@@ -142,7 +142,7 @@
 <string name="pref_ftpurl">Adresse (S)FTP racine</string>
 <string name="pref_ftpurl_info">Par exemple ftp://me@server.com/downloads/</string>
 <string name="pref_timeout">Délai de connexion dépassé</string>
-<string name="pref_timeout_info">Nombre de secondes avant l'expiration d'une tentative de connexion</string>
+<string name="pref_timeout_info">Nombre de secondes avant l\'expiration d\'une tentative de connexion</string>
 <string name="pref_ssl">SSL</string>
 <string name="pref_ssl_info">Sélectionner pour utiliser https</string>
 <string name="pref_ssl_trust_key">Empreinte du certificat SSL</string>

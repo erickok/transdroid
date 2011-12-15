@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<string name="no_settings">Ets nou a Transdroid? Pots trobar ajuda per l'instal·lació a www.transdroid.org/download\n\nPer començar a servir via torrent, entra si us plau les dades el teu servidor:</string>
+<string name="no_settings">Ets nou a Transdroid? Pots trobar ajuda per l\'installació a www.transdroid.org/download\n\nPer començar a servir via torrent, entra si us plau les dades el teu servidor:</string>
 <string name="save">Desa</string>
 <string name="dismiss">Descarta</string>
 <string name="torrent_server">Servidor torrent</string>
-<string name="no_servers">Encara no s'ha configurat cap servidor</string>
+<string name="no_servers">Encara no s\'ha configurat cap servidor</string>
 
 <string name="labels_showall">Mostra-ho tot</string>
 <string name="labels_unlabeled">Sense etiqueta</string>
