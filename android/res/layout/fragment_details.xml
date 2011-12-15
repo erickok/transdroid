@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical">
+
+	<ListView 
+		android:id="@+id/android:list" 
+		android:layout_weight="1"
+		android:layout_width="fill_parent" 
+		android:layout_height="0dip"
+		android:fastScrollEnabled="true" />
+
+	<LinearLayout
+		android:id="@+id/setprio"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:drawable/bottom_bar"
+		android:visibility="gone">
+		<Button
+			android:id="@+id/setprio_off"
+			android:text="@string/file_off"
+			android:layout_gravity="center"
+			android:layout_weight="1"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+		<Button
+			android:id="@+id/setprio_low"
+			android:text="@string/file_low"
+			android:layout_gravity="center"
+			android:layout_weight="1"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+		<Button
+			android:id="@+id/setprio_normal"
+			android:text="@string/file_normal"
+			android:layout_gravity="center"
+			android:layout_weight="1"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+		<Button
+			android:id="@+id/setprio_high"
+			android:text="@string/file_high"
+			android:layout_gravity="center"
+			android:layout_weight="1"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+			
+</LinearLayout>

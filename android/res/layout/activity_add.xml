@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent">
+	
+	<TextView 
+		android:id="@+id/url_label" 
+		android:text="@string/dialog_add_torrent" 
+		android:layout_height="wrap_content" 
+		android:layout_width="fill_parent"
+		android:gravity="center" 
+		android:paddingTop="10dip" 
+		android:paddingBottom="10dip" 
+		android:textStyle="bold"
+		/>
+	<EditText 
+		android:id="@+id/url" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/url_label"
+		android:layout_marginLeft="8dip"
+		android:layout_marginRight="8dip"
+		/>
+	<LinearLayout 
+		android:id="@+id/okcancelbar" 
+		android:orientation="horizontal"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/url"
+		android:background="@android:drawable/bottom_bar">
+		<Button  
+			android:id="@+id/ok"
+			android:text="@android:string/ok" 
+			android:layout_width="0dip" 
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:layout_gravity="center"
+			/>
+		<Button 
+			android:id="@+id/cancel"
+			android:text="@android:string/cancel" 
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:layout_gravity="center"
+			/>
+	</LinearLayout>
+	
+	<TextView 
+		android:id="@+id/separator" 
+		android:text=" " 
+		android:layout_height="wrap_content" 
+		android:layout_width="fill_parent"
+		android:layout_below="@id/okcancelbar"
+		/>
+		
+	<LinearLayout
+		android:id="@+id/selectfilebar"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/separator"
+		android:background="@android:drawable/bottom_bar">
+		<Button 
+			android:id="@+id/selectfile"
+			android:text="@string/selectfile"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_marginLeft="3dip"
+			android:layout_marginRight="3dip"
+			/>
+	</LinearLayout>	
+	
+</RelativeLayout>

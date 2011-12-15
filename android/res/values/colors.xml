@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="WindowBackgroundColor">#000</color>
+    <color name="TitleBackgroundColor">#7dbb21</color>
+	<color name="TitleTextColor">#fff</color>
+	<color name="TitleTextShadowColor">#000</color>
+	<color name="HighlightBackgroundColor">#aada62</color>
+	<color name="HighlightTextColor">#000</color>
+	<color name="AlertDialogBackground">#fff</color>
+</resources>

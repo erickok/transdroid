@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">Torrent-kliens menedzser beépített keresővel, RSS-támogatással és megfigyelő widgettel</string>
+
+<string name="no_settings_short">Nyisd meg a Beállításokat, és add meg a kapcsolódási adatokat.</string>
+<string name="no_settings">Új Transdroid-felhasználó vagy? A www.transdroid.org/download címen találsz segítseget.\n\nAhhoz, hogy elkezdhess torrentezni, kérlek, add meg a szerver-beállításaidat:</string>
+<string name="no_settings_button">Beállítások megnyitása</string>
+<string name="connecting">Kapcsolódás a szerverre...</string>
+<string name="no_torrents">Kapcsolódva, de nincsenek torrentek a szerveren.</string>
+<string name="no_downloading_torrents">Kapcsolódva, de nincs folyamatban lévő torrent letöltés a szerveren.</string>
+<string name="no_uploading_torrents">Kapcsolódva, de nincs seedelt torrent a szerveren.</string>
+<string name="no_inactive_torrents">Kapcsolódva, de nincs inaktív torrent a szerveren.</string>
+<string name="no_file_uploads">A torrent-kliensed nem támogatja a .torrent file feltöltéseket, vagy nincs implementálva egyelőre.</string>
+<string name="no_magnet_links">A torrent-kliensed nem támogatja a .magnet linkeket, vagy nincs implementálva egyelőre.</string>
+<string name="save">Mentés</string>
+<string name="dismiss">Bezárás</string>
+<string name="torrent_server">Torrent szerver</string>
+<string name="no_servers">Még nincs beállított szerver</string>
+
+<string name="labels_showall">Összes mutatása</string>
+<string name="labels_unlabeled">Cimkék eltávolítása</string>
+<string name="labels_newlabel">Új cimke</string>
+<string name="labels_no_support">A cimkézést nem támogatja a kliens</string>
+
+<string name="view_switchview">Nézet váltása</string>
+<string name="view_showall">Minden torrent</string>
+<string name="view_showdl">Letöltések</string>
+<string name="view_showul">Seedelő torrentek</string>
+<string name="view_showinactive">Inaktív torrentek</string>
+
+<string name="menu_add">Hozzáadás</string>
+<string name="menu_scanbarcode">Vonalkód leolvasása</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Szervel váltása</string>
+<string name="menu_speeds">Átviteli sebesség beállítása</string>
+<string name="menu_forall">Mindre</string>
+<string name="menu_forall_pause">Összes szüneteltetése</string>
+<string name="menu_forall_resume">Összes újraindítása</string>
+<string name="menu_forall_stop">Összes leállítása</string>
+<string name="menu_forall_start">Összes indítása</string>
+<string name="menu_filter">Szűrők listája</string>
+<string name="menu_sort_reverse">Rendezés (fordított)</string>
+<string name="menu_sort_alpha">Név</string>
+<string name="menu_sort_status">Állapot</string>
+<string name="menu_sort_added">Hozzáadás dátuma</string>
+<string name="menu_sort_upspeed">Feltöltési sebesség</string>
+<string name="menu_sort_ratio">Arány</string>
+<string name="menu_settings">Beállítások</string>
+<string name="menu_changelog">Névjegy/Változások</string>
+<string name="menu_errorreport">Hibajelentés</string>
+<string name="menu_remove">Eltávolítás</string>
+<string name="menu_remove_data">Eltávolítás és adatok törlése</string>
+<string name="menu_pause">Szüneteltetés</string>
+<string name="menu_resume">Újraindítás</string>
+<string name="menu_stop">Megállítás</string>
+<string name="menu_start">Indítás</string>
+<string name="menu_forcestart">Kényszerített indítás</string>
+<string name="menu_setlabel">Cimke beállítása</string>
+<string name="menu_setdownloadlocation">Letöltési hely megadása</string>
+<string name="menu_set_default">Beállítás alapértelmezettként</string>
+<string name="menu_moveup">Feljebb rendez</string>
+<string name="menu_movedown">Lejjebb rendez</string>
+<string name="menu_edittrackers">Trackerek szerkesztése</string>
+<string name="menu_invertselection">Kijelölés megfordítása</string>
+
+<string name="dialog_add_torrent">Add meg a torrent-file URL-jét</string>
+<string name="no_valid_url">Nem helyes URL</string>
+<string name="selectfile">Válassz egy lokális .torrent filet</string>
+<string name="oifm_install">Telepítés a Marketről</string>
+<string name="oifm_nomarket">A Market alkalmazás nincs telepítve</string>
+<string name="scanner_not_found">Barcode Scanner nem található. Telepítsük az Android Market-ből?</string>
+
+<string name="rate_download">Legmagasabb letöltési sebesség</string>
+<string name="rate_upload">Legmagasabb feltöltési sebesség</string>
+<string name="askremove_title">Torrent törlése</string>
+<string name="askremove">Biztosan törölni szeretnéd ezt a torrentet?</string>
+<string name="addfailed_title">Hozzáadás sikertelen</string>
+<string name="addfailed_service2">Nem sikerült %1$ hozzáadása. Megpróbálod újra, vagy hozzáaadod a várólistához?</string>
+<string name="addfailed_noservice2">Nem sikerült %1$ hozzáadása. Megpróbálod újra?</string>
+<string name="addfailed_retry">Újrapróbálkozás</string>
+<string name="addfailed_addlater">Hozzáadás később</string>
+
+<string name="searching">Keresés...</string>
+<string name="dialog_search">Torrentek keresése a neten</string>
+<string name="search_name">Torrentek</string>
+<string name="search_hint">Ubuntu</string>
+<string name="add_selected">Kijelöltek hozzáaadása</string>
+<string name="no_results">Nincs találat</string>
+<string name="no_query">Nincs keresési kifejezés megadva</string>
+<string name="searchmenu_add">Letöltés most</string>
+<string name="searchmenu_details">Weboldal megnyitása</string>
+<string name="searchmenu_openwith">Megnyitás ezzel...</string>
+<string name="searchmenu_sharelink">Link megosztása...</string>
+<string name="searchmenu_savesearch">Elmentés RSS-ként</string>
+<string name="tts_not_found">A Torrent Search egy különálló modul, amihez egyszeri installálás után hozzáférsz. Beinstallálod most az Android Marketről?</string>
+
+<string name="preferences">Transdroid beállítások</string>
+<string name="add_new_server">Új szerver hozzáadása</string>
+<string name="add_new_website">Torrentkereső hozzáadása</string>
+<string name="add_new_rssfeed">RSS feed hozzáadása</string>
+<string name="inappsite">Appon belüli keresés</string>
+<string name="websearch">Webes keresés</string>
+<string name="other_settings">Más beállítások</string>
+
+<string name="pref_basic">Alapbeállítások</string>
+<string name="pref_name">Név</string>
+<string name="pref_daemon">Szerver típusa</string>
+<string name="pref_address">IP vagy domain név</string>
+<string name="pref_address_info">http:// és port-szám nélkül</string>
+<string name="pref_port">Port</string>
+<string name="pref_port_info">Általában</string>
+<string name="pref_auth">Autentikáció használata</string>
+<string name="pref_auth_info">Felhasználónév és jelszó szükséges</string>
+<string name="pref_user">Felhasználónév</string>
+<string name="pref_pass">Jelszó</string>
+<string name="pref_os">Szerver operációsrendszer</string>
+<string name="pref_folder">SCGI mappa</string>
+<string name="pref_folder2">Mappa</string>
+<string name="pref_folder2_info">Például /torrentflux</string>
+<string name="pref_folder3_info">Általában üres</string>
+<string name="pref_advanced">Haladó beállítások (opcionális)</string>
+<string name="pref_downloaddir">Letöltési könvytár</string>
+<string name="pref_downloaddir_info">Abszolút elérési út a letöltési könyvtárhoz a szervereden</string>
+<string name="pref_ftpurl_info">Például ftp://en@szerverem.com/letoltesek/</string>
+<string name="pref_timeout">Időtúllépés</string>
+<string name="pref_ssl">SSL</string>
+<string name="pref_ssl_info">Válassza ki https használatához</string>
+
+<string name="pref_search">Keresőmotor</string>
+<string name="pref_setdefault">Alapértelmezett oldal</string>
+<string name="pref_ezrss_quality">Minőség</string>
+<string name="pref_ezrss_loading">Töltés...</string>
+
+<string name="pref_interface">Felület beállítások</string>
+<string name="pref_uirefresh">Frissítés gyakorisága</string>
+<string name="pref_hiderefresh">Frissítés elrejtése</string>
+<string name="pref_askremove">Eltávolítás megerősítése</string>
+<string name="pref_import_settings">Beállítások importálása</string>
+<string name="pref_export_settings">Beállítások exportálása</string>
+<string name="pref_enableads">Hírdetések engedélyezése</string>
+
+<string name="pref_alarmvibrate">Vibrálás engedélyezése</string>
+
+<string name="status_waiting">Várakozás az ellenőrzésre</string>
+<string name="status_checking">Ellenőrzés</string>
+<string name="status_error">Hiba...</string>
+<string name="status_size2">%1$s, feltöltött %2$s</string>
+<string name="status_ratio">arány %1$s</string>
+<string name="status_paused">Szünetelve</string>
+<string name="status_stopped">Leállítva</string>
+<string name="status_unknown">Ismeretlen</string>
+<string name="status_persecond">/mp</string>
+
+<string name="task_refreshing">Frissítés...</string>
+<string name="task_addbyurl">Torrent hozzáadása...</string>
+<string name="task_addbyfile">Torrent feltöltése...</string>
+<string name="task_removing">Torrent eltávolítása...</string>
+<string name="task_pausing">Torrent szüneteltetése...</string>
+<string name="task_pausingall">Összes torrent szüneteltetése...</string>
+<string name="task_resuming">Torrent folytatása...</string>
+<string name="task_resumingall">Összes torrent folytatása...</string>
+<string name="task_stopping">Torrent leállítása...</string>
+<string name="task_stoppingall">Összes torrent leállítása...</string>
+<string name="task_starting">Torrent indítása...</string>
+<string name="task_startingall">Összes torrent indítása...</string>
+<string name="task_setlabel">Cimke hozzárendelése...</string>
+<string name="task_setlocation">Torrent mozgatása...</string>
+
+<string name="list_refreshed">Torrent lista frissítve</string>
+<string name="torrent_added">Torrent hozzáadva (frissítés)</string>
+<string name="torrent_removed">eltávolítva</string>
+
+<string name="details_details">Részletek</string>
+<string name="details_files">Fájlok</string>
+<string name="details_size">Méret:</string>
+<string name="details_downloaded">Letöltve:</string>
+<string name="details_uploaded">Feltöltve:</string>
+<string name="details_rate">Arány:</string>
+<string name="details_availability">Elérhetőség:</string>
+<string name="details_errors">Hiba:</string>
+
+<string name="file_low">Alacsony</string>
+<string name="file_normal">Normál</string>
+<string name="file_high">Magas</string>
+
+<string name="widget_pref_server">Szerver</string>
+<string name="widget_pref_layout">Stílus</string>
+<string name="widget_downloading">LE @</string>
+<string name="widget_seeding">FEL @</string>
+<string name="widget_other">inaktív</string>
+<string name="widget_new">új</string>
+
+<string name="service_newtorrent">Torrent hozzáadva</string>
+
+
+
+
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 perc</item>
+<item>10 perc</item>
+<item>30 perc</item>
+<item>1 óra</item>
+<item>3 óra</item>
+<item>12 óra</item>
+<item>1 nap</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Search Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

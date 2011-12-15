@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+	
+	<TextView 
+		android:id="@+id/add_server"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:gravity="center_vertical"
+		android:paddingLeft="6dip"
+		android:minHeight="?android:attr/listPreferredItemHeight"
+	/>
+	<ImageButton
+		android:id="@+id/info"
+		android:layout_width="48dip"
+		android:layout_height="44dip"
+		android:layout_marginTop="11dip"
+		android:layout_marginRight="6dip"
+		android:layout_alignParentRight="true"
+		android:src="@android:drawable/ic_menu_help"
+		android:scaleType="fitXY"
+		android:focusable="false"
+	/>
+</RelativeLayout>

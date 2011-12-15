@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">內置搜尋、RSS支援和監控小工具的用戶端</string>
+
+<string name="no_settings_short">開啟設定選單進入伺服器細節訊息。</string>
+<string name="no_settings">開啟設定選單輸入您的伺服器細節訊息。\n\n安裝說明：www.transdroid.org/download</string>
+<string name="no_settings_button">開啟設定</string>
+<string name="connecting">嘗試連線到伺服器...</string>
+<string name="no_torrents">已連線，但是伺服器上沒有種子。</string>
+<string name="no_downloading_torrents">已連線，但是伺服器上沒有正在下載的種子。</string>
+<string name="no_uploading_torrents">已連線，但是伺服器上沒有正在做種的種子。</string>
+<string name="no_inactive_torrents">已連線，但是伺服器上沒有非活動中的種子。</string>
+<string name="no_file_uploads">您的用戶端不支援上傳.torrent檔案或並未實作此功能。</string>
+<string name="no_magnet_links">您的用戶端不支援magnet連結或並未實作此功能。</string>
+<string name="save">儲存</string>
+<string name="dismiss">忽略</string>
+<string name="torrent_server">Torrent伺服器</string>
+<string name="no_servers">未有已設定的伺服器</string>
+
+<string name="labels_showall">顯示所有</string>
+<string name="labels_unlabeled">未標籤</string>
+<string name="labels_newlabel">新標籤</string>
+<string name="labels_no_support">您的用戶端不支援設定標籤</string>
+
+<string name="view_showall">顯示所有種子</string>
+<string name="view_showdl">顯示下載中種子</string>
+<string name="view_showul">顯示做種中種子</string>
+<string name="view_showinactive">顯示未活動種子</string>
+
+<string name="menu_add">新增</string>
+<string name="menu_scanbarcode">掃瞄條碼</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">切換伺服器</string>
+<string name="menu_speeds">設定傳輸速度</string>
+<string name="menu_forall">設定全部</string>
+<string name="menu_forall_pause">暫停全部</string>
+<string name="menu_forall_resume">還原全部</string>
+<string name="menu_forall_stop">停止全部</string>
+<string name="menu_forall_start">開始全部</string>
+<string name="menu_filter">過濾清單</string>
+<string name="menu_sort_reverse">排序(反向排序)</string>
+<string name="menu_sort_alpha">名字</string>
+<string name="menu_sort_status">狀態</string>
+<string name="menu_sort_done">完成日期</string>
+<string name="menu_sort_added">新增日期</string>
+<string name="menu_sort_upspeed">上傳速度</string>
+<string name="menu_sort_ratio">比率</string>
+<string name="menu_sort_onlytransferring">限制傳輸(&gt; 0KB/s)</string>
+<string name="menu_settings">設定</string>
+<string name="menu_changelog">關於/更新日誌</string>
+<string name="menu_errorreport">錯誤報告</string>
+<string name="menu_remove">移除</string>
+<string name="menu_remove_data">移除並刪除資料</string>
+<string name="menu_also_data">同時也刪除資料</string>
+<string name="menu_pause">暫停</string>
+<string name="menu_resume">繼續</string>
+<string name="menu_stop">停止</string>
+<string name="menu_start">開始</string>
+<string name="menu_forcestart">強制開始</string>
+<string name="menu_setlabel">設定標籤</string>
+<string name="menu_setdownloadlocation">設定存放位置</string>
+<string name="menu_set_default">設為預設</string>
+<string name="menu_default_site_set_to">設定預設站台為</string>
+<string name="menu_moveup">上移</string>
+<string name="menu_movedown">下移</string>
+<string name="menu_edittrackers">編輯Tackers</string>
+
+<string name="dialog_add_torrent">貼上URL或種子檔案</string>
+<string name="no_valid_url">URL位址格式不對</string>
+<string name="selectfile">選取一個本機.torrent種子檔案</string>
+<string name="oifm_not_found">沒有發現支援的檔案管理器，比如OI File Manager。您想從Android Market安裝嗎？\n\n另外您也可以開啟一個不支援的檔案管理器並傳送一個.torrent種子檔案到Transdroid。</string>
+<string name="oifm_install">從Market安裝</string>
+<string name="oifm_nomarket">未安裝Android Market</string>
+<string name="scanner_not_found">尚未安裝條碼掃描器，您想從Android Market安裝嗎？</string>
+<string name="lc_install">您需要安裝Log Collector程式來傳送錯誤報告，您想從Android Market安裝嗎？</string>
+<string name="lc_run">Log Collector將會收集您的設備日誌並傳送到transdroid.org@gmail.com，\n你可以預覽和修改將要傳送的資料。</string>
+<string name="vlcremote_not_found">尚未安裝遠端檔案瀏覽器，如VLC Remote；您想從Android Market安裝VLC Remote嗎？</string>
+<string name="ftpclient_not_found">尚未安裝相容的FTP用戶端，\n您想從Android Market安裝AndFTP嗎？</string>
+
+<string name="rate_download">最大下載速率</string>
+<string name="rate_upload">最大上傳速率</string>
+<string name="rate_inkbs">只允許數字，以KB/s為單位</string>
+<string name="rate_reset">重設</string>
+<string name="rate_no_support">您的用戶端不支援設定傳輸速率，或並未實作此功能。</string>
+<string name="rate_updated">傳輸速率已更新</string>
+<string name="askremove_title">移除種子</string>
+<string name="askremove">確定要移除這個種子嗎？</string>
+<string name="addfailed_retry">重試</string>
+<string name="addfailed_addlater">稍候新增</string>
+
+<string name="searching">搜尋中...</string>
+<string name="dialog_search">搜尋線上種子</string>
+<string name="search_name">總子</string>
+<string name="search_hint">Ubuntu</string>
+<string name="search_resultsfrom">搜尋結果</string>
+<string name="add_selected">新增所有已選檔案</string>
+<string name="no_results">沒有搜尋結果</string>
+<string name="no_query">沒有輸入查詢條件</string>
+<string name="searchmenu_switchsite">切換站台</string>
+<string name="searchmenu_add">馬上下載</string>
+<string name="searchmenu_details">開啟網站</string>
+<string name="searchmenu_openwith">開啟方式...</string>
+<string name="searchmenu_sharelink">分享連結...</string>
+<string name="searchmenu_savesearch">另存為RSS摘要</string>
+<string name="search_savedrssfeed">將搜尋另存為RSS摘要</string>
+<string name="search_savenotsupported">站台不支援儲存</string>
+<string name="tts_not_found">搜尋種子功能分開在另一模組，您想從Android Market安裝嗎？</string>
+
+<string name="preferences">Transdroid偏好設定</string>
+<string name="add_new_server">新增新伺服器</string>
+<string name="add_new_website">新增網頁搜尋站台</string>
+<string name="add_new_rssfeed">新增RSS摘要</string>
+<string name="inappsite">程式內搜尋</string>
+<string name="websearch">網頁搜尋</string>
+<string name="other_settings">其他設定</string>
+
+<string name="pref_server">伺服器常駐執行</string>
+<string name="pref_basic">基礎設定</string>
+<string name="pref_name">名字</string>
+<string name="pref_name_info">可選使用者名</string>
+<string name="pref_daemon">伺服器類型</string>
+<string name="pref_address">IP位址或者域名</string>
+<string name="pref_address_info">不帶http://或者通訊埠名</string>
+<string name="pref_port">通訊埠</string>
+<string name="pref_port_info">通常是</string>
+<string name="pref_auth">使用認證</string>
+<string name="pref_auth_info">您需要一個使用者名稱和密碼</string>
+<string name="pref_user">使用者名稱</string>
+<string name="pref_pass">密碼</string>
+<string name="pref_os">伺服器作業系統</string>
+<string name="pref_folder">SCGI目錄</string>
+<string name="pref_folder_info">通常是/RPC2</string>
+<string name="pref_folder2">資料夾</string>
+<string name="pref_folder2_info">例如是 /torrentflux</string>
+<string name="pref_folder3_info">通常是空白</string>
+<string name="pref_advanced">進階選項(可選)</string>
+<string name="pref_downloaddir">下載目錄</string>
+<string name="pref_downloaddir_info">您伺服器上的下載目錄，絕對位址</string>
+<string name="pref_ftpurl">基本 (S)FTP url</string>
+<string name="pref_ftpurl_info">例如是 ftp://me@server.com/downloads/</string>
+<string name="pref_ssl">SSL</string>
+<string name="pref_ssl_info">選取此項使用https</string>
+<string name="pref_ssl_trust_key">自訂SSL thumbprint</string>
+<string name="pref_ssl_trust_key_info">保持連線到指定的憑證</string>
+<string name="pref_ssl_trust_all">接受所有的SSL憑證</string>
+<string name="pref_ssl_trust_all_info">選取自認證憑證</string>
+
+<string name="pref_search">搜尋引擎</string>
+<string name="pref_setdefault">設定預設站台</string>
+<string name="pref_url">直接搜尋位址</string>
+<string name="pref_url_info">%s將會被替換為搜尋語法</string>
+<string name="pref_numresults">結果數量</string>
+<string name="pref_sort">結果排序</string>
+<string name="pref_rss_info">RSS摘要</string>
+<string name="pref_feed">摘要設定</string>
+<string name="pref_feed_url">RSS摘要位址</string>
+<string name="pref_feed_needsauth">需要認證</string>
+<string name="pref_feed_needsauth_info">開啟瀏覽器進行認證</string>
+<string name="pref_ezrss">ezRSS摘要產生器</string>
+<string name="pref_ezrss_info">Build a TV show RSS feed</string>
+<string name="pref_ezrss_showname">顯示名字</string>
+<string name="pref_ezrss_quality">品質</string>
+<string name="pref_ezrss_group">發佈組</string>
+<string name="pref_ezrss_info2">品質和發佈組是可選的\nPowered by http://www.ezrss.it</string>
+<string name="pref_ezrss_exact">精確比對↴</string>
+<string name="pref_ezrss_enter">輸入查詢後會顯示RSS摘要範例</string>
+<string name="pref_ezrss_loading">載入中...</string>
+<string name="pref_ezrss_noresults">這個查詢返回一個空清單</string>
+
+<string name="pref_interface">介面設定</string>
+<string name="pref_onlytransferring">限制傳輸(&gt; 0KB/s)</string>
+<string name="pref_onlytransferring_info">將0KB/s的種子顯示為未活動</string>
+<string name="pref_swipelabels">Swipe labels</string>
+<string name="pref_swipelabels_info">Swipe between labels instead of servers</string>
+<string name="pref_uirefresh">更新間隔</string>
+<string name="pref_hiderefresh">隱藏更新</string>
+<string name="pref_hiderefresh_info">不顯示\'種子清單已更新\'訊息</string>
+<string name="pref_clear_search_history">清除搜尋紀錄</string>
+<string name="pref_history_cleared">成功清除搜尋紀錄</string>
+<string name="pref_askremove">確認移除</string>
+<string name="pref_askremove_info">移除種子時要求確認</string>
+<string name="pref_import_settings">匯入設定檔</string>
+<string name="pref_import_settings_info">Transdroid將會從下列文字檔匯入伺服器(包括密碼)、搜尋以及RSS設定：</string>
+<string name="pref_import_settings_success">匯入設定成功</string>
+<string name="pref_import_settings_pick">選擇檔案</string>
+<string name="pref_export_settings">匯出設定檔</string>
+<string name="pref_export_settings_info">Transdroid將會匯出伺服器(包括密碼)、搜尋以及RSS設定到下列文字檔：</string>
+<string name="pref_export_settings_success">匯出設定成功</string>
+<string name="pref_export_settings_pick">選擇目錄</string>
+<string name="pref_enableads">啟用廣告</string>
+<string name="pref_enableads_info">顯示螢幕底部的廣告</string>
+
+<string name="pref_alarm">提醒服務設定</string>
+<string name="pref_enablealarm">啟用提醒服務</string>
+<string name="pref_enablealarm_info">種子狀態改變時提醒我</string>
+<string name="pref_alarmtime">提醒間隔</string>
+<string name="pref_alarmtime_info">檢查種子狀態的間隔</string>
+<string name="pref_alarmfinished">下載完成提醒</string>
+<string name="pref_alarmfinished_info">種子完檔時通知</string>
+<string name="pref_alarmnew">新增種子提醒</string>
+<string name="pref_alarmnew_info">新增種子時通知</string>
+<string name="pref_alarmplaysound">啟用提醒音效</string>
+<string name="pref_alarmplaysound_info">提醒時播放通知音效</string>
+<string name="pref_alarmsounduri">提醒音效</string>
+<string name="pref_alarmsounduri_info">欲播放的通知音效</string>
+<string name="pref_alarmvibrate">啟用震動</string>
+<string name="pref_alarmvibrate_info">提醒時震動</string>
+<string name="pref_checkrssfeeds">檢查RSS摘要</string>
+<string name="pref_checkrssfeeds_info">有新種子的時候提醒我</string>
+<string name="pref_adwnotify">啟用ADW通知</string>
+<string name="pref_adwnotify_info">在ADW Launcher中顯示種子數</string>
+<string name="pref_adwonlydl">只計算下載中數量</string>
+<string name="pref_adwonlydl_info">ADW只包括下載中種子的數量</string>
+
+<string name="status_waiting">等待檢查...</string>
+<string name="status_checking">驗證本機資料</string>
+<string name="status_waitingtodl">等待下載%s</string>
+<string name="status_size1">%1$s於%2$s (%3$s)</string>
+<string name="status_size2">%1$s,已上傳%2$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_unknowneta">未知預計完成時間</string>
+<string name="status_ratio">比率%1$s</string>
+<string name="status_peers">%1$s於%2$s節點</string>
+<string name="status_speed_up">↑ %1$s</string>
+<string name="status_speed_down">↓ %1$s</string>
+<string name="status_paused">已暫停</string>
+<string name="status_stopped">已停止</string>
+<string name="status_unknown">未知</string>
+<string name="status_persecond">/秒</string>
+
+<string name="task_refreshing">更新...</string>
+<string name="task_addbyurl">新增種子...</string>
+<string name="task_addbyfile">上傳種子...</string>
+<string name="task_removing">移除種子...</string>
+<string name="task_pausing">暫停種子...</string>
+<string name="task_pausingall">暫停所有種子...</string>
+<string name="task_resuming">繼續種子...</string>
+<string name="task_resumingall">繼續所有種子...</string>
+<string name="task_stopping">停止種子...</string>
+<string name="task_stoppingall">停止所有種子...</string>
+<string name="task_starting">開始種子...</string>
+<string name="task_startingall">開始種子...</string>
+<string name="task_getfiles">檢索檔案...</string>
+<string name="task_setfileprop">設定檔案內容...</string>
+<string name="task_settransrates">設定傳輸速率...</string>
+<string name="task_setlabel">指定標籤...</string>
+<string name="task_setlocation">移動種子...</string>
+
+<string name="list_refreshed">種子清單已更新</string>
+<string name="torrent_added">種子已新增(更新中)</string>
+<string name="torrent_removed">已移除</string>
+<string name="torrent_removed_with_data">種子已移除且資料已刪除</string>
+<string name="torrent_resumed">已繼續(更新中)</string>
+<string name="torrent_stopped">已停止</string>
+<string name="torrent_started">已開始(更新中)</string>
+<string name="torrent_paused">已暫停</string>
+<string name="torrent_paused_all">種子已暫停</string>
+<string name="torrent_resumed_all">種子已繼續(更新中)</string>
+<string name="torrent_stopped_all">種子已停止</string>
+<string name="torrent_started_all">種子已開始(更新中)</string>
+<string name="torrent_trackersupdated">Trackers已最新</string>
+<string name="torrent_locationset">種子已移到\'%1$s\'</string>
+
+<string name="details_details">詳情</string>
+<string name="details_files">檔案</string>
+<string name="details_size">大小:</string>
+<string name="details_state">狀態:</string>
+<string name="details_downloaded">已下載:</string>
+<string name="details_uploaded">已上傳:</string>
+<string name="details_rate">速度:</string>
+<string name="details_eta">預計完成時間:</string>
+<string name="details_availability">可用度:</string>
+<string name="details_peers">節點:</string>
+<string name="details_label">標籤:</string>
+<string name="details_trackers">Tracker:</string>
+<string name="details_notsupported">您的用戶端不支援種子清單或並未實作此功能。</string>
+<string name="details_priorities_updated">檔案優先順序已更新</string>
+
+<string name="file_off">關</string>
+<string name="file_low">低</string>
+<string name="file_normal">中</string>
+<string name="file_high">高</string>
+<string name="file_remotestart">在VLC中遠端播放</string>
+<string name="file_ftpdownload">使用(S)FTP下載</string>
+
+<string name="widget_4x1">Transdroid 4x1</string>
+<string name="widget_2x1">Transdroid 2x1</string>
+<string name="widget_pref_server">伺服器</string>
+<string name="widget_pref_refresh">更新間隔</string>
+<string name="widget_pref_layout">風格</string>
+<string name="widget_pref_addwidget">新增小工具</string>
+<string name="widget_downloading">DL @</string>
+<string name="widget_downloading_up">up</string>
+<string name="widget_seeding">UP @</string>
+<string name="widget_other">未啟用</string>
+<string name="widget_persecond">/秒</string>
+<string name="widget_eta">預計完成時間</string>
+<string name="widget_unknowneta">未知預計完成時間</string>
+<string name="widget_new">新的</string>
+
+<string name="service_newtorrent">新增的種子</string>
+<string name="service_torrentfinished">結束下載的種子</string>
+<string name="service_newrssitems">可下載的新種子</string>
+<string name="service_newrssitems_count">%d 個新的RSS摘要種子</string>
+
+<string name="rss">RSS</string>
+<string name="rss_no_feeds">沒有RSS摘要\n\n請使用選單新增RSS摘要</string>
+<string name="rss_loading_feed">正在載入RSS摘要</string>
+<string name="rss_no_items">已連線，但RSS摘要無內容</string>
+
+<string name="error_httperror">與伺服器通信中發生錯誤</string>
+<string name="error_jsonrequesterror">建立要求時發生錯誤</string>
+<string name="error_jsonresponseerror">伺服器回應剖析發生錯誤(請檢查設定)</string>
+<string name="error_daemonnotconnected">網頁介面沒有連線到正在執行的常駐服務</string>
+<string name="error_401">拒絕登入(請檢查設定)</string>
+<string name="error_torrentfile">種子讀取錯誤</string>
+<string name="error_parsingrss">RSS摘要剖析錯誤</string>
+<string name="error_invalid_url_form">URL格式不正確</string>
+<string name="error_invalid_search_url">網頁搜尋位址錯誤:</string>
+<string name="error_invalid_ip_or_hostname">IP位址或主機名稱輸入錯誤</string>
+<string name="error_invalid_port_number">通訊埠號只能是數字</string>
+<string name="error_invalid_directory">目錄路徑應該以/或者\結尾</string>
+<string name="error_no_url_enclosure">RSS項目沒有提供種子的連結</string>
+<string name="error_no_link">RSS摘要沒有提供可以瀏覽的連結</string>
+<string name="error_norssfeed">URL不是正確的RSS位址</string>
+<string name="error_media_not_available">記憶卡無法存取</string>
+<string name="error_no_valid_settings_file">檔案未包含Transdroid的設定</string>
+<string name="error_file_not_found">未能找到設定檔</string>
+
+<string name="xirvik_info">Xirvik提供共用的，半獨立或者完全獨立的Seedboxes，Transdroid為所有的Xirvik伺服器提供簡單設定。\n\n訪問www.xirvik.com獲得更多訊息</string>
+<string name="xirvik_add_new_xserver">新增Xirvik伺服器</string>
+<string name="xirvik_pref_title">Xirvik伺服器設定</string>
+<string name="xirvik_pref_type">伺服器類型</string>
+<string name="xirvik_pref_type_info">共用，半獨立或完全獨立</string>
+<string name="xirvik_pref_server">伺服器名</string>
+<string name="xirvik_pref_server_info">像是 dedi000.xirvik.com</string>
+<string name="xirvik_error_invalid_servername">錯誤的伺服器(請使用完整主機名，像是dedi000.xirvik.com)</string>
+
+
+<string-array name="pref_sort_types">
+<item>合併排序</item>
+<item>供檔者/吸血者數量</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>不自動更新</item>
+<item>2秒</item>
+<item>5秒</item>
+<item>15秒</item>
+<item>1分鐘</item>
+<item>5分鐘</item>
+<item>15分鐘</item>
+<item>1小時</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1分鐘</item>
+<item>10分鐘</item>
+<item>30分鐘</item>
+<item>1小時</item>
+<item>3小時</item>
+<item>12小時</item>
+<item>1天</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>快速搜尋欄</item>
+<item>黑色</item>
+<item>Transparent</item>
+</string-array>
+</resources>

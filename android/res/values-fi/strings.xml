@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">Torrent clientin etäkäyttö-ohjelma RSS tuella ja seuranta widgetillä</string>
+
+<string name="no_settings_short">Avaa asetusvalikko asettaaksesi palvelimen daemon tiedot</string>
+<string name="no_settings">Uusi Transdroid käyttäjä? Voit saada apua (englanniksi) osoitteessa www.transdroid.org/download</string>
+<string name="no_settings_button">Avaa asetukset</string>
+<string name="connecting">Avataan yhteyttä palvelimeen...</string>
+<string name="no_torrents">Yhdistetty, mutta ei torrentteja palvelimella.</string>
+<string name="no_downloading_torrents">Yhdistetty, mutta ei latautuvia torrentteja palvelimella.</string>
+<string name="no_uploading_torrents">Yhdistetty, mutta ei jaettavia torrentteja palvelimella.</string>
+<string name="no_inactive_torrents">Yhdistetty, mutta ei epäaktiivisia torrentteja palvelimella.</string>
+<string name="no_file_uploads">Torrent ohjelmasti ei tue .torrent tiedostojen vastaanottamista tai tätä ominaisuutta ei ole vielä lisätty.</string>
+<string name="no_magnet_links">Torrent clienttisi ei tue Magnet-linkkejä tai tätä ei ole vielä toteutettu.</string>
+<string name="save">Tallenna</string>
+<string name="dismiss">Peruuta</string>
+<string name="torrent_server">Torrent-palvelin</string>
+<string name="no_servers">Palvelimia ei ole vielä määritelty</string>
+
+<string name="labels_showall">Näytä kaikki</string>
+<string name="labels_unlabeled">Poista merkki</string>
+<string name="labels_newlabel">Uusi merkki</string>
+<string name="labels_no_support">Clienttisi ei tue merkkien lisäystä</string>
+
+<string name="view_switchview">Vaihda näkymää</string>
+<string name="view_showall">Näytetään kaikki torrentit</string>
+<string name="view_showdl">Näytetään ladattavat torrentit</string>
+<string name="view_showul">Näytetään jaettavat torrentit</string>
+<string name="view_showinactive">Näytetään epäaktiiviset torrentit</string>
+
+<string name="menu_add">Lisää</string>
+<string name="menu_scanbarcode">Lue viivakoodi</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Vaihda palvelinta</string>
+<string name="menu_speeds">Aseta kaistan käyttö</string>
+<string name="menu_forall">Tee kaikille</string>
+<string name="menu_forall_pause">Tauota kaikki</string>
+<string name="menu_forall_resume">Jatka kaikkia</string>
+<string name="menu_forall_stop">Pysäytä kaikki</string>
+<string name="menu_forall_start">Aloita kaikki</string>
+<string name="menu_filter">Suodatin lista</string>
+<string name="menu_sort_reverse">Järjestä (turvaudu päinvastaiseen järjestykseen)</string>
+<string name="menu_sort_alpha">Nimi</string>
+<string name="menu_sort_status">Tila</string>
+<string name="menu_sort_done">Valmistumispäivä</string>
+<string name="menu_sort_added">Lisäämispäivä</string>
+<string name="menu_sort_upspeed">Uploadnopeus</string>
+<string name="menu_sort_ratio">Suhde</string>
+<string name="menu_sort_onlytransferring">Nopeus vain (> 0KB/s)</string>
+<string name="menu_settings">Asetukset</string>
+<string name="menu_changelog">Tietoa/Muutoshistoria</string>
+<string name="menu_errorreport">Virheraportti</string>
+<string name="menu_remove">Poista</string>
+<string name="menu_remove_data">Poista ja tyhjennä data</string>
+<string name="menu_also_data">Poista myös data</string>
+<string name="menu_pause">Tauko</string>
+<string name="menu_resume">Jatka</string>
+<string name="menu_stop">Pysäytä</string>
+<string name="menu_start">Aloita</string>
+<string name="menu_forcestart">Pakota aloitus</string>
+<string name="menu_setlabel">Laita merkki...</string>
+<string name="menu_setdownloadlocation">Aseta latauspaikka</string>
+<string name="menu_set_default">Laita oletukseksi</string>
+<string name="menu_default_site_set_to">Oletussivuksi laitettu</string>
+<string name="menu_moveup">Siirrä ylös</string>
+<string name="menu_movedown">Siirrä alas</string>
+
+<string name="dialog_add_torrent">Liitä torrentin URL</string>
+<string name="no_valid_url">Liitetty URL ei ole toimiva</string>
+<string name="selectfile">Valitse paikallinen .torrent tiedosto</string>
+<string name="oifm_not_found">Tuettua tiedostonhallintaa, kuten esimerkiksi OI File Manageria ei löydetty. Haluatko asentaa sen Android Marketista?\n\nVaihtoehtoisesti voit avata ei-tuetun tiedostonhallinnan ja itse lähettää .torrent tiedoston Transdroidiin.</string>
+<string name="oifm_install">Asenna marketista</string>
+<string name="oifm_nomarket">Android Market -sovellusta ei ole asennettu.</string>
+<string name="scanner_not_found">Viivakoodinlukijaa ei löydetty. Haluatko asentaa sen Android Marketista?</string>
+<string name="lc_install">Jos haluat lähettää raportin virheestä tarvitset ilmaisen &amp; open-source Lag Collector sovelluksen. Haluatko asentaa sen Android Marketista?</string>
+<string name="lc_run">Log Collector sovellus kerää laitteen lokin ja lähettää sen transdroid.org@gmail.com.\nSinulla on mahdollisuus tarkastaa tai muuttaa lähetettäviä tietoja.</string>
+<string name="vlcremote_not_found">VLC:tä ei löydetty, Haluatko asentaa sen Android marketista?</string>
+<string name="ftpclient_not_found">Et ole vielä asentanut yhteensopivaa FTP-asiakasta, haluatko asentaa sen Android marketista?</string>
+
+<string name="rate_download">Maksimi latausnopeus</string>
+<string name="rate_upload">Maksimi lähetysnopeus</string>
+<string name="rate_inkbs">Vain numerot</string>
+<string name="rate_reset">Nollaa</string>
+<string name="rate_no_support">Torrent-clienttisi ei tue rajoitusten määritystä.</string>
+<string name="rate_updated">Siirtonopeuden asetukset määritetty.</string>
+<string name="askremove_title">Poistetaan torrent</string>
+<string name="askremove">Oletko varma että haluat poistaa tämän torrentin?</string>
+<string name="addfailed_title">Lisäys epäonnistui</string>
+<string name="addfailed_retry">Uudestaan</string>
+<string name="addfailed_addlater">Lisää myöhemmin.</string>
+
+<string name="searching">Etsitään...</string>
+<string name="dialog_search">Hae netistä torrentteja.</string>
+<string name="search_name">Torrentit</string>
+<string name="search_hint">Ubuntu</string>
+<string name="search_resultsfrom">Tulokset sivulta</string>
+<string name="add_selected">Lisää kaikki valitut.</string>
+<string name="no_results">Ei tuloksia haullasi.</string>
+<string name="no_query">Hakusanaa ei annettu.</string>
+<string name="searchmenu_switchsite">Vaihda sivua</string>
+<string name="searchmenu_add">Lataa nyt</string>
+<string name="searchmenu_details">Avaa nettisivu</string>
+<string name="searchmenu_openwith">Avaa ohjelmalla...</string>
+<string name="searchmenu_sharelink">Jaa linkki...</string>
+<string name="searchmenu_savesearch">Tallenna RSS-syöte</string>
+<string name="search_savedrssfeed">Etsi talletettuja RSS syöteitä</string>
+<string name="search_savenotsupported">Tallennus ei tuettu tällä sivustolla.</string>
+
+<string name="preferences">Transdroidin asetukset</string>
+<string name="add_new_server">Lisää uusi palvelin</string>
+<string name="add_new_website">Lisää hakusivu</string>
+<string name="add_new_rssfeed">Lisää RSS syöte</string>
+<string name="inappsite">Ohjelman sisäinen haku</string>
+<string name="websearch">Web haku</string>
+<string name="other_settings">Muut asetukset</string>
+
+<string name="pref_server">Palvelin daemon</string>
+<string name="pref_basic">Perusasetukset</string>
+<string name="pref_name">Nimi</string>
+<string name="pref_name_info">Valinnainen henkilökohtainen nimi</string>
+<string name="pref_daemon">Palvelimen tyyppi</string>
+<string name="pref_address">IP tai domain nimi</string>
+<string name="pref_address_info">Ilman http:// tai portin numeroa</string>
+<string name="pref_port">Portti</string>
+<string name="pref_port_info">On yleensä</string>
+<string name="pref_auth">Käytä varmennusta</string>
+<string name="pref_auth_info">Tarvitset käyttäjätunnuksen ja salasanan</string>
+<string name="pref_user">Käyttäjätunnus</string>
+<string name="pref_pass">Salasana</string>
+<string name="pref_os">Palvelimen käyttöjärjestelmä</string>
+<string name="pref_folder">SCGI kansio</string>
+<string name="pref_folder_info">Yleensä /RPC2</string>
+<string name="pref_folder2">Kansio</string>
+<string name="pref_folder2_info">Esimerkiksi /torrentflux</string>
+<string name="pref_folder3_info">Yleensä tyhjä</string>
+<string name="pref_advanced">Lisäasetukset (valinnainen)</string>
+<string name="pref_downloaddir">Lataukset-hakemisto</string>
+<string name="pref_downloaddir_info">Tarkka polku Lataukset-hakemistoon palvelimellasi</string>
+<string name="pref_ftpurl_info">Esimerkiksi ftp://me@server.com/downloads/</string>
+<string name="pref_ssl">SSL</string>
+<string name="pref_ssl_info">Valitse käyttääksesi https</string>
+<string name="pref_ssl_trust_all">Hyväksy kaikki SSL-sertifikaatit</string>
+
+<string name="pref_search">Hakukone</string>
+<string name="pref_setdefault">Valitse oletussivu</string>
+<string name="pref_url">Suorahaun URL</string>
+<string name="pref_numresults">Tuloksien määrä</string>
+<string name="pref_sort">Tuloksien järjestys</string>
+<string name="pref_rss_info">RSS-syötteet</string>
+<string name="pref_feed">Syötteen asetukset</string>
+<string name="pref_feed_url">Syötteen URL</string>
+<string name="pref_feed_needsauth">Vaatii varmennusta.</string>
+<string name="pref_feed_needsauth_info">Avaa linkit selaimella todentaaksesi.</string>
+<string name="pref_ezrss">ezRSS-syöterakentaja</string>
+<string name="pref_ezrss_info">Rakenna TV-sarjan RSS-syöte</string>
+<string name="pref_ezrss_showname">Sarjan nimi</string>
+<string name="pref_ezrss_quality">Laatu</string>
+<string name="pref_ezrss_group">Julkaisuryhmä</string>
+<string name="pref_ezrss_info2">Laatu ja julkaisuryhmä ovat valinnaisia\nPalvelun tarjoaa http://www.ezrss.it</string>
+<string name="pref_ezrss_enter">Syöte-esimerkki näkyy täällä kun olet lisännyt pyyntösi</string>
+<string name="pref_ezrss_loading">Ladataan...</string>
+<string name="pref_ezrss_noresults">Tämä pyyntö antaa tyhjän jaksolistauksen</string>
+
+<string name="pref_interface">Käyttöliittymän asetukset</string>
+<string name="pref_onlytransferring_info">Näytä 0KB/s nopeudella olevat torrentit epäaktiivisena.</string>
+<string name="pref_swipelabels">Käytä Swipeä merkkeihin</string>
+<string name="pref_swipelabels_info">Käytä Swipeä palvelimien sijasta merkkeihin</string>
+<string name="pref_uirefresh">Päivitysnopeus</string>
+<string name="pref_hiderefresh">Piilota päivitys</string>
+<string name="pref_hiderefresh_info">Älä näytä \'Torrent list refreshed\' viestiä</string>
+<string name="pref_clear_search_history">Tyhjennä hakuhistoria</string>
+<string name="pref_history_cleared">Historia tyhjennetty onnistuneesti</string>
+<string name="pref_askremove">Varmista poisto</string>
+<string name="pref_askremove_info">Kysy poistettaessa torrenttia</string>
+
+<string name="pref_alarm">Hälytyspalvelun asetukset</string>
+<string name="pref_enablealarm">Ota hälytyspalvelu käyttöön</string>
+<string name="pref_enablealarm_info">Hälytä minua kun torrentin tila muuttuu</string>
+<string name="pref_alarmtime">Hälytyksien nopeus</string>
+<string name="pref_alarmtime_info">Kuinka usein torrenttini tarkastetaan</string>
+<string name="pref_alarmfinished">Lataa hälytys</string>
+<string name="pref_alarmfinished_info">Ilmoita minulle kun torrent valmistuu</string>
+<string name="pref_alarmnew">Uusi torrent hälytys</string>
+<string name="pref_alarmnew_info">Ilmoita kun uusi torrent on lisätty</string>
+<string name="pref_checkrssfeeds">Tarkista RSS syötteet</string>
+<string name="pref_checkrssfeeds_info">Hälytä kun uusia torrentteja on saatavilla</string>
+
+<string name="status_waiting">Odotetaan tarkistusta...</string>
+<string name="status_checking">Varmistetaan paikallista dataa...</string>
+<string name="status_error">Virhe...</string>
+<string name="status_size2">%1$s, lähetetty %2$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_unknowneta">tuntematon arvio</string>
+<string name="status_ratio">suhde %1$s</string>
+<string name="status_peers">%1$s of %2$s käyttäjät</string>
+<string name="status_speed_up">↑ %1$s</string>
+<string name="status_speed_down">↓ %1$s</string>
+<string name="status_paused">Tauolla</string>
+<string name="status_stopped">Pysäytetty</string>
+<string name="status_unknown">Tuntematon</string>
+<string name="status_persecond">/s</string>
+
+<string name="task_refreshing">Päivitetään...</string>
+<string name="task_addbyurl">Lisää...</string>
+<string name="task_addbyfile">Luo...</string>
+<string name="task_removing">Poista...</string>
+<string name="task_pausing">Pysäytä...</string>
+<string name="task_pausingall">Pysäytä kaikki...</string>
+<string name="task_resuming">Jatka...</string>
+<string name="task_resumingall">Jatka kaikki...</string>
+<string name="task_stopping">Pysäytä...</string>
+<string name="task_stoppingall">Pysäytä kaikki...</string>
+<string name="task_starting">Aloita...</string>
+<string name="task_startingall">Aloita kaikki...</string>
+<string name="task_getfiles">Noudetaan tiedostoja...</string>
+<string name="task_settransrates">Asetetaan siirtorajat...</string>
+
+<string name="list_refreshed">Torrent-lista päivitetty</string>
+<string name="torrent_added">Torrent lisätty (päivitetään)</string>
+<string name="torrent_removed">poistettu</string>
+<string name="torrent_removed_with_data">poistettu ja tiedot tyhjennetty</string>
+<string name="torrent_resumed">jatkettu (päivitetään)</string>
+<string name="torrent_stopped">pysäytetty</string>
+<string name="torrent_started">aloitettu (päivitetään)</string>
+<string name="torrent_paused">tauotettu</string>
+<string name="torrent_paused_all">Torrentit tauotettu</string>
+<string name="torrent_resumed_all">Torrenttien lataus jatkettu (päivitetään)</string>
+<string name="torrent_stopped_all">Torrenttien lataus pysäytetty (päivitetään)</string>
+<string name="torrent_started_all">Torrenttien lataus aloitettu (päivitetään)</string>
+
+<string name="details_details">Tiedot</string>
+<string name="details_files">Tiedostot</string>
+<string name="details_size">Koko:</string>
+<string name="details_state">Tila:</string>
+<string name="details_downloaded">Ladattu:</string>
+<string name="details_uploaded">Lähetetty:</string>
+<string name="details_rate">Nopeus:</string>
+<string name="details_eta">Arvio:</string>
+<string name="details_availability">Saatavuus:</string>
+<string name="details_peers">Käyttäjät:</string>
+<string name="details_label">Merkki:</string>
+<string name="details_errors">Virheet:</string>
+<string name="details_notsupported">Torrent-clienttisi ei tue tiedostojen listausta tai ominaisuutta ei ole vielä lisätty</string>
+<string name="details_priorities_updated">Tiedostojen tärkeydet päivitetty</string>
+
+<string name="file_off">Pois</string>
+<string name="file_low">Matala</string>
+<string name="file_normal">Normaali</string>
+<string name="file_high">Korkea</string>
+<string name="file_remotestart">Käynnistä VLC:llä etänä</string>
+<string name="file_ftpdownload">Lataa käyttäen (S)FTP:tä</string>
+
+<string name="widget_4x1">Widgetin koko 4x1</string>
+<string name="widget_2x1">Widgetin koko 2x1</string>
+<string name="widget_pref_server">Palvelin</string>
+<string name="widget_pref_refresh">Päivitys väli</string>
+<string name="widget_pref_layout">Ulkonäkö</string>
+<string name="widget_pref_addwidget">Lisää widgetti</string>
+<string name="widget_downloading">DL @</string>
+<string name="widget_seeding">UP @</string>
+<string name="widget_other">Passiivisia</string>
+<string name="widget_persecond">/s</string>
+<string name="widget_eta">Valmis</string>
+<string name="widget_unknowneta">Valmistuminen ei tiedossa.</string>
+<string name="widget_new">uusi</string>
+
+<string name="service_newtorrent">Uusi torrent lisätty</string>
+<string name="service_torrentfinished">Torrentin lataus valmistui</string>
+<string name="service_newrssitems">Uusia torrentteja saatavilla</string>
+<string name="service_newrssitems_count">%d uusia RSS syöte torrentteja</string>
+
+<string name="rss">RSS</string>
+<string name="rss_no_feeds">RSS-syötteitä ei asennettu\n\nKäytä valikkoa lisätäksesi uusia syötteitä</string>
+<string name="rss_loading_feed">Ladataan RSS-syötettä</string>
+<string name="rss_no_items">Yhdistetty, mutta RSS-syöte on tyhjä</string>
+
+<string name="error_httperror">Virhe yhdistättäessä palvelimeen</string>
+<string name="error_daemonnotconnected">Web-käyttöliittymää ei ole yhdistetty toimivaan daemon</string>
+<string name="error_401">Pääsy estetty (tarkista asetuksesi)</string>
+<string name="error_torrentfile">Ei voi lukea .torrent -tiedostoa</string>
+<string name="error_parsingrss">Virhe luettaessa RSS-tiedostoa</string>
+<string name="error_invalid_url_form">Tämä URL ei ole kunnollinen</string>
+<string name="error_invalid_search_url">Internethakusi URL on virheellinen:</string>
+<string name="error_invalid_ip_or_hostname">Ei ole oikea IP-osoite tai isäntä</string>
+<string name="error_invalid_port_number">Portin numero on aina numeerinen</string>
+<string name="error_invalid_directory">Hakemiston polku päättyy aina / tai \ -merkkiin</string>
+<string name="error_no_link">RSS syötteen kohde ei anna linkkiä jonne voisi mennä</string>
+<string name="error_norssfeed">URL ei ole (hyväksyttävä) RSS syöte</string>
+<string name="error_no_valid_settings_file">Tiedosto ei näytä sisältävän Transdroidin asetuksia</string>
+<string name="error_file_not_found">Asetustiedostoa ei löytynyt</string>
+
+<string name="xirvik_info">Xirvik tarjoaa shared, semi-dedicated tai dedicated seedboxeja. Transdroid tarjoaa yksinkertaisen setupin kaikille Xirvik palvelimille.\n\nLue lisää osoitteessa www.xirvik.com (englanniksi)</string>
+<string name="xirvik_add_new_xserver">Lisää Xirvik-palvelin</string>
+<string name="xirvik_pref_title">Xirvik-palvelimen asetukset</string>
+<string name="xirvik_pref_type">Palvelimen tyyppi</string>
+<string name="xirvik_pref_type_info">Shared, semi- or dedicated</string>
+<string name="xirvik_pref_server">Palvelimen nimi</string>
+<string name="xirvik_pref_server_info">Kuten dedi000.xirvik.com</string>
+<string name="xirvik_error_invalid_servername">Virheellinen palvelin (käytä kokonaista host nimeä, kuten dedi000.xirvik.com)</string>
+
+<string name="seedm8_pref_server">Palvelimen nimi</string>
+
+<string-array name="pref_sort_types">
+<item>Yhdistetty</item>
+<item>Seederien/leecherien lukumäärä</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>Ei automaattista päivitystä</item>
+<item>2 sekuntia</item>
+<item>5 sekuntia</item>
+<item>15 sekuntia</item>
+<item>1 minuutti</item>
+<item>5 minuuttia</item>
+<item>15 minuuttia</item>
+<item>1 tunti</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minuutti</item>
+<item>10 minuuttia</item>
+<item>30 minuuttia</item>
+<item>1 tunti</item>
+<item>3 tuntia</item>
+<item>12 tuntia</item>
+<item>1 päivä</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Seach Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

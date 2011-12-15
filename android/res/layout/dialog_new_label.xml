@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	style="@style/AlertDialog" >
+	
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:minHeight="54dip"
+		android:background="#80000000">
+        <LinearLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="6dip"
+            android:layout_marginBottom="9dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip">
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:paddingTop="6dip"
+                android:paddingRight="10dip"
+                android:src="@android:drawable/ic_dialog_info" />
+            <TextView 
+                style="@style/AlertDialogText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:text="@string/menu_setlabel" />
+        </LinearLayout>
+    </LinearLayout>
+    
+	<ListView
+		android:id="@+id/labels"
+		android:layout_height="0dip"
+		android:layout_width="fill_parent"
+		android:layout_weight="1" />
+		
+	<LinearLayout
+		android:orientation="horizontal" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_margin="10dip">
+		
+		<EditText
+			android:id="@+id/new_label"
+			android:layout_width="0dip" 
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+			android:maxLines="1"
+			android:inputType="textShortMessage" />
+			
+		<Button
+			android:id="@+id/set_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@android:string/ok" />
+			
+	</LinearLayout>
+	
+</LinearLayout>

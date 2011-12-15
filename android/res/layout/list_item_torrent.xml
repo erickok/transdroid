@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content" 
+	android:orientation="vertical" 
+	android:padding="5dip">
+	
+	<TextView  
+		android:id="@+id/name"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		style="@style/TorrentNameText" />
+		
+	<TextView  
+		android:id="@+id/progress_size"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/name" />
+		
+	<TextView  
+		android:id="@+id/progress_eta_ratio"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/name"
+		android:layout_alignParentRight="true"
+		android:paddingRight="3dip" />
+		
+	<org.transdroid.gui.TorrentProgressBar 
+		android:id="@+id/progressbar" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/progress_size" />
+		
+	<TextView  
+		android:id="@+id/progress_peers"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/progressbar" />
+
+	<TextView  
+		android:id="@+id/progress_speed"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/progressbar"
+		android:layout_alignParentRight="true"
+		android:paddingRight="3dip" />
+
+</RelativeLayout>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical">
+
+	<TableLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="5dip"
+		android:shrinkColumns="1"
+		android:stretchColumns="1">
+		<TableRow>
+			<TextView android:text="@string/details_size" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_size" style="@style/DetailsInfoText" />
+		</TableRow>
+		<TableRow>
+			<TextView android:text="@string/details_state" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_state" style="@style/DetailsInfoText" />
+		</TableRow>
+		<TableRow>
+			<TextView android:text="@string/details_downloaded" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_downloaded" style="@style/DetailsInfoText" />
+		</TableRow>
+		<TableRow>
+			<TextView android:text="@string/details_uploaded" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_uploaded" style="@style/DetailsInfoText" />
+		</TableRow>
+		<TableRow>
+			<TextView android:text="@string/details_rate" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_rate" style="@style/DetailsInfoText" />
+		</TableRow>
+		<TableRow>
+			<TextView android:text="@string/details_eta" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_eta" style="@style/DetailsInfoText" />
+		</TableRow>
+		<TableRow>
+			<TextView android:text="@string/details_peers" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_peers" style="@style/DetailsInfoText" />
+		</TableRow>
+		<TableRow android:id="@+id/detailsrow_availability">
+			<TextView android:text="@string/details_availability" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_availability" style="@style/DetailsInfoText" />
+		</TableRow>
+		<TableRow android:id="@+id/detailsrow_label">
+			<TextView android:text="@string/details_label" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_label" style="@style/DetailsInfoText" />
+		</TableRow>
+		<TableRow android:id="@+id/detailsrow_trackers1">
+			<TextView android:text="@string/details_trackers" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_trackershint" style="@style/DetailsInfoText" 
+				android:singleLine="true" android:lines="1" android:scrollHorizontally="false" android:ellipsize="middle" 
+				android:gravity="right" android:textColor="@color/HighlightBackgroundColor" />
+		</TableRow>
+		<TableRow android:id="@+id/detailsrow_trackers2" android:visibility="gone" >
+			<TextView android:id="@+id/details_trackers" style="@style/DetailsInfoText"
+				android:layout_span="2" />
+		</TableRow>
+		<TableRow android:id="@+id/detailsrow_errors1">
+			<TextView android:text="@string/details_errors" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_errorshint" style="@style/DetailsInfoText" 
+				android:singleLine="true" android:lines="1" android:scrollHorizontally="false" android:ellipsize="middle" 
+				android:gravity="right" android:textColor="@color/HighlightBackgroundColor" />
+		</TableRow>
+		<TableRow android:id="@+id/detailsrow_errors2" android:visibility="gone" >
+			<TextView android:id="@+id/details_errors" style="@style/DetailsInfoText"
+				android:layout_span="2" />
+		</TableRow>
+	</TableLayout>
+	
+	<LinearLayout
+		android:id="@+id/buttonsbar"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:drawable/bottom_bar"
+		android:orientation="horizontal">
+		<ImageButton
+			android:id="@+id/resumepause"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:src="@drawable/icon_resume"
+			android:background="@android:drawable/btn_default_small"
+			android:layout_gravity="center"
+			android:scaleType="centerInside"
+			android:layout_weight="1" />
+		<ImageButton
+			android:id="@+id/startstop"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:src="@drawable/icon_start"
+			android:background="@android:drawable/btn_default_small"
+			android:layout_gravity="center"
+			android:scaleType="centerInside"
+			android:layout_weight="1" />
+		<ImageButton
+			android:id="@+id/remove"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:src="@drawable/icon_remove"
+			android:background="@android:drawable/btn_default_small"
+			android:layout_gravity="center"
+			android:scaleType="centerInside"
+			android:layout_weight="1" />
+		<ImageButton
+			android:id="@+id/setlabel"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:src="@drawable/icon_setlabel"
+			android:background="@android:drawable/btn_default_small"
+			android:layout_gravity="center"
+			android:scaleType="centerInside"
+			android:layout_weight="1" />
+	</LinearLayout>
+
+</LinearLayout>

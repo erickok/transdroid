@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="90dip"
+	android:background="@drawable/widget_black">
+	
+	<ImageButton
+		android:id="@+id/widget_action"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/widget_icon_corner"
+		android:background="#0000" />
+		
+	<ImageButton
+		android:id="@+id/widget_refresh"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:src="@drawable/widget_refresh_corner"
+		android:background="#0000" />
+		
+	<TextView
+		android:id="@+id/widget_downloading"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/widget_action"
+		android:layout_marginTop="1dip"
+		android:singleLine="true"
+		android:textSize="11dip"
+		android:textColor="#fff" />
+	
+	<LinearLayout
+		android:id="@+id/widget_progress_container"
+			android:layout_width="fill_parent"
+			android:layout_height="8dip"
+			android:layout_toRightOf="@id/widget_action"
+			android:layout_below="@id/widget_downloading">
+		<ProgressBar
+			android:id="@+id/widget_progress"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:minHeight="6dip"
+			android:maxHeight="6dip"
+			android:indeterminateOnly="false"
+			android:max="100"
+			style="?android:attr/progressBarStyleHorizontal" />
+	</LinearLayout>
+		
+	<TextView
+		android:id="@+id/widget_message"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/widget_action"
+		android:layout_below="@id/widget_progress_container"
+		android:layout_marginTop="18dip"
+		android:textSize="11dip"
+		android:textColor="#fff" />
+		
+	<TextView
+		android:id="@+id/widget_eta"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/widget_action"
+		android:layout_below="@id/widget_progress_container"
+		android:singleLine="true"
+		android:textSize="11dip"
+		android:textColor="#fff" />
+		
+	<TextView
+		android:id="@+id/widget_seeding"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/widget_action"
+		android:layout_below="@id/widget_eta"
+		android:singleLine="true"
+		android:textSize="11dip"
+		android:textColor="#fff" />
+		
+	<ImageView
+		android:id="@+id/widget_rssicon"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/widget_action"
+		android:layout_below="@id/widget_seeding"
+		android:layout_marginTop="3dip"
+		android:src="@drawable/widget_rss" />
+	
+	<TextView
+		android:id="@+id/widget_rssnew"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/widget_seeding"
+		android:layout_toRightOf="@id/widget_rssicon"
+		android:layout_marginLeft="4dip"
+		android:singleLine="true"
+		android:textSize="11dip"
+		android:textColor="#fff" />
+	
+	<TextView
+		android:id="@+id/widget_other"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/widget_rssnew"
+		android:layout_below="@id/widget_seeding"
+		android:layout_marginLeft="10dip"
+		android:singleLine="true"
+		android:textSize="11dip"
+		android:textColor="#fff" />
+		
+</RelativeLayout>

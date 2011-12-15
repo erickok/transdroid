@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+        
+     <FrameLayout
+  		android:layout_marginTop="10dip"
+        android:id="@+id/header2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/quickaction_top_frame"/>
+        
+  	<ImageView
+        android:id="@+id/arrow_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"	
+        android:src="@drawable/quickaction_arrow_up" />
+   
+    <LinearLayout
+        android:id="@+id/shortcuts"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+    	android:layout_below="@id/header2"
+        android:orientation="horizontal"
+		android:background="@android:drawable/bottom_bar"
+		android:layout_marginLeft="1dip"
+		android:layout_marginRight="1dip"
+    	android:padding="2dip">
+    
+		<ImageButton
+			android:id="@+id/showall"
+			android:layout_width="0dip"
+			android:layout_height="48dip"
+			android:src="@drawable/icon_showall"
+			android:background="@android:drawable/btn_default_small"
+			android:layout_gravity="center"
+			android:layout_weight="1" />
+			
+		<ImageButton
+			android:id="@+id/showdl"
+			android:layout_width="0dip"
+			android:layout_height="48dip"
+			android:src="@drawable/icon_showdl"
+			android:background="@android:drawable/btn_default_small"
+			android:layout_gravity="center"
+			android:layout_weight="1" />
+			
+		<ImageButton
+			android:id="@+id/showup"
+			android:layout_width="0dip"
+			android:layout_height="48dip"
+			android:src="@drawable/icon_showup"
+			android:background="@android:drawable/btn_default_small"
+			android:layout_gravity="center"
+			android:layout_weight="1" />
+			
+		<ImageButton
+			android:id="@+id/showinactive"
+			android:layout_width="0dip"
+			android:layout_height="48dip"
+			android:src="@drawable/icon_showinactive"
+			android:background="@android:drawable/btn_default_small"
+			android:layout_gravity="center"
+			android:layout_weight="1" />
+	
+	</LinearLayout>
+	
+	<ListView
+		android:id="@+id/labelsList"
+		android:layout_width="fill_parent"
+		android:layout_height="200dip"
+    	android:layout_below="@id/shortcuts"
+		android:layout_marginLeft="1dip"
+		android:layout_marginRight="1dip"
+		android:background="#fff"
+		android:cacheColorHint="#fff" />
+		
+    <FrameLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/labelsList"
+        android:background="@drawable/quickaction_bottom_frame" />
+
+</RelativeLayout>

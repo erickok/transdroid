@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
+	android:layout_width="fill_parent"
+	android:layout_height="82dip"
+	android:background="@drawable/widget_black">
+	
+	<ImageButton
+		android:id="@+id/widget_action"
+        android:layout_width="36dip" 
+        android:layout_height="36dip"
+		android:scaleType="fitXY"
+		android:src="@drawable/icon"
+		android:background="#0000"
+		android:hapticFeedbackEnabled="true"
+		android:layout_marginLeft="4dip"
+		android:layout_marginTop="13dip" />
+		
+	<ImageView
+        android:layout_width="1dip" 
+        android:layout_height="fill_parent"
+        android:src="@drawable/widget_black_line"
+        android:scaleType="fitXY"
+		android:layout_marginLeft="5dip" />
+		
+	<ImageButton
+		android:id="@+id/widget_refresh"
+        android:layout_width="33dip" 
+        android:layout_height="33dip"
+		android:scaleType="fitXY"
+		android:src="@drawable/widget_refresh"
+		android:background="#0000"
+		android:hapticFeedbackEnabled="true"
+		android:layout_marginLeft="7dip"
+		android:layout_marginTop="14dip" />
+		
+	<ImageView
+        android:layout_width="1dip" 
+        android:layout_height="fill_parent"
+        android:src="@drawable/widget_black_line"
+        android:scaleType="fitXY"
+		android:layout_marginLeft="7dip" />
+		
+	<LinearLayout
+		android:orientation="vertical"
+		android:id="@+id/widget_stats"
+        android:layout_width="fill_parent" 
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+		android:layout_marginLeft="9dip"
+		android:layout_marginTop="3dip" >
+		
+		<TextView
+			android:id="@+id/widget_message"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+	        android:textColor="#ffff"
+			android:textStyle="bold" />
+			
+		<TextView
+			android:id="@+id/widget_downloading"
+			android:layout_width="fill_parent"
+			android:layout_height="18dip"
+	        android:textColor="#ffff"
+			android:textStyle="bold"
+			android:singleLine="true" />
+			
+		<TextView
+			android:id="@+id/widget_eta"
+			android:layout_width="fill_parent"
+			android:layout_height="16dip"
+	        android:textColor="#ffff"
+			android:singleLine="true" />
+			
+		
+		<TextView
+			android:id="@+id/widget_other"
+			android:layout_width="fill_parent"
+			android:layout_height="16dip"
+	        android:textColor="#ffff"
+			android:singleLine="true" />
+			
+			
+	</LinearLayout>
+		
+</LinearLayout>

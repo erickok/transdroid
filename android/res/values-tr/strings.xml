@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="save">Kaydet</string>
+
+
+
+<string name="menu_add">Ekle</string>
+<string name="menu_servers">Sunucu Değiştir</string>
+<string name="menu_forall_pause">Hepsini Durdur</string>
+<string name="menu_forall_resume">Hepsini Başlat</string>
+<string name="menu_forall_stop">Tümünü durdur</string>
+<string name="menu_forall_start">Tümünü başlat</string>
+<string name="menu_sort_alpha">İsim</string>
+<string name="menu_sort_status">Durum</string>
+<string name="menu_settings">Ayarlar</string>
+<string name="menu_changelog">Hakkında/Değişiklikler</string>
+<string name="menu_remove">Çıkar</string>
+<string name="menu_pause">Duraklat</string>
+<string name="menu_stop">Durdur</string>
+<string name="menu_start">Başlat</string>
+<string name="menu_moveup">Yukarı taşı</string>
+<string name="menu_movedown">Aşağı Taşı</string>
+
+
+<string name="addfailed_retry">Tekrar</string>
+<string name="addfailed_addlater">Sonra ekle</string>
+
+<string name="searching">Aranıyor...</string>
+<string name="searchmenu_add">Şimdi indir</string>
+<string name="searchmenu_details">Website aç</string>
+
+
+<string name="pref_basic">Temel ayarlar</string>
+<string name="pref_daemon">Server tipi</string>
+<string name="pref_user">Kullanıcı Adı</string>
+<string name="pref_pass">Şifre</string>
+<string name="pref_folder2">Klasör</string>
+<string name="pref_ftpurl_info">Örneğin ftp://me@server.com/downloads/</string>
+
+<string name="pref_search">Arama motoru</string>
+
+
+
+
+
+
+
+<string name="file_off">Kapalı</string>
+<string name="file_low">Düşük</string>
+<string name="file_normal">Normal</string>
+<string name="file_high">Yüksek</string>
+
+
+
+
+
+
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Search Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">תוכנת שליטה על תוכנות טורנט: Transmission, uTorrent, BitTorrent, rTorrent, Vuze and Deluge.</string>
+
+<string name="no_settings_short">פתח את תפריט ההגדרות בכדי להגדיר את השרת שלך</string>
+<string name="no_settings">פתח את תפריט ההגדרות בכדי להגדיר את השרת שלךnn לקבלת עזרה: www.transdroid.org/download</string>
+<string name="no_settings_button">פתח הגדרות</string>
+<string name="connecting">מנסה להתחבר לשרת...</string>
+<string name="no_torrents">מחובר, אך כרגע אין טורנטים.</string>
+<string name="no_downloading_torrents">מחובר, אך כרגע לא מוריד טורנטים.</string>
+<string name="no_uploading_torrents">מחובר, אך כרגע לא משתף טורנטים.</string>
+<string name="no_inactive_torrents">מחובר, אך כרגע אין טורנטים לא פעילים</string>
+<string name="no_file_uploads">שרת הטורנט שלך או האפליקציה לא תומכים בטעינת קבצי .torrent</string>
+<string name="save">שמור</string>
+
+
+
+<string name="menu_add">הוסף</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">החלף שרת</string>
+<string name="menu_speeds">הגדר מהירות העברה</string>
+<string name="menu_forall">בצע על כולם</string>
+<string name="menu_forall_pause">השהה את כולם</string>
+<string name="menu_forall_resume">המשך את כולם</string>
+<string name="menu_forall_stop">עצור את כולם</string>
+<string name="menu_forall_start">התחל את כולם</string>
+<string name="menu_filter">סנן רשימה</string>
+<string name="menu_sort_reverse">סדר על פי.. (לחץ שנית כדי להפוך סדר)</string>
+<string name="menu_sort_alpha">שם</string>
+<string name="menu_sort_status">סטטוס</string>
+<string name="menu_sort_done">תאריך סיום</string>
+<string name="menu_sort_added">תאריך התחלה</string>
+<string name="menu_sort_onlytransferring">רק פעילים (&gt; 0KB/s)</string>
+<string name="menu_settings">הגדרות</string>
+<string name="menu_errorreport">דוח שגיאה</string>
+<string name="menu_remove">הסר</string>
+<string name="menu_remove_data">הסר ומחק קבצים</string>
+<string name="menu_pause">השהה</string>
+<string name="menu_resume">המשך</string>
+<string name="menu_stop">עצור</string>
+<string name="menu_start">התחל</string>
+<string name="menu_forcestart">הפעל בכוח</string>
+<string name="menu_set_default">קבע כברירת מחדל</string>
+<string name="menu_default_site_set_to">אתר ברירת המחדל:</string>
+
+<string name="dialog_add_torrent">הדבק כתובת לקובץ הטורנט</string>
+<string name="no_valid_url">כתובת לא תקינה</string>
+<string name="selectfile">בחר קובץ טורנט מקומי</string>
+<string name="oifm_not_found">לא נמצא מנהל קמצים נתמך, כמו OI File Manager. התרצה להוריד אותו משוק התוכנות?\n\nלחילופין, ניתן להשתמש בתוכנה המועדפת עליך ולשלוח את הקובץ לטראנסדרואיד.</string>
+<string name="oifm_install">התקן משוק התוכנות</string>
+<string name="oifm_nomarket">שוק התוכנות של אנדרואיד לא מותקן</string>
+<string name="scanner_not_found">סורק הברקוד לא נמצא. האם תרצה להתקינו משוק האנדרואיד?</string>
+<string name="lc_install">כדי לשלוח דוח שגיאה, עליך להתקין תוכנה חופשית לאיסוף דוחות. האם ברצונך להתקין משוק התוכנות?</string>
+<string name="lc_run">תוכנת איסוף הדוחות מיד תאסוף ותשלח את הדוח לכתובת: transdroid.org@gmail.com\n\תוכל לראות ולערוך את המידע שישלח.</string>
+
+<string name="rate_download">מהירות הורדה מירבית</string>
+<string name="rate_upload">מהירות העלאה מירבית</string>
+<string name="rate_inkbs">מספרים בלבד, בקילו בייטים לשניה</string>
+<string name="rate_reset">אפס</string>
+<string name="rate_no_support">שרת הטורנט שלך או האפליקציה לא תומכים ושינוי הגדרה זו.</string>
+<string name="rate_updated">הגדרות מהירות עודכנו</string>
+<string name="askremove_title">מחיקת טורנט</string>
+<string name="askremove">האם אתה בטוח שברצונך למחוק את הטורנט?</string>
+
+<string name="searching">מחפש...</string>
+<string name="dialog_search">חפש טורנטים באינטרנט</string>
+<string name="search_hint">מילת חיפוש</string>
+<string name="add_selected">הוסף את כל הנבחרים</string>
+<string name="no_results">לא נמצאו תוצאות</string>
+<string name="no_query">לא סיפקת טקסט לחיפוש</string>
+<string name="searchmenu_switchsite">החלף אתר</string>
+<string name="searchmenu_add">הורד עכשיו</string>
+<string name="searchmenu_details">פתח כתובת אינטרנט</string>
+
+<string name="preferences">הגדרות טראנסדרואיד</string>
+<string name="add_new_server">הוסף שרת חדש</string>
+<string name="add_new_website">הוסף אתר חיפוש</string>
+<string name="add_new_rssfeed">הוסף מקור RSS</string>
+<string name="inappsite">חיפוש מובנה</string>
+<string name="websearch">חיפוש באתר-חיפוש</string>
+<string name="other_settings">הגדרות נוספות</string>
+
+<string name="pref_server">תוכנת שרת</string>
+<string name="pref_name">שם</string>
+<string name="pref_name_info">שם זיהוי (אופציונלי)</string>
+<string name="pref_daemon">סוג שרת</string>
+<string name="pref_address">כתובת או IP</string>
+<string name="pref_address_info">ללא http:// או מספר פורט</string>
+<string name="pref_port">פורט</string>
+<string name="pref_port_info">בד&quot;כ  </string>
+<string name="pref_auth">הרשאות התחברות</string>
+<string name="pref_auth_info">שימוש בשם וסיסמא כדי להתחבר</string>
+<string name="pref_user">שם</string>
+<string name="pref_pass">סיסמא</string>
+<string name="pref_folder">תיקיית SCGI</string>
+<string name="pref_folder_info">בד&quot;כ: /RPC2</string>
+<string name="pref_folder2">תיקייה</string>
+<string name="pref_folder2_info">/torrentflux : לדוגמה</string>
+<string name="pref_ssl">הצפנה (SSL)</string>
+<string name="pref_ssl_info">בחר כדי להשתמש ב-https</string>
+<string name="pref_ssl_trust_all">קבל כל SSL certificate</string>
+
+<string name="pref_search">מנוע חיפוש</string>
+<string name="pref_url">כתובת שאילתת חיפוש</string>
+<string name="pref_url_info">%1$s יוחלף במילות החיפוש</string>
+<string name="pref_numresults">מספר תוצאות</string>
+<string name="pref_sort">צורת סידור תוצאות</string>
+<string name="pref_rss_info">מקורות RSS</string>
+<string name="pref_feed">הגדרת מקור</string>
+<string name="pref_feed_url">כתובת מקור</string>
+
+<string name="pref_interface">הגדרות ממשק</string>
+<string name="pref_uirefresh">מרווח זמן רענון</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers	</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Seach Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

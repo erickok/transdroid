@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="Theme.Transdroid" parent="@style/Theme.Sherlock">
+	    <item name="android:windowBackground">@color/WindowBackgroundColor</item>
+	    <item name="abLogo">@drawable/pixel</item>
+		<item name="abTitleTextStyle">@style/WindowTitleText</item>
+		<item name="abDisplayOptions">showHome|useLogo</item>
+		<item name="abBackground">@color/TitleBackgroundColor</item>
+		<item name="actionSpinnerItemStyle">@style/WindowTitleText</item>
+		<item name="selectableItemBackground">@drawable/title_button</item>
+	</style>
+	<style name="Theme.Transdroid.NoTitle" parent="@style/Theme.Sherlock">
+		<item name="android:windowNoTitle">true</item>
+	</style>
+</resources>

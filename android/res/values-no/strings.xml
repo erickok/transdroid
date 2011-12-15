@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">En ekstern torrentklient for Transmission, uTorrent, BitTorrent, rTorrent, Vuze and Deluge.</string>
+
+<string name="no_settings_short">Åpne menyen &quot;innstillinger&quot; for å angi detaljer til serverens daemon.</string>
+<string name="no_settings">Åpne menyen &quot;innstillinger&quot; for å angi detaljer til serverens daemon.\n\nFor mer informasjon: www.transdroid.org/download</string>
+<string name="no_settings_button">Åpne innstillinger</string>
+<string name="connecting">Forsøker å koble til server...</string>
+<string name="no_torrents">Tilkoblet, men ingen torrents på serveren.</string>
+<string name="no_downloading_torrents">Tilkoblet, men ingen torrents som laster ned på serveren.</string>
+<string name="no_uploading_torrents">Tilkoblet, men ingen torrents som deles på serveren.</string>
+<string name="no_inactive_torrents">Tilkoblet, men ingen inaktive torrents på serveren.</string>
+<string name="no_file_uploads">Ditt torrentprogram har ikke støtte for opplasting av .torrent filer, eller har ikke implementert dette enda.</string>
+<string name="no_magnet_links">Din torrent klient støtter ikke .magnet linker, eller at det ikke er implementert</string>
+<string name="save">Lagre</string>
+<string name="dismiss">Slett</string>
+<string name="torrent_server">Torrent server</string>
+<string name="no_servers">Ingen server har blitt konfigurert enda</string>
+
+<string name="labels_showall">Vis alt</string>
+<string name="labels_unlabeled">Fjern etikett</string>
+<string name="labels_newlabel">Ny etikett</string>
+<string name="labels_no_support">Etiketer er ikke støttet av din klient</string>
+
+<string name="view_showall">Vis alle torrents</string>
+<string name="view_showdl">Viser torrents som lastes ned</string>
+<string name="view_showul">Viser torrents som deles</string>
+<string name="view_showinactive">Viser innaktive torrents</string>
+
+<string name="menu_add">Legg til</string>
+<string name="menu_rss">RSS nyhetsstrøm</string>
+<string name="menu_servers">Bytt server</string>
+<string name="menu_speeds">Velg nedlastingsrate</string>
+<string name="menu_forall">Gjør for alle</string>
+<string name="menu_forall_pause">Pause alle</string>
+<string name="menu_forall_resume">Fortsett alle</string>
+<string name="menu_forall_stop">Stop alle</string>
+<string name="menu_forall_start">Start alle</string>
+<string name="menu_filter">Filtrer liste</string>
+<string name="menu_sort_reverse">Sorter etter (resort to reverse order)</string>
+<string name="menu_sort_alpha">Navn</string>
+<string name="menu_sort_status">Status</string>
+<string name="menu_sort_done">Dato ferdig</string>
+<string name="menu_sort_added">Dato lagt til</string>
+<string name="menu_sort_upspeed">Opplastingshastighet</string>
+<string name="menu_sort_ratio">Ratio</string>
+<string name="menu_sort_onlytransferring">Overfører bare (&gt; 0KB/s)</string>
+<string name="menu_settings">Settings</string>
+<string name="menu_changelog">Om/Endrings logg</string>
+<string name="menu_errorreport">Error report</string>
+<string name="menu_remove">Fjern</string>
+<string name="menu_remove_data">Fjern og slett data</string>
+<string name="menu_pause">Pause</string>
+<string name="menu_resume">Fortsett</string>
+<string name="menu_stop">Stopp</string>
+<string name="menu_start">Start</string>
+<string name="menu_forcestart">Tving start</string>
+<string name="menu_setlabel">Sett Etikett...</string>
+<string name="menu_setdownloadlocation">Sett nedlastingssted</string>
+<string name="menu_set_default">Sett som standard</string>
+<string name="menu_default_site_set_to">Standard side satt som</string>
+<string name="menu_moveup">Flytt opp</string>
+<string name="menu_movedown">Flytt ned</string>
+
+<string name="dialog_add_torrent">Lim inn torrentfilens URL</string>
+<string name="no_valid_url">Det du tastet inn er ikke en (gyldig) URL</string>
+<string name="selectfile">Velg en lokal .torrent-fil</string>
+<string name="oifm_install">Installer fra market</string>
+<string name="oifm_nomarket">Applikasjonen Android Market er ikke installert</string>
+<string name="scanner_not_found">Strekkode leseren er ikke installert. Ønsker du å installere den fra Android Market?</string>
+<string name="lc_install">For å sende en feilmelding må du installere applikasjonen Log Collector. Denne er gratis og er åpen kildekode. Ønsker du å installere denne fra Android Market?</string>
+<string name="lc_run">Applikasjonen Log Connector vil nå samle loggen fra enheten og sende den til transdroid.org@gmail.com.\nDu vil få mulighet til å kontrollere og endre informasjonen som sendes.</string>
+<string name="ftpclient_not_found">Du har ikke en kompatibel FTP klient installert. \nØnsker du å installere AndFTP fra Android Market?</string>
+
+<string name="rate_download">Maksimal nedlastningsrate</string>
+<string name="rate_upload">Maksimal opplastningsrate</string>
+<string name="rate_inkbs">Kun numeriske verdier, i KB/s</string>
+<string name="rate_reset">Tilbakestill</string>
+<string name="rate_no_support">Your torrent client does not support setting of transfer rates or this is not yet implemented.</string>
+<string name="rate_updated">Overføringsrater oppdatert</string>
+<string name="askremove_title">Fjerner torrent</string>
+<string name="askremove">Er du sikker på at du vil fjerne denne torrenten?</string>
+<string name="addfailed_title">Legge til feilet</string>
+<string name="addfailed_retry">Prøv igjen</string>
+<string name="addfailed_addlater">Legg til senere</string>
+
+<string name="searching">Søker...</string>
+<string name="dialog_search">Søk etter torrents på nettet</string>
+<string name="search_name">Torrents</string>
+<string name="search_hint">Ubuntu</string>
+<string name="search_resultsfrom">Resultater fra</string>
+<string name="add_selected">Legg til alle merkete</string>
+<string name="no_results">Ditt søk ga ingen treff</string>
+<string name="no_query">Ingen søkeforespørsel ble gitt.</string>
+<string name="searchmenu_switchsite">Bytt side</string>
+<string name="searchmenu_add">Last ned nå</string>
+<string name="searchmenu_details">Åpne nettsted</string>
+<string name="searchmenu_openwith">Åpne med...</string>
+<string name="searchmenu_sharelink">Del link...</string>
+<string name="searchmenu_savesearch">Lagre som RSS nyhetsstrøm</string>
+<string name="search_savedrssfeed">Søk lagret som RSS feed</string>
+<string name="search_savenotsupported">lagring støttes ikke fra dette nettstedet</string>
+
+<string name="preferences">Transdroid innstillinger</string>
+<string name="add_new_server">Legg til ny server</string>
+<string name="add_new_website">Legg til søkeside</string>
+<string name="add_new_rssfeed">Legg til RSS nyhetsstrøm</string>
+<string name="inappsite">In-app søk</string>
+<string name="websearch">Web-basert søk</string>
+<string name="other_settings">Andre innstillinger</string>
+
+<string name="pref_server">Tjener deamon</string>
+<string name="pref_basic">Grunnleggende innstillinger</string>
+<string name="pref_name">Navn</string>
+<string name="pref_name_info">Valgfritt personlig navn</string>
+<string name="pref_daemon">Server type</string>
+<string name="pref_address">IP eller domene navn</string>
+<string name="pref_address_info">Uten http:// eller port</string>
+<string name="pref_port">Port</string>
+<string name="pref_port_info">Som regel </string>
+<string name="pref_auth">Bruk autentisering</string>
+<string name="pref_auth_info">Du vil få bruk for brukernavn og passord</string>
+<string name="pref_user">Brukernavn</string>
+<string name="pref_pass">Passord</string>
+<string name="pref_os">Server OS</string>
+<string name="pref_folder">SCGI mappe</string>
+<string name="pref_folder_info">Som regel /RPC2</string>
+<string name="pref_folder2">Mappe</string>
+<string name="pref_folder2_info">For eksempel /torrentflux</string>
+<string name="pref_folder3_info">Vanligvis tom</string>
+<string name="pref_advanced">Avanserte innstillinger (valgfritt)</string>
+<string name="pref_downloaddir">Nedlastnings mappe</string>
+<string name="pref_downloaddir_info">absolutt sti til nedlastingskatalogen på serveren</string>
+<string name="pref_ftpurl_info">For eksempel ftp://me@server.com/downloads/</string>
+<string name="pref_ssl">SSL</string>
+<string name="pref_ssl_info">Velg for å bruke https</string>
+<string name="pref_ssl_trust_all">Aksepter alle SSL sertifikater</string>
+<string name="pref_ssl_trust_all_info">Select if cert is self-signed</string>
+
+<string name="pref_search">Søkemotor</string>
+<string name="pref_setdefault">Angi standard site</string>
+<string name="pref_url">DIrektesøk URL</string>
+<string name="pref_url_info">%s vil bli erstattet med ditt søkeordl</string>
+<string name="pref_numresults">Antall resultater</string>
+<string name="pref_sort">Resultat sortering rekkefølge</string>
+<string name="pref_rss_info">RSS nyhetsstrømmer</string>
+<string name="pref_feed">Nyhetsstrøm innstillinger</string>
+<string name="pref_feed_url">Nyhetsstrøm URL</string>
+<string name="pref_feed_needsauth">Krever godkjenning</string>
+<string name="pref_feed_needsauth_info">Åpner linker i nettleseren for å autentisere</string>
+<string name="pref_ezrss_showname">Vis navn</string>
+<string name="pref_ezrss_quality">Kvalitet</string>
+<string name="pref_ezrss_loading">Laster...</string>
+
+<string name="pref_interface">Innstillinger for grensesnitt</string>
+<string name="pref_swipelabels">Skift mellom etiketter</string>
+<string name="pref_swipelabels_info">Bytt mellom etiketer istedenfor servere</string>
+<string name="pref_uirefresh">Oppdateringsintervall</string>
+<string name="pref_hiderefresh">Skjul oppdater</string>
+<string name="pref_hiderefresh_info">Ikke vis \'Torrentliste oppdatert\' beskjed</string>
+<string name="pref_clear_search_history">Tøm søkehistorikk</string>
+<string name="pref_history_cleared">History cleared successfully</string>
+<string name="pref_askremove">Bekreft fjerning</string>
+<string name="pref_askremove_info">Spør om bekreftelse ved fjerning av en torrent</string>
+<string name="pref_import_settings">importér innstillinger</string>
+<string name="pref_import_settings_success">Innstillinger ble importert</string>
+<string name="pref_export_settings">Eksport innstillinger</string>
+<string name="pref_export_settings_success">Innstillinger ble eksportert</string>
+
+<string name="pref_alarm">Alarm innstillinger</string>
+<string name="pref_enablealarm">Aktivér alarm</string>
+<string name="pref_enablealarm_info">Varsle meg ved torrent status forandringer</string>
+<string name="pref_alarmtime">Alarm intervall</string>
+<string name="pref_alarmtime_info">Hvor ofte torrents skal sjekkes</string>
+<string name="pref_alarmfinished">Nedlastningsalarm</string>
+<string name="pref_alarmfinished_info">Varsle når en torrent er ferdig</string>
+<string name="pref_alarmnew">Ny torrent alarm</string>
+<string name="pref_alarmnew_info">Varsle når en ny torrent blir lagt til</string>
+<string name="pref_alarmplaysound">Aktivér alarmlyd</string>
+<string name="pref_alarmsounduri">Alarmlyd</string>
+<string name="pref_alarmvibrate">Aktivér vibrasjon</string>
+<string name="pref_alarmvibrate_info">vibrér ved alarm</string>
+<string name="pref_checkrssfeeds">Kontroller RSS nyhetsstrøm</string>
+<string name="pref_checkrssfeeds_info">Varsle når nye torrenter er tilgengelig</string>
+
+<string name="status_waiting">Venter for å kontrollere...</string>
+<string name="status_checking">Kontrollerer lokale data...</string>
+<string name="status_waitingtodl">Venter til nedlastning %s</string>
+<string name="status_size1">%1$s av %2$s (%3$s)</string>
+<string name="status_size2">%1$s, opplastet %2$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_unknowneta">ukjent eta</string>
+<string name="status_ratio">ratio %1$s</string>
+<string name="status_peers">%1$s av %2$s peers</string>
+<string name="status_speed_up">↑ %1$s</string>
+<string name="status_speed_down">↓ %1$s</string>
+<string name="status_paused">Pauset</string>
+<string name="status_stopped">Stoppet</string>
+<string name="status_unknown">Ukjent</string>
+<string name="status_persecond">/s</string>
+
+<string name="task_refreshing">Oppdaterer...</string>
+<string name="task_addbyurl">Legger til torrent...</string>
+<string name="task_addbyfile">Laster opp torrent...</string>
+<string name="task_removing">Fjerner torrent...</string>
+<string name="task_pausing">Setter torrent på pause...</string>
+<string name="task_pausingall">Setter alle torrents på pause...</string>
+<string name="task_resuming">Fortsetter torrent...</string>
+<string name="task_resumingall">Fortsetter alle torrents...</string>
+<string name="task_stopping">Stopper torrent...</string>
+<string name="task_stoppingall">Stopper alle torrents...</string>
+<string name="task_starting">Starter torrents...</string>
+<string name="task_startingall">Starter alle torrents...</string>
+<string name="task_getfiles">Henter filer...</string>
+<string name="task_setfileprop">Setter filegenskaper</string>
+<string name="task_settransrates">Setter overføringshastighet</string>
+<string name="task_setlabel">Tilordner etikett</string>
+
+<string name="list_refreshed">Torrentliste oppdatert</string>
+<string name="torrent_added">Torrent lagt til (oppdaterer)</string>
+<string name="torrent_removed">Fjernet</string>
+<string name="torrent_removed_with_data">Fjernet og data slettet</string>
+<string name="torrent_resumed">Gjenopptatt (oppdaterer)</string>
+<string name="torrent_stopped">stoppet</string>
+<string name="torrent_started">startet (oppdaterer)</string>
+<string name="torrent_paused">pauset</string>
+<string name="torrent_paused_all">Torrenter pauset</string>
+<string name="torrent_resumed_all">Torrenter gjenopptatt (oppdaterer)</string>
+<string name="torrent_stopped_all">Torrenter stoppet</string>
+<string name="torrent_started_all">Torrenter startet (oppdaterer)</string>
+
+<string name="details_details">Detaljer</string>
+<string name="details_files">Filer</string>
+<string name="details_size">Størrelse:</string>
+<string name="details_state">Status:</string>
+<string name="details_downloaded">Nedlastet:</string>
+<string name="details_uploaded">Opplastet:</string>
+<string name="details_rate">Rate:</string>
+<string name="details_eta">Eta:</string>
+<string name="details_availability">Tilgjengelig:</string>
+<string name="details_peers">Peers</string>
+<string name="details_label">Etikett:</string>
+<string name="details_priorities_updated">Fil prioriteter oppdatert</string>
+
+<string name="file_off">Av</string>
+<string name="file_low">Lav</string>
+<string name="file_normal">Normal</string>
+<string name="file_high">Høy</string>
+<string name="file_remotestart">Fjernavspilling i VLC</string>
+<string name="file_ftpdownload">Last ned med (S)FTP</string>
+
+<string name="widget_4x1">Transdroid 4x1</string>
+<string name="widget_2x1">Transdroid 2x1</string>
+<string name="widget_pref_server">Server</string>
+<string name="widget_pref_refresh">Oppdaterings intervall</string>
+<string name="widget_pref_layout">Stil</string>
+<string name="widget_pref_addwidget">Legg</string>
+<string name="widget_downloading">DL @</string>
+<string name="widget_downloading_up">opp</string>
+<string name="widget_seeding">UP @</string>
+<string name="widget_other">inaktiv</string>
+<string name="widget_persecond">/s</string>
+<string name="widget_eta">eta</string>
+<string name="widget_unknowneta">ukjent eta</string>
+<string name="widget_new">ny</string>
+
+<string name="service_newtorrent">Ny torrent lagt til</string>
+<string name="service_torrentfinished">Torrent ferdig nedlastet</string>
+<string name="service_newrssitems">Nye torrents tilgjengelig</string>
+
+<string name="rss">RSS</string>
+<string name="rss_no_feeds">Ingen installerte RSS nyhetsstrømmer\n\nBruk menyen for å legge til nyhetsstrømmer</string>
+<string name="rss_loading_feed">Laster RSS nyhetsstrøm</string>
+<string name="rss_no_items">Tilkoblet, men RSS nyhetsstrømmen er tom</string>
+
+<string name="error_httperror">Feil under kommunikasjon med server</string>
+<string name="error_jsonrequesterror">Feil når forespørsel ble bygget</string>
+<string name="error_401">Autentisering nektet (vennligst kontroller dine innstillinger)</string>
+<string name="error_torrentfile">Kan ikke lese .torrent fil</string>
+<string name="error_parsingrss">Feil ved tolking av RSS nyhetsstrøm</string>
+<string name="error_invalid_ip_or_hostname">Det du tastet inn er ikke en gyldig IP adresse eller et gyldig vertsnavn</string>
+<string name="error_invalid_port_number">Et portnummer er alltid tall</string>
+<string name="error_norssfeed">URL er ikke en (gyldig) RSS nyhetsstrøm</string>
+<string name="error_media_not_available">SD kortet er ikke tilgjengelig for lese/skrive</string>
+<string name="error_no_valid_settings_file">Filen ser ikke ut til å inneholde Transdroid innstillinger</string>
+<string name="error_file_not_found">Finner ingen fil med innstillinger</string>
+
+<string name="xirvik_add_new_xserver">Legg til Xirvik server</string>
+<string name="xirvik_pref_title">Innstillinger for Xirvik server</string>
+<string name="xirvik_pref_type">Server type</string>
+<string name="xirvik_pref_server">Server navn</string>
+
+<string name="seedm8_add_new_xserver">Legg til SeedM8 server</string>
+<string name="seedm8_pref_title">SeedM8 server innstillinger</string>
+<string name="seedm8_pref_server">Server navn</string>
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Seach Box</item>
+<item>Zwart</item>
+<item>Transparent</item>
+</string-array>
+</resources>

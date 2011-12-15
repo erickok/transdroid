@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="connecting">zerbitzarira konektatzen...</string>
+<string name="cannot_connect">ezin izan dugu daemon zerbitzarira konektatu. Mesedez, berrikusi zure konfigurazioa. </string>
+
+
+
+<string name="menu_add">Gehitu</string>
+<string name="menu_search">Bilatu</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Zerbitzaria aldatu</string>
+<string name="menu_refresh">Eguneratu</string>
+<string name="menu_forall">Denentzako egin</string>
+<string name="menu_forall_resume">Denak jarraitu</string>
+<string name="menu_forall_stop">Denak gelditu</string>
+<string name="menu_forall_start">Denak hasi</string>
+<string name="menu_sort_alpha">Izena</string>
+<string name="menu_remove">Ezabatu</string>
+<string name="menu_resume">Jarraitu</string>
+
+
+
+<string name="search_label">Torrentak aurkitu</string>
+<string name="searchmenu_searchagain">Bilakera berria</string>
+<string name="searchmenu_add">Orain jeitsi</string>
+<string name="searchmenu_details">Orria iriki</string>
+
+
+<string name="pref_pass">Pasahitza</string>
+
+
+
+
+
+
+
+
+
+
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+</resources>

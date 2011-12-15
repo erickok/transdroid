@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mimics of com.android.internal.R.layout.preference_category -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingRight="0dip">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+		<TextView 
+    		style="?android:attr/listSeparatorTextViewStyle"
+    		android:id="@+id/title" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="?android:attr/actionBarSize">
+	
+	<!-- This is a wrapper to be able to set the size of the progress item (since the first FrameLayout will be merged) -->
+	<FrameLayout 
+		android:layout_width="26dip"
+		android:layout_height="match_parent"
+		android:paddingLeft="2dip">
+		
+		<ProgressBar
+			android:id="@+id/progress"
+			android:layout_width="20dip"
+			android:layout_height="20dip"
+			android:layout_gravity="center_vertical"
+			style="@android:style/Widget.ProgressBar.Small.Inverse"
+			android:indeterminate="true"
+			android:indeterminateOnly="true" />
+			
+	</FrameLayout>
+	
+</FrameLayout>

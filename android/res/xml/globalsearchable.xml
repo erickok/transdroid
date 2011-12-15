@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+	android:label="@string/search_name"
+	android:searchMode="showSearchIconAsBadge"
+	android:searchSettingsDescription="@string/dialog_search"
+	android:includeInGlobalSearch="true"
+	android:searchSuggestAuthority="org.transdroid.GlobalTorrentSearchProvider"
+	android:searchSuggestIntentAction="android.intent.action.SEARCH"
+	android:searchSuggestSelection=" ? " />

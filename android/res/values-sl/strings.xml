@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">Oddaljeni torrent odjemalec za Transmission, uTorrent, BitTorrent, rTorrent, Vuze in Deluge.</string>
+
+<string name="no_settings_short">V meniju odprite nastavitve, če želite dodati nov strežnik.</string>
+<string name="no_settings">V meniju odprite nastavitve, če želite dodati nov strežnik.\n\nZa pomoč pri inštalaciji:www.transdroid.org/download </string>
+<string name="no_settings_button">Odpri nastavitve</string>
+<string name="connecting">Poskušam se povezati s strežnikom..</string>
+<string name="no_torrents">Povezava je vzpostavljena vendar na strežniku ni torrentov.</string>
+<string name="no_downloading_torrents">Povezava je vzpostavljena vedar na strežniku ni torrentov v fazi shranjevanja.</string>
+<string name="no_uploading_torrents">Povezava je vzpostavljena vendar ni torrentov v fazi razsajanja.</string>
+<string name="no_inactive_torrents">Povezava je vzpostavljena vendar ni aktivnih torrentov.</string>
+<string name="no_file_uploads">Vaša torrent aplikacija ne podpira pošiljanja .torrent datotek ali pa podpora še ni implementirana.</string>
+<string name="no_magnet_links">Vaša torrent aplikacija ne podpira pošiljanja .magnet datotek ali pa podpora še ni implementirana.</string>
+<string name="save">Shrani</string>
+<string name="dismiss">Zavrži</string>
+<string name="torrent_server">Torrent strežnik</string>
+<string name="no_servers">Nastavljen ni še noben strežnik</string>
+
+<string name="labels_showall">Prikaži vse</string>
+<string name="labels_unlabeled">Neoznažen</string>
+<string name="labels_newlabel">Nova oznaka</string>
+<string name="labels_no_support">Nastavljanje oznak ni podprto na vašem odjemalcu</string>
+
+<string name="view_showall">Vsi torenti</string>
+<string name="view_showinactive">Neaktivni torenti</string>
+
+<string name="menu_add">Dodaj</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Zamenjaj strežnik</string>
+<string name="menu_speeds">Nastavi prenosne zmogljivosti</string>
+<string name="menu_forall">Naredi za vse</string>
+<string name="menu_forall_resume">Nadaljuj vse</string>
+<string name="menu_forall_stop">Ustavi vse</string>
+<string name="menu_forall_start">Zaženi vse</string>
+<string name="menu_filter">Filtriraj seznam</string>
+<string name="menu_sort_reverse">Uredi po</string>
+<string name="menu_sort_alpha">Ime</string>
+<string name="menu_sort_status">Status</string>
+<string name="menu_sort_done">Datum zaključka</string>
+<string name="menu_sort_added">Datum </string>
+<string name="menu_sort_upspeed">Hitrost oddajanja</string>
+<string name="menu_sort_ratio">Razmerje</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Search Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

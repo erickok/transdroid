@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">Torrent client manager with integrated search, RSS support and monitoring widget</string>
+
+<string name="no_settings_short">Open the settings menu to enter your server daemon details.</string>
+<string name="no_settings">New to Transdroid? You can get install help at www.transdroid.org/download\n\nTo start torrenting, please enter your server settings:</string>
+<string name="no_settings_button">Open settings</string>
+<string name="connecting">Trying to connect to the server...</string>
+<string name="no_torrents">Connected, but no torrents on the server.</string>
+<string name="no_downloading_torrents">Connected, but no downloading torrents on the server.</string>
+<string name="no_uploading_torrents">Connected, but no seeding torrents on the server.</string>
+<string name="no_inactive_torrents">Connected, but no inactive torrents on the server.</string>
+<string name="no_file_uploads">Your torrent client does not support .torrent file uploads or this is not yet implemented.</string>
+<string name="no_magnet_links">Your torrent client does not support .magnet links or this is not yet implemented.</string>
+<string name="save">Save</string>
+<string name="dismiss">Dismiss</string>
+<string name="refresh">Refresh</string>
+<string name="torrent_server">Torrent server</string>
+<string name="no_servers">No servers have been configured yet</string>
+
+<string name="labels_showall">All labels</string>
+<string name="labels_unlabeled">Unlabeled</string>
+<string name="labels_newlabel">New label</string>
+<string name="labels_no_support">Setting a label is not supported by your client</string>
+
+<string name="view_switchview">Switch view</string>
+<string name="view_showall">All torrents</string>
+<string name="view_showdl">Downloading torrents</string>
+<string name="view_showul">Seeding torrents</string>
+<string name="view_showinactive">Inactive torrents</string>
+
+<string name="menu_add">Add</string>
+<string name="menu_scanbarcode">Scan barcode</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Switch server</string>
+<string name="menu_speeds">Set transfer rates</string>
+<string name="menu_forall">Do for all</string>
+<string name="menu_forall_pause">Pause all</string>
+<string name="menu_forall_resume">Resume all</string>
+<string name="menu_forall_stop">Stop all</string>
+<string name="menu_forall_start">Start all</string>
+<string name="menu_filter">Filter list</string>
+<string name="menu_sort_reverse">Sort by (resort to reverse order)</string>
+<string name="menu_sort_alpha">Name</string>
+<string name="menu_sort_status">Status</string>
+<string name="menu_sort_done">Date done</string>
+<string name="menu_sort_added">Date added</string>
+<string name="menu_sort_upspeed">Upload speed</string>
+<string name="menu_sort_ratio">Ratio</string>
+<string name="menu_sort_onlytransferring">Only transferring (> 0KB/s)</string>
+<string name="menu_settings">Settings</string>
+<string name="menu_changelog">About/Change log</string>
+<string name="menu_errorreport">Error report</string>
+<string name="menu_remove">Remove</string>
+<string name="menu_remove_data">Remove and delete data</string>
+<string name="menu_also_data">Also delete data</string>
+<string name="menu_pause">Pause</string>
+<string name="menu_resume">Resume</string>
+<string name="menu_stop">Stop</string>
+<string name="menu_start">Start</string>
+<string name="menu_forcestart">Force start</string>
+<string name="menu_setlabel">Set label</string>
+<string name="menu_setdownloadlocation">Set download location</string>
+<string name="menu_set_default">Set as default</string>
+<string name="menu_default_site_set_to">Default site set to</string>
+<string name="menu_moveup">Move up</string>
+<string name="menu_movedown">Move down</string>
+<string name="menu_edittrackers">Edit trackers</string>
+<string name="menu_invertselection">Invert selection</string>
+<string name="menu_altmode">Turtle mode</string>
+
+<string name="dialog_add_torrent">Paste the URL of the torrent file</string>
+<string name="no_valid_url">The provided input is not a (valid) URL</string>
+<string name="selectfile">Select a local .torrent file</string>
+<string name="oifm_not_found">No supported file manager, such as OI File Manager, could be found. Would you like to install it from the Android Market?\n\nAlternatively, you can open an unsupported file manager yourself and send a .torrent file to Transdroid.</string>
+<string name="oifm_install">Install from market</string>
+<string name="oifm_nomarket">The Android Market application is not installed</string>
+<string name="scanner_not_found">The Barcode Scanner could not be found. Would you like to install it from the Android Market?</string>
+<string name="lc_install">To send an error report, you need the free and open-source Log Collector application. Would you like to install it from the Android Market?</string>
+<string name="lc_run">The Log Collector application will now collect the device log and send it to transdroid.org@gmail.com.\nYou will have an opportunity to review and modify the data being sent.</string>
+<string name="vlcremote_not_found">A remote file viewer, such as VLC Remote, could not be found. Would you like to install VLC Remote from the Android Market?</string>
+<string name="ftpclient_not_found">You have not installed a compatible FTP client.\nWould you like to install AndFTP from the Android Market?</string>
+
+<string name="rate_download">Maximum download rate</string>
+<string name="rate_upload">Maximum upload rate</string>
+<string name="rate_inkbs">Only numeric values, in KB/s</string>
+<string name="rate_reset">Reset</string>
+<string name="rate_no_support">Your torrent client does not support setting of transfer rates or this is not yet implemented.</string>
+<string name="rate_updated">Transfer rates updated</string>
+<string name="askremove_title">Removing torrent</string>
+<string name="askremove">Are you sure you want to remove this torrent?</string>
+<string name="addfailed_title">Adding failed</string>
+<string name="addfailed_service2">%1$s could not be added right now.\nWould you like to retry or queue it to automatically add it later?</string>
+<string name="addfailed_noservice2">%1$s could not be added right now.\nWould you like to retry?</string>
+<string name="addfailed_retry">Retry</string>
+<string name="addfailed_addlater">Add later</string>
+
+<string name="search">Search</string>
+<string name="searching">Searching...</string>
+<string name="dialog_search">Search on-line for torrents</string>
+<string name="search_name">Torrents</string>
+<string name="search_hint">Ubuntu</string>
+<string name="search_resultsfrom">Results from</string>
+<string name="add_selected">Add all selected</string>
+<string name="no_results">No results found for your query</string>
+<string name="no_query">No search query was provided</string>
+<string name="searchmenu_switchsite">Switch site</string>
+<string name="searchmenu_add">Download now</string>
+<string name="searchmenu_details">Open website</string>
+<string name="searchmenu_openwith">Open with...</string>
+<string name="searchmenu_sharelink">Share link...</string>
+<string name="searchmenu_savesearch">Save as RSS feed</string>
+<string name="searchmenu_useassearch">Use as new search</string>
+<string name="search_savedrssfeed">Search saved as RSS feed</string>
+<string name="search_savenotsupported">Saving not supported for this site</string>
+<string name="tts_not_found">Torrent Search is now a separate module, which means a one-time install from the Android Market. Install it now?</string>
+
+<string name="preferences">Transdroid preferences</string>
+<string name="add_new_server">Add new server</string>
+<string name="add_new_website">Add web search site</string>
+<string name="add_new_rssfeed">Add RSS feed</string>
+<string name="inappsite">In-app searching</string>
+<string name="websearch">Web-based searching</string>
+<string name="other_settings">Other settings</string>
+
+<string name="pref_server">Server daemon</string>
+<string name="pref_basic">Basic settings</string>
+<string name="pref_name">Name</string>
+<string name="pref_name_info">Optional personal name</string>
+<string name="pref_daemon">Server type</string>
+<string name="pref_address">IP or domain name</string>
+<string name="pref_address_info">Without http:// or port number</string>
+<string name="pref_port">Port</string>
+<string name="pref_port_info">Usually is </string>
+<string name="pref_auth">Use authentication</string>
+<string name="pref_auth_info">You\'ll need a username and password</string>
+<string name="pref_user">Username</string>
+<string name="pref_pass">Password</string>
+<string name="pref_os">Server OS</string>
+<string name="pref_folder">SCGI folder</string>
+<string name="pref_folder_info">Usually is /RPC2</string>
+<string name="pref_folder2">Folder</string>
+<string name="pref_folder2_info">For example /torrentflux</string>
+<string name="pref_folder3_info">Usually empty</string>
+<string name="pref_advanced">Advanced settings (optional)</string>
+<string name="pref_downloaddir">Downloads directory</string>
+<string name="pref_downloaddir_info">The absolute path to the downloads directory on your server</string>
+<string name="pref_ftpurl">Base (S)FTP url</string>
+<string name="pref_ftpurl_info">For example ftp://me@server.com/downloads/</string>
+<string name="pref_timeout">Connection timeout</string>
+<string name="pref_timeout_info">Number of seconds before timing out a connection attempt</string>
+<string name="pref_ssl">SSL</string>
+<string name="pref_ssl_info">Select to use https</string>
+<string name="pref_ssl_trust_key">Custom SSL thumbprint</string>
+<string name="pref_ssl_trust_key_info">Permit only connections to this specific certificate</string>
+<string name="pref_ssl_trust_all">Accept all SSL certificates</string>
+<string name="pref_ssl_trust_all_info">Select to allow connections from any thumbprint</string>
+
+<string name="pref_search">Search engine</string>
+<string name="pref_setdefault">Set default site</string>
+<string name="pref_url">Direct search URL</string>
+<string name="pref_url_info">%s will be replaced by the search query</string>
+<string name="pref_numresults">Number of results</string>
+<string name="pref_sort">Result sort order</string>
+<string name="pref_rss_info">RSS feeds</string>
+<string name="pref_feed">Feed settings</string>
+<string name="pref_feed_url">Feed URL</string>
+<string name="pref_feed_needsauth">Requires authentication</string>
+<string name="pref_feed_needsauth_info">Opens links in the browser to authenticate</string>
+<string name="pref_ezrss">ezRSS feed builder</string>
+<string name="pref_ezrss_info">Build a TV show RSS feed</string>
+<string name="pref_ezrss_showname">Show name</string>
+<string name="pref_ezrss_quality">Quality</string>
+<string name="pref_ezrss_group">Release group</string>
+<string name="pref_ezrss_info2">Quality and release group are optional\nPowered by http://www.ezrss.it</string>
+<string name="pref_ezrss_exact">exact match ↴</string>
+<string name="pref_ezrss_enter">A feed example will show here after entering your query</string>
+<string name="pref_ezrss_loading">Loading...</string>
+<string name="pref_ezrss_noresults">This query gives an empty episode listing</string>
+
+<string name="pref_interface">Interface settings</string>
+<string name="pref_onlytransferring">Only transferring (> 0KB/s)</string>
+<string name="pref_onlytransferring_info">Show torrents running at 0KB/s as inactive</string>
+<string name="pref_swipelabels">Swipe labels</string>
+<string name="pref_swipelabels_info">Swipe between labels instead of servers</string>
+<string name="pref_uirefresh">Refresh interval</string>
+<string name="pref_hiderefresh">Hide refresh</string>
+<string name="pref_hiderefresh_info">Don\'t show \'Torrent list refreshed\' message</string>
+<string name="pref_clear_search_history">Clear search history</string>
+<string name="pref_history_cleared">History cleared successfully</string>
+<string name="pref_askremove">Confirm removing</string>
+<string name="pref_askremove_info">Ask to confirm the removal of a torrent</string>
+<string name="pref_import_settings">Import settings</string>
+<string name="pref_import_settings_info">Transdroid will try to import server, web search and RSS settings from:</string>
+<string name="pref_import_settings_success">Settings successfully imported</string>
+<string name="pref_import_settings_pick">Pick file</string>
+<string name="pref_export_settings">Export settings</string>
+<string name="pref_export_settings_info">Transdroid will export server (including passwords), web search and RSS settings to the following plain text file:</string>
+<string name="pref_export_settings_success">Settings successfully exported</string>
+<string name="pref_export_settings_pick">Pick directory</string>
+<string name="pref_enableads">Enable ads</string>
+<string name="pref_enableads_info">Show advertisements in bottom of the screen</string>
+
+<string name="pref_alarm">Alarm service settings</string>
+<string name="pref_enablealarm">Enable alarm service</string>
+<string name="pref_enablealarm_info">Alarm me on torrent status changes</string>
+<string name="pref_alarmtime">Alarm interval</string>
+<string name="pref_alarmtime_info">How often to check my torrents</string>
+<string name="pref_alarmfinished">Download alarm</string>
+<string name="pref_alarmfinished_info">Notify when a torrent finishes</string>
+<string name="pref_alarmnew">New torrent alarm</string>
+<string name="pref_alarmnew_info">Notify when a new torrent was added</string>
+<string name="pref_alarmplaysound">Enable alarm sound</string>
+<string name="pref_alarmplaysound_info">Play notification sound with alarm</string>
+<string name="pref_alarmsounduri">Alarm sound</string>
+<string name="pref_alarmsounduri_info">Notification sound to play with alarm</string>
+<string name="pref_alarmvibrate">Enable vibration</string>
+<string name="pref_alarmvibrate_info">Vibrate on alarm</string>
+<string name="pref_checkrssfeeds">Check RSS feeds</string>
+<string name="pref_checkrssfeeds_info">Alarm when new torrents are available</string>
+<string name="pref_adwnotify">Enable ADW notifications</string>
+<string name="pref_adwnotify_info">Show torrent counter in ADW Launcher</string>
+<string name="pref_adwonlydl">Count only downloads</string>
+<string name="pref_adwonlydl_info">ADW counter only includes downloading torrents</string>
+
+<string name="status_waiting">Waiting to check...</string>
+<string name="status_checking">Verifying local data...</string>
+<string name="status_waitingtodl">Waiting to download %s</string>
+<string name="status_error">Error...</string>
+<string name="status_size1">%1$s of %2$s (%3$s)</string>
+<string name="status_size2">%1$s, uploaded %2$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_unknowneta">unknown eta</string>
+<string name="status_ratio">ratio %1$s</string>
+<string name="status_peers">%1$s of %2$s peers</string>
+<string name="status_speed_up">↑ %1$s</string>
+<string name="status_speed_down">↓ %1$s</string>
+<string name="status_paused">Paused</string>
+<string name="status_stopped">Stopped</string>
+<string name="status_unknown">Unknown</string>
+<string name="status_persecond">/s</string>
+
+<string name="task_refreshing">Refreshing...</string>
+<string name="task_addbyurl">Adding torrent...</string>
+<string name="task_addbyfile">Uploading torrent...</string>
+<string name="task_removing">Removing torrent...</string>
+<string name="task_pausing">Pausing torrent...</string>
+<string name="task_pausingall">Pausing all torrents...</string>
+<string name="task_resuming">Resuming torrent...</string>
+<string name="task_resumingall">Resuming all torrents...</string>
+<string name="task_stopping">Stopping torrent...</string>
+<string name="task_stoppingall">Stopping all torrents...</string>
+<string name="task_starting">Starting torrent...</string>
+<string name="task_startingall">Starting all torrents...</string>
+<string name="task_getfiles">Retrieving files...</string>
+<string name="task_setfileprop">Setting file properties...</string>
+<string name="task_settransrates">Setting transfer rates...</string>
+<string name="task_setlabel">Assigning label...</string>
+<string name="task_setlocation">Moving torrent...</string>
+<string name="task_setalternativemode">Switching mode...</string>
+
+<string name="list_refreshed">Torrent list refreshed</string>
+<string name="torrent_added">Torrent added (refreshing)</string>
+<string name="torrent_removed">removed</string>
+<string name="torrent_removed_with_data">removed and data deleted</string>
+<string name="torrent_resumed">resumed (refreshing)</string>
+<string name="torrent_stopped">stopped</string>
+<string name="torrent_started">started (refreshing)</string>
+<string name="torrent_paused">paused</string>
+<string name="torrent_paused_all">Torrents paused</string>
+<string name="torrent_resumed_all">Torrents resumed (refreshing)</string>
+<string name="torrent_stopped_all">Torrents stopped</string>
+<string name="torrent_started_all">Torrents started (refreshing)</string>
+<string name="torrent_trackersupdated">Trackers updated</string>
+<string name="torrent_locationset">Torrent moved to \'%1$s\'</string>
+
+<string name="details_details">Details</string>
+<string name="details_files">Files</string>
+<string name="details_size">Size:</string>
+<string name="details_state">State:</string>
+<string name="details_downloaded">Downloaded:</string>
+<string name="details_uploaded">Uploaded:</string>
+<string name="details_rate">Rate:</string>
+<string name="details_eta">Eta:</string>
+<string name="details_availability">Availability:</string>
+<string name="details_peers">Peers:</string>
+<string name="details_label">Label:</string>
+<string name="details_trackers">Trackers:</string>
+<string name="details_trackers_expand">%1$s (expand)</string>
+<string name="details_trackers_collapse">(collapse)</string>
+<string name="details_errors">Errors:</string>
+<string name="details_notsupported">Listing the files is not supported by your torrent client or it is not yet implemented</string>
+<string name="details_priorities_updated">File priorities updated</string>
+
+<string name="file_off">Off</string>
+<string name="file_low">Low</string>
+<string name="file_normal">Normal</string>
+<string name="file_high">High</string>
+<string name="file_remotestart">Remote play in VLC</string>
+<string name="file_ftpdownload">Download using (S)FTP</string>
+
+<string name="widget_4x1">Transdroid 4x1</string>
+<string name="widget_2x1">Transdroid 2x1</string>
+<string name="widget_pref_server">Server</string>
+<string name="widget_pref_refresh">Refresh interval</string>
+<string name="widget_pref_layout">Style</string>
+<string name="widget_pref_addwidget">Add this widget</string>
+<string name="widget_downloading">DL @</string>
+<string name="widget_downloading_up">up</string>
+<string name="widget_seeding">UP @</string>
+<string name="widget_other">inactive</string>
+<string name="widget_persecond">/s</string>
+<string name="widget_eta">eta</string>
+<string name="widget_unknowneta">unknown eta</string>
+<string name="widget_new">new</string>
+
+<string name="service_newtorrent">New torrent added</string>
+<string name="service_torrentfinished">Torrent finished downloading</string>
+<string name="service_newrssitems">New torrents available</string>
+<string name="service_newrssitems_count">%d new RSS feed torrents</string>
+
+<string name="rss">RSS</string>
+<string name="rss_no_feeds">No RSS feeds installed\n\nUse the menu to add new feeds</string>
+<string name="rss_loading_feed">Loading RSS feed</string>
+<string name="rss_no_items">Connected, but the RSS feed is empty</string>
+
+<string name="error_httperror">Error during communication with server</string>
+<string name="error_jsonrequesterror">Error building request</string>
+<string name="error_jsonresponseerror">Error parsing of server response (please check your settings)</string>
+<string name="error_daemonnotconnected">Web interface not connected to a running daemon</string>
+<string name="error_401">Access denied (please check your settings)</string>
+<string name="error_torrentfile">Can\'t read .torrent file</string>
+<string name="error_parsingrss">Error while parsing the RSS feed</string>
+<string name="error_invalid_url_form">This URL is not well-formed</string>
+<string name="error_invalid_search_url">Your web search URL is invalid:</string>
+<string name="error_invalid_ip_or_hostname">Input is not a valid IP address or host name</string>
+<string name="error_invalid_port_number">Port number is always numeric</string>
+<string name="error_invalid_directory">Directory paths end with a / or \</string>
+<string name="error_invalid_timeout">Timeout can not be empty and is a positive number</string>
+<string name="error_no_url_enclosure">The RSS feed item didn\'t provide an URL enclosure or link tag pointing to the .torrent file</string>
+<string name="error_no_link">The RSS feed item does not provide a link to browse to</string>
+<string name="error_norssfeed">URL is no (valid) RSS feed</string>
+<string name="error_media_not_available">SD card not available to read/write</string>
+<string name="error_no_valid_settings_file">File does not seem to contain Transdroid settings</string>
+<string name="error_file_not_found">There is no settings file found</string>
+
+<string name="xirvik_info">Xirvik offers shared, semi-dedicated or dedicated seedboxes. Transdroid provides easy setup for all Xirvik servers.\n\nRead more at www.xirvik.com</string>
+<string name="xirvik_add_new_xserver">Add Xirvik server</string>
+<string name="xirvik_pref_title">Xirvik server settings</string>
+<string name="xirvik_pref_type">Server type</string>
+<string name="xirvik_pref_type_info">Shared, semi- or dedicated</string>
+<string name="xirvik_pref_server">Server name</string>
+<string name="xirvik_pref_server_info">Like dedi000.xirvik.com</string>
+<string name="xirvik_error_invalid_servername">Invalid server (use the full host name, like dedi000.xirvik.com)</string>
+
+<string name="seedm8_info">SeedM8 offers unmetered GBit seedbox hosting. Transdroid provides easy setup for SeedM8 servers.\n\nRead more at www.seedm8.com</string>
+<string name="seedm8_add_new_xserver">Add SeedM8 server</string>
+<string name="seedm8_pref_title">SeedM8 server settings</string>
+<string name="seedm8_pref_server">Server name</string>
+<string name="seedm8_pref_server_info">Like alpha.seedm8.com</string>
+<string name="seedm8_error_invalid_servername">Invalid server (use the full host name, like alpha.seedm8.com)</string>
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Search Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

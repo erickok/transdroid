@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">Διαχειριστής Torrent Client με ενσωματωμένη αναζήτηση, υποστήριξη RSS και widget παρακολούθησης</string>
+
+<string name="no_settings_short">Ανοίξτε το μενού των ρυθμίσεων για να βάλετε τις λεπτομέρειες του server σας.</string>
+<string name="no_settings">Νέος με το Transdroid; Μπορείς να πάρεις βοήθεια για την εγκατάσταση από το www.transdroid.org/download\n\nΓια να ξεκινήσετε με τα torrents βάλτε τις ρυθμίσεις του server σας:</string>
+<string name="no_settings_button">Άνοιγμα Ρυθμίσεων</string>
+<string name="connecting">Απόπειρα σύνδεσης με το server...</string>
+<string name="no_torrents">Συνδεθήκατε, αλλά δεν υπάρχουν torrents στον server.</string>
+<string name="no_downloading_torrents">Συνδεθήκατε, αλλά δεν υπάρχουν torrents που κατεβαίνουν στον server.</string>
+<string name="no_uploading_torrents">Συνδεθήκατε, αλλά δεν υπάρχουν torrents που διαμοιράζονται στον server.</string>
+<string name="no_inactive_torrents">Συνδεθήκατε, αλλά κανένα torrent δεν είναι ενεργό.</string>
+<string name="no_file_uploads">Ο torrent client σας δεν υποστηρίζει μεταφόρτωση αρχείων .torrent ή ακόμα αυτή η διαδικασία δεν έχει υλοποιηθεί.</string>
+<string name="no_magnet_links">Ο torrent client σας δεν υποστηρίζει συνδέσμους .magnet ή ακόμα  αυτή η διαδικασία δεν έχει υλοποιηθεί.</string>
+<string name="save">Αποθήκευση</string>
+<string name="dismiss">Ακύρωση</string>
+<string name="torrent_server">Torrent server</string>
+<string name="no_servers">Κανένας server δεν έχει ρυθμιστεί ακόμα</string>
+
+<string name="labels_showall">Εμφάνιση όλων</string>
+<string name="labels_unlabeled">Χωρίς ετικέτα</string>
+<string name="labels_newlabel">Νέα ετικέτα</string>
+<string name="labels_no_support">Η εφαρμογή ετικέτας δεν υποστηρίζεται από τον client σας</string>
+
+<string name="view_switchview">Αλλαγή προβολής</string>
+<string name="view_showall">Εμφάνιση όλων των torrent</string>
+<string name="view_showdl">Εμφάνιση όσων  torrent γίνετε τώρα λήψη</string>
+<string name="view_showul">Εμφάνιση όσων  torrent γίνετε τώρα διαμοιρασμός</string>
+<string name="view_showinactive">Εμφάνιση όσων  torrent  δεν είναι ενεργά</string>
+
+<string name="menu_add">Προσθήκη</string>
+<string name="menu_scanbarcode">Σάρωση barcode</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Αλλαγή Server</string>
+<string name="menu_speeds">Ορισμός ταχύτητας μεταφοράς</string>
+<string name="menu_forall">Κάντο για όλα</string>
+<string name="menu_forall_pause">Παύση όλων</string>
+<string name="menu_forall_resume">Συνέχιση όλων</string>
+<string name="menu_forall_stop">Σταμάτημα όλων</string>
+<string name="menu_forall_start">Ξεκίνημα όλων</string>
+<string name="menu_filter">Λίστα φίλτρων</string>
+<string name="menu_sort_reverse">Ταξινόμηση κατά (για αντίστροφή ταξινόμησης)</string>
+<string name="menu_sort_alpha">Όνομα</string>
+<string name="menu_sort_status">Κατάσταση</string>
+<string name="menu_sort_done">Ημερομηνία ολοκλήρωσης λήψης</string>
+<string name="menu_sort_added">Ημερομηνία προσθήκης</string>
+<string name="menu_sort_upspeed">Ταχύτητα μεταφόρτωσης</string>
+<string name="menu_sort_ratio">Αναλογία</string>
+<string name="menu_settings">Ρυθμίσεις</string>
+<string name="menu_changelog">Σχετικά / Αρχείο αλλαγών</string>
+<string name="menu_errorreport">Έκθεση σφαλμάτων</string>
+<string name="menu_remove">Αφαίρεση</string>
+<string name="menu_remove_data">Αφαίρεση και διαγραφή δεδομένων</string>
+<string name="menu_also_data">Διέγραψε επίσης τα δεδομένα</string>
+<string name="menu_pause">Παύση</string>
+<string name="menu_resume">Συνέχιση</string>
+<string name="menu_stop">Σταμάτημα</string>
+<string name="menu_start">Ξεκίνημα</string>
+<string name="menu_forcestart">Εξαναγκαστικό Ξεκίνημα</string>
+<string name="menu_setlabel">Ορισμός ετικέτας...</string>
+<string name="menu_setdownloadlocation">Ορισμός διαδρομής αποθήκευσης ληφθέντων αρχείων</string>
+<string name="menu_set_default">Ορισμός ως προεπιλογή</string>
+<string name="menu_default_site_set_to">Προεπιλεγμένο site ορίσθηκε σε</string>
+<string name="menu_moveup">Μετακίνησης προς τα πάνω</string>
+<string name="menu_movedown">Μετακίνησης προς τα πκάτω</string>
+<string name="menu_invertselection">Αναίρεση επιλογής</string>
+
+<string name="dialog_add_torrent">Επικόλληση URL του αρχείου torrent</string>
+<string name="no_valid_url">Αυτό που εισάγατε δεν είναι σωστό URL</string>
+<string name="selectfile">Επιλογή τοπικού αρχείου .torrent</string>
+<string name="oifm_not_found">Δεν υπάρχει κάποιος υποστηριζόμενος διαχειριστής αρχείων,  ο OI File Manager, θα μπορούσε να βρεθεί(είναι υποστηριζόμενος). Θα ήθελες να εγκατασταθεί από το Android Market?\n\n Εναλλακτικά, μπορείς να ανοίξεις ένα μη υποστηριζόμενο διαχειριστή αρχείων και να στείλεις το αρχείο .torrent στο Transdroid. </string>
+<string name="oifm_install">Εγκατάσταση απο το market.</string>
+<string name="oifm_nomarket">Η εφαρμογή Android Market δεν είναι εγκατεστημένη.</string>
+<string name="scanner_not_found">To Barcode Scanner δεν βρέθηκε. Θα θέλατε να εγκατασταθεί από το Android Market;</string>
+<string name="lc_install">Για να στείλετε μια αναφορά σφαλμάτων, θα χρειαστείτε την δωρεάν και ανοιχτού κώδικα εφαρμογή Log Collector. Θα θέλατε να εγκατασταθεί από το Android Market;</string>
+<string name="lc_run">Η εφαρμογή Log Collector τώρα θα συλλέξει το αρχείο καταγραφής της συσκευής και θα το στείλει στο transdroid.org@gmail.com.\n Θα μπορείς να δεις και να επεξεργαστείς τα δεδομένα που στέλνονται. </string>
+<string name="vlcremote_not_found">Ένας απομακρυσμένος file viewer , όπως το VLC Remote, δεν μπόρεσε να βρεθεί. Θα θέλατε να εγκαταστήσετε το VLC Remote από το Android Market;</string>
+<string name="ftpclient_not_found">Δεν έχετε εγκαταστήσει κάποιο συμβατό FTP client.\nΘα θέλατε να εγκαταστήσετε το AndFTP από το Android Market;</string>
+
+<string name="rate_download">Μέγιστη ταχύτητα λήψης</string>
+<string name="rate_upload">Μέγιστη ταχύτητα μεταφόρτωσης</string>
+<string name="rate_inkbs">Μόνο αριθμητικές τιμές , σε KB/s</string>
+<string name="rate_reset">Επανεκκίνηση </string>
+<string name="rate_no_support">Ο torrent client σας, δεν υποστηρίζει τον ορισμό ταχυτήτων μεταφοράς ή ακόμα  αυτή η διαδικασία δεν έχει υλοποιηθεί.</string>
+<string name="rate_updated">Οι ταχύτητες μεταφοράς ανανεώθηκαν.</string>
+<string name="askremove_title">Αφαίρεση torrent</string>
+<string name="askremove">Είστε σίγουρος πως θέλετε να αφαιρέσετε αυτό το torrent; </string>
+<string name="addfailed_title">Η προσθήκη απέτυχε</string>
+<string name="addfailed_retry">Επανάληψη</string>
+<string name="addfailed_addlater">Προσθήκη Αργότερα</string>
+
+<string name="searching">Αναζήτηση...</string>
+<string name="dialog_search">Αναζήτηση on-line για torrents</string>
+<string name="search_name">Torrents</string>
+<string name="search_hint">Ubuntu</string>
+<string name="search_resultsfrom">Αποτελέσματα από</string>
+<string name="add_selected">Προσθήκη όλων των επιλεγμένων</string>
+<string name="no_results">Δεν βρέθηκαν αποτελέσματα για την αναζήτησή σας</string>
+<string name="no_query">Δεν θέσατε κάτι προς αναζήτηση</string>
+<string name="searchmenu_switchsite">Αλλαγή site</string>
+<string name="searchmenu_add">Λήψη τώρα</string>
+<string name="searchmenu_details">Άνοιγμα ιστοσελίδας</string>
+<string name="searchmenu_openwith">Άνοιγμα με...</string>
+<string name="searchmenu_sharelink">Μοιράσου τον σύνδεσμο...</string>
+<string name="searchmenu_savesearch">Σώσε το σαν RSS feed</string>
+<string name="searchmenu_useassearch">Χρήση σαν καινούργια αναζήτηση</string>
+
+<string name="add_new_server">Προσθήκη καινούργιου server</string>
+<string name="add_new_rssfeed">Προσθήκη RSS feed</string>
+<string name="other_settings">Άλλες ρυθμίσεις</string>
+
+<string name="pref_basic">Βασικές ρυθμίσεις</string>
+<string name="pref_user">Όνομα χρήστη</string>
+<string name="pref_pass">Κωδικός</string>
+<string name="pref_folder2">Φάκελος</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Search Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

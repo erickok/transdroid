@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/controlbar"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal">
+	
+	<ImageView
+		android:id="@+id/viewtypeselector"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="2dip"
+		android:src="@drawable/icon_showall"
+		android:focusable="true"
+		android:background="@drawable/controlbar_button"
+		android:contentDescription="@string/view_switchview" />
+		
+	<TextView 
+		android:id="@+id/viewtype" 
+		android:layout_width="0dip" 
+		android:layout_weight="1"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="2dip"
+		android:layout_marginBottom="2dip"
+		android:layout_gravity="center_vertical"
+		android:text="@string/view_showall" />
+	
+	<TextView 
+		android:id="@+id/taskmessage" 
+		android:layout_width="wrap_content" 
+		android:layout_height="47dip"
+		android:layout_gravity="center_vertical"
+		android:layout_margin="2dip"
+		android:layout_marginRight="4dip"
+		android:textColor="@color/HighlightBackgroundColor"
+		android:visibility="gone" />
+		
+	<TableLayout
+		android:id="@+id/st_box"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+		android:layout_margin="2dip"
+		android:focusable="true"
+		android:background="@drawable/controlbar_button">
+		<TableRow>
+			<TextView 
+				android:id="@+id/st_down" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginRight="2dip"
+				android:textSize="20dip"
+				android:textColor="@color/HighlightBackgroundColor" />
+			<TextView 
+				android:id="@+id/st_up" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginLeft="2dip"
+				android:textSize="20dip"
+				android:textColor="@color/HighlightBackgroundColor" />
+		</TableRow>
+		<TableRow>
+			<TextView 
+				android:id="@+id/st_downrate" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginRight="2dip"
+				android:textSize="10dip"
+				android:textColor="@color/HighlightBackgroundColor" />
+			<TextView 
+				android:id="@+id/st_uprate" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginLeft="2dip"
+				android:textSize="10dip"
+				android:textColor="@color/HighlightBackgroundColor" />
+		</TableRow>
+	</TableLayout>
+	
+</LinearLayout>

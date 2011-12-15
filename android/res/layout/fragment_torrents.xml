@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent"
+	android:layout_width="fill_parent"
+	android:orientation="vertical">
+
+	<include layout="@layout/part_controlbar" />
+	
+	<ListView 
+		android:id="@+id/torrents" 
+		android:layout_width="fill_parent" 
+		android:layout_height="0dip" 
+		android:layout_weight="1"
+		android:fastScrollEnabled="true"
+		android:visibility="gone" />
+		
+	<TextView 
+		android:id="@+id/android:empty" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="@string/connecting" 
+		android:layout_gravity="center" 
+		android:textStyle="bold"
+		android:autoLink="all" 
+		android:gravity="center"
+		android:layout_weight="1" />
+		
+	<LinearLayout
+		android:id="@+id/startsettings"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:background="@android:drawable/bottom_bar">
+		
+		<Button
+			android:id="@+id/startsettings_button"
+			android:layout_width="0dip"
+			android:layout_height="48dip"
+			android:layout_gravity="center"
+			android:background="@android:drawable/btn_default_small"
+			android:text="@string/no_settings_button"
+			android:textColor="@color/HighlightTextColor"
+			android:layout_weight="1" />
+			
+	</LinearLayout>
+	
+</LinearLayout>

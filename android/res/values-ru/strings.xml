@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">Клиент для удаленного управления Transmission, uTorrent, BitTorrent, rTorrent и Deluge</string>
+
+<string name="no_settings_short">Перейдите в меню настроек, для ввода параметров вашего сервера</string>
+<string name="no_settings">Перейдите в меню настроек, для указания данных о сервере.\n\nДля помощи при инсталляции: www.transdroid.org/download</string>
+<string name="no_settings_button">Открыть настройки</string>
+<string name="connecting">Попытка подключения к серверу</string>
+<string name="no_torrents">Соединение установлено, но на сервере отсутствуют торренты.</string>
+<string name="no_downloading_torrents">Соединение установлено, но на сервере нет скачиваемых торрентов.</string>
+<string name="no_uploading_torrents">Соединение установлено, но на сервере нет сидируемых торрентов.</string>
+<string name="no_inactive_torrents">Соединение установлено, но на сервере нет неактивных торрентов.</string>
+<string name="no_file_uploads">Ваше приложение не поддерживает загрузку файлов типа .torrent или же данная функция не реализована.</string>
+<string name="no_magnet_links">Ваш торрент клиент не поддерживает ссылки .magnet или это еще не реализовано.</string>
+<string name="save">Сохранить</string>
+<string name="dismiss">Отменить</string>
+<string name="torrent_server">Торрент сервер</string>
+<string name="no_servers">Серверы еще не настроены</string>
+
+<string name="labels_showall">Показать все</string>
+<string name="labels_unlabeled">Без меток</string>
+<string name="labels_newlabel">Новая метка</string>
+<string name="labels_no_support">Работа с метками не поддерживается Вашим клиентом</string>
+
+<string name="view_switchview">Переключить вид</string>
+<string name="view_showall">Показать все торренты</string>
+<string name="view_showdl">Показать загружаемые торренты</string>
+<string name="view_showul">Показать сидируемые торренты</string>
+<string name="view_showinactive">Показать неактивные торренты</string>
+
+<string name="menu_add">Добавить</string>
+<string name="menu_scanbarcode">Сканирование штрих-кодов</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Сменить сервер</string>
+<string name="menu_speeds">Установить скорость передачи</string>
+<string name="menu_forall">Для всех</string>
+<string name="menu_forall_pause">Приостановить все</string>
+<string name="menu_forall_resume">Продолжить все</string>
+<string name="menu_forall_stop">Остановить все</string>
+<string name="menu_forall_start">Запустить все</string>
+<string name="menu_filter">Фильтр</string>
+<string name="menu_sort_reverse">Сортировать по (в обратном порядке)</string>
+<string name="menu_sort_alpha">Имени</string>
+<string name="menu_sort_status">Статусу</string>
+<string name="menu_sort_done">Дате загрузки</string>
+<string name="menu_sort_added">Дате добавления</string>
+<string name="menu_sort_upspeed">Скорость выгрузки</string>
+<string name="menu_sort_ratio">Коэффициенту</string>
+<string name="menu_sort_onlytransferring">Только активные</string>
+<string name="menu_settings">Настройки</string>
+<string name="menu_changelog">О программе</string>
+<string name="menu_errorreport">Сообщить об ошибке</string>
+<string name="menu_remove">Удалить</string>
+<string name="menu_remove_data">Удалить вместе с данными</string>
+<string name="menu_also_data">Кроме удаления данных</string>
+<string name="menu_pause">Приостановить</string>
+<string name="menu_resume">Продолжить</string>
+<string name="menu_stop">Остановить</string>
+<string name="menu_start">Запустить</string>
+<string name="menu_forcestart">Запустить принудительно</string>
+<string name="menu_setlabel">Установить метку...</string>
+<string name="menu_setdownloadlocation">Каталог загрузки</string>
+<string name="menu_set_default">По умолчанию</string>
+<string name="menu_default_site_set_to">Сайт по умолчанию</string>
+<string name="menu_moveup">Вверх</string>
+<string name="menu_movedown">Вниз</string>
+<string name="menu_edittrackers">Изменить трекеры</string>
+<string name="menu_invertselection">Обратить выделенное</string>
+
+<string name="dialog_add_torrent">Вставьте URL торрент-файла </string>
+<string name="no_valid_url">Введенные данные не являются корректным URL</string>
+<string name="selectfile">Выберите локальный .torrent файл</string>
+<string name="oifm_not_found">Не найден поддерживаемый файл-менеджер (OI File Manager). Установить его с Android Market?\n\nВы можете использовать уже установленный файл-менеджер, для того, чтобы передать торрент-файл в Transdroid</string>
+<string name="oifm_install">Установить из Market</string>
+<string name="oifm_nomarket">Приложение Android Market не установлено</string>
+<string name="scanner_not_found">Сканер штрих-кодов не найден. Установить через Android Market?</string>
+<string name="lc_install">Чтобы отправить сообщение об ошибке вам нужно установить бесплатное приложение Log Collector. Установить через Android Market?</string>
+<string name="lc_run">Приложение Log Collector теперь будет следить за ошибками и отправлять автору  transdroid.org@gmail.com. \nУ вас будет возможность просматривать и редактировать сообщения.</string>
+<string name="vlcremote_not_found">Приложение для удаленного управления (VLC Remote) не найдено. Установить через Android Market?</string>
+<string name="ftpclient_not_found">Не установлен поддерживаемый  FTP клиент AndFTP.\nУстановить через Android Market?</string>
+
+<string name="rate_download">Максимальная скорость закачки</string>
+<string name="rate_upload">Максимальная скорость раздачи</string>
+<string name="rate_inkbs">Только цифровые значения, в Кб/с</string>
+<string name="rate_reset">Сброс</string>
+<string name="rate_no_support">Ваш торрент-клиент не поддерживает настройку скорости передачи</string>
+<string name="rate_updated">Скорость раздачи обновлена</string>
+<string name="askremove_title">Удаление торрента</string>
+<string name="askremove">Вы действительно хотите удалить этот торрент?</string>
+<string name="addfailed_title">Добавление не удалось</string>
+<string name="addfailed_service2">% 1 $ S не удалось добавить прямо сейчас. \ NВы хотите повторить или автоматически добавить его в очередь позже?</string>
+<string name="addfailed_noservice2">% 1 $ S не удалось добавить прямо сейчас. \ NВы хотите повторить?</string>
+<string name="addfailed_retry">Повторить</string>
+<string name="addfailed_addlater">Добавить позже</string>
+
+<string name="searching">Поиск...</string>
+<string name="dialog_search">Искать торренты он-лайн</string>
+<string name="search_name">Торренты</string>
+<string name="search_hint">Ubuntu</string>
+<string name="search_resultsfrom">Результаты от</string>
+<string name="add_selected">Добавить все выбранные</string>
+<string name="no_results">По вашему запросу ничего не найдено</string>
+<string name="no_query">Отсутствует поисковый запрос</string>
+<string name="searchmenu_switchsite">Переключиться на другой сайт</string>
+<string name="searchmenu_add">Скачать</string>
+<string name="searchmenu_details">Открыть сайт</string>
+<string name="searchmenu_openwith">Открыть с помощью...</string>
+<string name="searchmenu_sharelink">Отправить ссылку...</string>
+<string name="searchmenu_savesearch">Сохранить RSS-фид</string>
+<string name="searchmenu_useassearch">Искать заново</string>
+<string name="search_savedrssfeed">Искать в сохраненных RSS-фидах</string>
+<string name="search_savenotsupported">Сохранение не поддерживается этим сайтом</string>
+<string name="tts_not_found">Torrent Search теперь отдельный модуль. Установить его сейчас из Android Market?</string>
+
+<string name="preferences">Настройки Transdroid</string>
+<string name="add_new_server">Добавить новый сервер</string>
+<string name="add_new_website">Добавить поисковый сайт</string>
+<string name="add_new_rssfeed">Добавить  RSS-фид</string>
+<string name="inappsite">Поиск в приложении</string>
+<string name="websearch">Поиск через Web</string>
+<string name="other_settings">Прочие настройки</string>
+
+<string name="pref_server">Сервер</string>
+<string name="pref_basic">Основные настройки</string>
+<string name="pref_name">Имя</string>
+<string name="pref_name_info">Опциональное имя</string>
+<string name="pref_daemon">Тип сервера</string>
+<string name="pref_address">IP адрес или имя домена</string>
+<string name="pref_address_info">Без префикса http:// и номера порта</string>
+<string name="pref_port">Порт</string>
+<string name="pref_port_info">Обычно</string>
+<string name="pref_auth">Использовать авторизацию</string>
+<string name="pref_auth_info">Требуется имя пользователя и пароль</string>
+<string name="pref_user">Имя пользователя</string>
+<string name="pref_pass">Пароль</string>
+<string name="pref_os">Операционная система</string>
+<string name="pref_folder">Папка SGGI</string>
+<string name="pref_folder_info">Обычно /RPC2</string>
+<string name="pref_folder2">Папка</string>
+<string name="pref_folder2_info">Например: /torrentflux</string>
+<string name="pref_folder3_info">Обычно пусто</string>
+<string name="pref_advanced">Дополнительные настройки</string>
+<string name="pref_downloaddir">Папка для загрузки</string>
+<string name="pref_downloaddir_info">Полный путь папки для загрузки на сервере</string>
+<string name="pref_ftpurl">Адрес FTP</string>
+<string name="pref_ftpurl_info">Например:  ftp://me@server.com/downloads/</string>
+<string name="pref_timeout">Тайм-аут соединения</string>
+<string name="pref_timeout_info">Количество секунд до таймаута попытки подключения</string>
+<string name="pref_ssl">SSL</string>
+<string name="pref_ssl_info">Выбрать для использования https</string>
+<string name="pref_ssl_trust_key">Пользовательский SSL-сертификат</string>
+<string name="pref_ssl_trust_key_info">Разрешение подключения только к этому конкретному сертификату</string>
+<string name="pref_ssl_trust_all">Принимать все SSL сертификаты</string>
+<string name="pref_ssl_trust_all_info">Выберите, чтобы разрешить соединения с любым сертификатом</string>
+
+<string name="pref_search">Поисковая система</string>
+<string name="pref_setdefault">Выберите сайт по-умолчанию</string>
+<string name="pref_url">Прямой URL для поиска</string>
+<string name="pref_url_info">%s будет заменено поисковым запросом</string>
+<string name="pref_numresults">Количество результатов</string>
+<string name="pref_sort">Тип сортировки</string>
+<string name="pref_rss_info">RSS фиды</string>
+<string name="pref_feed">Настройки фида</string>
+<string name="pref_feed_url">URL фида</string>
+<string name="pref_feed_needsauth">Необходима авторизация</string>
+<string name="pref_feed_needsauth_info">Открытие в браузере для авторизации</string>
+<string name="pref_ezrss">ezRSS feed builder</string>
+<string name="pref_ezrss_info">Составить RSS-фид с ТВ программами</string>
+<string name="pref_ezrss_showname">Показать имя</string>
+<string name="pref_ezrss_quality">Качество</string>
+<string name="pref_ezrss_group">Релиз-группа</string>
+<string name="pref_ezrss_info2">Качество и релиз-группа не являются обязательными\nОсновано на http://www.ezrss.it</string>
+<string name="pref_ezrss_exact">точное совпадение ↴</string>
+<string name="pref_ezrss_enter">Пример фида будет показан после введения запроса</string>
+<string name="pref_ezrss_loading">Загрузка...</string>
+<string name="pref_ezrss_noresults">Этот запрос не дал результатов</string>
+
+<string name="pref_interface">Параметры интерфейса</string>
+<string name="pref_onlytransferring">Только активные (> 0 KB/s)</string>
+<string name="pref_onlytransferring_info">Показывать торренты со скоростью 0KB/s как неактивные</string>
+<string name="pref_swipelabels">Свайпать метки</string>
+<string name="pref_swipelabels_info">Переключать метки вместо серверов при свайпе</string>
+<string name="pref_uirefresh">Интервал обновления</string>
+<string name="pref_hiderefresh">Спрятать обновление</string>
+<string name="pref_hiderefresh_info">Не показывать сообщение \'Список торрентов обновлен\'</string>
+<string name="pref_clear_search_history">Очистить историю поиска</string>
+<string name="pref_history_cleared">История поиска успешно очищена</string>
+<string name="pref_askremove">Подтвердить удаление</string>
+<string name="pref_askremove_info">Запросить подтверждение удаления торрента</string>
+<string name="pref_import_settings">Импортировать настройки</string>
+<string name="pref_import_settings_info">Transdroid попытается импортировать сервер, веб-поиск и RSS настроек из:</string>
+<string name="pref_import_settings_success">Настройки успешно импортированы</string>
+<string name="pref_import_settings_pick">Выберите файл</string>
+<string name="pref_export_settings">Экспортировать настройки</string>
+<string name="pref_export_settings_info">Transdroid будет экспортировать сервера (включая пароли), веб-поиск и RSS настройки следующий текстовый файл:</string>
+<string name="pref_export_settings_success">Настройки успешно экспортированы</string>
+<string name="pref_export_settings_pick">Выберите каталог</string>
+<string name="pref_enableads_info">Показать объявления в нижней части экрана</string>
+
+<string name="pref_alarm">Настройки уведомлений</string>
+<string name="pref_enablealarm">Включить уведомления</string>
+<string name="pref_enablealarm_info">Уведомлять при изменении статуса торрента</string>
+<string name="pref_alarmtime">Частота уведомления</string>
+<string name="pref_alarmtime_info">Частота проверки моих торрентов</string>
+<string name="pref_alarmfinished">Уведомление о скачивании</string>
+<string name="pref_alarmfinished_info">Уведомлять когда торрент загружен</string>
+<string name="pref_alarmnew">Уведомление новых торрентов</string>
+<string name="pref_alarmnew_info">Уведомлять при добавлении новых торрентов</string>
+<string name="pref_alarmplaysound">Включить звук уведомления</string>
+<string name="pref_alarmsounduri">Предупреждающий звуковой сигнал</string>
+<string name="pref_alarmvibrate">Включить вибрацию</string>
+<string name="pref_checkrssfeeds">Проверка RSS фидов</string>
+<string name="pref_checkrssfeeds_info">Уведомлять когда доступны новые торренты</string>
+<string name="pref_adwnotify">Включить ADV уведомление</string>
+
+<string name="status_waiting">Ожидание проверки...</string>
+<string name="status_checking">Проверяем локальные данные...</string>
+<string name="status_waitingtodl">Ожидание начала загрузки %s</string>
+<string name="status_error">Ошибка...</string>
+<string name="status_size1">%1$s из %2$s (%3$s)</string>
+<string name="status_size2">%1$s, закачано %2$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_unknowneta">неизвестно</string>
+<string name="status_ratio">рейтинг %1$s</string>
+<string name="status_peers">%1$s из %2$s пиры(ов)</string>
+<string name="status_speed_up">↑ %1$s</string>
+<string name="status_speed_down">↓ %1$s</string>
+<string name="status_paused">Приостановка</string>
+<string name="status_stopped">Остановка</string>
+<string name="status_unknown">Неизвестно</string>
+<string name="status_persecond">/c</string>
+
+<string name="task_refreshing">Обновление... </string>
+<string name="task_addbyurl">Добавление торрента... </string>
+<string name="task_addbyfile">Закачка торрента... </string>
+<string name="task_removing">Удаление торрента... </string>
+<string name="task_pausing">Приостановка торрента... </string>
+<string name="task_pausingall">Приостановка всех торрентов... </string>
+<string name="task_resuming">Возобновление торрента...</string>
+<string name="task_resumingall">Возобновление всех торрентов...</string>
+<string name="task_stopping">Остановка торрента...</string>
+<string name="task_stoppingall">Остановка всех торрентов...</string>
+<string name="task_starting">Запуск торрента...</string>
+<string name="task_startingall">Запуск всех торрентов...</string>
+<string name="task_getfiles">Извлечение файлов...</string>
+<string name="task_setfileprop">Настройка свойств файла...</string>
+<string name="task_settransrates">Настройка скорости передачи...</string>
+<string name="task_setlabel">Назначение метки...</string>
+<string name="task_setlocation">Переместить торрент...</string>
+
+<string name="list_refreshed">Список торрентов обновлен</string>
+<string name="torrent_added">Торрент добавлен (обновляем)</string>
+<string name="torrent_removed">удалён</string>
+<string name="torrent_removed_with_data">удалён, данные тоже удалены</string>
+<string name="torrent_resumed">возоблено (обновляем)</string>
+<string name="torrent_stopped">остановлено</string>
+<string name="torrent_started">запущено (обновляем)</string>
+<string name="torrent_paused">приостановлено</string>
+<string name="torrent_paused_all">Торренты приостановлены</string>
+<string name="torrent_resumed_all">Торренты востановлены (обновляются)</string>
+<string name="torrent_stopped_all">Торренты остановлены</string>
+<string name="torrent_started_all">Торренты запущены (обновляются)</string>
+<string name="torrent_trackersupdated">Трекеры обновлены</string>
+<string name="torrent_locationset">Торрент перемещён в \ "% 1 $ S \ '</string>
+
+<string name="details_details">Подробности</string>
+<string name="details_files">Файлы</string>
+<string name="details_size">Размер:</string>
+<string name="details_state">Состояние:</string>
+<string name="details_downloaded">Скачано:</string>
+<string name="details_uploaded">Закачано:</string>
+<string name="details_rate">Рейтинг:</string>
+<string name="details_eta">Осталось:</string>
+<string name="details_availability">Доступность:</string>
+<string name="details_peers">Пиры:</string>
+<string name="details_label">Метка:</string>
+<string name="details_trackers">Трекеры:</string>
+<string name="details_errors">Ошибки:</string>
+<string name="details_notsupported">Отображение в виде списка не поддерживается вашим торрент клиентом либо еще не осуществлено</string>
+<string name="details_priorities_updated">Обновлены приоритеты файла</string>
+
+<string name="file_off">Выкл</string>
+<string name="file_low">Низк</string>
+<string name="file_normal">Норм</string>
+<string name="file_high">Высок</string>
+<string name="file_remotestart">Удаленно проиграть в VLC</string>
+<string name="file_ftpdownload">Загрузка при помощи (S)FTP</string>
+
+<string name="widget_4x1">Transdroid 4x1</string>
+<string name="widget_2x1">Transdroid 2x1</string>
+<string name="widget_pref_server">Сепвеп</string>
+<string name="widget_pref_refresh">Частота обновления</string>
+<string name="widget_pref_layout">Стиль</string>
+<string name="widget_pref_addwidget">Добавить виджет</string>
+<string name="widget_downloading">DL @</string>
+<string name="widget_downloading_up">up</string>
+<string name="widget_seeding">UP @</string>
+<string name="widget_other">неактивен</string>
+<string name="widget_persecond">/c</string>
+<string name="widget_eta">~</string>
+<string name="widget_unknowneta">неизвестно</string>
+<string name="widget_new">новое</string>
+
+<string name="service_newtorrent">Добавлен новый торрент</string>
+<string name="service_torrentfinished">Загрузка торрента закончена</string>
+<string name="service_newrssitems">Доступны новые торренты</string>
+<string name="service_newrssitems_count">%d новых RSS-фидов</string>
+
+<string name="rss">RSS</string>
+<string name="rss_no_feeds">Не установлено RSS-фидов\n\nДобавьте новые фиды через меню</string>
+<string name="rss_loading_feed">Загрузка RSS-фида</string>
+<string name="rss_no_items">Поключено, но RSS-фид пуст</string>
+
+<string name="error_httperror">Ошибка связи с сервером</string>
+<string name="error_jsonrequesterror">Ошибка при построении запроса</string>
+<string name="error_jsonresponseerror">Ошибка при обработке ответа от сервера (пожалуйста, проверьте ваши настройки)</string>
+<string name="error_daemonnotconnected">Не подключен web-интерфейс</string>
+<string name="error_401">Ошибка авторизации (пожалуйста, проверьте ваши настройки)</string>
+<string name="error_torrentfile">Невозможно прочитать торрент-файл</string>
+<string name="error_parsingrss">Ошибка при разборе RSS-фида</string>
+<string name="error_invalid_url_form">URL не правильно оформлен</string>
+<string name="error_invalid_search_url">Ссылка на web-поиск ошибочна:</string>
+<string name="error_invalid_ip_or_hostname">Введенный адрес не является корректным адресом или именем сервера</string>
+<string name="error_invalid_port_number">Номер порта - всегда числовое значение</string>
+<string name="error_invalid_directory">Путь к папке должен заканчиваться / или \</string>
+<string name="error_invalid_timeout">Тайм-аут не может быть пустым, и положительным числом</string>
+<string name="error_no_link">RSS-фид не дает ссылку, чтобы перейти к</string>
+<string name="error_norssfeed">Не правильная ссылка на  RSS-фид</string>
+<string name="error_media_not_available">SD-карта не доступна для чтения/записи</string>
+<string name="error_no_valid_settings_file">Файл, кажется, не содержат настроек Transdroid </string>
+<string name="error_file_not_found">Файл настроек не найден</string>
+
+<string name="xirvik_add_new_xserver">Добавить Xirvik сервер</string>
+<string name="xirvik_pref_title">Настройки Xirvik сервера</string>
+<string name="xirvik_pref_type">Тип сервера</string>
+<string name="xirvik_pref_server">Название сервера</string>
+<string name="xirvik_pref_server_info">Например dedi000.xirvik.com</string>
+<string name="xirvik_error_invalid_servername">Неверный сервер (Используйте полное имя, например dedi000.xirvik.com)</string>
+
+<string name="seedm8_info">SeedM8 предлагает безлимитный Гбит seedbox-хостинг. Transdroid обеспечивает легкую установку для SeedM8 серверов.\ n\ nУзнайте больше на www.seedm8.com</string>
+<string name="seedm8_add_new_xserver">Добавить сервер SeedM8</string>
+<string name="seedm8_pref_title">Настройки сервера SeedM8</string>
+<string name="seedm8_pref_server">Имя сервера</string>
+<string name="seedm8_pref_server_info">Например alpha.seedm8.com</string>
+<string name="seedm8_error_invalid_servername">Неверный сервер (Используйте полное имя, например alpha.seedm8.com)</string>
+
+<string-array name="pref_sort_types">
+<item>Комбинированный запрос</item>
+<item>Количество сидеров/личеров</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>Не обновлять</item>
+<item>2 секунды</item>
+<item>5 секунд</item>
+<item>15 секунд</item>
+<item>1 минута</item>
+<item>5 минут</item>
+<item>15 минут</item>
+<item>1 час</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 минута</item>
+<item>10 минут</item>
+<item>30 минут</item>
+<item>1 час</item>
+<item>3 часа</item>
+<item>12 часов</item>
+<item>1 день</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Search Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

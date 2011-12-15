@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_height="wrap_content" 
+	android:layout_width="fill_parent" >
+
+	<CheckBox 
+		android:id="@+id/result_check" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:button="@drawable/small_checkbox" 
+		android:focusable="false" />
+		
+	<TextView 
+		android:id="@+id/result_title" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/result_check" 
+		android:paddingTop="6dip"
+		android:paddingRight="5dip" 
+		style="@style/SearchNameText" />
+		
+	<TextView 
+		android:id="@+id/result_size" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_below="@id/result_title" 
+		android:paddingBottom="5dip"
+		android:layout_alignLeft="@id/result_title" />
+		
+	<TextView 
+		android:id="@+id/result_date" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_toRightOf="@id/result_size"
+		android:layout_below="@id/result_title" 
+		android:layout_marginLeft="10dip" />
+		
+	<TextView 
+		android:id="@+id/result_leechers" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_alignParentRight="true" 
+		android:layout_alignTop="@id/result_size" 
+		android:paddingRight="5dip"
+		android:layout_alignWithParentIfMissing="true" />
+		
+	<TextView 
+		android:id="@+id/result_seeds" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"  
+		android:textColor="#999"
+		android:layout_alignTop="@id/result_size" 
+		android:layout_toLeftOf="@id/result_leechers" 
+		android:layout_marginRight="5dip" />
+
+</RelativeLayout>

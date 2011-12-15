@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:padding="10dip"
+    android:paddingRight="?android:attr/scrollbarSize">
+
+		<TextView 
+			android:id="@+id/feed_name" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="test"
+            android:singleLine="true"
+			style="@style/SearchNameText" />
+		<ProgressBar
+			android:id="@+id/feed_loading"
+			android:layout_width="24dip" 
+			android:layout_height="24dip"
+			android:layout_alignParentRight="true"
+			android:indeterminateOnly="true" />
+		<TextView 
+			android:id="@+id/feed_unreadcount" 
+			android:layout_width="wrap_content" 
+			android:layout_height="24dip" 
+			android:layout_alignParentRight="true"
+   			android:gravity="center_vertical"
+			style="@style/SearchNameText"
+            android:visibility="gone" />
+		
+</RelativeLayout>

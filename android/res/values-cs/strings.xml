@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="no_settings_button">Nastavení</string>
+<string name="connecting">Zkouším se připojit k serveru ...</string>
+<string name="no_torrents">Připojen, ale na serveru není žádný torrent.</string>
+<string name="no_downloading_torrents">Připojen, ale na serveru nejsou žádné stahované torrenty.</string>
+<string name="no_uploading_torrents">Připojen, ale na serveru nejsou žádné seedováné torrenty.</string>
+<string name="no_inactive_torrents">Připojen, ale na serveru nejsou žádné neaktivní torrenty.</string>
+<string name="no_file_uploads">Váš torrent klient není podporován. Nahrání torrentu není implementováno.</string>
+<string name="no_magnet_links">Váš torrent klient není podporován. Magnet link není implementováno.</string>
+<string name="save">Uložit</string>
+<string name="dismiss">Zrušit</string>
+<string name="torrent_server">Torrent server</string>
+<string name="no_servers">Není  nastaven žádný server.</string>
+
+<string name="labels_showall">Zobrazit vše</string>
+<string name="labels_unlabeled">Neoznačený</string>
+<string name="labels_newlabel">Nový štítek</string>
+<string name="labels_no_support">Nastavení štítku není podporováno Vaším klientem</string>
+
+<string name="view_showall">Zobrazit všechny torrenty</string>
+<string name="view_showdl">Zobrazit stahované torrenty</string>
+<string name="view_showul">Zobrazit seedováné torrenty</string>
+<string name="view_showinactive">Zobrazit neaktivní torrenty</string>
+
+<string name="menu_add">Přidat </string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Změnit server</string>
+<string name="menu_speeds">Nastavít rychlost</string>
+<string name="menu_forall">Pro vše</string>
+<string name="menu_forall_pause">Pozastavit vše</string>
+<string name="menu_forall_resume">Obnovit vše</string>
+<string name="menu_forall_stop">Zastavit vše </string>
+<string name="menu_forall_start">Spusti vše</string>
+<string name="menu_filter">Filtry</string>
+<string name="menu_sort_reverse">Řadit (změnít směr)</string>
+<string name="menu_sort_alpha">Jmého</string>
+<string name="menu_sort_status">Stav</string>
+<string name="menu_sort_done">Datum dokončení</string>
+<string name="menu_sort_added">Datum přidání</string>
+<string name="menu_sort_upspeed">Rychlost stahování</string>
+<string name="menu_sort_ratio">Ratio</string>
+<string name="menu_sort_onlytransferring">Pouze běžící (> 0KB/s)</string>
+<string name="menu_settings">Nastavení </string>
+<string name="menu_changelog">O / novinky</string>
+<string name="menu_errorreport">Hlašení chyby</string>
+<string name="menu_remove">Odebrat </string>
+<string name="menu_remove_data">Odebrat a smazat data</string>
+<string name="menu_pause">Pozastavit</string>
+<string name="menu_resume">Obnovit</string>
+<string name="menu_stop">Stop</string>
+<string name="menu_start">Start</string>
+<string name="menu_forcestart">Vynuceny start</string>
+<string name="menu_setlabel">Nastavít štítek...</string>
+<string name="menu_setdownloadlocation">Nastavit umístění stahovaní</string>
+<string name="menu_set_default">Nastavit výchozí</string>
+<string name="menu_default_site_set_to">Výchozí stránka nastavena na</string>
+<string name="menu_moveup">Nahoru</string>
+<string name="menu_movedown">Dolu</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Search Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

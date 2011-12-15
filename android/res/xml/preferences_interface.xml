@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+<PreferenceCategory 
+	android:title="@string/pref_search">
+	<ListPreference 
+		android:title="@string/pref_numresults" 
+		android:key="transdroid_search_numresults" 
+		android:entries="@array/pref_numresults_types" 
+		android:entryValues="@array/pref_numresults_values" 
+		android:defaultValue="25" />
+	<ListPreference 
+		android:title="@string/pref_sort" 
+		android:key="transdroid_search_sort" 
+		android:entries="@array/pref_sort_types" 
+		android:entryValues="@array/pref_sort_values" 
+		android:defaultValue="sort_seeders" />
+</PreferenceCategory>
+
+<PreferenceCategory 
+	android:title="@string/pref_interface">
+	<ListPreference 
+		android:title="@string/pref_uirefresh" 
+		android:key="transdroid_interface_uirefresh" 
+		android:entries="@array/pref_uirefresh_types" 
+		android:entryValues="@array/pref_uirefresh_values" 
+		android:defaultValue="-1" />
+	<CheckBoxPreference 
+		android:title="@string/pref_onlytransferring" 
+		android:summary="@string/pref_onlytransferring_info" 
+		android:key="transdroid_interface_lastusedgtzero" />
+	<CheckBoxPreference 
+		android:title="@string/pref_swipelabels" 
+		android:summary="@string/pref_swipelabels_info" 
+		android:key="transdroid_interface_swipelabels" />
+	<CheckBoxPreference 
+		android:title="@string/pref_hiderefresh" 
+		android:summary="@string/pref_hiderefresh_info" 
+		android:key="transdroid_interface_hiderefresh" />
+	<CheckBoxPreference 
+		android:title="@string/pref_askremove" 
+		android:summary="@string/pref_askremove_info" 
+		android:key="transdroid_interface_askremove" 
+		android:defaultValue="true" />
+</PreferenceCategory>
+
+</PreferenceScreen>

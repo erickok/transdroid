@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent"
+	android:layout_width="fill_parent"
+	android:orientation="vertical">
+
+	<TableLayout
+		android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+		android:shrinkColumns="0"
+		android:stretchColumns="1">
+		
+		<TextView 
+			android:text="@string/pref_ezrss_exact" 
+			android:textSize="12dip" 
+			android:layout_marginRight="20dip"
+			android:gravity="right" />
+		<TableRow>
+			<TextView 
+				android:text="@string/pref_ezrss_showname"
+				android:layout_marginLeft="5dip" />
+			<EditText 
+				android:id="@+id/ezrss_showname"
+				android:layout_marginLeft="5dip"
+				android:inputType="textFilter"
+				android:singleLine="true" />
+			<CheckBox
+				android:id="@+id/ezrss_showname_exact"
+				android:layout_marginLeft="5dip"
+				android:layout_marginRight="5dip" />
+		</TableRow>		
+		<TableRow>
+			<TextView 
+				android:text="@string/pref_ezrss_quality"
+				android:layout_marginLeft="5dip" />
+			<EditText 
+				android:id="@+id/ezrss_quality"
+				android:layout_marginLeft="5dip"
+				android:inputType="textFilter"
+				android:singleLine="true" />
+			<CheckBox
+				android:id="@+id/ezrss_quality_exact"
+				android:layout_marginLeft="5dip"
+				android:layout_marginRight="5dip" />
+		</TableRow>		
+		<TableRow>
+			<TextView 
+				android:text="@string/pref_ezrss_group"
+				android:layout_marginLeft="5dip" />
+			<EditText 
+				android:id="@+id/ezrss_group"
+				android:layout_marginLeft="5dip"
+				android:inputType="textFilter"
+				android:singleLine="true" />
+		</TableRow>
+		<TextView 
+			android:text="@string/pref_ezrss_info2" 
+			android:textSize="12dip" 
+			android:gravity="center" 
+			android:autoLink="web" />
+				
+	</TableLayout>
+	
+	<ListView
+		android:id="@+id/android:list"
+		android:layout_width="fill_parent"
+		android:layout_height="0dip"
+		android:layout_weight="1">
+	</ListView>
+	
+	<TextView
+		android:id="@+id/android:empty"
+		android:layout_width="fill_parent"
+		android:layout_height="0dip"
+		android:layout_weight="1"
+		android:layout_gravity="center"
+		android:textStyle="bold"
+		android:gravity="center" />
+
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:drawable/bottom_bar"
+		android:orientation="horizontal">
+		<Button
+			android:id="@+id/ezrss_save"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/save"
+			android:layout_gravity="center"
+			android:layout_weight="1"
+			android:enabled="false" />
+		<Button
+			android:id="@+id/ezrss_dismiss"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/dismiss"
+			android:layout_gravity="center"
+			android:layout_weight="1" />
+	</LinearLayout>
+	
+</LinearLayout>

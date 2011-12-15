@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<ListView android:id="@+id/android:list" android:layout_width="fill_parent" android:layout_height="wrap_content"></ListView>
+	<TextView android:id="@+id/android:empty" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/no_servers" android:layout_gravity="center" android:textStyle="bold" android:gravity="center"></TextView>
+</LinearLayout>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <string-array name="pref_daemon_types">
+        <item>Bitflu 1.2+</item>
+        <item>BitTorrent 6+</item>
+        <item>Buffalo NAS -1.31</item>
+        <item>Deluge 1.2+</item>
+        <item>DLink Router BT</item>
+        <item>Ktorrent</item>
+        <item>qBittorrent</item>
+        <item>rTorrent</item>
+        <item>Torrentflux-b4rt</item>
+        <item>Transmission</item>
+        <item>µTorrent</item>
+        <item>Vuze</item>
+    </string-array>
+    <string-array name="pref_daemon_values">
+        <item>daemon_bitflu</item>
+        <item>daemon_bittorrent</item>
+        <item>daemon_buffalonas</item>
+        <item>daemon_deluge</item>
+        <item>daemon_dlinkrouterbt</item>
+        <item>daemon_ktorrent</item>
+        <item>daemon_qbittorrent</item>
+        <item>daemon_rtorrent</item>
+        <item>daemon_tfb4rt</item>
+        <item>daemon_transmission</item>
+        <item>daemon_utorrent</item>
+        <item>daemon_vuze</item>
+    </string-array>
+    
+    <string-array name="pref_os_types">
+        <item>Windows</item>
+        <item>Mac</item>
+        <item>Linux</item>
+    </string-array>
+    <string-array name="pref_os_values">
+        <item>type_windows</item>
+        <item>type_mac</item>
+        <item>type_linux</item>
+    </string-array>
+    
+    <string-array name="pref_xirvik_types">
+        <item>Shared</item>
+        <item>Semi-dedicated</item>
+        <item>Dedicated</item>
+    </string-array>
+    <string-array name="pref_xirvik_values">
+        <item>type_shared</item>
+        <item>type_semi</item>
+        <item>type_dedicated</item>
+    </string-array>
+    
+    <string-array name="pref_numresults_types">
+        <item>10</item>
+        <item>25</item>
+        <item>50</item>
+    </string-array>
+    <string-array name="pref_numresults_values">
+        <item>10</item>
+        <item>25</item>
+        <item>50</item>  
+    </string-array>
+    
+    <!-- "pref_sort_types" is in string.xml -->
+    <string-array name="pref_sort_values">
+        <item>sort_combined</item>
+        <item>sort_seeders</item>  
+    </string-array>
+    
+    <!-- "pref_uirefresh_types" is in string.xml -->
+    <string-array name="pref_uirefresh_values">
+		<item>-1</item>
+		<item>2</item>
+		<item>5</item>
+		<item>15</item>
+		<item>60</item>
+		<item>300</item>
+		<item>900</item>
+		<item>3600</item>
+    </string-array>
+
+	<!-- "pref_alarmintrval_types" is in string.xml -->
+	<string-array name="pref_alarminterval_values">
+		<item>60</item>
+		<item>600</item>
+		<item>1800</item>
+		<item>3600</item>
+		<item>10800</item>
+		<item>43200</item>
+		<item>86400</item>
+	</string-array>
+	
+    <!-- "pref_widget_types" is in string.xml -->
+    <string-array name="pref_widget_values">
+        <item>style_15</item>
+        <item>style_16</item>
+        <item>style_qsb</item>
+        <item>style_black</item>  
+        <item>style_transparent</item>  
+    </string-array>
+    
+</resources>

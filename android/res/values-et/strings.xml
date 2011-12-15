@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">Torrenti kliendi haldur intregbeeritud otsingu, RSS toega ja monitoorims vidinaga</string>
+
+<string name="no_settings_short">Ava Seaded menüü, et sisestada serveri parameetrid.</string>
+<string name="no_settings">Ava Seaded menüü, et sisestada serveri parameetrid.\n\nInstalli abi: www.transdroid.org/download</string>
+<string name="connecting">Proovin ühendust luua...</string>
+<string name="save">Salvesta</string>
+<string name="dismiss">Tühista</string>
+
+<string name="labels_showall">Näita kõik</string>
+<string name="labels_unlabeled">Sildistamata</string>
+<string name="labels_newlabel">Uus silt</string>
+
+<string name="view_showall">Näitan kõiki torrenteid</string>
+<string name="view_showdl">Näitan kõiki allalaetavaid torrenteid</string>
+<string name="view_showul">Näitan kõiki üleslaetavaid torrenteid</string>
+
+<string name="menu_add">Lisa</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Vaheta serverit</string>
+<string name="menu_speeds">Seadista liikluse piirangud</string>
+<string name="menu_forall">Tee kõigile</string>
+<string name="menu_forall_resume">Jätka kõik</string>
+<string name="menu_forall_stop">Seiska kõik</string>
+<string name="menu_forall_start">Käivita kõik</string>
+<string name="menu_filter">Filtreeri listi</string>
+<string name="menu_sort_alpha">Nimi</string>
+<string name="menu_sort_status">Staatus</string>
+<string name="menu_sort_ratio">Ratio</string>
+<string name="menu_settings">Seaded</string>
+<string name="menu_remove">Eemalda</string>
+<string name="menu_resume">Jätka</string>
+<string name="menu_stop">Seiska</string>
+<string name="menu_start">Käivita</string>
+<string name="menu_forcestart">Sunni käivitama</string>
+
+
+<string name="addfailed_addlater">Lisa hiljem</string>
+
+<string name="searching">Otsin...</string>
+<string name="search_hint">Ubuntu</string>
+
+
+<string name="pref_name">Nimi</string>
+<string name="pref_daemon">Serveri tüüp</string>
+<string name="pref_address">IP või domeen</string>
+<string name="pref_address_info">Ilma http:// või pordi numbrita</string>
+<string name="pref_port">Port</string>
+<string name="pref_user">Kasutajanimi</string>
+<string name="pref_pass">Parool</string>
+<string name="pref_os">Serveri OS</string>
+<string name="pref_folder2">Kaust</string>
+<string name="pref_folder2_info">Näiteks /torrentflux</string>
+<string name="pref_ssl">SSL</string>
+
+<string name="pref_search">Otsingumootor</string>
+<string name="pref_numresults">Tulemuste arv</string>
+<string name="pref_rss_info">RSS voog</string>
+<string name="pref_ezrss">ezRSS voo ehitaja</string>
+<string name="pref_ezrss_showname">Sarja nimi</string>
+<string name="pref_ezrss_quality">Kvaliteet</string>
+<string name="pref_ezrss_loading">Laen...</string>
+
+
+
+
+
+
+<string name="details_details">Detailid</string>
+<string name="details_files">Failid</string>
+<string name="details_size">Suurus:</string>
+<string name="details_state">Olek:</string>
+<string name="details_downloaded">Tõmmatud:</string>
+<string name="details_uploaded">Üleslaetud:</string>
+<string name="details_eta">Eta:</string>
+<string name="details_availability">Saadavus</string>
+
+<string name="file_low">Madal</string>
+<string name="file_normal">Normaalne</string>
+<string name="file_high">Kõrge</string>
+
+<string name="widget_downloading">DL @</string>
+<string name="widget_downloading_up">üles</string>
+<string name="widget_seeding">UP @</string>
+<string name="widget_eta">eta</string>
+<string name="widget_new">uus</string>
+
+
+
+
+
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Seach Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

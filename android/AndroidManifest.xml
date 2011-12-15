@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ *	This file is part of Transdroid <http://www.transdroid.org>
+ *	
+ *	Transdroid is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *	
+ *	Transdroid is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *	
+ *	You should have received a copy of the GNU General Public License
+ *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+ *	
+ -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="org.transdroid"
+	android:versionName="1.1.0" android:versionCode="140"
+	android:installLocation="auto">
+	
+	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="13" />
+	<supports-screens smallScreens="true" normalScreens="true" largeScreens="true" xlargeScreens="true" android:anyDensity="true" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+    
+	<application 
+		android:icon="@drawable/icon" 
+		android:label="Transdroid Torrent Manager" 
+		android:description="@string/description"
+		android:theme="@style/Theme.Transdroid"
+		android:hardwareAccelerated="true">
+
+		<activity 
+			android:name="org.transdroid.gui.Torrents" 
+			android:label="Transdroid" 
+			android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+        		<action android:name="android.intent.action.VIEW" />
+        		<category android:name="android.intent.category.DEFAULT" />
+        		<category android:name="android.intent.category.BROWSABLE" />
+        		<data android:mimeType="application/x-bittorrent" />
+        		<data scheme="http" android:mimeType="application/x-bittorrent" />
+            </intent-filter>
+            <intent-filter>
+        		<action android:name="android.intent.action.VIEW" />
+        		<category android:name="android.intent.category.DEFAULT" />
+        		<category android:name="android.intent.category.BROWSABLE" />
+        		<data android:scheme="http" android:host="*" android:pathPattern=".*\\.torrent" />
+            </intent-filter>
+            <intent-filter>
+        		<action android:name="android.intent.action.VIEW" />
+        		<category android:name="android.intent.category.DEFAULT" />
+        		<category android:name="android.intent.category.BROWSABLE" />
+        		<data android:mimeType="application/x-bittorrent" />
+        		<data scheme="file" android:mimeType="application/x-bittorrent" />
+            </intent-filter>
+            <intent-filter>
+        		<action android:name="android.intent.action.VIEW" />
+        		<category android:name="android.intent.category.DEFAULT" />
+        		<data android:scheme="file" android:pathPattern=".*\\.torrent" />
+            </intent-filter>
+            <intent-filter>
+        		<action android:name="android.intent.action.VIEW" />
+        		<category android:name="android.intent.category.DEFAULT" />
+        		<category android:name="android.intent.category.BROWSABLE" />
+        		<data android:scheme="magnet" />
+            </intent-filter>
+        	<meta-data android:name="android.app.default_searchable" android:value="org.transdroid.gui.search.Search" />
+        </activity>
+        
+        <activity android:name="org.transdroid.gui.ServerSelection" android:label="@string/torrent_server">
+        	<intent-filter>
+        		<action android:name="android.intent.action.CREATE_SHORTCUT" />
+        		<category android:name="android.intent.category.DEFAULT" />
+        	</intent-filter>
+        </activity>
+        
+		<activity 
+			android:name="org.transdroid.gui.Add" 
+			android:theme="@android:style/Theme.Dialog" 
+			android:label="@string/menu_add" 
+			android:excludeFromRecents="true"></activity>
+		
+		<activity 
+			android:name="org.transdroid.gui.Details" 
+			android:label="@string/details_details" 
+			android:launchMode="singleTop">
+        	<meta-data android:name="android.app.default_searchable" android:value="org.transdroid.gui.search.Search" />
+		</activity>
+		
+		<!-- Search -->
+		<activity 
+			android:name="org.transdroid.gui.search.Search" 
+			android:label="@string/search_name" 
+			android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+		    <intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+            <intent-filter>
+        		<action android:name="android.intent.action.SEND" />
+        		<category android:name="android.intent.category.DEFAULT" />
+        		<data android:mimeType="text/plain" />
+            </intent-filter>
+	    
+            <meta-data android:name="android.app.default_searchable" android:value="org.transdroid.gui.search.Search" />
+	    	<meta-data android:name="android.app.searchable" android:resource="@xml/searchable" />
+	    </activity>
+	    <provider android:name="org.transdroid.gui.search.TorrentSearchHistoryProvider" android:authorities="org.transdroid.TorrentSearchHistoryProvider" />
+	    
+	    <activity android:name="org.transdroid.gui.search.GlobalTorrentSearch" android:label="@string/search_name" android:launchMode="singleTop">
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+			</intent-filter>
+	    	<meta-data android:name="android.app.searchable" android:resource="@xml/globalsearchable" />
+		</activity>
+	    <meta-data android:name="android.app.default_searchable" android:value="org.transdroid.gui.search.GlobalTorrentSearchProvider" />
+		<provider android:name="org.transdroid.gui.search.GlobalTorrentSearchProvider" android:authorities="org.transdroid.GlobalTorrentSearchProvider" />
+	    
+	    <!-- RSS -->
+	    <activity 
+	    	android:name="org.transdroid.gui.rss.RssFeeds" 
+	    	android:label="@string/rss">
+        	<meta-data android:name="android.app.default_searchable" android:value="org.transdroid.gui.search.Search" />
+	    </activity>
+	    <activity 
+	    	android:name="org.transdroid.gui.rss.RssListing" 
+	    	android:label="@string/rss">
+        	<meta-data android:name="android.app.default_searchable" android:value="org.transdroid.gui.search.Search" />
+	    </activity>
+
+		<!-- Preferences screens -->	    
+	    <activity android:name="org.transdroid.preferences.PreferencesMain" android:label="@string/preferences"></activity>
+	    <activity android:name="com.xirvik.transdroid.preferences.PreferencesXirvikServer" android:label="@string/xirvik_pref_title"></activity>
+	    <activity android:name="com.seedm8.transdroid.preferences.PreferencesSeedM8Server" android:label="@string/seedm8_pref_title"></activity>
+	    <activity android:name="org.transdroid.preferences.PreferencesRss" android:label="@string/pref_rss_info"></activity>
+	    <activity android:name="org.transdroid.preferences.PreferencesServer" android:label="@string/preferences"></activity>
+	    <activity android:name="org.transdroid.preferences.PreferencesWebSearch" android:label="@string/pref_search"></activity>
+	    <activity android:name="org.transdroid.preferences.PreferencesRssFeed" android:label="@string/pref_rss_info"></activity>
+	    <activity android:name="org.transdroid.preferences.PreferencesInterface" android:label="@string/pref_interface"></activity>
+	    <activity android:name="org.transdroid.preferences.PreferencesAlarm" android:label="@string/pref_alarm"></activity>
+	    <activity android:name="org.transdroid.preferences.EzRssFeedBuilder" android:label="@string/pref_ezrss_info"></activity>
+	    
+	    <!-- Widgets -->
+        <receiver android:name="org.transdroid.widget.WidgetMedium" android:label="@string/widget_4x1">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/appwidget_medium" />
+        </receiver>
+        <receiver android:name="org.transdroid.widget.WidgetSmall" android:label="@string/widget_2x1">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/appwidget_small" />
+        </receiver>
+		<activity android:name="org.transdroid.widget.WidgetConfigure">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+			</intent-filter>
+		</activity>
+        <service android:name="org.transdroid.widget.WidgetService" />  
+        <receiver android:name="org.transdroid.widget.WidgetUpdateReceiver" />    
+        
+        <!-- Background notification service -->
+        <service android:name="org.transdroid.service.AlarmService">
+			<intent-filter> 
+				<action android:name="org.transdroid.service.FORCE_CHECK"/> 
+			</intent-filter>
+        </service>
+        <receiver android:name="org.transdroid.service.AlarmReceiver" />
+		<receiver android:name="org.transdroid.service.BootReceiver">
+			<intent-filter> 
+				<action android:value="android.intent.action.BOOT_COMPLETED" android:name="android.intent.action.BOOT_COMPLETED"/> 
+			</intent-filter> 
+		</receiver>
+		
+		<!-- Intent-based control service -->
+        <service android:name="org.transdroid.service.ControlService">
+			<intent-filter> 
+				<action android:name="org.transdroid.control.SET_TRANSFER_RATES"/> 
+				<action android:name="org.transdroid.control.PAUSE_ALL"/> 
+				<action android:name="org.transdroid.control.RESUME_ALL"/> 
+				<action android:name="org.transdroid.control.START_ALL"/> 
+				<action android:name="org.transdroid.control.STOP_ALL"/> 
+			</intent-filter> 
+        </service>
+		
+	</application>
+</manifest> 

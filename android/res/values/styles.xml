@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<dimen name="DefaultTextSize">16dip</dimen>
+	<dimen name="BiggerTextSize">24dip</dimen>
+	<style name="WindowTitleText">
+		<item name="android:textSize">@dimen/DefaultTextSize</item>
+		<item name="android:textColor">@color/TitleTextColor</item>
+	</style>
+	<style name="AlertDialog">
+		<item name="android:background">@color/AlertDialogBackground</item>
+	</style>
+	<style name="AlertDialogText" parent="@android:style/TextAppearance">
+		<item name="android:textSize">@dimen/BiggerTextSize</item>
+		<item name="android:singleLine">true</item>
+		<item name="android:fadingEdge">horizontal</item>
+		<item name="android:ellipsize">marquee</item>
+	</style>
+	<style name="TorrentNameText" parent="@android:style/TextAppearance">
+		<item name="android:textSize">@dimen/DefaultTextSize</item>
+		<item name="android:singleLine">true</item>
+		<item name="android:fadingEdge">horizontal</item>
+		<item name="android:ellipsize">marquee</item>
+	</style>
+	<style name="TorentFileNameText" parent="@android:style/TextAppearance">
+		<item name="android:textSize">@dimen/DefaultTextSize</item>
+	</style>
+	<style name="SearchNameText" parent="@android:style/TextAppearance">
+		<item name="android:textSize">@dimen/DefaultTextSize</item>
+	</style>
+	<style name="DetailsType">
+		<item name="android:paddingRight">4dip</item>
+		<item name="android:textSize">@dimen/DefaultTextSize</item>
+	</style>
+	<style name="DetailsInfoText" parent="@android:style/TextAppearance">
+		<item name="android:textSize">@dimen/DefaultTextSize</item>
+	</style>
+	
+	<style name="Animations" />
+	<style name="Animations.GrowFromBottom">
+		<item name="@android:windowEnterAnimation">@anim/grow_from_bottom</item>
+		<item name="@android:windowExitAnimation">@anim/shrink_from_top</item>
+	</style>
+	<style name="Animations.GrowFromTop">
+		<item name="@android:windowEnterAnimation">@anim/grow_from_top</item>
+		<item name="@android:windowExitAnimation">@anim/shrink_from_bottom</item>
+	</style>
+	<style name="Animations.PopDownMenu">
+		<item name="@android:windowEnterAnimation">@anim/grow_from_topleft_to_bottomright</item>
+		<item name="@android:windowExitAnimation">@anim/shrink_from_bottomright_to_topleft</item>
+	</style>
+</resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_height="wrap_content" 
+	android:layout_width="fill_parent">
+
+	<CheckBox
+		android:id="@+id/rssitem_check"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:button="@drawable/small_checkbox"
+		android:focusable="false" />
+	
+	<TextView 
+		android:id="@+id/rssitem_title" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/rssitem_check"
+		android:paddingRight="29dip"
+		android:paddingTop="5dip"
+		android:textSize="16dip"
+		style="@style/SearchNameText" />
+		
+	<TextView 
+		android:id="@+id/rssitem_date" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_toRightOf="@id/rssitem_check"
+		android:layout_below="@id/rssitem_title"
+		android:paddingBottom="5dip"
+		android:textColor="#999" />
+
+	<ImageView
+		android:id="@+id/rssitem_new"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_marginRight="8dip"
+		android:layout_marginTop="5dip"
+		android:src="@drawable/icon_notnew" />
+		
+</RelativeLayout>

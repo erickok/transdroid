@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
+	android:layout_width="fill_parent"
+	android:layout_height="80dip"
+	android:background="@drawable/widget_qsb">
+	
+	<ImageButton
+		android:id="@+id/widget_action"
+        android:layout_width="40dip" 
+        android:layout_height="40dip"
+		android:scaleType="fitXY"
+		android:src="@drawable/icon"
+		android:background="#0000"
+		android:hapticFeedbackEnabled="true"
+		android:layout_marginLeft="0dip"
+		android:layout_marginTop="5dip" />
+		
+	<ImageButton
+		android:id="@+id/widget_refresh"
+        android:layout_width="38dip" 
+        android:layout_height="38dip"
+		android:scaleType="fitXY"
+		android:src="@drawable/widget_refresh"
+		android:background="#0000"
+		android:hapticFeedbackEnabled="true"
+		android:layout_marginLeft="16dip"
+		android:layout_marginTop="6dip" />
+		
+	<LinearLayout
+	android:orientation="vertical"
+		android:id="@+id/widget_stats"
+        android:layout_width="fill_parent" 
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+		android:layout_marginLeft="17dip"
+		android:layout_marginTop="0dip" >
+		
+		<TextView
+			android:id="@+id/widget_message"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+	        android:textColor="#f000"
+			android:textStyle="bold" />
+			
+		<TextView
+			android:id="@+id/widget_downloading"
+			android:layout_width="fill_parent"
+			android:layout_height="18dip"
+	        android:textColor="#f000"
+			android:textStyle="bold"
+			android:singleLine="true" />
+			
+		<TextView
+			android:id="@+id/widget_eta"
+			android:layout_width="fill_parent"
+			android:layout_height="16dip"
+	        android:textColor="#f000"
+			android:singleLine="true" />
+			
+		
+		<TextView
+			android:id="@+id/widget_other"
+			android:layout_width="fill_parent"
+			android:layout_height="16dip"
+	        android:textColor="#f000"
+			android:singleLine="true" />
+			
+			
+	</LinearLayout>
+		
+</LinearLayout>

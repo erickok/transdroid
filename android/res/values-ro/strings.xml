@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">Manager de torrenti cu functii de cautare, suport RSS si widget</string>
+
+<string name="no_settings_short">Deschide meniul de setări pentru a introduce detalile serverului.</string>
+<string name="no_settings">Deschide meniul de setări pentru a introduce detalile serverului.\n\nPentru mai multe detalii: www.transdroid.org/download</string>
+<string name="no_settings_button">Deschide setarile</string>
+<string name="connecting">Se incearcă conectarea la server...</string>
+<string name="no_torrents">Conectat, dar nu sunt torrenti pe server.</string>
+<string name="no_downloading_torrents">Conectat, dar nu sunt torenți la download pe server.</string>
+<string name="no_uploading_torrents">Conectat, dar nu sunt torenți la seeduit pe server.</string>
+<string name="no_inactive_torrents">Conectat, dar nu sunt torenți inactivi pe server.</string>
+<string name="no_file_uploads">Aplicația ta de torenți nu are implementat sau nu suportă fișierele de tip .torrent.</string>
+<string name="save">Salveaza</string>
+<string name="dismiss">Anuleaza</string>
+<string name="torrent_server">Server Torrent</string>
+<string name="no_servers">Nu a fost configurat nici un server</string>
+
+<string name="labels_showall">Arata tot</string>
+<string name="labels_unlabeled">Fara eticheta</string>
+<string name="labels_newlabel">Eticheta noua</string>
+
+<string name="view_showall">Arata toti torrentii</string>
+<string name="view_showdl">Arata torrentii care downloadeaza</string>
+
+<string name="menu_add">Adaugă</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Switch server</string>
+<string name="menu_speeds">Seteaza rata de transfer</string>
+<string name="menu_forall_pause">Pauză pentru toate</string>
+<string name="menu_forall_resume">Reincepe pentru toate</string>
+<string name="menu_forall_stop">Oprește pentru toate</string>
+<string name="menu_forall_start">Incepele pe toate</string>
+<string name="menu_filter">Listă de filtre</string>
+<string name="menu_sort_reverse">Sorteaza dupa</string>
+<string name="menu_sort_alpha">Nume</string>
+<string name="menu_sort_status">Status</string>
+<string name="menu_sort_done">Data terminării</string>
+<string name="menu_sort_added">Data adaugării</string>
+<string name="menu_sort_upspeed">Viteza upload</string>
+<string name="menu_sort_ratio">Ratio</string>
+<string name="menu_settings">Setari</string>
+<string name="menu_changelog">Despre</string>
+<string name="menu_remove">Indepărtează</string>
+<string name="menu_remove_data">Indepărtează și șterge datele</string>
+<string name="menu_pause">Pauză</string>
+<string name="menu_resume">Reincepe</string>
+<string name="menu_stop">Oprește</string>
+<string name="menu_start">Incepe</string>
+<string name="menu_forcestart">Forteaza inceperea</string>
+<string name="menu_setlabel">Seteaza eticheta</string>
+<string name="menu_set_default">Seteaza ca implicit</string>
+<string name="menu_default_site_set_to">Site-ul implicit este setat</string>
+
+<string name="dialog_add_torrent">Pastează URLul fișierului torrent</string>
+<string name="no_valid_url">Adresa introdusă nu este un URL valid</string>
+<string name="oifm_install">Instaleaza din market</string>
+
+<string name="addfailed_retry">Reincearca</string>
+<string name="addfailed_addlater">Adauga mai tarziu</string>
+
+<string name="searching">Se caută...</string>
+<string name="dialog_search">Caută torenți online</string>
+<string name="search_hint">ultimele filme</string>
+<string name="search_resultsfrom">Rezultate de la</string>
+<string name="no_results">Nu au fost găsite rezultate în urma căutarii</string>
+<string name="no_query">Nu a fost introdus nici un termen de căutare.</string>
+<string name="searchmenu_switchsite">Schimba site</string>
+<string name="searchmenu_add">Descarcă acum</string>
+<string name="searchmenu_details">Website deschis</string>
+<string name="searchmenu_openwith">Deschide cu</string>
+<string name="searchmenu_sharelink">Imparte linkul</string>
+<string name="searchmenu_savesearch">Salveaza ca feed RSS</string>
+<string name="search_savedrssfeed">Cauta in feed-ul RSS salvat</string>
+
+<string name="preferences">Preferințe</string>
+<string name="add_new_server">Adaugă un nou server</string>
+<string name="add_new_website">Adaugă un nou site de căutare</string>
+<string name="add_new_rssfeed">Adauga feed RSS</string>
+<string name="inappsite">Cautare in-app</string>
+<string name="websearch">Căutare Web-based</string>
+<string name="other_settings">Alte setări</string>
+
+<string name="pref_server">Demon server</string>
+<string name="pref_basic">Setari de baza</string>
+<string name="pref_name">Nume</string>
+<string name="pref_name_info">Nume personal optional</string>
+<string name="pref_daemon">Tipul serverului</string>
+<string name="pref_address">IP sau nume de domeniu</string>
+<string name="pref_address_info">Fără http:// sau numărul portului</string>
+<string name="pref_port">Port</string>
+<string name="pref_port_info">În general este </string>
+<string name="pref_auth">Foloseste autentificare</string>
+<string name="pref_auth_info">Ai nevoie de un username și de o parola</string>
+<string name="pref_user">Username</string>
+<string name="pref_pass">Parola</string>
+<string name="pref_os">Server OS</string>
+<string name="pref_folder">Folder SCGI</string>
+<string name="pref_folder_info">În general este /RPC2</string>
+<string name="pref_folder2">Dosar</string>
+<string name="pref_folder2_info">Exemplu /torrentflux</string>
+<string name="pref_advanced">Setari avansate (optional)</string>
+<string name="pref_downloaddir">Director download-uri</string>
+<string name="pref_ssl_info">Alege sa folosesti https</string>
+
+<string name="pref_search">Motor de căutare</string>
+<string name="pref_setdefault">Alege site implicit</string>
+<string name="pref_url">căutare directă URL</string>
+<string name="pref_url_info">%s o să fie inlocuit de termenul de căutare</string>
+<string name="pref_numresults">Număr de rezultate</string>
+<string name="pref_sort">Ordinea sortării rezultatelor</string>
+<string name="pref_rss_info">Feeduri RSS</string>
+<string name="pref_feed">Setari feed</string>
+<string name="pref_feed_url">URL feed</string>
+<string name="pref_ezrss_showname">Arata nume</string>
+<string name="pref_ezrss_quality">Calitate</string>
+<string name="pref_ezrss_loading">Se incarca...</string>
+
+<string name="pref_interface">Setari interfata</string>
+<string name="pref_swipelabels">Alege intre etichete</string>
+<string name="pref_uirefresh">Interval împrospatare</string>
+<string name="pref_hiderefresh">Ascunde reîmprospatarea</string>
+<string name="pref_hiderefresh_info">Nu arăta mesajul \'Lista de torenți reimprospatata\'</string>
+<string name="pref_clear_search_history">Șterge istoria căutarilor</string>
+<string name="pref_history_cleared">Istoria căutarilor a fost stearsa cu succes</string>
+<string name="pref_askremove">Confirma inlaturarea</string>
+<string name="pref_askremove_info">Intreaba-ma sa confirm stergerea unui torrent</string>
+
+<string name="pref_alarm">Setari alarme service</string>
+<string name="pref_enablealarm">Porneste alarme service</string>
+<string name="pref_enablealarm_info">Anunta-ma cand se schimba statusul la un torrent</string>
+<string name="pref_alarmtime">Interval alarme</string>
+<string name="pref_alarmtime_info">Cat de des sa verifice torrentii mei</string>
+<string name="pref_alarmfinished">Descarca alarme</string>
+<string name="pref_alarmfinished_info">Anunta-ma cand un torrent este completat</string>
+<string name="pref_alarmnew">Alarma torrent nou</string>
+<string name="pref_alarmnew_info">Anunta-ma cand un torrent a fost adaugat</string>
+<string name="pref_checkrssfeeds">Verifica feed-urile RSS</string>
+<string name="pref_checkrssfeeds_info">Alarma cand noi torrenti sunt disponibili</string>
+
+<string name="status_waiting">Aștept să verific...</string>
+<string name="status_checking">Verific datele locale...</string>
+<string name="status_waitingtodl">Aștept să descarc %s</string>
+<string name="status_size1">%1$s de %2$s (%3$s)</string>
+<string name="status_size2">%1$s, uploadat %2$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_unknowneta">Estimare necunoscută</string>
+<string name="status_ratio">ratio %1$s</string>
+<string name="status_peers">%1$s de %2$s Parteneri</string>
+<string name="status_speed_up">↑ %1$s</string>
+<string name="status_speed_down">↓ %1$s</string>
+<string name="status_paused">Pauză</string>
+<string name="status_stopped">Oprit</string>
+<string name="status_unknown">Necunoscut</string>
+<string name="status_persecond">/s</string>
+
+<string name="task_refreshing">Se reimprospateaza...</string>
+<string name="task_addbyurl">Adaug torrent...</string>
+<string name="task_addbyfile">Urc torrent...</string>
+<string name="task_removing">Indepartez torrent...</string>
+<string name="task_pausing">Intrerup torrent...</string>
+<string name="task_pausingall">Se intrerup toti torrentii...</string>
+<string name="task_resuming">Reincep torrent...</string>
+<string name="task_resumingall">Reincep toti torrentii...</string>
+<string name="task_stopping">Opresc torrent...</string>
+<string name="task_stoppingall">Opresc toti torrentii...</string>
+<string name="task_starting">Incep torrent...</string>
+<string name="task_startingall">Incep toti torrentii...</string>
+<string name="task_getfiles">Se recupereaza fisierele...</string>
+<string name="task_setfileprop">Setez proprietati fisiere...</string>
+<string name="task_settransrates">Setez viteze transfer...</string>
+
+<string name="list_refreshed">Lista de torenți reîmprospătată</string>
+<string name="torrent_added">Torent adaugat (se reîmprospătează)</string>
+<string name="torrent_removed">indepartat</string>
+<string name="torrent_removed_with_data">indepartat si sters date</string>
+<string name="torrent_resumed">Torent reînceput (se reîmprospătează)</string>
+<string name="torrent_stopped">Torent oprit</string>
+<string name="torrent_started">Torent pornit (se reîmprospătează)</string>
+<string name="torrent_paused">intrerupt</string>
+<string name="torrent_paused_all">Torrent intrerupt</string>
+<string name="torrent_resumed_all">Torrent reinceput (se reimprospateaza)</string>
+<string name="torrent_stopped_all">Torrent oprit</string>
+<string name="torrent_started_all">Torrent pornit</string>
+
+<string name="details_details">Detalii</string>
+<string name="details_files">Fisiere</string>
+<string name="details_size">Marime:</string>
+<string name="details_state">Conditie:</string>
+<string name="details_downloaded">Descarcat:</string>
+<string name="details_uploaded">Uploadat:</string>
+<string name="details_rate">Rata:</string>
+<string name="details_eta">ETA:</string>
+<string name="details_availability">Disponibilitate:</string>
+<string name="details_label">Eticheta:</string>
+
+<string name="file_off">Oprit</string>
+<string name="file_low">Mic</string>
+<string name="file_normal">Normal</string>
+<string name="file_high">Mare</string>
+
+<string name="widget_4x1">Transdroid 4x1</string>
+<string name="widget_2x1">Transdroid 2x1</string>
+<string name="widget_pref_server">Server</string>
+<string name="widget_pref_refresh">Interval reimprospatare</string>
+<string name="widget_pref_layout">Stil</string>
+<string name="widget_pref_addwidget">Adauga acest widget</string>
+<string name="widget_downloading">DL @</string>
+<string name="widget_downloading_up">up</string>
+<string name="widget_seeding">UP @</string>
+<string name="widget_other">inactiv</string>
+<string name="widget_persecond">/s</string>
+<string name="widget_eta">Estimare</string>
+<string name="widget_unknowneta">Estimare necunoscuta</string>
+<string name="widget_new">nou</string>
+
+<string name="service_newtorrent">Torrent nou adaugat</string>
+<string name="service_torrentfinished">Terminat descarcare torrent</string>
+<string name="service_newrssitems">Noi torrenti disponibili</string>
+<string name="service_newrssitems_count">%d noi feed-uri RSS</string>
+
+<string name="rss">RSS</string>
+<string name="rss_loading_feed">Se incarca feed-ul RSS</string>
+<string name="rss_no_items">Conectat, dar feed-ul RSS este gol</string>
+
+<string name="error_httperror">Eroare la comunicarea cu serverul</string>
+<string name="error_jsonrequesterror">Eroare la construirea cererii</string>
+<string name="error_jsonresponseerror">Eroare in parsarea răspunsului serverului (Te rog verifică setările)</string>
+<string name="error_401">Autentificarea a fost respinsa (Te rog verifică setările)</string>
+<string name="error_torrentfile">Nu pot citi fișierul .torrent</string>
+<string name="error_parsingrss">Eroare la parsarea subscrierii RSS</string>
+<string name="error_invalid_url_form">Acest URL nu este bine format</string>
+<string name="error_invalid_ip_or_hostname">Datele introduse nu sunt un IP sau hostname valabil</string>
+<string name="error_invalid_port_number">Numarul portului este intodeauna numeric</string>
+<string name="error_invalid_directory">Calea folderului se termina cu / sau \</string>
+<string name="error_norssfeed">URL-ul nu este un feed RSS valid</string>
+
+<string name="xirvik_add_new_xserver">Adauga server Xirvik</string>
+<string name="xirvik_pref_title">Setari server Xirvik</string>
+<string name="xirvik_pref_type">Tip server</string>
+<string name="xirvik_pref_server">Nume server</string>
+
+
+<string-array name="pref_sort_types">
+<item>Combină aranjarea</item>
+<item>Număr de seederi/leecheri</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>Nu exită reîmprospatare automată</item>
+<item>2 secunde</item>
+<item>5 secunde</item>
+<item>15 secunde</item>
+<item>1 minut</item>
+<item>5 minute</item>
+<item>15 minute</item>
+<item>1 ora</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Seach Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

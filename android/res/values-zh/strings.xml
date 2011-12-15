@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">内置搜索、RSS支持和监控小控件的BT客户端</string>
+
+<string name="no_settings_short">打开设置菜单进入服务器详细信息。</string>
+<string name="no_settings">打开设置菜单输入您的服务器详细信息.\n\n安装帮助:www.transdroid.org/download</string>
+<string name="no_settings_button">打开设置iory</string>
+<string name="connecting">尝试连接到服务器...</string>
+<string name="no_torrents">已连接,但是服务器上没有种子.</string>
+<string name="no_downloading_torrents">已连接,但是服务器上没有正在下载的种子.</string>
+<string name="no_uploading_torrents">已连接,但是服务器上没有正在上传的种子.</string>
+<string name="no_inactive_torrents">已连接,但是服务器上没有活动的种子.</string>
+<string name="no_file_uploads">您的BT程序不支持.torrent文件格式上传或者还未部署这个功能.</string>
+<string name="no_magnet_links">你的BT程序不支持磁性链接或者还没被实行</string>
+<string name="save">保存</string>
+<string name="dismiss">忽略</string>
+<string name="torrent_server">Torrent服务器</string>
+<string name="no_servers">当前没有配置服务器</string>
+
+<string name="labels_showall">显示所有</string>
+<string name="labels_unlabeled">未标签</string>
+<string name="labels_newlabel">新建标签</string>
+<string name="labels_no_support">您的客户端不支持设定标签.</string>
+
+<string name="view_switchview">切换视图</string>
+<string name="view_showall">显示所有种子</string>
+<string name="view_showdl">显示下载中的种子</string>
+<string name="view_showul">显示做种中的种子</string>
+<string name="view_showinactive">显示未激活的种子</string>
+
+<string name="menu_add">添加</string>
+<string name="menu_scanbarcode">扫描条形码</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">切换服务器</string>
+<string name="menu_speeds">设定传输速度</string>
+<string name="menu_forall">设定全部</string>
+<string name="menu_forall_pause">暂停全部</string>
+<string name="menu_forall_resume">恢复全部</string>
+<string name="menu_forall_stop">停止全部</string>
+<string name="menu_forall_start">开始全部</string>
+<string name="menu_filter">过滤列表</string>
+<string name="menu_sort_reverse">排序(按反序排列)</string>
+<string name="menu_sort_alpha">名字</string>
+<string name="menu_sort_status">状态</string>
+<string name="menu_sort_done">完成日期</string>
+<string name="menu_sort_added">添加日期</string>
+<string name="menu_sort_upspeed">上传速度</string>
+<string name="menu_sort_ratio">比率</string>
+<string name="menu_sort_onlytransferring">限制传输(&gt; 0KB/s)</string>
+<string name="menu_settings">设置</string>
+<string name="menu_changelog">关于/更新日志</string>
+<string name="menu_errorreport">错误报告</string>
+<string name="menu_remove">删除</string>
+<string name="menu_remove_data">移除并删除数据</string>
+<string name="menu_also_data">删除已下载数据</string>
+<string name="menu_pause">暂停</string>
+<string name="menu_resume">继续</string>
+<string name="menu_stop">停止</string>
+<string name="menu_start">开始</string>
+<string name="menu_forcestart">强制开始</string>
+<string name="menu_setlabel">设定标签...</string>
+<string name="menu_setdownloadlocation">设定下载位置</string>
+<string name="menu_set_default">设为默认</string>
+<string name="menu_default_site_set_to">设定默认站点为</string>
+<string name="menu_moveup">上移</string>
+<string name="menu_movedown">下移</string>
+<string name="menu_edittrackers">编辑 Trackers</string>
+<string name="menu_invertselection">反向选择</string>
+
+<string name="dialog_add_torrent">粘贴种子文件地址</string>
+<string name="no_valid_url">URL地址格式不对</string>
+<string name="selectfile">选择一个本地.torrent种子文件</string>
+<string name="oifm_not_found">没有发现支持的文件管理器,比如OI文件管理器.您想从Android市场安装它吗?\n\n或者,你可以打开一个不支持的文件管理器并发送一个.torrent格式的种子文件到Transdroid.</string>
+<string name="oifm_install">从市场安装</string>
+<string name="oifm_nomarket">市场软件没有安装</string>
+<string name="scanner_not_found">您没有安装Barcode Scanner.您想从市场安装它吗?</string>
+<string name="lc_install">您需要安装Log Collector 程序来发送错误报告.您想从市场安装它吗?</string>
+<string name="lc_run">Log Collector 将会收集您的设备日志并发送到transdroid.org@gmail.com.\n你可以预览和修改将要发送的数据.</string>
+<string name="vlcremote_not_found">没有发现如VLC一样的远程文件浏览器.您想从市场安装VLC Remote吗?</string>
+<string name="ftpclient_not_found">您没有安装可兼容的FTP客户端.\n您想从市场安装AndFTP吗?</string>
+
+<string name="rate_download">最大下载速率</string>
+<string name="rate_upload">最大上传速率</string>
+<string name="rate_inkbs">只允许数字,已KB/s为单位</string>
+<string name="rate_reset">重置</string>
+<string name="rate_no_support">您的BT客户端不支持设定传输速率,或者这个功能还未部署.</string>
+<string name="rate_updated">传输速率已更新</string>
+<string name="askremove_title">移除种子</string>
+<string name="askremove">确定要移除这个种子吗?</string>
+<string name="addfailed_title">添加失败</string>
+<string name="addfailed_service2">%1$s 现在无法加入.\ n要重试或自动添加到队列中 呢？</string>
+<string name="addfailed_noservice2">%1$s 现在无法加入.\ n要重试吗？</string>
+<string name="addfailed_retry">重试</string>
+<string name="addfailed_addlater">稍后添加</string>
+
+<string name="searching">搜索中...</string>
+<string name="dialog_search">搜索在线种子文件</string>
+<string name="search_name">种子</string>
+<string name="search_hint">Ubuntu</string>
+<string name="search_resultsfrom">搜索结果</string>
+<string name="add_selected">添加所有已选文件</string>
+<string name="no_results">您的搜索没有搜索到结果</string>
+<string name="no_query">没有输入查询条件</string>
+<string name="searchmenu_switchsite">切换站点</string>
+<string name="searchmenu_add">马上下载</string>
+<string name="searchmenu_details">打开网站</string>
+<string name="searchmenu_openwith">打开方式</string>
+<string name="searchmenu_sharelink">共享链接</string>
+<string name="searchmenu_savesearch">保存为RSS feed</string>
+<string name="searchmenu_useassearch">使用新的搜索</string>
+<string name="search_savedrssfeed">搜索保持为RSS feed</string>
+<string name="search_savenotsupported">保存不被本页面支持的</string>
+<string name="tts_not_found">Torrent搜索到一个新的模块，现在安装？</string>
+
+<string name="preferences">Transdroid选项</string>
+<string name="add_new_server">添加新服务器</string>
+<string name="add_new_website">添加网页搜索站点</string>
+<string name="add_new_rssfeed">添加RSS源</string>
+<string name="inappsite">程序内搜索</string>
+<string name="websearch">网页搜索</string>
+<string name="other_settings">其他设置项</string>
+
+<string name="pref_server">服务器守护进程</string>
+<string name="pref_basic">基础设置</string>
+<string name="pref_name">名字</string>
+<string name="pref_name_info">可选用户名</string>
+<string name="pref_daemon">服务器类型</string>
+<string name="pref_address">IP地址或者域名</string>
+<string name="pref_address_info">不带http://或者端口名</string>
+<string name="pref_port">端口</string>
+<string name="pref_port_info">通常是</string>
+<string name="pref_auth">使用认证</string>
+<string name="pref_auth_info">你需要一个用户名和密码</string>
+<string name="pref_user">用户名</string>
+<string name="pref_pass">密码</string>
+<string name="pref_os">服务器操作系统</string>
+<string name="pref_folder">SCGI目录</string>
+<string name="pref_folder_info">通常是/RPC2</string>
+<string name="pref_folder2">目录</string>
+<string name="pref_folder2_info">比如 /torrentflux</string>
+<string name="pref_folder3_info">通常是空白的</string>
+<string name="pref_advanced">高级选项 (可选)</string>
+<string name="pref_downloaddir">下载目录</string>
+<string name="pref_downloaddir_info">您服务器的下载目录,绝对地址</string>
+<string name="pref_ftpurl">基本 (S)FTP url</string>
+<string name="pref_ftpurl_info">比如 ftp://me@server.com/downloads/</string>
+<string name="pref_timeout">连接超时</string>
+<string name="pref_timeout_info">连接尝试次数超出设置</string>
+<string name="pref_ssl">SSL</string>
+<string name="pref_ssl_info">选择此项使用https</string>
+<string name="pref_ssl_trust_key">自定义SSL指纹</string>
+<string name="pref_ssl_trust_key_info">只固定特定证书的链接</string>
+<string name="pref_ssl_trust_all">接收全部SSL证书</string>
+<string name="pref_ssl_trust_all_info">选择自认证证书</string>
+
+<string name="pref_search">搜索引擎</string>
+<string name="pref_setdefault">设置默认站点</string>
+<string name="pref_url">直接搜索地址</string>
+<string name="pref_url_info">%s将会被替换为搜索语句</string>
+<string name="pref_numresults">记过数量</string>
+<string name="pref_sort">结果排序顺序</string>
+<string name="pref_rss_info">RSS源</string>
+<string name="pref_feed">Feed设置</string>
+<string name="pref_feed_url">RSS源地址</string>
+<string name="pref_feed_needsauth">需要验证</string>
+<string name="pref_feed_needsauth_info">在浏览器中进行验证</string>
+<string name="pref_ezrss">ezRSS 源创建器</string>
+<string name="pref_ezrss_info">创建一个电视剧RSS源</string>
+<string name="pref_ezrss_showname">显示名字</string>
+<string name="pref_ezrss_quality">质量</string>
+<string name="pref_ezrss_group">发布组</string>
+<string name="pref_ezrss_info2">质量和发布组是可选的\n由http://www.ezrss.it提供支持</string>
+<string name="pref_ezrss_exact">释放匹配↴</string>
+<string name="pref_ezrss_enter">在您输入您的查询后会显示一个RSS源样例.</string>
+<string name="pref_ezrss_loading">加载中...</string>
+<string name="pref_ezrss_noresults">这个查询返回一个空列表.</string>
+
+<string name="pref_interface">界面设置</string>
+<string name="pref_onlytransferring">限制传输(&gt; 0KB/s)</string>
+<string name="pref_onlytransferring_info">将0KB/s的种子显示为活动.</string>
+<string name="pref_swipelabels">刷新标签</string>
+<string name="pref_swipelabels_info">刷新标签代替服务器</string>
+<string name="pref_uirefresh">刷新间隔</string>
+<string name="pref_hiderefresh">隐藏刷新</string>
+<string name="pref_hiderefresh_info">不显示\'种子列表已刷新\'信息</string>
+<string name="pref_clear_search_history">清除搜索历史</string>
+<string name="pref_history_cleared">成功清除搜索历史</string>
+<string name="pref_askremove">确认移除</string>
+<string name="pref_askremove_info">移除种子文件时要求确认</string>
+<string name="pref_import_settings">导入设定</string>
+<string name="pref_import_settings_info">Transdroid将试着导入服务器，网页搜索和RSS设定从：</string>
+<string name="pref_import_settings_success">设定导入成功完成</string>
+<string name="pref_import_settings_pick">载入文件</string>
+<string name="pref_export_settings">输出设定</string>
+<string name="pref_export_settings_info">Transdroid将会把服务器(包含密码),WEB搜索和RSS设定导出到下列文本文件</string>
+<string name="pref_export_settings_success">设定导出成功完成</string>
+<string name="pref_export_settings_pick">载入目录</string>
+<string name="pref_enableads">允许显示广告</string>
+<string name="pref_enableads_info">在屏幕的底部显示广告</string>
+
+<string name="pref_alarm">提醒服务设置</string>
+<string name="pref_enablealarm">启用提醒服务</string>
+<string name="pref_enablealarm_info">种子状态改变时提醒我</string>
+<string name="pref_alarmtime">检查间隔</string>
+<string name="pref_alarmtime_info">检查种子状态的频率</string>
+<string name="pref_alarmfinished">下载完成提醒</string>
+<string name="pref_alarmfinished_info">种子下载完成时提醒我</string>
+<string name="pref_alarmnew">新种子提醒</string>
+<string name="pref_alarmnew_info">添加新种子时提醒我</string>
+<string name="pref_alarmplaysound">允许报警声</string>
+<string name="pref_alarmplaysound_info">播放报警通知声</string>
+<string name="pref_alarmsounduri">报警声</string>
+<string name="pref_alarmsounduri_info">用报警声进行通知</string>
+<string name="pref_alarmvibrate">允许可变</string>
+<string name="pref_alarmvibrate_info">报警声可变</string>
+<string name="pref_checkrssfeeds">检查RSS订阅</string>
+<string name="pref_checkrssfeeds_info">有新种子可用时提醒我</string>
+<string name="pref_adwnotify">启用ADW通知</string>
+<string name="pref_adwnotify_info">在ADW启动器中显示种子统计</string>
+<string name="pref_adwonlydl">只统计下载</string>
+<string name="pref_adwonlydl_info">在ADW启动器中只显示下载的种子统计</string>
+
+<string name="status_waiting">等待检查</string>
+<string name="status_checking">验证本地数据</string>
+<string name="status_waitingtodl">等待下载</string>
+<string name="status_error">错误...</string>
+<string name="status_size1">%1$s于%2$s (%3$s)</string>
+<string name="status_size2">%1$s,已上传%2$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_unknowneta">未知预计完成时间</string>
+<string name="status_ratio">比率%1$s</string>
+<string name="status_peers">%1$s于%2$s节点</string>
+<string name="status_speed_up">↑ %1$s</string>
+<string name="status_speed_down">↓ %1$s</string>
+<string name="status_paused">已暂停</string>
+<string name="status_stopped">已停止</string>
+<string name="status_unknown">未知</string>
+<string name="status_persecond">/秒</string>
+
+<string name="task_refreshing">刷新...</string>
+<string name="task_addbyurl">添加种子...</string>
+<string name="task_addbyfile">上传种子...</string>
+<string name="task_removing">移除种子...</string>
+<string name="task_pausing">暂停种子...</string>
+<string name="task_pausingall">暂停所有种子...</string>
+<string name="task_resuming">恢复种子...</string>
+<string name="task_resumingall">恢复所有种子...</string>
+<string name="task_stopping">停止种子...</string>
+<string name="task_stoppingall">停止所有种子...</string>
+<string name="task_starting">开始种子...</string>
+<string name="task_startingall">开始所有种子...</string>
+<string name="task_getfiles">检索文件...</string>
+<string name="task_setfileprop">设置文件属性</string>
+<string name="task_settransrates">设置传输比率</string>
+<string name="task_setlabel">指定标签</string>
+<string name="task_setlocation">移动种子...</string>
+<string name="task_setalternativemode">切换模式</string>
+
+<string name="list_refreshed">种子列表已刷新</string>
+<string name="torrent_added">种子已添加(刷新中)</string>
+<string name="torrent_removed">已移除</string>
+<string name="torrent_removed_with_data">种子已移除且数据已删除</string>
+<string name="torrent_resumed">已恢复(刷新中)</string>
+<string name="torrent_stopped">已停止</string>
+<string name="torrent_started">已开始(刷新中)</string>
+<string name="torrent_paused">已暂停</string>
+<string name="torrent_paused_all">种子已暂停</string>
+<string name="torrent_resumed_all">种子已恢复(刷新中)</string>
+<string name="torrent_stopped_all">种子已停止</string>
+<string name="torrent_started_all">种子已开始(刷新中)</string>
+<string name="torrent_trackersupdated">种子已更新</string>
+<string name="torrent_locationset">种子被移动到 \'%1$s\'</string>
+
+<string name="details_details">详情</string>
+<string name="details_files">文件</string>
+<string name="details_size">大小:</string>
+<string name="details_state">状态:</string>
+<string name="details_downloaded">已下载:</string>
+<string name="details_uploaded">已上传:</string>
+<string name="details_rate">速度:</string>
+<string name="details_eta">预计完成时间:</string>
+<string name="details_availability">可用度:</string>
+<string name="details_peers">节点:</string>
+<string name="details_label">标签:</string>
+<string name="details_trackers">Trackers:</string>
+<string name="details_trackers_expand">%1$s （展开）</string>
+<string name="details_trackers_collapse">（折叠）</string>
+<string name="details_errors">错误...</string>
+<string name="details_notsupported">您的客户端不支持列表文件,或者该功能未部署.</string>
+<string name="details_priorities_updated">文件优先级已更新</string>
+
+<string name="file_off">关</string>
+<string name="file_low">低</string>
+<string name="file_normal">中等</string>
+<string name="file_high">高</string>
+<string name="file_remotestart">在VLC中远程播放</string>
+<string name="file_ftpdownload">使用(S)FTP下载</string>
+
+<string name="widget_4x1">Transdroid 4x1</string>
+<string name="widget_2x1">Transdroid 2x1</string>
+<string name="widget_pref_server">服务器</string>
+<string name="widget_pref_refresh">刷新间隔</string>
+<string name="widget_pref_layout">风格</string>
+<string name="widget_pref_addwidget">添加该窗口小部件</string>
+<string name="widget_downloading">DL @</string>
+<string name="widget_downloading_up">up</string>
+<string name="widget_seeding">UP @</string>
+<string name="widget_other">未激活</string>
+<string name="widget_persecond">/秒</string>
+<string name="widget_eta">预计完成时间</string>
+<string name="widget_unknowneta">未知预计完成时间</string>
+<string name="widget_new">新的</string>
+
+<string name="service_newtorrent">新添加的种子</string>
+<string name="service_torrentfinished">结束下载的种子</string>
+<string name="service_newrssitems">可用的新种子</string>
+<string name="service_newrssitems_count">%d 新的RSS feed种子</string>
+
+<string name="rss">RSS</string>
+<string name="rss_no_feeds">没有RSS源\n\n请使用菜单添加RSS源</string>
+<string name="rss_loading_feed">正在载入RSS源</string>
+<string name="rss_no_items">已连接，但是RSS源中没有内容</string>
+
+<string name="error_httperror">和服务器通信时发生错误</string>
+<string name="error_jsonrequesterror">建立请求时发生错误</string>
+<string name="error_jsonresponseerror">处理服务器返回是时发生错误(请检查设置)</string>
+<string name="error_daemonnotconnected">网页界面没有连接到正在运行的守护进程</string>
+<string name="error_401">拒绝登录(请检查设置)</string>
+<string name="error_torrentfile">种子文件读取错误</string>
+<string name="error_parsingrss">RSS源处理错误</string>
+<string name="error_invalid_url_form">URL格式不正确</string>
+<string name="error_invalid_search_url">网页搜索地址错误:</string>
+<string name="error_invalid_ip_or_hostname">IP地址或域名错误</string>
+<string name="error_invalid_port_number">端口号应该是数字</string>
+<string name="error_invalid_directory">目录路径应该以/或者结尾</string>
+<string name="error_invalid_timeout">超时项不能为空,必须是一个正数</string>
+<string name="error_no_url_enclosure">RSS条目没有提供指向种子文件URL或者连接标签</string>
+<string name="error_no_link">RSS源没有提供可以浏览的连接</string>
+<string name="error_norssfeed">URL不是正确的RSS地址</string>
+<string name="error_media_not_available">无法读写SD卡</string>
+<string name="error_no_valid_settings_file">文件不包含Transdroid设定</string>
+<string name="error_file_not_found">无法找到设定文件</string>
+
+<string name="xirvik_info">Xirvik提供共享的,半独立或者完全独立的种子盒子.Transdroid为所有的Xirvik服务器提供简单设置.\n\n访问www.xirvik.com获得更多消息</string>
+<string name="xirvik_add_new_xserver">添加Xirvik服务器</string>
+<string name="xirvik_pref_title">Xirvik服务器设置</string>
+<string name="xirvik_pref_type">服务器类型</string>
+<string name="xirvik_pref_type_info">共享,半独立或完全独立</string>
+<string name="xirvik_pref_server">服务器名</string>
+<string name="xirvik_pref_server_info">比如 dedi000.xirvik.com</string>
+<string name="xirvik_error_invalid_servername">错误的服务器(请使用完整主机名,比如dedi000.xirvik.com)</string>
+
+<string name="seedm8_add_new_xserver">添加SeedM8服务器</string>
+<string name="seedm8_pref_title">SeedM8服务器设置</string>
+<string name="seedm8_pref_server">服务器名</string>
+<string name="seedm8_pref_server_info">比如 alpha.seedm8.com</string>
+<string name="seedm8_error_invalid_servername">错误的服务器(请使用完整主机名,比如alpha.seedm8.com)</string>
+
+<string-array name="pref_sort_types">
+<item>联合排序</item>
+<item>供种者/吸血者数量</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>不自动刷新</item>
+<item>2 秒</item>
+<item>5 秒</item>
+<item>15 秒</item>
+<item>1 分钟</item>
+<item>5 分钟</item>
+<item>15 分钟</item>
+<item>1 小时</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 分钟</item>
+<item>10 分钟</item>
+<item>30 分钟</item>
+<item>1 小时</item>
+<item>3 小时</item>
+<item>12 小时</item>
+<item>1 天</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>快速搜索框</item>
+<item>黑色</item>
+<item>Transparent</item>
+</string-array>
+</resources>

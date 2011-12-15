@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent"
+	android:layout_width="fill_parent"
+	android:padding="24dip">
+
+	<include android:id="@+id/controlbar" layout="@layout/part_controlbar" />
+
+	<ListView 
+		android:id="@+id/torrents" 
+		android:layout_width="512dip" 
+		android:layout_height="fill_parent" 
+		android:layout_below="@+id/controlbar"
+		android:layout_marginRight="24dip"
+		android:fastScrollEnabled="true"
+		android:visibility="gone" />
+		
+	<LinearLayout
+		android:id="@+id/startsettings"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:orientation="horizontal"
+		android:background="@android:drawable/bottom_bar">
+		
+		<Button
+			android:id="@+id/startsettings_button"
+			android:layout_width="0dip"
+			android:layout_height="48dip"
+			android:layout_weight="1"
+			android:layout_gravity="center"
+			android:background="@android:drawable/btn_default_small"
+			android:text="@string/no_settings_button" />
+			
+	</LinearLayout>
+	
+	<TextView 
+		android:id="@+id/android:empty" 
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" 
+		android:layout_below="@id/controlbar"
+		android:layout_above="@id/startsettings"
+		android:text="@string/connecting" 
+		android:layout_gravity="center" 
+		android:textStyle="bold"
+		android:autoLink="all" 
+		android:gravity="center" />
+		
+	<FrameLayout
+		android:id="@+id/details"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/controlbar"
+		android:layout_toRightOf="@id/torrents" />
+		
+</RelativeLayout>
