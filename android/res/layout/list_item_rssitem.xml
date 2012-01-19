@@ -18,7 +18,6 @@
 		android:layout_toRightOf="@id/rssitem_check"
 		android:paddingRight="29dip"
 		android:paddingTop="5dip"
-		android:textSize="16dip"
 		style="@style/SearchNameText" />
 		
 	<TextView 

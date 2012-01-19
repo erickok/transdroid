@@ -82,11 +82,11 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 	private static final int FILEMENU_REMOTESTART_ID = 5;
 	private static final int FILEMENU_FTPDOWNLOAD_ID = 6;
 
-	private static final int MENU_FORCESTART_ID = 0;
-	private static final int MENU_SETLOCATION_ID = 1;
-	private static final int MENU_EDITTRACKERS_ID = 2;
-	private static final int MENU_INVERTSELECTION_ID = 3;
-	private static final int MENU_REFRESH_ID = 4;
+	private static final int MENU_FORCESTART_ID = 50;
+	private static final int MENU_SETLOCATION_ID = 51;
+	private static final int MENU_EDITTRACKERS_ID = 52;
+	private static final int MENU_INVERTSELECTION_ID = 53;
+	private static final int MENU_REFRESH_ID = 54;
 
 	static final int DIALOG_ASKREMOVE = 11;
 	private static final int DIALOG_INSTALLVLC = 12;
@@ -98,6 +98,7 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 	TorrentFilesSortBy sortSetting = TorrentFilesSortBy.Alphanumeric;
 	boolean sortReversed = false;
 
+	private TorrentsFragment torrentsFragment;
 	private final int daemonNumber;
 	private Torrent torrent;
 	private TorrentDetails fineDetails = null;
@@ -108,7 +109,8 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 	private LinearLayout prioBar;
 	private Button prioOff, prioLow, prioNormal, prioHigh;
 
-	public DetailsFragment(int daemonNumber, Torrent torrent, String[] existingLabels) {
+	public DetailsFragment(TorrentsFragment torrentsFragment, int daemonNumber, Torrent torrent, String[] existingLabels) {
+		this.torrentsFragment  = torrentsFragment;
 		this.daemonNumber = daemonNumber;
 		this.torrent = torrent;
 		this.existingLabels = existingLabels;
@@ -537,6 +539,10 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 	@Override
 	public void onTaskFailure(DaemonTaskFailureResult result) {
 
+		if (getActivity() == null) {
+			// No longer visible
+			return;
+		}
 		// Show error message
 		Toast.makeText(getActivity(), LocalTorrent.getResourceForDaemonException(result.getException()),
 			Toast.LENGTH_SHORT * 2).show();
@@ -596,6 +602,10 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 		case Pause:
 			torrent.mimicPause();
 			getDetailsListAdapter().updateViewsAndButtonStates();
+			// Also call back to the main torrents list to update its view
+			if (torrentsFragment != null) {
+				torrentsFragment.updateTorrentList();
+			}
 			break;
 
 		case Resume:
@@ -603,11 +613,19 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 			getDetailsListAdapter().updateViewsAndButtonStates();
 			queue.enqueue(RetrieveTask.create(daemon));
 			queue.enqueue(GetFileListTask.create(daemon, torrent));
+			// Also call back to the main torrents list to update its view
+			if (torrentsFragment != null) {
+				torrentsFragment.updateTorrentList();
+			}
 			break;
 
 		case Stop:
 			torrent.mimicStop();
 			getDetailsListAdapter().updateViewsAndButtonStates();
+			// Also call back to the main torrents list to update its view
+			if (torrentsFragment != null) {
+				torrentsFragment.updateTorrentList();
+			}
 			break;
 
 		case Start:
@@ -615,6 +633,10 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 			getDetailsListAdapter().updateViewsAndButtonStates();
 			queue.enqueue(RetrieveTask.create(daemon));
 			queue.enqueue(GetFileListTask.create(daemon, torrent));
+			// Also call back to the main torrents list to update its view
+			if (torrentsFragment != null) {
+				torrentsFragment.updateTorrentList();
+			}
 			break;
 
 		case Remove:
@@ -624,11 +646,18 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 				"'" + result.getTargetTorrent().getName() + "' "
 					+ getText(includingData ? R.string.torrent_removed_with_data : R.string.torrent_removed),
 				Toast.LENGTH_SHORT).show();
+			// Also call back to the main torrents list to update its view
+			if (torrentsFragment != null) {
+				torrentsFragment.updateTorrentList();
+			}
 			// Close this details fragment
-			FragmentTransaction ft = getSupportActivity().getSupportFragmentManager().beginTransaction();
-			ft.remove(this);
-			ft.addToBackStack(null);
-			ft.commit();
+			if (torrentsFragment != null) {
+				FragmentTransaction ft = getSupportActivity().getSupportFragmentManager().beginTransaction();
+				ft.remove(this);
+				ft.commit();
+			} else {
+				getSupportActivity().getSupportFragmentManager().popBackStack();
+			}
 			break;
 
 		case SetDownloadLocation:

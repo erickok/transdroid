@@ -60,7 +60,8 @@ public class Transdroid {
 	public static boolean isTablet(Resources r) {
 		//boolean hasLargeScreen = ((r.getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
 		boolean hasXLargeScreen = ((r.getConfiguration().screenLayout & 
-				Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE);
+				Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE) &&
+				android.os.Build.VERSION.SDK_INT >= 11;
 		return hasXLargeScreen;
 	}
 

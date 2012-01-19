@@ -49,7 +49,7 @@ public class Details extends FragmentActivity {
 
 			// Start the fragment for this torrent
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			ft.replace(R.id.details, new DetailsFragment(daemonNumber, torrent, existingLabels));
+			ft.replace(R.id.details, new DetailsFragment(null, daemonNumber, torrent, existingLabels));
 			if (getSupportFragmentManager().findFragmentById(R.id.details) != null) {
 				ft.addToBackStack(null);
 			}
