@@ -98,7 +98,7 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 	TorrentFilesSortBy sortSetting = TorrentFilesSortBy.Alphanumeric;
 	boolean sortReversed = false;
 
-	private TorrentsFragment torrentsFragment;
+	private final TorrentsFragment torrentsFragment;
 	private final int daemonNumber;
 	private Torrent torrent;
 	private TorrentDetails fineDetails = null;
@@ -109,6 +109,14 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 	private LinearLayout prioBar;
 	private Button prioOff, prioLow, prioNormal, prioHigh;
 
+	/**
+	 * Public empty constructor for use with fragment retainment (setRetainInstance(true);)
+	 */
+	public DetailsFragment() {
+		this.torrentsFragment  = null;
+		this.daemonNumber = -1;
+	}
+	
 	public DetailsFragment(TorrentsFragment torrentsFragment, int daemonNumber, Torrent torrent, String[] existingLabels) {
 		this.torrentsFragment  = torrentsFragment;
 		this.daemonNumber = daemonNumber;

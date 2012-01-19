@@ -29,7 +29,7 @@
 	<TextView 
 		android:id="@+id/taskmessage" 
 		android:layout_width="wrap_content" 
-		android:layout_height="47dip"
+		android:layout_height="46dip"
 		android:layout_gravity="center_vertical"
 		android:layout_margin="2dip"
 		android:layout_marginRight="4dip"

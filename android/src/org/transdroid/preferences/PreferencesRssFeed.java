@@ -22,13 +22,12 @@ import org.transdroid.R;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.InputType;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class PreferencesRssFeed extends PreferenceActivity {
 

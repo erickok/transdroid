@@ -8,6 +8,7 @@
 		android:id="@+id/progress"
 		android:layout_width="20dip"
 		android:layout_height="20dip"
+		android:paddingTop="2dip"
 		android:layout_marginLeft="22dip"
 		android:layout_marginRight="2dip"
 		android:layout_gravity="center_vertical"
@@ -22,8 +23,7 @@
 		android:layout_gravity="center_vertical"
 		android:layout_marginLeft="12dip"
 		android:layout_marginRight="17dip"
-		android:layout_marginTop="1dip"
-		android:layout_marginBottom="1dip"
+		android:paddingTop="2dip"
 		android:text="@string/refresh" 
 		style="@android:style/TextAppearance.Medium" />
 		<!--android:textColor="@color/TitleTextColor" />-->
