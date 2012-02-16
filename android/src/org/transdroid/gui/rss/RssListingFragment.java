@@ -501,7 +501,9 @@ public class RssListingFragment extends Fragment implements OnTouchListener, OnS
 
 	private void setProgressBar(boolean b) {
 		inProgress = b;
-		getSupportActivity().invalidateOptionsMenu();
+		if (getSupportActivity() != null) {
+			getSupportActivity().invalidateOptionsMenu();
+		}
 	}
 
     /*@Override
