@@ -128,7 +128,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	
 	private static final int ACTIVITY_PREFERENCES = 0;
 	private static final int ACTIVITY_DETAILS = 1;
-	private static final int ACTIVITY_BARCODE = 0x0ba7c0de; // get it?
+	private static final int ACTIVITY_BARCODE = 0x0000c0de;
 	
 	private static final int DIALOG_SERVERS = 0;
 	private static final int DIALOG_RATES = 1;
