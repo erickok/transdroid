@@ -156,7 +156,7 @@
 <string name="pref_search">Motore di ricerca</string>
 <string name="pref_setdefault">Imposta sito predefinito</string>
 <string name="pref_url">Ricerca diretta da URL</string>
-<string name="pref_url_info">%1$s sarà sostituito con la domanda di ricerca</string>
+<string name="pref_url_info">%s sarà sostituito con la domanda di ricerca</string>
 <string name="pref_numresults">Numero di risultati</string>
 <string name="pref_sort">Ordine risultati</string>
 <string name="pref_rss_info">Feed RSS</string>

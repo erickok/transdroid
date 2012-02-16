@@ -41,9 +41,18 @@
 <string name="menu_sort_added">Datum </string>
 <string name="menu_sort_upspeed">Hitrost oddajanja</string>
 <string name="menu_sort_ratio">Razmerje</string>
+<string name="menu_settings">Nastavitve</string>
+<string name="menu_errorreport">Porocilo o napaki</string>
+<string name="menu_pause">Pavziraj</string>
+<string name="menu_resume">Nadaljuj </string>
+<string name="menu_stop">Ustavi</string>
+<string name="menu_start">Zacni</string>
+<string name="menu_moveup">Premakni navzgor</string>
+<string name="menu_movedown">Premakni navzdol</string>
 
 
 
+<string name="search">Isci</string>
 
 
 

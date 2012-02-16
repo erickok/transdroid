@@ -102,7 +102,7 @@
 
 <string name="pref_search">מנוע חיפוש</string>
 <string name="pref_url">כתובת שאילתת חיפוש</string>
-<string name="pref_url_info">%1$s יוחלף במילות החיפוש</string>
+<string name="pref_url_info">%s יוחלף במילות החיפוש</string>
 <string name="pref_numresults">מספר תוצאות</string>
 <string name="pref_sort">צורת סידור תוצאות</string>
 <string name="pref_rss_info">מקורות RSS</string>
