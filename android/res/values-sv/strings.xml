@@ -14,6 +14,7 @@
 <string name="no_magnet_links">Din torrentklient stödjer inte .magnet-länkar</string>
 <string name="save">Spara</string>
 <string name="dismiss">Ångra</string>
+<string name="refresh">Uppdatera</string>
 <string name="torrent_server">Torrentserver</string>
 <string name="no_servers">Inga servrar har blivit konfigurerade</string>
 
@@ -66,6 +67,7 @@
 <string name="menu_movedown">Flytta ner</string>
 <string name="menu_edittrackers">Redigera trackers</string>
 <string name="menu_invertselection">Invertera val</string>
+<string name="menu_altmode">Sköldpaddsläge</string>
 
 <string name="dialog_add_torrent">Klistra in URLen för torrentfilen</string>
 <string name="no_valid_url">Det är inte en (giltig) URL</string>
@@ -93,6 +95,7 @@
 <string name="addfailed_retry">Försök igen</string>
 <string name="addfailed_addlater">Lägg till senare</string>
 
+<string name="search">Sök</string>
 <string name="searching">Söker...</string>
 <string name="dialog_search">Sök efter torrents online</string>
 <string name="search_name">Torrenter</string>

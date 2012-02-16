@@ -14,6 +14,7 @@
 <string name="no_magnet_links">Ваш торрент клиент не поддерживает ссылки .magnet или это еще не реализовано.</string>
 <string name="save">Сохранить</string>
 <string name="dismiss">Отменить</string>
+<string name="refresh">Обновить</string>
 <string name="torrent_server">Торрент сервер</string>
 <string name="no_servers">Серверы еще не настроены</string>
 
@@ -93,6 +94,7 @@
 <string name="addfailed_retry">Повторить</string>
 <string name="addfailed_addlater">Добавить позже</string>
 
+<string name="search">Искать</string>
 <string name="searching">Поиск...</string>
 <string name="dialog_search">Искать торренты он-лайн</string>
 <string name="search_name">Торренты</string>

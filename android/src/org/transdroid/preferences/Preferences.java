@@ -590,9 +590,7 @@ public class Preferences {
     }
 
     public static SiteSettings getSupportedSiteSetting(String preferencesKey) {
-    	if (preferencesKey.equals("site_btjunkie")) {
-    		return new SiteSettings(preferencesKey, "BTJunkie");
-    	} else if (preferencesKey.equals("site_extratorrent")) {
+    	if (preferencesKey.equals("site_extratorrent")) {
     		return new SiteSettings(preferencesKey, "ExtraTorrent");
     	} else if (preferencesKey.equals("site_ezrss")) {
     		return new SiteSettings(preferencesKey, "EzRss");

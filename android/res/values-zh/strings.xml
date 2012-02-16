@@ -4,7 +4,7 @@
 
 <string name="no_settings_short">打开设置菜单进入服务器详细信息。</string>
 <string name="no_settings">打开设置菜单输入您的服务器详细信息.\n\n安装帮助:www.transdroid.org/download</string>
-<string name="no_settings_button">打开设置iory</string>
+<string name="no_settings_button">打开设置</string>
 <string name="connecting">尝试连接到服务器...</string>
 <string name="no_torrents">已连接,但是服务器上没有种子.</string>
 <string name="no_downloading_torrents">已连接,但是服务器上没有正在下载的种子.</string>
@@ -14,6 +14,7 @@
 <string name="no_magnet_links">你的BT程序不支持磁性链接或者还没被实行</string>
 <string name="save">保存</string>
 <string name="dismiss">忽略</string>
+<string name="refresh">刷新</string>
 <string name="torrent_server">Torrent服务器</string>
 <string name="no_servers">当前没有配置服务器</string>
 
@@ -68,7 +69,7 @@
 <string name="menu_invertselection">反向选择</string>
 
 <string name="dialog_add_torrent">粘贴种子文件地址</string>
-<string name="no_valid_url">URL地址格式不对</string>
+<string name="no_valid_url">URL地址格式错误</string>
 <string name="selectfile">选择一个本地.torrent种子文件</string>
 <string name="oifm_not_found">没有发现支持的文件管理器,比如OI文件管理器.您想从Android市场安装它吗?\n\n或者,你可以打开一个不支持的文件管理器并发送一个.torrent格式的种子文件到Transdroid.</string>
 <string name="oifm_install">从市场安装</string>
@@ -81,7 +82,7 @@
 
 <string name="rate_download">最大下载速率</string>
 <string name="rate_upload">最大上传速率</string>
-<string name="rate_inkbs">只允许数字,已KB/s为单位</string>
+<string name="rate_inkbs">只允许数字,以KB/s为单位</string>
 <string name="rate_reset">重置</string>
 <string name="rate_no_support">您的BT客户端不支持设定传输速率,或者这个功能还未部署.</string>
 <string name="rate_updated">传输速率已更新</string>
@@ -93,6 +94,7 @@
 <string name="addfailed_retry">重试</string>
 <string name="addfailed_addlater">稍后添加</string>
 
+<string name="search">搜索</string>
 <string name="searching">搜索中...</string>
 <string name="dialog_search">搜索在线种子文件</string>
 <string name="search_name">种子</string>

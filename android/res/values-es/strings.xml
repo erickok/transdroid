@@ -2,7 +2,7 @@
 <resources>
 <string name="description">Gestor de clientes de -torrents con búsqueda integrada, soporte para RSS y un widget de estado.</string>
 
-<string name="no_settings_short">btorrente</string>
+<string name="no_settings_short">Abre el menú de configuración para introducir los detalles de tu servidor.</string>
 <string name="no_settings">Nuevo usuario de Transdroid?\nAbre el menú de configuración para introducir los detalles de tu servidor.\n\nPara más información: www.transdroid.org/download</string>
 <string name="no_settings_button">Mostrar opciones</string>
 <string name="connecting">Intentando conectar con el servidor...</string>
@@ -14,6 +14,7 @@
 <string name="no_magnet_links">Tu cliente de torrents no soporta enlaces .magnet o esto todavía no está implementado.</string>
 <string name="save">Guardar</string>
 <string name="dismiss">Ignorar</string>
+<string name="refresh">Refrescar</string>
 <string name="torrent_server">Servidor torrent</string>
 <string name="no_servers">Ningún servidor has sido configurado</string>
 
@@ -66,6 +67,7 @@
 <string name="menu_movedown">Ir abajo</string>
 <string name="menu_edittrackers">Editar trackers</string>
 <string name="menu_invertselection">Invertir selección</string>
+<string name="menu_altmode">Modo tortuga</string>
 
 <string name="dialog_add_torrent">Pega la URL del archivo torrent</string>
 <string name="no_valid_url">La entrada introducida no es una URL (válida)</string>
@@ -93,6 +95,7 @@
 <string name="addfailed_retry">Reintentar</string>
 <string name="addfailed_addlater">Añadir más tarde</string>
 
+<string name="search">Buscar</string>
 <string name="searching">Buscando...</string>
 <string name="dialog_search">Buscar torrents en línea</string>
 <string name="search_name">Torrents</string>
@@ -156,7 +159,7 @@
 <string name="pref_search">Motor de búsqueda</string>
 <string name="pref_setdefault">Definir sitio predeterminado</string>
 <string name="pref_url">URL de búsqueda directa</string>
-<string name="pref_url_info">%1$s se sustituirá por la cadena buscada</string>
+<string name="pref_url_info">%s se sustituirá por la cadena buscada</string>
 <string name="pref_numresults">Número de resultados</string>
 <string name="pref_sort">Orden del resultado</string>
 <string name="pref_rss_info">Fuentes RSS</string>

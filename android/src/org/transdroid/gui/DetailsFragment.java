@@ -213,7 +213,8 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 			&& file.getMimeType() != null) {
 			menu.add(FILEMENU_REMOTESTART_ID, FILEMENU_REMOTESTART_ID, 0, R.string.file_remotestart);
 		}
-		if (daemon.getSettings().getFtpUrl() != null && !daemon.getSettings().getFtpUrl().equals("")) {
+		if (Daemon.supportsFilePaths(daemon.getType()) && daemon.getSettings().getFtpUrl() != null && 
+			!daemon.getSettings().getFtpUrl().equals("") && file.getRelativePath() != null) {
 			menu.add(FILEMENU_FTPDOWNLOAD_ID, FILEMENU_FTPDOWNLOAD_ID, 0, R.string.file_ftpdownload);
 		}
 

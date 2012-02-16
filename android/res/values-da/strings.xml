@@ -155,7 +155,7 @@
 <string name="pref_search">Søgemaskine</string>
 <string name="pref_setdefault">Indstil startside</string>
 <string name="pref_url">Direkte søge URL</string>
-<string name="pref_url_info">%1$s vil blive erstattet af dine søgeord</string>
+<string name="pref_url_info">%s vil blive erstattet af dine søgeord</string>
 <string name="pref_numresults">Antal resultater</string>
 <string name="pref_sort">Resultat sorteringsrækkefølge</string>
 <string name="pref_rss_info">RSS feeds</string>

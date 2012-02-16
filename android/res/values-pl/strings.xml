@@ -13,6 +13,7 @@
 <string name="no_magnet_links">Twój klient Torrent nie obsługuje linków typu .magnet bądź ta funkcjonalność jeszcze nie została zaimplementowana</string>
 <string name="save">Zapisz</string>
 <string name="dismiss">Pomiń</string>
+<string name="refresh">Odśwież</string>
 <string name="torrent_server">Serwer Torrent</string>
 <string name="no_servers">Serwery nie zostały jeszcze skonfigurowane</string>
 
@@ -21,12 +22,14 @@
 <string name="labels_newlabel">Nowa etykieta</string>
 <string name="labels_no_support">Ustawianie etykiet nie jest wspierane przez twojego klienta.</string>
 
+<string name="view_switchview">Przełącz widok</string>
 <string name="view_showall">Pokazano wszystkie torrenty</string>
 <string name="view_showdl">Pokazano pobierane pliki torrent</string>
 <string name="view_showul">Pokazano seedowane pliki torrent</string>
 <string name="view_showinactive">Pokazano nieaktywne pliki torrent</string>
 
 <string name="menu_add">Dodaj</string>
+<string name="menu_scanbarcode">Skanuj kod kreskowy</string>
 <string name="menu_rss">RSS</string>
 <string name="menu_servers">Zmień serwer</string>
 <string name="menu_speeds">Ustaw limit transferu</string>
@@ -49,6 +52,7 @@
 <string name="menu_errorreport">Raport błędów</string>
 <string name="menu_remove">Usuń</string>
 <string name="menu_remove_data">Usuń dane i torrent</string>
+<string name="menu_also_data">Skasuj również dane</string>
 <string name="menu_pause">Wstrzymaj</string>
 <string name="menu_resume">Wznów</string>
 <string name="menu_stop">Zatrzymaj</string>
@@ -60,6 +64,7 @@
 <string name="menu_default_site_set_to">Domyślna strona ustawiona na</string>
 <string name="menu_moveup">Do góry</string>
 <string name="menu_movedown">Do dołu</string>
+<string name="menu_altmode">Tryb żółwia</string>
 
 <string name="dialog_add_torrent">Wklej adres URL lub pliku torrent.</string>
 <string name="no_valid_url">Wprowadzony link jest nieprawidłowy.</string>
@@ -85,6 +90,7 @@
 <string name="addfailed_retry">Ponów</string>
 <string name="addfailed_addlater">Dodaj później</string>
 
+<string name="search">Szukaj</string>
 <string name="searching">Wyszukiwanie...</string>
 <string name="dialog_search">Szukaj torrentów on-line</string>
 <string name="search_name">Torrenty</string>
@@ -184,6 +190,7 @@
 <string name="pref_export_settings_info">Transdroid wyeksportuje serwer (z hasłami), wyszukiwanie w internecie i ustawienia RSS do następującego pliku tekstowego:</string>
 <string name="pref_export_settings_success">Ustawienia zostały wyeksportowane</string>
 <string name="pref_export_settings_pick">Wybierz folder</string>
+<string name="pref_enableads">Włącz reklamy</string>
 
 <string name="pref_alarm">Alarm ustaweień </string>
 <string name="pref_enablealarm">Włącz powiadomienia ustawień</string>
@@ -210,6 +217,7 @@
 <string name="status_waiting">Czekam na sprwadzenie</string>
 <string name="status_checking">Weryfikacja danych</string>
 <string name="status_waitingtodl">Czekam na pobieranie %s</string>
+<string name="status_error">Błąd...</string>
 <string name="status_size1">%1$s z %2$s (%3$s)</string>
 <string name="status_size2">%1$s, wysłano %2$s</string>
 <string name="status_eta">~ %1$s</string>
@@ -239,6 +247,8 @@
 <string name="task_setfileprop">Ustawienie właściwości pliku...</string>
 <string name="task_settransrates">Ustawienie szybkości transferu...</string>
 <string name="task_setlabel">Przypisywanie etykiet...</string>
+<string name="task_setlocation">Przenoszę torrent...</string>
+<string name="task_setalternativemode">Przełączam tryb...</string>
 
 <string name="list_refreshed">Lista torrentów odświeżona</string>
 <string name="torrent_added">Torrent dodany (odświeżanie)</string>
@@ -264,6 +274,9 @@
 <string name="details_availability">Dostępność:</string>
 <string name="details_peers">Pobierający:</string>
 <string name="details_label">Etykieta:</string>
+<string name="details_trackers_expand">%1$s (rozwiń)</string>
+<string name="details_trackers_collapse">(zwiń)</string>
+<string name="details_errors">Blędy:</string>
 <string name="details_notsupported">Listowanie plików nie jest wspieranie przez klienta torrenta lub nie zostało zaimplementowane</string>
 <string name="details_priorities_updated">Priorytety zostały zaaktualizowane</string>
 
