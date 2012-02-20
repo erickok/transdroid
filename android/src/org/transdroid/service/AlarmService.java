@@ -314,15 +314,22 @@ public class AlarmService extends IntentService {
 			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		}
 		
-		//if sound enabled add to notification
+		// If sound enabled add to notification
 		if (settings.getAlarmPlaySound() && settings.getAlarmSoundURI() != null) {
 			newNotification.sound = Uri.parse(settings.getAlarmSoundURI());
 		}
 		
-		//if vibration enabled add to notification
+		// If vibration enabled add to notification
 		if (settings.getAlarmVibrate()) {
 			newNotification.defaults = Notification.DEFAULT_VIBRATE;
 		}
+
+		// Add coloured light; defaults to 0xff7dbb21
+		newNotification.ledARGB = settings.getAlarmColour();
+		newNotification.ledOnMS = 600;
+		newNotification.ledOffMS = 1000;
+		newNotification.flags |= Notification.FLAG_SHOW_LIGHTS;
+		
 		// Send notification
 		notificationManager.notify(notifyID, newNotification);
 

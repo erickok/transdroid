@@ -530,6 +530,11 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 	 */
 
 	@Override
+	public boolean isAttached() {
+		return getActivity() != null;
+	}
+
+	@Override
 	public void onQueueEmpty() {
 		// No active task: turn off status indicator
 		// ((TransdroidListActivity)getActivity()).setProgressBar(false);

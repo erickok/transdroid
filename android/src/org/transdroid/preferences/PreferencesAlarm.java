@@ -17,6 +17,8 @@
  */
  package org.transdroid.preferences;
 
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
+
 import org.transdroid.R;
 import org.transdroid.service.BootReceiver;
 
@@ -39,6 +41,7 @@ public class PreferencesAlarm extends PreferenceActivity {
 	private TransdroidCheckBoxPreference alarmPlaySound;
 	private TransdroidNotificationListPreference alarmSoundURI;
 	private TransdroidCheckBoxPreference alarmVibrate;
+	private ColorPickerPreference alarmColour;
 	private TransdroidCheckBoxPreference adwNotify;
 	private TransdroidCheckBoxPreference adwOnlyDl;
 
@@ -78,14 +81,14 @@ public class PreferencesAlarm extends PreferenceActivity {
         checkRssFeeds.setKey(Preferences.KEY_PREF_CHECKRSSFEEDS);
         checkRssFeeds.setEnabled(isEnabled);
         getPreferenceScreen().addItemFromInflater(checkRssFeeds);
-        // alarm play sound
+        // Alarm play sound
         alarmPlaySound = new TransdroidCheckBoxPreference(this);
         alarmPlaySound.setTitle(R.string.pref_alarmplaysound);
         alarmPlaySound.setSummary(R.string.pref_alarmplaysound_info);
         alarmPlaySound.setKey(Preferences.KEY_PREF_ALARMPLAYSOUND);
         alarmPlaySound.setEnabled(isEnabled);
         getPreferenceScreen().addItemFromInflater(alarmPlaySound);
-        // alarm sound URI
+        // Alarm sound URI
         alarmSoundURI = new TransdroidNotificationListPreference(this);
         alarmSoundURI.setTitle(R.string.pref_alarmsounduri);
         alarmSoundURI.setSummary(R.string.pref_alarmsounduri_info);
@@ -95,13 +98,22 @@ public class PreferencesAlarm extends PreferenceActivity {
 		alarmSoundURI.setShowSilent(false);
 		alarmSoundURI.setEnabled(isEnabled);
 		getPreferenceScreen().addItemFromInflater(alarmSoundURI);
-		// vibrate
+		// Vibrate
 		alarmVibrate = new TransdroidCheckBoxPreference(this);
 		alarmVibrate.setTitle(R.string.pref_alarmvibrate);
 		alarmVibrate.setSummary(R.string.pref_alarmvibrate_info);
 		alarmVibrate.setKey(Preferences.KEY_PREF_ALARMVIBRATE);
 		alarmVibrate.setEnabled(isEnabled);
 		getPreferenceScreen().addItemFromInflater(alarmVibrate);
+		// Notification LED colour
+		alarmColour = new ColorPickerPreference(this);
+		alarmColour.setTitle(R.string.pref_alarmcolour);
+		alarmColour.setSummary(R.string.pref_alarmcolour_info);
+		alarmColour.setKey(Preferences.KEY_PREF_ALARMCOLOUR);
+		alarmColour.setAlphaSliderEnabled(false);
+		alarmColour.setDefaultValue(0xff7dbb21);
+		alarmColour.setEnabled(isEnabled);
+		getPreferenceScreen().addItemFromInflater(alarmColour);
 		// Enable ADW notifications
 		adwNotify = new TransdroidCheckBoxPreference(this);
 		adwNotify.setTitle(R.string.pref_adwnotify);
@@ -153,6 +165,7 @@ public class PreferencesAlarm extends PreferenceActivity {
 			alarmPlaySound.setEnabled(isEnabled);
 			alarmSoundURI.setEnabled(isEnabled);
 			alarmVibrate.setEnabled(isEnabled);
+			alarmColour.setEnabled(isEnabled);
 			adwNotify.setEnabled(isEnabled);
 			adwOnlyDl.setEnabled(isEnabled && isAdwEnabled);
 		}

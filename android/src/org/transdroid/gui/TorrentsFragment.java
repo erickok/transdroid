@@ -1594,6 +1594,11 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	}
 
 	@Override
+	public boolean isAttached() {
+		return getActivity() != null;
+	}
+
+	@Override
 	public void onTaskFailure(DaemonTaskFailureResult result) {
 
 		if (result.getMethod() == DaemonMethod.Retrieve) {
@@ -1970,7 +1975,8 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 
 	private void setProgressBar(boolean b) {
 		inProgress  = b;
-		getSupportActivity().invalidateOptionsMenu();
+		if (getSupportActivity() != null)
+			getSupportActivity().invalidateOptionsMenu();
 	}
 
 	protected View findViewById(int id) {

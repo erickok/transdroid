@@ -31,16 +31,18 @@ public class AlarmSettings{
 	private boolean alarmPlaySound;
 	private String alarmSoundURI;
 	private boolean alarmVibrate;
+	private int alarmColour;
 	private boolean adwNotify;
 	private boolean adwOnlyDl;
 		
-	public AlarmSettings(boolean enableAlarm, int alarmInterval, boolean checkRssFeeds, boolean alarmPlaySound, String alarmSoundURI, boolean alarmVibrate, boolean adwNotify, boolean adwOnlyDl) {
+	public AlarmSettings(boolean enableAlarm, int alarmInterval, boolean checkRssFeeds, boolean alarmPlaySound, String alarmSoundURI, boolean alarmVibrate, int alarmColour, boolean adwNotify, boolean adwOnlyDl) {
 		this.enableAlarm = enableAlarm;
 		this.alarmInterval = alarmInterval;
 		this.checkRssFeeds = checkRssFeeds;
 		this.alarmPlaySound = alarmPlaySound;
 		this.alarmSoundURI = alarmSoundURI;
 		this.alarmVibrate = alarmVibrate;
+		this.alarmColour = alarmColour;
 		this.adwNotify = adwNotify;
 		this.adwOnlyDl = adwOnlyDl;
 	}
@@ -68,9 +70,13 @@ public class AlarmSettings{
 	public String getAlarmSoundURI() {
 		return alarmSoundURI;
 	}
-	
+
 	public boolean getAlarmVibrate() {
 		return alarmVibrate;
+	}
+
+	public int getAlarmColour() {
+		return alarmColour;
 	}
 
 	public boolean showAdwNotifications() {

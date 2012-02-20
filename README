@@ -34,4 +34,7 @@ Some code/libraries are used in the project:
   android-xmlrpc
     pskink et al. (Apache License, Version 2.0)
     http://code.google.com/p/android-xmlrpc/
+  android-ColorPickerPreference
+    Daniel Nilsson and Sergey Margaritov (Apache License, Version 2.0)
+    https://github.com/attenzione/android-ColorPickerPreference
 

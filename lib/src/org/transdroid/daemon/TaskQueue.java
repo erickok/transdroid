@@ -156,17 +156,19 @@ public class TaskQueue implements Runnable {
 			return;
 		}
 
-		callback.onQueuedTaskStarted(task);
+		if (callback.isAttached())
+			callback.onQueuedTaskStarted(task);
 		
 		// Ask the daemon adapter to perform the task (which does it synchronously)
 		DLog.d(LOG_NAME, "Starting task: " + task.toString());
 		DaemonTaskResult result = task.execute();
 
-		callback.onQueuedTaskFinished(task);
+		if (callback.isAttached())
+			callback.onQueuedTaskFinished(task);
 		
 		// Return the result (to the UI thread)
 		DLog.d(LOG_NAME, "Task result: " + (result == null? "null": result.toString()));
-		if (result != null && !this.paused) {
+		if (result != null && !this.paused && callback.isAttached()) {
 			if (result.wasSuccessful()) {
 				callback.onTaskSuccess((DaemonTaskSuccessResult) result);
 			} else {

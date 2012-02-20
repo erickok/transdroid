@@ -216,6 +216,8 @@
 <string name="pref_alarmsounduri_info">Notification sound to play with alarm</string>
 <string name="pref_alarmvibrate">Enable vibration</string>
 <string name="pref_alarmvibrate_info">Vibrate on alarm</string>
+<string name="pref_alarmcolour">Notification LED colour</string>
+<string name="pref_alarmcolour_info">If supported by your device</string>
 <string name="pref_checkrssfeeds">Check RSS feeds</string>
 <string name="pref_checkrssfeeds_info">Alarm when new torrents are available</string>
 <string name="pref_adwnotify">Enable ADW notifications</string>
@@ -323,6 +325,9 @@
 <string name="rss_no_feeds">No RSS feeds installed\n\nUse the menu to add new feeds</string>
 <string name="rss_loading_feed">Loading RSS feed</string>
 <string name="rss_no_items">Connected, but the RSS feed is empty</string>
+
+<string name="dialog_color_picker">Color Picker</string>
+<string name="press_color_to_apply">Press on Color to apply</string>    
 
 <string name="error_httperror">Error during communication with server</string>
 <string name="error_jsonrequesterror">Error building request</string>

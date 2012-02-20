@@ -127,12 +127,13 @@ public class Preferences {
 	public static final String KEY_PREF_ALARMPLAYSOUND = "transdroid_alarm_playsound";
 	public static final String KEY_PREF_ALARMSOUNDURI = "transdroid_alarm_sounduri";
 	public static final String KEY_PREF_ALARMVIBRATE = "transdroid_alarm_vibrate";
-	public static final String KEY_PREF_ADWNOTIFY    = "transdroid_alarm_adwnotify";
-	public static final String KEY_PREF_ADWONLYDL    = "transdroid_alarm_adwonlydl";
+	public static final String KEY_PREF_ALARMCOLOUR = "transdroid_alarm_colour";
+	public static final String KEY_PREF_ADWNOTIFY   = "transdroid_alarm_adwnotify";
+	public static final String KEY_PREF_ADWONLYDL   = "transdroid_alarm_adwonlydl";
 	
-	public static final String KEY_WIDGET_DAEMON	 = "transdroid_widget_daemon";
-	public static final String KEY_WIDGET_REFRESH	 = "transdroid_widget_refresh";
-	public static final String KEY_WIDGET_LAYOUT	 = "transdroid_widget_layout";
+	public static final String KEY_WIDGET_DAEMON	= "transdroid_widget_daemon";
+	public static final String KEY_WIDGET_REFRESH	= "transdroid_widget_refresh";
+	public static final String KEY_WIDGET_LAYOUT	= "transdroid_widget_layout";
 	
 	/**
 	 * Determines the order number of the last used daemon settings object
@@ -918,6 +919,7 @@ public class Preferences {
         		prefs.getBoolean(KEY_PREF_ALARMPLAYSOUND, false),
         		prefs.getString(KEY_PREF_ALARMSOUNDURI, null),
         		prefs.getBoolean(KEY_PREF_ALARMVIBRATE, false),
+        		prefs.getInt(KEY_PREF_ALARMCOLOUR, 0xff7dbb21),
         		prefs.getBoolean(KEY_PREF_ADWNOTIFY, false),
         		prefs.getBoolean(KEY_PREF_ADWONLYDL, false));
     }

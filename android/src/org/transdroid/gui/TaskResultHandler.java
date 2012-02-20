@@ -90,5 +90,10 @@ public class TaskResultHandler extends Handler implements IDaemonCallback {
 		msg.obj = result;
 		sendMessage(msg);
 	}
+
+	@Override
+	public boolean isAttached() {
+		return callback.isAttached();
+	}
 	
 }

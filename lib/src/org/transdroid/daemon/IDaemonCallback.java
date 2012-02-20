@@ -38,5 +38,7 @@ public interface IDaemonCallback {
 	void onTaskFailure(DaemonTaskFailureResult result);
 
 	void onTaskSuccess(DaemonTaskSuccessResult result);
+
+	boolean isAttached();
 	
 }
