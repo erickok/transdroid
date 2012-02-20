@@ -281,7 +281,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 			// Read JSON response
 			InputStream instream = response.getEntity().getContent();
 			String result = HttpHelper.ConvertStreamToString(instream);
-			if ((result.equals("") || result.equals("invalid request\n"))) {
+			if ((result.equals("") || result.trim().equals("invalid request"))) {
 				authtoken = null;
 				throw new DaemonException(ExceptionType.AuthenticationFailure, "Response was '" + result.replace("\n", "") + "' instead of a proper JSON object (and we used auth token '" + authtoken + "')");
 			}
