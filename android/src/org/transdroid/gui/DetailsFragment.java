@@ -465,6 +465,7 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 			final View setLocationLayout = LayoutInflater.from(getActivity()).inflate(
 				R.layout.dialog_set_download_location, null);
 			final EditText newLocation = (EditText) setLocationLayout.findViewById(R.id.download_location);
+			newLocation.setText(torrent.getLocationDir());
 			AlertDialog.Builder setLocationDialog = new AlertDialog.Builder(getActivity());
 			setLocationDialog.setTitle(R.string.menu_setdownloadlocation);
 			setLocationDialog.setView(setLocationLayout);
