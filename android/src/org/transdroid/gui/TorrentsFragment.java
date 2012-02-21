@@ -1778,6 +1778,8 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 				emptyText.setText(R.string.no_uploading_torrents);
 			} else if (activeMainView == MainViewType.OnlyInactive) {
 				emptyText.setText(R.string.no_inactive_torrents);
+			} else if (activeMainView == MainViewType.OnlyActive) {
+				emptyText.setText(R.string.no_active_torrents);
 			} else {
 				emptyText.setText(R.string.no_torrents);
 			}
@@ -1978,10 +1980,12 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 			// Update the torrents view type text
 			int mainViewTextID = activeMainView == MainViewType.OnlyDownloading? R.string.view_showdl: 
 				(activeMainView == MainViewType.OnlyUploading? R.string.view_showul: 
-				(activeMainView == MainViewType.OnlyInactive? R.string.view_showinactive: R.string.view_showall));
+				(activeMainView == MainViewType.OnlyInactive? R.string.view_showinactive: 
+					(activeMainView == MainViewType.OnlyActive? R.string.view_showactive: R.string.view_showall)));
 			int mainViewDrawableID = activeMainView == MainViewType.OnlyDownloading? R.drawable.icon_showdl: 
 				(activeMainView == MainViewType.OnlyUploading? R.drawable.icon_showup: 
-					(activeMainView == MainViewType.OnlyInactive? R.drawable.icon_showinactive: R.drawable.icon_showall));
+					(activeMainView == MainViewType.OnlyInactive? R.drawable.icon_showinactive: 
+						(activeMainView == MainViewType.OnlyActive? R.drawable.icon_showactive: R.drawable.icon_showall)));
 			viewtype.setText(getText(mainViewTextID).toString() + (Daemon.supportsLabels(getActiveDaemonType())? "\n" + useLabel: ""));
 			viewtypeselector.setImageResource(mainViewDrawableID);
 			
@@ -2000,7 +2004,8 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 		boolean isActivelySeeding = torrent.getStatusCode() == TorrentStatus.Seeding && (!onlyShowTransferring || torrent.getRateUpload() > 0);
 		return (matchViewType == MainViewType.ShowAll || 
 				(matchViewType == MainViewType.OnlyDownloading && isActivelyDownloading) || 
-				(matchViewType == MainViewType.OnlyUploading && isActivelySeeding)|| 
+				(matchViewType == MainViewType.OnlyUploading && isActivelySeeding)||  
+				(matchViewType == MainViewType.OnlyActive && (isActivelySeeding || isActivelyDownloading))|| 
 				(matchViewType == MainViewType.OnlyInactive && !isActivelyDownloading && !isActivelySeeding));
 	}
 

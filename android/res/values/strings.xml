@@ -10,6 +10,7 @@
 <string name="no_downloading_torrents">Connected, but no downloading torrents on the server.</string>
 <string name="no_uploading_torrents">Connected, but no seeding torrents on the server.</string>
 <string name="no_inactive_torrents">Connected, but no inactive torrents on the server.</string>
+<string name="no_active_torrents">Connected, but no active torrents on the server.</string>
 <string name="no_file_uploads">Your torrent client does not support .torrent file uploads or this is not yet implemented.</string>
 <string name="no_magnet_links">Your torrent client does not support .magnet links or this is not yet implemented.</string>
 <string name="save">Save</string>
@@ -27,6 +28,7 @@
 <string name="view_showall">All torrents</string>
 <string name="view_showdl">Downloading torrents</string>
 <string name="view_showul">Seeding torrents</string>
+<string name="view_showactive">Active torrents</string>
 <string name="view_showinactive">Inactive torrents</string>
 
 <string name="menu_add">Add</string>

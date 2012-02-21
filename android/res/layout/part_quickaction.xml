@@ -55,6 +55,15 @@
 			android:layout_weight="1" />
 			
 		<ImageButton
+			android:id="@+id/showactive"
+			android:layout_width="0dip"
+			android:layout_height="48dip"
+			android:src="@drawable/icon_showactive"
+			android:background="@android:drawable/btn_default_small"
+			android:layout_gravity="center"
+			android:layout_weight="1" />
+			
+		<ImageButton
 			android:id="@+id/showinactive"
 			android:layout_width="0dip"
 			android:layout_height="48dip"

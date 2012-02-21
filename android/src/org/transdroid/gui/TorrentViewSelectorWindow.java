@@ -45,6 +45,7 @@ public class TorrentViewSelectorWindow extends BetterPopupWindow {
 		((ImageButton)rootView.findViewById(R.id.showall)).setOnClickListener(getOnMainViewTypeClickListener(MainViewType.ShowAll));
 		((ImageButton)rootView.findViewById(R.id.showdl)).setOnClickListener(getOnMainViewTypeClickListener(MainViewType.OnlyDownloading));
 		((ImageButton)rootView.findViewById(R.id.showup)).setOnClickListener(getOnMainViewTypeClickListener(MainViewType.OnlyUploading));
+		((ImageButton)rootView.findViewById(R.id.showactive)).setOnClickListener(getOnMainViewTypeClickListener(MainViewType.OnlyActive));
 		((ImageButton)rootView.findViewById(R.id.showinactive)).setOnClickListener(getOnMainViewTypeClickListener(MainViewType.OnlyInactive));
         labelsListView = (ListView) rootView.findViewById(R.id.labelsList);
         labelsListView.setOnItemClickListener(onLabelClickListener);

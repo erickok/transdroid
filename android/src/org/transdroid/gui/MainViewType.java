@@ -25,7 +25,8 @@ public enum MainViewType {
 	ShowAll (1),
 	OnlyDownloading (2),
 	OnlyUploading (3),
-	OnlyInactive (4);
+	OnlyInactive (4),
+	OnlyActive (5);
 
 	private int code;
     private static final Map<Integer,MainViewType> lookup  = new HashMap<Integer,MainViewType>();
