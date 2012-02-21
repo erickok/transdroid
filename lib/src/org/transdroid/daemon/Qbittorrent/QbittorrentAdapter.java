@@ -125,7 +125,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 				// Remove a torrent
 				RemoveTask removeTask = (RemoveTask) task;
-				makeRequest((removeTask.includingData()? "/command/deletePerm": "/command/delete"), new BasicNameValuePair("hash", removeTask.getTargetTorrent().getUniqueID()));
+				makeRequest((removeTask.includingData()? "/command/deletePerm": "/command/delete"), new BasicNameValuePair("hashes", removeTask.getTargetTorrent().getUniqueID()));
 				return new DaemonTaskSuccessResult(task);
 				
 			case Pause:
