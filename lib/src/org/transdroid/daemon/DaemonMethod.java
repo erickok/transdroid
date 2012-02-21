@@ -42,7 +42,8 @@ public enum DaemonMethod {
 	SetDownloadLocation (17),
 	GetTorrentDetails (18), 
 	SetTrackers (19), 
-	SetAlternativeMode (20);
+	SetAlternativeMode (20),
+	GetStats (21);
 
 	private int code;
     private static final Map<Integer,DaemonMethod> lookup  = new HashMap<Integer,DaemonMethod>();

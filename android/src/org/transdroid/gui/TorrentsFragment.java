@@ -39,6 +39,8 @@ import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
+import org.transdroid.daemon.task.GetStatsTask;
+import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
 import org.transdroid.daemon.task.PauseAllTask;
 import org.transdroid.daemon.task.PauseTask;
 import org.transdroid.daemon.task.RemoveTask;
@@ -554,7 +556,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 		miSearch.setIcon(R.drawable.icon_search_title);
 		miSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		MenuItem miAltMode = menu.add(0, MENU_ALTMODE_ID, 0, R.string.menu_altmode);
-		miAltMode.setIcon(R.drawable.icon_turtle_title);
+		miAltMode.setIcon(inAlternativeMode? R.drawable.icon_turtle_title: R.drawable.icon_turtle_title_off);
 		miAltMode.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		miAltMode.setVisible(daemon != null && Daemon.supportsSetAlternativeMode(daemon.getType()));
 		
@@ -1381,6 +1383,9 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	public void updateTorrentList() {
     	if (daemon != null) {
 			queue.enqueue(RetrieveTask.create(daemon));
+			if (Daemon.supportsStats(daemon.getType())) {
+				queue.enqueue(GetStatsTask.create(daemon));
+			}
     	}
 	}
 
@@ -1519,6 +1524,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 		}
 
 		inAlternativeMode = !inAlternativeMode;
+		updateAlternativeModeIcon();
 		queue.enqueue(SetAlternativeModeTask.create(daemon, inAlternativeMode));
 		
 	}
@@ -1665,6 +1671,21 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 			}
 			break;
 
+		case GetStats:
+
+			// Only bother if we still are still looking at the same daemon since the task was queued
+			if (result.getTask().getAdapterType() == daemon.getType()) {
+				
+				GetStatsTaskSuccessResult stats = (GetStatsTaskSuccessResult) result;
+				if (Daemon.supportsSetAlternativeMode(daemon.getType())) {
+					// Update the alternative/tutle mode indicator
+					inAlternativeMode = stats.isAlternativeModeEnabled();
+					updateAlternativeModeIcon();
+				}
+					
+			}
+			break;
+
 		case Remove:
 
 			// Show 'removed' message
@@ -1730,10 +1751,20 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 			Toast.makeText(getActivity(), getString(R.string.torrent_locationset, ((SetDownloadLocationTask)result.getTask()).getNewLocation()), Toast.LENGTH_SHORT).show();
 			break;
 
+		case SetAlternativeMode:
+			
+			// Updated the mode: now update the server stats to reflect the real new status (since the action might have been unsuccessful for some reason)
+			queue.enqueue(GetStatsTask.create(daemon));
+			break;
 		}
 		
 	}
 
+	private void updateAlternativeModeIcon() {
+		// By invalidation the options menu it gets redrawn and the turtle icon gets updated
+		getSupportActivity().invalidateOptionsMenu();
+	}
+	
 	/**
 	 * Shows the proper text when the torrent list is empty
 	 */

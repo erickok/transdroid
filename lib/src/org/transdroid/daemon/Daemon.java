@@ -179,6 +179,10 @@ public enum Daemon {
 		return 8080;
 	}
 
+	public static boolean supportsStats(Daemon type) {
+		return type == Transmission || type == Bitflu;
+	}
+
 	public static boolean supportsAvailability(Daemon type) {
 		return type == uTorrent || type == BitTorrent || type == DLinkRouterBT || type == Transmission || type == Vuze || type == BuffaloNas;
 	}

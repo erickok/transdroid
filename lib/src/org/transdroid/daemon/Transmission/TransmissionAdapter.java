@@ -56,6 +56,8 @@ import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
+import org.transdroid.daemon.task.GetStatsTask;
+import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
 import org.transdroid.daemon.task.PauseTask;
@@ -145,9 +147,16 @@ public class TransmissionAdapter implements IDaemonAdapter {
 					fields.put(field);
 				}
 				request.put("fields", fields);
-				
+
 				JSONObject result = makeRequest(buildRequestObject("torrent-get", request));
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONObject("arguments")));
+
+			case GetStats:
+
+				// Request the current server statistics
+				JSONObject stats = makeRequest(buildRequestObject("session-get", new JSONObject())).getJSONObject("arguments");
+				return new GetStatsTaskSuccessResult((GetStatsTask) task, stats.getBoolean("alt-speed-enabled"), 
+					stats.getLong("download-dir-free-space"));
 
 			case GetTorrentDetails:
 
