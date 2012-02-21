@@ -42,6 +42,7 @@ import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
 import org.transdroid.daemon.DaemonException.ExceptionType;
@@ -54,6 +55,8 @@ import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
+import org.transdroid.daemon.task.GetTorrentDetailsTask;
+import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
@@ -92,7 +95,14 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				// Request all torrents from server
 				JSONArray result = new JSONArray(makeRequest("/json/events"));
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result));
-				
+
+			case GetTorrentDetails:
+
+				// Request tracker and error details for a specific teacher 
+				String mhash = ((GetTorrentDetailsTask)task).getTargetTorrent().getUniqueID();
+				JSONArray messages = new JSONArray(makeRequest("/json/propertiesTrackers/" + mhash));
+				return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, parseJsonTorrentDetails(messages));
+
 			case GetFileList:
 
 				// Request files listing for a specific torrent
@@ -295,6 +305,27 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	 */
 	private String buildWebUIUrl(String path) {
 		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + path;
+	}
+	
+	private TorrentDetails parseJsonTorrentDetails(JSONArray messages) throws JSONException {
+		
+		ArrayList<String> trackers = new ArrayList<String>();
+		ArrayList<String> errors = new ArrayList<String>();
+
+		// Parse response
+		if (messages.length() > 0) {
+			for (int i = 0; i < messages.length(); i++) {
+				JSONObject tor = messages.getJSONObject(i);
+				trackers.add(tor.getString("url"));
+				String msg = tor.getString("msg");
+				if (msg != null && !msg.equals(""))
+					errors.add(msg);
+			}
+		}
+		
+		// Return the list
+		return new TorrentDetails(trackers, errors);
+		
 	}
 
 	private ArrayList<Torrent> parseJsonTorrents(JSONArray response) throws JSONException {

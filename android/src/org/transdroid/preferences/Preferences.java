@@ -543,7 +543,6 @@ public class Preferences {
      */
     public static List<SiteSettings> getSupportedSiteSettings() {
             List<SiteSettings> settings = new ArrayList<SiteSettings>();
-            settings.add(new SiteSettings("site_btjunkie", "BTJunkie"));
             settings.add(new SiteSettings("site_extratorrent", "ExtraTorrent"));
             settings.add(new SiteSettings("site_ezrss", "EzRss"));
             settings.add(new SiteSettings("site_isohunt", "isoHunt"));
@@ -564,9 +563,7 @@ public class Preferences {
      * @return The Transdroid Torrent Search site key, f.e. 'Mininova'
      */
     public static String getCursorKeyForPreferencesKey(String preferencesKey) {
-    	if (preferencesKey.equals("site_btjunkie")) {
-    		return "Btjunkie";
-    	} else if (preferencesKey.equals("site_extratorrent")) {
+    	if (preferencesKey.equals("site_extratorrent")) {
     		return "ExtraTorrent";
     	} else if (preferencesKey.equals("site_ezrss")) {
     		return "EzRss";

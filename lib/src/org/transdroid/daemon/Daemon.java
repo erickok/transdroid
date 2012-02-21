@@ -192,7 +192,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsFineDetails(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Daemon.Transmission || type == Deluge || type == rTorrent;
+		return type == uTorrent || type == BitTorrent || type == Daemon.Transmission || type == Deluge || type == rTorrent || type == qBittorrent;
 	}
 
 	public static boolean needsManualPathSpecified(Daemon type) {
