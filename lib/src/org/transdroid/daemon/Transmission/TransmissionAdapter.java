@@ -156,7 +156,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				// Request the current server statistics
 				JSONObject stats = makeRequest(buildRequestObject("session-get", new JSONObject())).getJSONObject("arguments");
 				return new GetStatsTaskSuccessResult((GetStatsTask) task, stats.getBoolean("alt-speed-enabled"), 
-					stats.getLong("download-dir-free-space"));
+						rpcVersion >= 12? stats.getLong("download-dir-free-space"): -1);
 
 			case GetTorrentDetails:
 
