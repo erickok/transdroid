@@ -79,7 +79,7 @@ import android.widget.Toast;
 public class Search extends FragmentActivity implements OnTouchListener, OnSelectedChangedListener {
 
 	private static final String LOG_NAME = "Search";
-	private final static Uri TTS_MARKET_URI = Uri.parse("market://search?q=pname:org.transdroid.search");
+	private final static Uri TTS_MARKET_URI = Uri.parse("http://www.transdroid.org/latest-search");
 	
 	private static final int MENU_REFRESH_ID = 1;
 	private static final int MENU_SEARCH_ID = 2;
@@ -462,8 +462,9 @@ public class Search extends FragmentActivity implements OnTouchListener, OnSelec
 
 		case DIALOG_INSTALLSEARCH:
 			
-			return ActivityUtil.buildInstallDialog(this, R.string.tts_not_found, TTS_MARKET_URI, true);
-			
+			return ActivityUtil.buildInstallDialog(this, R.string.tts_not_found, TTS_MARKET_URI, true,
+				getString(R.string.tts_install));
+
 		}
 		return super.onCreateDialog(id);
 

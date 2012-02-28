@@ -58,22 +58,23 @@ public class ActivityUtil {
      * @return The dialog to show
      */
 	public static Dialog buildInstallDialog(final Activity activity, int messageResourceID, final Uri marketUri) {
-		return buildInstallDialog(activity, messageResourceID, marketUri, false);
+		return buildInstallDialog(activity, messageResourceID, marketUri, false, activity.getString(R.string.oifm_install));
 	}
     
     /**
      * Builds a (reusable) dialog that asks to install some application from the Android market
      * @param messageResourceID The message to show to the user
      * @param marketUri The application's URI on the Android Market
+     * @param buttonText The text to show on the positive (install) button
      * @param alternativeNegativeButtonHandler The click handler for the negative dialog button
      * @return The dialog to show
      */
 	public static Dialog buildInstallDialog(final Activity activity, int messageResourceID, final Uri marketUri, 
-			final boolean closeAfterInstallFailure) {
+			final boolean closeAfterInstallFailure, CharSequence buttonText) {
 		AlertDialog.Builder fbuilder = new AlertDialog.Builder(activity);
 		fbuilder.setMessage(messageResourceID);
 		fbuilder.setCancelable(true);
-		fbuilder.setPositiveButton(R.string.oifm_install, new DialogInterface.OnClickListener() {
+		fbuilder.setPositiveButton(buttonText, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				Intent install = new Intent(Intent.ACTION_VIEW, marketUri);

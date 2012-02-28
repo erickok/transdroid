@@ -75,12 +75,10 @@ public class BootReceiver extends BroadcastReceiver {
 		// Set up PendingIntent for the alarm service
 		if (mgr == null)
 			mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		mgr.cancel(pui);
-		
 		Intent i = new Intent(context, UpdateReceiver.class);
-		pui = PendingIntent.getBroadcast(context, 0, i, 0);
+		pui = PendingIntent.getBroadcast(context, 1, i, 0);
 		// First intent after a small (2 second) delay and repeat every day
-		mgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 2000,
+		mgr.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 2000,
 			AlarmManager.INTERVAL_DAY, pui);
 	}
 

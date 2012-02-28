@@ -115,7 +115,8 @@
 <string name="searchmenu_useassearch">Use as new search</string>
 <string name="search_savedrssfeed">Search saved as RSS feed</string>
 <string name="search_savenotsupported">Saving not supported for this site</string>
-<string name="tts_not_found">Torrent Search is now a separate module, which means a one-time install from the Android Market. Install it now?</string>
+<string name="tts_not_found">Torrent Search is a separate module, to be installed from the website. Download and install it now?</string>
+<string name="tts_install">Download and install</string>
 
 <string name="preferences">Transdroid preferences</string>
 <string name="add_new_server">Add new server</string>
