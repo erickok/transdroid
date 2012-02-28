@@ -331,6 +331,10 @@
 <string name="dialog_color_picker">Color Picker</string>
 <string name="press_color_to_apply">Press on Color to apply</string>    
 
+<string name="update_app_newversion">New Transdroid version available</string>
+<string name="update_search_newversion">New Transdroid search module available</string>
+<string name="update_updateto">You can now update to %1$s</string>
+
 <string name="error_httperror">Error during communication with server</string>
 <string name="error_jsonrequesterror">Error building request</string>
 <string name="error_jsonresponseerror">Error parsing of server response (please check your settings)</string>

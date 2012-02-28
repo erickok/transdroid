@@ -201,5 +201,9 @@
 			</intent-filter> 
         </service>
 		
+        <!-- App and search module update service -->
+        <service android:name="org.transdroid.service.UpdateService" />
+        <receiver android:name="org.transdroid.service.UpdateReceiver" />
+        
 	</application>
 </manifest> 
