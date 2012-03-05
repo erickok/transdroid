@@ -372,6 +372,13 @@
 <string name="seedm8_pref_server_info">Like alpha.seedm8.com</string>
 <string name="seedm8_error_invalid_servername">Invalid server (use the full host name, like alpha.seedm8.com)</string>
 
+<string name="seedstuff_info">Seedstuff offers seedboxes where customer service is priority #1. Transdroid provides easy setup for Seedstuff servers.\n\nRead more at www.seedstuff.ca</string>
+<string name="seedstuff_add_new_xserver">Add Seedstuff server</string>
+<string name="seedstuff_pref_title">Seedstuff server settings</string>
+<string name="seedstuff_pref_server">Server name</string>
+<string name="seedstuff_pref_server_info">Like 100.seedstuff.ca</string>
+<string name="seedstuff_error_invalid_servername">Invalid server (use the full host name, like 100.seedstuff.ca)</string>
+
 <string-array name="pref_sort_types">
 <item>Combined ordering</item>
 <item>Number of seeders/leechers</item>

@@ -42,6 +42,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
+import ca.seedstuff.transdroid.preferences.SeedstuffSettings;
+
 import com.seedm8.transdroid.preferences.SeedM8Settings;
 import com.xirvik.transdroid.preferences.XirvikServerType;
 import com.xirvik.transdroid.preferences.XirvikSettings;
@@ -78,6 +80,13 @@ public class Preferences {
 	public static final String KEY_PREF_8SPASS		= "transdroid_8server_spass";
 	public static final String KEY_PREF_8ALARMFINISHED	= "transdroid_8server_alarmfinished";
 	public static final String KEY_PREF_8ALARMNEW	= "transdroid_8server_alarmnew";
+
+	public static final String KEY_PREF_SNAME		= "transdroid_sserver_name";
+	public static final String KEY_PREF_SSERVER		= "transdroid_sserver_server";
+	public static final String KEY_PREF_SUSER		= "transdroid_sserver_user";
+	public static final String KEY_PREF_SPASS		= "transdroid_sserver_pass";
+	public static final String KEY_PREF_SALARMFINISHED	= "transdroid_sserver_alarmfinished";
+	public static final String KEY_PREF_SALARMNEW	= "transdroid_sserver_alarmnew";
 	
 	public static final String KEY_PREF_NAME		= "transdroid_server_name";
 	public static final String KEY_PREF_DAEMON		= "transdroid_server_daemon";
@@ -314,6 +323,48 @@ public class Preferences {
 		editor.commit();
 	}
 
+	public static void removeSeedstuffSettings(SharedPreferences prefs, SeedstuffSettings toRemove) {
+
+		Editor editor = prefs.edit();
+		
+		// Move all seedstuff server settings 'up' 1 spot (by saving the preferences to an order id number 1 lower)
+		int id = (toRemove.getIdString() == ""? 0: Integer.parseInt(toRemove.getIdString()));
+		while (prefs.contains(KEY_PREF_SUSER + Integer.toString(id + 1))) {
+			
+			// Copy the preferences
+			String fromId = Integer.toString(id + 1);
+			String toId = (id == 0? "": Integer.toString(id));
+			editor.putString(KEY_PREF_SNAME + toId, prefs.getString(KEY_PREF_SNAME + fromId, null));
+			editor.putString(KEY_PREF_SSERVER + toId, prefs.getString(KEY_PREF_SSERVER + fromId, null));
+			editor.putString(KEY_PREF_SUSER + toId, prefs.getString(KEY_PREF_SUSER + fromId, null));
+			editor.putString(KEY_PREF_SPASS + toId, prefs.getString(KEY_PREF_SPASS + fromId, null));
+			editor.putString(KEY_PREF_SALARMFINISHED + toId, prefs.getString(KEY_PREF_SALARMFINISHED + fromId, null));
+			editor.putString(KEY_PREF_SALARMNEW + toId, prefs.getString(KEY_PREF_SALARMNEW + fromId, null));
+			id++;
+			
+		}
+		
+		// Remove the last server preferences configuration
+		String delId = (id == 0? "": Integer.toString(id));
+		editor.remove(KEY_PREF_SNAME + delId);
+		editor.remove(KEY_PREF_SSERVER + delId);
+		editor.remove(KEY_PREF_SUSER + delId);
+		editor.remove(KEY_PREF_SPASS + delId);
+		editor.remove(KEY_PREF_SALARMNEW + delId);
+		editor.remove(KEY_PREF_SALARMFINISHED + delId);
+
+		// If the last used daemon...
+		String lastUsed = prefs.getString(KEY_PREF_LASTUSED, "");
+		
+		// no longer exists...
+		if (!prefs.contains(KEY_PREF_ADDRESS + lastUsed)) {
+			// Just reset the last used number
+			editor.putString(KEY_PREF_LASTUSED, "");
+		}
+
+		editor.commit();
+	}
+
 	public static void removeSiteSettings(SharedPreferences prefs, SiteSettings toRemove) {
 
 		Editor editor = prefs.edit();
@@ -472,6 +523,33 @@ public class Preferences {
 	}
 
 	/**
+	 * Build a list of seedstuff server setting objects, available in the stored preferences
+	 * @param prefs The application's shared preferences
+	 * @return A list of all seedstuff server configurations available
+	 */
+	public static List<SeedstuffSettings> readAllSeedstuffSettings(SharedPreferences prefs) {
+
+        // Build a list of seedstuff server setting objects, available in the stored preferences
+        List<SeedstuffSettings> sservers = new ArrayList<SeedstuffSettings>();
+        int i = 0;
+        String nextName = KEY_PREF_SUSER;
+        while (prefs.contains(nextName)) {
+        	
+        	// The first server is stored without number, subsequent ones have an order number after the regular pref key
+        	String postfix = (i == 0? "": Integer.toString(i));
+        	
+        	// Add an entry for this server
+        	sservers.add(readSeedstuffSettings(prefs, postfix));
+        	
+        	// Search for more
+        	i++;
+        	nextName = KEY_PREF_SUSER + Integer.toString(i);
+        }
+
+        return sservers;
+	}
+
+	/**
 	 * Build a list of server setting objects, available in the stored preferences
 	 * @param prefs The application's shared preferences
 	 * @return A list of all daemon configurations available
@@ -516,6 +594,9 @@ public class Preferences {
 		}
 		for (SeedM8Settings seedm8 : readAllSeedM8Settings(prefs)) {
 			daemons.addAll(seedm8.createDaemonSettings(max + 1));
+		}
+		for (SeedstuffSettings seedstuff : readAllSeedstuffSettings(prefs)) {
+			daemons.addAll(seedstuff.createDaemonSettings(max + 1));
 		}
 		return daemons;
 		
@@ -779,6 +860,20 @@ public class Preferences {
     		prefs.getString(KEY_PREF_8SPASS + postfix, null),
     		prefs.getBoolean(KEY_PREF_XALARMFINISHED + postfix, true),
     		prefs.getBoolean(KEY_PREF_XALARMNEW + postfix, false),
+    		postfix);
+
+    }
+
+    private static SeedstuffSettings readSeedstuffSettings(SharedPreferences prefs, String postfix) {
+    		
+    	// Return daemon settings
+    	return new SeedstuffSettings(
+    		prefs.getString(KEY_PREF_SNAME + postfix, null),
+			prefs.getString(KEY_PREF_SSERVER + postfix, null),
+			prefs.getString(KEY_PREF_SUSER + postfix, null),
+    		prefs.getString(KEY_PREF_SPASS + postfix, null),
+    		prefs.getBoolean(KEY_PREF_SALARMFINISHED + postfix, true),
+    		prefs.getBoolean(KEY_PREF_SALARMNEW + postfix, false),
     		postfix);
 
     }

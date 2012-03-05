@@ -30,6 +30,7 @@ import org.transdroid.gui.search.TorrentSearchHistoryProvider;
 import org.transdroid.gui.util.ActivityUtil;
 import org.transdroid.preferences.PreferencesAdapter.PreferencesListButton;
 import org.transdroid.preferences.PreferencesAdapter.SeedM8ListButton;
+import org.transdroid.preferences.PreferencesAdapter.SeedstuffListButton;
 import org.transdroid.preferences.PreferencesAdapter.XirvikListButton;
 
 import android.app.AlertDialog;
@@ -53,6 +54,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import ca.seedstuff.transdroid.preferences.PreferencesSeedstuffServer;
+import ca.seedstuff.transdroid.preferences.SeedstuffSettings;
+
 import com.seedm8.transdroid.preferences.PreferencesSeedM8Server;
 import com.seedm8.transdroid.preferences.SeedM8Settings;
 import com.xirvik.transdroid.preferences.PreferencesXirvikServer;
@@ -74,6 +78,7 @@ public class PreferencesMain extends ListActivity {
 	private static final int DIALOG_IMPORT_SETTINGS = 3;
 	private static final int DIALOG_EXPORT_SETTINGS = 4;
 	private static final int DIALOG_INSTALL_FILE_MANAGER = 5;
+	static final int DIALOG_SEEDSTUFF_INFO = 6;
 	private final static String PICK_DIRECTORY_INTENT = "org.openintents.action.PICK_DIRECTORY";
 	private final static String PICK_FILE_INTENT = "org.openintents.action.PICK_FILE";
 	private final static Uri OIFM_MARKET_URI = Uri.parse("market://search?q=pname:org.openintents.filemanager");
@@ -103,13 +108,14 @@ public class PreferencesMain extends ListActivity {
         // Build a list of server and search site settings objects to show
 		List<XirvikSettings> xservers = Preferences.readAllXirvikSettings(prefs);
 		List<SeedM8Settings> s8servers = Preferences.readAllSeedM8Settings(prefs);
+		List<SeedstuffSettings> sservers = Preferences.readAllSeedstuffSettings(prefs);
 		List<DaemonSettings> daemons = Preferences.readAllNormalDaemonSettings(prefs);
 		List<SiteSettings> websites = Preferences.readAllWebSearchSiteSettings(prefs);
 		
 		currentdefaultsite = Preferences.readDefaultSearchSiteSettings(prefs);
         
         // Set the list items
-        adapter = new PreferencesAdapter(this, xservers, s8servers, daemons, websites);
+        adapter = new PreferencesAdapter(this, xservers, s8servers, sservers, daemons, websites);
         setListAdapter(adapter);
         
 	}
@@ -145,6 +151,19 @@ public class PreferencesMain extends ListActivity {
 			// Start a new seedm8 server settings screen
     		Intent i = new Intent(this, PreferencesSeedM8Server.class);
     		i.putExtra(PreferencesSeedM8Server.PREFERENCES_8SERVER_KEY, (max == 0? "": Integer.toString(max)));
+    		startActivityForResult(i, 0);
+
+    	} else if (item instanceof SeedstuffListButton) {
+
+			// What is the max current seedstuff settings ID number?
+			int max = 0;
+			while (prefs.contains(Preferences.KEY_PREF_SUSER + (max == 0? "": Integer.toString(max)))) {
+				max++;
+			}
+			
+			// Start a new seedstuff server settings screen
+    		Intent i = new Intent(this, PreferencesSeedstuffServer.class);
+    		i.putExtra(PreferencesSeedstuffServer.PREFERENCES_SSERVER_KEY, (max == 0? "": Integer.toString(max)));
     		startActivityForResult(i, 0);
 
     	} else if (item instanceof PreferencesListButton) {
@@ -215,6 +234,14 @@ public class PreferencesMain extends ListActivity {
     		Intent i = new Intent(this, PreferencesSeedM8Server.class);
     		SeedM8Settings s8server = (SeedM8Settings) item;
     		i.putExtra(PreferencesSeedM8Server.PREFERENCES_8SERVER_KEY, s8server.getIdString());
+    		startActivityForResult(i, 0);
+
+    	} else if (item instanceof SeedstuffSettings) { 
+    		
+    		// Open the seedstuff server settings edit activity for the clicked server
+    		Intent i = new Intent(this, PreferencesSeedstuffServer.class);
+    		SeedstuffSettings sserver = (SeedstuffSettings) item;
+    		i.putExtra(PreferencesSeedstuffServer.PREFERENCES_SSERVER_KEY, sserver.getIdString());
     		startActivityForResult(i, 0);
 
     	} else if (item instanceof DaemonSettings) { 
@@ -309,6 +336,16 @@ public class PreferencesMain extends ListActivity {
 				return true;
 			}
 		}
+		if (selected instanceof SeedstuffSettings) {
+			
+			if (item.getItemId() == MENU_REMOVE_ID) {
+
+				// Remove this Seedstuff server configuration and reload this screen
+				Preferences.removeSeedstuffSettings(prefs, (SeedstuffSettings)selected);
+				buildAdapter();
+				return true;
+			}
+		}
 		if (selected instanceof SiteSettings) {
 
 			if (item.getItemId() == MENU_REMOVE_ID) {
@@ -348,6 +385,11 @@ public class PreferencesMain extends ListActivity {
 			menu.add(0, MENU_REMOVE_ID, 0, R.string.menu_remove);
 		}
 
+		// For SeedstuffSettings, allow removing of the config
+		if (item instanceof SeedstuffSettings) {
+			menu.add(0, MENU_REMOVE_ID, 0, R.string.menu_remove);
+		}
+
 		// For DeamonSettings, allow removing of the config
 		if (item instanceof DaemonSettings) {
 			menu.add(0, MENU_REMOVE_ID, 0, R.string.menu_remove);
@@ -381,6 +423,13 @@ public class PreferencesMain extends ListActivity {
 			AlertDialog.Builder s8infoDialog = new AlertDialog.Builder(this);
 			s8infoDialog.setView(getLayoutInflater().inflate(R.layout.dialog_seedm8_info, null));
 			return s8infoDialog.create();
+
+		case DIALOG_SEEDSTUFF_INFO:
+
+			// Build a dialog with the seedstuff info message (with logo and link)
+			AlertDialog.Builder sinfoDialog = new AlertDialog.Builder(this);
+			sinfoDialog.setView(getLayoutInflater().inflate(R.layout.dialog_seedstuff_info, null));
+			return sinfoDialog.create();
 
 		case DIALOG_SET_DEFAULT_SITE:
 

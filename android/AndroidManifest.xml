@@ -148,6 +148,7 @@
 	    <activity android:name="org.transdroid.preferences.PreferencesMain" android:label="@string/preferences"></activity>
 	    <activity android:name="com.xirvik.transdroid.preferences.PreferencesXirvikServer" android:label="@string/xirvik_pref_title"></activity>
 	    <activity android:name="com.seedm8.transdroid.preferences.PreferencesSeedM8Server" android:label="@string/seedm8_pref_title"></activity>
+	    <activity android:name="ca.seedstuff.transdroid.preferences.PreferencesSeedstuffServer" android:label="@string/seedstuff_pref_title"></activity>
 	    <activity android:name="org.transdroid.preferences.PreferencesRss" android:label="@string/pref_rss_info"></activity>
 	    <activity android:name="org.transdroid.preferences.PreferencesServer" android:label="@string/preferences"></activity>
 	    <activity android:name="org.transdroid.preferences.PreferencesWebSearch" android:label="@string/pref_search"></activity>

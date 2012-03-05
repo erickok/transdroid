@@ -25,6 +25,8 @@ import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.gui.search.SiteSettings;
 import org.transdroid.rss.RssFeedSettings;
 
+import ca.seedstuff.transdroid.preferences.SeedstuffSettings;
+
 import com.seedm8.transdroid.preferences.SeedM8Settings;
 import com.xirvik.transdroid.preferences.XirvikSettings;
 
@@ -48,11 +50,11 @@ public class PreferencesAdapter extends BaseAdapter {
 
 	public static final String ADD_NEW_XSERVER = "add_new_xserver";
 	public static final String ADD_NEW_8SERVER = "add_new_8server";
+	public static final String ADD_NEW_SSERVER = "add_new_sserver";
 	public static final String ADD_NEW_DAEMON = "add_new_daemon";
 	public static final String ADD_NEW_WEBSITE = "add_new_website";
 	public static final String ADD_NEW_RSSFEED = "add_new_rssfeed";
 	public static final String ADD_EZRSS_FEED = "add_ezrss_feed";
-	public static final String XIRVIK_INFO = "xirvik_info";
 	public static final String RSS_SETTINGS = "rss_settings";
 	public static final String INTERFACE_SETTINGS = "interface_settings";
 	public static final String CLEAN_SEARCH_HISTORY = "clear_search_history";
@@ -70,7 +72,7 @@ public class PreferencesAdapter extends BaseAdapter {
 	 * @param daemons List of existing servers
 	 */
 	public PreferencesAdapter(Context context, List<DaemonSettings> daemons) {
-		this(context, null, null, null, daemons, null, null, true, false, false);
+		this(context, null, null, null, null, daemons, null, null, true, false, false);
 	}
 
 	/**
@@ -80,7 +82,7 @@ public class PreferencesAdapter extends BaseAdapter {
 	 * @param foo Dummy (unused) parameter to make this constructor's signature unique
 	 */
 	public PreferencesAdapter(Context context, List<RssFeedSettings> feeds, int foo) {
-		this(context, null, null, null, null, feeds, null, false, false, true);
+		this(context, null, null, null, null, null, feeds, null, false, false, true);
 	}
 
 	/**
@@ -91,11 +93,11 @@ public class PreferencesAdapter extends BaseAdapter {
 	 * @param daemons All regular server settings
 	 * @param websites All web-search site settings
 	 */
-	public PreferencesAdapter(ListActivity preferencesActivity, List<XirvikSettings> xservers, List<SeedM8Settings> s8servers, List<DaemonSettings> daemons, List<SiteSettings> websites) {
-		this(preferencesActivity, preferencesActivity, xservers, s8servers, daemons, null, websites, true, true, false);
+	public PreferencesAdapter(ListActivity preferencesActivity, List<XirvikSettings> xservers, List<SeedM8Settings> s8servers, List<SeedstuffSettings> sservers, List<DaemonSettings> daemons, List<SiteSettings> websites) {
+		this(preferencesActivity, preferencesActivity, xservers, s8servers, sservers, daemons, null, websites, true, true, false);
 	}
 	
-	private PreferencesAdapter(Context context, ListActivity preferencesActivity, List<XirvikSettings> xservers, List<SeedM8Settings> s8servers, List<DaemonSettings> daemons, List<RssFeedSettings> feeds, List<SiteSettings> websites, boolean withDaemons, boolean withOthers, boolean withRssFeeds) {
+	private PreferencesAdapter(Context context, ListActivity preferencesActivity, List<XirvikSettings> xservers, List<SeedM8Settings> s8servers, List<SeedstuffSettings> sservers, List<DaemonSettings> daemons, List<RssFeedSettings> feeds, List<SiteSettings> websites, boolean withDaemons, boolean withOthers, boolean withRssFeeds) {
 
 		this.context = context;
 		
@@ -107,9 +109,11 @@ public class PreferencesAdapter extends BaseAdapter {
 		if (withOthers) {
 			this.items.addAll(xservers);
 			this.items.addAll(s8servers);
+			this.items.addAll(sservers);
 			this.items.add(new PreferencesListButton(context, ADD_NEW_DAEMON, R.string.add_new_server));
 			this.items.add(new XirvikListButton(preferencesActivity, ADD_NEW_XSERVER, R.string.xirvik_add_new_xserver));
 			this.items.add(new SeedM8ListButton(preferencesActivity, ADD_NEW_8SERVER, R.string.seedm8_add_new_xserver));
+			this.items.add(new SeedstuffListButton(preferencesActivity, ADD_NEW_SSERVER, R.string.seedstuff_add_new_xserver));
 			this.items.add(new Divider(context, R.string.pref_search));
 			this.items.add(new PreferencesListButton(context, SET_DEFAULT_SITE, R.string.pref_setdefault));
 			this.items.addAll(websites);
@@ -188,6 +192,18 @@ public class PreferencesAdapter extends BaseAdapter {
 			// Reuse view
 			SeedM8SettingsView setView = (SeedM8SettingsView) convertView;
 			setView.SetData(s8server);
+			return setView;
+
+		} else if (item instanceof SeedstuffSettings) {
+			
+			// return a Seedstuff list view
+			SeedstuffSettings sserver = (SeedstuffSettings) item;
+			if (convertView == null || !(convertView instanceof SeedstuffSettingsView)) {
+				return new SeedstuffSettingsView(context, sserver);
+			}
+			// Reuse view
+			SeedstuffSettingsView setView = (SeedstuffSettingsView) convertView;
+			setView.SetData(sserver);
 			return setView;
 
 		} else if (item instanceof DaemonSettings) {
@@ -284,6 +300,33 @@ public class PreferencesAdapter extends BaseAdapter {
 		 * Sets the actual texts and images to the visible widgets (fields)
 		 */
 		public void SetData(SeedM8Settings settings) {
+			((TextView)findViewById(R.id.title)).setText(settings.getName());
+			((TextView)findViewById(R.id.summary)).setText(settings.getHumanReadableIdentifier());
+		}
+
+	}
+
+	/**
+	 * A list item representing a Seedstuff settings object (by showing its name and an identifier text)
+	 */
+	public class SeedstuffSettingsView extends LinearLayout {
+
+		SeedstuffSettings settings;
+		
+		public SeedstuffSettingsView(Context context, SeedstuffSettings settings) {
+			super(context);
+			addView(inflate(context, R.layout.list_item_seedbox_settings, null));
+			ImageView icon = (ImageView) findViewById(R.id.icon);
+			icon.setImageResource(R.drawable.seedstuff_icon);
+			
+			this.settings = settings;
+			SetData(settings);
+		}
+
+		/**
+		 * Sets the actual texts and images to the visible widgets (fields)
+		 */
+		public void SetData(SeedstuffSettings settings) {
 			((TextView)findViewById(R.id.title)).setText(settings.getName());
 			((TextView)findViewById(R.id.summary)).setText(settings.getHumanReadableIdentifier());
 		}
@@ -457,6 +500,44 @@ public class PreferencesAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					preferencesActivity.showDialog(PreferencesMain.DIALOG_SEEDM8_INFO);
+				}
+			});
+			helpButton.setFocusable(false);
+		}
+		
+		/**
+		 * Returns the string identifier that can be used on clicks
+		 * @return The identifier key
+		 */
+		public String getKey() {
+			return key;
+		}
+	}
+
+	/**
+	 * An button to show inside the list, that allows adding of a new seedstuff server as well as to click a '?' button
+	 */
+	public class SeedstuffListButton extends LinearLayout {
+
+		private String key;
+		
+		/**
+		 * Create a static action button instance, that can be shown in the list screen
+		 * @param preferencesActivity The application context
+		 * @param key The button-unique string to identify clicks
+		 * @param textResourceID The resource of the text to show as the buttons title text
+		 */
+		public SeedstuffListButton(final ListActivity preferencesActivity, String key, int textResourceID) {
+			super(preferencesActivity);
+			addView(inflate(preferencesActivity, R.layout.list_item_seedbox_pref, null));
+
+			this.key = key;
+			((TextView)findViewById(R.id.add_server)).setText(textResourceID);
+			ImageButton helpButton = (ImageButton)findViewById(R.id.info);
+			helpButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					preferencesActivity.showDialog(PreferencesMain.DIALOG_SEEDSTUFF_INFO);
 				}
 			});
 			helpButton.setFocusable(false);
