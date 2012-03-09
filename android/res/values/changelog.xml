@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="changes">
+Transdroid 1.1.4\n
+- Support for Seedstuff servers\n
+- Automatic update checker for app and search module\n
+- Added Demonoid search\n
+\n
 Transdroid 1.1.3\n
 - View active (seeding or downloading) torrents\n
 - qBittorrent: view trackers and bugfix for removal\n
