@@ -363,7 +363,10 @@
 <string name="xirvik_pref_type_info">Shared, semi- or dedicated</string>
 <string name="xirvik_pref_server">Server name</string>
 <string name="xirvik_pref_server_info">Like dedi000.xirvik.com</string>
+<string name="xirvik_pref_folder">SCGI mount</string>
+<string name="xirvik_pref_setautomatically">Set automatically</string>
 <string name="xirvik_error_invalid_servername">Invalid server (use the full host name, like dedi000.xirvik.com)</string>
+<string name="xirvik_error_nofolder">Cannot retrieve the Xirvik SCGI folder setting; please try again later ro correct your server name setting</string>
 
 <string name="seedm8_info">SeedM8 offers unmetered GBit seedbox hosting. Transdroid provides easy setup for SeedM8 servers.\n\nRead more at www.seedm8.com</string>
 <string name="seedm8_add_new_xserver">Add SeedM8 server</string>

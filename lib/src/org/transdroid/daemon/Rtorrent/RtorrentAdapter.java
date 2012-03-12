@@ -240,7 +240,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 	 */
 	private void initialise() throws DaemonException {
 
-		this.rpcclient = new XMLRPCClient(HttpHelper.createStandardHttpClient(settings, true), buildWebUIUrl());
+		this.rpcclient = new XMLRPCClient(HttpHelper.createStandardHttpClient(settings, true), buildWebUIUrl().trim());
 		
 	}
 	

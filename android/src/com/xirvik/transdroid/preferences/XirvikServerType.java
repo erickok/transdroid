@@ -8,7 +8,8 @@ public enum XirvikServerType {
 
 	Dedicated (1),
 	SemiDedicated (2),
-	Shared (3);
+	Shared (3),
+	SharedRtorrent (4);
 
 	private int code;
     private static final Map<Integer,XirvikServerType> lookup  = new HashMap<Integer,XirvikServerType>();
@@ -47,6 +48,9 @@ public enum XirvikServerType {
 		}
 		if (code.equals("type_shared")) {
 			return Shared;
+		}
+		if (code.equals("type_sharedrt")) {
+			return SharedRtorrent;
 		}
 		return null;
 	}

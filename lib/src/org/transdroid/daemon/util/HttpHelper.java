@@ -68,30 +68,42 @@ public class HttpHelper {
 	 * The 'User-Agent' name to send to the server
 	 */
 	public static String userAgent = null;
-	
+
 	/**
 	 * Creates a standard Apache HttpClient that is thread safe, supports different
 	 * SSL auth methods and basic authentication
 	 * @param settings The server settings to adhere
-	 * @param connectionTimeout The connection timeout for all requests
 	 * @return An HttpClient that should be stored locally and reused for every new request
 	 * @throws DaemonException Thrown when information (such as username/password) is missing
 	 */
 	public static DefaultHttpClient createStandardHttpClient(DaemonSettings settings, boolean userBasicAuth) throws DaemonException {
+		return createStandardHttpClient(userBasicAuth && settings.shouldUseAuthentication(), settings.getUsername(), settings.getPassword(), settings.getSslTrustAll(), settings.getSslTrustKey(), settings.getTimeoutInMilliseconds(), settings.getAddress(), settings.getPort());
+	}
+
+	/**
+	 * Creates a standard Apache HttpClient that is thread safe, supports different
+	 * SSL auth methods and basic authentication
+	 * @param sslTrustAll Whether to trust all SSL certificates
+	 * @param sslTrustkey A specific SSL key to accept exclusively
+	 * @param timeout The connection timeout for all requests
+	 * @param authAddress The authentication domain address 
+	 * @param authPort The authentication domain port number
+	 * @return An HttpClient that should be stored locally and reused for every new request
+	 * @throws DaemonException Thrown when information (such as username/password) is missing
+	 */
+	public static DefaultHttpClient createStandardHttpClient(boolean userBasicAuth, String username, String password, boolean sslTrustAll, String sslTrustkey, int timeout, String authAddress, int authPort) throws DaemonException {
 
 		// Register http and https sockets
 		SchemeRegistry registry = new SchemeRegistry();
 		registry.register(new Scheme("http", new PlainSocketFactory(), 80));
-		SocketFactory https_socket =
-			  settings.getSslTrustAll() 				? new FakeSocketFactory()
-			: settings.getSslTrustKey() != null			? new FakeSocketFactory(settings.getSslTrustKey())
-			: SSLSocketFactory.getSocketFactory();
+		SocketFactory https_socket = sslTrustAll ? new FakeSocketFactory()
+			: sslTrustkey != null ? new FakeSocketFactory(sslTrustkey) : SSLSocketFactory.getSocketFactory();
 		registry.register(new Scheme("https", https_socket, 443)); 
 		
 		// Standard parameters
 		HttpParams httpparams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpparams, settings.getTimeoutInMilliseconds());
-		HttpConnectionParams.setSoTimeout(httpparams, settings.getTimeoutInMilliseconds());
+		HttpConnectionParams.setConnectionTimeout(httpparams, timeout);
+		HttpConnectionParams.setSoTimeout(httpparams, timeout);
 		if (userAgent != null) {
 			HttpProtocolParams.setUserAgent(httpparams, userAgent);
 		}
@@ -99,13 +111,13 @@ public class HttpHelper {
 		DefaultHttpClient httpclient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpparams, registry), httpparams);
 		
 		// Authentication credentials
-		if (userBasicAuth && settings.shouldUseAuthentication()) {
-			if (settings.getUsername() == null || settings.getPassword() == null) {
+		if (userBasicAuth) {
+			if (username == null || password == null) {
 				throw new InvalidParameterException("No username or password was provided while we hadauthentication enabled");
 			}
 			httpclient.getCredentialsProvider().setCredentials(
-				new AuthScope(settings.getAddress(), settings.getPort(), AuthScope.ANY_REALM), 
-				new UsernamePasswordCredentials(settings.getUsername(), settings.getPassword()));
+				new AuthScope(authAddress, authPort, AuthScope.ANY_REALM), 
+				new UsernamePasswordCredentials(username, password));
 		}
 		
 		return httpclient;

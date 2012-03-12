@@ -16,25 +16,26 @@ public class XirvikSettings {
 	private static final int TFB4RT_PORT = 443;
 	private static final String TFB4RT_FOLDER = "/tfx";
 	private static final int RTORRENT_PORT = 443;
-	private static final String RTORRENT_FOLDER_DEDI = "/RPC2";
-	private static final String RTORRENT_FOLDER_SEMI = "/RPC2";
+	public static final String RTORRENT_FOLDER = "/RPC2";
 	private static final int UTORRENT_PORT = 5010;
 
 	final private String name;
 	final private XirvikServerType type;
 	final private String server;
+	final private String folder;
 	final private String username;
 	final private String password;
 	final private boolean alarmOnFinishedDownload;
 	final private boolean alarmOnNewTorrent;
 	final private String idString;
 	
-	public XirvikSettings(String name, XirvikServerType type, String server, String username, 
+	public XirvikSettings(String name, XirvikServerType type, String server, String folder, String username, 
 			String password, boolean alarmOnFinishedDownload, boolean alarmOnNewTorrent, 
 			String idString) {
 		this.name = name;
 		this.type = type;
 		this.server = server;
+		this.folder = folder;
 		this.username = username;
 		this.password = password;
 		this.alarmOnFinishedDownload = alarmOnFinishedDownload;
@@ -50,6 +51,9 @@ public class XirvikSettings {
 	}
 	public String getServer() {
 		return server;
+	}
+	public String getFolder() {
+		return folder;
 	}
 	public String getUsername() {
 		return username;
@@ -94,13 +98,13 @@ public class XirvikSettings {
 							getPassword(), HttpHelper.DEFAULT_CONNECTION_TIMEOUT, shouldAlarmOnFinishedDownload(), 
 							shouldAlarmOnNewTorrent(), "" + startID++, true));
 		}
-		if (getType() == XirvikServerType.SemiDedicated || isDedi) {
+		if (getType() == XirvikServerType.SharedRtorrent || getType() == XirvikServerType.SemiDedicated || isDedi) {
 			daemons.add(
 					new DaemonSettings(
 							getName() + (isDedi? " rTorrent": ""), 
 							Daemon.rTorrent, getServer(), RTORRENT_PORT, 
 							true, true, null, 
-							(isDedi? RTORRENT_FOLDER_DEDI: getSemiFoldername()), true, getUsername(), getPassword(), 
+							getFolder(), true, getUsername(), getPassword(), 
 							OS.Linux, "/", "ftp://" + getName() + ":" + getServer() + "/",
 							getPassword(), HttpHelper.DEFAULT_CONNECTION_TIMEOUT, shouldAlarmOnFinishedDownload(),
 							shouldAlarmOnNewTorrent(), "" + startID++, true));
@@ -119,29 +123,4 @@ public class XirvikSettings {
 		return daemons;
 	}
 
-	/**
-	 * Returns the rTorrent folder name for a semi-dedicated server, based on the server, i.e. 'store001a.xirvik.com' 
-	 * @return The full folder name, i.e. '/RPC2'
-	 */
-	private String getSemiFoldername() {
-		/*int nr = 0;
-		if (getServer().length() > 1) {
-			switch (getServer().charAt(getServer().indexOf(".") - 1)) {
-			case 'a':
-				nr = 1;
-				break;
-			case 'b':
-				nr = 2;
-				break;
-			case 'c':
-				nr = 3;
-				break;
-			case 'd':
-				nr = 4;
-				break;
-			}
-		}*/
-		return RTORRENT_FOLDER_SEMI;
-	}
-	
 }

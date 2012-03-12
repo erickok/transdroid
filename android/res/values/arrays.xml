@@ -43,12 +43,14 @@
     </string-array>
     
     <string-array name="pref_xirvik_types">
-        <item>Shared</item>
+        <item>Shared (Torrentflux)</item>
+        <item>Shared (rTorrent)</item>
         <item>Semi-dedicated</item>
         <item>Dedicated</item>
     </string-array>
     <string-array name="pref_xirvik_values">
         <item>type_shared</item>
+        <item>type_sharedrt</item>
         <item>type_semi</item>
         <item>type_dedicated</item>
     </string-array>

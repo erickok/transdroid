@@ -64,6 +64,7 @@ public class Preferences {
 	public static final String KEY_PREF_XNAME		= "transdroid_xserver_name";
 	public static final String KEY_PREF_XTYPE		= "transdroid_xserver_type";
 	public static final String KEY_PREF_XSERVER		= "transdroid_xserver_server";
+	public static final String KEY_PREF_XFOLDER		= "transdroid_xserver_folder";
 	public static final String KEY_PREF_XUSER		= "transdroid_xserver_user";
 	public static final String KEY_PREF_XPASS		= "transdroid_xserver_pass";
 	public static final String KEY_PREF_XALARMFINISHED	= "transdroid_xserver_alarmfinished";
@@ -240,7 +241,8 @@ public class Preferences {
 			String toId = (id == 0? "": Integer.toString(id));
 			editor.putString(KEY_PREF_XNAME + toId, prefs.getString(KEY_PREF_XNAME + fromId, null));
 			editor.putString(KEY_PREF_XTYPE + toId, prefs.getString(KEY_PREF_XTYPE + fromId, null));
-			editor.putString(KEY_PREF_XSERVER+ toId, prefs.getString(KEY_PREF_XSERVER + fromId, null));
+			editor.putString(KEY_PREF_XSERVER + toId, prefs.getString(KEY_PREF_XSERVER + fromId, null));
+			editor.putString(KEY_PREF_XFOLDER + toId, prefs.getString(KEY_PREF_XFOLDER + fromId, null));
 			editor.putString(KEY_PREF_XUSER + toId, prefs.getString(KEY_PREF_XUSER + fromId, null));
 			editor.putString(KEY_PREF_XPASS + toId, prefs.getString(KEY_PREF_XPASS + fromId, null));
 			editor.putString(KEY_PREF_XALARMFINISHED + toId, prefs.getString(KEY_PREF_XALARMFINISHED + fromId, null));
@@ -817,6 +819,7 @@ public class Preferences {
     		prefs.getString(KEY_PREF_XNAME + postfix, null), 
 			XirvikServerType.fromCode(prefType), 
 			prefs.getString(KEY_PREF_XSERVER + postfix, null),
+			prefs.getString(KEY_PREF_XFOLDER + postfix, XirvikSettings.RTORRENT_FOLDER),
 			prefs.getString(KEY_PREF_XUSER + postfix, null),
     		prefs.getString(KEY_PREF_XPASS + postfix, null),
     		prefs.getBoolean(KEY_PREF_XALARMFINISHED + postfix, true),
