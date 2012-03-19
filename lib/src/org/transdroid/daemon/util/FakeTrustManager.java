@@ -33,7 +33,7 @@ public class FakeTrustManager implements X509TrustManager {
         	
         	// Otherwise, we have a certKey defined. We should now examine the one we got from the server.
         	// They match? All is good. They don't, throw an exception.
-        	String our_key = this.certKey.replaceAll("\\s+", "");
+        	String our_key = this.certKey.replaceAll("[^a-f0-9]+", "");
         	try {
             	//Assume self-signed root is okay?
             	X509Certificate ss_cert = chain[0];

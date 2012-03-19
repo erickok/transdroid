@@ -154,7 +154,7 @@
 <string name="pref_timeout_info">Number of seconds before timing out a connection attempt</string>
 <string name="pref_ssl">SSL</string>
 <string name="pref_ssl_info">Select to use https</string>
-<string name="pref_ssl_trust_key">Custom SSL thumbprint</string>
+<string name="pref_ssl_trust_key">Custom SSL thumbprint (SHA-1)</string>
 <string name="pref_ssl_trust_key_info">Permit only connections to this specific certificate</string>
 <string name="pref_ssl_trust_all">Accept all SSL certificates</string>
 <string name="pref_ssl_trust_all_info">Select to allow connections from any thumbprint</string>
