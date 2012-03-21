@@ -94,12 +94,15 @@ public class Add extends Activity {
 			return;
 		}
 		
-		// Check URL structure
-		try {
-			new URL(urlText); // Nothing is actually done with it; only for parsing
-		} catch (MalformedURLException e) {
-			Toast.makeText(this, R.string.no_valid_url, Toast.LENGTH_SHORT).show();
-			return;
+		// Magnet scheme is not supported by java.net.URL so instead we consider this to be okay manually
+		if (urlText != null && !urlText.startsWith("magnet")) {
+			// Check URL structure
+			try {
+				new URL(urlText); // Nothing is actually done with it; only for parsing
+			} catch (MalformedURLException e) {
+				Toast.makeText(this, R.string.no_valid_url, Toast.LENGTH_SHORT).show();
+				return;
+			}
 		}
 		
 		// Create a result for the calling activity
