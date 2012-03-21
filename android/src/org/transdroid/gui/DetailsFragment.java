@@ -55,20 +55,20 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class DetailsFragment extends Fragment implements IDaemonCallback, OnSelectedChangedListener {
 
@@ -253,7 +253,6 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 			// Set up an intent to remotely play this file (in VLC)
 			Intent remote = new Intent(Transdroid.REMOTEINTENT);
 			remote.addCategory(Intent.CATEGORY_DEFAULT);
-			// TODO: See if this still works
 			remote.setDataAndType(Uri.parse(file.getFullPathUri()), file.getMimeType());
 			remote.putExtra(Transdroid.REMOTEINTENT_HOST, daemon.getSettings().getAddress());
 
@@ -270,12 +269,18 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 			Uri ftpUri = Uri.parse(daemon.getSettings().getFtpUrl() + file.getRelativePath());
 			Intent dl = new Intent(Intent.ACTION_PICK);
 			dl.setDataAndType(Uri.parse(ftpUri.getScheme() + "://" + ftpUri.getHost()), Transdroid.ANDFTP_INTENT_TYPE);
-			dl.putExtra(Transdroid.ANDFTP_INTENT_USER, (ftpUri.getEncodedUserInfo() == null ? daemon.getSettings()
-				.getUsername() : ftpUri.getEncodedUserInfo()));
-			dl.putExtra(Transdroid.ANDFTP_INTENT_PASS, daemon.getSettings().getFtpPassword());
+			if (!ftpUri.getScheme().equals("alias")) {
+				// Assume the username and password are set if the alias:// construct is used
+				dl.putExtra(Transdroid.ANDFTP_INTENT_USER, (ftpUri.getEncodedUserInfo() == null ? daemon.getSettings()
+					.getUsername() : ftpUri.getEncodedUserInfo()));
+				dl.putExtra(Transdroid.ANDFTP_INTENT_PASS, daemon.getSettings().getFtpPassword());
+			}
 			dl.putExtra(Transdroid.ANDFTP_INTENT_PASV, "true");
 			dl.putExtra(Transdroid.ANDFTP_INTENT_CMD, "download");
-			dl.putExtra(Transdroid.ANDFTP_INTENT_FILE, ftpUri.getEncodedPath());
+			// If the file is directly in the root, AndFTP fails if we supply the proper path (like /file.pdf)
+			// Work around this bug by removing the leading / if no further directories are used in the file path
+			dl.putExtra(Transdroid.ANDFTP_INTENT_FILE, ftpUri.getEncodedPath().startsWith("/") && 
+				ftpUri.getEncodedPath().indexOf("/", 1) < 0? ftpUri.getEncodedPath().substring(1): ftpUri.getEncodedPath());
 			dl.putExtra(Transdroid.ANDFTP_INTENT_LOCAL, "/sdcard/download");
 
 			TLog.d(LOG_NAME, "Requesting FTP transfer for " + dl.getStringExtra(Transdroid.ANDFTP_INTENT_FILE)

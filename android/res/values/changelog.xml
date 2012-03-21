@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="changes">
+Transdroid 1.1.5\n
+- AndFTP alias:// support and file-in-root fix\n
+\n
 Transdroid 1.1.4\n
 - App and search module update checker\n
 - Support for Seedstuff seedboxes\n
