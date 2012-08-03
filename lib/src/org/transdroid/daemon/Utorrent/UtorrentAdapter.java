@@ -45,6 +45,7 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
+import org.transdroid.daemon.Label;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -103,7 +104,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 
 				// Request all torrents from server
 				JSONObject result = makeUtorrentRequest("&list=1");
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONArray("torrents")));
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONArray("torrents")),parseJsonRetrieveGetLabels(result.getJSONArray("label")));
 
 			case GetTorrentDetails:
 				
@@ -246,7 +247,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 				makeUtorrentRequest("&action=setprops" + RPC_URL_HASH + trackersTask.getTargetTorrent().getUniqueID() + 
 						"&s=trackers&v=" + URLEncoder.encode(newTrackersText, "UTF-8"));
 				return new DaemonTaskSuccessResult(task);
-				
+			
 			default:
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
 			}
@@ -263,6 +264,26 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		}
 	}
 	
+	private static final int NAME_IDX = 0;
+	private static final int COUNT_IDX = 1;
+
+	private ArrayList<Label> parseJsonRetrieveGetLabels(JSONArray lresults) throws JSONException {
+
+		// Parse response
+		ArrayList<Label> labels = new ArrayList<Label>();
+		for (int i = 0; i < lresults.length(); i++) {
+			JSONArray lab = lresults.getJSONArray(i);
+			String name = lab.getString(NAME_IDX);
+			int count = lab.getInt(COUNT_IDX);
+			labels.add(new Label(
+					name,
+					count
+					));
+		}
+		return labels;
+		
+	}
+
 	private JSONObject makeUtorrentRequest(String addToUrl) throws DaemonException {
 
 		try {

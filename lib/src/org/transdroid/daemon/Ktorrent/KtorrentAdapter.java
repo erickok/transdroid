@@ -106,7 +106,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			case Retrieve:
 
 				// Request all torrents from server
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, makeStatsRequest());
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, makeStatsRequest(),null);
 				
 			case GetFileList:
 				

@@ -149,7 +149,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				request.put("fields", fields);
 
 				JSONObject result = makeRequest(buildRequestObject("torrent-get", request));
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONObject("arguments")));
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONObject("arguments")),null);
 
 			case GetStats:
 

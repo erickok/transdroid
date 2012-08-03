@@ -88,7 +88,7 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 
 				// Request all torrents from server
 				JSONObject result = new JSONObject(makeRequest("/api/torrents-get"));
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result));
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result),null);
 				
 			case GetFileList:
 

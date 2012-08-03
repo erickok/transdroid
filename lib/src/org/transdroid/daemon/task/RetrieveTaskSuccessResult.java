@@ -20,6 +20,7 @@
 import java.util.List;
 
 import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.Label;
 
 /**
  * The result of a successfully executed RetrieveTask on the daemon.
@@ -30,14 +31,19 @@ import org.transdroid.daemon.Torrent;
 public class RetrieveTaskSuccessResult extends DaemonTaskSuccessResult {
 	
 	private List<Torrent> torrents;
+	private List<Label> labels;
 	
-	public RetrieveTaskSuccessResult(RetrieveTask executedTask, List<Torrent> torrents) {
+	public RetrieveTaskSuccessResult(RetrieveTask executedTask, List<Torrent> torrents, List<Label> labels) {
 		super(executedTask);
 		this.torrents = torrents;
+		this.labels = labels;
 	}
 	
 	public List<Torrent> getTorrents() {
 		return torrents;
 	}
 	
+	public List<Label> getLabels() {
+		return labels;
+	}	
 }

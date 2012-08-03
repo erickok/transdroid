@@ -46,14 +46,17 @@ public class TorrentProgressBar extends View {
 	
 	public void setProgress(int progress) {
 		this.progress = progress;
+		this.invalidate();
 	}
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+		this.invalidate();
 	}
 
 	public void setError(boolean isError) {
 		this.isError = isError;
+		this.invalidate();
 	}
 
 	public TorrentProgressBar(Context context) {

@@ -124,7 +124,7 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 
 				// Request all torrents from server
 				JSONObject result = makeRequest(API_GET);
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result));
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result),null);
 
 			case GetFileList:
 

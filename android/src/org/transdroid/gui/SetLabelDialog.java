@@ -58,6 +58,7 @@ public class SetLabelDialog extends Dialog {
 		existingLabelsList = (ListView) findViewById(R.id.labels);
 		newLabelText = (EditText) findViewById(R.id.new_label);
 		okButton = (Button) findViewById(R.id.set_button);
+		newLabelText.setText(currentLabel);
 		
 		// Set content and attach listeners
 		existingLabelsList.setAdapter(new ArrayAdapter<String>(context, R.layout.list_item_label, existingLabels));
@@ -69,7 +70,7 @@ public class SetLabelDialog extends Dialog {
 		// Update the available existing labels and empty the text box
 		this.currentLabel = currentLabel;
 		existingLabelsList.setAdapter(new ArrayAdapter<String>(context, R.layout.list_item_label, existingLabels));
-		newLabelText.setText("");
+		newLabelText.setText(currentLabel);
 	}
 
 	private OnItemClickListener onLabelSelected = new OnItemClickListener() {

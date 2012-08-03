@@ -86,7 +86,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 			case Retrieve:
 
 				Object result = makeRtorrentCall("d.multicall", new String[] { "main", "d.get_hash=", "d.get_name=", "d.get_state=", "d.get_down_rate=", "d.get_up_rate=", "d.get_peers_connected=", "d.get_peers_not_connected=", "d.get_peers_accounted=", "d.get_bytes_done=", "d.get_up_total=", "d.get_size_bytes=", "d.get_creation_date=", "d.get_left_bytes=", "d.get_complete=", "d.is_active=", "d.is_hash_checking=", "d.get_base_path=", "d.get_base_filename=", "d.get_message=" });
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result));
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result),null);
 
 			case GetTorrentDetails:
 

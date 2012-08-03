@@ -95,7 +95,7 @@ public class BitfluAdapter implements IDaemonAdapter {
 			case Retrieve:
 				// Request all torrents from server
 				JSONObject result = makeBitfluRequest(RPC_TORRENT_LIST);
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONArray(JSON_ROOT)));
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONArray(JSON_ROOT)),null);
 			case GetStats:
 				return new GetStatsTaskSuccessResult((GetStatsTask) task, false, -1);
 			case Pause:

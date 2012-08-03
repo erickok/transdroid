@@ -33,6 +33,7 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentStatus;
 import org.transdroid.daemon.TorrentsComparator;
 import org.transdroid.daemon.TorrentsSortBy;
+import org.transdroid.daemon.Label;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -207,7 +208,8 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	protected boolean ignoreFirstListNavigation = true;
 		
 	private List<Torrent> allTorrents;
-	
+	private List<Label> allLabels;
+ 	
 	private TaskQueue queue;
 	private boolean inProgress = false;
 
@@ -1384,12 +1386,12 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	}
 
 	public void updateTorrentList() {
-    	if (daemon != null) {
+	    	if (daemon != null) {
 			queue.enqueue(RetrieveTask.create(daemon));
 			if (Daemon.supportsStats(daemon.getType())) {
 				queue.enqueue(GetStatsTask.create(daemon));
 			}
-    	}
+    		}
 	}
 
 	private void addTorrentByUrl(String url, String title) {
@@ -1402,7 +1404,6 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 		
 		queue.enqueue(AddByUrlTask.create(daemon, url, title));
 		queue.enqueue(RetrieveTask.create(daemon));
-
 	}
 
 	private void addTorrentByMagnetUrl(String url) {
@@ -1661,6 +1662,9 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 				// Sort the new list of torrents
 				allTorrents = ((RetrieveTaskSuccessResult) result).getTorrents();
 				Collections.sort(allTorrents, new TorrentsComparator(daemon, sortSetting, sortReversed));
+
+				// Sort the new list of labels
+				allLabels = ((RetrieveTaskSuccessResult) result).getLabels();
 				
 				// Show refreshed totals for this daemon
 				updateStatusText(null);
@@ -1922,6 +1926,16 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 			availableLabels.add(showAll);
 			
 			// Gather the used labels from the torrents
+			if (allLabels!=null){
+				for (Label lab : allLabels) {
+					String name = lab.getName();
+					// Start a new label if this name wasn't encountered yet
+					if (!availableLabels.contains(name)) {
+						availableLabels.add(name);
+					}
+					
+				}				
+			}
 			for (Torrent tor : allTorrents) {
 				
 				// Force a label name (use 'unlabeled' if none is provided)

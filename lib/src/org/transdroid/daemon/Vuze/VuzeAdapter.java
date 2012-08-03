@@ -88,7 +88,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 			case Retrieve:
 
 				Object result = makeVuzeCall(DaemonMethod.Retrieve, "getDownloads");
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result));
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result),null);
 				
 			case GetFileList:
 				

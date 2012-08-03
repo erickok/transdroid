@@ -220,7 +220,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 				// params.put(-1); // cache_id
 				
 				JSONObject result = makeRequest(buildRequest(RPC_METHOD_GET, params));
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONObject(RPC_RESULT)));
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONObject(RPC_RESULT)),null);
 
 			case GetTorrentDetails:
 
