@@ -3,6 +3,8 @@
 	<name>Transdroid</name>
 	<comment></comment>
 	<projects>
+		<project>com_actionbarsherlock</project>
+		<project>Transdroid Torrent Connect</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
