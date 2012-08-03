@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="changes">
+Transdroid 1.1.6\n
+- Improved label support, by Alexey Rogovoy\n
+\n
 Transdroid 1.1.5\n
 - AndFTP alias:// support and file-in-root fix\n
 \n
