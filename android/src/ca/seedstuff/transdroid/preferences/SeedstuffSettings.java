@@ -80,7 +80,7 @@ public class SeedstuffSettings {
 		List<DaemonSettings> daemons = new ArrayList<DaemonSettings>();
 		// rTorrent
 		daemons.add(new DaemonSettings(getName(), Daemon.rTorrent, getServer(), RTORRENT_PORT, true, true, null,
-				RTORRENT_FOLDER_PART + getUsername(), true, getUsername(), getPassword(), OS.Linux,
+				RTORRENT_FOLDER_PART + getUsername(), true, getUsername(), getPassword(), null, OS.Linux,
 				"/rtorrent/downloads/", "ftp://" + getName() + "@" + getServer() + FTP_PORT + "/rtorrents/downloads/",
 				getPassword(), HttpHelper.DEFAULT_CONNECTION_TIMEOUT, shouldAlarmOnFinishedDownload(),
 				shouldAlarmOnNewTorrent(), "" + startID++, true));

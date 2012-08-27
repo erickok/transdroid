@@ -430,9 +430,13 @@ public class DelugeAdapter implements IDaemonAdapter {
 			if (sessionCookie == null) {
 				
 				// Build login object
+				String extraPass = settings.getExtraPassword();
+				if (extraPass == null || extraPass.isEmpty()) {
+					extraPass = settings.getPassword();
+				}
 				JSONObject loginRequest = new JSONObject();
 				loginRequest.put(RPC_METHOD, RPC_METHOD_LOGIN);
-				loginRequest.put(RPC_PARAMS, (new JSONArray()).put(settings.getPassword()));
+				loginRequest.put(RPC_PARAMS, (new JSONArray()).put(extraPass));
 				loginRequest.put(RPC_ID, 1);
 
 				// Set POST URL and data
@@ -520,7 +524,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	 */
 	private void initialise() throws DaemonException {
 
-		httpclient = HttpHelper.createStandardHttpClient(settings, false);
+		httpclient = HttpHelper.createStandardHttpClient(settings, settings.getUsername() != null && !settings.getUsername().isEmpty());
         httpclient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
         httpclient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
         
@@ -624,8 +628,9 @@ public class DelugeAdapter implements IDaemonAdapter {
 			return 2;
 		case High:
 			return 3;
+		default:
+			return 1;
 		}
-		return 1;
 	}
 
 	private TorrentStatus convertDelugeState(String state) {

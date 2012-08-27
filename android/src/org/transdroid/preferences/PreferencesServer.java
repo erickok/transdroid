@@ -60,6 +60,7 @@ public class PreferencesServer extends PreferenceActivity {
 	private TransdroidCheckBoxPreference auth;
 	private TransdroidEditTextPreference user;
 	private TransdroidEditTextPreference pass;
+	private TransdroidEditTextPreference extraPass;
 	private TransdroidListPreference os;
 	private TransdroidEditTextPreference downloadDir;
 	private TransdroidEditTextPreference ftpUrl;
@@ -75,6 +76,7 @@ public class PreferencesServer extends PreferenceActivity {
 	private boolean authValue = false;
 	private String userValue = null;
 	//private String passValue = null;
+	//private String extraPassValue = null;
 	
 	private boolean sslValue = false;
 	private boolean sslTAValue = false;
@@ -107,6 +109,7 @@ public class PreferencesServer extends PreferenceActivity {
         authValue = prefs.getBoolean(Preferences.KEY_PREF_AUTH + serverPostfix, false);
         userValue = prefs.getString(Preferences.KEY_PREF_USER + serverPostfix, null);
         //passValue = prefs.getString(Preferences.KEY_PREF_PASS + serverPostfix, null);
+        //extraPassValue = prefs.getString(Preferences.KEY_PREF_EXTRAPASS + serverPostfix, null);
 
         sslValue = prefs.getBoolean(Preferences.KEY_PREF_SSL + serverPostfix, false);
         //sslTAValue = prefs.getBoolean(Preferences.KEY_PREF_SSL_TRUST_ALL + serverPostfix, false);
@@ -159,7 +162,7 @@ public class PreferencesServer extends PreferenceActivity {
         port.setDialogTitle(R.string.pref_port);
         port.setOnPreferenceChangeListener(updateHandler);
         getPreferenceScreen().addItemFromInflater(port);
-
+        
         // Auth
         auth = new TransdroidCheckBoxPreference(this);
         auth.setTitle(R.string.pref_auth);
@@ -204,6 +207,16 @@ public class PreferencesServer extends PreferenceActivity {
         folder.setDialogTitle(R.string.pref_folder);
         folder.setOnPreferenceChangeListener(updateHandler);
         getPreferenceScreen().addItemFromInflater(folder);
+        // ExtraUser
+        extraPass = new TransdroidEditTextPreference(this);
+        extraPass.setTitle(R.string.pref_extrapass);
+        extraPass.setKey(Preferences.KEY_PREF_EXTRAPASS + serverPostfix);
+        extraPass.getEditText().setSingleLine();
+        extraPass.getEditText().setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+        extraPass.getEditText().setTransformationMethod(new PasswordTransformationMethod());
+        extraPass.setDialogTitle(R.string.pref_extrapass);
+        extraPass.setOnPreferenceChangeListener(updateHandler);
+        getPreferenceScreen().addItemFromInflater(extraPass);
 
         // Advanced
         PreferenceCategory advanced = new PreferenceCategory(this);
@@ -322,6 +335,8 @@ public class PreferencesServer extends PreferenceActivity {
 				userValue = (String) newValue;
 			} else if (preference == pass) {
 				//passValue = (String) newValue;
+			} else if (preference == extraPass) {
+				//extraPassValue = (String) newValue;
 			} else if (preference == ssl) {
 				sslValue = (Boolean) newValue;
 			} else if (preference == sslTrustAll) {
@@ -391,8 +406,9 @@ public class PreferencesServer extends PreferenceActivity {
 		// Use daemon factory to see if the newly selected daemon supports the feature
     	// Then set the availability of the options according to the (other) settings
     	Daemon daemonType = Daemon.fromCode(daemonValue);
-        user.setEnabled(authValue && (daemonType == null? true: Daemon.supportsUsername(Daemon.fromCode(daemonValue))));
+        user.setEnabled(authValue);
         pass.setEnabled(authValue);
+        extraPass.setEnabled(Daemon.supportsExtraPassword(Daemon.fromCode(daemonValue)));
         sslTrustAll.setEnabled(sslValue);
 		folder.setEnabled(daemonType == null? false: Daemon.supportsCustomFolder(daemonType));
 		downloadDir.setEnabled(daemonType == null? false: Daemon.needsManualPathSpecified(daemonType));
@@ -410,6 +426,8 @@ public class PreferencesServer extends PreferenceActivity {
         port.setSummary(portValue == null? getText(R.string.pref_port_info).toString().trim() + " " + Daemon.getDefaultPortNumber(daemonType, sslValue): portValue);
 
         auth.setSummary(R.string.pref_auth_info);
+		user.setTitle(daemonType != null && Daemon.supportsUsernameForHttp(Daemon.fromCode(daemonValue)) ? getString(R.string.pref_user_forhttp)
+			: getString(R.string.pref_user));
         user.setSummary(userValue == null? "": userValue);
 
         if (daemonType == Daemon.rTorrent) {

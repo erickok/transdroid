@@ -270,8 +270,12 @@ public enum Daemon {
 		return type == uTorrent || type == BitTorrent || type == Deluge;
 	}
 
-	public static boolean supportsUsername(Daemon type) {
-		return !(type == Deluge);
+	public static boolean supportsExtraPassword(Daemon type) {
+		return type == Deluge;
+	}
+
+	public static boolean supportsUsernameForHttp(Daemon type) {
+		return type == Deluge;
 	}
 
 }

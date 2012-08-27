@@ -138,7 +138,9 @@
 <string name="pref_auth">Use authentication</string>
 <string name="pref_auth_info">You\'ll need a username and password</string>
 <string name="pref_user">Username</string>
+<string name="pref_user_forhttp">Username for HTTP authentication</string>
 <string name="pref_pass">Password</string>
+<string name="pref_extrapass">Deluge web password</string>
 <string name="pref_os">Server OS</string>
 <string name="pref_folder">SCGI folder</string>
 <string name="pref_folder_info">Usually is /RPC2</string>

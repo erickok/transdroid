@@ -2,7 +2,10 @@
 <resources>
 <string name="changes">
 Transdroid 1.1.6\n
+- Added BitComet support, by Sergey (SeNS)\n
 - Improved label support, by Alexey Rogovoy\n
+- Added GZipped content support in RSS feeds\n
+- Allow Deluge users to enter a password for HTTP authentication\n
 \n
 Transdroid 1.1.5\n
 - AndFTP alias:// support and file-in-root fix\n

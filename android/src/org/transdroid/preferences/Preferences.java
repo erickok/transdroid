@@ -100,6 +100,7 @@ public class Preferences {
 	public static final String KEY_PREF_AUTH		= "transdroid_server_auth";
 	public static final String KEY_PREF_USER		= "transdroid_server_user";
 	public static final String KEY_PREF_PASS		= "transdroid_server_pass";
+	public static final String KEY_PREF_EXTRAPASS		= "transdroid_server_extrapass";
 	public static final String KEY_PREF_OS			= "transdroid_server_os";
 	public static final String KEY_PREF_DOWNLOADDIR	= "transdroid_server_downloaddir";
 	public static final String KEY_PREF_FTPURL		= "transdroid_server_ftpurl";
@@ -186,6 +187,7 @@ public class Preferences {
 			editor.putBoolean(KEY_PREF_AUTH + toId, prefs.getBoolean(KEY_PREF_AUTH + fromId, false));
 			editor.putString(KEY_PREF_USER + toId, prefs.getString(KEY_PREF_USER + fromId, null));
 			editor.putString(KEY_PREF_PASS + toId, prefs.getString(KEY_PREF_PASS + fromId, null));
+			editor.putString(KEY_PREF_EXTRAPASS + toId, prefs.getString(KEY_PREF_EXTRAPASS + fromId, null));
 			editor.putString(KEY_PREF_OS + toId, prefs.getString(KEY_PREF_OS + fromId, "type_windows"));
 			editor.putString(KEY_PREF_DOWNLOADDIR + toId, prefs.getString(KEY_PREF_DOWNLOADDIR + fromId, null));
 			editor.putString(KEY_PREF_FTPURL + toId, prefs.getString(KEY_PREF_FTPURL + fromId, null));
@@ -204,6 +206,7 @@ public class Preferences {
 		editor.remove(KEY_PREF_AUTH + delId);
 		editor.remove(KEY_PREF_USER + delId);
 		editor.remove(KEY_PREF_PASS + delId);
+		editor.remove(KEY_PREF_EXTRAPASS + delId);
 		editor.remove(KEY_PREF_OS + delId);
 		editor.remove(KEY_PREF_DOWNLOADDIR + delId);
 		editor.remove(KEY_PREF_FTPURL + delId);
@@ -928,6 +931,7 @@ public class Preferences {
     		prefs.getBoolean(KEY_PREF_AUTH + postfix, false),
     		prefs.getString(KEY_PREF_USER + postfix, null),
     		prefs.getString(KEY_PREF_PASS + postfix, null),
+    		prefs.getString(KEY_PREF_EXTRAPASS + postfix, null),
     		OS.fromCode(prefs.getString(KEY_PREF_OS + postfix, "type_windows")),
     		prefs.getString(KEY_PREF_DOWNLOADDIR + postfix, null),
     		prefs.getString(KEY_PREF_FTPURL + postfix, null),

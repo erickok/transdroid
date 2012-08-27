@@ -93,7 +93,7 @@ public class XirvikSettings {
 							getName() + (isDedi? " Torrentflux-b4rt": ""), 
 							Daemon.Tfb4rt, getServer(), TFB4RT_PORT, 
 							true, true, null, 
-							TFB4RT_FOLDER, true, getUsername(), getPassword(), 
+							TFB4RT_FOLDER, true, getUsername(), getPassword(), null, 
 							OS.Linux, "/", "ftp://" + getName() + ":" + getServer() + "/",
 							getPassword(), HttpHelper.DEFAULT_CONNECTION_TIMEOUT, shouldAlarmOnFinishedDownload(), 
 							shouldAlarmOnNewTorrent(), "" + startID++, true));
@@ -104,7 +104,7 @@ public class XirvikSettings {
 							getName() + (isDedi? " rTorrent": ""), 
 							Daemon.rTorrent, getServer(), RTORRENT_PORT, 
 							true, true, null, 
-							getFolder(), true, getUsername(), getPassword(), 
+							getFolder(), true, getUsername(), getPassword(), null, 
 							OS.Linux, "/", "ftp://" + getName() + ":" + getServer() + "/",
 							getPassword(), HttpHelper.DEFAULT_CONNECTION_TIMEOUT, shouldAlarmOnFinishedDownload(),
 							shouldAlarmOnNewTorrent(), "" + startID++, true));
@@ -115,7 +115,7 @@ public class XirvikSettings {
 							getName() + " uTorrent", 
 							Daemon.uTorrent, getServer(), UTORRENT_PORT, 
 							false, false, null, 
-							null, true, getUsername(), getPassword(), 
+							null, true, getUsername(), getPassword(), null, 
 							OS.Linux, "/", "ftp://" + getName() + ":" + getServer() + "/",
 							getPassword(), HttpHelper.DEFAULT_CONNECTION_TIMEOUT, shouldAlarmOnFinishedDownload(),
 							shouldAlarmOnNewTorrent(), "" + startID++, true));
