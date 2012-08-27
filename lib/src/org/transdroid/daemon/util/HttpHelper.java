@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidParameterException;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
@@ -49,6 +48,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
 import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 
 /**
@@ -113,7 +113,7 @@ public class HttpHelper {
 		// Authentication credentials
 		if (userBasicAuth) {
 			if (username == null || password == null) {
-				throw new InvalidParameterException("No username or password was provided while we hadauthentication enabled");
+				throw new DaemonException(ExceptionType.AuthenticationFailure, "No username or password was provided while we hadauthentication enabled");
 			}
 			httpclient.getCredentialsProvider().setCredentials(
 				new AuthScope(authAddress, authPort, AuthScope.ANY_REALM), 

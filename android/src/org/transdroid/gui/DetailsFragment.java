@@ -265,8 +265,11 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 		}
 
 		if (item.getItemId() == FILEMENU_FTPDOWNLOAD_ID) {
+			
 			// Set up an intent to download this file using the partial user-specified FTP URL
 			Uri ftpUri = Uri.parse(daemon.getSettings().getFtpUrl() + file.getRelativePath());
+
+			// Try with an AndFTP PICK Intent
 			Intent dl = new Intent(Intent.ACTION_PICK);
 			dl.setDataAndType(Uri.parse(ftpUri.getScheme() + "://" + ftpUri.getHost()), Transdroid.ANDFTP_INTENT_TYPE);
 			if (!ftpUri.getScheme().equals("alias")) {
@@ -283,7 +286,7 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 				ftpUri.getEncodedPath().indexOf("/", 1) < 0? ftpUri.getEncodedPath().substring(1): ftpUri.getEncodedPath());
 			dl.putExtra(Transdroid.ANDFTP_INTENT_LOCAL, "/sdcard/download");
 
-			TLog.d(LOG_NAME, "Requesting FTP transfer for " + dl.getStringExtra(Transdroid.ANDFTP_INTENT_FILE)
+			TLog.d(LOG_NAME, "Requesting AndFTP transfer for " + dl.getStringExtra(Transdroid.ANDFTP_INTENT_FILE)
 				+ " from " + dl.getDataString());
 			if (ActivityUtil.isIntentAvailable(getActivity(), dl)) {
 				startActivity(dl);
