@@ -25,6 +25,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.util.FakeSocketFactory;
+import org.transdroid.daemon.util.HttpHelper;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -78,6 +79,9 @@ public class RssParser extends DefaultHandler
 		HttpConnectionParams.setSoTimeout(httpparams, 5000); 
 		DefaultHttpClient httpclient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpparams, registry), httpparams);
 
+        httpclient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
+        httpclient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
+        
 		return httpclient;
 		
 	}
