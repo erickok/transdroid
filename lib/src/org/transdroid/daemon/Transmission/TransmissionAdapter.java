@@ -104,6 +104,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	private static final String RPC_DATEADDED = "addedDate";
 	private static final String RPC_DATEDONE = "doneDate";
 	private static final String RPC_AVAILABLE = "desiredAvailable";
+	private static final String RPC_COMMENT = "comment";
 	
 	private static final String RPC_FILE_NAME = "name";
 	private static final String RPC_FILE_LENGTH = "length";
@@ -142,7 +143,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				final String[] fieldsArray = new String[] { RPC_ID, RPC_NAME, RPC_ERROR, RPC_ERRORSTRING, RPC_STATUS, 
 						RPC_DOWNLOADDIR, RPC_RATEDOWNLOAD, RPC_RATEUPLOAD, RPC_PEERSGETTING, RPC_PEERSSENDING, 
 						RPC_PEERSCONNECTED, RPC_ETA, RPC_DOWNLOADSIZE1, RPC_DOWNLOADSIZE2, RPC_UPLOADEDEVER, 
-						RPC_TOTALSIZE, RPC_DATEADDED, RPC_DATEDONE, RPC_AVAILABLE }; 
+						RPC_TOTALSIZE, RPC_DATEADDED, RPC_DATEDONE, RPC_AVAILABLE, RPC_COMMENT }; 
 				for (String field : fieldsArray) {
 					fields.put(field);
 				}
@@ -472,6 +473,9 @@ public class TransmissionAdapter implements IDaemonAdapter {
 			// Error is a number, see https://trac.transmissionbt.com/browser/trunk/libtransmission/transmission.h#L1747
 			// We only consider it a real error if it is local (blocking), which is error code 3
 			boolean hasError = tor.getInt(RPC_ERROR) == 3;
+			String errorString = tor.getString(RPC_ERRORSTRING);
+			String commentString = tor.getString(RPC_COMMENT);
+			errorString = errorString.isEmpty()? commentString : errorString + "\n" + commentString;
 			torrents.add(new Torrent(
 					tor.getInt(RPC_ID),
 					null,
@@ -493,7 +497,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 					(total == 0? 0: (have+(float)tor.getLong(RPC_AVAILABLE))/(float)total),
 					null, // No label/category/group support in the RPC API for now
 					new Date(tor.getLong(RPC_DATEADDED)),
-					tor.getString(RPC_ERRORSTRING) != null && tor.getString(RPC_ERRORSTRING).equals("")? null: tor.getString(RPC_ERRORSTRING)));
+					errorString));
 		}
 		
 		// Return the list
