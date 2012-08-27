@@ -614,10 +614,11 @@ public class DelugeAdapter implements IDaemonAdapter {
 			return Priority.Off;
 		case 2:
 			return Priority.Normal;
-		case 3:
+		case 5:
 			return Priority.High;
+		default:
+			return Priority.Low;
 		}
-		return Priority.Low;
 	}
 
 	private int convertPriority(Priority priority) {
@@ -627,7 +628,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 		case Normal:
 			return 2;
 		case High:
-			return 3;
+			return 5;
 		default:
 			return 1;
 		}

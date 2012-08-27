@@ -160,17 +160,11 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 	}
 
 	/**
-	 * Gives the upload/download seed ratio. If not downloading, 
-	 * it will base the ratio on the total size; so if you created the torrent yourself
-	 * you will have downloaded 0 bytes, but the ratio will pretend you have 100%.
+	 * Gives the upload/download seed ratio. 
 	 * @return The ratio in range [0,r]
 	 */
 	public double getRatio() {
-		if (statusCode == TorrentStatus.Downloading) {
-			return ((double)uploadedEver) / ((double)downloadedEver);
-		} else {
-			return ((double)uploadedEver) / ((double)totalSize);
-		}
+		return ((double)uploadedEver) / ((double)downloadedEver);
 	}
 
 	/**
