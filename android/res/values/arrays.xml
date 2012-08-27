@@ -3,6 +3,7 @@
 <resources>
 
     <string-array name="pref_daemon_types">
+        <item>BitComet</item>
         <item>Bitflu 1.2+</item>
         <item>BitTorrent 6+</item>
         <item>Buffalo NAS -1.31</item>
@@ -17,6 +18,7 @@
         <item>Vuze</item>
     </string-array>
     <string-array name="pref_daemon_values">
+        <item>daemon_bitcomet</item>
         <item>daemon_bitflu</item>
         <item>daemon_bittorrent</item>
         <item>daemon_buffalonas</item>

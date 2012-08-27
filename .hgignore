@@ -5,3 +5,4 @@ syntax: glob
 .metadata/
 bin/
 gen/
+lint.xml
