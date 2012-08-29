@@ -629,11 +629,10 @@ public class Preferences {
      */
     public static List<SiteSettings> getSupportedSiteSettings() {
             List<SiteSettings> settings = new ArrayList<SiteSettings>();
-            settings.add(new SiteSettings("site_demonoid", "Demonoid"));
             settings.add(new SiteSettings("site_extratorrent", "ExtraTorrent"));
-            settings.add(new SiteSettings("site_ezrss", "EzRss"));
             settings.add(new SiteSettings("site_isohunt", "isoHunt"));
             settings.add(new SiteSettings("site_kickasstorrents", "KickassTorrents"));
+            settings.add(new SiteSettings("site_limetorrents", "LimeTorrents"));
             settings.add(new SiteSettings("site_mininova", "Mininova"));
             settings.add(new SiteSettings("site_monova", "Monova"));
             settings.add(new SiteSettings("site_thepiratebay", "The Pirate Bay"));
@@ -650,16 +649,14 @@ public class Preferences {
      * @return The Transdroid Torrent Search site key, f.e. 'Mininova'
      */
     public static String getCursorKeyForPreferencesKey(String preferencesKey) {
-    	if (preferencesKey.equals("site_demonoid")) {
-    		return "Demonoid";
-    	} else if (preferencesKey.equals("site_extratorrent")) {
+    	if (preferencesKey.equals("site_extratorrent")) {
     		return "ExtraTorrent";
-    	} else if (preferencesKey.equals("site_ezrss")) {
-    		return "EzRss";
     	} else if (preferencesKey.equals("site_isohunt")) {
     		return "Isohunt";
     	} else if (preferencesKey.equals("site_kickasstorrents")) {
     		return "KickassTorents";
+    	} else if (preferencesKey.equals("site_limetorrents")) {
+    		return "LimeTorrents";
     	} else if (preferencesKey.equals("site_mininova")) {
     		return "Mininova";
     	} else if (preferencesKey.equals("site_monova")) {
@@ -677,16 +674,14 @@ public class Preferences {
     }
 
     public static SiteSettings getSupportedSiteSetting(String preferencesKey) {
-    	if (preferencesKey.equals("site_demonoid")) {
-    		return new SiteSettings(preferencesKey, "Demonoid");
-    	} else if (preferencesKey.equals("site_extratorrent")) {
+    	if (preferencesKey.equals("site_extratorrent")) {
     		return new SiteSettings(preferencesKey, "ExtraTorrent");
-    	} else if (preferencesKey.equals("site_ezrss")) {
-    		return new SiteSettings(preferencesKey, "EzRss");
     	} else if (preferencesKey.equals("site_isohunt")) {
     		return new SiteSettings(preferencesKey, "Isohunt");
     	} else if (preferencesKey.equals("site_kickasstorrents")) {
     		return new SiteSettings(preferencesKey, "KickassTorents");
+    	} else if (preferencesKey.equals("site_limetorrents")) {
+    		return new SiteSettings(preferencesKey, "LimeTorrents");
     	} else if (preferencesKey.equals("site_mininova")) {
     		return new SiteSettings(preferencesKey, "Mininova");
     	} else if (preferencesKey.equals("site_monova")) {
