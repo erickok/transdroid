@@ -49,6 +49,7 @@ public class ImportExport {
 				editor.remove(Preferences.KEY_PREF_AUTH + postfixj);
 				editor.remove(Preferences.KEY_PREF_USER + postfixj);
 				editor.remove(Preferences.KEY_PREF_PASS + postfixj);
+				editor.remove(Preferences.KEY_PREF_EXTRAPASS + postfixj);
 				editor.remove(Preferences.KEY_PREF_FOLDER + postfixj);
 				editor.remove(Preferences.KEY_PREF_ALARMFINISHED + postfixj);
 				editor.remove(Preferences.KEY_PREF_ALARMNEW + postfixj);
@@ -76,6 +77,7 @@ public class ImportExport {
 				if (server.has("use_auth")) editor.putBoolean(Preferences.KEY_PREF_AUTH + postfix, server.getBoolean("use_auth"));
 				if (server.has("username")) editor.putString(Preferences.KEY_PREF_USER + postfix, server.getString("username"));
 				if (server.has("password")) editor.putString(Preferences.KEY_PREF_PASS + postfix, server.getString("password"));
+				if (server.has("extra_password")) editor.putString(Preferences.KEY_PREF_EXTRAPASS + postfix, server.getString("extra_password"));
 				if (server.has("folder")) editor.putString(Preferences.KEY_PREF_FOLDER + postfix, server.getString("folder"));
 				if (server.has("download_alarm")) editor.putBoolean(Preferences.KEY_PREF_ALARMFINISHED + postfix, server.getBoolean("download_alarm"));
 				if (server.has("new_torrent_alarm")) editor.putBoolean(Preferences.KEY_PREF_ALARMNEW + postfix, server.getBoolean("new_torrent_alarm"));
@@ -186,6 +188,7 @@ public class ImportExport {
 			server.put("use_auth", prefs.getBoolean(Preferences.KEY_PREF_AUTH + postfixi, false));
 			server.put("username", prefs.getString(Preferences.KEY_PREF_USER + postfixi, null));
 			server.put("password", prefs.getString(Preferences.KEY_PREF_PASS + postfixi, null));
+			server.put("extra_password", prefs.getString(Preferences.KEY_PREF_EXTRAPASS + postfixi, null));
 			server.put("folder", prefs.getString(Preferences.KEY_PREF_FOLDER + postfixi, null));
 			server.put("download_alarm", prefs.getBoolean(Preferences.KEY_PREF_ALARMFINISHED + postfixi, false));
 			server.put("new_torrent_alarm", prefs.getBoolean(Preferences.KEY_PREF_ALARMNEW + postfixi, false));
