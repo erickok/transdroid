@@ -475,7 +475,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 			boolean hasError = tor.getInt(RPC_ERROR) == 3;
 			String errorString = tor.getString(RPC_ERRORSTRING);
 			String commentString = tor.getString(RPC_COMMENT);
-			errorString = errorString.isEmpty()? commentString : errorString + "\n" + commentString;
+			errorString = errorString == ""? commentString : errorString + "\n" + commentString;
 			torrents.add(new Torrent(
 					tor.getInt(RPC_ID),
 					null,

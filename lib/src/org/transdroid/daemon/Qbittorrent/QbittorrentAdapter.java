@@ -80,20 +80,51 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
+	private int version = -1;
 	
 	public QbittorrentAdapter(DaemonSettings settings) {
 		this.settings = settings;
+	}
+	
+	private void ensureVersion() throws DaemonException {
+		if (version > 0)
+			return;
+		// We still need to retrieve the version number from the server
+		// Do this by getting the web interface about page and trying to parse the version number
+		// Format is something like 'qBittorrent v2.9.7 (Web UI)'
+		String about = makeRequest("/about.html");
+		String aboutStartText = "qBittorrent v";
+		String aboutEndText = " (Web UI)";
+		int aboutStart = about.indexOf(aboutStartText);
+		int aboutEnd = about.indexOf(aboutEndText);
+		if (aboutStart >= 0 && aboutEnd > aboutStart) {
+			// String found: now parse a version like 2.9.7 as a number like 20907 (allowing 10 places for each .)
+			String[] parts = about.substring(aboutStart + aboutStartText.length(), aboutEnd).split("\\.");
+			if (parts.length > 0) {
+				version = Integer.parseInt(parts[0]) * 100 * 100;
+				if (parts.length > 1) {
+					version += Integer.parseInt(parts[1]) * 100;
+					if (parts.length > 2) {
+						version += Integer.parseInt(parts[2]);
+						return;
+					}
+				}
+			}
+		}
+		// Unable to establish version number; assume an old version by setting it to version 1
+		version = 10000;
 	}
 	
 	@Override
 	public DaemonTaskResult executeTask(DaemonTask task) {
 		
 		try {
+			ensureVersion();
 			switch (task.getMethod()) {
 			case Retrieve:
 
 				// Request all torrents from server
-				JSONArray result = new JSONArray(makeRequest("/json/events"));
+				JSONArray result = new JSONArray(makeRequest(version > 30000? "/json/torrents": "/json/events"));
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result),null);
 
 			case GetTorrentDetails:

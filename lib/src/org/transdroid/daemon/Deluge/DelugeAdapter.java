@@ -431,7 +431,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 				
 				// Build login object
 				String extraPass = settings.getExtraPassword();
-				if (extraPass == null || extraPass.isEmpty()) {
+				if (extraPass == null || extraPass == "") {
 					extraPass = settings.getPassword();
 				}
 				JSONObject loginRequest = new JSONObject();
@@ -524,7 +524,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	 */
 	private void initialise() throws DaemonException {
 
-		httpclient = HttpHelper.createStandardHttpClient(settings, settings.getUsername() != null && !settings.getUsername().isEmpty());
+		httpclient = HttpHelper.createStandardHttpClient(settings, settings.getUsername() != null && settings.getUsername() != "");
         httpclient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
         httpclient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
         

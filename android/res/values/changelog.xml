@@ -6,6 +6,7 @@ Transdroid 1.1.6\n
 - Improved label support, by Alexey Rogovoy\n
 - Added GZipped content support in RSS feeds\n
 - Allow Deluge users to enter a password for HTTP authentication\n
+- Support qBittorrent version 3.0.0 and up\n
 \n
 Transdroid 1.1.5\n
 - AndFTP alias:// support and file-in-root fix\n
