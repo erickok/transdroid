@@ -65,7 +65,7 @@
 		</TableRow>
 		<TableRow android:id="@+id/detailsrow_errors2" android:visibility="gone" >
 			<TextView android:id="@+id/details_errors" style="@style/DetailsInfoText"
-				android:layout_span="2" />
+				android:layout_span="2" android:autoLink="web" />
 		</TableRow>
 	</TableLayout>
 	
