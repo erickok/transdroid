@@ -14,6 +14,7 @@
 <string name="no_magnet_links">Din torrent klient støtter ikke .magnet linker, eller at det ikke er implementert</string>
 <string name="save">Lagre</string>
 <string name="dismiss">Slett</string>
+<string name="refresh">Oppdater</string>
 <string name="torrent_server">Torrent server</string>
 <string name="no_servers">Ingen server har blitt konfigurert enda</string>
 
@@ -50,6 +51,7 @@
 <string name="menu_errorreport">Error report</string>
 <string name="menu_remove">Fjern</string>
 <string name="menu_remove_data">Fjern og slett data</string>
+<string name="menu_also_data">og slett data</string>
 <string name="menu_pause">Pause</string>
 <string name="menu_resume">Fortsett</string>
 <string name="menu_stop">Stopp</string>
@@ -61,6 +63,7 @@
 <string name="menu_default_site_set_to">Standard side satt som</string>
 <string name="menu_moveup">Flytt opp</string>
 <string name="menu_movedown">Flytt ned</string>
+<string name="menu_edittrackers">Rediger Trackere</string>
 
 <string name="dialog_add_torrent">Lim inn torrentfilens URL</string>
 <string name="no_valid_url">Det du tastet inn er ikke en (gyldig) URL</string>
@@ -84,6 +87,7 @@
 <string name="addfailed_retry">Prøv igjen</string>
 <string name="addfailed_addlater">Legg til senere</string>
 
+<string name="search">Søk</string>
 <string name="searching">Søker...</string>
 <string name="dialog_search">Søk etter torrents på nettet</string>
 <string name="search_name">Torrents</string>
@@ -148,8 +152,11 @@
 <string name="pref_feed_url">Nyhetsstrøm URL</string>
 <string name="pref_feed_needsauth">Krever godkjenning</string>
 <string name="pref_feed_needsauth_info">Åpner linker i nettleseren for å autentisere</string>
+<string name="pref_ezrss">ezRSS feed bygger</string>
+<string name="pref_ezrss_info">Bygg et TV program RSS feed</string>
 <string name="pref_ezrss_showname">Vis navn</string>
 <string name="pref_ezrss_quality">Kvalitet</string>
+<string name="pref_ezrss_group">Utgivelse gruppe</string>
 <string name="pref_ezrss_loading">Laster...</string>
 
 <string name="pref_interface">Innstillinger for grensesnitt</string>

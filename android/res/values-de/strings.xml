@@ -4,7 +4,7 @@
 
 <string name="no_settings_short">Öffnen Sie die Einstellungen, um eine Konfiguration der Server-Daten vorzunehmen.</string>
 <string name="no_settings">Verwenden Sie Transdroid zum ersten Mal? Eine Installationsanleitung findet man unter www.transdroid.org/download\n\nUm Transdroid zu benutzen, geben Sie bitte Ihre Server-Konfiguration ein: </string>
-<string name="no_settings_button">Einstellungen öffne</string>
+<string name="no_settings_button">Einstellungen öffnen</string>
 <string name="connecting">Versuche eine Verbindung zum Server herzustellen …</string>
 <string name="no_torrents">Verbunden, aber keine Torrents auf dem Server.</string>
 <string name="no_downloading_torrents">Verbunden, aber keine herunterladende Torrents auf dem Server.</string>
@@ -265,8 +265,8 @@
 <string name="details_files">Dateien</string>
 <string name="details_size">Größe:</string>
 <string name="details_state">Status: </string>
-<string name="details_downloaded">Hochgeladen:</string>
-<string name="details_uploaded">Heruntergeladen:</string>
+<string name="details_downloaded">Heruntergeladen:</string>
+<string name="details_uploaded">Hochgeladen:</string>
 <string name="details_rate">Ratio:</string>
 <string name="details_eta">Voraussichtliche Dauer:</string>
 <string name="details_availability">Verfügbarkeit:</string>

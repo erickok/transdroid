@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="no_settings_button">បើក​ការ​កំណត់</string>
+<string name="connecting">កំពុង​ព្យាយាម​តភ្ជាប់​ទៅ​ម៉ាស៊ីន​បម្រើ...</string>
+<string name="save">រក្សាទុក</string>
+<string name="dismiss">បោះបង់</string>
+<string name="torrent_server">ម៉ាស៊ីនបម្រើ Torrent</string>
+<string name="no_servers">គ្មាន​ម៉ាស៊ីន​បម្រើ​ត្រូវ​បាន​កំណត់​រចនាសម្ព័ន្ធ​នៅ​ឡើយ​ទេ</string>
+
+
+<string name="view_switchview">ប្ដូរ​ទិដ្ឋភាព</string>
+<string name="view_showall">torrents ទាំងអស់</string>
+
+<string name="menu_add">បន្ថែម</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_forall_stop">បញ្ឈប់​ទាំង​អស់</string>
+<string name="menu_forall_start">ចាប់ផ្ដើម​ទាំង​អស់</string>
+<string name="menu_sort_alpha">ឈ្មោះ</string>
+<string name="menu_sort_status">ស្ថានភាព</string>
+<string name="menu_pause">ផ្អាក</string>
+<string name="menu_resume">បន្ត</string>
+<string name="menu_stop">បញ្ឈប់</string>
+<string name="menu_start">ចាប់ផ្ដើម</string>
+<string name="menu_forcestart">បង្ខំ​ឲ្យ​ចាប់ផ្ដើម</string>
+<string name="menu_setlabel">កំណត់​ស្លាក</string>
+<string name="menu_set_default">កំណត់​ជា​លំនាំ​ដើម</string>
+<string name="menu_default_site_set_to">តំបន់​បណ្ដាញ​លំនាំ​ដើម​កំណត់​ជា</string>
+<string name="menu_moveup">ផ្លាស់ទី​ឡើងលើ</string>
+<string name="menu_movedown">ផ្លាស់ទីចុះក្រោម</string>
+
+
+<string name="addfailed_retry">ព្យាយាម​ម្ដង​ទៀត</string>
+<string name="addfailed_addlater">បន្ថែម​ពេល​ក្រោយ</string>
+
+<string name="searching">កំពុង​ស្វែងរក...</string>
+<string name="search_name">Torrents</string>
+<string name="search_hint">Ubuntu</string>
+<string name="search_resultsfrom">លទ្ធផល​ពី</string>
+<string name="add_selected">បន្ថែម​ធាតុ​ដែល​បាន​ជ្រើស​ទាំង​អស់</string>
+<string name="searchmenu_add">ទាញយក​ឥឡូវ</string>
+<string name="searchmenu_details">បើក​តំបន់​បណ្ដាញ</string>
+<string name="searchmenu_openwith">បើកជា​មួយ...</string>
+<string name="searchmenu_sharelink">ចែករំលែក​តំណ...</string>
+
+<string name="add_new_server">បន្ថែម​ម៉ាស៊ីន​បម្រើ​ថ្មី</string>
+<string name="add_new_website">បន្ថែម​តំបន់​បណ្ដាញ​ថ្មី</string>
+<string name="add_new_rssfeed">បន្ថែម​មតិ​ព័ត៌មាន RSS</string>
+<string name="other_settings">ការ​កំណត់​ផ្សេងៗ</string>
+
+<string name="pref_server">ដេមិន​ម៉ាស៊ីន​បម្រើ</string>
+<string name="pref_basic">កា​រកំណត់​មូលដ្ឋាន</string>
+<string name="pref_name">ឈ្មោះ</string>
+<string name="pref_name_info">ឈ្មោះ​ផ្ទាល់​ខ្លួន​ជា​ជម្រើស</string>
+<string name="pref_daemon">ប្រភេទ​ម៉ាស៊ីន​បម្រើ</string>
+<string name="pref_address">IP ឬ​ឈ្មោះ​ដែន</string>
+<string name="pref_port">ច្រក</string>
+
+
+
+
+<string name="status_speed_up">↑ %1$s</string>
+<string name="status_speed_down">↓ %1$s</string>
+<string name="status_paused">បាន​ផ្អាក</string>
+<string name="status_stopped">បាន​បញ្ឈប់</string>
+<string name="status_unknown">មិន​ស្គាល់</string>
+
+
+
+
+
+
+
+
+
+
+<string name="seedm8_pref_server">ឈ្មោះ​ម៉ាស៊ីន​បម្រើ</string>
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Search Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

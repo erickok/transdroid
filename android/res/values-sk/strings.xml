@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">Torrent klient správca s vyhľadávaním, podporou RSS a monitoringom vo widgete</string>
+
+<string name="no_settings_button">Nastavenia</string>
+<string name="connecting">Prebieha pripojenie k serveru</string>
+<string name="no_torrents">Pripojené, ale na serveri nieje žiadny torrent.</string>
+<string name="no_downloading_torrents">Pripojené, ale na serveri niesu žiadne sťahované torrenty.</string>
+<string name="no_uploading_torrents">Pripojené, ale na serveri niesu žiadne seedované torrenty.</string>
+<string name="no_inactive_torrents">Pripojené, ale na serveri niesu žiadne neaktívne torrenty.</string>
+<string name="no_file_uploads">Váš torrent klient nieje podporovaný. Nahranie torrentu nieje implementované.</string>
+<string name="no_magnet_links">Váš torrent klient není podporovaný. Magnet link nieje implementovaný.</string>
+<string name="save">Uložiť</string>
+<string name="dismiss">Zrušiť</string>
+<string name="refresh">Obnoviť</string>
+<string name="torrent_server">Torrent server</string>
+<string name="no_servers">Nieje nastavený žiadny server.</string>
+
+<string name="labels_showall">Vybrať všetko</string>
+<string name="labels_unlabeled">Neoznačené</string>
+<string name="labels_newlabel">Nová značka</string>
+<string name="labels_no_support">Nastavenie značky nieje podporované Vašim klientom</string>
+
+<string name="view_switchview">Prepnúť zobrazenie</string>
+<string name="view_showall">Zobraziť všetky torrenty</string>
+<string name="view_showdl">Zobraziť sťahované torrenty</string>
+<string name="view_showul">Zobraziť seedované torrenty</string>
+<string name="view_showinactive">Zobraziť neaktívne torrenty</string>
+
+<string name="menu_add">Pridať</string>
+<string name="menu_scanbarcode">Zosnímať barcode</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">Prepnúť server</string>
+<string name="menu_speeds">Nastaviť rýchlosť</string>
+<string name="menu_forall">Urobiť všetko</string>
+<string name="menu_forall_pause">Pozastaviť všetko</string>
+<string name="menu_forall_resume">Obnoviť všetko</string>
+<string name="menu_forall_stop">Zastaviť všetko</string>
+<string name="menu_forall_start">Spustiť všetko</string>
+<string name="menu_filter">Filtre</string>
+<string name="menu_sort_reverse">Zoradiť (obrátiť smer zoradenia)</string>
+<string name="menu_sort_alpha">Meno</string>
+<string name="menu_sort_status">Stav</string>
+<string name="menu_sort_done">Dátum dokončenia</string>
+<string name="menu_sort_added">Dátum pridania</string>
+<string name="menu_sort_upspeed">Rýchlosť sťahovania</string>
+<string name="menu_sort_ratio">Ratio</string>
+<string name="menu_sort_onlytransferring">Len prenosy (> 0KB/s)</string>
+<string name="menu_settings">Nastavenia</string>
+<string name="menu_changelog">O / Zmeny</string>
+<string name="menu_errorreport">Hlásenie chýb</string>
+<string name="menu_remove">Odobrať</string>
+<string name="menu_remove_data">Odobrať a zmazať dáta</string>
+<string name="menu_also_data">Len zmazať dáta</string>
+<string name="menu_pause">Pozastaviť</string>
+<string name="menu_resume">Obnoviť</string>
+<string name="menu_stop">Zastaviť</string>
+<string name="menu_start">Spustiť</string>
+<string name="menu_forcestart">Vynútený štart</string>
+<string name="menu_setlabel">Nastaviť značku</string>
+<string name="menu_setdownloadlocation">Sťahovať do</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<string-array name="pref_alarminterval_types">
+<item>1 minuta</item>
+<item>10 minút</item>
+<item>30 minút</item>
+<item>1 hodina</item>
+<item>3 hodiny</item>
+<item>12 hodín</item>
+<item>1 deň</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Rýchle vyhľadávanie</item>
+<item>Čierny</item>
+<item>Transparentný</item>
+</string-array>
+</resources>

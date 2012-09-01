@@ -89,6 +89,7 @@
 <string name="addfailed_retry">Επανάληψη</string>
 <string name="addfailed_addlater">Προσθήκη Αργότερα</string>
 
+<string name="search">Αναζήτηση</string>
 <string name="searching">Αναζήτηση...</string>
 <string name="dialog_search">Αναζήτηση on-line για torrents</string>
 <string name="search_name">Torrents</string>
@@ -110,9 +111,18 @@
 <string name="other_settings">Άλλες ρυθμίσεις</string>
 
 <string name="pref_basic">Βασικές ρυθμίσεις</string>
+<string name="pref_name">Όνομα</string>
+<string name="pref_daemon">Τύπος server</string>
+<string name="pref_port">Πόρτα</string>
 <string name="pref_user">Όνομα χρήστη</string>
 <string name="pref_pass">Κωδικός</string>
+<string name="pref_os">Λειτουργικό server </string>
 <string name="pref_folder2">Φάκελος</string>
+<string name="pref_folder3_info">Συνήθως κενό</string>
+<string name="pref_ssl">SSL</string>
+
+<string name="pref_search">Μηχανή αναζήτησης</string>
+<string name="pref_ezrss_showname">Προβολή ονόματος</string>
 
 
 
@@ -126,7 +136,10 @@
 
 
 
-
+<string name="seedm8_add_new_xserver">Προσθήκη SeedM8 server</string>
+<string name="seedm8_pref_title">Ρυθμίσεις SeedM8 server</string>
+<string name="seedm8_pref_server">Όνομα server</string>
+<string name="seedm8_pref_server_info">Όπως alpha.seedm8.com</string>
 
 <string-array name="pref_sort_types">
 <item>Combined ordering</item>

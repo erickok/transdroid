@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="description">Torrent client manager met geintegreerd zoeken, RSS ondersteuning en widget</string>
+<string name="description">Torrent client manager met geintegreerd zoeken, RSS ondersteuning en statuswidget</string>
 
 <string name="no_settings_short">Gebruik het instellingenmenu om de server daemon te configureren.</string>
 <string name="no_settings">Gebruik het instellingenmenu om de server daemon te configureren.\n\nVoor meer info, zie: www.transdroid.org/download</string>
@@ -67,6 +67,7 @@
 <string name="menu_movedown">Omlaag</string>
 <string name="menu_edittrackers">Trackers aanpassen</string>
 <string name="menu_invertselection">Selectie omdraaien</string>
+<string name="menu_altmode">schildpad modus</string>
 
 <string name="dialog_add_torrent">Plak hier de URL van het torrent bestand</string>
 <string name="no_valid_url">Ongeldige URL ingevoegd</string>

@@ -278,7 +278,7 @@
 
 <string name="file_off">關</string>
 <string name="file_low">低</string>
-<string name="file_normal">中</string>
+<string name="file_normal">一</string>
 <string name="file_high">高</string>
 <string name="file_remotestart">在VLC中遠端播放</string>
 <string name="file_ftpdownload">使用(S)FTP下載</string>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="save">حفظ</string>
+<string name="dismiss">تجاهل</string>
+
+
+
+<string name="menu_add">إضافة</string>
+<string name="menu_servers">تبديل الخادم</string>
+<string name="menu_forall">عمل للكل</string>
+<string name="menu_forall_pause">ايقاف مؤقت للكل</string>
+<string name="menu_forall_resume">استمرار الكل</string>
+<string name="menu_forall_stop">ايقاف الكل</string>
+<string name="menu_forall_start">بدء الكل</string>
+<string name="menu_sort_alpha">الاسم</string>
+<string name="menu_sort_status">الحالة</string>
+<string name="menu_settings">الاعدادات</string>
+<string name="menu_remove">ازالة</string>
+<string name="menu_pause">ايقاف مؤقت</string>
+<string name="menu_resume">استمرار</string>
+<string name="menu_stop">ايقاف</string>
+<string name="menu_start">بدء</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<string name="file_low">منخفض</string>
+<string name="file_normal">متوسط</string>
+<string name="file_high">عالي</string>
+
+
+
+
+
+
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>No automatic refresh</item>
+<item>2 seconds</item>
+<item>5 seconds</item>
+<item>15 seconds</item>
+<item>1 minute</item>
+<item>5 minutes</item>
+<item>15 minutes</item>
+<item>1 hour</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 hour</item>
+<item>3 hours</item>
+<item>12 hours</item>
+<item>1 day</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Quick Search Box</item>
+<item>Black</item>
+<item>Transparent</item>
+</string-array>
+</resources>

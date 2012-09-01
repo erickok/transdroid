@@ -112,7 +112,7 @@
 <string name="searchmenu_useassearch">Искать заново</string>
 <string name="search_savedrssfeed">Искать в сохраненных RSS-фидах</string>
 <string name="search_savenotsupported">Сохранение не поддерживается этим сайтом</string>
-<string name="tts_not_found">Torrent Search теперь отдельный модуль. Установить его сейчас из Android Market?</string>
+<string name="tts_not_found">Torrent Search теперье отдельный модуль. Установить его сейчас из Android Market?</string>
 
 <string name="preferences">Настройки Transdroid</string>
 <string name="add_new_server">Добавить новый сервер</string>
