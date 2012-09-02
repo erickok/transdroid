@@ -124,7 +124,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			case Retrieve:
 
 				// Request all torrents from server
-				JSONArray result = new JSONArray(makeRequest(version > 30000? "/json/torrents": "/json/events"));
+				JSONArray result = new JSONArray(makeRequest(version >= 30000? "/json/torrents": "/json/events"));
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result),null);
 
 			case GetTorrentDetails:
