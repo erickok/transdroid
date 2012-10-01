@@ -1,58 +1,396 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<string name="description">Integratutako bilaketa, RSS euskarria eta monitorizazio trepeta eskaintzen dituen torrent bezeroen kudeatzailea</string>
 
-<string name="connecting">zerbitzarira konektatzen...</string>
-<string name="cannot_connect">ezin izan dugu daemon zerbitzarira konektatu. Mesedez, berrikusi zure konfigurazioa. </string>
+<string name="no_settings_short">Ireki ezarpenak menua zure zerbitzariaren xehetasunak sartzeko</string>
+<string name="no_settings">Transdroid-en erabiltzaile berria zara? Instalazioan laguntza behar baduzu bisitatu www.transdroid.org/download\n\nTorrentak deskargatzen hasteko, mesedez, sartu zure zerbitzariaren ezarpenak:</string>
+<string name="no_settings_button">Ireki ezarpenak</string>
+<string name="connecting">Zerbitzarira konektatzen saiatzen...</string>
+<string name="no_torrents">Konektatuta, baina ez dago torrentik zerbitzarian.</string>
+<string name="no_downloading_torrents">Konektatuta, baina ez dago deskargatzen ari den torrentik zerbitzarian.</string>
+<string name="no_uploading_torrents">Konektatuta, baina ez dago aletzen ari den torrentik zerbitzarian.</string>
+<string name="no_inactive_torrents">Konektatuta, baina ez dago inaktibo dagoen torrentik zerbitzarian.</string>
+<string name="no_file_uploads">Zure torrent bezeroak ez ditu onartzen .torrent fitxategien kargak edo hau ez dago inplementatuta oraindik.</string>
+<string name="no_magnet_links">Zure torrent bezeroak ez ditu onartzen .magnet estekak edo hau ez dago inplementatuta oraindik.</string>
+<string name="save">Gorde</string>
+<string name="dismiss">Baztertu</string>
+<string name="refresh">Freskatu</string>
+<string name="torrent_server">Torrent zerbitzaria</string>
+<string name="no_servers">Ez da zerbitzaririk konfiguratu oraindik</string>
 
+<string name="labels_showall">Etiketa guztiak</string>
+<string name="labels_unlabeled">Etiketarik gabe</string>
+<string name="labels_newlabel">Etiketa berria</string>
+<string name="labels_no_support">Zure bezeroak ez du onartzen etiketak ezartzea</string>
 
+<string name="view_switchview">Aldatu ikuspegia</string>
+<string name="view_showall">Torrent guztiak</string>
+<string name="view_showdl">Torrentak deskargatzen</string>
+<string name="view_showul">Torrentak aletzen</string>
+<string name="view_showinactive">Torrent inaktiboak</string>
 
 <string name="menu_add">Gehitu</string>
-<string name="menu_search">Bilatu</string>
+<string name="menu_scanbarcode">Barra-kodea eskaneatu</string>
 <string name="menu_rss">RSS</string>
-<string name="menu_servers">Zerbitzaria aldatu</string>
-<string name="menu_refresh">Eguneratu</string>
-<string name="menu_forall">Denentzako egin</string>
-<string name="menu_forall_resume">Denak jarraitu</string>
-<string name="menu_forall_stop">Denak gelditu</string>
-<string name="menu_forall_start">Denak hasi</string>
+<string name="menu_servers">Aldatu zerbitzaria</string>
+<string name="menu_speeds">Ezarri transferentzia-abiadurak</string>
+<string name="menu_forall">Egin guztiekin</string>
+<string name="menu_forall_pause">Pausatu guztiak</string>
+<string name="menu_forall_resume">Berrekin guztiak</string>
+<string name="menu_forall_stop">Gelditu guztiak</string>
+<string name="menu_forall_start">Abiatu guztiak</string>
+<string name="menu_filter">Iragazi zerrenda</string>
+<string name="menu_sort_reverse">Ordenatu honela (errepikatu alderantzikatzeko)</string>
 <string name="menu_sort_alpha">Izena</string>
-<string name="menu_remove">Ezabatu</string>
-<string name="menu_resume">Jarraitu</string>
+<string name="menu_sort_status">Egoera</string>
+<string name="menu_sort_done">Osatze-data</string>
+<string name="menu_sort_added">Gehitze-data</string>
+<string name="menu_sort_upspeed">Karga-abiadura</string>
+<string name="menu_sort_ratio">Proportzioa</string>
+<string name="menu_sort_onlytransferring">Transferitzen soilik (> 0KB/s)</string>
+<string name="menu_settings">Ezarpenak</string>
+<string name="menu_changelog">Honi buruz/Aldaketa-egunkaria</string>
+<string name="menu_errorreport">Errore-txostena</string>
+<string name="menu_remove">Kendu</string>
+<string name="menu_remove_data">Kendu eta ezabatu datuak</string>
+<string name="menu_also_data">Eta ezabatu datuak</string>
+<string name="menu_pause">Pausatu</string>
+<string name="menu_resume">Berrekin</string>
+<string name="menu_stop">Gelditu</string>
+<string name="menu_start">Abiatu</string>
+<string name="menu_forcestart">Behartu abiatzera</string>
+<string name="menu_setlabel">Ezarri etiketa</string>
+<string name="menu_setdownloadlocation">Ezarri deskargen kokapena</string>
+<string name="menu_set_default">Ezarri lehenetsi bezala</string>
+<string name="menu_default_site_set_to">Gune lehenetsiaren ezarpena</string>
+<string name="menu_moveup">Mugitu gora</string>
+<string name="menu_movedown">Mugitu behera</string>
+<string name="menu_edittrackers">Editatu aztarnariak</string>
+<string name="menu_invertselection">Alderantzikatu hautapena</string>
+<string name="menu_altmode">Dordoka modua</string>
 
+<string name="dialog_add_torrent">Itsatsi torrent fitxategiaren URLa</string>
+<string name="no_valid_url">Emandako sarrera ez da (baliozko) URL bat</string>
+<string name="selectfile">Hautatu .torrent fitxategi lokal bat</string>
+<string name="oifm_not_found">Ezin izan da aurkitu onartutako fitxategi-kudeatzailerik (adibidez, OI fitxategi-kudeatzailea). Android Market-etik instalatu nahi duzu?\n\nBestela, onartu gabeko fitxategi-kudeatzaile bat ireki dezakezu eta .torrent fitxategi bat bidali Transdoid-era. </string>
+<string name="oifm_install">Instalatu market-etik</string>
+<string name="oifm_nomarket">Android Market aplikazioa ez dago instalatuta</string>
+<string name="scanner_not_found">Ezin izan da Barra-kode Eskanerra aplikazioa aurkitu. Android Market-etik instalatu nahi duzu?</string>
+<string name="lc_install">Errore-txosten bat bidaltzeko, Log Collector izeneko doako aplikazio librea behar duzu. Android Market-etik instalatu nahi duzu?</string>
+<string name="lc_run">Log Collector aplikazioak gailuaren egunkariak bildu eta transdroid.org@gmail.com-era bidaliko ditu orain.\nBidaliko diren datuak berrikusi eta aldatzeko aukera izango duzu.</string>
+<string name="vlcremote_not_found">Ezin izan da aurkitu VLC Remote bezalako urruneko fitxategi-ikustailerik. VLC Remote instalatu nahi duzu Android Market-etik?</string>
+<string name="ftpclient_not_found">Ez duzu FTP bezero bateragarririk instalatu.\n AndFTP instalatu nahi duzu Android Market-etik?</string>
 
+<string name="rate_download">Gehienezko deskarga-abiadura</string>
+<string name="rate_upload">Gehienezko karga-abiadura</string>
+<string name="rate_inkbs">Zenbakizko balioak soilik, KB/s-tan</string>
+<string name="rate_reset">Berrezarri</string>
+<string name="rate_no_support">Zure torrent bezeroak ez du onartzen transferentzia-abiadurak ezartzea edo hau inplementatu gabe dago oraindik.</string>
+<string name="rate_updated">Transferentzia-abiadurak eguneratuta</string>
+<string name="askremove_title">Torrenta kentzen</string>
+<string name="askremove">Ziur zaude torrent hau kendu nahi duzula?</string>
+<string name="addfailed_title">Gehitzeak huts egin du</string>
+<string name="addfailed_service2">Ezin izan da %1$s gehitu.\nBerriz saiatu ala geroago automatikoki gehitzeko ilaran jarri?</string>
+<string name="addfailed_noservice2">Ezin izan da %1$s gehitu.\nBerriz saiatu nahi duzu?</string>
+<string name="addfailed_retry">Berriz saiatu</string>
+<string name="addfailed_addlater">Gehitu geroago</string>
 
-<string name="search_label">Torrentak aurkitu</string>
-<string name="searchmenu_searchagain">Bilakera berria</string>
-<string name="searchmenu_add">Orain jeitsi</string>
-<string name="searchmenu_details">Orria iriki</string>
+<string name="search">Bilatu</string>
+<string name="searching">Bilatzen...</string>
+<string name="dialog_search">Bilatu torrentak linean</string>
+<string name="search_name">Torrentak</string>
+<string name="search_hint">Ubuntu</string>
+<string name="search_resultsfrom">Hemengo emaitzak</string>
+<string name="add_selected">Gehitu hautatutako guztiak</string>
+<string name="no_results">Ez da emaitzarik aurkitu zure kontsultarentzat</string>
+<string name="no_query">Ez da bilaketa kontsultarik hornitu</string>
+<string name="searchmenu_switchsite">Aldatu gunea</string>
+<string name="searchmenu_add">Deskargatu orain</string>
+<string name="searchmenu_details">Ireki webgunea</string>
+<string name="searchmenu_openwith">Ireki honekin...</string>
+<string name="searchmenu_sharelink">Partekatu esteka...</string>
+<string name="searchmenu_savesearch">Gorde RSS jario bezala</string>
+<string name="searchmenu_useassearch">Erabili bilaketa berri bezala</string>
+<string name="search_savedrssfeed">Bilaketa RSS jario bezala gordeta</string>
+<string name="search_savenotsupported">Gune honek ez du gordetzea onartzen</string>
+<string name="tts_not_found">Torrent Search modulu bereizi bat da orain. Android Market-etik instalatu nahi duzu?</string>
 
+<string name="preferences">Transdroid hobespenak</string>
+<string name="add_new_server">Gehitu zerbitzari berria</string>
+<string name="add_new_website">Gehitu web bilaketa gunea</string>
+<string name="add_new_rssfeed">Gehitu RSS jarioa</string>
+<string name="inappsite">Bilatu aplikazioan</string>
+<string name="websearch">Bilatu sarean</string>
+<string name="other_settings">Beste ezarpenak</string>
 
+<string name="pref_server">Zerbitzari daemona</string>
+<string name="pref_basic">Oinarrizko ezarpenak</string>
+<string name="pref_name">Izena</string>
+<string name="pref_name_info">Hautazko izen pertsonala</string>
+<string name="pref_daemon">Zerbitzari mota</string>
+<string name="pref_address">IP edo domeinu-izena</string>
+<string name="pref_address_info">http:// edo ataka zenbakirik gabe</string>
+<string name="pref_port">Ataka</string>
+<string name="pref_port_info">Normalean hau da</string>
+<string name="pref_auth">Erabili autentifikazioa</string>
+<string name="pref_auth_info">Erabiltzaile-izen eta pasahitza beharko dituzu</string>
+<string name="pref_user">Erabiltzaile-izena</string>
 <string name="pref_pass">Pasahitza</string>
+<string name="pref_os">Zerbitzariaren SE</string>
+<string name="pref_folder">SCGI karpeta</string>
+<string name="pref_folder_info">Normalean /RPC2 da</string>
+<string name="pref_folder2">Karpeta</string>
+<string name="pref_folder2_info">Adibidez /torrentflux</string>
+<string name="pref_folder3_info">Normalean hutsik</string>
+<string name="pref_advanced">Ezarpen aurreratuak (hautazkoa)</string>
+<string name="pref_downloaddir">Deskargen direktorioa</string>
+<string name="pref_downloaddir_info">Zure zerbitzariko deskargen direktorioaren bide absolutua</string>
+<string name="pref_ftpurl">Oinarrizko (S)FTP url-a</string>
+<string name="pref_ftpurl_info">Adibidez, ftp://ni@zerbitzaria.com/deskargak/</string>
+<string name="pref_timeout">Konexioaren denbora-muga</string>
+<string name="pref_timeout_info">Konexio saiakera bat denboraz kanpo gelditzeko segundo kopurua</string>
+<string name="pref_ssl">SSL</string>
+<string name="pref_ssl_info">Hautatu https erabiltzeko</string>
+<string name="pref_ssl_trust_key">SSL hatz-marka pertsonalizatua</string>
+<string name="pref_ssl_trust_key_info">Onartu ziurtagiri zehatz hau duten konexioak soilik</string>
+<string name="pref_ssl_trust_all">Onartu SSL ziurtagiri guztiak</string>
+<string name="pref_ssl_trust_all_info">Hautatu edozein hatz-markako konexioak onartzeko</string>
 
+<string name="pref_search">Bilaketa-tresna</string>
+<string name="pref_setdefault">Ezarri gune lehenetsia</string>
+<string name="pref_url">Bilaketa zuzeneko URLa</string>
+<string name="pref_url_info">%s bilaketa-kontsultarekin ordezkatuko da</string>
+<string name="pref_numresults">Emaitza kopurua</string>
+<string name="pref_sort">Emaitzen ordena</string>
+<string name="pref_rss_info">RSS jarioak</string>
+<string name="pref_feed">Jarioen ezarpenak</string>
+<string name="pref_feed_url">Jarioaren URLa</string>
+<string name="pref_feed_needsauth">Autentifikazioa behar du</string>
+<string name="pref_feed_needsauth_info">Estekak arakatzailean irekitzen ditu autentifikatzeko</string>
+<string name="pref_ezrss">ezRSS jarioen eraikitzailea</string>
+<string name="pref_ezrss_info">Eraiki TB saio baten RSS jarioa</string>
+<string name="pref_ezrss_showname">Saioaren izena</string>
+<string name="pref_ezrss_quality">Kalitatea</string>
+<string name="pref_ezrss_group">Argitaratzaile taldea</string>
+<string name="pref_ezrss_info2">Kalitatea eta argitaratzaile taldea hautazkoak dira\nHornitzailea: http://www.ezrss.it</string>
+<string name="pref_ezrss_exact">parekatze zehatza ↴</string>
+<string name="pref_ezrss_enter">Adibidetarako jario bat erakutsiko da hemen zure kontsulta sartutakoan</string>
+<string name="pref_ezrss_loading">Kargatzen...</string>
+<string name="pref_ezrss_noresults">Kontsulta honek atal zerrenda huts bat ematen du</string>
 
+<string name="pref_interface">Interfazearen ezarpenak</string>
+<string name="pref_onlytransferring">Soilik transferitzen (> 0KB/s)</string>
+<string name="pref_onlytransferring_info">Erakutsi 0KB/s-ko abiadura duten torrentak inaktibo bezala</string>
+<string name="pref_swipelabels">Arrastatu etiketak</string>
+<string name="pref_swipelabels_info">Arrastatu etiketaz aldatzeko eta ez zerbitzariz</string>
+<string name="pref_uirefresh">Freskatze bitartea</string>
+<string name="pref_hiderefresh">Ezkutatu freskatzea</string>
+<string name="pref_hiderefresh_info">Ez erakutsi \'Torrent zerrenda freskatuta\' mezua</string>
+<string name="pref_clear_search_history">Garbitu bilaketa historia</string>
+<string name="pref_history_cleared">Historia behar bezala garbitu da</string>
+<string name="pref_askremove">Berretsi kentzea</string>
+<string name="pref_askremove_info">Galdetu torrent bat kentzea berresteko</string>
+<string name="pref_import_settings">Inportatu ezarpenak</string>
+<string name="pref_import_settings_info">Transdroid zerbitzari, web bilaketa eta RSS ezarpenak hemendik inportatzen saiatuko da:</string>
+<string name="pref_import_settings_success">Ezarpenak behar bezala inportatu dira</string>
+<string name="pref_import_settings_pick">Aukeratu fitxategia</string>
+<string name="pref_export_settings">Esportatu ezarpenak</string>
+<string name="pref_export_settings_info">Transdroid-ek zerbitzari (pasahitzak barne), web bilaketa eta RSS ezarpenak esportatuko ditu ondorengo testu lau fitxategira:</string>
+<string name="pref_export_settings_success">Ezarpenak behar bezala esportatu dira</string>
+<string name="pref_export_settings_pick">Aukeratu direktorioa</string>
+<string name="pref_enableads">Gaitu iragarkiak</string>
+<string name="pref_enableads_info">Erakutsi iragarkiak pantailaren behealdean</string>
 
+<string name="pref_alarm">Alarma zerbitzuaren ezarpenak</string>
+<string name="pref_enablealarm">Gaitu alarma zerbitzua</string>
+<string name="pref_enablealarm_info">Jo alarma torrentaren egoera aldatzean</string>
+<string name="pref_alarmtime">Alarmaren bitartea</string>
+<string name="pref_alarmtime_info">Ze maiztasunekin egiaztatu behar diren nire torrentak</string>
+<string name="pref_alarmfinished">Deskarga alarma</string>
+<string name="pref_alarmfinished_info">Jakinarazi torrent bat osatzean</string>
+<string name="pref_alarmnew">Torrent berria alarma</string>
+<string name="pref_alarmnew_info">Jakinarazi torrent berri bat gehitzean</string>
+<string name="pref_alarmplaysound">Gaitu alarmaren soinua</string>
+<string name="pref_alarmplaysound_info">Erreproduzitu jakinarazpen soinua alarman</string>
+<string name="pref_alarmsounduri">Alarmaren soinua</string>
+<string name="pref_alarmsounduri_info">Alarmarekin erreproduzituko den jakinarazpen soinua</string>
+<string name="pref_alarmvibrate">Gaitu bibrazioa</string>
+<string name="pref_alarmvibrate_info">Bibratu alarman</string>
+<string name="pref_checkrssfeeds">Egiaztatu RSS jarioak</string>
+<string name="pref_checkrssfeeds_info">Jo alarma torrent berriak eskuragarri daudenean</string>
+<string name="pref_adwnotify">Gaitu ADW jakinarazpenak</string>
+<string name="pref_adwnotify_info">Erakutsi torrent kontagailua ADW abiarazlean</string>
+<string name="pref_adwonlydl">Kontatu deskargak soilik</string>
+<string name="pref_adwonlydl_info">ADW kontagailuak deskargak soilik hartzen ditu kontuan</string>
 
+<string name="status_waiting">Egiaztatzeko itxaroten...</string>
+<string name="status_checking">Datu lokalak egiaztatzen...</string>
+<string name="status_waitingtodl">%s deskargatzeko itxaroten</string>
+<string name="status_error">Errorea...</string>
+<string name="status_size1">%2$s-(e)tik %1$s (%3$s)</string>
+<string name="status_size2">%1$s, %2$s kargatuta</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_unknowneta">ETA ezezaguna</string>
+<string name="status_ratio">proportzioa %1$s</string>
+<string name="status_peers">%2$s paretik %1$s</string>
+<string name="status_speed_up">↑ %1$s</string>
+<string name="status_speed_down">↓ %1$s</string>
+<string name="status_paused">Pausatuta</string>
+<string name="status_stopped">Geldituta</string>
+<string name="status_unknown">Ezezaguna</string>
+<string name="status_persecond">/s</string>
 
+<string name="task_refreshing">Freskatzen...</string>
+<string name="task_addbyurl">Torrenta gehitzen...</string>
+<string name="task_addbyfile">Torrenta kargatzen...</string>
+<string name="task_removing">Torrenta kentzen...</string>
+<string name="task_pausing">Torrenta pausatzen...</string>
+<string name="task_pausingall">Torrent guztiak pausatzen...</string>
+<string name="task_resuming">Torrenta berrekiten...</string>
+<string name="task_resumingall">Torrent guztiak berrekiten...</string>
+<string name="task_stopping">Torrenta gelditzen...</string>
+<string name="task_stoppingall">Torrent guztiak gelditzen...</string>
+<string name="task_starting">Torrenta abiatzen...</string>
+<string name="task_startingall">Torrent guztiak abiatzen...</string>
+<string name="task_getfiles">Fitxategiak eskuratzen...</string>
+<string name="task_setfileprop">Fitxategiaren propietateak ezartzen...</string>
+<string name="task_settransrates">Transferentzia-abiadurak ezartzen...</string>
+<string name="task_setlabel">Etiketa esleitzen...</string>
+<string name="task_setlocation">Torrenta mugitzen...</string>
+<string name="task_setalternativemode">Modua aldatzen...</string>
 
+<string name="list_refreshed">Torrent zerrenda freskatuta</string>
+<string name="torrent_added">Torrenta gehituta (freskatzen)</string>
+<string name="torrent_removed">kenduta</string>
+<string name="torrent_removed_with_data">kenduta eta datuak ezabatuta</string>
+<string name="torrent_resumed">berrekinda (freskatzen)</string>
+<string name="torrent_stopped">geldituta</string>
+<string name="torrent_started">abiatuta (freskatzen)</string>
+<string name="torrent_paused">pausatuta</string>
+<string name="torrent_paused_all">Pausatuta torrentak</string>
+<string name="torrent_resumed_all">Berrekindako torrentak (freskatzen)</string>
+<string name="torrent_stopped_all">Gelditutako torrentak</string>
+<string name="torrent_started_all">Abiatutako torrentak (freskatzen)</string>
+<string name="torrent_trackersupdated">Aztarnariak eguneratuta</string>
+<string name="torrent_locationset">Torrenta hona mugituta: \'%1$s\'</string>
 
+<string name="details_details">Xehetasunak</string>
+<string name="details_files">Fitxategiak</string>
+<string name="details_size">Tamaina:</string>
+<string name="details_state">Egoera:</string>
+<string name="details_downloaded">Deskargatuta:</string>
+<string name="details_uploaded">Kargatuta:</string>
+<string name="details_rate">Tasa:</string>
+<string name="details_eta">ETA:</string>
+<string name="details_availability">Eskuragarritasuna:</string>
+<string name="details_peers">Pareak:</string>
+<string name="details_label">Etiketa:</string>
+<string name="details_trackers">Aztarnariak:</string>
+<string name="details_trackers_expand">%1$s (zabaldu)</string>
+<string name="details_trackers_collapse">(tolestu)</string>
+<string name="details_errors">Erroreak:</string>
+<string name="details_notsupported">Zure torrent bezeroak ez du onartzen fitxategiak zerrendatzea edo ez dago inplementatuta oraindik</string>
+<string name="details_priorities_updated">Fitxategi lehentasunak eguneratuta</string>
 
+<string name="file_off">Itzalita</string>
+<string name="file_low">Baxua</string>
+<string name="file_normal">Normala</string>
+<string name="file_high">Altua</string>
+<string name="file_remotestart">Urruneko erreprodukzioa VLC-n</string>
+<string name="file_ftpdownload">Deskargatu (S)FTP erabiliz</string>
 
+<string name="widget_4x1">Transdroid 4x1</string>
+<string name="widget_2x1">Transdroid 2x1</string>
+<string name="widget_pref_server">Zerbitzaria</string>
+<string name="widget_pref_refresh">Freskatze tartea</string>
+<string name="widget_pref_layout">Estiloa</string>
+<string name="widget_pref_addwidget">Gehitu trepeta hau</string>
+<string name="widget_downloading">DK @</string>
+<string name="widget_downloading_up">gora</string>
+<string name="widget_seeding">KG @</string>
+<string name="widget_other">inaktibo</string>
+<string name="widget_persecond">/s</string>
+<string name="widget_eta">ETA</string>
+<string name="widget_unknowneta">ETA ezezaguna</string>
+<string name="widget_new">berria</string>
 
+<string name="service_newtorrent">Torrent berria gehituta</string>
+<string name="service_torrentfinished">Torrentak amaitu du deskarga</string>
+<string name="service_newrssitems">Torrent berriak eskuragarri</string>
+<string name="service_newrssitems_count">%d RSS jario torrent berri</string>
+
+<string name="rss">RSS</string>
+<string name="rss_no_feeds">Ez dago RSS jariorik instalatuta\n\nErabili menua jario berriak gehitzeko</string>
+<string name="rss_loading_feed">RSS jarioa kargatzen</string>
+<string name="rss_no_items">Konektatuta, baina RSS jarioa hutsik dago</string>
+
+<string name="error_httperror">Errorea zerbitzariarekin komunikatzean</string>
+<string name="error_jsonrequesterror">Errorea eskaera eraikitzean</string>
+<string name="error_jsonresponseerror">Errorea zerbitzariaren erantzuna analizatzean (mesedez, egiaztatu zure ezarpenak)</string>
+<string name="error_daemonnotconnected">Web interfazea ez dago martxan dagoen daemonari konektaturik</string>
+<string name="error_401">Sarbidea ukatuta (mesedez, egiaztatu zure ezarpenak)</string>
+<string name="error_torrentfile">Ezin da irakurri .torrent fitxategia</string>
+<string name="error_parsingrss">Errorea RSS jarioa analizatzean</string>
+<string name="error_invalid_url_form">URL hau ez dago ondo osatuta</string>
+<string name="error_invalid_search_url">Zure web bilaketa URLa baliogabea da:</string>
+<string name="error_invalid_ip_or_hostname">Sarrera ez da baliozko IP helbide edo ostalari-izena</string>
+<string name="error_invalid_port_number">Ataka zenbakiak zenbakizkoa izan behar du</string>
+<string name="error_invalid_directory">Direktorio bideak / edo \ batekin bukatzen dira</string>
+<string name="error_invalid_timeout">Denbora-mugak ezin du hutsik egon eta zenbaki positibo bat da</string>
+<string name="error_no_url_enclosure">RSS jario elementuak ez dauka URL eranskin edo esteka etiketarik .torrent fitxategira zuzenduta</string>
+<string name="error_no_link">RSS jario elementuak ez dauka arakatzeko estekarik</string>
+<string name="error_norssfeed">URLa ez da (baliozko) RSS jarioa</string>
+<string name="error_media_not_available">SD txartela ez dago eskuragarri irakurtzeko/idazteko</string>
+<string name="error_no_valid_settings_file">Fitxategiak Transdroid ezarpenik ez daukala dirudi</string>
+<string name="error_file_not_found">Ez da ezarpenen fitxategirik aurkitu</string>
+
+<string name="xirvik_info">Xirvik-ek partekatutako, erdi-dedikatutako edo dedikatutako aletze-makinak (seedbox) eskaintzen ditu. Transdroid-ek Xirvik zerbitzari guztientzako konfigurazio erraza eskaintzen du.\n\nIrakurri gehiago www.xirvik.com gunean</string>
+<string name="xirvik_add_new_xserver">Gehitu Xirvik zerbitzaria</string>
+<string name="xirvik_pref_title">Xirvik zerbitzariaren ezarpenak</string>
+<string name="xirvik_pref_type">Zerbitzari mota</string>
+<string name="xirvik_pref_type_info">Partekatua, erdi-dedikatua edo dedikatua</string>
+<string name="xirvik_pref_server">Zerbitzariaren izena</string>
+<string name="xirvik_pref_server_info">Adibidez, dedi000.xirvik.com</string>
+<string name="xirvik_error_invalid_servername">Zerbitzari baliogabea (erabili ostalari-izen osoa, adibidez, dedi000.xirvik.com)</string>
+
+<string name="seedm8_info">SeedM8-k mugarik gabeko GBit aletze-makinen ostatzea eskaintzen du. Transdroid-ek SeedM8 zerbitzarientzako konfigurazio erraza eskaintzen du.\n\nIrakurri gehiago www.seedm8.com gunean</string>
+<string name="seedm8_add_new_xserver">Gehitu SeedM8 zerbitzaria</string>
+<string name="seedm8_pref_title">SeedM8 zerbitzariaren ezarpenak</string>
+<string name="seedm8_pref_server">Zerbitzariaren izena</string>
+<string name="seedm8_pref_server_info">Adibidez, alpha.seedm8.com</string>
+<string name="seedm8_error_invalid_servername">Zerbitzari baliogabea (erabili ostalari-izen osoa, adibidez, alpha.seedm8.com)</string>
 
 <string-array name="pref_sort_types">
-<item>Combined ordering</item>
-<item>Number of seeders/leechers</item>
+<item>Ordenatze konbinatua</item>
+<item>Aletzen/izainak</item>
 </string-array>
 
 <string-array name="pref_uirefresh_types">
-<item>No automatic refresh</item>
-<item>2 seconds</item>
-<item>5 seconds</item>
-<item>15 seconds</item>
-<item>1 minute</item>
-<item>5 minutes</item>
-<item>15 minutes</item>
-<item>1 hour</item>
+<item>Freskatze automatikorik ez</item>
+<item>2 segundo</item>
+<item>5 segundo</item>
+<item>15 segundo</item>
+<item>minutu 1</item>
+<item>5 minutu</item>
+<item>15 minutu</item>
+<item>ordu 1</item>
 </string-array>
 
+<string-array name="pref_alarminterval_types">
+<item>minutu 1</item>
+<item>10 minutu</item>
+<item>30 minutu</item>
+<item>ordu 1</item>
+<item>3 ordu</item>
+<item>12 ordu</item>
+<item>egun 1</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>Android 1.5</item>
+<item>Android 1.6</item>
+<item>Bilaketa azkarra kaxa</item>
+<item>Beltza</item>
+<item>Gardena</item>
+</string-array>
 </resources>

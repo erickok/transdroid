@@ -5,7 +5,7 @@
 <string name="no_settings_short">Ouvrez le menu des paramètres pour configurer les détails de votre serveur.</string>
 <string name="no_settings">Ouvrez le menu des paramètres pour configurer les détails de votre serveur.\n\nPour plus d\'informations : www.transdroid.org/download</string>
 <string name="no_settings_button">Ouvrir les paramètres</string>
-<string name="connecting">Tentative de connexion au serveur...</string>
+<string name="connecting">Tentative de connexion au serveur....</string>
 <string name="no_torrents">Connecté mais aucun torrent sur le serveur.</string>
 <string name="no_downloading_torrents">Connecté mais aucun torrent actif sur le serveur.</string>
 <string name="no_uploading_torrents">Connecté mais aucun torrent en cours de partage sur le serveur.</string>
@@ -72,11 +72,11 @@
 <string name="dialog_add_torrent">Coller l\'URL du fichier torrent</string>
 <string name="no_valid_url">Ce l\'est pas une URL valide</string>
 <string name="selectfile">Sélectionner un fichier .torrent local</string>
-<string name="oifm_not_found">Aucun gestionnaire de fichier supporté n\'a pu être trouvé. Souhaitez-vous installer OI File Manager depuis l\'Android Market ?\n\nVous pouvez aussi ouvrir un gestionnaire de fichiers non supporté et envoyer un fichier .torrent à Transdroid.</string>
+<string name="oifm_not_found">Aucun gestionnaire de fichier supporté n\'a pu être trouvé. Souhaitez-vous installer OI File Manager depuis l\'Android Market?\n\nVous pouvez aussi ouvrir un gestionnaire de fichiers non supporté et envoyer un fichier .torrent à Transdroid.</string>
 <string name="oifm_install">Installer depuis l\'Android Market</string>
 <string name="oifm_nomarket">L\'application Android Market n\'est pas installée.</string>
-<string name="scanner_not_found">Barcode Scanner n\'a pas pu être trouvé. Voulez-vous l\'installer depuis l\'Android Market ?</string>
-<string name="lc_install">Pour envoyer un rapport d\'erreur, vous devez avoir l\'application gratuite et open-source Log Collector. Voulez-vous l\'installer depuis l\'Android Market ?</string>
+<string name="scanner_not_found">Barcode Scanner n\'a pas pu être trouvé. Voulez-vous l\'installer depuis l\'Android Market?</string>
+<string name="lc_install">Pour envoyer un rapport d\'erreur, vous devez avoir l\'application gratuite et open-source Log Collector. Voulez-vous l\'installer depuis l\'Android Market?</string>
 <string name="lc_run">L\'application Log Collector va maintenant collecter le log du périphérique et l\'envoyer à transdroid.org@gmail.com.\nVous pourrez voir et modifier les données envoyées.</string>
 <string name="vlcremote_not_found">Aucun lecteur de fichier à distance n\'a pu être trouvé. Voulez-vous installer VLC Remote depuis l\'Android Market?</string>
 <string name="ftpclient_not_found">Vous n\'avez pas de client FTP compatible.\nVoulez-vous installer AndFTP depuis l\'Android Market?</string>
@@ -88,8 +88,10 @@
 <string name="rate_no_support">Votre client torrent ne supporte pas la gestion des vitesses de transfert ou ce n\'est pas encore implémenté.</string>
 <string name="rate_updated">Vitesses de transfert mises à jour</string>
 <string name="askremove_title">Suppression du torrent</string>
-<string name="askremove">Êtes-vous certain de vouloir supprimer ce torrent ?</string>
+<string name="askremove">Êtes-vous certain de vouloir supprimer ce torrent?</string>
 <string name="addfailed_title">Échec de l\'ajout</string>
+<string name="addfailed_service2">%1$s n\'a pas pu être ajouté.\nSouhaitez-vous retenter ou le mettre en file d\'attente pour l\'ajouter ultérieurement?</string>
+<string name="addfailed_noservice2">%1$s n\'a pas pu être ajouté.\nSouhaitez-vous retenter?</string>
 <string name="addfailed_retry">Réessayer</string>
 <string name="addfailed_addlater">Ajouter ultérieurement</string>
 
@@ -111,6 +113,7 @@
 <string name="searchmenu_useassearch">Utiliser en tant que nouvelle recherche</string>
 <string name="search_savedrssfeed">Recherche enregistrée en tant que flux RSS</string>
 <string name="search_savenotsupported">Enregistrement non supporté pour ce site</string>
+<string name="tts_not_found">La recherche torrent est maintenant un module séparé, il vous faut l\'installer depuis l\'Play Store. Souhaitez-vous l\'installer maintenant?</string>
 
 <string name="preferences">Préférences Transdroid</string>
 <string name="add_new_server">Ajouter un nouveau serveur</string>
@@ -218,6 +221,7 @@
 <string name="pref_adwnotify">Autoriser les notifications ADW</string>
 <string name="pref_adwnotify_info">Montrer le compteur torrent dans le lanceur ADW</string>
 <string name="pref_adwonlydl">Compter seulement les téléchargements</string>
+<string name="pref_adwonlydl_info">Le compteur ADW inclue uniquement les fichiers torrents en cours de téléchargement</string>
 
 <string name="status_waiting">En attente de vérification...</string>
 <string name="status_checking">Vérification des données locales...</string>
@@ -282,6 +286,8 @@
 <string name="details_peers">Pairs :</string>
 <string name="details_label">Étiquette :</string>
 <string name="details_trackers">Trackers:</string>
+<string name="details_trackers_expand">%1$s (étendre)</string>
+<string name="details_trackers_collapse">(replier)</string>
 <string name="details_errors">Erreurs :</string>
 <string name="details_notsupported">Lister les fichiers n\'est pas supporté par votre client torrent ou ce n\'est pas encore implanté</string>
 <string name="details_priorities_updated">Priorités du fichier mises à jour</string>
@@ -330,6 +336,7 @@
 <string name="error_invalid_ip_or_hostname">Ce n\'est pas une IP ou une adresse valide</string>
 <string name="error_invalid_port_number">Le numéro de port doit être numérique</string>
 <string name="error_invalid_directory">Les chemins de répertoires se finissent par / ou \\</string>
+<string name="error_invalid_timeout">Le délai ne peut pas être vide et doit être positif</string>
 <string name="error_no_url_enclosure">L\'objet du flux RSS ne donne pas une URL qui pointe vers un fichier .torrent</string>
 <string name="error_no_link">Le sujet du flux RSS ne fournit pas de lien pour accéder à</string>
 <string name="error_norssfeed">L\'URL n\'est pas un flux RSS valide</string>

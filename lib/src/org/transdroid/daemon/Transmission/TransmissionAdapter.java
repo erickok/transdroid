@@ -473,9 +473,11 @@ public class TransmissionAdapter implements IDaemonAdapter {
 			// Error is a number, see https://trac.transmissionbt.com/browser/trunk/libtransmission/transmission.h#L1747
 			// We only consider it a real error if it is local (blocking), which is error code 3
 			boolean hasError = tor.getInt(RPC_ERROR) == 3;
-			String errorString = tor.getString(RPC_ERRORSTRING);
-			String commentString = tor.getString(RPC_COMMENT);
-			errorString = errorString == ""? commentString : errorString + "\n" + commentString;
+			String errorString = tor.getString(RPC_ERRORSTRING).trim();
+			String commentString = tor.getString(RPC_COMMENT).trim();
+			if (!commentString.equals("")) {
+				errorString = errorString.equals("")? commentString : errorString + "\n" + commentString;
+			}
 			torrents.add(new Torrent(
 					tor.getInt(RPC_ID),
 					null,

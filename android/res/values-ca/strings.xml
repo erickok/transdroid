@@ -39,13 +39,18 @@
 <string name="menu_changelog">Quant a/Registre de canvis</string>
 <string name="menu_errorreport">Informe d\'error</string>
 <string name="menu_remove">Suprimeix</string>
+<string name="menu_remove_data">Suprimeix i esborra les dades</string>
+<string name="menu_also_data">Esborra les dades</string>
 <string name="menu_pause">Pausa</string>
 <string name="menu_resume">Reprén</string>
 <string name="menu_stop">Atura</string>
 <string name="menu_start">Inicia</string>
 <string name="menu_forcestart">Força l\'inici</string>
 <string name="menu_setlabel">Estable etiqueta...</string>
+<string name="menu_setdownloadlocation">Estableix la carpeta de baixada</string>
 <string name="menu_set_default">Estableix com a predeterminat</string>
+<string name="menu_moveup">Mou amunt</string>
+<string name="menu_movedown">Mou avall</string>
 
 <string name="oifm_install">Instal·la del Market</string>
 
@@ -56,6 +61,8 @@
 <string name="searching">S\'està cercant...</string>
 <string name="search_name">Torrents</string>
 <string name="search_hint">Ubuntu</string>
+<string name="add_selected">Afegeix tots els seleccionats</string>
+<string name="no_results">No s\'han trobat resultats per la teva cerca</string>
 <string name="searchmenu_add">Baixa ara</string>
 <string name="searchmenu_details">Obre el lloc web</string>
 <string name="searchmenu_openwith">Obre amb...</string>

@@ -147,7 +147,7 @@ public class DetailsListAdapter extends MergeAdapter {
 				(fineDetails != null && fineDetails.getErrors() != null && !fineDetails.getErrors().isEmpty()? "\n" + fineDetails.getErrorsText(): ""): 
 			(fineDetails != null && fineDetails.getErrors() != null && !fineDetails.getErrors().isEmpty()? fineDetails.getErrorsText(): 
 			null);
-		if (errorsText == null) {
+		if (errorsText == null || errorsText.equals("")) {
 			errors.setText("");
 			errorshint.setText("");
 		} else {
@@ -155,8 +155,9 @@ public class DetailsListAdapter extends MergeAdapter {
 			if (showingErrors) {
 				errorshint.setText(detailsFragment.getString(R.string.details_trackers_collapse));
 			} else {
+				String[] err = errorsText.split("\n");
 				errorshint.setText(detailsFragment.getString(R.string.details_trackers_expand, 
-					errorsText.split("\n")[0]));
+						err.length >= 0? err[0]: ""));
 			}
 		}
 		

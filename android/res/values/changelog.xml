@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="changes">
-Transdroid 1.1.6\n
+Transdroid 1.1.7\n
+- Transmission and qBittorrent bugfixes\n
+\n
+	Transdroid 1.1.6\n
 - Added BitComet support, by Sergey (SeNS)\n
 - Improved label support, by Alexey Rogovoy\n
 - Added GZipped content support in RSS feeds\n
