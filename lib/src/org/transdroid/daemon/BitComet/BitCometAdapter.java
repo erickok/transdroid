@@ -19,6 +19,7 @@ package org.transdroid.daemon.BitComet;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.text.DateFormat;
@@ -58,6 +59,7 @@ import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
+import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.DLog;
 import org.transdroid.daemon.util.HttpHelper;
 
@@ -66,11 +68,18 @@ import com.android.internalcopy.http.multipart.MultipartEntity;
 import com.android.internalcopy.http.multipart.BitCometFilePart;
 import com.android.internalcopy.http.multipart.Utf8StringPart;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+
 /**
  * The daemon adapter for the BitComet torrent client.
  * 
  * @author SeNS (sensboston)
  *
+ * 09/26/2012: added AJAX support for BitComet v.1.34 and up
+ * 			 : added additional tasks support
  */
 public class BitCometAdapter implements IDaemonAdapter {
 
@@ -91,7 +100,13 @@ public class BitCometAdapter implements IDaemonAdapter {
 			case Retrieve:
 				
 				// Request all torrents from server
-				String result = makeRequest("/panel/task_list");
+				// first, check client for the new AJAX interface (BitComet v.1.34 and up)
+				String result = makeRequest("/panel/task_list_xml");
+				if (result.startsWith("<?xml", 0)) {
+					return new RetrieveTaskSuccessResult((RetrieveTask) task, parseXmlTorrents(result), null);
+				}
+				// it's old client, parse HTML
+				result = makeRequest("/panel/task_list");
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseHttpTorrents(result), null);
 				
 			case GetFileList:
@@ -142,6 +157,42 @@ public class BitCometAdapter implements IDaemonAdapter {
 				makeRequest("/panel/task_action", new BasicNameValuePair("id", task.getTargetTorrent().getUniqueID()), new BasicNameValuePair("action", "start"));
 				return new DaemonTaskSuccessResult(task);
 				
+			case PauseAll:
+				
+				// Suspend (pause) all active torrents
+				makeRequest("/panel/tasklist_action", new BasicNameValuePair("id", "suspend_all"));
+				return new DaemonTaskSuccessResult(task);
+				
+			case ResumeAll:
+				
+				// Resume suspended torrents
+				makeRequest("/panel/tasklist_action", new BasicNameValuePair("id", "resume_all"));
+				return new DaemonTaskSuccessResult(task);
+				
+			case StopAll:
+				
+				// Stop all torrents
+				makeRequest("/panel/tasklist_action", new BasicNameValuePair("id", "stop_all"));
+				return new DaemonTaskSuccessResult(task);
+				
+			case StartAll:
+				
+				// Start all torrents for download and seeding
+				makeRequest("/panel/tasklist_action", new BasicNameValuePair("id", "start_all_download"));
+				makeRequest("/panel/tasklist_action", new BasicNameValuePair("id", "start_all_seeding"));
+				
+				return new DaemonTaskSuccessResult(task);
+				
+			case SetTransferRates:
+
+				// Request to set the maximum transfer rates
+				SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
+				String dl = Integer.toString((ratesTask.getDownloadRate() == null? -1: ratesTask.getDownloadRate().intValue()));
+				String ul = Integer.toString((ratesTask.getUploadRate() == null? -1: ratesTask.getUploadRate().intValue()));
+				makeRequest("/panel/option_set", new BasicNameValuePair("key", "down_rate_max"), new BasicNameValuePair("value", dl));
+				makeRequest("/panel/option_set", new BasicNameValuePair("key", "up_rate_max"), new BasicNameValuePair("value", ul));
+				return new DaemonTaskSuccessResult(task);
+				
 			default:
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
 			}
@@ -162,7 +213,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 	}
 	
 	/**
-	 * Build the URL of the http request from the user settings
+	 * Build the URL of the HTTP request from the user settings
 	 * @return The URL to request
 	 */
 	private String buildWebUIUrl(String path) {
@@ -195,7 +246,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
 				
-				// Read JSON response
+				// Read HTTP response
 				java.io.InputStream instream = entity.getContent();
 				String result = HttpHelper.ConvertStreamToString(instream);
 				instream.close();
@@ -336,6 +387,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 		
 		try {
 			
+			// Find, prepare and split substring with HTML tag TABLE 
 			String[] parts = response.substring(response.indexOf("<TABLE"),response.indexOf("</TABLE>")).replaceAll("</td>", "").replaceAll("</tr>", "").replaceAll("\n", "").split("<tr>");
 	
 			for (int i=2; i<parts.length; i++) {
@@ -347,7 +399,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 					String name = subParts[2].substring(subParts[2].indexOf("/panel/task_detail")); 
 					name = name.substring(name.indexOf(">")+1, name.indexOf("<"));
 
-					TorrentStatus status = parseStatus(subParts[3]);
+					TorrentStatus status = convertStatus(subParts[3]);
 					String percenDoneStr = subParts[6];
 					String downloadRateStr = subParts[7];
 					String uploadRateStr = subParts[8];
@@ -434,7 +486,149 @@ public class BitCometAdapter implements IDaemonAdapter {
 	}
 
 	/**
-	 * Parse BitComet HTML page (http response) 
+	 * Parse BitComet AJAX response 
+	 * that code was copy-pasted and slightly modified from \Ktorrent\StatsParser.java 
+	 * @param response
+	 * @return
+	 * @throws DaemonException
+	 */
+	private ArrayList<Torrent> parseXmlTorrents(String response) throws DaemonException  {
+	
+		ArrayList<Torrent> torrents = new ArrayList<Torrent>();
+
+		try {
+			// Use a PullParser to handle XML tags one by one
+			XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
+			xpp.setInput(new StringReader(response));
+
+			// Temp variables to load into torrent objects
+			int id = 0;
+			String name = "";
+			@SuppressWarnings("unused")
+			String hash = "";
+			TorrentStatus status = TorrentStatus.Unknown;
+			long sizeDone = 0;
+			long sizeUp = 0;
+			long totalSize = 0;
+			int rateDown = 0;
+			int rateUp = 0;
+			int seeders = 0;
+			int seedersTotal = 0;
+			int leechers = 0;
+			int leechersTotal = 0;
+			float progress = 0;
+			String label = "";
+			Date dateAdded = new Date();
+			
+			// Start pulling
+			int next = xpp.nextTag();
+			String tagName = xpp.getName();
+			
+			while (next != XmlPullParser.END_DOCUMENT) {
+				
+				if (next == XmlPullParser.END_TAG && tagName.equals("task")) {
+					
+					// End of a 'transfer' item, add gathered torrent data
+					sizeDone = (long) (totalSize * progress);
+					torrents.add(new Torrent(
+							id, 
+							null, // hash,  // we suppose to use simple integer IDs
+							name, 
+							status, 
+							null, 
+							rateDown, 
+							rateUp, 
+							leechers, 
+							seeders, 
+							seeders + leechers, 
+							seedersTotal + leechersTotal, 
+							(int) ((status == TorrentStatus.Downloading && rateDown != 0)? (totalSize - sizeDone) / rateDown: -1), // eta (in seconds) = (total_size_in_btes - bytes_already_downloaded) / bytes_per_second
+							sizeDone, 
+							sizeUp, 
+							totalSize, 
+							progress, 
+							0f,
+							label,
+							dateAdded,
+							null)); // Not supported in the web interface
+					
+					id++; // Stop/start/etc. requests are made by ID, which is the order number in the returned XML list :-S
+					
+				} else if (next == XmlPullParser.START_TAG && tagName.equals("task")){
+					
+					// Start of a new 'transfer' item; reset gathered torrent data
+					name = "";
+					//hash = "";
+					status = TorrentStatus.Unknown;
+					sizeDone = 0;
+					sizeUp = 0;
+					totalSize = 0;
+					rateDown = 0;
+					rateUp = 0;
+					seeders = 0;
+					seedersTotal = 0;
+					leechers = 0;
+					leechersTotal = 0;
+					progress = 0;
+					label = "";
+					dateAdded = new Date();
+	
+				} else if (next == XmlPullParser.START_TAG){
+					
+					// Probably encountered a torrent property, i.e. '<type>BT</type>'
+					next = xpp.next();
+					if (next == XmlPullParser.TEXT) {
+						if (tagName.equals("name")) {
+							name = xpp.getText().trim();
+						} else if (tagName.equals("infohash")) {
+							hash = xpp.getText().trim();
+						} else if (tagName.equals("state")) {
+							status = convertStatus(xpp.getText());
+						} else if (tagName.equals("bytes_downloaded")) {
+							sizeDone = Integer.parseInt(xpp.getText());
+						} else if (tagName.equals("bytes_uploaded")) {
+							sizeUp = Integer.parseInt(xpp.getText());
+						} else if (tagName.equals("size")) {
+							totalSize = Long.parseLong(xpp.getText());
+						} else if (tagName.equals("down_speed")) {
+							rateDown = Integer.parseInt(xpp.getText());
+						} else if (tagName.equals("up_speed")) {
+							rateUp = Integer.parseInt(xpp.getText());
+						} else if (tagName.equals("seeders")) {
+							seeders = Integer.parseInt(xpp.getText());
+						} else if (tagName.equals("total_seeders")) {
+							seedersTotal = Integer.parseInt(xpp.getText());
+						} else if (tagName.equals("peers")) {
+							leechers = Integer.parseInt(xpp.getText());
+						} else if (tagName.equals("total_peers")) {
+							leechersTotal = Integer.parseInt(xpp.getText());
+						} else if (tagName.equals("progress_permillage")) {
+							progress = convertProgress(xpp.getText());
+						} else if (tagName.equals("created_time")) {
+							dateAdded = new Date(Long.parseLong(xpp.getText()));
+						} else if (tagName.equals("comment")) {
+							label = xpp.getText().trim();
+						}
+					}
+				}
+	
+				next = xpp.next();
+				if (next == XmlPullParser.START_TAG || next == XmlPullParser.END_TAG) {
+					tagName = xpp.getName();
+				}
+			}
+		
+		} catch (XmlPullParserException e) {
+			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+		} catch (Exception e) {
+			throw new DaemonException(ExceptionType.UnexpectedResponse, "Invalid BitComet HTTP response.");
+		}
+
+		return torrents;
+	}
+	
+	/**
+	 * Parse BitComet HTML page (HTTP response) 
 	 * @param response
 	 * @return
 	 * @throws DaemonException
@@ -466,7 +660,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 						settings.getDownloadDir() + fileDetails[3],
 						size,
 						sizeDone,
-						parsePriority(fileDetails[1])));
+						convertPriority(fileDetails[1])));
 			}
 		}
 		catch (Exception e) {
@@ -480,7 +674,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 	/**
 	 * Returns the size of the torrent, as parsed form some string
 	 * @param size The size in a string format, i.e. '691 MB'
-	 * @return The size in number of kB
+	 * @return The size in bytes
 	 */
 	private static long convertSize(String size) {
 		try {
@@ -501,7 +695,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 	/**
 	 * Parse BitComet torrent files priority
 	 **/
-	private Priority parsePriority(String priority) {
+	private Priority convertPriority(String priority) {
 		if (priority.equals("Very High") || priority.equals("High")) {
 			return Priority.High;
 		} else if (priority.equals("Normal")) {
@@ -513,7 +707,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 	/**
 	 * Parse BitComet torrent status 
 	 **/
-	private TorrentStatus parseStatus(String state) {
+	private TorrentStatus convertStatus(String state) {
 		// Status is given as a descriptive string and an indication if the torrent was stopped/paused
 		if (state.equals("stopped")) {
 			return TorrentStatus.Paused;
@@ -522,7 +716,16 @@ public class BitCometAdapter implements IDaemonAdapter {
 		}
 		return TorrentStatus.Unknown;
 	}
-
+	
+	/**
+	 * Returns the part done (or progress) of a torrent, as parsed from some string
+	 * @param progress The part done in a string format, i.e. '15.96'
+	 * @return The part done as [0..1] fraction, i.e. 0.1596
+	 */
+	public static float convertProgress(String progress) {
+		return Float.parseFloat(progress) / 1000.0f;
+	}
+	
 	@Override
 	public Daemon getType() {
 		return settings.getType();

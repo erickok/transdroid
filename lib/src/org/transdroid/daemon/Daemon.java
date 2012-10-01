@@ -214,7 +214,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsStoppingStarting(Daemon type) {
-		return type == uTorrent || type == rTorrent || type == BitTorrent;
+		return type == uTorrent || type == rTorrent || type == BitTorrent || type == BitComet;
 	}
 
 	public static boolean supportsForcedStarting(Daemon type) {
@@ -226,7 +226,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsSetTransferRates(Daemon type) {
-		return type == Deluge || type == Transmission || type == uTorrent || type == BitTorrent || type == Deluge || type == rTorrent || type == Vuze || type == BuffaloNas;
+		return type == Deluge || type == Transmission || type == uTorrent || type == BitTorrent || type == Deluge || type == rTorrent || type == Vuze || type == BuffaloNas || type == BitComet;
 	}
 
 	public static boolean supportsAddByFile(Daemon type) {
@@ -247,7 +247,7 @@ public enum Daemon {
 	}
 	
 	public static boolean supportsDateAdded(Daemon type) {
-		return type == Vuze || type == Transmission || type == rTorrent || type == Bitflu;
+		return type == Vuze || type == Transmission || type == rTorrent || type == Bitflu || type == BitComet;
 	}
 
 	public static boolean supportsLabels(Daemon type) {
