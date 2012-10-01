@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="changes">
+Transdroid 1.1.8\n
+- Improved BitComet support, by Sergey\n
+- Fix for non-English KTorrent\n
+\n
 Transdroid 1.1.7\n
 - Transmission and qBittorrent bugfixes\n
 \n

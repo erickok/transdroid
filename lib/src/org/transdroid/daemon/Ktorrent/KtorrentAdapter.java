@@ -80,7 +80,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 	private static final String RPC_URL_LOGIN_USER = "username";
 	private static final String RPC_URL_LOGIN_PASS = "password";
 	private static final String RPC_URL_LOGIN_CHAL = "challenge";
-	private static final String RPC_URL_STATS = "/data/torrents.xml";
+	private static final String RPC_URL_STATS = "/data/torrents.xml?L10n=no";
 	private static final String RPC_URL_ACTION = "/action?";
 	private static final String RPC_URL_UPLOAD = "/torrent/load?page=interface.html";
 	private static final String RPC_URL_FILES = "/data/torrent/files.xml?torrent=";
