@@ -19,6 +19,7 @@ package org.transdroid.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -58,6 +59,8 @@ public class UpdateService extends IntentService {
 	private static final String DOWNLOAD_URL_SEARCH = "http://www.transdroid.org/latest-search";
 	private static final String LOG_NAME = "Update service";
 	private static NotificationManager notificationManager;
+	
+	private Random random = new Random();
 
 	public UpdateService() {
 		super(LOG_NAME);
@@ -91,7 +94,7 @@ public class UpdateService extends IntentService {
 					// New version available! Notify the user.
 					newNotification(getString(R.string.update_app_newversion),
 						getString(R.string.update_app_newversion), getString(R.string.update_updateto,
-							app[1].trim()), DOWNLOAD_URL_APP, 0);
+							app[1].trim()), DOWNLOAD_URL_APP + "?" + Integer.toString(random.nextInt()), 0);
 				}
 			} catch (NameNotFoundException e) {
 				// Not installed... this can never happen since this Service is part of the app itself.
@@ -104,7 +107,7 @@ public class UpdateService extends IntentService {
 					// New version available! Notify the user.
 					newNotification(getString(R.string.update_search_newversion),
 						getString(R.string.update_search_newversion), getString(R.string.update_updateto,
-							search[1].trim()), DOWNLOAD_URL_SEARCH, 0);
+							search[1].trim()), DOWNLOAD_URL_SEARCH + "?" + Integer.toString(random.nextInt()), 0);
 				}
 			} catch (NameNotFoundException e) {
 				// The search module isn't installed yet at all; ignore and wait for the user to manually

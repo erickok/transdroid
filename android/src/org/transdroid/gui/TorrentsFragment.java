@@ -368,7 +368,8 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
     			// Intent should have some Uri data pointing to a single torrent
 	    		String data = startIntent.getDataString();
 	    		if (data != null && startIntent.getData() != null && startIntent.getData().getScheme() != null) {
-		    		if (startIntent.getData().getScheme().equals(HttpHelper.SCHEME_HTTP)) {
+					if (startIntent.getData().getScheme().equals(HttpHelper.SCHEME_HTTP)
+							|| startIntent.getData().getScheme().equals(HttpHelper.SCHEME_HTTPS)) {
 			        	// From a global intent to add a .torrent file via URL (maybe form the browser)
 		    			String title = data.substring(data.lastIndexOf("/"));
 		    			if (startIntent.hasExtra(Transdroid.INTENT_TORRENT_TITLE)) {

@@ -61,6 +61,7 @@ public class HttpHelper {
 
 	public static final int DEFAULT_CONNECTION_TIMEOUT = 8000;
 	public static final String SCHEME_HTTP = "http";
+	public static final String SCHEME_HTTPS = "https";
 	public static final String SCHEME_MAGNET = "magnet";
 	public static final String SCHEME_FILE = "file";
  
