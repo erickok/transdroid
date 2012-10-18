@@ -64,6 +64,7 @@ import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetDownloadLocationTask;
 import org.transdroid.daemon.task.SetFilePriorityTask;
+import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.DLog;
@@ -115,7 +116,6 @@ public class DelugeAdapter implements IDaemonAdapter {
 	private static final String RPC_NAME = "name";
 	private static final String RPC_STATUS = "state";
 	private static final String RPC_MESSAGE = "message";
-	private static final String RPC_TRACKERSTATUS = "tracker_status";
 	private static final String RPC_SAVEPATH = "save_path";
 	private static final String RPC_MAXDOWNLOAD = "max_download_speed";
 	private static final String RPC_MAXUPLOAD = "max_upload_speed";
@@ -136,6 +136,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	private static final String RPC_LABEL = "label";
 	private static final String RPC_TRACKERS = "trackers";
 	private static final String RPC_TRACKER_STATUS = "tracker_status";
+	private static final String NO_LABEL = "No Label";
 
 	private static final String RPC_DETAILS = "files";
 	private static final String RPC_INDEX = "index";
@@ -149,6 +150,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 			RPC_PEERSGETTING, RPC_PEERSSENDING, RPC_PEERSCONNECTED,
 			RPC_PEERSKNOWN, RPC_ETA, RPC_DOWNLOADEDEVER, RPC_UPLOADEDEVER,
 			RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL, RPC_MESSAGE, RPC_TIMEADDED, RPC_TRACKER_STATUS };
+
 
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
@@ -366,6 +368,17 @@ public class DelugeAdapter implements IDaemonAdapter {
 				map.put(RPC_MAXDOWNLOAD, (ratesTask.getDownloadRate() == null? -1: ratesTask.getDownloadRate().intValue()));
 
 				makeRequest(buildRequest(RPC_METHOD_SETCONFIG, (new JSONArray()).put(map)));
+				return new DaemonTaskSuccessResult(task);
+
+			case SetLabel:
+
+				// TODO: This doesn't seem to work; totally undocumented and also broken in the web UI so won't fix for now
+				// Request to set the label
+				SetLabelTask labelTask = (SetLabelTask) task;
+				JSONObject labelMap = new JSONObject();
+				labelMap.put(RPC_LABEL, (labelTask.getNewLabel() == null? NO_LABEL: labelTask.getNewLabel()));
+
+				makeRequest(buildRequest(RPC_METHOD_SETCONFIG, (new JSONArray()).put(labelMap)));
 				return new DaemonTaskSuccessResult(task);
 
 			case SetTrackers:
