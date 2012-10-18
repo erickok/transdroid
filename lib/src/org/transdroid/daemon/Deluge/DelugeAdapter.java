@@ -115,6 +115,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	private static final String RPC_NAME = "name";
 	private static final String RPC_STATUS = "state";
 	private static final String RPC_MESSAGE = "message";
+	private static final String RPC_TRACKERSTATUS = "tracker_status";
 	private static final String RPC_SAVEPATH = "save_path";
 	private static final String RPC_MAXDOWNLOAD = "max_download_speed";
 	private static final String RPC_MAXUPLOAD = "max_upload_speed";
@@ -147,7 +148,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 			RPC_NAME, RPC_STATUS, RPC_SAVEPATH, RPC_RATEDOWNLOAD, RPC_RATEUPLOAD,
 			RPC_PEERSGETTING, RPC_PEERSSENDING, RPC_PEERSCONNECTED,
 			RPC_PEERSKNOWN, RPC_ETA, RPC_DOWNLOADEDEVER, RPC_UPLOADEDEVER,
-			RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL, RPC_MESSAGE, RPC_TIMEADDED };
+			RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL, RPC_MESSAGE, RPC_TIMEADDED, RPC_TRACKER_STATUS };
 
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
@@ -554,10 +555,16 @@ public class DelugeAdapter implements IDaemonAdapter {
 				
 				JSONObject tor = objects.getJSONObject(names.getString(j));
 				// Add the parsed torrent to the list
+				TorrentStatus status = convertDelugeState(tor.getString(RPC_STATUS));
+				String error = tor.getString(RPC_MESSAGE);
+				if (tor.getString(RPC_TRACKER_STATUS).indexOf("Error") > 0) {
+					error += (error.length() > 0? "\n": "") + tor.getString(RPC_TRACKER_STATUS);
+					status = TorrentStatus.Error;
+				}
 				torrents.add(new Torrent(j, 
 						names.getString(j), 
 						tor.getString(RPC_NAME), 
-						convertDelugeState(tor.getString(RPC_STATUS)),
+						status,
 						tor.getString(RPC_SAVEPATH) + settings.getOS().getPathSeperator(),
 						tor.getInt(RPC_RATEDOWNLOAD), 
 						tor.getInt(RPC_RATEUPLOAD), 
