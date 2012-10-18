@@ -280,6 +280,7 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 					(float)tor.getDouble("distributed_copies") / 10,
 					null,
 					null,
+					null,
 					null));
 		}
 		

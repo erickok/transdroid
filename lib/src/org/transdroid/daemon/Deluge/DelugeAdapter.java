@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -125,6 +126,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	private static final String RPC_PEERSCONNECTED = "num_peers";
 	private static final String RPC_PEERSKNOWN = "total_peers";
 	private static final String RPC_ETA = "eta";
+	private static final String RPC_TIMEADDED = "time_added";
 
 	private static final String RPC_DOWNLOADEDEVER = "total_done";
 	private static final String RPC_UPLOADEDEVER = "total_uploaded";
@@ -145,7 +147,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 			RPC_NAME, RPC_STATUS, RPC_SAVEPATH, RPC_RATEDOWNLOAD, RPC_RATEUPLOAD,
 			RPC_PEERSGETTING, RPC_PEERSSENDING, RPC_PEERSCONNECTED,
 			RPC_PEERSKNOWN, RPC_ETA, RPC_DOWNLOADEDEVER, RPC_UPLOADEDEVER,
-			RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL, RPC_MESSAGE };
+			RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL, RPC_MESSAGE, RPC_TIMEADDED };
 
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
@@ -570,6 +572,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 						((float) tor.getDouble(RPC_PARTDONE)) / 100f, // Percentage to [0..1]
 						0f, // Not available
 						tor.has(RPC_LABEL)? tor.getString(RPC_LABEL): null,
+						tor.has(RPC_TIMEADDED)? new Date(tor.getInt(RPC_TIMEADDED) * 1000L): null,
 						null,
 						tor.getString(RPC_MESSAGE))); // Not available
 			}

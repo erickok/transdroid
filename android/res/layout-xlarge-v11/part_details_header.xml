@@ -12,6 +12,10 @@
 		android:shrinkColumns="1"
 		android:stretchColumns="1">
 		<TextView android:id="@+id/details_name" style="@style/DetailsInfoText" />
+		<TableRow android:id="@+id/detailsrow_dateadded">
+			<TextView android:text="@string/details_dateadded" style="@style/DetailsType" />
+			<TextView android:id="@+id/details_dateadded" style="@style/DetailsInfoText" />
+		</TableRow>
 		<TableRow>
 			<TextView android:text="@string/details_size" style="@style/DetailsType" />
 			<TextView android:id="@+id/details_size" style="@style/DetailsInfoText" />

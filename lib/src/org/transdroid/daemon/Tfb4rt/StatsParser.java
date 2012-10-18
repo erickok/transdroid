@@ -79,6 +79,7 @@ public class StatsParser {
 							0f,
 							null, // Not supported in the XML stats
 							null,
+							null,
 							null));
 					
 				} else if (next == XmlPullParser.START_TAG && name.equals("transfer")){

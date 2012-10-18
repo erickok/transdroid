@@ -299,6 +299,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						0f, // TODO: Add availability data
 						null, // See remark on rTorrent/groups above
 						new Date((Long)info[11]),
+						null,
 						error));
 					
 				} else {
@@ -327,6 +328,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						0f, // TODO: Add availability data
 						null, // See remark on rTorrent/groups above
 						new Date((Integer)info[11]),
+						null,
 						error));
 					
 				}

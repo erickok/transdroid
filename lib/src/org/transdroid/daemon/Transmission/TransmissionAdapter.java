@@ -498,7 +498,8 @@ public class TransmissionAdapter implements IDaemonAdapter {
 					(total == 0? 0: have/(float)total),
 					(total == 0? 0: (have+(float)tor.getLong(RPC_AVAILABLE))/(float)total),
 					null, // No label/category/group support in the RPC API for now
-					new Date(tor.getLong(RPC_DATEADDED)),
+					new Date(tor.getLong(RPC_DATEADDED) * 1000L),
+					new Date(tor.getLong(RPC_DATEDONE) * 1000L),
 					errorString));
 		}
 		

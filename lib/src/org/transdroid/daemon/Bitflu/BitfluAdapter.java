@@ -213,6 +213,7 @@ public class BitfluAdapter implements IDaemonAdapter {
 						0f,       // Not available
 						null,     // label
 						null,     // Not available
+						null,     // Not available
 						null));   // Not available
 			}
 		}

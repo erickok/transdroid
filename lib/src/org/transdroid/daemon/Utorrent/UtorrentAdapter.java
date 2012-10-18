@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -463,6 +464,8 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	private static final int RPC_SEEDSCONNECTED_IDX = 14;
 	private static final int RPC_SEEDSINSWARM_IDX = 15;
 	private static final int RPC_AVAILABILITY_IDX = 16;
+	private static final int RPC_ADDEDON_IDX = 23;
+	private static final int RPC_COMPLETEDON_IDX = 24;
 
 	private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONArray results) throws JSONException {
 
@@ -486,6 +489,10 @@ public class UtorrentAdapter implements IDaemonAdapter {
 			}
 			// Add the parsed torrent to the list
 			TorrentStatus status = convertUtorrentStatus(tor.getInt(RPC_STATUS_IDX), downloaded);
+			long addedOn = tor.optInt(RPC_ADDEDON_IDX, -1) * 1000L;
+			long completedOn = tor.optInt(RPC_COMPLETEDON_IDX, -1) * 100L;
+			Date addedOnDate = addedOn == -1? null: new Date(addedOn);
+			Date completedOnDate = completedOn == -1? null: new Date(completedOn);
 			torrents.add(new Torrent(
 					i, // No ID but a hash is used
 					tor.getString(RPC_HASH_IDX),
@@ -505,7 +512,8 @@ public class UtorrentAdapter implements IDaemonAdapter {
 					((float) tor.getLong(RPC_PARTDONE)) / 1000f, // Integer in promille
 					Math.min(available, 1f), // Can be > 100% if multiple peers have 100%
 					tor.getString(RPC_LABEL_IDX).trim(),
-					null, // Not available
+					addedOnDate,
+					completedOnDate,
 					// uTorrent doesn't give the error message, so just remind that there is some error
 					status == TorrentStatus.Error? "See GUI for error message": null));
 		}

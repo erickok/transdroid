@@ -84,6 +84,7 @@ public class StatsParser {
 							0f,
 							null, // Not supported in the web interface
 							null, // Not supported in the web interface
+							null, // Not supported in the web interface
 							null)); // Not supported in the web interface
 					id++; // Stop/start/etc. requests are made by ID, which is the order number in the returned XML list :-S
 					

@@ -374,7 +374,8 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 				(float) (tor.getLong(BT_DONE) / (float) tor.getLong(BT_SIZE)), 
 				Float.parseFloat(tor.getString(BT_COPYS)), 
 				null,
-				new Date(), 
+				null,
+				null,
 				null);
 
 			torrents.add(new_t);

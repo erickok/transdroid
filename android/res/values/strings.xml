@@ -283,6 +283,7 @@
 
 <string name="details_details">Details</string>
 <string name="details_files">Files</string>
+<string name="details_dateadded">Added on:</string>
 <string name="details_size">Size:</string>
 <string name="details_state">State:</string>
 <string name="details_downloaded">Downloaded:</string>

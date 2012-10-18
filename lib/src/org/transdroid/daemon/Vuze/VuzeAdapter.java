@@ -405,6 +405,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 				Math.min(availability.floatValue(), 1f),
 				null, // TODO: Implement Vuze label support
 				new Date((Long) statsinfo.get("time_started")), // dateAdded
+				null, // Unsupported?
 				error));
 			
 		}

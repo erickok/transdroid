@@ -113,7 +113,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 	public Torrent(long id, String hash, String name, TorrentStatus statusCode, String locationDir, int rateDownload, int rateUpload, 
 			int peersGettingFromUs, int peersSendingToUs, int peersConnected, int peersKnown, int eta, 
 			long downloadedEver, long uploadedEver, long totalSize, float partDone, float available, String label, 
-			Date dateAdded, String error) {
+			Date dateAdded, Date realDateDone, String error) {
 		this.id = id;
 		this.hash = hash;
 		this.name = name;
@@ -136,14 +136,18 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 		this.label = label;
 		
 		this.dateAdded = dateAdded;
-		Calendar cal = Calendar.getInstance();
-		if (eta == -1 || eta == -2) {
-			cal.clear();
-			cal.set(9999, 12, 31);
+		if (realDateDone != null) {
+			this.dateDone = realDateDone;
 		} else {
-			cal.add(Calendar.SECOND, eta);
+			Calendar cal = Calendar.getInstance();
+			if (eta == -1 || eta == -2) {
+				cal.clear();
+				cal.set(9999, 12, 31);
+			} else {
+				cal.add(Calendar.SECOND, eta);
+			}
+			this.dateDone = cal.getTime();
 		}
-		this.dateDone = cal.getTime();
 		this.error = error;
 	}
 	

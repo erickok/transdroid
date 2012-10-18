@@ -474,6 +474,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 							distributed_copies,
 							comment,
 							dateAdded,
+							null,
 							null));
 				}
 			}
@@ -550,6 +551,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 							0f,
 							label,
 							dateAdded,
+							null,
 							null)); // Not supported in the web interface
 					
 					id++; // Stop/start/etc. requests are made by ID, which is the order number in the returned XML list :-S

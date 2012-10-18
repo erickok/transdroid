@@ -10,6 +10,8 @@ import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
 import org.transdroid.daemon.util.FileSizeConverter;
 
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -28,9 +30,9 @@ public class DetailsListAdapter extends MergeAdapter {
 	private TorrentFileListAdapter filesAdapter;
 
 	private View detailsfields;
-    private TextView name, state, size,  downloaded, uploaded, rate, eta, peers, availability, label, trackers, trackershint, 
-    	errors, errorshint;
-    private TableRow availabilityRow, labelRow, trackers1Row, trackers2Row, errors1Row, errors2Row;
+	private TextView dateAdded, name, state, size, downloaded, uploaded, rate, eta, peers, availability, label,
+			trackers, trackershint, errors, errorshint;
+    private TableRow dateAddedRow, availabilityRow, labelRow, trackers1Row, trackers2Row, errors1Row, errors2Row;
     private ImageButton resumepause, startstop, remove, setlabel;
 
     private boolean showingTrackers = false;
@@ -45,6 +47,7 @@ public class DetailsListAdapter extends MergeAdapter {
 		detailsfields = detailsFragment.getActivity().getLayoutInflater().inflate(R.layout.part_details_header, null);
 		addView(detailsfields);
 
+		dateAdded = (TextView) findViewById(R.id.details_dateadded);
         name = (TextView) findViewById(R.id.details_name);
         state = (TextView) findViewById(R.id.details_state);
         size = (TextView) findViewById(R.id.details_size);
@@ -61,7 +64,8 @@ public class DetailsListAdapter extends MergeAdapter {
         errors = (TextView) findViewById(R.id.details_errors);
         errorshint = (TextView) findViewById(R.id.details_errorshint);
         errorshint.setOnClickListener(onErrorsExpandClick);
-        
+
+        dateAddedRow = (TableRow) findViewById(R.id.detailsrow_dateadded);
         availabilityRow = (TableRow) findViewById(R.id.detailsrow_availability);
         labelRow = (TableRow) findViewById(R.id.detailsrow_label);
         trackers1Row = (TableRow) findViewById(R.id.detailsrow_trackers1);
@@ -113,6 +117,12 @@ public class DetailsListAdapter extends MergeAdapter {
 		
 		// Update textviews according to the torrent data
         LocalTorrent local = LocalTorrent.fromTorrent(torrent);
+        if (torrent.getDateAdded() != null) {
+        	dateAdded.setText(DateUtils.formatDateTime(detailsFragment.getActivity(), torrent.getDateAdded().getTime(), DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE));
+        	dateAddedRow.setVisibility(View.VISIBLE);
+        } else {
+        	dateAddedRow.setVisibility(View.GONE);
+        }
 		state.setText(torrent.getStatusCode().toString());
 		size.setText(FileSizeConverter.getSize(torrent.getTotalSize()));
 		downloaded.setText(FileSizeConverter.getSize(torrent.getDownloadedEver()) + " (" + 
@@ -123,9 +133,11 @@ public class DetailsListAdapter extends MergeAdapter {
 		if (torrent.getStatusCode() == TorrentStatus.Downloading) {
 			eta.setText(local.getRemainingTimeString(detailsFragment.getResources(), true));
 			availability.setText(String.format(DECIMAL_FORMATTER, torrent.getAvailability() * 100) + "%");
+        	availabilityRow.setVisibility(View.VISIBLE);
 		} else {
 			eta.setText("");
 			availability.setText("");
+        	availabilityRow.setVisibility(View.GONE);
 		}
 		peers.setText(local.getProgressConnectionText(detailsFragment.getResources()));
 		label.setText((torrent.getLabelName() == null || torrent.getLabelName().equals(""))? 

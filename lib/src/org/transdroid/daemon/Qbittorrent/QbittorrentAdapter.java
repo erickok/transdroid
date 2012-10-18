@@ -392,6 +392,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					(float)progress,
 					0f,
 					null,
+					null, // Only available in /json/propertiesGeneral on a per-torrent basis, unfortunately
 					null,
 					null));
 		}
