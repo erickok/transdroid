@@ -101,20 +101,25 @@ public class BitCometAdapter implements IDaemonAdapter {
 				
 				// Request all torrents from server
 				// first, check client for the new AJAX interface (BitComet v.1.34 and up)
-				String result = makeRequest("/panel/task_list_xml");
-				if (result.startsWith("<?xml", 0)) {
-					return new RetrieveTaskSuccessResult((RetrieveTask) task, parseXmlTorrents(result), null);
+				try {
+					String xmlResult = makeRequest("/panel/task_list_xml");
+					if (xmlResult.startsWith("<?xml", 0)) {
+						return new RetrieveTaskSuccessResult((RetrieveTask) task, parseXmlTorrents(xmlResult), null);
+					}
+				} catch (Exception e) {
+					// it's probably an old client, parse HTML instead
+					String htmlResult = makeRequest("/panel/task_list");
+					return new RetrieveTaskSuccessResult((RetrieveTask) task, parseHttpTorrents(htmlResult), null);
 				}
-				// it's old client, parse HTML
-				result = makeRequest("/panel/task_list");
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseHttpTorrents(result), null);
 				
 			case GetFileList:
 				
 				// Request files listing for a specific torrent
 				String fhash = ((GetFileListTask)task).getTargetTorrent().getUniqueID();
-				result = makeRequest("/panel/task_detail", new BasicNameValuePair("id", fhash), new BasicNameValuePair("show", "files"));
-				return new GetFileListTaskSuccessResult((GetFileListTask) task, parseHttpTorrentFiles(result, fhash));
+				String fileListResult = makeRequest("/panel/task_detail", new BasicNameValuePair("id", fhash),
+					new BasicNameValuePair("show", "files"));
+				return new GetFileListTaskSuccessResult((GetFileListTask) task, parseHttpTorrentFiles(fileListResult,
+					fhash));
 				
 			case AddByFile:
 
