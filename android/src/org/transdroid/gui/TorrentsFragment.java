@@ -142,6 +142,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	private static final int DIALOG_SETDOWNLOADLOCATION = 6;
 	private static final int DIALOG_REFRESH_INTERVAL = 7;
 	private static final int DIALOG_INSTALLBARCODESCANNER = 8;
+	private static final int DIALOG_FILTER = 9;
 
 	private static final int MENU_ADD_ID = 1;
 	private static final int MENU_BARCODE_ID = 2;
@@ -183,6 +184,8 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	private static final int MENU_REMOVE_DATA_ID = 47;
 	private static final int MENU_SETLABEL_ID = 48;
 	private static final int MENU_SETDOWNLOADLOCATION_ID = 49;
+	
+	private static final int MENU_FILTER_ID = 60;
 
 	protected boolean useTabletInterface;
 	private Handler handler;
@@ -206,6 +209,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	private String activeLabel = null;
 	private boolean inAlternativeMode = false; // Whether the server is in alternative (speed) mode (i.e. Transmission's Turtle Mode)
 	protected boolean ignoreFirstListNavigation = true;
+	private String activeFilter = null;
 		
 	private List<Torrent> allTorrents;
 	private List<Label> allLabels;
@@ -591,7 +595,10 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 		miForAll.add(MENU_FORALL_GROUP_ID, MENU_FORALL_RESUME_ID, 0, R.string.menu_forall_resume).setShortcut('5', 'u');
 		miForAll.add(MENU_FORALL_GROUP_ID, MENU_FORALL_STOP_ID, 0, R.string.menu_forall_stop).setShortcut('7', 't');
 		miForAll.add(MENU_FORALL_GROUP_ID, MENU_FORALL_START_ID, 0, R.string.menu_forall_start).setShortcut('8', 's');
-		SubMenu miSort = menu.addSubMenu(MENU_SORT_GROUP_ID, MENU_SORT_ID, 0, R.string.menu_filter);
+		
+		menu.add(0, MENU_FILTER_ID, 0, R.string.menu_filter); 
+		
+		SubMenu miSort = menu.addSubMenu(MENU_SORT_GROUP_ID, MENU_SORT_ID, 0, R.string.menu_sort);
 		miSort.setIcon(android.R.drawable.ic_menu_sort_alphabetically);
 		//miSort.setHeaderTitle(R.string.menu_sort_reverse);
 		miSort.add(MENU_SORT_GROUP_ID, MENU_SORT_ALPHA_ID, 0, R.string.menu_sort_alpha).setAlphabeticShortcut('1').setChecked(true);
@@ -626,6 +633,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 		menu.findItem(MENU_BARCODE_ID).setEnabled(ok);
 		menu.findItem(MENU_RSS_ID).setEnabled(ok);
 		menu.findItem(MENU_FORALL_ID).setEnabled(ok);
+		menu.findItem(MENU_FILTER_ID).setEnabled(ok);
 		menu.findItem(MENU_SORT_ID).setEnabled(ok);			
 		if (ok) {
 			menu.findItem(MENU_ALTMODE_ID).setVisible(Daemon.supportsSetAlternativeMode(daemon.getType()));
@@ -916,6 +924,11 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 
 			ErrorLogSender.collectAndSendLog(getActivity(), daemon, allDaemonSettings.get(lastUsedDaemonSettings));
 			break;
+			
+		case MENU_FILTER_ID:
+			// Present a dialog that allows filtering the list
+			showDialog(DIALOG_FILTER);
+			break;
 
 		case MENU_SORT_ALPHA_ID:
 			
@@ -1195,6 +1208,31 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 		case DIALOG_INSTALLBARCODESCANNER:
 			return ActivityUtil.buildInstallDialog(getActivity(), R.string.scanner_not_found, Transdroid.SCANNER_MARKET_URI);	
 			
+		
+		case DIALOG_FILTER:
+			// Build a dialog that asks for a new download location for the torrent
+			final View setFilterLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_set_filter, null);
+			final EditText newFilter = (EditText) setFilterLayout.findViewById(R.id.filter);
+			if(activeFilter != null)
+				newFilter.setText(activeFilter);
+			AlertDialog.Builder setFilterDialog = new AlertDialog.Builder(getActivity());
+			setFilterDialog.setTitle(R.string.menu_setfilter);
+			setFilterDialog.setView(setFilterLayout);
+			setFilterDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {				
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					
+					setFilter(newFilter.getText().toString());
+				}
+			});
+			setFilterDialog.setNegativeButton(android.R.string.cancel, null);
+			setFilterDialog.setNeutralButton(R.string.reset, new DialogInterface.OnClickListener() {				
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {					
+					setFilter("");
+				}
+			});
+			return setFilterDialog.create();
 		}
 		return null;
 
@@ -1977,7 +2015,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 			// Build a list of torrents that should be shown
 			List<Torrent> showTorrents = new ArrayList<Torrent>();
 			for (Torrent torrent : allTorrents) {
-				if (matchesLabel(torrent, useLabel, showAllLabelsText) && matchesStatus(torrent, activeMainView)) {
+				if (matchesLabel(torrent, useLabel, showAllLabelsText) && matchesStatus(torrent, activeMainView) && matchesFilter(torrent, activeFilter)) {
 					showTorrents.add(torrent);
 				}
 			}
@@ -2026,6 +2064,10 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 				(matchViewType == MainViewType.OnlyActive && (isActivelySeeding || isActivelyDownloading))|| 
 				(matchViewType == MainViewType.OnlyInactive && !isActivelyDownloading && !isActivelySeeding));
 	}
+	
+	private boolean matchesFilter(Torrent torrent, String matchSearchString) {
+		return ((matchSearchString == null? true : false) || (torrent.getName().toLowerCase().indexOf(matchSearchString.toLowerCase()) > -1));
+	}
 
 	private void setProgressBar(boolean b) {
 		inProgress  = b;
@@ -2054,6 +2096,14 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 			emptyText.setVisibility(View.GONE);
 			getListView().setVisibility(View.VISIBLE);
 		}
+	}
+	
+	public void setFilter(String search_text){
+		if(search_text.equals(""))
+			activeFilter = null;
+		else
+			activeFilter = search_text.trim();
+		updateTorrentsView(true);
 	}
 
 	public void showDialog(int id) {

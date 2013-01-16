@@ -19,6 +19,8 @@
 <string name="torrent_server">Torrent server</string>
 <string name="no_servers">No servers have been configured yet</string>
 
+<string name="reset">Reset</string>
+
 <string name="labels_showall">All labels</string>
 <string name="labels_unlabeled">Unlabeled</string>
 <string name="labels_newlabel">New label</string>
@@ -42,7 +44,7 @@
 <string name="menu_forall_stop">Stop all</string>
 <string name="menu_forall_start">Start all</string>
 <string name="menu_filter">Filter list</string>
-<string name="menu_sort_reverse">Sort by (resort to reverse order)</string>
+<string name="menu_sort">Sort list</string><string name="menu_sort_reverse">Sort by (resort to reverse order)</string>
 <string name="menu_sort_alpha">Name</string>
 <string name="menu_sort_status">Status</string>
 <string name="menu_sort_done">Date done</string>
@@ -63,6 +65,7 @@
 <string name="menu_forcestart">Force start</string>
 <string name="menu_setlabel">Set label</string>
 <string name="menu_setdownloadlocation">Set download location</string>
+<string name="menu_setfilter">Set list filter</string>
 <string name="menu_set_default">Set as default</string>
 <string name="menu_default_site_set_to">Default site set to</string>
 <string name="menu_moveup">Move up</string>
@@ -418,4 +421,5 @@
 <item>Black</item>
 <item>Transparent</item>
 </string-array>
+
 </resources>
