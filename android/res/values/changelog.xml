@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="changes">
+Transdroid 1.1.10\n
+- Updated translations (thanks to all translators)\n
+- Special thanks Tom Briden for the following contributions:\n
+- Name filtering of the torrents lists\n
+- rTorrent viewing of labels (with ruTorrent\'s plugin)\n
+- rTorrent delete data when removing torrent\n
+- rTorrent correct \'added on\' time\n
+\n
 Transdroid 1.1.9\n
 - Added Bitsnoop to search sites\n
 \n

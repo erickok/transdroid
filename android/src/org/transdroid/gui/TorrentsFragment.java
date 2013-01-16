@@ -680,7 +680,9 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 			return true;
 		}
 		
-		// Get torrent item
+		// Get torrent item (if it still exists)
+		if (getTorrentListAdapter().getCount() <= info.id)
+			return true;
 		Torrent selection = (Torrent) getTorrentListAdapter().getItem((int)info.id);
 		
 		switch (item.getItemId()) {
@@ -1102,6 +1104,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 			// Build a dialog that asks for a new download location for the torrent
 			final View setLocationLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_set_download_location, null);
 			final EditText newLocation = (EditText) setLocationLayout.findViewById(R.id.download_location);
+			newLocation.setText(selectedTorrent.getLocationDir());
 			AlertDialog.Builder setLocationDialog = new AlertDialog.Builder(getActivity());
 			setLocationDialog.setTitle(R.string.menu_setdownloadlocation);
 			setLocationDialog.setView(setLocationLayout);
