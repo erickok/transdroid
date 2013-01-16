@@ -49,6 +49,7 @@ import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
+import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetFilePriorityTask;
@@ -131,8 +132,12 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				return new DaemonTaskSuccessResult(task);
 
 			case Remove:
-
+				
 				// Remove a torrent
+				RemoveTask removeTask = (RemoveTask) task;
+				if (removeTask.includingData()) {
+					makeRtorrentCall("d.set_custom5", new String[] { task.getTargetTorrent().getUniqueID(), "1" });
+				}
 				makeRtorrentCall("d.erase", new String[] { task.getTargetTorrent().getUniqueID() });
 				return new DaemonTaskSuccessResult(task);
 				
