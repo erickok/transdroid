@@ -21,9 +21,12 @@
 <string name="menu_resume">استمرار</string>
 <string name="menu_stop">ايقاف</string>
 <string name="menu_start">بدء</string>
+<string name="menu_moveup">تحريك للاعلى</string>
+<string name="menu_movedown">تحريك للاسفل</string>
 
 
 
+<string name="searchmenu_add">تحميل الان</string>
 
 
 
@@ -43,6 +46,7 @@
 
 
 
+<string name="seedm8_pref_server">اسم الخادم</string>
 
 <string-array name="pref_sort_types">
 <item>Combined ordering</item>

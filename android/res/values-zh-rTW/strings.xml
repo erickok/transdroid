@@ -14,6 +14,7 @@
 <string name="no_magnet_links">您的用戶端不支援magnet連結或並未實作此功能。</string>
 <string name="save">儲存</string>
 <string name="dismiss">忽略</string>
+<string name="refresh">重新整理</string>
 <string name="torrent_server">Torrent伺服器</string>
 <string name="no_servers">未有已設定的伺服器</string>
 
@@ -22,6 +23,7 @@
 <string name="labels_newlabel">新標籤</string>
 <string name="labels_no_support">您的用戶端不支援設定標籤</string>
 
+<string name="view_switchview">排列圖示依</string>
 <string name="view_showall">顯示所有種子</string>
 <string name="view_showdl">顯示下載中種子</string>
 <string name="view_showul">顯示做種中種子</string>
@@ -64,18 +66,20 @@
 <string name="menu_moveup">上移</string>
 <string name="menu_movedown">下移</string>
 <string name="menu_edittrackers">編輯Tackers</string>
+<string name="menu_invertselection">反向選取</string>
+<string name="menu_altmode">Alt 模式</string>
 
-<string name="dialog_add_torrent">貼上URL或種子檔案</string>
-<string name="no_valid_url">URL位址格式不對</string>
-<string name="selectfile">選取一個本機.torrent種子檔案</string>
-<string name="oifm_not_found">沒有發現支援的檔案管理器，比如OI File Manager。您想從Android Market安裝嗎？\n\n另外您也可以開啟一個不支援的檔案管理器並傳送一個.torrent種子檔案到Transdroid。</string>
-<string name="oifm_install">從Market安裝</string>
+<string name="dialog_add_torrent">貼上URL 或種子檔案</string>
+<string name="no_valid_url">URL 位址格式不對</string>
+<string name="selectfile">選取一個本機.torrent 種子檔案</string>
+<string name="oifm_not_found">沒有發現支援的檔案管理器，比如OI File Manager 。您想從Android Marke t安裝嗎？\n\n另外您也可以開啟一個不支援的檔案管理器並傳送一個.torrent 種子檔案到Transdroid 。</string>
+<string name="oifm_install">從Market 安裝</string>
 <string name="oifm_nomarket">未安裝Android Market</string>
-<string name="scanner_not_found">尚未安裝條碼掃描器，您想從Android Market安裝嗎？</string>
-<string name="lc_install">您需要安裝Log Collector程式來傳送錯誤報告，您想從Android Market安裝嗎？</string>
-<string name="lc_run">Log Collector將會收集您的設備日誌並傳送到transdroid.org@gmail.com，\n你可以預覽和修改將要傳送的資料。</string>
-<string name="vlcremote_not_found">尚未安裝遠端檔案瀏覽器，如VLC Remote；您想從Android Market安裝VLC Remote嗎？</string>
-<string name="ftpclient_not_found">尚未安裝相容的FTP用戶端，\n您想從Android Market安裝AndFTP嗎？</string>
+<string name="scanner_not_found">尚未安裝條碼掃描器，您想從Android Market 安裝嗎？</string>
+<string name="lc_install">您需要安裝Log Collector 程式來傳送錯誤報告，您想從Android Market 安裝嗎？</string>
+<string name="lc_run">Log Collector 將會收集您的設備日誌並傳送到transdroid.org@gmail.com ，\n你可以預覽和修改將要傳送的資料。</string>
+<string name="vlcremote_not_found">尚未安裝遠端檔案瀏覽器，如VLC Remote ；您想從Android Market 安裝VLC Remote 嗎？</string>
+<string name="ftpclient_not_found">尚未安裝相容的FTP 用戶端，\n您想從Android Market安裝AndFTP嗎？</string>
 
 <string name="rate_download">最大下載速率</string>
 <string name="rate_upload">最大上傳速率</string>
@@ -85,9 +89,13 @@
 <string name="rate_updated">傳輸速率已更新</string>
 <string name="askremove_title">移除種子</string>
 <string name="askremove">確定要移除這個種子嗎？</string>
+<string name="addfailed_title">新增失敗</string>
+<string name="addfailed_service2">%1$s 無法加入。\nWould you like to retry or queue it to automatically add it later?</string>
+<string name="addfailed_noservice2">%1$s 無法加入。\nWould you like to retry?</string>
 <string name="addfailed_retry">重試</string>
 <string name="addfailed_addlater">稍候新增</string>
 
+<string name="search">搜尋</string>
 <string name="searching">搜尋中...</string>
 <string name="dialog_search">搜尋線上種子</string>
 <string name="search_name">總子</string>
@@ -102,6 +110,7 @@
 <string name="searchmenu_openwith">開啟方式...</string>
 <string name="searchmenu_sharelink">分享連結...</string>
 <string name="searchmenu_savesearch">另存為RSS摘要</string>
+<string name="searchmenu_useassearch">使用為新的搜尋</string>
 <string name="search_savedrssfeed">將搜尋另存為RSS摘要</string>
 <string name="search_savenotsupported">站台不支援儲存</string>
 <string name="tts_not_found">搜尋種子功能分開在另一模組，您想從Android Market安裝嗎？</string>
@@ -138,6 +147,7 @@
 <string name="pref_downloaddir_info">您伺服器上的下載目錄，絕對位址</string>
 <string name="pref_ftpurl">基本 (S)FTP url</string>
 <string name="pref_ftpurl_info">例如是 ftp://me@server.com/downloads/</string>
+<string name="pref_timeout">連結逾時</string>
 <string name="pref_ssl">SSL</string>
 <string name="pref_ssl_info">選取此項使用https</string>
 <string name="pref_ssl_trust_key">自訂SSL thumbprint</string>

@@ -44,7 +44,8 @@
 <string name="menu_forall_stop">Stop all</string>
 <string name="menu_forall_start">Start all</string>
 <string name="menu_filter">Filter list</string>
-<string name="menu_sort">Sort list</string><string name="menu_sort_reverse">Sort by (resort to reverse order)</string>
+<string name="menu_sort">Sort list</string>
+<string name="menu_sort_reverse">Sort by (resort to reverse order)</string>
 <string name="menu_sort_alpha">Name</string>
 <string name="menu_sort_status">Status</string>
 <string name="menu_sort_done">Date done</string>

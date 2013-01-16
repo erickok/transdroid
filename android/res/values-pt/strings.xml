@@ -47,7 +47,7 @@
 <string name="menu_sort_added">Adicionado em</string>
 <string name="menu_sort_upspeed">Velocidade envio</string>
 <string name="menu_sort_ratio">Taxa</string>
-<string name="menu_sort_onlytransferring">Apenas transferindo (> 0KB/s)</string>
+<string name="menu_sort_onlytransferring">Apenas transferindo (> 0KB/s)250k/s</string>
 <string name="menu_settings">Configurações</string>
 <string name="menu_changelog">Sobre/Changelog</string>
 <string name="menu_errorreport">Comunicar erros</string>

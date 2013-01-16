@@ -112,7 +112,7 @@
 <string name="searchmenu_useassearch">Искать заново</string>
 <string name="search_savedrssfeed">Искать в сохраненных RSS-фидах</string>
 <string name="search_savenotsupported">Сохранение не поддерживается этим сайтом</string>
-<string name="tts_not_found">Torrent Search теперье отдельный модуль. Установить его сейчас из Android Market?</string>
+<string name="tts_not_found">Torrent Search теперь отдельный модуль. Установить его сейчас из Android Market?</string>
 
 <string name="preferences">Настройки Transdroid</string>
 <string name="add_new_server">Добавить новый сервер</string>
@@ -290,7 +290,7 @@
 
 <string name="widget_4x1">Transdroid 4x1</string>
 <string name="widget_2x1">Transdroid 2x1</string>
-<string name="widget_pref_server">Сепвеп</string>
+<string name="widget_pref_server">Сервер</string>
 <string name="widget_pref_refresh">Частота обновления</string>
 <string name="widget_pref_layout">Стиль</string>
 <string name="widget_pref_addwidget">Добавить виджет</string>

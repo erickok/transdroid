@@ -14,6 +14,7 @@
 <string name="no_magnet_links">Ο torrent client σας δεν υποστηρίζει συνδέσμους .magnet ή ακόμα  αυτή η διαδικασία δεν έχει υλοποιηθεί.</string>
 <string name="save">Αποθήκευση</string>
 <string name="dismiss">Ακύρωση</string>
+<string name="refresh">Ανανέωση</string>
 <string name="torrent_server">Torrent server</string>
 <string name="no_servers">Κανένας server δεν έχει ρυθμιστεί ακόμα</string>
 

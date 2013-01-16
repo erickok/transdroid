@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="description">검색, RSS, 위젯이 탑재된 토런트 클리아인트 관리기</string>
+
+<string name="no_settings_short">설정 메뉴를 열어서 당신의 서버의 정보를 입력해주세요.</string>
+<string name="no_settings">Transdroid는 처음인가요? www.transdroid.org/download/ 에서 도움을 얻을 수 있습니다.\n\n시작하려면, 서버 설정을 입력해주세요.</string>
+<string name="no_settings_button">설정 열기</string>
+<string name="connecting">서버에 접속 중</string>
+<string name="no_torrents">서버에 접속했지만, 해당 서버에 토런트가 없습니다.</string>
+<string name="no_downloading_torrents">서버에 접속했지만, 해당 서버에 다운로드중인 토런트가 없습니다.</string>
+<string name="no_uploading_torrents">서버에 접속했지만, 해당 서버에 시드중인 토런트가 없습니다.</string>
+<string name="no_inactive_torrents">서버에 접속했지만, 해당 서버에 비활성화된 토런트가 없습니다.</string>
+<string name="no_file_uploads">당신의 토런트 클라이언트는 .torrent파일 업로드 기능을 지원하지 않습니다. 또는 이 기능이 아직 구현하지 않았습니다.</string>
+<string name="no_magnet_links">당신의 토런트 클라이언트는 마그넷 주소 기능을 지원하지 않습니다. 또는 이 기능이 아직 구현하지 않았습니다.</string>
+<string name="save">저장</string>
+<string name="dismiss">취소</string>
+<string name="refresh">새로고침</string>
+<string name="torrent_server">토런트 서버</string>
+<string name="no_servers">설정된 서버가 없습니다.</string>
+
+<string name="labels_showall">모든 라벨</string>
+<string name="labels_unlabeled">라벨없음</string>
+<string name="labels_newlabel">새 라벨</string>
+<string name="labels_no_support">당신의 클라이언트는 라벨을 설정하는 기능을 지원하지 않습니다.</string>
+
+<string name="view_switchview">보기 전환</string>
+<string name="view_showall">모든 토런트</string>
+<string name="view_showdl">다운로드중인 토런트</string>
+<string name="view_showul">시드중인 토런트</string>
+<string name="view_showinactive">비활성 토런트</string>
+
+<string name="menu_add">추가</string>
+<string name="menu_scanbarcode">바코드 스캔</string>
+<string name="menu_rss">RSS</string>
+<string name="menu_servers">서버 전환</string>
+<string name="menu_speeds">전송속도 설정</string>
+<string name="menu_forall">모두 적용</string>
+<string name="menu_forall_pause">모두 일시정지</string>
+<string name="menu_forall_resume">모두 재개</string>
+<string name="menu_forall_stop">모두 정지</string>
+<string name="menu_forall_start">모두 시작</string>
+<string name="menu_filter">목록 필터</string>
+<string name="menu_sort_reverse">정렬 기준 (재정렬하면 순서 반대로)</string>
+<string name="menu_sort_alpha">이름</string>
+<string name="menu_sort_status">상태</string>
+<string name="menu_sort_done">완료된 시각</string>
+<string name="menu_sort_added">추가한 시각</string>
+<string name="menu_sort_upspeed">업로드 속도</string>
+<string name="menu_sort_ratio">비율</string>
+<string name="menu_sort_onlytransferring">전송중인것만 (0KB/s 이상)</string>
+<string name="menu_settings">설정</string>
+<string name="menu_changelog">정보/변경사항</string>
+<string name="menu_errorreport">오류 보고</string>
+<string name="menu_remove">제거</string>
+<string name="menu_remove_data">데이터까지 제거</string>
+<string name="menu_also_data">데이터도 같이 지우기</string>
+<string name="menu_pause">일시정지</string>
+<string name="menu_resume">재개</string>
+<string name="menu_stop">정지</string>
+<string name="menu_start">시작</string>
+<string name="menu_forcestart">강제 시작</string>
+<string name="menu_setlabel">라벨 설정</string>
+<string name="menu_setdownloadlocation">다운로드 장소 설정</string>
+<string name="menu_set_default">기본값으로 설정</string>
+<string name="menu_default_site_set_to">기본 사이트</string>
+<string name="menu_moveup">위로 옮기기</string>
+<string name="menu_movedown">아래로 옮기기</string>
+<string name="menu_edittrackers">트래커 편집</string>
+<string name="menu_invertselection">선택 반전</string>
+<string name="menu_altmode">거북이모드</string>
+
+<string name="dialog_add_torrent">토런트파일 URL을 복사해 넣으세요.</string>
+<string name="no_valid_url">올바르지 않은 URL입니다.</string>
+<string name="selectfile">.torrent파일 선택</string>
+<string name="oifm_not_found">지원하지 않는 파일 관리자입니다. OI File Manager를 플레이스토어에서 설치하시겠습니까?\n\n아니면, 파일관리자를 직접 열어서 토런트 파일을 Transroid로 열어도 됩니다.</string>
+<string name="oifm_install">플레이스토어에서 설치</string>
+<string name="oifm_nomarket">플레이스토어 어플이 설치되어있지 않습니다.</string>
+<string name="scanner_not_found">바코드 스캐너를 찾을 수 없습니다. 플레이스토어에서 설치하시겠습니까?</string>
+<string name="lc_install">오류를 보고하려면 무료/오픈소스인 Log Collector 어플이 필요합니다. 플레이스토어에서 설치하시겠습니까?</string>
+<string name="lc_run">Log Collector 어플이 장치 로그를 모아 transdroid.org@gmail.com에 보내려고 합니다.\n보내려고 하는 데이터를 보고 수정할 수 있습니다.</string>
+<string name="vlcremote_not_found">VLC Remote같은 원격 파일 뷰어를 찾을 수 없습니다. 플레이스토어에서 설치하시겠습니까?</string>
+<string name="ftpclient_not_found">호환되는 FTP클라이언트가 없습니다. 플레이스토어에서 AndFTP 어플을 설치하시겠습니까?</string>
+
+<string name="rate_download">최대 다운로드 속도</string>
+<string name="rate_upload">최대 업로드 속도</string>
+<string name="rate_inkbs">숫자만 입력하세요. 단위는 KB/s</string>
+<string name="rate_reset">초기화</string>
+<string name="rate_no_support">당신의 토런트 클라이언트에서 전송속도 설정을 지원하지 않습니다. 또는 아직 구현하지 않은 기능입니다.</string>
+<string name="rate_updated">전송속도 설정이 업데이트되었습니다.</string>
+<string name="askremove_title">토런트 지우기</string>
+<string name="askremove">정말로 토런트를 지우시겠습니까?</string>
+<string name="addfailed_title">추가 실패</string>
+<string name="addfailed_service2">%1$s를 추가할 수 없습니다.\n다시 시도하거나 나중에 다시 추가할까요?</string>
+<string name="addfailed_noservice2">%1$s를 추가할 수 없습니다.\n다시 시도하시겠습니까?</string>
+<string name="addfailed_retry">재시도</string>
+<string name="addfailed_addlater">나중에 추가</string>
+
+<string name="search">검색</string>
+<string name="searching">검색중...</string>
+<string name="dialog_search">인터넷에서 토런트 검색</string>
+<string name="search_name">토런트</string>
+<string name="search_hint">검색어 입력</string>
+<string name="search_resultsfrom">검색한 곳:</string>
+<string name="add_selected">선택한것 모두 추가하기</string>
+<string name="no_results">입력한 검색어의 검색결과가 없습니다.</string>
+<string name="no_query">검색어가 입력되지 않았습니다.</string>
+<string name="searchmenu_switchsite">사이트 전환</string>
+<string name="searchmenu_add">지금 다운로드</string>
+<string name="searchmenu_details">사이트 열기</string>
+<string name="searchmenu_openwith">열기...</string>
+<string name="searchmenu_sharelink">공유</string>
+<string name="searchmenu_savesearch">RSS 피드로 저장</string>
+<string name="searchmenu_useassearch">새 검색으로 </string>
+<string name="search_savedrssfeed">RSS 피드로 저장했습니다.</string>
+<string name="search_savenotsupported">이 사이트에선 저장할 수 없습니다.</string>
+<string name="tts_not_found">토런트 검색을 위하여 어플을 따로 설치해야 합니다. 지금 설치하시겠습니까?</string>
+
+<string name="preferences">Transdroid 설정</string>
+<string name="add_new_server">새 서버 추가</string>
+<string name="add_new_website">검색사이트 추가</string>
+<string name="add_new_rssfeed">RSS 피드 추가</string>
+<string name="inappsite">앱 내 검색</string>
+<string name="websearch">웹 검색</string>
+<string name="other_settings">다른 설정</string>
+
+<string name="pref_server">서버 데몬</string>
+<string name="pref_basic">기본 설정</string>
+<string name="pref_name">이름</string>
+<string name="pref_name_info">서버 이름을 입력해주세요 (선택사항)</string>
+<string name="pref_daemon">서버 종류</string>
+<string name="pref_address">IP나 도메인 주소</string>
+<string name="pref_address_info">http://나 포트번호는 빼고 입력해주세요.</string>
+<string name="pref_port">포트</string>
+<string name="pref_port_info">예를들면</string>
+<string name="pref_auth">인증 사용</string>
+<string name="pref_auth_info">아이디와 비밀번호가 필요합니다.</string>
+<string name="pref_user">아이디</string>
+<string name="pref_pass">비밀번호</string>
+<string name="pref_os">서버 운영체제</string>
+<string name="pref_folder">SCGI 폴더</string>
+<string name="pref_folder_info">예를들면</string>
+<string name="pref_folder2">폴더</string>
+<string name="pref_folder2_info">예를들면 /torrentflux</string>
+<string name="pref_folder3_info">대부분 비워도 됩니다.</string>
+<string name="pref_advanced">고급 설정(선택사항)</string>
+<string name="pref_downloaddir">다운로드 경로</string>
+<string name="pref_downloaddir_info">당신의 서버의 다운로드 절대경로</string>
+<string name="pref_ftpurl">기본 (S)FTP 주소</string>
+<string name="pref_ftpurl_info">예를들면 ftp://me@server.com/downloads/</string>
+<string name="pref_timeout">접속 타임아웃</string>
+<string name="pref_timeout_info">설정한 시간(초)동안 접속을 시도합니다.</string>
+<string name="pref_ssl">SSL</string>
+<string name="pref_ssl_info">https를 사용하면 선택해주세요.</string>
+<string name="pref_ssl_trust_key">사용자 SSL 지문</string>
+<string name="pref_ssl_trust_key_info">특정 인증서에서만 접속 허용</string>
+<string name="pref_ssl_trust_all">모든 SSL인증서를 허용</string>
+<string name="pref_ssl_trust_all_info">모든 지문에 접속 허용</string>
+
+<string name="pref_search">검색 엔진</string>
+<string name="pref_setdefault">기본 사이트 설정</string>
+<string name="pref_url">직접 검색 URL</string>
+<string name="pref_url_info">검색어가 들어갈 자리에 %s를 넣어주세요.</string>
+<string name="pref_numresults">검색 결과 갯수</string>
+<string name="pref_sort">검색 결과 정렬순서</string>
+<string name="pref_rss_info">RSS 피드</string>
+<string name="pref_feed">피드 설정</string>
+<string name="pref_feed_url">피드 URL</string>
+<string name="pref_feed_needsauth">인증 필요</string>
+<string name="pref_feed_needsauth_info">인증을 위해 브라우저로 링크 열기</string>
+<string name="pref_ezrss">ezRSS 피드 생성기</string>
+<string name="pref_ezrss_info">TV쇼 RSS 피드를 생성</string>
+<string name="pref_ezrss_showname">쇼 이름</string>
+<string name="pref_ezrss_quality">품질</string>
+<string name="pref_ezrss_group">릴 그룹</string>
+<string name="pref_ezrss_info2">품질과 릴 그룹은 선택사항\nhttp://www.ezrss.it에서 제공</string>
+<string name="pref_ezrss_exact">정확히 일치</string>
+<string name="pref_ezrss_enter">검색어를 입력 하면 피드 예제가 여기에 뜹니다.</string>
+<string name="pref_ezrss_loading">로딩 중...</string>
+<string name="pref_ezrss_noresults">이 검색어로 검색하면 결과가 없습니다.</string>
+
+<string name="pref_interface">인터페이스 설정</string>
+<string name="pref_onlytransferring">전송중인것만 (0KB/s 이상)</string>
+<string name="pref_onlytransferring_info">속도가 0KB/s인건 비활성 토런트로 보기</string>
+<string name="pref_swipelabels">라벨 스와이프</string>
+<string name="pref_swipelabels_info">스와이프를 하면 서버가 아닌 라벨 전환</string>
+<string name="pref_uirefresh">새로고침 간격</string>
+<string name="pref_hiderefresh">새로고침 숨기기</string>
+<string name="pref_hiderefresh_info">토런트 목록을 새로고침했다는 메시지를 안 보여주기.</string>
+<string name="pref_clear_search_history">검색 기록 지우기</string>
+<string name="pref_history_cleared">검색 기록 지우기 성공</string>
+<string name="pref_askremove">지울때 확인</string>
+<string name="pref_askremove_info">토런트를 지울때 한번 정말로 지울지 물어봅니다.</string>
+<string name="pref_import_settings">설정 불러오기</string>
+<string name="pref_import_settings_info">Transdroid는 서버나 검색, RSS 설정을 다음에서 불러올 것입니다:</string>
+<string name="pref_import_settings_success">설정 불러오기 성공</string>
+<string name="pref_import_settings_pick">파일 고르기</string>
+<string name="pref_export_settings">설정 내보내기</string>
+<string name="pref_export_settings_info">Transdroid는 서버(비밀번호 포함), 검색, RSS 설정을 다음 텍스트 파일로 내보낼 것입니다:</string>
+<string name="pref_export_settings_success">설정 내보내기 성공</string>
+<string name="pref_export_settings_pick">디렉토리 고르기</string>
+<string name="pref_enableads">광고 설정</string>
+<string name="pref_enableads_info">화면 아래에 광고를 보여줍니다.</string>
+
+<string name="pref_alarm">알람 서비스 설정</string>
+<string name="pref_enablealarm">알람 서비스 사용</string>
+<string name="pref_enablealarm_info">토런트의 상태가 변할때 알립니다.</string>
+<string name="pref_alarmtime">알람 간격</string>
+<string name="pref_alarmtime_info">토런트 체크 빈도</string>
+<string name="pref_alarmfinished">알람 다운로드</string>
+<string name="pref_alarmfinished_info">토런트가 끝날때 알립니다.</string>
+<string name="pref_alarmnew">새 토런트 알람</string>
+<string name="pref_alarmnew_info">토런트가 추가되었을때 알림</string>
+<string name="pref_alarmplaysound">소리 사용</string>
+<string name="pref_alarmplaysound_info">알람이 울릴때 소리도 재생합니다.</string>
+<string name="pref_alarmsounduri">알람 소리</string>
+<string name="pref_alarmsounduri_info">재생할 알람 소리 선택</string>
+<string name="pref_alarmvibrate">진동 사용</string>
+<string name="pref_alarmvibrate_info">알람이 울릴때 진동합니다.</string>
+<string name="pref_checkrssfeeds">RSS 피드 검사</string>
+<string name="pref_checkrssfeeds_info">새 토런트가 있으면 알립니다.</string>
+<string name="pref_adwnotify">ADW 알림 설정</string>
+<string name="pref_adwnotify_info">ADW 런처에 토런트 카운터를 보여줍니다.</string>
+<string name="pref_adwonlydl">다운로드만 카운트</string>
+<string name="pref_adwonlydl_info">다운로드하는 토런트만 카운터에 표시합니다.</string>
+
+<string name="status_waiting">검사 대기중...</string>
+<string name="status_checking">로컬 데이터 검사중...</string>
+<string name="status_waitingtodl">%s 다운로드 대기중</string>
+<string name="status_error">오류...</string>
+<string name="status_size1">%1$s 받음 (총 %2$s, %3$s)</string>
+<string name="status_size2">%1$s, 업로드한 용량: %2$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_unknowneta">남은 시간 알 수 없음</string>
+<string name="status_ratio">비율: %1$s</string>
+<string name="status_peers">%1$s (%2$s 피어 중에서)</string>
+<string name="status_speed_up">↑ %1$s</string>
+<string name="status_speed_down">↓ %1$s</string>
+<string name="status_paused">일시정지됨</string>
+<string name="status_stopped">정지됨</string>
+<string name="status_unknown">알 수 없음</string>
+<string name="status_persecond">/s</string>
+
+<string name="task_refreshing">새로고침중...</string>
+<string name="task_addbyurl">토런트 추가 중...</string>
+<string name="task_addbyfile">토런트 업로드 중...</string>
+<string name="task_removing">토런트 제거 중...</string>
+<string name="task_pausing">토런트 일시정지 중...</string>
+<string name="task_pausingall">모든 토런트 일지정지 중...</string>
+<string name="task_resuming">토런트 재개 중...</string>
+<string name="task_resumingall">모든 토런트 재개 중...</string>
+<string name="task_stopping">토런트 정지 중...</string>
+<string name="task_stoppingall">모든 토런트 정지 중...</string>
+<string name="task_starting">토런트 시작 중...</string>
+<string name="task_startingall">모든 토런트 시작 중...</string>
+<string name="task_getfiles">파일 받아오는 중...</string>
+<string name="task_setfileprop">파일 속성 설정하는 중...</string>
+<string name="task_settransrates">전송속도 설정하는 중...</string>
+<string name="task_setlabel">라벨 설정 중...</string>
+<string name="task_setlocation">토런트 옮기는 중...</string>
+<string name="task_setalternativemode">모드 전환중...</string>
+
+<string name="list_refreshed">토런트 목록을 새로고침했습니다.</string>
+<string name="torrent_added">토런트를 추가했습니다 (새로고침 중)</string>
+<string name="torrent_removed">토런트를 제거했습니다</string>
+<string name="torrent_removed_with_data">토런트를 제거+데이터 삭제했습니다.</string>
+<string name="torrent_resumed">토런트를 재개합니다 (새로고침 중)</string>
+<string name="torrent_stopped">토런트를 정지했습니다</string>
+<string name="torrent_started">토런트를 시작했습니다 (새로고침 중)</string>
+<string name="torrent_paused">토런트를 일시정지했습니다.</string>
+<string name="torrent_paused_all">모든 토런트를 일시정지했습니다</string>
+<string name="torrent_resumed_all">모든 토런트를 재개했습니다</string>
+<string name="torrent_stopped_all">모든 토런트를 정지했습니다</string>
+<string name="torrent_started_all">모든 토런트를 시작했습니다</string>
+<string name="torrent_trackersupdated">트래커를 업데이트했습니다</string>
+<string name="torrent_locationset">토런트를 \'%1$s\'에 옮겼습니다</string>
+
+<string name="details_details">자세히</string>
+<string name="details_files">파일</string>
+<string name="details_size">크기:</string>
+<string name="details_state">상태:</string>
+<string name="details_downloaded">다운로드한 용량:</string>
+<string name="details_uploaded">업로드한 용량:</string>
+<string name="details_rate">속도:</string>
+<string name="details_eta">남은 시간:</string>
+<string name="details_availability">가용성:</string>
+<string name="details_peers">피어:</string>
+<string name="details_label">라벨:</string>
+<string name="details_trackers">트래커:</string>
+<string name="details_trackers_expand">%1$s (펼치기)</string>
+<string name="details_trackers_collapse">접기</string>
+<string name="details_errors">오류:</string>
+<string name="details_notsupported">당신의 토런트 클라이언트에서 파일목록을 보여주는걸 지원하지 않습니다. 또는 아직 구현하지 않았습니다.</string>
+<string name="details_priorities_updated">파일 속성 업데이트함</string>
+
+<string name="file_off">받지 않기</string>
+<string name="file_low">낮은 우선순위</string>
+<string name="file_normal">중간 우선순위</string>
+<string name="file_high">높은 우선순위</string>
+<string name="file_remotestart">VLC로 원격으로 재생하기</string>
+<string name="file_ftpdownload">(S)FTP로 다운로드 받기</string>
+
+<string name="widget_4x1">Transdroid 4x1</string>
+<string name="widget_2x1">Transdroid 2x1</string>
+<string name="widget_pref_server">서버</string>
+<string name="widget_pref_refresh">새로고침 간격</string>
+<string name="widget_pref_layout">스타일</string>
+<string name="widget_pref_addwidget">이 위젯 추가</string>
+<string name="widget_downloading">다운 @</string>
+<string name="widget_downloading_up">up</string>
+<string name="widget_seeding">업 @</string>
+<string name="widget_other">비활성</string>
+<string name="widget_persecond">/s</string>
+<string name="widget_eta">남은시간</string>
+<string name="widget_unknowneta">남은시간 알 수 없음</string>
+<string name="widget_new">새항목</string>
+
+<string name="service_newtorrent">새 토런트 추가됨</string>
+<string name="service_torrentfinished">토런트 다운로드 완료</string>
+<string name="service_newrssitems">새 토런트 사용가능</string>
+<string name="service_newrssitems_count">새 RSS 피드 토런트 %d개</string>
+
+<string name="rss">RSS</string>
+<string name="rss_no_feeds">RSS 피드가 없습니다. 메뉴에서 RSS 피드를 추가해주세요</string>
+<string name="rss_loading_feed">RSS 피드 로딩 중</string>
+<string name="rss_no_items">RSS 피드가 비어있습니다.</string>
+
+<string name="error_httperror">서버에 접속실패했습니다.</string>
+<string name="error_jsonrequesterror">요청을 생성하는데 오류가 발생했습니다</string>
+<string name="error_jsonresponseerror">서버 응답을 분석하는데 실패했습니다 (서버 설정을 확인해주세요)</string>
+<string name="error_daemonnotconnected">웹 인터페이스가 데몬에 접속하지 않았습니다</string>
+<string name="error_401">접근 거부 (서버 설정을 확인해주세요)</string>
+<string name="error_torrentfile">.torrent 파일을 읽을 수 없습니다</string>
+<string name="error_parsingrss">RSS 피드를 분석하는데 오류가 발생했습니다.</string>
+<string name="error_invalid_url_form">URL이 올바르지 않습니다</string>
+<string name="error_invalid_search_url">웹 검색 URL이 올바르지 않습니다</string>
+<string name="error_invalid_ip_or_hostname">IP주소나 도메인 주소가 올바르지 않습니다</string>
+<string name="error_invalid_port_number">포트번호는 숫자로 입력해주세요</string>
+<string name="error_invalid_directory">디렉토리 경로는 /나 \로 끝나야 합니다.</string>
+<string name="error_invalid_timeout">타임아웃 시간은 자연수를 입력해주세요.</string>
+<string name="error_no_url_enclosure">RSS 피드가 .torrent파일의 URL주소를 제공하지 않습니다.</string>
+<string name="error_no_link">RSS 피드가 링크 주소를 제공하지 않습니다</string>
+<string name="error_norssfeed">URL이 올바른 RSS 피드의 주소가 아닙니다</string>
+<string name="error_media_not_available">SD카드를 사용할 수 없습니다</string>
+<string name="error_no_valid_settings_file">이 파일은 Transdroid의 설정 파일이 아닌것 같습니다</string>
+<string name="error_file_not_found">설정 파일을 찾을 수 없습니다</string>
+
+
+
+<string-array name="pref_sort_types">
+<item>Combined ordering</item>
+<item>Number of seeders/leechers</item>
+</string-array>
+
+<string-array name="pref_uirefresh_types">
+<item>자동 새로고침하지 않기</item>
+<item>2초</item>
+<item>5초</item>
+<item>15초</item>
+<item>1분</item>
+<item>5분</item>
+<item>15분</item>
+<item>1시간</item>
+</string-array>
+
+<string-array name="pref_alarminterval_types">
+<item>1분</item>
+<item>10분</item>
+<item>30분</item>
+<item>1시간</item>
+<item>3시간</item>
+<item>12시간</item>
+<item>1일</item>
+</string-array>
+
+<string-array name="pref_widget_types">
+<item>안드로이드1.5</item>
+<item>안드로이드1.6</item>
+<item>빠른검색창</item>
+<item>검정</item>
+<item>투명</item>
+</string-array>
+</resources>

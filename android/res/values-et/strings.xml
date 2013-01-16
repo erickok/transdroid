@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<string name="app_name">Transdroid</string>
+<string name="welcome">Tere tulemast Transdroidi</string>
 <string name="description">Torrenti kliendi haldur intregbeeritud otsingu, RSS toega ja monitoorims vidinaga</string>
 
 <string name="no_settings_short">Ava Seaded menüü, et sisestada serveri parameetrid.</string>
 <string name="no_settings">Ava Seaded menüü, et sisestada serveri parameetrid.\n\nInstalli abi: www.transdroid.org/download</string>
 <string name="connecting">Proovin ühendust luua...</string>
+<string name="cannot_connect">Ei suuda serveriga ühenduda. Palun kontrolli sätteid.</string>
 <string name="save">Salvesta</string>
 <string name="dismiss">Tühista</string>
 
+<string name="labels">Sildid</string>
+<string name="labels_no_loaded">Silte pole laetud</string>
 <string name="labels_showall">Näita kõik</string>
 <string name="labels_unlabeled">Sildistamata</string>
 <string name="labels_newlabel">Uus silt</string>
@@ -17,8 +22,10 @@
 <string name="view_showul">Näitan kõiki üleslaetavaid torrenteid</string>
 
 <string name="menu_add">Lisa</string>
+<string name="menu_search">Otsi</string>
 <string name="menu_rss">RSS</string>
 <string name="menu_servers">Vaheta serverit</string>
+<string name="menu_refresh">Uuenda</string>
 <string name="menu_speeds">Seadista liikluse piirangud</string>
 <string name="menu_forall">Tee kõigile</string>
 <string name="menu_forall_resume">Jätka kõik</string>
@@ -64,7 +71,10 @@
 
 
 
-
+<string name="status_dl">DL:</string>
+<string name="status_ul">UL:</string>
+<string name="status_up">, üles</string>
+<string name="status_eta">eta</string>
 
 
 <string name="details_details">Detailid</string>
@@ -87,13 +97,13 @@
 <string name="widget_new">uus</string>
 
 
-
+<string name="rss">RSS</string>
 
 
 
 <string-array name="pref_sort_types">
-<item>Combined ordering</item>
-<item>Number of seeders/leechers</item>
+<item></item>
+<item></item>
 </string-array>
 
 <string-array name="pref_uirefresh_types">
@@ -108,20 +118,13 @@
 </string-array>
 
 <string-array name="pref_alarminterval_types">
-<item>1 minute</item>
-<item>10 minutes</item>
-<item>30 minutes</item>
-<item>1 hour</item>
-<item>3 hours</item>
-<item>12 hours</item>
-<item>1 day</item>
+<item></item>
+<item></item>
+<item></item>
+<item></item>
+<item></item>
+<item></item>
+<item></item>
 </string-array>
 
-<string-array name="pref_widget_types">
-<item>Android 1.5</item>
-<item>Android 1.6</item>
-<item>Quick Seach Box</item>
-<item>Black</item>
-<item>Transparent</item>
-</string-array>
 </resources>

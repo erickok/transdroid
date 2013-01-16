@@ -5,6 +5,8 @@
 <string name="no_settings_short">Перейдіть в меню налаштувань, щоб ввести дані вашого сервера</string>
 <string name="no_settings">Перейдіть в меню налаштувань, для зазначення даних про сервер.\n\nДопомога при встановленні: www.transdroid.org/download</string>
 <string name="no_settings_button">Відкрити параметри</string>
+<string name="save">Зберегти</string>
+<string name="refresh">Поновити</string>
 
 
 

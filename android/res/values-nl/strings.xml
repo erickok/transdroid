@@ -10,6 +10,7 @@
 <string name="no_downloading_torrents">Verbonden, maar er zijn geen active downloads op de server.</string>
 <string name="no_uploading_torrents">Verbonden, maar er zijn geen seeding torrents op de server.</string>
 <string name="no_inactive_torrents">Verbonen, maar er zijn geen inactieve torrents op de server.</string>
+<string name="no_active_torrents">Verbonden, maar geen actieve torrents op de server</string>
 <string name="no_file_uploads">Je torrentapplicatie ondersteund geen .torrent bestand uploads of dit is nog niet geïmplementeerd.</string>
 <string name="no_magnet_links">Je torrentapplicatie ondersteund geen magnet links of dit is nog niet geïmplementeerd.</string>
 <string name="save">Opslaan</string>
@@ -17,6 +18,8 @@
 <string name="refresh">Verversen</string>
 <string name="torrent_server">Torrent server</string>
 <string name="no_servers">Er zijn nog geen servers geconfigureerd</string>
+
+<string name="reset">Resetten</string>
 
 <string name="labels_showall">Toon alles</string>
 <string name="labels_unlabeled">Niet gelabeld</string>
@@ -27,6 +30,7 @@
 <string name="view_showall">Alle torrents tonen</string>
 <string name="view_showdl">Alleen downloads tonen</string>
 <string name="view_showul">Seeding torrents tonen</string>
+<string name="view_showactive">Actieve torrents</string>
 <string name="view_showinactive">Inactieve torrents tonen</string>
 
 <string name="menu_add">Toevoegen</string>
@@ -40,6 +44,7 @@
 <string name="menu_forall_stop">Alles stoppen</string>
 <string name="menu_forall_start">Alles starten</string>
 <string name="menu_filter">Lijst filteren</string>
+<string name="menu_sort">Sorteer lijst</string>
 <string name="menu_sort_reverse">Sorteren (kies opnieuw om volgorde om te keren)</string>
 <string name="menu_sort_alpha">Naam</string>
 <string name="menu_sort_status">Status</string>
@@ -61,6 +66,7 @@
 <string name="menu_forcestart">Forceer start</string>
 <string name="menu_setlabel">Wijzig label...</string>
 <string name="menu_setdownloadlocation">Downloadlocatie instellen...</string>
+<string name="menu_setfilter">Lijst filteren</string>
 <string name="menu_set_default">Als standaard gebruiken</string>
 <string name="menu_default_site_set_to">Standaard is nu</string>
 <string name="menu_moveup">Omhoog</string>
@@ -114,6 +120,7 @@
 <string name="search_savedrssfeed">Opgeslagen als RSS feed</string>
 <string name="search_savenotsupported">Kan niet opslaan via deze website</string>
 <string name="tts_not_found">Torrent Search is tegenwoordig een aparte module, welke eenmalig geinstalleerd moet worden uit de Android Market. Nu installeren?</string>
+<string name="tts_install">Downloaden en installeren</string>
 
 <string name="preferences">Transdroid instellingen</string>
 <string name="add_new_server">Nieuwe server toevoegen</string>
@@ -135,7 +142,9 @@
 <string name="pref_auth">Gebruik beveiliging</string>
 <string name="pref_auth_info">Je hebt een gebruikersnaam en wachtwoord nodig</string>
 <string name="pref_user">Gebruiksnaam</string>
+<string name="pref_user_forhttp">Gebruikersnaam voor HTTP authenticatie</string>
 <string name="pref_pass">Wachtwoord</string>
+<string name="pref_extrapass">Deluge webwachtwoord</string>
 <string name="pref_os">Besturingssysteem</string>
 <string name="pref_folder">SCGI folder</string>
 <string name="pref_folder_info">Is meestal /RPC2</string>
@@ -216,6 +225,8 @@
 <string name="pref_alarmsounduri_info">Af te spelen alarmtoon</string>
 <string name="pref_alarmvibrate">Trillen</string>
 <string name="pref_alarmvibrate_info">Trillen als het alarm af gaat</string>
+<string name="pref_alarmcolour">LED notificatiekleur</string>
+<string name="pref_alarmcolour_info">Mits ondersteund door je apparaat</string>
 <string name="pref_checkrssfeeds">Controleer RSS feeds</string>
 <string name="pref_checkrssfeeds_info">Laat weten als er nieuwe torrents beschikbaar zijn</string>
 <string name="pref_adwnotify">ADW notificaties</string>
@@ -276,6 +287,7 @@
 
 <string name="details_details">Details</string>
 <string name="details_files">Bestanden</string>
+<string name="details_dateadded">Toegevoegd op:</string>
 <string name="details_size">Grootte:</string>
 <string name="details_state">Status:</string>
 <string name="details_downloaded">Gedownload:</string>
@@ -324,6 +336,13 @@
 <string name="rss_loading_feed">RSS feed wordt geladen</string>
 <string name="rss_no_items">Verbonden, maar de RSS feed heeft geen items</string>
 
+<string name="dialog_color_picker">Kleurenkiezer</string>
+<string name="press_color_to_apply">Druk op de kleur om te kiezen</string>
+
+<string name="update_app_newversion">Nieuwe versie van Transdroid beschikbaar</string>
+<string name="update_search_newversion">Nieuwe versie van de Transdroid search module beschikbaar</string>
+<string name="update_updateto">Je kunt nu upgraden naar %1$s</string>
+
 <string name="error_httperror">Fout tijdens communicatie met server</string>
 <string name="error_jsonrequesterror">Fout bij opbouwen verzoek</string>
 <string name="error_jsonresponseerror">Fout bij verwerken van serverreactie (controleer je instellingen)</string>
@@ -346,19 +365,29 @@
 
 <string name="xirvik_info">Xirvik biedt gedeelde, semi-gedeelde en dedicated seedbox servers aan. In Transdroid zijn deze eenvoudig in te stellen.\n\nLees verder op www.xirvik.com</string>
 <string name="xirvik_add_new_xserver">Xirvik server toevoegen</string>
-<string name="xirvik_pref_title">Xirvik server instellingen</string>
+<string name="xirvik_pref_title">Xirvik serverinstellingen</string>
 <string name="xirvik_pref_type">Servertype</string>
 <string name="xirvik_pref_type_info">Gedeeld, semi-gedeeld of dedicated</string>
 <string name="xirvik_pref_server">Servernaam</string>
 <string name="xirvik_pref_server_info">Bijvoorbeeld dedi000.xirvik.com</string>
+<string name="xirvik_pref_folder">SCGI mount</string>
+<string name="xirvik_pref_setautomatically">Wordt automatisch ingesteld</string>
 <string name="xirvik_error_invalid_servername">Ongeldige servernaam (gebruikt het volledige adres, zoals dedi000.xirvik.com)</string>
+<string name="xirvik_error_nofolder">Kan de Xirvik SCGI mount-instelling niet ophalen; probeer het later nog eens of corrigeer je servernaam</string>
 
 <string name="seedm8_info">SeedM8 biedt ongelimiteerde GBit seedbox hosting aan. In Transdroid zijn deze eenvoudig in te stellen.\n\nLees verder op www.seedm8.com</string>
 <string name="seedm8_add_new_xserver">SeedM8 server toevoegen</string>
-<string name="seedm8_pref_title">SeedM8 server instellingen</string>
+<string name="seedm8_pref_title">SeedM8 serverinstellingen</string>
 <string name="seedm8_pref_server">Servernaam</string>
 <string name="seedm8_pref_server_info">Bijvoorbeeld alpha.seedm8.com </string>
 <string name="seedm8_error_invalid_servername">Ongeldige servernaam (gebruikt het volledige adres, zoals alpha.seedm8.com)</string>
+
+<string name="seedstuff_info">Bij Seedstuff seedboxes is service de #1 prioriteit. In Transdroid zijn deze eenvoudig in te stellen.\n\nLees verder op www.seedstuff.ca</string>
+<string name="seedstuff_add_new_xserver">Seedstuff server toevoegen</string>
+<string name="seedstuff_pref_title">Seedstuff serverinstellingen</string>
+<string name="seedstuff_pref_server">Servernaam</string>
+<string name="seedstuff_pref_server_info">Bijvoorbeeld 100.seedstuff.ca</string>
+<string name="seedstuff_error_invalid_servername">Incorrecte servernaam (gebruik de volledige hostnaam, zoals 100.seedstuff.ca)</string>
 
 <string-array name="pref_sort_types">
 <item>Gecombineerde ordening</item>
@@ -393,4 +422,5 @@
 <item>Zwart</item>
 <item>Transparant</item>
 </string-array>
+
 </resources>

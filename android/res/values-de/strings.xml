@@ -56,7 +56,7 @@
 <string name="menu_also_data">Auch alle Dateien löschen</string>
 <string name="menu_pause">Anhalten</string>
 <string name="menu_resume">Fortsetzen</string>
-<string name="menu_stop">Anhalten</string>
+<string name="menu_stop">Stoppen</string>
 <string name="menu_start">Start</string>
 <string name="menu_forcestart">Erzwungener Start</string>
 <string name="menu_setlabel">Label setzen</string>
