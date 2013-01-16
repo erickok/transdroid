@@ -86,7 +86,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 			switch (task.getMethod()) {
 			case Retrieve:
 
-				Object result = makeRtorrentCall("d.multicall", new String[] { "main", "d.get_hash=", "d.get_name=", "d.get_state=", "d.get_down_rate=", "d.get_up_rate=", "d.get_peers_connected=", "d.get_peers_not_connected=", "d.get_peers_accounted=", "d.get_bytes_done=", "d.get_up_total=", "d.get_size_bytes=", "d.get_creation_date=", "d.get_left_bytes=", "d.get_complete=", "d.is_active=", "d.is_hash_checking=", "d.get_base_path=", "d.get_base_filename=", "d.get_message=" });
+				Object result = makeRtorrentCall("d.multicall", new String[] { "main", "d.get_hash=", "d.get_name=", "d.get_state=", "d.get_down_rate=", "d.get_up_rate=", "d.get_peers_connected=", "d.get_peers_not_connected=", "d.get_peers_accounted=", "d.get_bytes_done=", "d.get_up_total=", "d.get_size_bytes=", "d.get_creation_date=", "d.get_left_bytes=", "d.get_complete=", "d.is_active=", "d.is_hash_checking=", "d.get_base_path=", "d.get_base_filename=", "d.get_message=", "d.get_custom=addtime", "d.get_custom=seedingtime" });
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result),null);
 
 			case GetTorrentDetails:
@@ -278,6 +278,19 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				Object[] info = (Object[]) responseList[i];
 				String error = (String)info[18];
 				error = error.equals("")? null: error;
+				
+				Date added = null;
+				Date finished = null;
+				if(!((String)info[19]).equals(""))
+					added = new Date(Long.valueOf(((String)info[19]).trim()));
+				else
+					added = new Date((Long)info[11]);
+				
+				if(!((String)info[20]).equals(""))
+					finished = new Date(Long.valueOf(((String)info[20]).trim()));
+				
+				
+				
 				if (info[3] instanceof Long) {
 
 					// rTorrent uses the i8 dialect which returns 64-bit integers
@@ -303,8 +316,8 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						((Long)info[8]).floatValue() / ((Long)info[10]).floatValue(), // partDone
 						0f, // TODO: Add availability data
 						null, // See remark on rTorrent/groups above
-						new Date((Long)info[11]),
-						null,
+						added,
+						finished,
 						error));
 					
 				} else {
@@ -332,8 +345,8 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						((Integer)info[8]).floatValue() / ((Integer)info[10]).floatValue(), // partDone
 						0f, // TODO: Add availability data
 						null, // See remark on rTorrent/groups above
-						new Date((Integer)info[11]),
-						null,
+						added,
+						finished,
 						error));
 					
 				}

@@ -142,7 +142,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 			Calendar cal = Calendar.getInstance();
 			if (eta == -1 || eta == -2) {
 				cal.clear();
-				cal.set(9999, 12, 31);
+				cal.set(1900, 12, 31);
 			} else {
 				cal.add(Calendar.SECOND, eta);
 			}
