@@ -18,6 +18,9 @@
 package org.transdroid.gui;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,12 +31,12 @@ import org.transdroid.daemon.DaemonMethod;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.IDaemonCallback;
+import org.transdroid.daemon.Label;
 import org.transdroid.daemon.TaskQueue;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentStatus;
 import org.transdroid.daemon.TorrentsComparator;
 import org.transdroid.daemon.TorrentsSortBy;
-import org.transdroid.daemon.Label;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -80,31 +83,35 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBar.OnNavigationListener;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ActionBar.OnNavigationListener;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.support.v4.view.SubMenu;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -115,8 +122,6 @@ import android.widget.SpinnerAdapter;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * The main screen for the Transdroid application and provides most on-the-surface functionality 
@@ -372,21 +377,24 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
     			// Intent should have some Uri data pointing to a single torrent
 	    		String data = startIntent.getDataString();
 	    		if (data != null && startIntent.getData() != null && startIntent.getData().getScheme() != null) {
-					if (startIntent.getData().getScheme().equals(HttpHelper.SCHEME_HTTP)
+	    			// From Android 4.2 the file path is not directly in the Intent :( but rather in the 'Download manager' cursor
+					if (startIntent.getData().getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+						addTorrentFromDownloads(startIntent.getData());
+					} else if (startIntent.getData().getScheme().equals(HttpHelper.SCHEME_HTTP)
 							|| startIntent.getData().getScheme().equals(HttpHelper.SCHEME_HTTPS)) {
-			        	// From a global intent to add a .torrent file via URL (maybe form the browser)
-		    			String title = data.substring(data.lastIndexOf("/"));
-		    			if (startIntent.hasExtra(Transdroid.INTENT_TORRENT_TITLE)) {
-		    				title = startIntent.getStringExtra(Transdroid.INTENT_TORRENT_TITLE);
-		    			}
-			            addTorrentByUrl(data, title);
-		    		} else if (startIntent.getData().getScheme().equals(HttpHelper.SCHEME_MAGNET)) {
-		    			// From a global intent to add a magnet link via URL (usually from the browser)
-		    			addTorrentByMagnetUrl(data);
-		    		} else if (startIntent.getData().getScheme().equals(HttpHelper.SCHEME_FILE)) {
-		    			// From a global intent to add via the contents of a local .torrent file (maybe form a file manager)
-		    			addTorrentByFile(data);
-		    		}
+						// From a global intent to add a .torrent file via URL (maybe form the browser)
+						String title = data.substring(data.lastIndexOf("/"));
+						if (startIntent.hasExtra(Transdroid.INTENT_TORRENT_TITLE)) {
+							title = startIntent.getStringExtra(Transdroid.INTENT_TORRENT_TITLE);
+						}
+						addTorrentByUrl(data, title);
+					} else if (startIntent.getData().getScheme().equals(HttpHelper.SCHEME_MAGNET)) {
+						// From a global intent to add a magnet link via URL (usually from the browser)
+						addTorrentByMagnetUrl(data);
+					} else if (startIntent.getData().getScheme().equals(HttpHelper.SCHEME_FILE)) {
+						// From a global intent to add via the contents of a local .torrent file (maybe form a file manager)
+						addTorrentByFile(data);
+					}
 	    		}
 	    		
     		}
@@ -1465,6 +1473,42 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 		queue.enqueue(AddByMagnetUrlTask.create(daemon, url));
 		queue.enqueue(RetrieveTask.create(daemon));
 
+	}
+
+	private void addTorrentFromDownloads(Uri contentUri) {
+
+		InputStream input = null;
+		try {
+			// Open the content uri as input stream
+			input = getActivity().getContentResolver().openInputStream(contentUri);
+			
+			// Write a temporary file with the torrent contents
+			File tempFile = File.createTempFile("transdroid_", ".torrent", getActivity().getCacheDir());
+			FileOutputStream output = new FileOutputStream(tempFile);
+			try {
+				final byte[] buffer = new byte[1024];
+				int read;
+				while ((read = input.read(buffer)) != -1)
+					output.write(buffer, 0, read);
+				output.flush();
+				addTorrentByFile(Uri.fromFile(tempFile).toString());
+			} finally {
+				output.close();
+			}
+		} catch (SecurityException e) {
+			// No longer access to this file
+			Toast.makeText(getActivity(), R.string.error_torrentfile, Toast.LENGTH_SHORT).show();
+		} catch (IOException e1) {
+			// Can't write temporary file
+			Toast.makeText(getActivity(), R.string.error_torrentfile, Toast.LENGTH_SHORT).show();
+		} finally {
+			try {
+				if (input != null)
+					input.close();
+			} catch (IOException e) {
+				Toast.makeText(getActivity(), R.string.error_torrentfile, Toast.LENGTH_SHORT).show();
+			}
+		}
 	}
 
 	private void addTorrentByFile(String fileUri) {
