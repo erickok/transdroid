@@ -55,6 +55,7 @@ import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetFilePriorityTask;
+import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.DLog;
 import org.transdroid.daemon.util.HttpHelper;
@@ -210,6 +211,12 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				makeRtorrentCall("set_upload_rate", new String[] { (ratesTask.getUploadRate() == null? "0": ratesTask.getUploadRate().toString() + "k") });
 				return new DaemonTaskSuccessResult(task);
 				
+			case SetLabel:
+
+				SetLabelTask labelTask = (SetLabelTask) task;
+				makeRtorrentCall("d.set_custom1", new String[] { task.getTargetTorrent().getUniqueID(), labelTask.getNewLabel() });
+				return new DaemonTaskSuccessResult(task);
+
 			default:
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
 			}
