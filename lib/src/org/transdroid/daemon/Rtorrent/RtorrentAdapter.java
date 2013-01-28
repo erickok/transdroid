@@ -288,15 +288,24 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				String error = (String)info[18];
 				error = error.equals("")? null: error;
 				
+				// Determine the time added
 				Date added = null;
-				Date finished = null;
 				if(!((String)info[19]).equals(""))
-					added = new Date(Long.valueOf(((String)info[19]).trim()));
-				else
-					added = new Date((Long)info[11]);
+					// Successfully received the addtime from rTorrent (which is a String like '1337089336\n')
+					added = new Date(Long.valueOf(((String)info[19]).trim()) * 1000L);
+				else {
+					// rTorrent didn't have the addtime (missing plugin?): base it on creationtime instead
+					if (info[11] instanceof Long)
+						added = new Date((Long)info[11] * 1000L);
+					else
+						added = new Date((Integer)info[11] * 1000L);
+				}
 				
+				// Determine the seeding time
+				Date finished = null;
 				if(!((String)info[20]).equals(""))
-					finished = new Date(Long.valueOf(((String)info[20]).trim()));
+					// Successfully received the seedingtime from rTorrent (which is a String like '1337089336\n')
+					finished = new Date(Long.valueOf(((String)info[20]).trim()) * 1000L);
 				
 				String label = null;
 				
