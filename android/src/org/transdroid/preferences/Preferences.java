@@ -637,6 +637,7 @@ public class Preferences {
             settings.add(new SiteSettings("site_mininova", "Mininova"));
             settings.add(new SiteSettings("site_monova", "Monova"));
             settings.add(new SiteSettings("site_thepiratebay", "The Pirate Bay"));
+            settings.add(new SiteSettings("site_thepiratebaymirror", "The Pirate Bay (Mirror)"));
             settings.add(new SiteSettings("site_torrentdownloads", "Torrent Downloads"));
             settings.add(new SiteSettings("site_torrentreactor", "Torrent Reactor"));
             settings.add(new SiteSettings("site_vertor", "Vertor"));
@@ -666,6 +667,8 @@ public class Preferences {
     		return "Monova";
     	} else if (preferencesKey.equals("site_thepiratebay")) {
     		return "ThePirateBay";
+    	} else if (preferencesKey.equals("site_thepiratebaymirror")) {
+    		return "ThePirateBayMirror";
     	} else if (preferencesKey.equals("site_torrentdownloads")) {
     		return "TorrentDownloads";
     	} else if (preferencesKey.equals("site_torrentreactor")) {
@@ -693,6 +696,8 @@ public class Preferences {
     		return new SiteSettings(preferencesKey, "Monova");
     	} else if (preferencesKey.equals("site_thepiratebay")) {
     		return new SiteSettings(preferencesKey, "ThePirateBay");
+    	} else if (preferencesKey.equals("site_thepiratebaymirror")) {
+    		return new SiteSettings(preferencesKey, "ThePirateBayMirror");
     	} else if (preferencesKey.equals("site_torrentdownloads")) {
     		return new SiteSettings(preferencesKey, "TorrentDownloads");
     	} else if (preferencesKey.equals("site_torrentreactor")) {
