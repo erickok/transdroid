@@ -290,9 +290,15 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				
 				// Determine the time added
 				Date added = null;
-				if(!((String)info[19]).equals(""))
+				Long addtime = null;
+				try {
+					addtime = Long.valueOf(((String) info[19]).trim());
+				} catch (NumberFormatException e) {
+					// Not a number (timestamp); ignore and fall back to using creationtime
+				}
+				if(addtime != null)
 					// Successfully received the addtime from rTorrent (which is a String like '1337089336\n')
-					added = new Date(Long.valueOf(((String)info[19]).trim()) * 1000L);
+					added = new Date(addtime * 1000L);
 				else {
 					// rTorrent didn't have the addtime (missing plugin?): base it on creationtime instead
 					if (info[11] instanceof Long)
@@ -303,18 +309,22 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				
 				// Determine the seeding time
 				Date finished = null;
-				if(!((String)info[20]).equals(""))
+				Long seedingtime = null;
+				try {
+					seedingtime = Long.valueOf(((String) info[20]).trim());
+				} catch (NumberFormatException e) {
+					// Not a number (timestamp); ignore and fall back to using creationtime
+				}
+				if(seedingtime != null)
 					// Successfully received the seedingtime from rTorrent (which is a String like '1337089336\n')
-					finished = new Date(Long.valueOf(((String)info[20]).trim()) * 1000L);
+					finished = new Date(seedingtime * 1000L);
 				
+				// Determine the label
 				String label = null;
-				
-				try{
+				try {
 					label = URLDecoder.decode((String)info[21], "UTF-8");
+				} catch (UnsupportedEncodingException e) {					
 				}
-				catch(UnsupportedEncodingException e){					
-				}
-				
 				
 				if (info[3] instanceof Long) {
 
