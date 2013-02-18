@@ -412,10 +412,15 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	}
 
 	private long parseSize(String string) {
-		// Sizes are given in "703.3 MiB" string format
+		// See https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-Documentation
+		if (string.equals("Unknown")
+			return -1;
+		// Sizes are given in "703.3 MiB"-like string format
 		// Returns size in B-based long
 		String[] parts = string.split(" ");
-		if (parts[1].equals("GiB")) {
+		if (parts[1].equals("TiB")) {
+			return (long) (Double.parseDouble(parts[0]) * 1024L * 1024L * 1024L * 1024L);
+		} else if (parts[1].equals("GiB")) {
 			return (long) (Double.parseDouble(parts[0]) * 1024L * 1024L * 1024L);
 		} else if (parts[1].equals("MiB")) {
 			return (long) (Double.parseDouble(parts[0]) * 1024L * 1024L);
@@ -463,7 +468,10 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	}
 
 	private int parseSpeed(String speed) {
-		// Speeds are in "21.9 KiB/s" string format
+		// See https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-Documentation
+		if (speed.equals("Unknown")
+			return -1;
+		// Speeds are in "21.9 KiB/s"-like string format
 		// Returns speed in B/s-based integer
 		String[] parts = speed.split(" ");
 		if (parts[1].equals("GiB/s")) {
