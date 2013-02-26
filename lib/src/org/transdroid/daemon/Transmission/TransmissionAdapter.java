@@ -387,7 +387,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	
 			// Setup request using POST stream with URL and data
 			HttpPost httppost = new HttpPost(buildWebUIUrl());
-			StringEntity se = new StringEntity(data.toString());
+			StringEntity se = new StringEntity(data.toString(), "UTF-8");
 			httppost.setEntity(se);
 	
 			// Send the stored session token as a header
