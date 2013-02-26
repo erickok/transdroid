@@ -71,6 +71,12 @@ public class BootReceiver extends BroadcastReceiver {
 		}
 	}
 
+	public static void cancelUpdateCheck() {
+		if (mgr != null) {
+			mgr.cancel(pui);
+		}
+	}
+
 	public static void startUpdateCheck(Context context) {
 		// Set up PendingIntent for the alarm service
 		if (mgr == null)

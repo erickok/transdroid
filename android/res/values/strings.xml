@@ -233,6 +233,8 @@
 <string name="pref_adwnotify_info">Show torrent counter in ADW Launcher</string>
 <string name="pref_adwonlydl">Count only downloads</string>
 <string name="pref_adwonlydl_info">ADW counter only includes downloading torrents</string>
+<string name="pref_checkforupdates">Check for updates</string>
+<string name="pref_checkforupdates_info">Check transdroid.org for latest app version</string>
 
 <string name="status_waiting">Waiting to check...</string>
 <string name="status_checking">Verifying local data...</string>

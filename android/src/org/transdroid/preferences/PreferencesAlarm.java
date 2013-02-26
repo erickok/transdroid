@@ -44,6 +44,7 @@ public class PreferencesAlarm extends PreferenceActivity {
 	private ColorPickerPreference alarmColour;
 	private TransdroidCheckBoxPreference adwNotify;
 	private TransdroidCheckBoxPreference adwOnlyDl;
+	private TransdroidCheckBoxPreference checkForUpdates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +129,13 @@ public class PreferencesAlarm extends PreferenceActivity {
 		adwOnlyDl.setKey(Preferences.KEY_PREF_ADWONLYDL);
 		adwOnlyDl.setEnabled(isEnabled && isAdwEnabled);
 		getPreferenceScreen().addItemFromInflater(adwOnlyDl);
+        // Enable
+        checkForUpdates = new TransdroidCheckBoxPreference(this);
+        checkForUpdates.setTitle(R.string.pref_checkforupdates);
+        checkForUpdates.setSummary(R.string.pref_checkforupdates_info);
+        checkForUpdates.setKey(Preferences.KEY_PREF_CHECKUPDATES);
+        checkForUpdates.setDefaultValue(true);
+        getPreferenceScreen().addItemFromInflater(checkForUpdates);
         
         prefs.registerOnSharedPreferenceChangeListener(changesHandler);
     }
@@ -148,6 +156,16 @@ public class PreferencesAlarm extends PreferenceActivity {
 		
 		@Override
 		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+			
+			if (key.equals(Preferences.KEY_PREF_CHECKUPDATES)) {
+				// Only the update checker setting changed
+				BootReceiver.cancelUpdateCheck();
+				boolean shouldCheckForUpdates = sharedPreferences.getBoolean(Preferences.KEY_PREF_CHECKUPDATES, true);
+				if (shouldCheckForUpdates) {
+					BootReceiver.startUpdateCheck(getApplicationContext());
+				}
+				return;
+			}
 			
 			// First cancel the alarm
 			BootReceiver.cancelAlarm();

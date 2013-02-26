@@ -34,8 +34,9 @@ public class AlarmSettings{
 	private int alarmColour;
 	private boolean adwNotify;
 	private boolean adwOnlyDl;
+	private boolean checkForUpdates;
 		
-	public AlarmSettings(boolean enableAlarm, int alarmInterval, boolean checkRssFeeds, boolean alarmPlaySound, String alarmSoundURI, boolean alarmVibrate, int alarmColour, boolean adwNotify, boolean adwOnlyDl) {
+	public AlarmSettings(boolean enableAlarm, int alarmInterval, boolean checkRssFeeds, boolean alarmPlaySound, String alarmSoundURI, boolean alarmVibrate, int alarmColour, boolean adwNotify, boolean adwOnlyDl, boolean checkForUpdates) {
 		this.enableAlarm = enableAlarm;
 		this.alarmInterval = alarmInterval;
 		this.checkRssFeeds = checkRssFeeds;
@@ -45,6 +46,7 @@ public class AlarmSettings{
 		this.alarmColour = alarmColour;
 		this.adwNotify = adwNotify;
 		this.adwOnlyDl = adwOnlyDl;
+		this.checkForUpdates = checkForUpdates;
 	}
 	
 	public boolean isAlarmEnabled() {
@@ -85,6 +87,10 @@ public class AlarmSettings{
 
 	public boolean showOnlyDownloadsInAdw() {
 		return adwOnlyDl;
+	}
+
+	public boolean shouldCheckForUpdates() {
+		return checkForUpdates;
 	}
 	
 }

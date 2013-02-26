@@ -141,6 +141,7 @@ public class Preferences {
 	public static final String KEY_PREF_ALARMCOLOUR = "transdroid_alarm_colour";
 	public static final String KEY_PREF_ADWNOTIFY   = "transdroid_alarm_adwnotify";
 	public static final String KEY_PREF_ADWONLYDL   = "transdroid_alarm_adwonlydl";
+	public static final String KEY_PREF_CHECKUPDATES  = "transdroid_alarm_checkupdates";
 	
 	public static final String KEY_WIDGET_DAEMON	= "transdroid_widget_daemon";
 	public static final String KEY_WIDGET_REFRESH	= "transdroid_widget_refresh";
@@ -1030,7 +1031,8 @@ public class Preferences {
         		prefs.getBoolean(KEY_PREF_ALARMVIBRATE, false),
         		prefs.getInt(KEY_PREF_ALARMCOLOUR, 0xff7dbb21),
         		prefs.getBoolean(KEY_PREF_ADWNOTIFY, false),
-        		prefs.getBoolean(KEY_PREF_ADWONLYDL, false));
+        		prefs.getBoolean(KEY_PREF_ADWONLYDL, false),
+        		prefs.getBoolean(KEY_PREF_CHECKUPDATES, true));
     }
 
     /**

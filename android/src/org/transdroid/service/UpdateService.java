@@ -77,6 +77,14 @@ public class UpdateService extends IntentService {
 			return;
 		}
 
+		// Check if the update service should run
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		AlarmSettings settings = Preferences.readAlarmSettings(prefs);
+		if (!settings.shouldCheckForUpdates()) {
+			TLog.d(LOG_NAME, "The user disabled the update checker service.");
+			return;
+		}
+
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 
 		try {
