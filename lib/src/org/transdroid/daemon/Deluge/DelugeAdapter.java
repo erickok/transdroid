@@ -572,7 +572,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 				String error = tor.getString(RPC_MESSAGE);
 				if (tor.getString(RPC_TRACKER_STATUS).indexOf("Error") > 0) {
 					error += (error.length() > 0? "\n": "") + tor.getString(RPC_TRACKER_STATUS);
-					status = TorrentStatus.Error;
+					//status = TorrentStatus.Error; // Don't report this as blocking error
 				}
 				torrents.add(new Torrent(j, 
 						names.getString(j), 
