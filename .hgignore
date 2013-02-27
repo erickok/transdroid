@@ -6,3 +6,4 @@ syntax: glob
 bin/
 gen/
 lint.xml
+.apt_generated
