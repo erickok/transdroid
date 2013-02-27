@@ -1,0 +1,7 @@
+<resources>
+
+	<style name="TransdroidBaseTheme" parent="Theme.Sherlock">
+		<!-- API 11 theme customizations can go here. -->
+	</style>
+
+</resources>
