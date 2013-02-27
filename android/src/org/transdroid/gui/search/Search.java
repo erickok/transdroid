@@ -30,6 +30,12 @@ import org.transdroid.gui.util.SelectableArrayAdapter.OnSelectedChangedListener;
 import org.transdroid.preferences.Preferences;
 import org.transdroid.util.TLog;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -42,11 +48,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.SearchRecentSuggestions;
-import android.support.v4.app.ActionBar;
-import android.support.v4.app.ActionBar.OnNavigationListener;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
@@ -76,7 +78,7 @@ import android.widget.Toast;
  * @author erickok
  *
  */
-public class Search extends FragmentActivity implements OnTouchListener, OnSelectedChangedListener {
+public class Search extends SherlockFragmentActivity implements OnTouchListener, OnSelectedChangedListener {
 
 	private static final String LOG_NAME = "Search";
 	private final static Uri TTS_MARKET_URI = Uri.parse("http://www.transdroid.org/latest-search");

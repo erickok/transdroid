@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<style name="Theme.Transdroid" parent="@style/Theme.Sherlock">
+	    <item name="android:windowBackground">@color/WindowBackgroundColor</item>
+		<item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+		<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
+        <item name="actionBarItemBackground">@drawable/title_button</item>
+	</style>
+	<style name="Theme.Transdroid.NoTitle" parent="@style/Theme.Sherlock">
+		<item name="android:windowNoTitle">true</item>
+	</style>
+	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.Light.ActionBar">
+		<item name="android:displayOptions">useLogo|showHome</item>
+		<item name="displayOptions">useLogo|showHome</item>
+		<item name="background">@color/TitleBackgroundColor</item>
+		<item name="android:background">@color/TitleBackgroundColor</item>
+		<item name="android:textAppearance">@style/WindowTitleText</item>
+	</style>
+</resources>

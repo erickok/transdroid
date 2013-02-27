@@ -22,10 +22,11 @@ import org.transdroid.daemon.Torrent;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
-public class Details extends FragmentActivity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+public class Details extends SherlockFragmentActivity {
 
 	//private static final String LOG_NAME = "Details";
 

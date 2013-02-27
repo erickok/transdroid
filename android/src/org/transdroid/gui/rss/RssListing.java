@@ -21,13 +21,15 @@ import org.transdroid.R;
 import org.transdroid.preferences.Preferences;
 import org.transdroid.rss.RssFeedSettings;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
-public class RssListing extends FragmentActivity {
+public class RssListing extends SherlockFragmentActivity {
 
 	public static final String RSSFEED_LISTING_KEY = "RSSFEED_LISTING_KEY";
 

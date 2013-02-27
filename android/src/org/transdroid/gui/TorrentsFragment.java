@@ -92,18 +92,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBar.OnNavigationListener;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
-import android.support.v4.view.SubMenu;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -123,6 +118,13 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
+
 /**
  * The main screen for the Transdroid application and provides most on-the-surface functionality 
  * as well. Server daemon and search engine communication is wrapped in adapters.
@@ -130,7 +132,7 @@ import android.widget.Toast;
  * @author erickok
  *
  */
-public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTouchListener {
+public class TorrentsFragment extends SherlockFragment implements IDaemonCallback, OnTouchListener {
 
 	private static final String LOG_NAME = "Main";
 	
@@ -468,7 +470,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 
     	// Update the navigation list of the action bar
     	ignoreFirstListNavigation = true;
-    	getSupportActivity().getSupportActionBar().setListNavigationCallbacks(buildServerListAdapter(), onServerChanged );
+    	getSherlockActivity().getSupportActionBar().setListNavigationCallbacks(buildServerListAdapter(), onServerChanged );
     	
     }
     
@@ -485,7 +487,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
         	
     		// Show which server configuration is currently active
         	ignoreFirstListNavigation = true;
-        	getSupportActivity().getSupportActionBar().setSelectedNavigationItem(lastUsedDaemonSettings);
+        	getSherlockActivity().getSupportActionBar().setSelectedNavigationItem(lastUsedDaemonSettings);
         	
 			// Show the control bar
         	startsettings.setVisibility(View.GONE);
@@ -493,7 +495,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 			statusBox.setVisibility(View.GONE);
 			activeLabel = null;
 			inAlternativeMode = false; // TODO: Actually this should be retrieved from the server's session
-			getSupportActivity().invalidateOptionsMenu();
+			getSherlockActivity().supportInvalidateOptionsMenu();
 
         } else {
         	
@@ -504,7 +506,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
         	
 			// Show that no server configuration is currently active
         	ignoreFirstListNavigation = true;
-        	getSupportActivity().getSupportActionBar().setListNavigationCallbacks(null, onServerChanged);
+        	getSherlockActivity().getSupportActionBar().setListNavigationCallbacks(null, onServerChanged);
         	statusBox.setVisibility(View.GONE);
 			viewtype.setText("");
 
@@ -512,7 +514,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
         	startsettings.setVisibility(View.VISIBLE);
         	controlbar.setVisibility(View.GONE);
 			activeLabel = null;
-			getSupportActivity().invalidateOptionsMenu();
+			getSherlockActivity().supportInvalidateOptionsMenu();
 			
         }
 
@@ -790,7 +792,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(android.support.v4.view.MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 
 		// Check connection first (when not opening the settings)
 		if (item.getItemId() != MENU_SETTINGS_ID && 
@@ -815,7 +817,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 			break;
 			
 		case MENU_SEARCH_ID:
-			getSupportActivity().onSearchRequested();
+			getSherlockActivity().onSearchRequested();
 			break;
 			
 		case MENU_ALTMODE_ID:
@@ -1009,7 +1011,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	    		
 		    	// Show the details in the right of the screen (tablet interface) or separately
 		    	if (useTabletInterface) {
-		    		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		    		FragmentTransaction ft = getSherlockActivity().getSupportFragmentManager().beginTransaction();
 		    		ft.replace(R.id.details, new DetailsFragment(TorrentsFragment.this, lastUsedDaemonSettings, tor, 
 		    				buildLabelTexts(false)));
 		    		ft.commit();
@@ -1429,9 +1431,9 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 
 	private void refreshActivity() {
 		updateTorrentList();
-		if (getSupportFragmentManager().findFragmentById(R.id.details) != null) {
+		if (getSherlockActivity().getSupportFragmentManager().findFragmentById(R.id.details) != null) {
 			// Marshal the refresh button click to the fragment
-			((DetailsFragment)getSupportFragmentManager().findFragmentById(R.id.details)).refreshActivity();
+			((DetailsFragment)getSherlockActivity().getSupportFragmentManager().findFragmentById(R.id.details)).refreshActivity();
 		}
 	}
 
@@ -1855,7 +1857,7 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 
 	private void updateAlternativeModeIcon() {
 		// By invalidation the options menu it gets redrawn and the turtle icon gets updated
-		getSupportActivity().invalidateOptionsMenu();
+		getSherlockActivity().supportInvalidateOptionsMenu();
 	}
 	
 	/**
@@ -1987,9 +1989,9 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 		
 		// Clear the old details fragment
 		if (useTabletInterface) {
-			Fragment f = getSupportFragmentManager().findFragmentById(R.id.details);
+			Fragment f = getSherlockActivity().getSupportFragmentManager().findFragmentById(R.id.details);
 			if (f != null) {
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				FragmentTransaction ft = getSherlockActivity().getSupportFragmentManager().beginTransaction();
 				ft.remove(f);
 				ft.commit();
 			}
@@ -2118,8 +2120,8 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 
 	private void setProgressBar(boolean b) {
 		inProgress  = b;
-		if (getSupportActivity() != null)
-			getSupportActivity().invalidateOptionsMenu();
+		if (getSherlockActivity() != null)
+			getSherlockActivity().supportInvalidateOptionsMenu();
 	}
 
 	protected View findViewById(int id) {
@@ -2154,13 +2156,13 @@ public class TorrentsFragment extends Fragment implements IDaemonCallback, OnTou
 	}
 
 	public void showDialog(int id) {
-		new DialogWrapper(onCreateDialog(id)).show(getSupportActivity().getSupportFragmentManager(), DialogWrapper.TAG + id);
+		new DialogWrapper(onCreateDialog(id)).show(getSherlockActivity().getSupportFragmentManager(), DialogWrapper.TAG + id);
 	}
 
 	protected void dismissDialog(int id) {
 		// Remove the dialog wrapper fragment for the dialog's ID
-		getSupportActivity().getSupportFragmentManager().beginTransaction().remove(
-			getSupportActivity().getSupportFragmentManager().findFragmentByTag(DialogWrapper.TAG + id)).commit();
+		getSherlockActivity().getSupportFragmentManager().beginTransaction().remove(
+				getSherlockActivity().getSupportFragmentManager().findFragmentByTag(DialogWrapper.TAG + id)).commit();
 	}
 
     /**

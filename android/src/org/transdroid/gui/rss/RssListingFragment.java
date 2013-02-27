@@ -33,6 +33,7 @@ import org.transdroid.preferences.Preferences;
 import org.transdroid.rss.RssFeedSettings;
 import org.transdroid.util.TLog;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -44,17 +45,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBar.OnNavigationListener;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.text.Html;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,7 +67,14 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RssListingFragment extends Fragment implements OnTouchListener, OnSelectedChangedListener {
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
+@SuppressLint("ValidFragment")
+public class RssListingFragment extends SherlockFragment implements OnTouchListener, OnSelectedChangedListener {
 
 	private static final String LOG_NAME = "RSS listing";
 
@@ -121,14 +124,14 @@ public class RssListingFragment extends Fragment implements OnTouchListener, OnS
         addSelectedButton.setOnClickListener(addSelectedClicked);
         // Swiping or flinging between server configurations
         gestureDetector = new GestureDetector(new RssScreenGestureListener());
-        getSupportActivity().getSupportActionBar().setTitle(R.string.rss);
+        getSherlockActivity().getSupportActionBar().setTitle(R.string.rss);
         
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         allFeeds = Preferences.readAllRssFeedSettings(prefs);
         
     	ignoreFirstListNavigation = true;
         if (getActivity() instanceof RssListing) {
-        	getSupportActivity().getSupportActionBar().setListNavigationCallbacks(buildFeedsAdapter(), onFeedSelected);
+        	getSherlockActivity().getSupportActionBar().setListNavigationCallbacks(buildFeedsAdapter(), onFeedSelected);
         }
         if (lastLoadedItems == null || feedSettings == null) {
         	// Start loading the items
@@ -136,7 +139,7 @@ public class RssListingFragment extends Fragment implements OnTouchListener, OnS
         } else {
         	// Set items from the retained instance state
         	if (getActivity() instanceof RssListing) {
-        		getSupportActivity().getSupportActionBar().setSelectedNavigationItem(feedSettingsIndex(feedSettings));
+        		getSherlockActivity().getSupportActionBar().setSelectedNavigationItem(feedSettingsIndex(feedSettings));
         		setListAdapter(new RssItemListAdapter(getActivity(), RssListingFragment.this, lastLoadedItems, true, feedSettings.getLastNew()));
         	}
         }
@@ -169,7 +172,7 @@ public class RssListingFragment extends Fragment implements OnTouchListener, OnS
 		// Show the (newly) selected feed
 		if (getActivity() instanceof RssListing && feedSettings.getName() != null && !feedSettings.getName().equals("")) {
 	    	ignoreFirstListNavigation = true;
-	    	getSupportActivity().getSupportActionBar().setSelectedNavigationItem(feedSettingsIndex(feedSettings));
+	    	getSherlockActivity().getSupportActionBar().setSelectedNavigationItem(feedSettingsIndex(feedSettings));
 		}
 		
 		// Read the RSS items asynchronously
@@ -326,7 +329,7 @@ public class RssListingFragment extends Fragment implements OnTouchListener, OnS
 	};
 
 	@Override
-	public boolean onOptionsItemSelected(android.support.v4.view.MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_REFRESH_ID:
 			loadItems();
@@ -456,7 +459,7 @@ public class RssListingFragment extends Fragment implements OnTouchListener, OnS
     		// Create a result for the calling activity
     		//setResult(RESULT_OK);
     		startActivity(i);
-    		getSupportFragmentManager().popBackStack();
+    		getSherlockActivity().getSupportFragmentManager().popBackStack();
 
     	} else {
     		
@@ -487,7 +490,7 @@ public class RssListingFragment extends Fragment implements OnTouchListener, OnS
 				// Create a result for the calling activity
 				//setResult(RESULT_OK);
 				startActivity(i);
-				getSupportFragmentManager().popBackStack();
+				getSherlockActivity().getSupportFragmentManager().popBackStack();
 	
 	    	} else {
 	    		
@@ -501,8 +504,8 @@ public class RssListingFragment extends Fragment implements OnTouchListener, OnS
 
 	private void setProgressBar(boolean b) {
 		inProgress = b;
-		if (getSupportActivity() != null) {
-			getSupportActivity().invalidateOptionsMenu();
+		if (getSherlockActivity() != null) {
+			getSherlockActivity().supportInvalidateOptionsMenu();
 		}
 	}
 
@@ -591,13 +594,13 @@ public class RssListingFragment extends Fragment implements OnTouchListener, OnS
 	};
 
 	public void showDialog(int id) {
-		new DialogWrapper(onCreateDialog(id)).show(getSupportActivity().getSupportFragmentManager(), DialogWrapper.TAG + id);
+		new DialogWrapper(onCreateDialog(id)).show(getSherlockActivity().getSupportFragmentManager(), DialogWrapper.TAG + id);
 	}
 
 	protected void dismissDialog(int id) {
 		// Remove the dialog wrapper fragment for the dialog's ID
-		getSupportActivity().getSupportFragmentManager().beginTransaction().remove(
-			getSupportActivity().getSupportFragmentManager().findFragmentByTag(DialogWrapper.TAG + id)).commit();
+		getSherlockActivity().getSupportFragmentManager().beginTransaction().remove(
+				getSherlockActivity().getSupportFragmentManager().findFragmentByTag(DialogWrapper.TAG + id)).commit();
 	}
 
 	protected ListView getListView() {

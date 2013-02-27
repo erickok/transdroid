@@ -42,6 +42,7 @@ import org.transdroid.gui.util.SelectableArrayAdapter.OnSelectedChangedListener;
 import org.transdroid.preferences.Preferences;
 import org.transdroid.util.TLog;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -50,27 +51,29 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 
-public class DetailsFragment extends Fragment implements IDaemonCallback, OnSelectedChangedListener {
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
+@SuppressLint("ValidFragment")
+public class DetailsFragment extends SherlockFragment implements IDaemonCallback, OnSelectedChangedListener {
 
 	private static final String LOG_NAME = "Details fragment";
 
@@ -172,7 +175,7 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 
 		// Show the torrent details
 		getListView().setAdapter(new DetailsListAdapter(this, torrent, fineDetails));
-		getSupportActivity().setTitle(torrent.getName());
+		getSherlockActivity().setTitle(torrent.getName());
 
 		if (Daemon.supportsFileListing(daemon.getType())) {
 
@@ -675,11 +678,11 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 			}
 			// Close this details fragment
 			if (torrentsFragment != null) {
-				FragmentTransaction ft = getSupportActivity().getSupportFragmentManager().beginTransaction();
+				FragmentTransaction ft = getSherlockActivity().getSupportFragmentManager().beginTransaction();
 				ft.remove(this);
 				ft.commit();
 			} else {
-				getSupportActivity().getSupportFragmentManager().popBackStack();
+				getSherlockActivity().getSupportFragmentManager().popBackStack();
 			}
 			break;
 
@@ -804,14 +807,14 @@ public class DetailsFragment extends Fragment implements IDaemonCallback, OnSele
 	}
 
 	public void showDialog(int id) {
-		new DialogWrapper(onCreateDialog(id)).show(getSupportActivity().getSupportFragmentManager(), DialogWrapper.TAG
+		new DialogWrapper(onCreateDialog(id)).show(getSherlockActivity().getSupportFragmentManager(), DialogWrapper.TAG
 			+ id);
 	}
 
 	protected void dismissDialog(int id) {
 		// Remove the dialog wrapper fragment for the dialog's ID
-		getSupportActivity().getSupportFragmentManager().beginTransaction().remove(
-			getSupportActivity().getSupportFragmentManager().findFragmentByTag(DialogWrapper.TAG + id)).commit();
+		getSherlockActivity().getSupportFragmentManager().beginTransaction().remove(
+				getSherlockActivity().getSupportFragmentManager().findFragmentByTag(DialogWrapper.TAG + id)).commit();
 	}
 
 }

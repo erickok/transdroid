@@ -20,10 +20,11 @@
 import org.transdroid.R;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
-public class RssFeeds extends FragmentActivity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+public class RssFeeds extends SherlockFragmentActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

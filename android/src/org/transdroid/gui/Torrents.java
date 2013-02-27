@@ -21,9 +21,10 @@ import org.transdroid.R;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActionBar;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 /**
  * Activity that loads the torrents fragment and, on tablet interfaces, hosts
@@ -31,7 +32,7 @@ import android.support.v4.app.FragmentTransaction;
  * 
  * @author erickok
  */
-public class Torrents extends FragmentActivity {
+public class Torrents extends SherlockFragmentActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

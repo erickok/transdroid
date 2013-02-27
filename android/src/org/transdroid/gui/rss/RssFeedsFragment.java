@@ -25,23 +25,25 @@ import org.transdroid.preferences.Preferences;
 import org.transdroid.preferences.PreferencesRss;
 import org.transdroid.rss.RssFeedSettings;
 
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class RssFeedsFragment extends Fragment {
+public class RssFeedsFragment extends SherlockFragment {
 
 	// private static final String LOG_NAME = "Transdroid RSS feeds";
 
@@ -69,10 +71,10 @@ public class RssFeedsFragment extends Fragment {
 
 		useTabletInterface = Transdroid.isTablet(getResources());
 		registerForContextMenu(getView().findViewById(android.R.id.list));
-		getSupportActivity().getSupportActionBar().setTitle(R.string.rss);
+		getSherlockActivity().getSupportActionBar().setTitle(R.string.rss);
 		getListView().setOnItemClickListener(onFeedClicked);
 
-		getSupportActivity().setTitle(R.string.rss);
+		getSherlockActivity().setTitle(R.string.rss);
 		
 		loadFeeds();
 
@@ -107,7 +109,7 @@ public class RssFeedsFragment extends Fragment {
 
 	    	// Show the feed items in the right of the screen (tablet interface) or separately
 	    	if (useTabletInterface) {
-	    		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+	    		FragmentTransaction ft = getSherlockActivity().getSupportFragmentManager().beginTransaction();
 	    		ft.replace(R.id.listing, new RssListingFragment(getListAdapter().getItem(position)));
 	    		ft.commit();
 	    	} else {
@@ -122,7 +124,7 @@ public class RssFeedsFragment extends Fragment {
 	};
 
 	@Override
-	public boolean onOptionsItemSelected(android.support.v4.view.MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_REFRESH_ID:
 			loadFeeds();
