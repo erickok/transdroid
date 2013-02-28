@@ -14,7 +14,8 @@
 		android:label="@string/app_name"
 		android:theme="@style/TransdroidTheme" >
 		<activity
-			android:name="org.transdroid.lite.gui.Torrents_"
+			android:name="org.transdroid.lite.gui.TorrentsActivity_"
+			android:icon="@drawable/ic_activity_torrents"
 			android:label="@string/app_name"
 			android:uiOptions="splitActionBarWhenNarrow" >
 			<intent-filter>

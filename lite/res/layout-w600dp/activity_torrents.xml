@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This layout is for phones in landscape and 7" tablets in portrait and shows torrents and filters. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="horizontal"
+	android:baselineAligned="false"
+	tools:context=".TorrentsActivity" >
+
+	<ListView
+		android:id="@+id/filters_list"
+		android:layout_width="0dip"
+		android:layout_height="match_parent"
+		android:layout_weight="1" />
+	
+	<fragment
+		android:id="@+id/torrent_list"
+		android:layout_width="0dip"
+		android:layout_height="match_parent"
+		android:layout_weight="3"
+		class="org.transdroid.gui.TorrentsFragment" />
+
+</LinearLayout>

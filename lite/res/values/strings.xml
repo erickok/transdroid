@@ -1,8 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="app_name">Transdroid Lite</string>
+	<string name="app_name" translatable="false">Transdroid Lite</string>
+	
+	<string name="action_add">Add</string>
+	<string name="action_addfromfile">From file</string>
+	<string name="action_addfromurl">From URL</string>
+	<string name="action_scanbarcode">Scan barcode</string>
+	<string name="action_search">Search</string>
+	<string name="action_refresh">Refresh</string>
+	<string name="action_rss">RSS</string>
+	<string name="action_enableturtle">Enable turle mode</string>
+	<string name="action_disableturtle">Disable turle mode</string>
+	<string name="action_sort">Sort list</string>
+	<string name="action_sort_alpha">Name</string>
+	<string name="action_sort_status">Status</string>
+	<string name="action_sort_done">Date done</string>
+	<string name="action_sort_added">Date added</string>
+	<string name="action_sort_upspeed">Upload speed</string>
+	<string name="action_sort_ratio">Ratio</string>
+	<string name="action_filter">Filter list</string>
 	<string name="action_settings">Settings</string>
-	<string name="hello_world">Hello world!</string>
-
+	
+	<string name="action_start">Start</string>
+	<string name="action_stop">Stop</string>
+	<string name="action_resume">Resume</string>
+	<string name="action_pause">Pause</string>
+	<string name="action_remove">Remove</string>
+	<string name="action_remove_default">Remove torrent</string>
+	<string name="action_remove_withdata">Remove and delete data</string>
+	<string name="action_setlabel">Set label</string>
+	<string name="action_updatetrackers">Update trackers</string>
+	<string name="action_priority_off">Off</string>
+	<string name="action_priority_low">Low</string>
+	<string name="action_priority_normal">Normal</string>
+	<string name="action_priority_high">High</string>
+	<string name="action_remoteplay">Remote play in VLC</string>
+	<string name="action_download">Download using (S)FTP</string>
+	
+	<string name="navigation_servers">SERVERS</string>
+	<string name="navigation_status">STATUS</string>
+	<string name="navigation_labels">LABELS</string>
+	<string name="navigation_emptytorrents">Connected, but no torrent are active on the server</string>
+	<string name="navigation_emptydetails">Select a torrent to view its details</string>
+	
 </resources>
