@@ -12,20 +12,24 @@
 		android:id="@+id/filters_list"
 		android:layout_width="0dip"
 		android:layout_height="match_parent"
-		android:layout_weight="1" />
+		android:layout_weight="1"
+		android:choiceMode="singleChoice"
+		android:listSelector="@drawable/selectable_background_transdroid" />
 	
 	<fragment
 		android:id="@+id/torrent_list"
 		android:layout_width="0dip"
 		android:layout_height="match_parent"
 		android:layout_weight="2"
-		class="org.transdroid.gui.TorrentsFragment" />
+		class="org.transdroid.gui.TorrentsFragment"
+		tools:layout="@layout/fragment_torrents" />
 
 	<fragment
 		android:id="@+id/torrent_details"
 		android:layout_width="0dip"
 		android:layout_height="match_parent"
 		android:layout_weight="2"
-		class="org.transdroid.gui.DetailsFragment" />
+		class="org.transdroid.gui.DetailsFragment"
+		tools:layout="@layout/fragment_details" />
 	
 </LinearLayout>

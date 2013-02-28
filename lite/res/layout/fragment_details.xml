@@ -3,10 +3,13 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
 
-	<ListView
+	<com.actionbarsherlock.view.SherlockListView
 		android:id="@+id/details_list"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+		android:layout_height="match_parent"
+		android:choiceMode="multipleChoiceModal"
+		android:listSelector="@drawable/selectable_background_transdroid"
+		android:visibility="gone" />
 
 	<TextView
 		android:id="@+id/empty_text"

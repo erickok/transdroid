@@ -14,11 +14,10 @@ import org.transdroid.lite.gui.navigation.FilterItem;
 import org.transdroid.lite.gui.navigation.FilterSeparatorView;
 import org.transdroid.lite.gui.navigation.NavigationHelper;
 
-import android.widget.ListView;
-
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.SherlockListView;
 
 @EActivity(R.layout.activity_torrents)
 @OptionsMenu(R.menu.activity_torrents)
@@ -28,7 +27,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Bean
 	protected NavigationHelper navigationHelper;
 	@ViewById
-	protected ListView filtersList;
+	protected SherlockListView filtersList;
 	protected FilterAdapter navigationListAdapter = null;
 	protected FilterAdapter navigationSpinnerAdapter = null;
 	
@@ -57,6 +56,9 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		
 	}
 
+	/**
+	 * Called when an item in the action bar navigation spinner was selected
+	 */
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		Object item = navigationSpinnerAdapter.getItem(itemPosition);
@@ -71,7 +73,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	
 	/**
 	 * A new filter was selected; update the view over the current data
-	 * @param selected
+	 * @param selected True if
 	 * @param item
 	 */
 	@ItemSelect(R.id.filters_list)

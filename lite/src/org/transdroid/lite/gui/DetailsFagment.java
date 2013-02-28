@@ -40,6 +40,8 @@ public class DetailsFagment extends SherlockFragment {
 			emptyText.setVisibility(View.VISIBLE);
 		}
 		
+		// TODO: Show the torrent details and load the advanced statistics
+		
 	}
 	
 }
