@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	
+	<CheckBoxPreference
+		android:key="notifications_enabled"
+		android:title="@string/pref_notifications"
+		android:summary="@string/pref_notifications_info"
+		android:defaultValue="true" />
+	
+	<ListPreference
+		android:key="notifications_interval"
+		android:title="@string/pref_notifyinterval"
+		android:summary="@string/pref_notifyinterval_info"
+		android:entries="@array/pref_notifyinterval_types"
+		android:entryValues="@array/pref_notifyinterval_values"
+		android:defaultValue="10800"
+		android:dependency="notifications_enabled" />
+
+	<RingtonePreference
+		android:key="notifications_sound"
+		android:title="@string/pref_notifysound"
+		android:ringtoneType="notification"
+		android:showDefault="true"
+		android:showSilent="true"
+		android:dependency="notifications_enabled" />
+	
+	<CheckBoxPreference
+		android:key="notifications_vibrate"
+		android:title="@string/pref_notifyvibrate"
+		android:defaultValue="false" />
+	
+	<net.margaritov.preference.colorpicker.ColorPickerPreference
+		android:key="notifications_ledcolour"
+		android:title="@string/pref_notifyled"
+		android:summary="@string/pref_notifyled_info"
+		android:defaultValue="@color/ledgreen"
+		android:dependency="notifications_enabled"
+		alphaSlider="false" />
+	
+	<CheckBoxPreference
+		android:key="notifications_adwnotify"
+		android:title="@string/pref_notifyled"
+		android:summary="@string/pref_notifyled_info"
+		android:defaultValue="false"
+		android:dependency="notifications_enabled" />
+	
+</PreferenceScreen>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	
+	<EditTextPreference
+		android:key="websearch_name"
+		android:title="@string/pref_name"
+		android:summary="@string/pref_name_optional"
+		android:inputType="textNoSuggestions" />
+	
+	<EditTextPreference
+		android:key="websearch_url"
+		android:title="@string/pref_searchurl"
+		android:summary="@string/pref_searchurl_info"
+		android:inputType="textUri" />
+	
+</PreferenceScreen>

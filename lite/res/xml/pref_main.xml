@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	
+	<PreferenceCategory
+		android:key="header_servers"
+		android:title="@string/pref_servers"
+		android:order="0">
+		<Preference
+			android:key="header_addserver"
+			android:title="@string/pref_addserver"
+			android:order="99" />
+	</PreferenceCategory>
+	
+	<PreferenceCategory
+		android:key="header_searchsites"
+		android:title="@string/pref_servers"
+		android:order="100">
+		<ListPreference
+			android:key="header_setsearchsite"
+			android:title="@string/pref_setsearchsite"
+			android:order="101" />
+		<Preference
+			android:key="header_addwebsearch"
+			android:title="@string/pref_addwebsearch" 
+			android:order="199"/>
+	</PreferenceCategory>
+	
+	<PreferenceCategory
+		android:key="header_rssfeeds"
+		android:title="@string/pref_rssfeeds"
+		android:order="200">
+		<Preference
+			android:key="header_addrssfeed"
+			android:title="@string/pref_addrssfeed" 
+			android:order="199"/>
+	</PreferenceCategory>
+	
+	<PreferenceCategory
+		android:key="header_other"
+		android:title="@string/pref_others"
+		android:order="300">
+		<Preference
+			android:key="header_background"
+			android:title="@string/pref_background"
+			android:order="301" />
+		<Preference
+			android:key="header_system"
+			android:title="@string/pref_system"
+			android:order="302" />
+	</PreferenceCategory>
+	
+</PreferenceScreen>

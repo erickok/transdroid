@@ -1,7 +1,7 @@
 package org.transdroid.lite.gui;
 
 import org.androidannotations.annotations.EFragment;
-import org.transdroid.lite.R;
+import org.transdroid.core.R;
 
 import com.actionbarsherlock.app.SherlockFragment;
 

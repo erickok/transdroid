@@ -2,7 +2,7 @@ package org.transdroid.lite.gui.navigation;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
-import org.transdroid.lite.R;
+import org.transdroid.core.R;
 
 import android.content.Context;
 import android.widget.LinearLayout;

@@ -2,7 +2,7 @@ package org.transdroid.lite.gui.navigation;
 
 import java.util.List;
 
-import org.transdroid.lite.R;
+import org.transdroid.core.R;
 
 import android.content.Context;
 import android.view.View;
@@ -31,7 +31,7 @@ public class FilterAdapter extends MergeAdapter {
 	 * Update the list of available servers.
 	 * @param servers The new list of available servers
 	 */
-	public void updateServers(List<FilterItem> servers) {
+	public void updateServers(List<? extends FilterItem> servers) {
 		if (this.serverItems == null && servers != null) {
 			addView(FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_servers)), false);
 			this.serverItems = new FilterItemAdapter(context, servers);
@@ -47,7 +47,7 @@ public class FilterAdapter extends MergeAdapter {
 	 * Update the list of available status types.
 	 * @param statusTypes The new list of available status types
 	 */
-	public void updateStatusTypes(List<FilterItem> statusTypes) {
+	public void updateStatusTypes(List<? extends FilterItem> statusTypes) {
 		if (this.statusTypeItems == null && statusTypes != null) {
 			addView(FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_status)), false);
 			this.statusTypeItems = new FilterItemAdapter(context, statusTypes);
@@ -63,7 +63,7 @@ public class FilterAdapter extends MergeAdapter {
 	 * Update the list of available labels.
 	 * @param labels The new list of available labels
 	 */
-	public void updateLabels(List<FilterItem> labels) {
+	public void updateLabels(List<? extends FilterItem> labels) {
 		if (this.labelItems == null && labels != null) {
 			addView(FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_labels)), false);
 			this.labelItems = new FilterItemAdapter(context, labels);
@@ -78,9 +78,9 @@ public class FilterAdapter extends MergeAdapter {
 	protected class FilterItemAdapter extends BaseAdapter {
 
 		private final Context context;
-		private List<FilterItem> items;
+		private List<? extends FilterItem> items;
 
-		public FilterItemAdapter(Context context, List<FilterItem> items) {
+		public FilterItemAdapter(Context context, List<? extends FilterItem> items) {
 			this.context = context;
 			this.items = items;
 		}
@@ -89,7 +89,7 @@ public class FilterAdapter extends MergeAdapter {
 		 * Allows updating of the full data list underlying this adapter, replacing all items
 		 * @param newItems The new list of filter items to display
 		 */
-		public void update(List<FilterItem> newItems) {
+		public void update(List<? extends FilterItem> newItems) {
 			this.items = newItems;
 			notifyDataSetChanged();
 		}

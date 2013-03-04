@@ -7,7 +7,7 @@ import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
-import org.transdroid.lite.R;
+import org.transdroid.core.R;
 
 import android.view.View;
 import android.widget.TextView;

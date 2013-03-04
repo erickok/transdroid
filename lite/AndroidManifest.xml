@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.transdroid.lite"
+	package="org.transdroid.core"
 	android:versionCode="1"
-	android:versionName="1.0" >
+	android:versionName="2.0-alpha1" >
 
 	<uses-sdk
 		android:minSdkVersion="7"
 		android:targetSdkVersion="17" />
+
+	<supports-screens
+		android:anyDensity="true"
+		android:largeScreens="true"
+		android:normalScreens="true"
+		android:smallScreens="true"
+		android:xlargeScreens="true" />
 
 	<application
 		android:allowBackup="true"
@@ -20,9 +27,15 @@
 			android:uiOptions="splitActionBarWhenNarrow" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
+
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		<activity android:name="org.transdroid.lite.gui.settings.MainSettingsActivity_" />
+		<activity android:name="org.transdroid.lite.gui.settings.ServerSettingsActivity_" />
+		<activity android:name="org.transdroid.lite.gui.settings.WebsearchSettingsActivity_" />
+		<activity android:name="org.transdroid.lite.gui.settings.RssfeedSettingsActivity_" />
+		<activity android:name="org.transdroid.lite.gui.settings.OtherSettingsActivity_" />
 	</application>
 
 </manifest>
