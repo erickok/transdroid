@@ -15,7 +15,8 @@
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="@dimen/margin_half"
 		android:layout_marginTop="@dimen/margin_half"
-		android:src="@drawable/ic_priority_normal" />
+		android:src="@drawable/ic_priority_normal"
+		android:contentDescription="@string/status_priority_normal" />
 		
 	<fr.marvinlabs.widget.InertCheckBox
 		android:id="@+id/torrent_checkbox"
@@ -30,7 +31,6 @@
 		android:layout_toRightOf="@id/torrent_checkbox"
 		android:textColor="#fff"
 		android:textSize="15sp"
-		android:text="CSI.Miami.Title-That_is_long.S13E16.HDTV.x264-LOL.mp4"
 		android:textIsSelectable="true" />
 		
 	<TextView
@@ -41,7 +41,6 @@
 		android:layout_alignParentRight="true"
 		android:layout_marginLeft="@dimen/margin_half"
 		android:layout_marginTop="4dip"
-		android:text="UNKNOWN ETA"
 		android:textSize="12sp"
 		android:textIsSelectable="false" />
 	
@@ -52,14 +51,14 @@
 		android:layout_alignBaseline="@id/ratio_text"
 		android:layout_toLeftOf="@id/ratio_text"
 		android:layout_toRightOf="@id/torrent_checkbox"
-		android:text="325.6MB OF 388.8MB (0%)"
 		android:textSize="12sp"
 		android:textIsSelectable="false" />
 		
-	<org.transdroid.lite.gui.TorrentProgressBar 
+	<org.transdroid.core.gui.lists.TorrentProgressBar 
 		android:id="@+id/torrent_progressbar" 
 		android:layout_width="match_parent" 
 		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/torrent_checkbox"
 		android:layout_below="@id/ratio_text"
 		android:layout_marginTop="@dimen/margin_half"
 		android:layout_marginBottom="@dimen/margin_half" />
@@ -71,7 +70,6 @@
 		android:layout_below="@id/torrent_progressbar"
 		android:layout_alignParentRight="true"
 		android:layout_marginLeft="@dimen/margin_half"
-		android:text="↓400.8KB/s ↑1.4MB/s"
 		android:textSize="12sp"
 		android:textIsSelectable="false" />
 	
@@ -82,7 +80,6 @@
 		android:layout_alignBaseline="@id/speed_text"
 		android:layout_toLeftOf="@id/speed_text"
 		android:layout_toRightOf="@id/torrent_checkbox"
-		android:text="246 (288) LEECHERS"
 		android:textSize="12sp"
 		android:textIsSelectable="false" />
 		

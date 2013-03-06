@@ -31,6 +31,7 @@ import java.util.Map;
 import org.apache.openjpa.lib.util.Base16Encoder;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonMethod;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
@@ -38,7 +39,6 @@ import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTask;
@@ -99,18 +99,27 @@ public class VuzeAdapter implements IDaemonAdapter {
 			case AddByFile:
 
 				byte[] bytes;
+				FileInputStream in = null;
 				try {
 					// Request to add a torrent by local .torrent file
 					String file = ((AddByFileTask)task).getFile();
-					FileInputStream in = new FileInputStream(new File(URI.create(file)));
+					in = new FileInputStream(new File(URI.create(file)));
 					bytes = new byte[in.available()];
 					in.read(bytes, 0, in.available());
+					in.close();
 				} catch (FileNotFoundException e) {
 					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
 				} catch (IllegalArgumentException e) {
 					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, "Invalid local URI"));
 				} catch (Exception e) {
 					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
+				} finally {
+					try {
+						if (in != null)
+							in.close();
+					} catch (IOException e) {
+						// Ignore; it was already closed or never opened
+					}
 				}
 				makeVuzeCall(DaemonMethod.AddByFile, "createFromBEncodedData[byte[]]", new String[] { Base16Encoder.encode(bytes) });
 				return new DaemonTaskSuccessResult(task);
@@ -406,7 +415,8 @@ public class VuzeAdapter implements IDaemonAdapter {
 				null, // TODO: Implement Vuze label support
 				new Date((Long) statsinfo.get("time_started")), // dateAdded
 				null, // Unsupported?
-				error));
+				error,
+				settings.getType()));
 			
 		}
 		

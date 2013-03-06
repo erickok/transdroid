@@ -21,7 +21,7 @@
 		android:layout_width="0dip"
 		android:layout_height="match_parent"
 		android:layout_weight="3"
-		class="org.transdroid.gui.TorrentsFragment"
+		class="org.transdroid.core.gui.TorrentsFragment_"
 		tools:layout="@layout/fragment_torrents" />
 
 </LinearLayout>

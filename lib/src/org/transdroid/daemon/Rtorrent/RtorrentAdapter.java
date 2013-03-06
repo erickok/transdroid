@@ -350,10 +350,11 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						(Long)info[10], // totalSize
 						((Long)info[8]).floatValue() / ((Long)info[10]).floatValue(), // partDone
 						0f, // TODO: Add availability data
-						label, // See remark on rTorrent/groups above
+						label,
 						added,
 						finished,
-						error));
+						error,
+						settings.getType()));
 					
 				} else {
 
@@ -379,10 +380,11 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						(Integer)info[10], // totalSize
 						((Integer)info[8]).floatValue() / ((Integer)info[10]).floatValue(), // partDone
 						0f, // TODO: Add availability data
-						label, // See remark on rTorrent/groups above
+						label,
 						added,
 						finished,
-						error));
+						error,
+						settings.getType()));
 					
 				}
 			}

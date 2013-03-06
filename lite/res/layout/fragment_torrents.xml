@@ -19,6 +19,7 @@
 		android:drawableTop="@drawable/ic_empty_details"
 		android:drawablePadding="8dip"
 		android:text="@string/navigation_emptytorrents"
+		android:gravity="center"
 		android:textIsSelectable="false"
 		android:visibility="gone" />
 	

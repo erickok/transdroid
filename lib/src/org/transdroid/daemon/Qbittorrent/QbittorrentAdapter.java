@@ -394,7 +394,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					null,
 					null, // Only available in /json/propertiesGeneral on a per-torrent basis, unfortunately
 					null,
-					null));
+					null,
+					settings.getType()));
 		}
 		
 		// Return the list

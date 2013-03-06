@@ -17,12 +17,13 @@
 
 	<application
 		android:allowBackup="true"
-		android:icon="@drawable/ic_launcher"
+		android:icon="@drawable/ic_activity_torrents"
 		android:label="@string/app_name"
 		android:theme="@style/TransdroidTheme" >
+
+		<!-- Main activities -->
 		<activity
-			android:name="org.transdroid.lite.gui.TorrentsActivity_"
-			android:icon="@drawable/ic_activity_torrents"
+			android:name="org.transdroid.core.gui.TorrentsActivity_"
 			android:label="@string/app_name"
 			android:uiOptions="splitActionBarWhenNarrow" >
 			<intent-filter>
@@ -30,12 +31,59 @@
 
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+			</intent-filter>
+
+			<meta-data
+				android:name="android.app.default_searchable"
+				android:value="org.transdroid.gui.search.Search" />
 		</activity>
-		<activity android:name="org.transdroid.lite.gui.settings.MainSettingsActivity_" />
-		<activity android:name="org.transdroid.lite.gui.settings.ServerSettingsActivity_" />
-		<activity android:name="org.transdroid.lite.gui.settings.WebsearchSettingsActivity_" />
-		<activity android:name="org.transdroid.lite.gui.settings.RssfeedSettingsActivity_" />
-		<activity android:name="org.transdroid.lite.gui.settings.OtherSettingsActivity_" />
+		<activity
+			android:name="org.transdroid.core.gui.DetailsActivity_"
+			android:uiOptions="splitActionBarWhenNarrow" >
+		</activity>
+
+		<!-- Settings screens -->
+		<activity android:name="org.transdroid.core.gui.settings.MainSettingsActivity_" />
+		<activity android:name="org.transdroid.core.gui.settings.ServerSettingsActivity_" />
+		<activity android:name="org.transdroid.core.gui.settings.WebsearchSettingsActivity_" />
+		<activity android:name="org.transdroid.core.gui.settings.RssfeedSettingsActivity_" />
+		<activity android:name="org.transdroid.core.gui.settings.OtherSettingsActivity_" />
+
+		<!-- Search -->
+		<activity
+			android:name="org.transdroid.core.gui.SearchActivity"
+			android:label="@string/search_torrentsearch" >
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.SEND" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+
+				<data android:mimeType="text/plain" />
+			</intent-filter>
+
+			<meta-data
+				android:name="android.app.default_searchable"
+				android:value="org.transdroid.gui.search.Search" />
+			<meta-data
+				android:name="android.app.searchable"
+				android:resource="@xml/searchable" />
+		</activity>
+
+		<provider
+			android:name="org.transdroid.core.gui.SearchHistoryProvider"
+			android:authorities="org.transdroid.core.gui.SearchHistoryProvider"
+			android:exported="false" />
+
+		<meta-data
+			android:name="android.app.default_searchable"
+			android:value="org.transdroid.core.gui.SearchActivity_" />
 	</application>
 
 </manifest>

@@ -45,8 +45,45 @@
 	<string name="navigation_status_onlyup">Uploading</string>
 	<string name="navigation_status_onlyactive">Active</string>
 	<string name="navigation_status_onlyinactive">Inactive</string>
-	<string name="navigation_emptytorrents">Connected, but no torrent are active on the server</string>
+	<string name="navigation_emptytorrents">Connected, but no torrent are active within the current filter</string>
 	<string name="navigation_emptydetails">Select a torrent to view its details</string>
+	
+	<string name="status_waiting">Waiting to check&#8230;</string>
+	<string name="status_checking">Verifying local data&#8230;</string>
+	<string name="status_waitingtodl">Waiting to download %s</string>
+	<string name="status_error">Error&#8230;</string>
+	<string name="status_size1">%1$s OF %2$s (%3$s)</string>
+	<string name="status_size2">%1$s, UPLOADED %2$s</string>
+	<string name="status_sincedate">SINCE $s</string>
+	<string name="status_eta">~ %1$s</string>
+	<string name="status_etalong">ETA %1$s</string>
+	<string name="status_unknowneta">UNKNOWN ETA</string>
+	<string name="status_ratio">RATIO %1$s</string>
+	<string name="status_peers">%1$s OF %2$s PEERS</string>
+	<string name="status_speed_up">↑ %1$s</string>
+	<string name="status_speed_down">↓ %1$s</string>
+	<string name="status_downloading">Downloading</string>
+	<string name="status_seeding">Seeding</string>
+	<string name="status_paused">Paused</string>
+	<string name="status_queued">Queued</string>
+	<string name="status_stopped">Stopped</string>
+	<string name="status_unknown">Unknown status</string>
+	<string name="status_priority_off">Not downloaded</string>
+	<string name="status_priority_low">Low priority</string>
+	<string name="status_priority_normal">Normal priority</string>
+	<string name="status_priority_high">High priority</string>
+	<string name="status_trackers">TRACKERS</string>
+	<string name="status_errors">ERRORS</string>
+	<string name="status_files">FILES</string>
+	
+	<string name="labels_showall">All labels</string>
+	<string name="labels_unlabeled">Unlabeled</string>
+	<string name="labels_newlabel">New label</string>
+	<string name="labels_no_support">Setting a label is not supported by your client</string>
+	
+	<string name="search_torrentsearch">Torrent search</string>
+	<string name="search_hint">Search for torrents</string>
+	<string name="search_"></string>
 	
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
@@ -119,6 +156,26 @@
 	<string name="pref_sendlog">Send error log</string>
 	<string name="pref_sendlog_info">Get support or report a bug</string>
 	<string name="pref_about">About</string>
+	
+	<string name="error_httperror">Error during communication; check your connection</string>
+	<string name="error_jsonrequesterror">Internal error building request</string>
+	<string name="error_jsonresponseerror">Error parsing server response (please check your settings)</string>
+	<string name="error_daemonnotconnected">Web interface not connected to a running daemon</string>
+	<string name="error_401">Access denied (please check your settings)</string>
+	<string name="error_torrentfile">Can\'t read .torrent file</string>
+	<string name="error_parsingrss">Error while parsing the RSS feed</string>
+	<string name="error_invalid_url_form">This URL is not well-formed</string>
+	<string name="error_invalid_search_url">Your web search URL is invalid:</string>
+	<string name="error_invalid_ip_or_hostname">Input is not a valid IP address or host name</string>
+	<string name="error_invalid_port_number">Port number is always numeric</string>
+	<string name="error_invalid_directory">Directory paths end with a / or \</string>
+	<string name="error_invalid_timeout">Timeout can not be empty and is a positive number</string>
+	<string name="error_no_url_enclosure">The RSS feed item didn\'t provide an URL enclosure or link tag pointing to the .torrent file</string>
+	<string name="error_no_link">The RSS feed item does not provide a link to browse to</string>
+	<string name="error_norssfeed">URL is not a (valid) RSS feed</string>
+	<string name="error_media_not_available">SD card not available to read/write</string>
+	<string name="error_no_valid_settings_file">File does not seem to contain Transdroid settings</string>
+	<string name="error_file_not_found">There is no settings file found</string>
 	
     <string-array name="pref_daemon_types" translatable="false">
         <item>BitComet</item>
