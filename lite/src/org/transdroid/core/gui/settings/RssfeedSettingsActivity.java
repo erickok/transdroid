@@ -3,6 +3,7 @@ package org.transdroid.core.gui.settings;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OptionsMenu;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 
@@ -16,6 +17,7 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
  * @author Eric Kok
  */
 @EActivity
+@OptionsMenu(R.menu.activity_deleteableprefs)
 public class RssfeedSettingsActivity extends SherlockPreferenceActivity {
 
 	@Extra

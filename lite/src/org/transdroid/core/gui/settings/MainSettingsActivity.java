@@ -45,7 +45,7 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		addPreferencesFromResource(R.xml.pref_main);
 		findPreference("header_addserver").setOnPreferenceClickListener(onAddServer);
 		findPreference("header_addwebsearch").setOnPreferenceClickListener(onAddWebsearch);
-		findPreference("header_rssfeed").setOnPreferenceClickListener(onAddRssfeed);
+		findPreference("header_addrssfeed").setOnPreferenceClickListener(onAddRssfeed);
 		findPreference("header_background").setOnPreferenceClickListener(onBackgroundSettings);
 		findPreference("header_system").setOnPreferenceClickListener(onSystemSettings);
 
@@ -126,8 +126,7 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 	private OnPreferenceClickListener onBackgroundSettings = new OnPreferenceClickListener() {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
-			OtherSettingsActivity_.intent(MainSettingsActivity.this).preferencesResourceID(R.xml.pref_notifications)
-					.start();
+			NotificationSettingsActivity_.intent(MainSettingsActivity.this).start();
 			return true;
 		}
 	};
@@ -135,7 +134,7 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 	private OnPreferenceClickListener onSystemSettings = new OnPreferenceClickListener() {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
-			OtherSettingsActivity_.intent(MainSettingsActivity.this).preferencesResourceID(R.xml.pref_about).start();
+			SystemSettingsActivity_.intent(MainSettingsActivity.this).start();
 			return true;
 		}
 	};

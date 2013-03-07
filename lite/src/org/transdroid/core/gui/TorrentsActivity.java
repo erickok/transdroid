@@ -25,6 +25,8 @@ import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.navigation.StatusType.StatusTypeFilter;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
+import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
@@ -68,6 +70,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@InstanceState
 	boolean firstStart = true;
 	private IDaemonAdapter currentConnection = null;
+	@InstanceState
+	protected boolean turleModeEnabled = false;
 	
 	// Torrents list components
 	@FragmentById(R.id.torrent_list)
@@ -75,7 +79,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	
 	// Details view components
 	@FragmentById(R.id.torrent_details)
-	protected DetailsFagment fragmentDetails;
+	protected DetailsFragment fragmentDetails;
 	
 	@AfterViews
 	protected void init() {
@@ -105,14 +109,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			return;
 		}
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
-		// TODO: Does this call the action bar item selection callback?
+		// TODO: Does this call the action bar item selection callback? And refreshes?
 		getSupportActionBar().setSelectedNavigationItem(lastUsed.getOrder());
 		
-		// Handle any start up intents or instead just refresh the torrents list
+		// Handle any start up intents
 		if (firstStart) {
 			handleStartIntent();
-		} else {
-			refreshTorrents();
 		}
 		
 	}
@@ -120,7 +122,16 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Override
 	protected void onResume() {
 		super.onResume();
-		refreshTorrents();
+		
+		// Refresh server settings
+		navigationSpinnerAdapter.updateServers(applicationSettings.getServerSettings());
+		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
+		if (lastUsed == null) {
+			// Still no settings
+			return;
+		}
+		// There is a server now: select it to establish a connection
+		filterSelected(lastUsed);
 	}
 
 	@TargetApi(Build.VERSION_CODES.FROYO)
@@ -135,6 +146,45 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			searchView.setQueryRefinementEnabled(true);
 			item.setActionView(searchView);
 		}
+		return true;
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		
+		// No connection yet; hide all menu options except settings
+		if (currentConnection == null) {
+			menu.findItem(R.id.action_add).setVisible(false);
+			menu.findItem(R.id.action_search).setVisible(false);
+			menu.findItem(R.id.action_rss).setVisible(false);
+			menu.findItem(R.id.action_enableturtle).setVisible(false);
+			menu.findItem(R.id.action_disableturtle).setVisible(false);
+			menu.findItem(R.id.action_refresh).setVisible(false);
+			menu.findItem(R.id.action_sort).setVisible(false);
+			menu.findItem(R.id.action_filter).setVisible(false);
+			menu.findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+			menu.findItem(R.id.action_help).setVisible(true);
+			fragmentTorrents.updateConnectionStatus(false);
+			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+			return true;
+		}
+		
+		// There is a connection (read: settings to some server known)
+		menu.findItem(R.id.action_add).setVisible(true);
+		menu.findItem(R.id.action_search).setVisible(true);
+		menu.findItem(R.id.action_rss).setVisible(true);
+		boolean hasAltMode = Daemon.supportsSetAlternativeMode(currentConnection.getType());
+		menu.findItem(R.id.action_enableturtle).setVisible(hasAltMode && !turleModeEnabled);
+		menu.findItem(R.id.action_disableturtle).setVisible(hasAltMode && turleModeEnabled);
+		menu.findItem(R.id.action_refresh).setVisible(true);
+		menu.findItem(R.id.action_sort).setVisible(true);
+		menu.findItem(R.id.action_filter).setVisible(true);
+		menu.findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		menu.findItem(R.id.action_help).setVisible(false);
+		fragmentTorrents.updateConnectionStatus(true);
+		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
 		return true;
 	}
 	
@@ -211,7 +261,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@OptionsItem(R.id.action_refresh)
 	protected void refreshScreen() {
 		refreshTorrents();
-		// TODO: Refresh TorentDetails and TorrentFiles as well
+		// TODO: Retrieve turtle mode status
+	}
+	
+	@OptionsItem(R.id.action_settings)
+	protected void openSettings() {
+		MainSettingsActivity_.intent(this).start();
 	}
 	
 	private void clearScreens() {

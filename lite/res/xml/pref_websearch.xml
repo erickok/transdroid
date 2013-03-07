@@ -8,7 +8,7 @@
 		android:inputType="textNoSuggestions" />
 	
 	<EditTextPreference
-		android:key="websearch_url"
+		android:key="websearch_baseurl"
 		android:title="@string/pref_searchurl"
 		android:summary="@string/pref_searchurl_info"
 		android:inputType="textUri" />

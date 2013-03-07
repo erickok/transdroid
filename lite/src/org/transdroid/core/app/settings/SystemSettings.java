@@ -9,22 +9,22 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 /**
- * Allows instantiation of the settings specified in R.xml.pref_about.
+ * Allows instantiation of the settings specified in R.xml.pref_system.
  * @author Eric Kok
  */
 @EBean(scope = Scope.Singleton)
-public class AboutSettings {
+public class SystemSettings {
 
 	@RootContext
 	protected Context context;
 	private SharedPreferences prefs;
 	
-	protected AboutSettings(Context context) {
+	protected SystemSettings(Context context) {
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
 	public boolean checkForUpdates() {
-		return prefs.getBoolean("about_checkupdates", true);
+		return prefs.getBoolean("system_checkupdates", true);
 	}
 	
 }

@@ -1,10 +1,10 @@
 package org.transdroid.core.gui.lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.RootContext;
 import org.transdroid.core.R;
+import org.transdroid.core.gui.navigation.FilterSeparatorView;
 import org.transdroid.core.gui.navigation.FilterSeparatorView_;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentFile;
@@ -20,77 +20,110 @@ import com.commonsware.cwac.merge.MergeAdapter;
  * List adapter that holds a header view showing torrent details and show the list list contained by the torrent.
  * @author Eric Kok
  */
-@EBean
 public class DetailsAdapter extends MergeAdapter {
 
-	@RootContext
-	protected Context context;
 	private TorrentDetailsView torrentDetailsView = null;
-	private TorrentFilesAdapter torrentFilesAdapter = null;
+	private FilterSeparatorView trackersSeparatorView = null;
 	private SimpleListItemAdapter trackersAdapter = null;
+	private FilterSeparatorView errorsSeparatorView = null;
 	private SimpleListItemAdapter errorsAdapter = null;
+	private FilterSeparatorView torrentFilesSeparatorView = null;
+	private TorrentFilesAdapter torrentFilesAdapter = null;
 
+	public DetailsAdapter(Context context) {
+		// Immediately bind the adapters, or the MergeAdapter will not be able to determine the view types and instead
+		// display nothing at all
+
+		// Torrent details header
+		torrentDetailsView = TorrentDetailsView_.build(context);
+		torrentDetailsView.setVisibility(View.GONE);
+		addView(torrentDetailsView, true);
+		
+		// Trackers
+		trackersSeparatorView = FilterSeparatorView_.build(context).setText(context.getString(R.string.status_trackers));
+		trackersSeparatorView.setVisibility(View.GONE);
+		addView(trackersSeparatorView, true);
+		this.trackersAdapter = new SimpleListItemAdapter(context, new ArrayList<SimpleListItem>());
+		addAdapter(trackersAdapter);
+		
+		// Tracker errors
+		errorsSeparatorView = FilterSeparatorView_.build(context).setText(context.getString(R.string.status_errors));
+		errorsSeparatorView.setVisibility(View.GONE);
+		addView(errorsSeparatorView, true);
+		this.errorsAdapter = new SimpleListItemAdapter(context, new ArrayList<SimpleListItem>());
+		addAdapter(errorsAdapter);
+		
+		// Torrent files
+		torrentFilesSeparatorView = FilterSeparatorView_.build(context).setText(context.getString(R.string.status_files));
+		torrentFilesSeparatorView.setVisibility(View.GONE);
+		addView(torrentFilesSeparatorView, true);
+		this.torrentFilesAdapter = new TorrentFilesAdapter(context, new ArrayList<TorrentFile>());
+		addAdapter(torrentFilesAdapter);
+		
+	}
+	
 	/**
 	 * Update the torrent data in the details header of this merge adapter
 	 * @param torrent The torrent for which detailed data is shown
 	 */
 	public void updateTorrent(Torrent torrent) {
-		if (this.torrentDetailsView == null) {
-			torrentDetailsView = TorrentDetailsView_.build(context);
-			addView(torrentDetailsView, false);
-		}
 		torrentDetailsView.update(torrent);
+		torrentDetailsView.setVisibility(torrent == null? View.GONE: View.VISIBLE);
 	}
 	
 	/**
 	 * Update the list of files contained in this torrent
-	 * @param torrentFiles The new list of files
+	 * @param torrentFiles The new list of files, or null if the list and header should be hidden
 	 */
 	public void updateTorrentFiles(List<TorrentFile> torrentFiles) {
-		if (this.torrentFilesAdapter == null && torrentFiles != null) {
-			addView(FilterSeparatorView_.build(context).setText(context.getString(R.string.status_files)), false);
-			this.torrentFilesAdapter = new TorrentFilesAdapter(context, torrentFiles);
-			addAdapter(torrentFilesAdapter);
-		} else if (this.torrentFilesAdapter != null && torrentFiles != null) {
-			this.torrentFilesAdapter.update(torrentFiles);
+		if (torrentFiles == null) {
+			torrentFilesAdapter.update(new ArrayList<TorrentFile>());
+			torrentFilesSeparatorView.setVisibility(View.GONE);
 		} else {
-			this.torrentFilesAdapter = null;
+			torrentFilesAdapter.update(torrentFiles);
+			torrentFilesSeparatorView.setVisibility(View.GONE);
 		}
 	}
 
 	/**
 	 * Update the list of trackers
-	 * @param trackers The new list of trackers known for this torrent
+	 * @param trackers The new list of trackers known for this torrent, or null if the list and header should be hidden
 	 */
 	public void updateTrackers(List<? extends SimpleListItem> trackers) {
-		if (this.trackersAdapter == null && trackers != null) {
-			addView(FilterSeparatorView_.build(context).setText(context.getString(R.string.status_trackers)), false);
-			this.trackersAdapter = new SimpleListItemAdapter(context, trackers);
-			addAdapter(trackersAdapter);
-		} else if (this.trackersAdapter != null && trackers != null) {
-			this.trackersAdapter.update(trackers);
+		if (trackers == null) {
+			trackersAdapter.update(new ArrayList<SimpleListItemAdapter.SimpleStringItem>());
+			trackersSeparatorView.setVisibility(View.GONE);
 		} else {
-			this.trackersAdapter = null;
+			trackersAdapter.update(trackers);
+			trackersSeparatorView.setVisibility(View.GONE);
 		}
 	}
 
 	/**
 	 * Update the list of errors
-	 * @param errors The new list of errors known for this torrent
+	 * @param errors The new list of errors known for this torrent, or null if the list and header should be hidden
 	 */
 	public void updateErrors(List<? extends SimpleListItem> errors) {
-		if (this.errorsAdapter == null && errors != null) {
-			addView(FilterSeparatorView_.build(context).setText(context.getString(R.string.status_errors)), false);
-			this.errorsAdapter = new SimpleListItemAdapter(context, errors);
-			addAdapter(errorsAdapter);
-		} else if (this.errorsAdapter != null && errors != null) {
-			this.errorsAdapter.update(errors);
+		if (errors == null) {
+			errorsAdapter.update(new ArrayList<SimpleListItemAdapter.SimpleStringItem>());
+			errorsSeparatorView.setVisibility(View.GONE);
 		} else {
-			this.errorsAdapter = null;
+			errorsAdapter.update(errors);
+			errorsSeparatorView.setVisibility(View.GONE);
 		}
 	}
 
-	protected class TorrentFilesAdapter extends BaseAdapter {
+	/**
+	 * Clear currently visible torrent, including header and shown lists
+	 */
+	public void clear() {
+		updateTorrent(null);
+		updateTorrentFiles(null);
+		updateErrors(null);
+		updateTrackers(null);
+	}
+	
+	protected static class TorrentFilesAdapter extends BaseAdapter {
 
 		private final Context context;
 		private List<TorrentFile> items;

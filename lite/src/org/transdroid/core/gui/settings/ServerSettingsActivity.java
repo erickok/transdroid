@@ -3,6 +3,7 @@ package org.transdroid.core.gui.settings;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OptionsMenu;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
@@ -21,6 +22,7 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
  * @author Eric Kok
  */
 @EActivity
+@OptionsMenu(R.menu.activity_deleteableprefs)
 public class ServerSettingsActivity extends SherlockPreferenceActivity {
 
 	@Extra
@@ -53,15 +55,17 @@ public class ServerSettingsActivity extends SherlockPreferenceActivity {
 		findPreference("server_localnetwork").setKey("server_localnetwork_" + key);
 		findPreference("server_folder").setKey("server_folder_" + key);
 		findPreference("server_timeout").setKey("server_timeout_" + key);
-		findPreference("server_alamrfinished").setKey("server_alamrfinished_" + key);
-		findPreference("server_alarnew").setKey("server_alarnew_" + key);
+		findPreference("server_alarmfinished").setKey("server_alarmfinished_" + key);
+		findPreference("server_alarmnew").setKey("server_alarmnew_" + key);
 		findPreference("server_os").setKey("server_os_" + key);
 		findPreference("server_downloaddir").setKey("server_downloaddir_" + key);
 		findPreference("server_ftpurl").setKey("server_ftpurl_" + key);
 		findPreference("server_ftppass").setKey("server_ftppass_" + key);
 		findPreference("server_sslenabled").setKey("server_sslenabled_" + key);
 		findPreference("server_ssltrustall").setKey("server_ssltrustall_" + key);
+		findPreference("server_ssltrustall_" + key).setDependency("server_sslenabled_" + key);
 		findPreference("server_ssltrustkey").setKey("server_ssltrustkey_" + key);
+		findPreference("server_ssltrustkey_" + key).setDependency("server_sslenabled_" + key);
 
 		// Monitor preference changes
 		getPreferenceScreen().setOnPreferenceChangeListener(onPreferenceChangeListener);
@@ -70,6 +74,7 @@ public class ServerSettingsActivity extends SherlockPreferenceActivity {
 	private OnPreferenceChangeListener onPreferenceChangeListener = new OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object newValue) {
+			// TODO: This doesn't get called
 			updatePreferenceAvailability();
 			return true;
 		}

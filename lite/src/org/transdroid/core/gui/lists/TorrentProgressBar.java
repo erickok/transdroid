@@ -18,8 +18,7 @@ import android.view.View;
 public class TorrentProgressBar extends View {
 
 	private final float scale = getContext().getResources().getDisplayMetrics().density;
-	private final int MINIMUM_HEIGHT = (int) (2 * scale + 0.5f);
-	// private final int RIGHT_MARGIN = (int)(3 * scale + 0.5f);
+	private final int MINIMUM_HEIGHT = (int) (3 * scale + 0.5f);
 
 	private int progress;
 	private boolean isActive;
@@ -77,7 +76,7 @@ public class TorrentProgressBar extends View {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		int ws = MeasureSpec.getSize(widthMeasureSpec);// - RIGHT_MARGIN;
+		int ws = MeasureSpec.getSize(widthMeasureSpec);
 		int hs = Math.max(getHeight(), MINIMUM_HEIGHT);
 		setMeasuredDimension(ws, hs);
 	}

@@ -27,7 +27,8 @@
 	<CheckBoxPreference
 		android:key="notifications_vibrate"
 		android:title="@string/pref_notifyvibrate"
-		android:defaultValue="false" />
+		android:defaultValue="false"
+		android:dependency="notifications_enabled" />
 	
 	<net.margaritov.preference.colorpicker.ColorPickerPreference
 		android:key="notifications_ledcolour"
@@ -39,8 +40,8 @@
 	
 	<CheckBoxPreference
 		android:key="notifications_adwnotify"
-		android:title="@string/pref_notifyled"
-		android:summary="@string/pref_notifyled_info"
+		android:title="@string/pref_adw"
+		android:summary="@string/pref_adw_info"
 		android:defaultValue="false"
 		android:dependency="notifications_enabled" />
 	

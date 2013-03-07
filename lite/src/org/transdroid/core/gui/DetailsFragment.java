@@ -25,7 +25,7 @@ import com.actionbarsherlock.view.SherlockListView;
  * @author Eric Kok
  */
 @EFragment(R.layout.fragment_details)
-public class DetailsFagment extends SherlockFragment {
+public class DetailsFragment extends SherlockFragment {
 
 	// Local data
 	@InstanceState
@@ -44,8 +44,8 @@ public class DetailsFagment extends SherlockFragment {
 	@AfterViews
 	protected void init() {
 
-		detailsList.setAdapter(new DetailsAdapter());
-		detailsList.setEmptyView(emptyText); // Shows a text that no torrent was selected yet
+		detailsList.setAdapter(new DetailsAdapter(getActivity()));
+		detailsList.setEmptyView(emptyText);
 		if (torrent != null)
 			updateTorrent(torrent);
 		if (torrentDetails != null)
@@ -104,7 +104,7 @@ public class DetailsFagment extends SherlockFragment {
 	 * Clear the screen by fully clearing the internal merge list (with header and other lists)
 	 */
 	public void clear() {
-		detailsList.setAdapter(new DetailsAdapter());
+		((DetailsAdapter)detailsList.getAdapter()).clear();
 		torrent = null;
 		torrentDetails = null;
 		torrentFiles = null;

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="horizontal" >
+	android:paddingTop="@dimen/margin_half"
+	android:paddingBottom="@dimen/margin_half"
+	android:paddingLeft="@dimen/margin_default"
+	android:paddingRight="@dimen/margin_default" >
 
 	<TextView
 		android:id="@+id/item_text"
@@ -10,4 +13,4 @@
 		android:layout_height="wrap_content"
 		android:textIsSelectable="true" />
 
-</LinearLayout>
+</FrameLayout>

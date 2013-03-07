@@ -13,7 +13,7 @@
 	
 	<PreferenceCategory
 		android:key="header_searchsites"
-		android:title="@string/pref_servers"
+		android:title="@string/pref_searchsites"
 		android:order="100">
 		<ListPreference
 			android:key="header_setsearchsite"

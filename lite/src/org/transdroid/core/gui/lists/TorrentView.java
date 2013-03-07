@@ -27,7 +27,7 @@ public class TorrentView extends CheckableRelativeLayout {
 	protected TorrentProgressBar torrentProgressbar;
 
 	public TorrentView(Context context) {
-		super(context, null);
+		super(context);
 	}
 
 	public void bind(Torrent torrent) {

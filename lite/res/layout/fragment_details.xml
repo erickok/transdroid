@@ -9,6 +9,8 @@
 		android:layout_height="match_parent"
 		android:choiceMode="multipleChoiceModal"
 		android:listSelector="@drawable/selectable_background_transdroid"
+		android:divider="@null"
+		android:dividerHeight="0dip"
 		android:visibility="gone" />
 
 	<TextView

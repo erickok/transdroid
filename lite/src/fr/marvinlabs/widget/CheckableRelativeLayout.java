@@ -30,7 +30,7 @@ public class CheckableRelativeLayout extends RelativeLayout implements Checkable
 		initialise(attrs);
 	}
 
-	public CheckableRelativeLayout(Context context, int checkableId) {
+	public CheckableRelativeLayout(Context context) {
 		super(context);
 		initialise(null);
 	}

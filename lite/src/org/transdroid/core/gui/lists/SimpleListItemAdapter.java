@@ -69,8 +69,10 @@ public class SimpleListItemAdapter extends BaseAdapter {
 		 */
 		public static List<SimpleStringItem> wrapStringsList(List<String> errorStrings) {
 			ArrayList<SimpleStringItem> errors = new ArrayList<SimpleStringItem>();
-			for (String errorString : errorStrings) {
-				errors.add(new SimpleStringItem(errorString));
+			if (errorStrings != null) {
+				for (String errorString : errorStrings) {
+					errors.add(new SimpleStringItem(errorString));
+				}
 			}
 			return errors;
 		}

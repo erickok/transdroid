@@ -4,15 +4,15 @@
 	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content" 
 	android:orientation="vertical" 
-	android:layout_marginTop="@dimen/margin_half"
-	android:layout_marginBottom="@dimen/margin_half"
-	android:layout_marginLeft="@dimen/margin_half"
-	android:layout_marginRight="@dimen/margin_default">
+	android:paddingTop="@dimen/margin_half"
+	android:paddingBottom="@dimen/margin_half"
+	android:paddingRight="@dimen/margin_default">
 	
 	<fr.marvinlabs.widget.InertCheckBox
 		android:id="@+id/file_checkbox"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
+		android:layout_height="wrap_content"
+		android:focusable="false" />
 		
 	<TextView
 		android:id="@+id/name_text"
@@ -21,8 +21,9 @@
 		android:layout_alignParentTop="true"
 		android:layout_toRightOf="@+id/file_checkbox"
 		android:textColor="#fff"
-		android:textIsSelectable="true"
-		android:textSize="15sp" />
+		android:textSize="15sp"
+		android:textIsSelectable="false"
+		android:focusable="false" />
 		
 	<TextView
 		android:id="@+id/progress_text"
@@ -33,7 +34,8 @@
 		android:layout_marginLeft="@dimen/margin_half"
 		android:layout_marginTop="4dip"
 		android:textSize="12sp"
-		android:textIsSelectable="false" />
+		android:textIsSelectable="false"
+		android:focusable="false" />
 
 	<TextView
 		android:id="@+id/sizes_text"
@@ -43,7 +45,8 @@
 		android:layout_alignBottom="@+id/progress_text"
 		android:layout_toRightOf="@+id/priority_image"
 		android:textIsSelectable="false"
-		android:textSize="12sp" />
+		android:textSize="12sp"
+		android:focusable="false" />
 
 	<ImageView
 		android:id="@+id/priority_image"
@@ -53,6 +56,7 @@
 		android:layout_below="@+id/name_text"
 		android:layout_marginTop="4dip"
 		android:layout_marginRight="@dimen/margin_half"
-		android:contentDescription="@string/status_priority_normal" />
+		android:contentDescription="@string/status_priority_normal"
+		android:focusable="false" />
 
 </fr.marvinlabs.widget.CheckableRelativeLayout>

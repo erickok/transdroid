@@ -17,6 +17,7 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
+import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
@@ -30,6 +31,9 @@ import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -49,11 +53,17 @@ public class DetailsActivity extends SherlockFragmentActivity {
 	
 	// Details view components
 	@FragmentById(R.id.torrent_details)
-	protected DetailsFagment fragmentDetails;
+	protected DetailsFragment fragmentDetails;
 
 	@AfterViews
 	protected void init() {
 
+		// We require a torrent to be specified; otherwise close the activity
+		if (torrent == null) {
+			finish();
+			return;
+		}
+		
 		// Simple action bar with up, torrent name as title and refresh button
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setTitle(torrent.getName());
@@ -62,9 +72,17 @@ public class DetailsActivity extends SherlockFragmentActivity {
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		currentConnection = lastUsed.createServerAdapter();
 
-		// Load fine details and torrent files
+		// Show details and load fine stats and torrent files
+		fragmentDetails.updateTorrent(torrent);
 		refreshTorrentDetails();
+		refreshTorrentFiles();
 		
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	@OptionsItem(android.R.id.home)
+	protected void navigateUp() {
+		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 	
 	@OptionsItem(R.id.action_refresh)
@@ -92,6 +110,8 @@ public class DetailsActivity extends SherlockFragmentActivity {
 
 	@Background
 	protected void refreshTorrentDetails() {
+		if (!Daemon.supportsFineDetails(torrent.getDaemon()))
+			return;
 		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute();
 		if (result instanceof GetTorrentDetailsTaskSuccessResult) {
 			onTorrentDetailsRetrieved(((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
@@ -108,6 +128,8 @@ public class DetailsActivity extends SherlockFragmentActivity {
 
 	@Background
 	protected void refreshTorrentFiles() {
+		if (!Daemon.supportsFileListing(torrent.getDaemon()))
+			return;
 		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute();
 		if (result instanceof GetFileListTaskSuccessResult) {
 			onTorrentFilesRetrieved(((GetFileListTaskSuccessResult) result).getFiles());

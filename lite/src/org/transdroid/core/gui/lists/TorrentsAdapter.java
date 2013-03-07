@@ -34,6 +34,11 @@ public class TorrentsAdapter extends BaseAdapter {
 	}
 	
 	@Override
+	public boolean hasStableIds() {
+		return true;
+	}
+	
+	@Override
 	public int getCount() {
 		if (torrents == null)
 			return 0;

@@ -3,6 +3,7 @@
 	<style name="TransdroidTheme" parent="Theme.Transdroid">
 		<!-- All customizations that are NOT specific to a particular API-level can go here. -->
 		<item name="android:textViewStyle">@style/DefaultTextView</item>
+		<item name="android:windowBackground">@android:color/black</item>
 	</style>
 
 	<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->

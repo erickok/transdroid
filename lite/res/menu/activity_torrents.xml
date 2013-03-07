@@ -4,7 +4,13 @@
 		android:id="@+id/action_add"
 		android:icon="@drawable/ic_action_new"
 		android:showAsAction="always"
-		android:title="@string/action_add"/>
+		android:title="@string/action_add">
+		<menu>
+			<item android:id="@+id/action_add_fromurl" android:title="@string/action_addfromurl" />
+			<item android:id="@+id/action_add_fromfile" android:title="@string/action_addfromfile" />
+			<item android:id="@+id/action_add_frombarcode" android:title="@string/action_scanbarcode" />
+		</menu>
+	</item>
 	<item
 		android:id="@+id/action_search"
 		android:icon="@drawable/ic_action_search"
@@ -47,8 +53,12 @@
 		android:showAsAction="never"
 		android:title="@string/action_filter"/>
 	<item
-		android:id="@+id/action_settings"
+		android:id="@+id/action_help"
 		android:showAsAction="never"
+		android:title="@string/action_help"/>
+	<item
+		android:id="@+id/action_settings"
+		android:showAsAction="always"
 		android:title="@string/action_settings"/>
 
 </menu>

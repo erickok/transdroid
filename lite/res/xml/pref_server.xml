@@ -18,8 +18,7 @@
 		android:inputType="textUri" />
 	<EditTextPreference
 		android:key="server_port"
-		android:title="@string/pref_address"
-		android:summary="@string/pref_searchurl_info"
+		android:title="@string/pref_port"
 		android:inputType="numberSigned" />
 	<EditTextPreference
 		android:key="server_user"
@@ -53,14 +52,15 @@
 			android:key="server_timeout"
 			android:title="@string/pref_timeout"
 			android:summary="@string/pref_timeout_info"
-			android:inputType="numberSigned" />
+			android:inputType="numberSigned"
+			android:defaultValue="8" />
 		<CheckBoxPreference
 			android:key="server_sslenabled"
 			android:title="@string/pref_sslenable"
 			android:summary="@string/pref_sslenable_info"
 			android:defaultValue="false" />
 		<CheckBoxPreference
-			android:key="server_trustall"
+			android:key="server_ssltrustall"
 			android:title="@string/pref_sslacceptall"
 			android:summary="@string/pref_sslacceptall_info"
 			android:defaultValue="false"
