@@ -37,7 +37,7 @@
 		android:title="@string/action_setlabel" />
 	<item
 		android:id="@+id/action_updatetrackers"
-		android:showAsAction="never"
+		android:showAsAction="ifRoom"
 		android:title="@string/action_updatetrackers" />
 
 </menu>

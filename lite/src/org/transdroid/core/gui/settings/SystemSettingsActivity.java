@@ -27,7 +27,7 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		super.onCreate(savedInstanceState);
 
 		// Just load the system-related preferences from XML
-		addPreferencesFromResource(R.xml.pref_notifications);
+		addPreferencesFromResource(R.xml.pref_system);
 		
 		// Handle outgoing links
 		findPreference("system_sendlog").setOnPreferenceClickListener(onSendLogClick);

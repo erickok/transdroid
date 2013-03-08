@@ -81,7 +81,7 @@ public class DetailsAdapter extends MergeAdapter {
 			torrentFilesSeparatorView.setVisibility(View.GONE);
 		} else {
 			torrentFilesAdapter.update(torrentFiles);
-			torrentFilesSeparatorView.setVisibility(View.GONE);
+			torrentFilesSeparatorView.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -95,7 +95,7 @@ public class DetailsAdapter extends MergeAdapter {
 			trackersSeparatorView.setVisibility(View.GONE);
 		} else {
 			trackersAdapter.update(trackers);
-			trackersSeparatorView.setVisibility(View.GONE);
+			trackersSeparatorView.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -109,10 +109,19 @@ public class DetailsAdapter extends MergeAdapter {
 			errorsSeparatorView.setVisibility(View.GONE);
 		} else {
 			errorsAdapter.update(errors);
-			errorsSeparatorView.setVisibility(View.GONE);
+			errorsSeparatorView.setVisibility(View.VISIBLE);
 		}
 	}
 
+	/**
+	 * The details adapter is empty if it is not showing any torrent (regardless of errors, trackers and files)
+	 */
+	@Override
+	public boolean isEmpty() {
+		//return torrentDetailsView.isBound();
+		return false;
+	}
+	
 	/**
 	 * Clear currently visible torrent, including header and shown lists
 	 */

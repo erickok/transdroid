@@ -146,4 +146,11 @@ public class TorrentsFragment extends SherlockFragment {
 		// TODO: Implement action
 	}
 
+	public interface TorrentsTasksExecutor {
+		void resumeTorrents(List<Torrent> torrents);
+		void pauseTorrents(List<Torrent> torrents);
+		void removeTorrents(List<Torrent> torrents, boolean withData);
+		void setLabels(List<Torrent> torrents);
+	}
+	
 }

@@ -6,10 +6,13 @@ import java.util.List;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.gui.lists.DetailsAdapter;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
+import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
@@ -17,6 +20,7 @@ import org.transdroid.daemon.TorrentFile;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.SherlockListView;
 
 /**
@@ -25,6 +29,7 @@ import com.actionbarsherlock.view.SherlockListView;
  * @author Eric Kok
  */
 @EFragment(R.layout.fragment_details)
+@OptionsMenu(R.menu.fragment_details)
 public class DetailsFragment extends SherlockFragment {
 
 	// Local data
@@ -60,8 +65,11 @@ public class DetailsFragment extends SherlockFragment {
 	 * @param newTorrent The new torrent object
 	 */
 	public void updateTorrent(Torrent newTorrent) {
+		clear();
 		this.torrent = newTorrent;
 		((DetailsAdapter) detailsList.getAdapter()).updateTorrent(newTorrent);
+		// Also update the available actions in the action bar
+		getActivity().supportInvalidateOptionsMenu();
 	}
 
 	/**
@@ -108,6 +116,40 @@ public class DetailsFragment extends SherlockFragment {
 		torrent = null;
 		torrentDetails = null;
 		torrentFiles = null;
+	}
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		
+		// Update action availability
+		boolean startStop = Daemon.supportsStoppingStarting(torrent.getDaemon());
+		menu.findItem(R.id.action_resume).setVisible(torrent.canResume());
+		menu.findItem(R.id.action_pause).setVisible(torrent.canPause());
+		menu.findItem(R.id.action_start).setVisible(startStop && torrent.canStart());
+		menu.findItem(R.id.action_stop).setVisible(startStop && torrent.canStop());
+		boolean removeWithData = Daemon.supportsRemoveWithData(torrent.getDaemon());
+		menu.findItem(R.id.action_remove_withdata).setVisible(removeWithData);
+		boolean setLabel = Daemon.supportsSetLabel(torrent.getDaemon());
+		menu.findItem(R.id.action_setlabel).setVisible(setLabel);
+		boolean setTrackers = Daemon.supportsSetTrackers(torrent.getDaemon());
+		menu.findItem(R.id.action_updatetrackers).setVisible(setTrackers);
+		
+	}
+	
+	@OptionsItem(R.id.action_start)
+	protected void startTorrent() {
+		
+	}
+	
+	public interface DetailsTasksExecutor {
+		void resumeTorrent(Torrent torrent);
+		void pauseTorrent(Torrent torrent);
+		void startTorrent(Torrent torrent);
+		void stopTorrent(Torrent torrent);
+		void removeTorrent(Torrent torrent, boolean withData);
+		void setLabel(Torrent torrent);
+		void updateTrackers(Torrent torrent);
 	}
 	
 }

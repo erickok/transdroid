@@ -3,7 +3,6 @@ package org.transdroid.core.gui.navigation;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
-import org.transdroid.core.gui.lists.SimpleListItem;
 
 import android.content.Context;
 import android.widget.LinearLayout;
@@ -26,17 +25,13 @@ public class FilterSeparatorView extends LinearLayout {
 		super(context);
 	}
 
-	public void bind(SimpleListItem filterItem) {
-		separatorText.setText(text);
-	}
-	
 	/**
 	 * Sets the text that will be shown in this separator (sub header)
 	 * @param text The new text to show
 	 * @return Itself, for convenience of method chaining
 	 */
 	public FilterSeparatorView setText(String text) {
-		this.text = text;
+		separatorText.setText(text);
 		return this;
 	}
 	
