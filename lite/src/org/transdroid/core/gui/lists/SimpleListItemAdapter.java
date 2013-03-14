@@ -45,7 +45,7 @@ public class SimpleListItemAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		SimpleListItemView filterItemView;
-		if (convertView == null) {
+		if (convertView == null || !(convertView instanceof SimpleListItemView)) {
 			filterItemView = SimpleListItemView_.build(context);
 		} else {
 			filterItemView = (SimpleListItemView) convertView;

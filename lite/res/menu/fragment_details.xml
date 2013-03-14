@@ -13,12 +13,17 @@
 	<item
 		android:id="@+id/action_start"
 		android:icon="@drawable/ic_action_start"
-		android:showAsAction="always"
-		android:title="@string/action_start" />
+		android:showAsAction="ifRoom"
+		android:title="@string/action_start">
+		<menu>
+			<item android:id="@+id/action_start_default" android:title="@string/action_start_default" />
+			<item android:id="@+id/action_start_forced" android:title="@string/action_start_forced" />
+		</menu>
+	</item>
 	<item
 		android:id="@+id/action_stop"
 		android:icon="@drawable/ic_action_stop"
-		android:showAsAction="always"
+		android:showAsAction="ifRoom"
 		android:title="@string/action_stop" />
 	<item
 		android:id="@+id/action_remove"

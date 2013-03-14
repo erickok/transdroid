@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
@@ -12,9 +11,12 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.gui.lists.TorrentsAdapter;
 import org.transdroid.core.gui.lists.TorrentsAdapter_;
+import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.daemon.Torrent;
 
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -30,6 +32,12 @@ public class TorrentsFragment extends SherlockFragment {
 	// Local data
 	@InstanceState
 	protected ArrayList<Torrent> torrents = null;
+	@InstanceState
+	protected NavigationFilter currentFilter = null;
+	@InstanceState
+	protected boolean hasAConnection = false;
+	@InstanceState
+	protected boolean isLoading = false;
 
 	// Views
 	@ViewById(R.id.torrent_list)
@@ -38,11 +46,12 @@ public class TorrentsFragment extends SherlockFragment {
 	protected TextView emptyText;
 	@ViewById
 	protected TextView nosettingsText;
+	@ViewById
+	protected ProgressBar loadingProgress;
 
 	@AfterViews
 	protected void init() {
 		torrentsList.setAdapter(TorrentsAdapter_.getInstance_(getActivity()));
-		torrentsList.setEmptyView(emptyText);
 		torrentsList.setMultiChoiceModeListener(onTorrentsSelected);
 		if (torrents != null)
 			updateTorrents(torrents);
@@ -54,14 +63,7 @@ public class TorrentsFragment extends SherlockFragment {
 	 */
 	public void updateTorrents(ArrayList<Torrent> newTorrents) {
 		torrents = newTorrents;
-		if (newTorrents == null) {
-			// Hide list adapter as well as empty text
-			torrentsList.setVisibility(View.GONE);
-			emptyText.setVisibility(View.GONE);
-		} else {
-			((TorrentsAdapter) torrentsList.getAdapter()).update(newTorrents);
-			// NOTE: This will also make visible again the list or empty view
-		}
+		applyFilter(null); // Resets the filter and shown list of torrents
 	}
 
 	/**
@@ -71,6 +73,26 @@ public class TorrentsFragment extends SherlockFragment {
 		updateTorrents(null);
 	}
 
+	/**
+	 * Apply a filter on the current list of all torrents, showing the appropriate sublist of torrents only
+	 * @param currentFilter
+	 */
+	public void applyFilter(NavigationFilter currentFilter) {
+		this.currentFilter = currentFilter;
+		if (this.currentFilter == null)
+			this.currentFilter = StatusType.getShowAllType(getActivity());
+		if (torrents != null) {
+			// Build a local list of torrents that match the selected navigation filter
+			ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>();
+			for (Torrent torrent : torrents) {
+				if (currentFilter.matches(torrent))
+					filteredTorrents.add(torrent);
+			}
+			((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);
+		}
+		updateViewVisibility();
+	}
+	
 	private MultiChoiceModeListenerCompat onTorrentsSelected = new MultiChoiceModeListenerCompat() {
 		
 		@Override
@@ -91,10 +113,33 @@ public class TorrentsFragment extends SherlockFragment {
 			}
 			
 			// Execute the requested action
-			// TODO: Add the other actions
 			switch (item.getItemId()) {
-			case R.id.action_start:
-				startTorrents(checked);
+			case R.id.action_resume:
+				for (Torrent torrent : checked) {
+					getTasksExecutor().resumeTorrent(torrent);
+				}
+				mode.finish();
+				return true;
+			case R.id.action_pause:
+				for (Torrent torrent : checked) {
+					getTasksExecutor().pauseTorrent(torrent);
+				}
+				mode.finish();
+				return true;
+			case R.id.action_remove_default:
+				for (Torrent torrent : checked) {
+					getTasksExecutor().removeTorrent(torrent, false);
+				}
+				mode.finish();
+				return true;
+			case R.id.action_remove_withdata:
+				for (Torrent torrent : checked) {
+					getTasksExecutor().removeTorrent(torrent, true);
+				}
+				mode.finish();
+				return true;
+			case R.id.action_setlabel:
+				// TODO: Open label selection dialogue
 				mode.finish();
 				return true;
 			default:
@@ -126,31 +171,37 @@ public class TorrentsFragment extends SherlockFragment {
 	/**
 	 * Updates the shown screen depending on whether we have a connection (so torrents can be shown) or not (in case we
 	 * need to show a message suggesting help)
-	 * @param hasAConnection True if the user has servers configured and therefor has a conenction that can be used
+	 * @param hasAConnection True if the user has servers configured and therefore has a connection that can be used
 	 */
 	public void updateConnectionStatus(boolean hasAConnection) {
-		if (!hasAConnection) {
+		this.hasAConnection = hasAConnection;
+		if (!hasAConnection)
 			clear();
-			torrentsList.setVisibility(View.GONE);
-			emptyText.setVisibility(View.GONE);
-			nosettingsText.setVisibility(View.VISIBLE);
-		} else {
-			nosettingsText.setVisibility(View.GONE);
-			torrentsList.setVisibility(torrentsList.getAdapter().isEmpty()? View.GONE: View.VISIBLE);
-			emptyText.setVisibility(torrentsList.getAdapter().isEmpty()? View.VISIBLE: View.GONE);
-		}
-	}
-
-	@Background
-	protected void startTorrents(List<Torrent> torrents) {
-		// TODO: Implement action
-	}
-
-	public interface TorrentsTasksExecutor {
-		void resumeTorrents(List<Torrent> torrents);
-		void pauseTorrents(List<Torrent> torrents);
-		void removeTorrents(List<Torrent> torrents, boolean withData);
-		void setLabels(List<Torrent> torrents);
+		updateViewVisibility();
 	}
 	
+	private void updateViewVisibility() {
+		if (!hasAConnection) {
+			torrentsList.setVisibility(View.GONE);
+			emptyText.setVisibility(View.GONE);
+			loadingProgress.setVisibility(View.GONE);
+			nosettingsText.setVisibility(View.VISIBLE);
+			return;
+		}
+		boolean isEmpty = torrents == null || torrentsList.getAdapter().isEmpty();
+		nosettingsText.setVisibility(View.GONE);
+		torrentsList.setVisibility(!isLoading && !isEmpty? View.GONE: View.VISIBLE);
+		loadingProgress.setVisibility(isLoading? View.VISIBLE: View.GONE);
+		emptyText.setVisibility(!isLoading && isEmpty? View.VISIBLE: View.GONE);
+	}
+
+	/**
+	 * Returns the object responsible for executing torrent tasks against a connected server
+	 * @return The executor for tasks on some torrent
+	 */
+	private TorrentTasksExecutor getTasksExecutor() {
+		// NOTE: Assumes the activity implements all the required torrent tasks
+		return (TorrentTasksExecutor) getActivity();
+	}
+
 }

@@ -17,16 +17,14 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.gui.DetailsFragment.DetailsTasksExecutor;
-import org.transdroid.core.gui.TorrentsFragment.TorrentsTasksExecutor;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.navigation.FilterListAdapter;
 import org.transdroid.core.gui.navigation.FilterListAdapter_;
-import org.transdroid.core.gui.navigation.Label;
+import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.NavigationSelectionView.NavigationFilterManager;
 import org.transdroid.core.gui.navigation.StatusType;
-import org.transdroid.core.gui.navigation.StatusType.StatusTypeFilter;
 import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
@@ -34,9 +32,19 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
+import org.transdroid.daemon.task.GetStatsTask;
+import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
+import org.transdroid.daemon.task.PauseTask;
+import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.ResumeTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
+import org.transdroid.daemon.task.SetAlternativeModeTask;
+import org.transdroid.daemon.task.SetDownloadLocationTask;
+import org.transdroid.daemon.task.SetLabelTask;
+import org.transdroid.daemon.task.SetTrackersTask;
+import org.transdroid.daemon.task.StartTask;
+import org.transdroid.daemon.task.StopTask;
 
 import android.annotation.TargetApi;
 import android.app.SearchManager;
@@ -56,7 +64,7 @@ import com.actionbarsherlock.widget.SearchView;
 
 @EActivity(R.layout.activity_torrents)
 @OptionsMenu(R.menu.activity_torrents)
-public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, DetailsTasksExecutor, TorrentsTasksExecutor {
+public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor, NavigationFilterManager {
 
 	// Navigation components
 	@Bean
@@ -75,6 +83,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	boolean firstStart = true;
 	private IDaemonAdapter currentConnection = null;
 	@InstanceState
+	protected NavigationFilter currentFilter = null;
+	@InstanceState
 	protected boolean turleModeEnabled = false;
 	
 	// Torrents list components
@@ -91,7 +101,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Set up navigation, with an action bar spinner and possibly (if room) with a filter list
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		getSupportActionBar().setHomeButtonEnabled(false);
-		navigationSpinnerAdapter = FilterListAdapter_.getInstance_(this);
+		navigationSpinnerAdapter = FilterListAdapter_.getInstance_(this).setNavigationFilterManager(this);
 		// Servers are always added to the action bar spinner
 		navigationSpinnerAdapter.updateServers(applicationSettings.getServerSettings());
 		getSupportActionBar().setListNavigationCallbacks(navigationSpinnerAdapter, this);
@@ -240,19 +250,33 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			
 			// Update connection to the newly selected server and refresh
 			currentConnection = server.createServerAdapter();
+			applicationSettings.setLastUsedServer(server);
 			clearScreens();
 			refreshTorrents();
+			return;
 
 		}
 		
-		if (item instanceof StatusTypeFilter) {
-			// TODO: Update the torrent list view
+		// Status type or label selection - both of which are navigation filters 
+		if (item instanceof NavigationFilter) {
+			currentFilter = (NavigationFilter) item;
+			fragmentTorrents.applyFilter(currentFilter);
+			// Clear the details view
+			if (fragmentDetails != null) {
+				fragmentDetails.clear();
+			}
 		}
 		
-		if (item instanceof Label) {
-			// TODO: Update the torrent list view
-		}
-		
+	}
+
+	@Override
+	public String getActiveFilterText() {
+		return currentFilter.getName();
+	}
+
+	@Override
+	public String getActiveServerText() {
+		return currentConnection.getSettings().getName();
 	}
 
 	/**
@@ -265,7 +289,17 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@OptionsItem(R.id.action_refresh)
 	protected void refreshScreen() {
 		refreshTorrents();
-		// TODO: Retrieve turtle mode status
+		getAdditionalStats();
+	}
+
+	@OptionsItem(R.id.action_enableturtle)
+	protected void enableTurtleMode() {
+		updateTurtleMode(true);
+	}
+
+	@OptionsItem(R.id.action_disableturtle)
+	protected void disableTurtleMode() {
+		updateTurtleMode(false);
 	}
 	
 	@OptionsItem(R.id.action_settings)
@@ -291,6 +325,134 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		}
 	}
 
+	@Background
+	protected void getAdditionalStats() {
+		DaemonTaskResult result = GetStatsTask.create(currentConnection).execute();
+		if (result instanceof GetStatsTaskSuccessResult) {
+			onTurtleModeRetrieved(((GetStatsTaskSuccessResult) result).isAlternativeModeEnabled());
+		} else {
+			onCommunicationError((DaemonTaskFailureResult)result);
+		}
+	}
+	
+	@Background
+	protected void updateTurtleMode(boolean enable) {
+		DaemonTaskResult result = SetAlternativeModeTask.create(currentConnection, enable).execute();
+		if (result instanceof GetStatsTaskSuccessResult) {
+			// Success; no need to retrieve it again - just update the visual indicator
+			onTurtleModeRetrieved(enable);
+		} else {
+			onCommunicationError((DaemonTaskFailureResult)result);
+		}
+	}
+
+	@Background
+	@Override
+	public void resumeTorrent(Torrent torrent) {
+		torrent.mimicResume();
+		DaemonTaskResult result = ResumeTask.create(currentConnection, torrent).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_resumed);
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@Background
+	@Override
+	public void pauseTorrent(Torrent torrent) {
+		torrent.mimicPause();
+		DaemonTaskResult result = PauseTask.create(currentConnection, torrent).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_paused);
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@Background
+	@Override
+	public void startTorrent(Torrent torrent, boolean forced) {
+		torrent.mimicStart();
+		DaemonTaskResult result = StartTask.create(currentConnection, torrent, forced).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_started);
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@Background
+	@Override
+	public void stopTorrent(Torrent torrent) {
+		torrent.mimicStop();
+		DaemonTaskResult result = StopTask.create(currentConnection, torrent).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_stopped);
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@Background
+	@Override
+	public void removeTorrent(Torrent torrent, boolean withData) {
+		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, withData ? R.string.result_removed_with_data
+					: R.string.result_removed);
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@Background
+	@Override
+	public void updateLabel(Torrent torrent, String newLabel) {
+		torrent.mimicNewLabel(newLabel);
+		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_labelset, newLabel);
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@Background
+	@Override
+	public void updateTrackers(Torrent torrent, List<String> newTrackers) {
+		DaemonTaskResult result = SetTrackersTask.create(currentConnection, torrent, newTrackers).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_trackersupdated);
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@Background
+	@Override
+	public void updateLocation(Torrent torrent, String newLocation) {
+		DaemonTaskResult result = SetDownloadLocationTask.create(currentConnection, torrent, newLocation).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_locationset, newLocation);
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@UiThread
+	protected void onTaskSucceeded(DaemonTaskSuccessResult result, int successMessageId, String... messageParams) {
+		// TODO: Properly report this success
+		Toast.makeText(this, getString(successMessageId, (Object[]) messageParams), Toast.LENGTH_LONG).show();
+	}
+
+	@UiThread
+	protected void onCommunicationError(DaemonTaskFailureResult result) {
+		// TODO: Properly report this error
+		Toast.makeText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
+				Toast.LENGTH_LONG).show();
+	}
+
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
 		// Report the newly retrieved list of torrents to the torrents fragment
@@ -303,88 +465,9 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	}
 
 	@UiThread
-	protected void onTaskSucceeded(DaemonTaskSuccessResult result, int successMessageId, Torrent target) {
-		// TODO: Properly report this success
-		Toast.makeText(this, getString(successMessageId, target.getName()),Toast.LENGTH_LONG).show();
-	}
-
-	@UiThread
-	protected void onCommunicationError(DaemonTaskFailureResult result) {
-		// TODO: Properly report this error
-		Toast.makeText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
-				Toast.LENGTH_LONG).show();
-	}
-
-	@Background
-	@Override
-	public void resumeTorrent(Torrent torrent) {
-		torrent.mimicResume();
-		DaemonTaskResult result = ResumeTask.create(currentConnection, torrent).execute();
-		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_resumed, torrent);
-		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
-		}
-	}
-
-	@Override
-	public void pauseTorrent(Torrent torrent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void startTorrent(Torrent torrent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void stopTorrent(Torrent torrent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeTorrent(Torrent torrent, boolean withData) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setLabel(Torrent torrent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateTrackers(Torrent torrent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void resumeTorrents(List<Torrent> torrents) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void pauseTorrents(List<Torrent> torrents) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeTorrents(List<Torrent> torrents, boolean withData) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setLabels(List<Torrent> torrents) {
-		// TODO Auto-generated method stub
-		
+	protected void onTurtleModeRetrieved(boolean turtleModeEnabled) {
+		turleModeEnabled = turtleModeEnabled;
+		supportInvalidateOptionsMenu();
 	}
 
 }

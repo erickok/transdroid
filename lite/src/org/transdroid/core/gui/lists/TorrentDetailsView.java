@@ -21,8 +21,6 @@ import android.widget.TextView;
 @EViewGroup(R.layout.fragment_details_header)
 public class TorrentDetailsView extends RelativeLayout {
 
-	private boolean isShowingData = false;
-	
 	@ViewById
 	protected TextView labelText, dateaddedText, uploadedText, uploadedunitText, ratioText, upspeedText, seedersText,
 			downloadedunitText, downloadedText, totalsizeText, downspeedText, leechersText, statusText;
@@ -38,11 +36,9 @@ public class TorrentDetailsView extends RelativeLayout {
 	public void update(Torrent torrent) {
 
 		if (torrent == null) {
-			isShowingData = false;
 			return;
 		}
 
-		isShowingData = true;
 		LocalTorrent local = LocalTorrent.fromTorrent(torrent);
 
 		// Set label text
@@ -67,7 +63,7 @@ public class TorrentDetailsView extends RelativeLayout {
 		} else {
 			dateaddedText.setVisibility(View.INVISIBLE);
 		}
-		statusText.setText(local.getProgressStatusEta(getResources()));
+		statusText.setText(getResources().getString(R.string.status_status, local.getProgressStatusEta(getResources())));
 		ratioText.setText(getResources().getString(R.string.status_ratio, local.getRatioString()));
 		// TODO: Implement separate numbers of seeders and leechers
 		seedersText.setText(getResources().getString(R.string.status_peers, torrent.getPeersSendingToUs(),
@@ -88,10 +84,6 @@ public class TorrentDetailsView extends RelativeLayout {
 		upspeedText.setText(getResources().getString(R.string.status_speed_up,
 				FileSizeConverter.getSize(torrent.getRateUpload()) + "/s"));
 
-	}
-
-	public boolean isBound() {
-		return isShowingData ;
 	}
 
 }

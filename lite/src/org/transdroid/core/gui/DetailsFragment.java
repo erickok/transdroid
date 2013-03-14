@@ -17,6 +17,7 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 
+import android.view.View;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -50,7 +51,6 @@ public class DetailsFragment extends SherlockFragment {
 	protected void init() {
 
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));
-		detailsList.setEmptyView(emptyText);
 		if (torrent != null)
 			updateTorrent(torrent);
 		if (torrentDetails != null)
@@ -68,6 +68,9 @@ public class DetailsFragment extends SherlockFragment {
 		clear();
 		this.torrent = newTorrent;
 		((DetailsAdapter) detailsList.getAdapter()).updateTorrent(newTorrent);
+		// Make the list (with detials header) visible
+		detailsList.setVisibility(View.VISIBLE);
+		emptyText.setVisibility(View.INVISIBLE);
 		// Also update the available actions in the action bar
 		getActivity().supportInvalidateOptionsMenu();
 	}
@@ -112,7 +115,9 @@ public class DetailsFragment extends SherlockFragment {
 	 * Clear the screen by fully clearing the internal merge list (with header and other lists)
 	 */
 	public void clear() {
-		((DetailsAdapter)detailsList.getAdapter()).clear();
+		detailsList.setAdapter(new DetailsAdapter(getActivity()));
+		detailsList.setVisibility(View.INVISIBLE);
+		emptyText.setVisibility(View.VISIBLE);
 		torrent = null;
 		torrentDetails = null;
 		torrentFiles = null;
@@ -136,20 +141,59 @@ public class DetailsFragment extends SherlockFragment {
 		menu.findItem(R.id.action_updatetrackers).setVisible(setTrackers);
 		
 	}
-	
-	@OptionsItem(R.id.action_start)
-	protected void startTorrent() {
-		
+
+	@OptionsItem(R.id.action_resume)
+	protected void resumeTorrent() {
+		getTasksExecutor().resumeTorrent(torrent);
 	}
-	
-	public interface DetailsTasksExecutor {
-		void resumeTorrent(Torrent torrent);
-		void pauseTorrent(Torrent torrent);
-		void startTorrent(Torrent torrent);
-		void stopTorrent(Torrent torrent);
-		void removeTorrent(Torrent torrent, boolean withData);
-		void setLabel(Torrent torrent);
-		void updateTrackers(Torrent torrent);
+
+	@OptionsItem(R.id.action_pause)
+	protected void pauseTorrent() {
+		getTasksExecutor().pauseTorrent(torrent);
+	}
+
+	@OptionsItem(R.id.action_start_default)
+	protected void startTorrentDefault() {
+		getTasksExecutor().startTorrent(torrent, false);
+	}
+
+	@OptionsItem(R.id.action_start_forced)
+	protected void startTorrentForced() {
+		getTasksExecutor().startTorrent(torrent, true);
+	}
+
+	@OptionsItem(R.id.action_stop)
+	protected void stopTorrent() {
+		getTasksExecutor().stopTorrent(torrent);
+	}
+
+	@OptionsItem(R.id.action_remove_default)
+	protected void removeTorrentDefault() {
+		getTasksExecutor().removeTorrent(torrent, false);
+	}
+
+	@OptionsItem(R.id.action_remove_withdata)
+	protected void removeTorrentWithData() {
+		getTasksExecutor().removeTorrent(torrent, true);
+	}
+
+	@OptionsItem(R.id.action_setlabel)
+	protected void setLabel() {
+		// TODO: Show label selection dialog
+	}
+
+	@OptionsItem(R.id.action_updatetrackers)
+	protected void updateTrackers() {
+		// TODO: Show trackers edit dialog
+	}
+
+	/**
+	 * Returns the object responsible for executing torrent tasks against a connected server
+	 * @return The executor for tasks on some torrent
+	 */
+	private TorrentTasksExecutor getTasksExecutor() {
+		// NOTE: Assumes the activity implements all the required torrent tasks
+		return (TorrentTasksExecutor) getActivity();
 	}
 	
 }

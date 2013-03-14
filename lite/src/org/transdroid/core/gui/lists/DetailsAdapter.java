@@ -114,15 +114,6 @@ public class DetailsAdapter extends MergeAdapter {
 	}
 
 	/**
-	 * The details adapter is empty if it is not showing any torrent (regardless of errors, trackers and files)
-	 */
-	@Override
-	public boolean isEmpty() {
-		//return torrentDetailsView.isBound();
-		return false;
-	}
-	
-	/**
 	 * Clear currently visible torrent, including header and shown lists
 	 */
 	public void clear() {

@@ -23,6 +23,6 @@
 		android:text="@string/navigation_emptydetails"
 		android:gravity="center"
 		android:textIsSelectable="false"
-		android:visibility="gone" />
+		android:visibility="visible" />
 	
 </FrameLayout>

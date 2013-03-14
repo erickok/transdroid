@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="changes">
+Transdroid 1.1.12\n
+- Option to disable app update checking\n
+- Transmission: support non-Western characters in directories\n
+- Deluge: don\'t treat trackers errors as blocking\n
+- Added Pirate Bay mirror search support\n
+\n
+Transdroid 1.1.11\n
+- rTorrent: fix crash with creationtime and non-i8 dialect\n
+- Fixed picking up local .torrent files\n
+\n
 Transdroid 1.1.10\n
 - Updated translations (thanks to all translators)\n
 - Special thanks Tom Briden for the following contributions:\n
