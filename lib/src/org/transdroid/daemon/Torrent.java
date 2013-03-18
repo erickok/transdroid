@@ -139,14 +139,13 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 		if (realDateDone != null) {
 			this.dateDone = realDateDone;
 		} else {
-			Calendar cal = Calendar.getInstance();
 			if (eta == -1 || eta == -2) {
-				cal.clear();
-				cal.set(1900, 12, 31);
+				this.dateDone = new Date(Long.MAX_VALUE);
 			} else {
+				Calendar cal = Calendar.getInstance();
 				cal.add(Calendar.SECOND, eta);
+				this.dateDone = cal.getTime();
 			}
-			this.dateDone = cal.getTime();
 		}
 		this.error = error;
 	}
