@@ -31,6 +31,7 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.SparseArray;
@@ -352,7 +353,7 @@ public class MenuBuilder implements Menu {
 
         SparseArray<Parcelable> viewStates = states.getSparseParcelableArray(
                 getActionViewStatesKey());
-
+        
         final int itemCount = size();
         for (int i = 0; i < itemCount; i++) {
             final MenuItem item = getItem(i);

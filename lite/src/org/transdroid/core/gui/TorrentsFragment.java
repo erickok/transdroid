@@ -12,7 +12,6 @@ import org.transdroid.core.R;
 import org.transdroid.core.gui.lists.TorrentsAdapter;
 import org.transdroid.core.gui.lists.TorrentsAdapter_;
 import org.transdroid.core.gui.navigation.NavigationFilter;
-import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.daemon.Torrent;
 
 import android.view.View;
@@ -79,8 +78,6 @@ public class TorrentsFragment extends SherlockFragment {
 	 */
 	public void applyFilter(NavigationFilter currentFilter) {
 		this.currentFilter = currentFilter;
-		if (this.currentFilter == null)
-			this.currentFilter = StatusType.getShowAllType(getActivity());
 		if (torrents != null) {
 			// Build a local list of torrents that match the selected navigation filter
 			ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>();

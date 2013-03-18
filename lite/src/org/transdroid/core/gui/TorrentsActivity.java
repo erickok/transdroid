@@ -115,6 +115,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Add status types directly to the action bar spinner
 			navigationSpinnerAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));
 		}
+		currentFilter = StatusType.getShowAllType(this);
 
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
