@@ -97,19 +97,34 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		String aboutEndText = " (Web UI)";
 		int aboutStart = about.indexOf(aboutStartText);
 		int aboutEnd = about.indexOf(aboutEndText);
-		if (aboutStart >= 0 && aboutEnd > aboutStart) {
-			// String found: now parse a version like 2.9.7 as a number like 20907 (allowing 10 places for each .)
-			String[] parts = about.substring(aboutStart + aboutStartText.length(), aboutEnd).split("\\.");
-			if (parts.length > 0) {
-				version = Integer.parseInt(parts[0]) * 100 * 100;
-				if (parts.length > 1) {
-					version += Integer.parseInt(parts[1]) * 100;
-					if (parts.length > 2) {
-						version += Integer.parseInt(parts[2]);
-						return;
+		try {
+			if (aboutStart >= 0 && aboutEnd > aboutStart) {
+				// String found: now parse a version like 2.9.7 as a number like 20907 (allowing 10 places for each .)
+				String[] parts = about.substring(aboutStart + aboutStartText.length(), aboutEnd).split("\\.");
+				if (parts.length > 0) {
+					version = Integer.parseInt(parts[0]) * 100 * 100;
+					if (parts.length > 1) {
+						version += Integer.parseInt(parts[1]) * 100;
+						if (parts.length > 2) {
+							// For the last part only read until a non-numeric character is read
+							// For example version 3.0.0-alpha5 is read as version code 30000
+							String numbers = "";
+							for (char c : parts[2].toCharArray()) {
+								if (Character.isDigit(c))
+									// Still a number; add it to the numbers string
+									numbers += Character.toString(c);
+								else {
+									// No longer reading numbers; stop reading
+									break;
+								}
+							}
+							version += Integer.parseInt(numbers);
+							return;
+						}
 					}
 				}
 			}
+		} catch (NumberFormatException e) {
 		}
 		// Unable to establish version number; assume an old version by setting it to version 1
 		version = 10000;
