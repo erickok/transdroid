@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.SearchRecentSuggestionsProvider;
 import android.provider.SearchRecentSuggestions;
 
+/**
+ * Provides search suggestions by simply returning previous user entries
+ * @author Eric Kok
+ */
 public class SearchHistoryProvider extends SearchRecentSuggestionsProvider {
 
     public final static String AUTHORITY = "org.transdroid.core.gui.SearchHistoryProvider";

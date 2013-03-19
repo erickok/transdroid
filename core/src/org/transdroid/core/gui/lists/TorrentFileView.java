@@ -14,7 +14,7 @@ import fr.marvinlabs.widget.CheckableRelativeLayout;
  * View that represents some {@link TorrentFile} object and show the file's name, status and priority
  * @author Eric Kok
  */
-@EViewGroup(R.layout.list_item_torrentfile)
+@EViewGroup(resName="list_item_torrentfile")
 public class TorrentFileView extends CheckableRelativeLayout {
 
 	@ViewById

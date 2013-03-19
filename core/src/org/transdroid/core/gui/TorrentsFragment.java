@@ -24,7 +24,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SherlockListView;
 import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
 
-@EFragment(R.layout.fragment_torrents)
+@EFragment(resName="fragment_torrents")
 public class TorrentsFragment extends SherlockFragment {
 
 	// Local data
@@ -38,7 +38,7 @@ public class TorrentsFragment extends SherlockFragment {
 	protected boolean isLoading = false;
 
 	// Views
-	@ViewById(R.id.torrent_list)
+	@ViewById(resName="torrent_list")
 	protected SherlockListView torrentsList;
 	@ViewById
 	protected TextView emptyText;
@@ -108,37 +108,36 @@ public class TorrentsFragment extends SherlockFragment {
 					checked.add((Torrent) torrentsList.getAdapter().getItem(i));
 			}
 			
-			// Execute the requested action
-			switch (item.getItemId()) {
-			case R.id.action_resume:
+			int itemId = item.getItemId();
+			if (itemId == R.id.action_resume) {
 				for (Torrent torrent : checked) {
 					getTasksExecutor().resumeTorrent(torrent);
 				}
 				mode.finish();
 				return true;
-			case R.id.action_pause:
+			} else if (itemId == R.id.action_pause) {
 				for (Torrent torrent : checked) {
 					getTasksExecutor().pauseTorrent(torrent);
 				}
 				mode.finish();
 				return true;
-			case R.id.action_remove_default:
+			} else if (itemId == R.id.action_remove_default) {
 				for (Torrent torrent : checked) {
 					getTasksExecutor().removeTorrent(torrent, false);
 				}
 				mode.finish();
 				return true;
-			case R.id.action_remove_withdata:
+			} else if (itemId == R.id.action_remove_withdata) {
 				for (Torrent torrent : checked) {
 					getTasksExecutor().removeTorrent(torrent, true);
 				}
 				mode.finish();
 				return true;
-			case R.id.action_setlabel:
+			} else if (itemId == R.id.action_setlabel) {
 				// TODO: Open label selection dialogue
 				mode.finish();
 				return true;
-			default:
+			} else {
 				return false;
 			}
 		}
@@ -159,7 +158,7 @@ public class TorrentsFragment extends SherlockFragment {
 		
 	};
 
-	@ItemClick(R.id.torrent_list)
+	@ItemClick(resName="torrent_list")
 	protected void torrentsListClicked(Torrent torrent) {
 		DetailsActivity_.intent(getActivity()).torrent(torrent).start();
 	}

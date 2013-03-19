@@ -47,8 +47,8 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
-@EActivity(R.layout.activity_details)
-@OptionsMenu(R.menu.activity_details)
+@EActivity(resName="activity_details")
+@OptionsMenu(resName="activity_details")
 public class DetailsActivity extends SherlockFragmentActivity implements TorrentTasksExecutor {
 
 	@Extra
@@ -61,7 +61,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	private IDaemonAdapter currentConnection = null;
 	
 	// Details view components
-	@FragmentById(R.id.torrent_details)
+	@FragmentById(resName="torrent_details")
 	protected DetailsFragment fragmentDetails;
 
 	@AfterViews
@@ -94,7 +94,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 	
-	@OptionsItem(R.id.action_refresh)
+	@OptionsItem(resName="action_refresh")
 	protected void refreshScreen() {
 		refreshTorrent();
 		refreshTorrentDetails();

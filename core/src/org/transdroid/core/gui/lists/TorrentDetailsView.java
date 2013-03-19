@@ -18,7 +18,7 @@ import android.widget.TextView;
  * Represents a group of views that show torrent status, sizes, speeds and other details.
  * @author Eric Kok
  */
-@EViewGroup(R.layout.fragment_details_header)
+@EViewGroup(resName="fragment_details_header")
 public class TorrentDetailsView extends RelativeLayout {
 
 	@ViewById

@@ -22,7 +22,7 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
  * @author Eric Kok
  */
 @EActivity
-@OptionsMenu(R.menu.activity_deleteableprefs)
+@OptionsMenu(resName="activity_deleteableprefs")
 public class ServerSettingsActivity extends SherlockPreferenceActivity {
 
 	@Extra

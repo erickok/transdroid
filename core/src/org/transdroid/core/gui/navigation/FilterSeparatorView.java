@@ -2,7 +2,6 @@ package org.transdroid.core.gui.navigation;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
-import org.transdroid.core.R;
 
 import android.content.Context;
 import android.widget.LinearLayout;
@@ -13,7 +12,7 @@ import android.widget.TextView;
  * 
  * @author Eric Kok
  */
-@EViewGroup(R.layout.list_item_separator)
+@EViewGroup(resName="list_item_separator")
 public class FilterSeparatorView extends LinearLayout {
 
 	protected String text;

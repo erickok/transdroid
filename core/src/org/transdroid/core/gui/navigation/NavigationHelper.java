@@ -12,6 +12,24 @@ public class NavigationHelper {
 
 	@RootContext
 	protected Context context;
+
+	/**
+	 * Whether any search-related UI components should be shown in the interface. At the moment returns false only if we
+	 * run as Transdroid Lite version.
+	 * @return True if search is enabled, false otherwise
+	 */
+	public boolean enableSearchUi() {
+		return !context.getPackageName().equals("org.transdroid.lite");
+	}
+
+	/**
+	 * Whether any RSS-related UI components should be shown in the interface. At the moment returns false only if we
+	 * run as Transdroid Lite version.
+	 * @return True if search is enabled, false otherwise
+	 */
+	public boolean enableRssUi() {
+		return !context.getPackageName().equals("org.transdroid.lite");
+	}
 	
 	/**
 	 * Whether the navigation of server types and labels as filter are shown in a separate fragment.

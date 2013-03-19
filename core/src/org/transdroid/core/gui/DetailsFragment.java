@@ -29,8 +29,8 @@ import com.actionbarsherlock.view.SherlockListView;
  * object, but it also retrieves further detailed statistics.
  * @author Eric Kok
  */
-@EFragment(R.layout.fragment_details)
-@OptionsMenu(R.menu.fragment_details)
+@EFragment(resName="fragment_details")
+@OptionsMenu(resName="fragment_details")
 public class DetailsFragment extends SherlockFragment {
 
 	// Local data
@@ -42,7 +42,7 @@ public class DetailsFragment extends SherlockFragment {
 	protected ArrayList<TorrentFile> torrentFiles = null;
 
 	// Views
-	@ViewById(R.id.details_list)
+	@ViewById(resName="details_list")
 	protected SherlockListView detailsList;
 	@ViewById
 	protected TextView emptyText;
@@ -142,47 +142,47 @@ public class DetailsFragment extends SherlockFragment {
 		
 	}
 
-	@OptionsItem(R.id.action_resume)
+	@OptionsItem(resName="action_resume")
 	protected void resumeTorrent() {
 		getTasksExecutor().resumeTorrent(torrent);
 	}
 
-	@OptionsItem(R.id.action_pause)
+	@OptionsItem(resName="action_pause")
 	protected void pauseTorrent() {
 		getTasksExecutor().pauseTorrent(torrent);
 	}
 
-	@OptionsItem(R.id.action_start_default)
+	@OptionsItem(resName="action_start_default")
 	protected void startTorrentDefault() {
 		getTasksExecutor().startTorrent(torrent, false);
 	}
 
-	@OptionsItem(R.id.action_start_forced)
+	@OptionsItem(resName="action_start_forced")
 	protected void startTorrentForced() {
 		getTasksExecutor().startTorrent(torrent, true);
 	}
 
-	@OptionsItem(R.id.action_stop)
+	@OptionsItem(resName="action_stop")
 	protected void stopTorrent() {
 		getTasksExecutor().stopTorrent(torrent);
 	}
 
-	@OptionsItem(R.id.action_remove_default)
+	@OptionsItem(resName="action_remove_default")
 	protected void removeTorrentDefault() {
 		getTasksExecutor().removeTorrent(torrent, false);
 	}
 
-	@OptionsItem(R.id.action_remove_withdata)
+	@OptionsItem(resName="action_remove_withdata")
 	protected void removeTorrentWithData() {
 		getTasksExecutor().removeTorrent(torrent, true);
 	}
 
-	@OptionsItem(R.id.action_setlabel)
+	@OptionsItem(resName="action_setlabel")
 	protected void setLabel() {
 		// TODO: Show label selection dialog
 	}
 
-	@OptionsItem(R.id.action_updatetrackers)
+	@OptionsItem(resName="action_updatetrackers")
 	protected void updateTrackers() {
 		// TODO: Show trackers edit dialog
 	}

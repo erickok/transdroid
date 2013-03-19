@@ -44,6 +44,8 @@ import org.transdroid.daemon.task.StopTask;
 
 import android.annotation.TargetApi;
 import android.app.SearchManager;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.view.View;
 import android.widget.AdapterView;
@@ -58,8 +60,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SherlockListView;
 import com.actionbarsherlock.widget.SearchView;
 
-@EActivity(R.layout.activity_torrents)
-@OptionsMenu(R.menu.activity_torrents)
+@EActivity(resName="activity_torrents")
+@OptionsMenu(resName="activity_torrents")
 public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor, NavigationFilterManager {
 
 	// Navigation components
@@ -84,11 +86,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected boolean turleModeEnabled = false;
 	
 	// Torrents list components
-	@FragmentById(R.id.torrent_list)
+	@FragmentById(resName="torrent_list")
 	protected TorrentsFragment fragmentTorrents;
 	
 	// Details view components
-	@FragmentById(R.id.torrent_details)
+	@FragmentById(resName="torrent_details")
 	protected DetailsFragment fragmentDetails;
 	
 	@AfterViews
@@ -149,13 +151,15 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		// For Android 2.1+, add an expandable SearchView to the action bar
-		MenuItem item = menu.findItem(R.id.action_search);
-		if (android.os.Build.VERSION.SDK_INT >= 8) {
-			final SearchView searchView = new SearchView(this);
-			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-			searchView.setQueryRefinementEnabled(true);
-			item.setActionView(searchView);
+		if (navigationHelper.enableSearchUi()) {
+			// For Android 2.1+, add an expandable SearchView to the action bar
+			MenuItem item = menu.findItem(R.id.action_search);
+			if (android.os.Build.VERSION.SDK_INT >= 8) {
+				final SearchView searchView = new SearchView(this);
+				searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+				searchView.setQueryRefinementEnabled(true);
+				item.setActionView(searchView);
+			}
 		}
 		return true;
 	}
@@ -183,8 +187,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		
 		// There is a connection (read: settings to some server known)
 		menu.findItem(R.id.action_add).setVisible(true);
-		menu.findItem(R.id.action_search).setVisible(true);
-		menu.findItem(R.id.action_rss).setVisible(true);
+		menu.findItem(R.id.action_search).setVisible(navigationHelper.enableSearchUi());
+		menu.findItem(R.id.action_rss).setVisible(navigationHelper.enableRssUi());
 		boolean hasAltMode = Daemon.supportsSetAlternativeMode(currentConnection.getType());
 		menu.findItem(R.id.action_enableturtle).setVisible(hasAltMode && !turleModeEnabled);
 		menu.findItem(R.id.action_disableturtle).setVisible(hasAltMode && turleModeEnabled);
@@ -283,25 +287,30 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// TODO: Handle start intent
 	}
 
-	@OptionsItem(R.id.action_refresh)
+	@OptionsItem(resName="action_refresh")
 	protected void refreshScreen() {
 		refreshTorrents();
 		getAdditionalStats();
 	}
 
-	@OptionsItem(R.id.action_enableturtle)
+	@OptionsItem(resName="action_enableturtle")
 	protected void enableTurtleMode() {
 		updateTurtleMode(true);
 	}
 
-	@OptionsItem(R.id.action_disableturtle)
+	@OptionsItem(resName="action_disableturtle")
 	protected void disableTurtleMode() {
 		updateTurtleMode(false);
 	}
-	
-	@OptionsItem(R.id.action_settings)
+
+	@OptionsItem(resName="action_settings")
 	protected void openSettings() {
 		MainSettingsActivity_.intent(this).start();
+	}
+
+	@OptionsItem(resName="action_help")
+	protected void openHelp() {
+		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.transdroid.org/download/")));
 	}
 	
 	private void clearScreens() {

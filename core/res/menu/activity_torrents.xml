@@ -54,7 +54,7 @@
 		android:title="@string/action_filter"/>
 	<item
 		android:id="@+id/action_help"
-		android:showAsAction="never"
+		android:showAsAction="always"
 		android:title="@string/action_help"/>
 	<item
 		android:id="@+id/action_settings"

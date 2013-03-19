@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="org.transdroid.lite"
+	android:versionCode="1"
+	android:versionName="2.0-alpha1" >
+
+	<uses-sdk
+		android:minSdkVersion="7"
+		android:targetSdkVersion="17" />
+
+	<supports-screens
+		android:anyDensity="true"
+		android:largeScreens="true"
+		android:normalScreens="true"
+		android:smallScreens="true"
+		android:xlargeScreens="true" />
+
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+	
+	<application
+		android:allowBackup="true"
+		android:icon="@drawable/ic_launcher"
+		android:label="@string/app_name"
+		android:theme="@style/Theme.Sherlock" >
+
+		<!-- Main activities -->
+		<activity
+			android:name="org.transdroid.core.gui.TorrentsActivity_"
+			android:label="@string/app_name"
+			android:icon="@drawable/ic_activity_torrents"
+			android:uiOptions="splitActionBarWhenNarrow"
+			android:theme="@style/TransdroidTheme" >
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+			</intent-filter>
+
+			<meta-data
+				android:name="android.app.default_searchable"
+				android:value="org.transdroid.gui.search.Search" />
+		</activity>
+		<activity
+			android:name="org.transdroid.core.gui.DetailsActivity_"
+			android:icon="@drawable/ic_activity_torrents"
+			android:uiOptions="splitActionBarWhenNarrow"
+			android:theme="@style/TransdroidTheme" >
+		</activity>
+
+		<!-- Settings screens -->
+		<activity android:name="org.transdroid.core.gui.settings.MainSettingsActivity_" />
+		<activity android:name="org.transdroid.core.gui.settings.ServerSettingsActivity_" />
+		<activity android:name="org.transdroid.core.gui.settings.NotificationSettingsActivity_" />
+		<activity android:name="org.transdroid.core.gui.settings.SystemSettingsActivity_" />
+		
+	</application>
+
+</manifest>

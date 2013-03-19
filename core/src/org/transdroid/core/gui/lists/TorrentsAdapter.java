@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
-import org.transdroid.core.gui.lists.TorrentView_;
 import org.transdroid.daemon.Torrent;
 
 import android.content.Context;

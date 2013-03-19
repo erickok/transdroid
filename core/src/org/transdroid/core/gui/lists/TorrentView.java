@@ -2,7 +2,6 @@ package org.transdroid.core.gui.lists;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
-import org.transdroid.core.R;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentStatus;
 
@@ -16,7 +15,7 @@ import fr.marvinlabs.widget.CheckableRelativeLayout;
  * View that represents some {@link Torrent} object and displays progress, status, speeds, etc.
  * @author Eric Kok
  */
-@EViewGroup(R.layout.list_item_torrent)
+@EViewGroup(resName="list_item_torrent")
 public class TorrentView extends CheckableRelativeLayout {
 
 	@ViewById

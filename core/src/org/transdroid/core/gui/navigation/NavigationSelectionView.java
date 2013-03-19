@@ -2,7 +2,6 @@ package org.transdroid.core.gui.navigation;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
-import org.transdroid.core.R;
 
 import android.content.Context;
 import android.widget.LinearLayout;
@@ -12,7 +11,7 @@ import android.widget.TextView;
  * View that displays the user-selected server and display filter inside the action bar list navigation spinner
  * @author Eric Kok
  */
-@EViewGroup(R.layout.list_item_navigation)
+@EViewGroup(resName="list_item_navigation")
 public class NavigationSelectionView extends LinearLayout {
 
 	@ViewById
