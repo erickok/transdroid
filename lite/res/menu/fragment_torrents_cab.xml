@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item
+		android:id="@+id/action_resume"
+		android:icon="@drawable/ic_action_resume"
+		android:showAsAction="always"
+		android:title="@string/action_resume" />
+	<item
+		android:id="@+id/action_pause"
+		android:icon="@drawable/ic_action_pause"
+		android:showAsAction="always"
+		android:title="@string/action_pause" />
+	<item
+		android:id="@+id/action_remove"
+		android:icon="@drawable/ic_action_remove"
+		android:showAsAction="always"
+		android:title="@string/action_remove">
+		<menu>
+			<item android:id="@+id/action_remove_default" android:title="@string/action_remove_default" />
+			<item android:id="@+id/action_remove_withdata" android:title="@string/action_remove_withdata" />
+		</menu>
+	</item>
+	<item
+		android:id="@+id/action_setlabel"
+		android:icon="@drawable/ic_action_labels"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_setlabel" />
+
+</menu>

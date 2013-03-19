@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentStatus;
@@ -80,7 +81,8 @@ public class StatsParser {
 							null, // Not supported in the XML stats
 							null,
 							null,
-							null));
+							null,
+							Daemon.Tfb4rt));
 					
 				} else if (next == XmlPullParser.START_TAG && name.equals("transfer")){
 					

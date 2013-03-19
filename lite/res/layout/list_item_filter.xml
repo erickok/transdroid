@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:paddingTop="4dip"
+	android:paddingBottom="4dip"
+	android:paddingLeft="@dimen/margin_default"
+	android:paddingRight="@dimen/margin_default" >
+
+	<TextView
+		android:id="@+id/item_text"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textIsSelectable="true" />
+
+</FrameLayout>

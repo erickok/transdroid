@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="TorrentProgressBar">
+		<attr name="progress" format="integer" />
+		<attr name="isActive" format="boolean" />
+	</declare-styleable>
+</resources>

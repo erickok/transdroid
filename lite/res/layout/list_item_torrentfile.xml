@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fr.marvinlabs.widget.CheckableRelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content" 
+	android:orientation="vertical" 
+	android:paddingTop="@dimen/margin_half"
+	android:paddingBottom="@dimen/margin_half"
+	android:paddingRight="@dimen/margin_default">
+	
+	<fr.marvinlabs.widget.InertCheckBox
+		android:id="@+id/file_checkbox"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:focusable="false" />
+		
+	<TextView
+		android:id="@+id/name_text"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_toRightOf="@+id/file_checkbox"
+		android:textColor="#fff"
+		android:textSize="15sp"
+		android:textIsSelectable="false"
+		android:focusable="false" />
+		
+	<TextView
+		android:id="@+id/progress_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/name_text"
+		android:layout_alignParentRight="true"
+		android:layout_marginLeft="@dimen/margin_half"
+		android:layout_marginTop="4dip"
+		android:textSize="12sp"
+		android:textIsSelectable="false"
+		android:focusable="false" />
+
+	<TextView
+		android:id="@+id/sizes_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/progress_text"
+		android:layout_alignBottom="@+id/progress_text"
+		android:layout_toRightOf="@+id/priority_image"
+		android:textIsSelectable="false"
+		android:textSize="12sp"
+		android:focusable="false" />
+
+	<ImageView
+		android:id="@+id/priority_image"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@+id/name_text"
+		android:layout_below="@+id/name_text"
+		android:layout_marginTop="4dip"
+		android:layout_marginRight="@dimen/margin_half"
+		android:contentDescription="@string/status_priority_normal"
+		android:focusable="false" />
+
+</fr.marvinlabs.widget.CheckableRelativeLayout>

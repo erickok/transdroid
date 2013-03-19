@@ -515,7 +515,8 @@ public class UtorrentAdapter implements IDaemonAdapter {
 					addedOnDate,
 					completedOnDate,
 					// uTorrent doesn't give the error message, so just remind that there is some error
-					status == TorrentStatus.Error? "See GUI for error message": null));
+					status == TorrentStatus.Error? "See GUI for error message": null,
+					settings.getType()));
 		}
 		return torrents;
 		

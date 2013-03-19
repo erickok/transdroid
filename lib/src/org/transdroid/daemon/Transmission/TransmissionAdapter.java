@@ -500,7 +500,8 @@ public class TransmissionAdapter implements IDaemonAdapter {
 					null, // No label/category/group support in the RPC API for now
 					new Date(tor.getLong(RPC_DATEADDED) * 1000L),
 					new Date(tor.getLong(RPC_DATEDONE) * 1000L),
-					errorString));
+					errorString,
+					settings.getType()));
 		}
 		
 		// Return the list

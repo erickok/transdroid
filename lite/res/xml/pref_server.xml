@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<EditTextPreference
+		android:key="server_name"
+		android:title="@string/pref_name"
+		android:summary="@string/pref_name_optional"
+		android:inputType="textNoSuggestions" />
+	<ListPreference
+		android:key="server_type"
+		android:title="@string/pref_servertype"
+		android:entries="@array/pref_daemon_types"
+		android:entryValues="@array/pref_daemon_values" />
+	<EditTextPreference
+		android:key="server_address"
+		android:title="@string/pref_address"
+		android:summary="@string/pref_searchurl_info"
+		android:inputType="textUri" />
+	<EditTextPreference
+		android:key="server_port"
+		android:title="@string/pref_port"
+		android:inputType="numberSigned" />
+	<EditTextPreference
+		android:key="server_user"
+		android:title="@string/pref_user"
+		android:inputType="textNoSuggestions" />
+	<EditTextPreference
+		android:key="server_pass"
+		android:title="@string/pref_pass"
+		android:inputType="textPassword" />
+	<EditTextPreference
+		android:key="server_extrapass"
+		android:title="@string/pref_extrapass"
+		android:inputType="textPassword" />
+
+	<PreferenceScreen android:title="@string/pref_advanced" >
+		<EditTextPreference
+			android:key="server_localaddress"
+			android:title="@string/pref_localaddress"
+			android:summary="@string/pref_localaddress_info"
+			android:inputType="textUri" />
+		<ListPreference
+			android:key="server_localnetwork"
+			android:title="@string/pref_localnetwork"
+			android:summary="@string/pref_localnetwork_info" />
+		<EditTextPreference
+			android:key="server_folder"
+			android:title="@string/pref_folder"
+			android:summary="@string/pref_folder_info"
+			android:inputType="textUri" />
+		<EditTextPreference
+			android:key="server_timeout"
+			android:title="@string/pref_timeout"
+			android:summary="@string/pref_timeout_info"
+			android:inputType="numberSigned"
+			android:defaultValue="8" />
+		<CheckBoxPreference
+			android:key="server_sslenabled"
+			android:title="@string/pref_sslenable"
+			android:summary="@string/pref_sslenable_info"
+			android:defaultValue="false" />
+		<CheckBoxPreference
+			android:key="server_ssltrustall"
+			android:title="@string/pref_sslacceptall"
+			android:summary="@string/pref_sslacceptall_info"
+			android:defaultValue="false"
+			android:dependency="server_sslenabled" />
+		<EditTextPreference
+			android:key="server_ssltrustkey"
+			android:title="@string/pref_sslkey"
+			android:summary="@string/pref_sslkey_info"
+			android:inputType="textNoSuggestions"
+			android:dependency="server_sslenabled" />
+	</PreferenceScreen>
+
+	<PreferenceScreen android:title="@string/pref_optional" >
+		<CheckBoxPreference
+			android:key="server_alarmfinished"
+			android:title="@string/pref_alarmdone"
+			android:summary="@string/pref_alarmdone_info"
+			android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="server_alarmnew"
+			android:title="@string/pref_alarmnew"
+			android:summary="@string/pref_alarmnew_info"
+			android:defaultValue="false" />
+		<ListPreference
+			android:key="server_os"
+			android:title="@string/pref_os"
+			android:entries="@array/pref_os_types"
+			android:entryValues="@array/pref_os_values" />
+		<EditTextPreference
+			android:key="server_downloaddir"
+			android:title="@string/pref_downdir"
+			android:summary="@string/pref_downdir_info"
+			android:inputType="textUri" />
+		<EditTextPreference
+			android:key="server_ftpurl"
+			android:title="@string/pref_ftpurl"
+			android:summary="@string/pref_ftpurl_into"
+			android:inputType="textUri" />
+		<EditTextPreference
+			android:key="server_ftppass"
+			android:title="@string/pref_ftppass"
+			android:inputType="textPassword" />
+	</PreferenceScreen>
+	
+</PreferenceScreen>

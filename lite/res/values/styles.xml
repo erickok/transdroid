@@ -1,0 +1,33 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<style name="TransdroidTheme" parent="Theme.Transdroid">
+		<!-- All customizations that are NOT specific to a particular API-level can go here. -->
+		<item name="android:textViewStyle">@style/DefaultTextView</item>
+		<item name="android:windowBackground">@android:color/black</item>
+	</style>
+
+	<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->
+	<style name="SectionHeader" parent="android:Widget.Holo.Light.TextView">
+		<item name="android:drawableBottom">@drawable/section_header</item>
+		<item name="android:drawablePadding">4dp</item>
+		<item name="android:layout_marginTop">8dp</item>
+		<item name="android:paddingLeft">4dp</item>
+		<item name="android:textColor">@color/green</item>
+		<item name="android:textSize">14sp</item>
+	</style>
+
+	<style name="DefaultTextView" parent="android:Widget.Holo.TextView">
+		<item name="android:textSize">15sp</item>
+	</style>
+
+	<style name="LabelTextView" parent="android:Widget.Holo.TextView">
+		<item name="android:textSize">12sp</item>
+		<item name="android:background">#fff</item>
+		<item name="android:textColor">#000</item>
+		<item name="android:paddingLeft">4dip</item>
+		<item name="android:paddingRight">4dip</item>
+		<item name="android:paddingTop">2dip</item>
+		<item name="android:paddingBottom">2dip</item>
+	</style>
+	
+</resources>
