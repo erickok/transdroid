@@ -3,7 +3,7 @@
 <string name="changes">
 Transdroid 1.1.13\n
 - Fix crash on pre-Android 2.3 devices\n
-- Sort 'no eta' torrents as last instead of first\n
+- Sort \'no eta\' torrents as last instead of first\n
 - qBittorrent: improve version number parsing\n
 \n
 Transdroid 1.1.12\n
