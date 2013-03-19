@@ -68,9 +68,9 @@ public class ApplicationSettings {
 				prefs.getString("server_pass_" + order, null), prefs.getString("server_extrapass_" + order, null),
 				OS.fromCode(prefs.getString("server_os_" + order, null)), prefs.getString(
 						"server_downloaddir_" + order, null), prefs.getString("server_ftpurl_" + order, null),
-				prefs.getString("server_ftppass_" + order, null), prefs.getInt("server_timeout_" + order, 8),
-				prefs.getBoolean("server_alarmfinished_" + order, true), prefs.getBoolean("server_alarmnew_" + order,
-						false), false);
+				prefs.getString("server_ftppass_" + order, null), Integer.parseInt(prefs.getString("server_timeout_"
+						+ order, "8")), prefs.getBoolean("server_alarmfinished_" + order, true), prefs.getBoolean(
+						"server_alarmnew_" + order, false), false);
 	}
 
 	/**

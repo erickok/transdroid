@@ -14,7 +14,6 @@
 	<EditTextPreference
 		android:key="server_address"
 		android:title="@string/pref_address"
-		android:summary="@string/pref_searchurl_info"
 		android:inputType="textUri" />
 	<EditTextPreference
 		android:key="server_port"
