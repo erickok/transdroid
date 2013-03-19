@@ -41,6 +41,17 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Note: Settings are loaded in onResume()
+
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		if (getPreferenceScreen() != null)
+			getPreferenceScreen().removeAll();
+		
 		// Load the preference menu and attack actions
 		addPreferencesFromResource(R.xml.pref_main);
 		findPreference("header_addserver").setOnPreferenceClickListener(onAddServer);
@@ -49,6 +60,13 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		findPreference("header_background").setOnPreferenceClickListener(onBackgroundSettings);
 		findPreference("header_system").setOnPreferenceClickListener(onSystemSettings);
 
+		loadSettings();
+		
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void loadSettings() {
+		
 		// Add existing servers
 		List<ServerSetting> servers = applicationSettings.getServerSettings();
 		for (ServerSetting serverSetting : servers) {
@@ -90,7 +108,7 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		// Supply the Preference list names and values
 		setSite.setEntries(siteNames.toArray(new String[siteNames.size()]));
 		setSite.setEntryValues(siteValues.toArray(new String[siteValues.size()]));
-
+		
 	}
 
 	@Override
