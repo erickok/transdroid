@@ -9,8 +9,7 @@ import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
-import org.transdroid.core.gui.lists.TorrentsAdapter;
-import org.transdroid.core.gui.lists.TorrentsAdapter_;
+import org.transdroid.core.gui.lists.*;
 import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.daemon.Torrent;
 
