@@ -22,7 +22,7 @@ public class DialogHolderActivity extends SherlockFragmentActivity {
 	 * DialogFragment's class here only; a new instance will be created by this holder activity.
 	 */
 	public static void showDialog(Context context, Class<? extends DialogFragment> dialogType) {
-		DialogHolderActivity_.intent(context).start();
+		DialogHolderActivity_.intent(context).dialogType(dialogType.getName()).start();
 	}
 
 	@AfterViews
