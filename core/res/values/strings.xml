@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-	<string name="app_name" translatable="false">Transdroid</string>
 	
 	<string name="action_add">Add</string>
 	<string name="action_addfromfile">From file</string>
@@ -40,6 +38,7 @@
 	<string name="action_remoteplay">Remote play in VLC</string>
 	<string name="action_download">Download using (S)FTP</string>
 	<string name="action_removesettings">Remove settings</string>
+	<string name="action_visitwebsite">Visit transdroid.org</string>
 	
 	<string name="navigation_nosettings">Transdroid allows you to monitor and manage the torrent client you run at home or on your seedbox. Setting things up can be a bit tricky, but we offer step-by-step guides and promise it\'ll be worth it!</string>
 	<string name="navigation_emptytorrents">Connected, but no torrent are active within the current filter</string>
@@ -179,27 +178,6 @@
 	<string name="pref_installhelp">View install guides</string>
 	<string name="pref_changelog">Recent changes</string>
 	<string name="pref_about">About</string>
-	
-	<string name="error_httperror">Error during communication; check your connection</string>
-	<string name="error_jsonrequesterror">Internal error building request</string>
-	<string name="error_jsonresponseerror">Error parsing server response (please check your settings)</string>
-	<string name="error_daemonnotconnected">Web interface not connected to a running daemon</string>
-	<string name="error_401">Access denied (please check your settings)</string>
-	<string name="error_torrentfile">Can\'t read .torrent file</string>
-	<string name="error_parsingrss">Error while parsing the RSS feed</string>
-	<string name="error_invalid_url_form">This URL is not well-formed</string>
-	<string name="error_invalid_search_url">Your web search URL is invalid:</string>
-	<string name="error_invalid_ip_or_hostname">Input is not a valid IP address or host name</string>
-	<string name="error_invalid_port_number">Port number is always numeric</string>
-	<string name="error_invalid_directory">Directory paths end with a / or \</string>
-	<string name="error_invalid_timeout">Timeout can not be empty and is a positive number</string>
-	<string name="error_no_url_enclosure">The RSS feed item didn\'t provide an URL enclosure or link tag pointing to the .torrent file</string>
-	<string name="error_no_link">The RSS feed item does not provide a link to browse to</string>
-	<string name="error_norssfeed">URL is not a (valid) RSS feed</string>
-	<string name="error_media_not_available">SD card not available to read/write</string>
-	<string name="error_no_valid_settings_file">File does not seem to contain Transdroid settings</string>
-	<string name="error_file_not_found">There is no settings file found</string>
-	
     <string-array name="pref_daemon_types" translatable="false">
         <item>BitComet</item>
         <item>Bitflu 1.2+</item>
@@ -258,5 +236,31 @@
 		<item>43200</item>
 		<item>86400</item>
 	</string-array>
+	
+	<string name="error_httperror">Error during communication; check your connection</string>
+	<string name="error_jsonrequesterror">Internal error building request</string>
+	<string name="error_jsonresponseerror">Error parsing server response (please check your settings)</string>
+	<string name="error_daemonnotconnected">Web interface not connected to a running daemon</string>
+	<string name="error_401">Access denied (please check your settings)</string>
+	<string name="error_torrentfile">Can\'t read .torrent file</string>
+	<string name="error_parsingrss">Error while parsing the RSS feed</string>
+	<string name="error_invalid_url_form">This URL is not well-formed</string>
+	<string name="error_invalid_search_url">Your web search URL is invalid:</string>
+	<string name="error_invalid_ip_or_hostname">Input is not a valid IP address or host name</string>
+	<string name="error_invalid_port_number">Port number is always numeric</string>
+	<string name="error_invalid_directory">Directory paths end with a / or \</string>
+	<string name="error_invalid_timeout">Timeout can not be empty and is a positive number</string>
+	<string name="error_no_url_enclosure">The RSS feed item didn\'t provide an URL enclosure or link tag pointing to the .torrent file</string>
+	<string name="error_no_link">The RSS feed item does not provide a link to browse to</string>
+	<string name="error_norssfeed">URL is not a (valid) RSS feed</string>
+	<string name="error_media_not_available">SD card not available to read/write</string>
+	<string name="error_no_valid_settings_file">File does not seem to contain Transdroid settings</string>
+	<string name="error_file_not_found">There is no settings file found</string>
+	
+	<string name="app_name" translatable="false">Transdroid</string>
+	<string name="app_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>
+	<string name="app_license" translatable="false">Published under GNU General Public License v3</string>
+	<string name="system_description">Manage your torrents from your Android device</string>
+	<string name="system_libraries">LIBRARIES</string>
 
 </resources>

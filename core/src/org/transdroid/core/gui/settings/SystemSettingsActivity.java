@@ -4,12 +4,16 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.gui.AboutFragment;
+import org.transdroid.core.gui.log.ErrorLogSender;
+import org.transdroid.core.gui.navigation.DialogHolderActivity;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
@@ -20,6 +24,8 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 
 	@Bean
 	protected ApplicationSettings applicationSettings;
+	@Bean
+	protected ErrorLogSender errorLogSender;
 	
 	@SuppressWarnings("deprecation")
 	@Override
@@ -39,7 +45,7 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 	private OnPreferenceClickListener onSendLogClick = new OnPreferenceClickListener() {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
-			// TODO: Implement error log collection and sending
+			errorLogSender.collectAndSendLog(SystemSettingsActivity.this, applicationSettings.getLastUsedServer());
 			return true;
 		}
 	};
@@ -55,7 +61,8 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 	private OnPreferenceClickListener onChangeLogClick = new OnPreferenceClickListener() {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
-			// TODO: Implement about change log screen
+			// TODO: Implement change log screen
+			Toast.makeText(SystemSettingsActivity.this, "TODO: Implement change log screen", Toast.LENGTH_LONG).show();
 			return true;
 		}
 	};
@@ -63,7 +70,7 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 	private OnPreferenceClickListener onAboutClick = new OnPreferenceClickListener() {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
-			// TODO: Implement about screen with app version, developer name and used open source libraries
+			DialogHolderActivity.showDialog(SystemSettingsActivity.this, AboutFragment.class);
 			return true;
 		}
 	};

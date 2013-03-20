@@ -103,7 +103,9 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	
 	@Background
 	protected void refreshTorrent() {
+		fragmentDetails.updateIsLoading(true);
 		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute();
+		fragmentDetails.updateIsLoading(false);
 		if (result instanceof RetrieveTaskSuccessResult) {
 			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(), ((RetrieveTaskSuccessResult) result).getLabels());
 		} else {

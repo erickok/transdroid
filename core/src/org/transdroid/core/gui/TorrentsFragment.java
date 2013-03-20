@@ -7,6 +7,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.gui.lists.*;
@@ -172,10 +173,20 @@ public class TorrentsFragment extends SherlockFragment {
 		this.hasAConnection = hasAConnection;
 		if (!hasAConnection)
 			clear();
-		updateViewVisibility();
 	}
-	
-	private void updateViewVisibility() {
+
+	/**
+	 * Updates the shown screen depending on whether the torrents are loading
+	 * @param isLoading True if the list of torrents is (re)loading, false otherwise
+	 */
+	public void updateIsLoading(boolean isLoading) {
+		this.isLoading = isLoading;
+		if (isLoading)
+			clear();
+	}
+
+	@UiThread
+	protected void updateViewVisibility() {
 		if (!hasAConnection) {
 			torrentsList.setVisibility(View.GONE);
 			emptyText.setVisibility(View.GONE);

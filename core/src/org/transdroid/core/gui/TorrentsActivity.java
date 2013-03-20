@@ -19,6 +19,7 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.*;
 import org.transdroid.core.gui.navigation.NavigationSelectionView.NavigationFilterManager;
 import org.transdroid.core.gui.settings.*;
@@ -323,7 +324,9 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	@Background
 	protected void refreshTorrents() {
+		fragmentTorrents.updateIsLoading(true);
 		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute();
+		fragmentTorrents.updateIsLoading(false);
 		if (result instanceof RetrieveTaskSuccessResult) {
 			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(), ((RetrieveTaskSuccessResult) result).getLabels());
 		} else {
@@ -454,6 +457,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result) {
+		Log.i(this, result.getException().toString());
 		// TODO: Properly report this error
 		Toast.makeText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
 				Toast.LENGTH_LONG).show();

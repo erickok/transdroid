@@ -18,6 +18,7 @@ import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -25,7 +26,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.SherlockListView;
 
 /**
- * Fragment that shown detailed statistics about some torrent. These come from some already fetched {@link Torrent}
+ * Fragment that shows detailed statistics about some torrent. These come from some already fetched {@link Torrent}
  * object, but it also retrieves further detailed statistics.
  * @author Eric Kok
  */
@@ -40,12 +41,16 @@ public class DetailsFragment extends SherlockFragment {
 	protected TorrentDetails torrentDetails = null;
 	@InstanceState
 	protected ArrayList<TorrentFile> torrentFiles = null;
+	@InstanceState
+	protected boolean isLoadingTorrent = false;
 
 	// Views
 	@ViewById(resName="details_list")
 	protected SherlockListView detailsList;
 	@ViewById
 	protected TextView emptyText;
+	@ViewById
+	protected ProgressBar loadingProgress;
 
 	@AfterViews
 	protected void init() {
@@ -68,9 +73,10 @@ public class DetailsFragment extends SherlockFragment {
 		clear();
 		this.torrent = newTorrent;
 		((DetailsAdapter) detailsList.getAdapter()).updateTorrent(newTorrent);
-		// Make the list (with detials header) visible
+		// Make the list (with details header) visible
 		detailsList.setVisibility(View.VISIBLE);
-		emptyText.setVisibility(View.INVISIBLE);
+		emptyText.setVisibility(isLoadingTorrent? View.INVISIBLE: View.VISIBLE);
+		loadingProgress.setVisibility(!isLoadingTorrent? View.VISIBLE: View.INVISIBLE);
 		// Also update the available actions in the action bar
 		getActivity().supportInvalidateOptionsMenu();
 	}
@@ -122,7 +128,17 @@ public class DetailsFragment extends SherlockFragment {
 		torrentDetails = null;
 		torrentFiles = null;
 	}
-	
+
+	/**
+	 * Updates the shown screen depending on whether the torrent is loading
+	 * @param isLoading True if the torrent is (re)loading, false otherwise
+	 */
+	public void updateIsLoading(boolean isLoading) {
+		this.isLoadingTorrent = isLoading;
+		if (isLoadingTorrent)
+			clear();
+	}
+
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);

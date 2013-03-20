@@ -20,6 +20,12 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 ---
 
 Some code/libraries are used in the project:
+  ActionBarSherlock
+    Jake Wharton (Apache License, Version 2.0)
+    http://actionbarsherlock.com/
+  AndroidAnnotations
+    Pierre-Yves Ricau (eBusinessInformations) et al.
+    http://androidannotations.org/
   Base16Encoder (Apache OpenJPA)
     Marc Prud'hommeaux (Apache License, Version 2.0)
   MultipartEntity (AOSP)

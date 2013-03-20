@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:layout_margin="@dimen/margin_default" >
+	
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:text="@string/app_name"
+		android:textSize="36sp"
+		android:textColor="@android:color/white"
+		android:fontFamily="sans-serif-condensed"
+		android:drawableLeft="@drawable/ic_launcher"
+		android:drawablePadding="@dimen/margin_half"
+		android:layout_marginTop="@dimen/margin_half"
+		android:layout_marginBottom="@dimen/margin_half" />
+	
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:text="@string/system_description"
+		android:gravity="center" />
+	
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginTop="@dimen/margin_default"
+		android:text="@string/app_developer"
+		android:textColor="@android:color/white"
+		android:textSize="18sp"
+		android:fontFamily="sans-serif-condensed"
+		android:gravity="center" />
+	
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginTop="4dip"
+		android:layout_marginBottom="@dimen/margin_default"
+		android:text="@string/app_license"
+		android:gravity="center" />
+	
+</LinearLayout>
