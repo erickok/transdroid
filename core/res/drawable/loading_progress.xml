@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
-	android:drawable="@drawable/ic_empty_details"
-	android:pivotX="50%"
-	android:pivotY="50%" />
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item
+		android:id="@android:id/progress"
+		android:duration="100">
+		<rotate
+			android:drawable="@drawable/ic_empty_details"
+			android:pivotX="50%"
+			android:pivotY="50%" />
+	</item>
+
+</animation-list>

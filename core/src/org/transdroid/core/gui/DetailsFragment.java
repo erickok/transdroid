@@ -127,6 +127,7 @@ public class DetailsFragment extends SherlockFragment {
 		torrent = null;
 		torrentDetails = null;
 		torrentFiles = null;
+		getActivity().supportInvalidateOptionsMenu();
 	}
 
 	/**
@@ -143,12 +144,24 @@ public class DetailsFragment extends SherlockFragment {
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		
+		if (torrent == null) {
+			menu.findItem(R.id.action_resume).setVisible(false);
+			menu.findItem(R.id.action_pause).setVisible(false);
+			menu.findItem(R.id.action_start).setVisible(false);
+			menu.findItem(R.id.action_stop).setVisible(false);
+			menu.findItem(R.id.action_remove).setVisible(false);
+			menu.findItem(R.id.action_remove_withdata).setVisible(false);
+			menu.findItem(R.id.action_setlabel).setVisible(false);
+			menu.findItem(R.id.action_updatetrackers).setVisible(false);
+			return;
+		}
 		// Update action availability
 		boolean startStop = Daemon.supportsStoppingStarting(torrent.getDaemon());
 		menu.findItem(R.id.action_resume).setVisible(torrent.canResume());
 		menu.findItem(R.id.action_pause).setVisible(torrent.canPause());
 		menu.findItem(R.id.action_start).setVisible(startStop && torrent.canStart());
 		menu.findItem(R.id.action_stop).setVisible(startStop && torrent.canStop());
+		menu.findItem(R.id.action_remove).setVisible(true);
 		boolean removeWithData = Daemon.supportsRemoveWithData(torrent.getDaemon());
 		menu.findItem(R.id.action_remove_withdata).setVisible(removeWithData);
 		boolean setLabel = Daemon.supportsSetLabel(torrent.getDaemon());

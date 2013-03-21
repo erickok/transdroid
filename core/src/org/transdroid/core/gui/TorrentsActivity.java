@@ -142,8 +142,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		if (lastUsed == null) {
 			// Still no settings
+			updateFragmentVisibility(false);
 			return;
 		}
+		// TODO: See if this does not mean the refresh is called twice (first in onCreate)
 		// There is a server now: select it to establish a connection
 		filterSelected(lastUsed);
 	}
@@ -254,6 +256,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			currentConnection = server.createServerAdapter();
 			applicationSettings.setLastUsedServer(server);
 			clearScreens();
+			updateFragmentVisibility(true);
 			refreshTorrents();
 			return;
 
@@ -279,6 +282,17 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Override
 	public String getActiveServerText() {
 		return currentConnection.getSettings().getName();
+	}
+
+	/**
+	 * Hides the filter list and details fragment's full view if there is no configured connection
+	 * @param hasServerSettings Whether there are server settings available, so we can continue to connect
+	 */
+	private void updateFragmentVisibility(boolean hasServerSettings) {
+		if (filtersList != null)
+			filtersList.setVisibility(hasServerSettings? View.VISIBLE: View.GONE);
+		if (fragmentDetails != null)
+			getSupportFragmentManager().beginTransaction().hide(fragmentDetails).commit();
 	}
 
 	/**

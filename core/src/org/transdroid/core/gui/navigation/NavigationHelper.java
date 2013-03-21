@@ -38,7 +38,7 @@ public class NavigationHelper {
 	 * @return True if the app runs on a small device, false otherwise
 	 */
 	public boolean isSmallScreen() {
-		return context.getResources().getBoolean(R.bool.small_screen);
+		return context.getResources().getBoolean(R.bool.show_dialog_fullscreen);
 	}
 
 	/**
