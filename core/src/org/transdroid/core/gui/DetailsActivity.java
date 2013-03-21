@@ -17,6 +17,8 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
+import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
@@ -43,12 +45,13 @@ import org.transdroid.daemon.task.StopTask;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
-@EActivity(resName="activity_details")
-@OptionsMenu(resName="activity_details")
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+
+@EActivity(resName = "activity_details")
+@OptionsMenu(resName = "activity_details")
 public class DetailsActivity extends SherlockFragmentActivity implements TorrentTasksExecutor {
 
 	@Extra
@@ -57,11 +60,13 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 	// Settings
 	@Bean
+	protected NavigationHelper navigationHelper;
+	@Bean
 	protected ApplicationSettings applicationSettings;
 	private IDaemonAdapter currentConnection = null;
-	
+
 	// Details view components
-	@FragmentById(resName="torrent_details")
+	@FragmentById(resName = "torrent_details")
 	protected DetailsFragment fragmentDetails;
 
 	@AfterViews
@@ -72,7 +77,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 			finish();
 			return;
 		}
-		
+
 		// Simple action bar with up, torrent name as title and refresh button
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setTitle(torrent.getName());
@@ -85,31 +90,32 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		fragmentDetails.updateTorrent(torrent);
 		refreshTorrentDetails();
 		refreshTorrentFiles();
-		
+
 	}
-	
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@OptionsItem(android.R.id.home)
 	protected void navigateUp() {
 		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
-	
-	@OptionsItem(resName="action_refresh")
+
+	@OptionsItem(resName = "action_refresh")
 	protected void refreshScreen() {
 		refreshTorrent();
 		refreshTorrentDetails();
 		refreshTorrentFiles();
 	}
-	
+
 	@Background
 	protected void refreshTorrent() {
 		fragmentDetails.updateIsLoading(true);
 		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute();
 		fragmentDetails.updateIsLoading(false);
 		if (result instanceof RetrieveTaskSuccessResult) {
-			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(), ((RetrieveTaskSuccessResult) result).getLabels());
+			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
+					((RetrieveTaskSuccessResult) result).getLabels());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult)result);
+			onCommunicationError((DaemonTaskFailureResult) result);
 		}
 	}
 
@@ -121,7 +127,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof GetTorrentDetailsTaskSuccessResult) {
 			onTorrentDetailsRetrieved(((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult)result);
+			onCommunicationError((DaemonTaskFailureResult) result);
 		}
 	}
 
@@ -133,7 +139,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof GetFileListTaskSuccessResult) {
 			onTorrentFilesRetrieved(((GetFileListTaskSuccessResult) result).getFiles());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult)result);
+			onCommunicationError((DaemonTaskFailureResult) result);
 		}
 	}
 
@@ -233,15 +239,15 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 	@UiThread
 	protected void onTaskSucceeded(DaemonTaskSuccessResult result, int successMessageId, String... messageParams) {
-		// TODO: Properly report this success
-		Toast.makeText(this, getString(successMessageId, (Object[]) messageParams), Toast.LENGTH_LONG).show();
+		Crouton.showText(this, getString(successMessageId, (Object[]) messageParams),
+				navigationHelper.CROUTON_INFO_STYLE);
 	}
 
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result) {
-		// TODO: Properly report this error
-		Toast.makeText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
-				Toast.LENGTH_LONG).show();
+		Log.i(this, result.getException().toString());
+		Crouton.showText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
+				navigationHelper.CROUTON_ERROR_STYLE);
 	}
 
 	@UiThread
@@ -261,5 +267,5 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		// Update the details fragment with the newly retrieved list of files
 		fragmentDetails.updateTorrentFiles(new ArrayList<TorrentFile>(torrentFiles));
 	}
-	
+
 }

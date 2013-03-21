@@ -4,17 +4,30 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.transdroid.core.R;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
+/**
+ * Helper for activities to make navigation-related decisions, such as when a device can display a larger, tablet style
+ * layout or how to display errors.
+ * @author Eric Kok
+ */
+@SuppressLint("ResourceAsColor")
 @EBean
 public class NavigationHelper {
 
 	@RootContext
 	protected Context context;
+
+	public Style CROUTON_ERROR_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_error).setTextSize(13)
+			.build();
+	public Style CROUTON_INFO_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_info).setTextSize(13)
+			.build();
 
 	/**
 	 * Whether any search-related UI components should be shown in the interface. At the moment returns false only if we
@@ -32,8 +45,8 @@ public class NavigationHelper {
 	}
 
 	/**
-	 * Returns whether the device is considered small (i.e. a phone) rather than large (i.e. a tablet). Can, for example, 
-	 * be used to determine if a dialog should be shown full screen. Currently is true if the device's smallest 
+	 * Returns whether the device is considered small (i.e. a phone) rather than large (i.e. a tablet). Can, for
+	 * example, be used to determine if a dialog should be shown full screen. Currently is true if the device's smallest
 	 * dimension is 500 dip.
 	 * @return True if the app runs on a small device, false otherwise
 	 */
@@ -58,19 +71,19 @@ public class NavigationHelper {
 	public boolean enableRssUi() {
 		return !context.getPackageName().equals("org.transdroid.lite");
 	}
-	
+
 	/**
 	 * Whether the navigation of server types and labels as filter are shown in a separate fragment.
 	 * @return True if navigation is in a separate fragment, false if the items are shown in the action bar spinner
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public boolean showFiltersInFragment() {
-		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) { 
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			if (context.getResources().getConfiguration().screenWidthDp >= 600) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 }

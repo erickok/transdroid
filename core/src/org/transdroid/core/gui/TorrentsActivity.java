@@ -21,7 +21,10 @@ import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.*;
+import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.NavigationSelectionView.NavigationFilterManager;
+import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.settings.*;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
@@ -51,7 +54,6 @@ import android.os.Build;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
@@ -61,9 +63,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SherlockListView;
 import com.actionbarsherlock.widget.SearchView;
 
-@EActivity(resName="activity_torrents")
-@OptionsMenu(resName="activity_torrents")
-public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor, NavigationFilterManager {
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+
+@EActivity(resName = "activity_torrents")
+@OptionsMenu(resName = "activity_torrents")
+public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor,
+		NavigationFilterManager {
 
 	// Navigation components
 	@Bean
@@ -85,15 +90,15 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected NavigationFilter currentFilter = null;
 	@InstanceState
 	protected boolean turleModeEnabled = false;
-	
+
 	// Torrents list components
-	@FragmentById(resName="torrent_list")
+	@FragmentById(resName = "torrent_list")
 	protected TorrentsFragment fragmentTorrents;
-	
+
 	// Details view components
-	@FragmentById(resName="torrent_details")
+	@FragmentById(resName = "torrent_details")
 	protected DetailsFragment fragmentDetails;
-	
+
 	@AfterViews
 	protected void init() {
 
@@ -119,24 +124,24 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		if (lastUsed == null) {
-			// No server settings yet; 
+			// No server settings yet;
 			return;
 		}
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
 		// TODO: Does this call the action bar item selection callback? And refreshes?
 		getSupportActionBar().setSelectedNavigationItem(lastUsed.getOrder());
-		
+
 		// Handle any start up intents
 		if (firstStart) {
 			handleStartIntent();
 		}
-		
+
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
 		// Refresh server settings
 		navigationSpinnerAdapter.updateServers(applicationSettings.getServerSettings());
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
@@ -166,11 +171,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		
+
 		// No connection yet; hide all menu options except settings
 		if (currentConnection == null) {
 			menu.findItem(R.id.action_add).setVisible(false);
@@ -187,7 +192,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			return true;
 		}
-		
+
 		// There is a connection (read: settings to some server known)
 		menu.findItem(R.id.action_add).setVisible(true);
 		menu.findItem(R.id.action_search).setVisible(navigationHelper.enableSearchUi());
@@ -205,7 +210,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 		return true;
 	}
-	
+
 	/**
 	 * Called when an item in the action bar navigation spinner was selected
 	 */
@@ -220,7 +225,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// A header was selected; no action
 		return false;
 	}
-	
+
 	// Handles clicks (selections) on the dedicated list of filter items (if it exists)
 	// NOTE: Unfortunately we cannot use the @ItemSelect(R.id.filters_list) annotation as it throws NPE exceptions when
 	// the list doesn't exist (read: on small screens)
@@ -229,29 +234,30 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 			filterSelected((SimpleListItem) filtersList.getAdapter().getItem(position));
 		}
+
 		@Override
 		public void onNothingSelected(AdapterView<?> parent) {
 			// TODO: Check if this happens
 		}
 	};
-	
+
 	/**
 	 * A new filter was selected; update the view over the current data
 	 * @param selected True if the filter item was selected, false if it was deselected
 	 * @param item The touched filter item
 	 */
 	protected void filterSelected(SimpleListItem item) {
-		
+
 		// Server selection
 		if (item instanceof ServerSetting) {
 			ServerSetting server = (ServerSetting) item;
-			
+
 			if (currentConnection != null && server.equals(currentConnection.getSettings())) {
 				// Already connected to this server; just ask for a refresh instead
 				refreshTorrents();
 				return;
 			}
-			
+
 			// Update connection to the newly selected server and refresh
 			currentConnection = server.createServerAdapter();
 			applicationSettings.setLastUsedServer(server);
@@ -261,8 +267,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			return;
 
 		}
-		
-		// Status type or label selection - both of which are navigation filters 
+
+		// Status type or label selection - both of which are navigation filters
 		if (item instanceof NavigationFilter) {
 			currentFilter = (NavigationFilter) item;
 			fragmentTorrents.applyFilter(currentFilter);
@@ -271,7 +277,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 				fragmentDetails.clear();
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -290,7 +296,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	 */
 	private void updateFragmentVisibility(boolean hasServerSettings) {
 		if (filtersList != null)
-			filtersList.setVisibility(hasServerSettings? View.VISIBLE: View.GONE);
+			filtersList.setVisibility(hasServerSettings ? View.VISIBLE : View.GONE);
 		if (fragmentDetails != null)
 			getSupportFragmentManager().beginTransaction().hide(fragmentDetails).commit();
 	}
@@ -302,32 +308,32 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// TODO: Handle start intent
 	}
 
-	@OptionsItem(resName="action_refresh")
+	@OptionsItem(resName = "action_refresh")
 	protected void refreshScreen() {
 		refreshTorrents();
 		getAdditionalStats();
 	}
 
-	@OptionsItem(resName="action_enableturtle")
+	@OptionsItem(resName = "action_enableturtle")
 	protected void enableTurtleMode() {
 		updateTurtleMode(true);
 	}
 
-	@OptionsItem(resName="action_disableturtle")
+	@OptionsItem(resName = "action_disableturtle")
 	protected void disableTurtleMode() {
 		updateTurtleMode(false);
 	}
 
-	@OptionsItem(resName="action_settings")
+	@OptionsItem(resName = "action_settings")
 	protected void openSettings() {
 		MainSettingsActivity_.intent(this).start();
 	}
 
-	@OptionsItem(resName="action_help")
+	@OptionsItem(resName = "action_help")
 	protected void openHelp() {
 		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.transdroid.org/download/")));
 	}
-	
+
 	private void clearScreens() {
 		// Clear the currently shown list of torrent and perhaps the details
 		fragmentTorrents.clear();
@@ -342,9 +348,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute();
 		fragmentTorrents.updateIsLoading(false);
 		if (result instanceof RetrieveTaskSuccessResult) {
-			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(), ((RetrieveTaskSuccessResult) result).getLabels());
+			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
+					((RetrieveTaskSuccessResult) result).getLabels());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult)result);
+			onCommunicationError((DaemonTaskFailureResult) result);
 		}
 	}
 
@@ -354,10 +361,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (result instanceof GetStatsTaskSuccessResult) {
 			onTurtleModeRetrieved(((GetStatsTaskSuccessResult) result).isAlternativeModeEnabled());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult)result);
+			onCommunicationError((DaemonTaskFailureResult) result);
 		}
 	}
-	
+
 	@Background
 	protected void updateTurtleMode(boolean enable) {
 		DaemonTaskResult result = SetAlternativeModeTask.create(currentConnection, enable).execute();
@@ -365,7 +372,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Success; no need to retrieve it again - just update the visual indicator
 			onTurtleModeRetrieved(enable);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult)result);
+			onCommunicationError((DaemonTaskFailureResult) result);
 		}
 	}
 
@@ -465,16 +472,15 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	@UiThread
 	protected void onTaskSucceeded(DaemonTaskSuccessResult result, int successMessageId, String... messageParams) {
-		// TODO: Properly report this success
-		Toast.makeText(this, getString(successMessageId, (Object[]) messageParams), Toast.LENGTH_LONG).show();
+		Crouton.showText(this, getString(successMessageId, (Object[]) messageParams),
+				navigationHelper.CROUTON_INFO_STYLE);
 	}
 
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result) {
 		Log.i(this, result.getException().toString());
-		// TODO: Properly report this error
-		Toast.makeText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
-				Toast.LENGTH_LONG).show();
+		Crouton.showText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
+				navigationHelper.CROUTON_ERROR_STYLE);
 	}
 
 	@UiThread
