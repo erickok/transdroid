@@ -21,26 +21,44 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 
 Some code/libraries are used in the project:
   ActionBarSherlock
-    Jake Wharton (Apache License, Version 2.0)
+    Jake Wharton
+    Apache License, Version 2.0
     http://actionbarsherlock.com/
   AndroidAnnotations
     Pierre-Yves Ricau (eBusinessInformations) et al.
+    Apache License, Version 2.0
     http://androidannotations.org/
-  Base16Encoder (Apache OpenJPA)
-    Marc Prud'hommeaux (Apache License, Version 2.0)
-  MultipartEntity (AOSP)
-    Apache Software Foundation (Apache License, Version 2.0)
+  Crouton
+    Code: Benjamin Weiss (Neofonie Mobile Gmbh) et al.
+    Idea: Cyril Mottier
+    Apache License, Version 2.0
+    https://github.com/keyboardsurfer/Crouton
+  Base16Encoder
+    Marc Prud'hommeaux
+    Apache OpenJPA
+    http://openjpa.apache.org/
+  MultipartEntity
+    Apache Software Foundation
+    Apache License, Version 2.0
     http://source.android.com/
   RssParser (learning-android)
-    Tane Piper (Public Domain)
+    Tane Piper
+    Public Domain
     http://github.com/digitalspaghetti/learning-android
   Base64
-    Robert Harder (Public Domain)
+    Robert Harder
+    Public Domain
     http://iharder.net/base64
   android-xmlrpc
-    pskink et al. (Apache License, Version 2.0)
+    pskink et al.
+    Apache License, Version 2.0
     http://code.google.com/p/android-xmlrpc/
   android-ColorPickerPreference
-    Daniel Nilsson and Sergey Margaritov (Apache License, Version 2.0)
+    Daniel Nilsson and Sergey Margaritov
+    Apache License, Version 2.0
     https://github.com/attenzione/android-ColorPickerPreference
+  CheckableRelativeLayout
+    Cédric Caron (MarvinLabs)
+    Public Domain
+    http://www.marvinlabs.com/2010/10/custom-listview-ability-check-items/
 
