@@ -63,6 +63,7 @@ public class TorrentDetailsView extends RelativeLayout {
 		} else {
 			dateaddedText.setVisibility(View.INVISIBLE);
 		}
+		
 		statusText.setText(getResources().getString(R.string.status_status, local.getProgressStatusEta(getResources())));
 		ratioText.setText(getResources().getString(R.string.status_ratio, local.getRatioString()));
 		// TODO: Implement separate numbers of seeders and leechers

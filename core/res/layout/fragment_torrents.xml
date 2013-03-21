@@ -17,8 +17,8 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:indeterminate="true"
-		android:indeterminateOnly="true"
 		android:indeterminateDrawable="@drawable/loading_progress"
+		android:indeterminateOnly="true"
 		android:visibility="visible" />
 
 	<TextView
@@ -30,7 +30,21 @@
 		android:drawableTop="@drawable/ic_empty_details"
 		android:gravity="center"
 		android:maxWidth="400dip"
+		android:padding="@dimen/margin_default"
 		android:text="@string/navigation_emptytorrents"
+		android:textIsSelectable="false"
+		android:visibility="gone" />
+
+	<TextView
+		android:id="@+id/error_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:drawablePadding="8dip"
+		android:drawableTop="@drawable/ic_empty_details"
+		android:gravity="center"
+		android:maxWidth="400dip"
+		android:padding="@dimen/margin_default"
 		android:textIsSelectable="false"
 		android:visibility="gone" />
 
@@ -43,6 +57,7 @@
 		android:drawableTop="@drawable/ic_empty_details"
 		android:gravity="center"
 		android:maxWidth="400dip"
+		android:padding="@dimen/margin_default"
 		android:text="@string/navigation_nosettings"
 		android:textIsSelectable="false"
 		android:visibility="gone" />

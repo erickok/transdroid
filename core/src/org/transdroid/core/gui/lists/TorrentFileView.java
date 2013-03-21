@@ -33,11 +33,11 @@ public class TorrentFileView extends CheckableRelativeLayout {
 		switch (torrentFile.getPriority()) {
 		case Off:
 			priorityImage.setImageResource(R.drawable.ic_priority_off);
-			priorityImage.setContentDescription(getResources().getString(R.string.status_priority_low));
+			priorityImage.setContentDescription(getResources().getString(R.string.status_priority_off));
 			break;
 		case Low:
 			priorityImage.setImageResource(R.drawable.ic_priority_low);
-			priorityImage.setContentDescription(getResources().getString(R.string.status_priority_normal));
+			priorityImage.setContentDescription(getResources().getString(R.string.status_priority_low));
 			break;
 		case Normal:
 			priorityImage.setImageResource(R.drawable.ic_priority_normal);

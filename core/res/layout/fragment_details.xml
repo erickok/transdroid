@@ -8,9 +8,9 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:choiceMode="multipleChoiceModal"
-		android:listSelector="@drawable/selectable_background_transdroid"
 		android:divider="@null"
 		android:dividerHeight="0dip"
+		android:listSelector="@drawable/selectable_background_transdroid"
 		android:visibility="gone" />
 
 	<ProgressBar
@@ -20,17 +20,18 @@
 		android:layout_gravity="center"
 		android:indeterminateDrawable="@drawable/loading_progress"
 		android:visibility="gone" />
-	
+
 	<TextView
 		android:id="@+id/empty_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
-		android:drawableTop="@drawable/ic_empty_details"
 		android:drawablePadding="8dip"
-		android:text="@string/navigation_emptydetails"
+		android:drawableTop="@drawable/ic_empty_details"
 		android:gravity="center"
+		android:padding="@dimen/margin_default"
+		android:text="@string/navigation_emptydetails"
 		android:textIsSelectable="false"
 		android:visibility="visible" />
-	
+
 </FrameLayout>

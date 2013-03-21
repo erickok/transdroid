@@ -40,6 +40,8 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		findPreference("system_sendlog").setOnPreferenceClickListener(onSendLogClick);
 		findPreference("system_installhelp").setOnPreferenceClickListener(onInstallHelpClick);
 		findPreference("system_changelog").setOnPreferenceClickListener(onChangeLogClick);
+		findPreference("system_importsettings").setOnPreferenceClickListener(onImportSettingsClick);
+		findPreference("system_exportsettings").setOnPreferenceClickListener(onExportSettingsClick);
 		findPreference("system_about").setOnPreferenceClickListener(onAboutClick);
 	}
 
@@ -59,6 +61,22 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		}
 	};
 
+	private OnPreferenceClickListener onImportSettingsClick = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			// TODO: Allow import of settings
+			return true;
+		}
+	};
+
+	private OnPreferenceClickListener onExportSettingsClick = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			// TODO: Allow export of settings
+			return true;
+		}
+	};
+	
 	private OnPreferenceClickListener onChangeLogClick = new OnPreferenceClickListener() {
 		@SuppressWarnings("deprecation")
 		@Override

@@ -261,7 +261,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Update connection to the newly selected server and refresh
 			currentConnection = server.createServerAdapter();
 			applicationSettings.setLastUsedServer(server);
-			clearScreens();
+			// Clear the currently shown list of torrent and perhaps the details
+			fragmentTorrents.clear();
+			if (fragmentDetails != null) {
+				fragmentDetails.clear();
+			}
 			updateFragmentVisibility(true);
 			refreshTorrents();
 			return;
@@ -311,7 +315,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@OptionsItem(resName = "action_refresh")
 	protected void refreshScreen() {
 		refreshTorrents();
-		getAdditionalStats();
+		if (Daemon.supportsStats(currentConnection.getType()))
+			getAdditionalStats();
 	}
 
 	@OptionsItem(resName = "action_enableturtle")
@@ -332,14 +337,6 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@OptionsItem(resName = "action_help")
 	protected void openHelp() {
 		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.transdroid.org/download/")));
-	}
-
-	private void clearScreens() {
-		// Clear the currently shown list of torrent and perhaps the details
-		fragmentTorrents.clear();
-		if (fragmentDetails != null) {
-			fragmentDetails.clear();
-		}
 	}
 
 	@Background
@@ -479,8 +476,9 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result) {
 		Log.i(this, result.getException().toString());
-		Crouton.showText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
-				navigationHelper.CROUTON_ERROR_STYLE);
+		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
+		Crouton.showText(this, error, navigationHelper.CROUTON_ERROR_STYLE);
+		fragmentTorrents.updateError(error);
 	}
 
 	@UiThread

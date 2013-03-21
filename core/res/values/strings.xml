@@ -52,7 +52,7 @@
 	<string name="navigation_status_onlyactive">Active</string>
 	<string name="navigation_status_onlyinactive">Inactive</string>
 	
-	<string name="status_status">Status: %1%s</string>
+	<string name="status_status">Status: %1$s</string>
 	<string name="status_waiting">Waiting to check&#8230;</string>
 	<string name="status_checking">Verifying local data&#8230;</string>
 	<string name="status_waitingtodl">Waiting to download %s</string>
@@ -103,7 +103,6 @@
 	
 	<string name="search_torrentsearch">Torrent search</string>
 	<string name="search_hint">Search for torrents</string>
-	<string name="search_"></string>
 	
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
@@ -257,10 +256,9 @@
 	<string name="error_no_valid_settings_file">File does not seem to contain Transdroid settings</string>
 	<string name="error_file_not_found">There is no settings file found</string>
 	
-	<string name="app_name" translatable="false">Transdroid</string>
-	<string name="app_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>
-	<string name="app_license" translatable="false">Published under GNU General Public License v3</string>
+	<string name="system_name" translatable="false">Transdroid</string>
+	<string name="system_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>
+	<string name="system_license" translatable="false">Published under GNU General Public License v3</string>
 	<string name="system_description">Manage your torrents from your Android device</string>
-	<string name="system_libraries">LIBRARIES</string>
 
 </resources>

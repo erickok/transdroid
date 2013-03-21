@@ -2,27 +2,27 @@
 
 	<item
 		android:id="@+id/action_off"
-		android:showAsAction="always"
+		android:showAsAction="ifRoom"
 		android:title="@string/action_priority_off" />
 	<item
 		android:id="@+id/action_priority_low"
-		android:showAsAction="always"
+		android:showAsAction="ifRoom"
 		android:title="@string/action_priority_low" />
 	<item
 		android:id="@+id/action_priority_normal"
-		android:showAsAction="always"
+		android:showAsAction="ifRoom"
 		android:title="@string/action_priority_normal" />
 	<item
 		android:id="@+id/action_priority_high"
-		android:showAsAction="always"
+		android:showAsAction="ifRoom"
 		android:title="@string/action_priority_high" />
 	<item
 		android:id="@+id/action_remoteplay"
-		android:showAsAction="always"
+		android:showAsAction="ifRoom"
 		android:title="@string/action_remoteplay" />
 	<item
 		android:id="@+id/action_download"
-		android:showAsAction="always"
+		android:showAsAction="ifRoom"
 		android:title="@string/action_download" />
 
 </menu>

@@ -5,11 +5,10 @@ import org.androidannotations.annotations.RootContext;
 import org.transdroid.core.R;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Build;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
@@ -24,10 +23,17 @@ public class NavigationHelper {
 	@RootContext
 	protected Context context;
 
+	/**
+	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display error messages.
+	 */
 	public Style CROUTON_ERROR_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_error).setTextSize(13)
-			.build();
+			.setDuration(2500).build();
+	
+	/**
+	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display info messages.
+	 */
 	public Style CROUTON_INFO_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_info).setTextSize(13)
-			.build();
+			.setDuration(1500).build();
 
 	/**
 	 * Whether any search-related UI components should be shown in the interface. At the moment returns false only if we
@@ -70,20 +76,6 @@ public class NavigationHelper {
 	 */
 	public boolean enableRssUi() {
 		return !context.getPackageName().equals("org.transdroid.lite");
-	}
-
-	/**
-	 * Whether the navigation of server types and labels as filter are shown in a separate fragment.
-	 * @return True if navigation is in a separate fragment, false if the items are shown in the action bar spinner
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	public boolean showFiltersInFragment() {
-		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			if (context.getResources().getConfiguration().screenWidthDp >= 600) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }

@@ -25,7 +25,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SherlockListView;
 import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
 
-@EFragment(resName="fragment_torrents")
+@EFragment(resName = "fragment_torrents")
 public class TorrentsFragment extends SherlockFragment {
 
 	// Local data
@@ -36,15 +36,19 @@ public class TorrentsFragment extends SherlockFragment {
 	@InstanceState
 	protected boolean hasAConnection = false;
 	@InstanceState
-	protected boolean isLoading = false;
+	protected boolean isLoading = true;
+	@InstanceState
+	protected String connectionErrorMessage = null;
 
 	// Views
-	@ViewById(resName="torrent_list")
+	@ViewById(resName = "torrent_list")
 	protected SherlockListView torrentsList;
 	@ViewById
 	protected TextView emptyText;
 	@ViewById
 	protected TextView nosettingsText;
+	@ViewById
+	protected TextView errorText;
 	@ViewById
 	protected ProgressBar loadingProgress;
 
@@ -69,6 +73,7 @@ public class TorrentsFragment extends SherlockFragment {
 	 * Clear currently visible list of torrents
 	 */
 	public void clear() {
+		this.connectionErrorMessage = null;
 		updateTorrents(null);
 	}
 
@@ -89,26 +94,26 @@ public class TorrentsFragment extends SherlockFragment {
 		}
 		updateViewVisibility();
 	}
-	
+
 	private MultiChoiceModeListenerCompat onTorrentsSelected = new MultiChoiceModeListenerCompat() {
-		
+
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Show contextual action bar to start/stop/remove/etc. torrents in batch mode
 			mode.getMenuInflater().inflate(R.menu.fragment_torrents_cab, menu);
 			return true;
 		}
-		
+
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			
+
 			// Get checked torrents
 			List<Torrent> checked = new ArrayList<Torrent>();
 			for (int i = 0; i < torrentsList.getCheckedItemPositions().size(); i++) {
 				if (torrentsList.getCheckedItemPositions().get(i))
 					checked.add((Torrent) torrentsList.getAdapter().getItem(i));
 			}
-			
+
 			int itemId = item.getItemId();
 			if (itemId == R.id.action_resume) {
 				for (Torrent torrent : checked) {
@@ -142,7 +147,7 @@ public class TorrentsFragment extends SherlockFragment {
 				return false;
 			}
 		}
-		
+
 		@Override
 		public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 			// TODO: Update title or otherwise show number of selected torrents?
@@ -152,14 +157,14 @@ public class TorrentsFragment extends SherlockFragment {
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
 			return false;
 		}
-		
+
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
 		}
-		
+
 	};
 
-	@ItemClick(resName="torrent_list")
+	@ItemClick(resName = "torrent_list")
 	protected void torrentsListClicked(Torrent torrent) {
 		DetailsActivity_.intent(getActivity()).torrent(torrent).start();
 	}
@@ -171,8 +176,11 @@ public class TorrentsFragment extends SherlockFragment {
 	 */
 	public void updateConnectionStatus(boolean hasAConnection) {
 		this.hasAConnection = hasAConnection;
-		if (!hasAConnection)
-			clear();
+		if (!hasAConnection) {
+			clear(); // Indirectly also calls updateViewVisibility()
+		} else {
+			updateViewVisibility();
+		}
 	}
 
 	/**
@@ -181,8 +189,26 @@ public class TorrentsFragment extends SherlockFragment {
 	 */
 	public void updateIsLoading(boolean isLoading) {
 		this.isLoading = isLoading;
-		if (isLoading)
-			clear();
+		if (isLoading) {
+			clear(); // Indirectly also calls updateViewVisibility()
+		} else {
+			updateViewVisibility();
+		}
+	}
+
+	/**
+	 * Updates the shown screen depending on whether a connection error occurred
+	 * @param connectionErrorMessage The error message from the last failed connection attempt, or null to clear the
+	 *            visible error text
+	 */
+	public void updateError(String connectionErrorMessage) {
+		this.connectionErrorMessage = connectionErrorMessage;
+		errorText.setText(connectionErrorMessage);
+		if (connectionErrorMessage != null) {
+			clear(); // Indirectly also calls updateViewVisibility()
+		} else {
+			updateViewVisibility();
+		}
 	}
 
 	@UiThread
@@ -191,14 +217,17 @@ public class TorrentsFragment extends SherlockFragment {
 			torrentsList.setVisibility(View.GONE);
 			emptyText.setVisibility(View.GONE);
 			loadingProgress.setVisibility(View.GONE);
+			errorText.setVisibility(View.GONE);
 			nosettingsText.setVisibility(View.VISIBLE);
 			return;
 		}
 		boolean isEmpty = torrents == null || torrentsList.getAdapter().isEmpty();
+		boolean hasError = connectionErrorMessage == null;
 		nosettingsText.setVisibility(View.GONE);
-		torrentsList.setVisibility(!isLoading && !isEmpty? View.GONE: View.VISIBLE);
-		loadingProgress.setVisibility(isLoading? View.VISIBLE: View.GONE);
-		emptyText.setVisibility(!isLoading && isEmpty? View.VISIBLE: View.GONE);
+		errorText.setVisibility(hasError? View.VISIBLE : View.GONE);
+		torrentsList.setVisibility(!hasError && !isLoading && !isEmpty ? View.GONE : View.VISIBLE);
+		loadingProgress.setVisibility(!hasError && isLoading ? View.VISIBLE : View.GONE);
+		emptyText.setVisibility(!hasError && !isLoading && isEmpty ? View.VISIBLE : View.GONE);
 	}
 
 	/**
