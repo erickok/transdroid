@@ -36,15 +36,13 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 	@Bean
 	protected SearchHelper searchHelper;
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		// Note: Settings are loaded in onResume()
-
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onResume() {
 		super.onResume();

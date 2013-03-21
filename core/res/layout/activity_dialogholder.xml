@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- This layout is a simple wrapper to display dialogs (which might be show full screen, without border) -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/dialogholder"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	tools:context=".DialogHolderActivity" />

@@ -59,6 +59,7 @@
 		<activity android:name="org.transdroid.core.gui.settings.ServerSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.settings.NotificationSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.settings.SystemSettingsActivity_" />
+		<activity android:name="org.transdroid.core.gui.navigation.DialogHelper_" />
 		
 	</application>
 

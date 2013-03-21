@@ -3,46 +3,46 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
-	android:layout_margin="@dimen/margin_default" >
-	
+	android:padding="@dimen/margin_default" >
+
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_horizontal"
-		android:text="@string/app_name"
-		android:textSize="36sp"
-		android:textColor="@android:color/white"
-		android:fontFamily="sans-serif-condensed"
+		android:layout_marginBottom="@dimen/margin_half"
+		android:layout_marginTop="@dimen/margin_half"
 		android:drawableLeft="@drawable/ic_launcher"
 		android:drawablePadding="@dimen/margin_half"
-		android:layout_marginTop="@dimen/margin_half"
-		android:layout_marginBottom="@dimen/margin_half" />
-	
+		android:fontFamily="sans-serif-condensed"
+		android:text="@string/app_name"
+		android:textColor="@android:color/white"
+		android:textSize="36sp" />
+
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_horizontal"
-		android:text="@string/system_description"
-		android:gravity="center" />
-	
+		android:gravity="center"
+		android:text="@string/system_description" />
+
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_horizontal"
 		android:layout_marginTop="@dimen/margin_default"
+		android:fontFamily="sans-serif-condensed"
+		android:gravity="center"
 		android:text="@string/app_developer"
 		android:textColor="@android:color/white"
-		android:textSize="18sp"
-		android:fontFamily="sans-serif-condensed"
-		android:gravity="center" />
-	
+		android:textSize="18sp" />
+
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_horizontal"
-		android:layout_marginTop="4dip"
 		android:layout_marginBottom="@dimen/margin_default"
-		android:text="@string/app_license"
-		android:gravity="center" />
-	
+		android:layout_marginTop="4dip"
+		android:gravity="center"
+		android:text="@string/app_license" />
+
 </LinearLayout>

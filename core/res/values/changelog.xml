@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="system_changelog">
+Transdroid 2.0.0-alpha1\n
+- Totally reworked Holo-style interface\n
+- Provide tablet interface on smaller tablets\n
+- Automatically switch between local and remote IP configurations\n
+\n
+Older changes: http://www.transdroid.org/about/changelog/
+</string>
+</resources>
