@@ -23,11 +23,13 @@
 		android:title="@string/action_rss"/>
 	<item
 		android:id="@+id/action_enableturtle"
+		android:icon="@drawable/ic_action_turtle_disabled"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_enableturtle"/>
 	<item
 		android:id="@+id/action_disableturtle"
 		android:showAsAction="ifRoom"
+		android:icon="@drawable/ic_action_turtle_enabled"
 		android:title="@string/action_disableturtle"/>
 	<item
 		android:id="@+id/action_refresh"
