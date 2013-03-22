@@ -35,8 +35,10 @@ public class RssfeedSetting implements SimpleListItem {
 	public String getName() {
 		if (!TextUtils.isEmpty(name))
 			return name;
-		if (!TextUtils.isEmpty(url))
-			return Uri.parse(url).getHost();
+		if (!TextUtils.isEmpty(url)) {
+			String host = Uri.parse(url).getHost();
+			return host == null? DEFAULT_NAME: host;
+		}
 		return DEFAULT_NAME;
 	}
 
@@ -62,6 +64,16 @@ public class RssfeedSetting implements SimpleListItem {
 	 */
 	public void setLastNew(String lastNew) {
 		this.lastNew = lastNew;
+	}
+
+	/**
+	 * Returns a nicely formatted identifier containing (a portion of) the feed URL
+	 * @return A string to identify this feed's URL
+	 */
+	public String getHumanReadableIdentifier() {
+		String host = Uri.parse(url).getHost();
+		String path = Uri.parse(url).getPath();
+		return (host == null? null: host + (path == null? "": path));
 	}
 	
 }

@@ -50,7 +50,7 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		if (getPreferenceScreen() != null)
 			getPreferenceScreen().removeAll();
 		
-		// Load the preference menu and attack actions
+		// Load the preference menu and attach actions
 		addPreferencesFromResource(R.xml.pref_main);
 		findPreference("header_addserver").setOnPreferenceClickListener(onAddServer);
 		findPreference("header_addwebsearch").setOnPreferenceClickListener(onAddWebsearch);
@@ -58,13 +58,6 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		findPreference("header_background").setOnPreferenceClickListener(onBackgroundSettings);
 		findPreference("header_system").setOnPreferenceClickListener(onSystemSettings);
 
-		loadSettings();
-		
-	}
-	
-	@SuppressWarnings("deprecation")
-	private void loadSettings() {
-		
 		// Add existing servers
 		List<ServerSetting> servers = applicationSettings.getServerSettings();
 		for (ServerSetting serverSetting : servers) {

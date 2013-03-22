@@ -29,6 +29,7 @@ public class WebsearchPreference extends Preference {
 	public WebsearchPreference setWebsearchSetting(WebsearchSetting websearchSetting) {
 		this.websearchSetting = websearchSetting;
 		setTitle(websearchSetting.getName());
+		setSummary(websearchSetting.getHumanReadableIdentifier());
 		setOrder(ORDER_START + websearchSetting.getOrder());
 		return this;
 	}

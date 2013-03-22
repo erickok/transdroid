@@ -1,15 +1,12 @@
 package org.transdroid.core.gui.settings;
 
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ApplicationSettings_;
 
 import android.os.Bundle;
-
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 /**
  * Activity that allows for a configuration of a web search site. The key can be supplied to update an existing web
@@ -18,30 +15,23 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
  */
 @EActivity
 @OptionsMenu(resName="activity_deleteableprefs")
-public class WebsearchSettingsActivity extends SherlockPreferenceActivity {
+public class WebsearchSettingsActivity extends KeyBoundPreferencesActivity {
 
-	@Extra
-	protected int key = -1;
-
-	@Bean
-	protected ApplicationSettings applicationSettings;
-
-	@SuppressWarnings("deprecation")
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
 		// Load the raw preferences to show in this screen
-		addPreferencesFromResource(R.xml.pref_websearch);
-
-		// Bind the preferences to the correct storage key, e.g. the first site setting stores its URL in the
-		// 'websearch_baseurl_0' shared preferences field
-		if (key < 0) {
-			key = applicationSettings.getMaxWebsearch() + 1;
-		}
-		findPreference("websearch_name").setKey("websearch_name_" + key);
-		findPreference("websearch_baseurl").setKey("websearch_baseurl_" + key);
+		init(R.xml.pref_websearch, ApplicationSettings_.getInstance_(this).getMaxWebsearch());
+		initTextPreference("websearch_name");
+		initTextPreference("websearch_baseurl");
 
 	}
 
+	@OptionsItem(resName = "action_removesettings")
+	protected void removeSettings() {
+		ApplicationSettings_.getInstance_(this).removeWebsearchSettings(key);
+		finish();
+	}
+	
 }

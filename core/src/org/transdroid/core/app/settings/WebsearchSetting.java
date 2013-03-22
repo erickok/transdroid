@@ -32,8 +32,10 @@ public class WebsearchSetting implements SimpleListItem {
 	public String getName() {
 		if (!TextUtils.isEmpty(name))
 			return name;
-		if (!TextUtils.isEmpty(baseUrl))
-			return Uri.parse(baseUrl).getHost();
+		if (!TextUtils.isEmpty(baseUrl)) {
+			String host = Uri.parse(baseUrl).getHost();
+			return host == null? DEFAULT_NAME: host;
+		}
 		return DEFAULT_NAME;
 	}
 	
@@ -45,4 +47,12 @@ public class WebsearchSetting implements SimpleListItem {
 		return KEY_PREFIX + getOrder();
 	}
 
+	/**
+	 * Returns a nicely formatted identifier containing (a portion of) the search base URL
+	 * @return A string to identify this site's search URL
+	 */
+	public String getHumanReadableIdentifier() {
+		return Uri.parse(baseUrl).getHost();
+	}
+	
 }

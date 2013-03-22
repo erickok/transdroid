@@ -11,6 +11,7 @@ import org.transdroid.daemon.OS;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 /**
@@ -58,19 +59,95 @@ public class ApplicationSettings {
 	 * @return The server settings object, loaded from shared preferences
 	 */
 	public ServerSetting getServerSetting(int order) {
-		return new ServerSetting(order, prefs.getString("server_name_" + order, null), Daemon.fromCode(prefs.getString(
-				"server_type_" + order, null)), prefs.getString("server_address_" + order, null), prefs.getString(
-				"server_localaddress_" + order, null), prefs.getString("server_localnetwork_" + order, null),
-				Integer.parseInt(prefs.getString("server_port_" + order, "-1")), prefs.getBoolean("server_sslenabled_"
-						+ order, false), prefs.getBoolean("server_ssltrustall_" + order, false), prefs.getString(
-						"server_ssltrustkey_" + order, null), prefs.getString("server_folder_" + order, null),
-				prefs.getBoolean("server_useauth_" + order, true), prefs.getString("server_user_" + order, null),
-				prefs.getString("server_pass_" + order, null), prefs.getString("server_extrapass_" + order, null),
-				OS.fromCode(prefs.getString("server_os_" + order, null)), prefs.getString(
-						"server_downloaddir_" + order, null), prefs.getString("server_ftpurl_" + order, null),
-				prefs.getString("server_ftppass_" + order, null), Integer.parseInt(prefs.getString("server_timeout_"
-						+ order, "8")), prefs.getBoolean("server_alarmfinished_" + order, true), prefs.getBoolean(
-						"server_alarmnew_" + order, false), false);
+		// @formatter:off
+		Daemon type = Daemon.fromCode(prefs.getString("server_type_" + order, null));
+		boolean ssl = prefs.getBoolean("server_sslenabled_" + order, false);
+		String defaultPort = Integer.toString(Daemon.getDefaultPortNumber(type, ssl));
+		return new ServerSetting(order, 
+				prefs.getString("server_name_" + order, null), 
+				type, 
+				prefs.getString("server_address_" + order, null), 
+				prefs.getString("server_localaddress_" + order, null), 
+				prefs.getString("server_localnetwork_" + order, null),
+				Integer.parseInt(prefs.getString("server_port_" + order, defaultPort)), 
+				ssl, 
+				prefs.getBoolean("server_ssltrustall_" + order, false), 
+				prefs.getString("server_ssltrustkey_" + order, null), 
+				prefs.getString("server_folder_" + order, null),
+				prefs.getBoolean("server_useauth_" + order, true), 
+				prefs.getString("server_user_" + order, null),
+				prefs.getString("server_pass_" + order, null), 
+				prefs.getString("server_extrapass_" + order, null),
+				OS.fromCode(prefs.getString("server_os_" + order, "type_linux")), 
+				prefs.getString("server_downloaddir_" + order, null), 
+				prefs.getString("server_ftpurl_" + order, null),
+				prefs.getString("server_ftppass_" + order, null), 
+				Integer.parseInt(prefs.getString("server_timeout_"+ order, "8")), 
+				prefs.getBoolean("server_alarmfinished_" + order, true), 
+				prefs.getBoolean("server_alarmnew_" + order, false), false);
+		// @formatter:on
+	}
+
+	/**
+	 * Removes all settings related to a configured server. Since servers are ordered, the order of the remaining 
+	 * servers will be updated accordingly.
+	 * @param order The identifying order number/key of the settings to remove
+	 */
+	public void removeServerSettings(int order) {
+		if (prefs.getString("server_type_" + order, null) == null)
+			return; // The settings that were requested to be removed do not exist
+		
+		// Copy all settings higher than the supplied order number to the previous spot
+		Editor edit = prefs.edit();
+		int max = getMaxWebsearch();
+		for (int i = order; i < max; i++) {
+			edit.putString("server_name_" + i, prefs.getString("server_name_" + (i + 1), null));
+			edit.putString("server_type_" + i, prefs.getString("server_type_" + (i + 1), null));
+			edit.putString("server_address_" + i, prefs.getString("server_address_" + (i + 1), null));
+			edit.putString("server_localaddress_" + i, prefs.getString("server_localaddress_" + (i + 1), null));
+			edit.putString("server_localnetwork_" + i, prefs.getString("server_localnetwork_" + (i + 1), null));
+			edit.putString("server_port_" + i, prefs.getString("server_port_" + (i + 1), null));
+			edit.putBoolean("server_sslenabled_" + i, prefs.getBoolean("server_sslenabled_" + (i + 1), false));
+			edit.putBoolean("server_ssltrustall_" + i, prefs.getBoolean("server_ssltrustall_" + (i + 1), false));
+			edit.putString("server_ssltrustkey_" + i, prefs.getString("server_ssltrustkey_" + (i + 1), null));
+			edit.putString("server_folder_" + i, prefs.getString("server_folder_" + (i + 1), null));
+			edit.putBoolean("server_useauth_" + i, prefs.getBoolean("server_useauth_" + (i + 1), false));
+			edit.putString("server_user_" + i, prefs.getString("server_user_" + (i + 1), null));
+			edit.putString("server_pass_" + i, prefs.getString("server_pass_" + (i + 1), null));
+			edit.putString("server_extrapass_" + i, prefs.getString("server_extrapass_" + (i + 1), null));
+			edit.putString("server_os_" + i, prefs.getString("server_os_" + (i + 1), null));
+			edit.putString("server_downloaddir_" + i, prefs.getString("server_downloaddir_" + (i + 1), null));
+			edit.putString("server_ftpurl_" + i, prefs.getString("server_ftpurl_" + (i + 1), null));
+			edit.putString("server_ftppass_" + i, prefs.getString("server_ftppass_" + (i + 1), null));
+			edit.putString("server_timeout_" + i, prefs.getString("server_timeout_" + (i + 1), null));
+			edit.putBoolean("server_alarmfinished_" + i, prefs.getBoolean("server_alarmfinished_" + (i + 1), false));
+			edit.putBoolean("server_alarmfinished_" + i, prefs.getBoolean("server_alarmfinished_" + (i + 1), false));
+		}
+
+		// Remove the last settings, of which we are now sure are no longer required
+		edit.remove("server_name_" + max);
+		edit.remove("server_type_" + max);
+		edit.remove("server_address_" + max);
+		edit.remove("server_localaddress_" + max);
+		edit.remove("server_localnetwork_" + max);
+		edit.remove("server_port_" + max);
+		edit.remove("server_sslenabled_" + max);
+		edit.remove("server_ssltrustall_" + max);
+		edit.remove("server_ssltrustkey_" + max);
+		edit.remove("server_folder_" + max);
+		edit.remove("server_useauth_" + max);
+		edit.remove("server_user_" + max);
+		edit.remove("server_pass_" + max);
+		edit.remove("server_extrapass_" + max);
+		edit.remove("server_os_" + max);
+		edit.remove("server_downloaddir_" + max);
+		edit.remove("server_ftpurl_" + max);
+		edit.remove("server_ftppass_" + max);
+		edit.remove("server_timeout_" + max);
+		edit.remove("server_alarmfinished_" + max);
+		edit.remove("server_alarmfinished_" + max);
+		edit.commit();
+		
 	}
 
 	/**
@@ -138,7 +215,7 @@ public class ApplicationSettings {
 	 */
 	public int getMaxWebsearch() {
 		for (int i = 0; true; i++) {
-			if (prefs.getString("websearch_url_" + i, null) == null)
+			if (prefs.getString("websearch_baseurl_" + i, null) == null)
 				return i - 1;
 		}
 	}
@@ -149,8 +226,35 @@ public class ApplicationSettings {
 	 * @return The web search site settings object, loaded from shared preferences
 	 */
 	public WebsearchSetting getWebsearchSetting(int order) {
-		return new WebsearchSetting(order, prefs.getString("websearch_name_" + order, null), prefs.getString(
-				"websearch_url_" + order, null));
+		// @formatter:off
+		return new WebsearchSetting(order, 
+				prefs.getString("websearch_name_" + order, null), 
+				prefs.getString("websearch_baseurl_" + order, null));
+		// @formatter:on
+	}
+
+	/**
+	 * Removes all settings related to a configured web-based search site. Since sites are ordered, the order of the
+	 * remaining sites will be updated accordingly.
+	 * @param order The identifying order number/key of the settings to remove
+	 */
+	public void removeWebsearchSettings(int order) {
+		if (prefs.getString("websearch_baseurl_" + order, null) == null)
+			return; // The settings that were requested to be removed do not exist
+		
+		// Copy all settings higher than the supplied order number to the previous spot
+		Editor edit = prefs.edit();
+		int max = getMaxWebsearch();
+		for (int i = order; i < max; i++) {
+			edit.putString("websearch_name_" + i, prefs.getString("websearch_name_" + (i + 1), null));
+			edit.putString("websearch_baseurl_" + i, prefs.getString("websearch_baseurl_" + (i + 1), null));
+		}
+
+		// Remove the last settings, of which we are now sure are no longer required
+		edit.remove("websearch_name_" + max);
+		edit.remove("websearch_baseurl_" + max);
+		edit.commit();
+		
 	}
 
 	/**
@@ -171,7 +275,7 @@ public class ApplicationSettings {
 	 */
 	public int getMaxRssfeed() {
 		for (int i = 0; true; i++) {
-			if (prefs.getString("rssfeed_feedurl_" + i, null) == null)
+			if (prefs.getString("rssfeed_url_" + i, null) == null)
 				return i - 1;
 		}
 	}
@@ -182,8 +286,38 @@ public class ApplicationSettings {
 	 * @return The RSS feed settings object, loaded from shared preferences
 	 */
 	public RssfeedSetting getRssfeedSetting(int order) {
-		return new RssfeedSetting(order, prefs.getString("rssfeed_name_" + order, null), prefs.getString(
-				"rssfeed_feedurl_" + order, null), prefs.getBoolean("rssfeed_reqauth_" + order, false));
+		// @formatter:off
+		return new RssfeedSetting(order, 
+				prefs.getString("rssfeed_name_" + order, null), 
+				prefs.getString("rssfeed_url_" + order, null), 
+				prefs.getBoolean("rssfeed_reqauth_" + order, false));
+		// @formatter:on
+	}
+
+	/**
+	 * Removes all settings related to a configured RSS feed. Since feeds are ordered, the order of the remaining feeds
+	 * will be updated accordingly.
+	 * @param order The identifying order number/key of the settings to remove
+	 */
+	public void removeRssfeedSettings(int order) {
+		if (prefs.getString("rssfeed_url_" + order, null) == null)
+			return; // The settings that were requested to be removed do not exist
+		
+		// Copy all settings higher than the supplied order number to the previous spot
+		Editor edit = prefs.edit();
+		int max = getMaxWebsearch();
+		for (int i = order; i < max; i++) {
+			edit.putString("rssfeed_name_" + i, prefs.getString("rssfeed_name_" + (i + 1), null));
+			edit.putString("rssfeed_url_" + i, prefs.getString("rssfeed_url_" + (i + 1), null));
+			edit.putBoolean("rssfeed_reqauth_" + i, prefs.getBoolean("rssfeed_reqauth_" + (i + 1), false));
+		}
+
+		// Remove the last settings, of which we are now sure are no longer required
+		edit.remove("rssfeed_name_" + max);
+		edit.remove("rssfeed_url_" + max);
+		edit.remove("rssfeed_reqauth_" + max);
+		edit.commit();
+		
 	}
 
 }

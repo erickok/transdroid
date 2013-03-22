@@ -28,7 +28,8 @@ public class ServerPreference extends Preference {
 	 */
 	public ServerPreference setServerSetting(ServerSetting serverSetting) {
 		this.serverSetting = serverSetting;
-		setTitle(serverSetting.getHumanReadableIdentifier());
+		setTitle(serverSetting.getName());
+		setSummary(serverSetting.getHumanReadableIdentifier());
 		setOrder(ORDER_START + serverSetting.getOrder());
 		return this;
 	}

@@ -6,6 +6,7 @@ import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.OS;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 /**
@@ -91,7 +92,13 @@ public class ServerSetting implements SimpleListItem {
 
 	@Override
 	public String getName() {
-		return (name == null || name.equals("") ? DEFAULT_NAME : name);
+		if (!TextUtils.isEmpty(name))
+			return name;
+		if (!TextUtils.isEmpty(address)) {
+			String host = Uri.parse(address).getHost();
+			return host == null? DEFAULT_NAME: host;
+		}
+		return DEFAULT_NAME;
 	}
 
 	public Daemon getType() {

@@ -16,10 +16,6 @@
 		android:title="@string/pref_address"
 		android:inputType="textUri" />
 	<EditTextPreference
-		android:key="server_port"
-		android:title="@string/pref_port"
-		android:inputType="numberSigned" />
-	<EditTextPreference
 		android:key="server_user"
 		android:title="@string/pref_user"
 		android:inputType="textNoSuggestions" />
@@ -34,11 +30,15 @@
 
 	<PreferenceScreen android:title="@string/pref_advanced" >
 		<EditTextPreference
+			android:key="server_port"
+			android:title="@string/pref_port"
+			android:inputType="numberSigned" />
+		<EditTextPreference
 			android:key="server_localaddress"
 			android:title="@string/pref_localaddress"
 			android:summary="@string/pref_localaddress_info"
 			android:inputType="textUri" />
-		<ListPreference
+		<EditTextPreference
 			android:key="server_localnetwork"
 			android:title="@string/pref_localnetwork"
 			android:summary="@string/pref_localnetwork_info" />
@@ -87,7 +87,8 @@
 			android:key="server_os"
 			android:title="@string/pref_os"
 			android:entries="@array/pref_os_types"
-			android:entryValues="@array/pref_os_values" />
+			android:entryValues="@array/pref_os_values"
+			android:defaultValue="type_linux" />
 		<EditTextPreference
 			android:key="server_downloaddir"
 			android:title="@string/pref_downdir"

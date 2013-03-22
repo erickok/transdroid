@@ -14,7 +14,8 @@
 
 	<Preference
 		android:key="system_installhelp"
-		android:title="@string/pref_installhelp" />
+		android:title="@string/pref_installhelp"
+		android:summary="@string/pref_installhelp_info" />
 	
 	<Preference
 		android:key="system_importsettings"

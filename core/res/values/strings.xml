@@ -131,7 +131,7 @@
 	<string name="pref_localaddress">Local IP or host</string>
 	<string name="pref_localaddress_info">When connected to the specified local network</string>
 	<string name="pref_localnetwork">Local network</string>
-	<string name="pref_localnetwork_info">The server\'s local (wifi) network</string>
+	<string name="pref_localnetwork_info">The server\'s local network SSID</string>
 	<string name="pref_folder">Folder</string>
 	<string name="pref_folder_info">Usually empty</string>
 	<string name="pref_scgifolder">SCGI mount point</string>
@@ -169,14 +169,15 @@
 	
 	<string name="pref_system">System</string>
 	<string name="pref_checkupdates">Check for updates</string>
-	<string name="pref_checkupdates_info">Check transdroidorg for latest app version</string>
+	<string name="pref_checkupdates_info">Check transdroid.org for latest app version</string>
 	<string name="pref_import">Import settings</string>
 	<string name="pref_export">Export settings</string>
 	<string name="pref_sendlog">Send error log</string>
 	<string name="pref_sendlog_info">Get support or report a bug</string>
 	<string name="pref_installhelp">View install guides</string>
+	<string name="pref_installhelp_info">Available at transdroid.org/download</string>
 	<string name="pref_changelog">Recent changes</string>
-	<string name="pref_about">About</string>
+	<string name="pref_about">About Transdroid</string>
     <string-array name="pref_daemon_types" translatable="false">
         <item>BitComet</item>
         <item>Bitflu 1.2+</item>

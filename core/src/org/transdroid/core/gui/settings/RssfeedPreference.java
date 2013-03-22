@@ -29,6 +29,7 @@ public class RssfeedPreference extends Preference {
 	public RssfeedPreference setRssfeedSetting(RssfeedSetting rssfeedSetting) {
 		this.rssfeedSetting = rssfeedSetting;
 		setTitle(rssfeedSetting.getName());
+		setSummary(rssfeedSetting.getHumanReadableIdentifier());
 		setOrder(ORDER_START + rssfeedSetting.getOrder());
 		return this;
 	}
