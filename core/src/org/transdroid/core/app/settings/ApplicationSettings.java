@@ -99,7 +99,7 @@ public class ApplicationSettings {
 		
 		// Copy all settings higher than the supplied order number to the previous spot
 		Editor edit = prefs.edit();
-		int max = getMaxWebsearch();
+		int max = getMaxServer();
 		for (int i = order; i < max; i++) {
 			edit.putString("server_name_" + i, prefs.getString("server_name_" + (i + 1), null));
 			edit.putString("server_type_" + i, prefs.getString("server_type_" + (i + 1), null));
@@ -305,7 +305,7 @@ public class ApplicationSettings {
 		
 		// Copy all settings higher than the supplied order number to the previous spot
 		Editor edit = prefs.edit();
-		int max = getMaxWebsearch();
+		int max = getMaxRssfeed();
 		for (int i = order; i < max; i++) {
 			edit.putString("rssfeed_name_" + i, prefs.getString("rssfeed_name_" + (i + 1), null));
 			edit.putString("rssfeed_url_" + i, prefs.getString("rssfeed_url_" + (i + 1), null));
