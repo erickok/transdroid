@@ -21,9 +21,15 @@ import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.log.Log_;
-import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.navigation.NavigationSelectionView.NavigationFilterManager;
-import org.transdroid.core.gui.settings.*;
+import org.transdroid.core.gui.navigation.FilterListAdapter;
+import org.transdroid.core.gui.navigation.FilterListAdapter_;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter_;
+import org.transdroid.core.gui.navigation.Label;
+import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.StatusType;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
@@ -66,8 +72,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 @EActivity(resName = "activity_torrents")
 @OptionsMenu(resName = "activity_torrents")
-public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor,
-		NavigationFilterManager {
+public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor {
 
 	// Navigation components
 	@Bean
@@ -75,7 +80,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@ViewById
 	protected SherlockListView filtersList;
 	protected FilterListAdapter navigationListAdapter = null;
-	protected FilterListAdapter navigationSpinnerAdapter = null;
+	protected FilterListDropDownAdapter navigationSpinnerAdapter = null;
 	@SystemService
 	protected SearchManager searchManager;
 
@@ -105,7 +110,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		getSupportActionBar().setHomeButtonEnabled(false);
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
-		navigationSpinnerAdapter = FilterListDropDownAdapter_.getInstance_(this).setNavigationFilterManager(this);
+		navigationSpinnerAdapter = FilterListDropDownAdapter_.getInstance_(this);
 		// Servers are always added to the action bar spinner
 		navigationSpinnerAdapter.updateServers(applicationSettings.getServerSettings());
 
@@ -125,8 +130,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			navigationSpinnerAdapter.updateLabels(new ArrayList<Label>());
 		}
 		// Now that all items (or at least their adapters) have been added
-		getSupportActionBar().setListNavigationCallbacks(navigationSpinnerAdapter, this);
 		currentFilter = StatusType.getShowAllType(this);
+		getSupportActionBar().setListNavigationCallbacks(navigationSpinnerAdapter, this);
 
 		// Log messages from the server daemons using our singleton logger
 		DLog.setLogger(Log_.getInstance_(this));
@@ -138,7 +143,6 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			return;
 		}
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
-		// TODO: Does this call the action bar item selection callback? And refreshes?
 		getSupportActionBar().setSelectedNavigationItem(lastUsed.getOrder());
 
 		// Handle any start up intents
@@ -160,7 +164,6 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			updateFragmentVisibility(false);
 			return;
 		}
-		// TODO: See if this does not mean the refresh is called twice (first in onCreate)
 		// There is a server know (now): forcefully select it to establish a connection
 		filterSelected(lastUsed, true);
 	}
@@ -262,7 +265,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (item instanceof ServerSetting) {
 			ServerSetting server = (ServerSetting) item;
 
-			if (currentConnection != null && server.equals(currentConnection.getSettings())) {
+			if (!forceNewConnection && currentConnection != null && server.equals(currentConnection.getSettings())) {
 				// Already connected to this server; just ask for a refresh instead
 				fragmentTorrents.updateIsLoading(true);
 				refreshTorrents();
@@ -272,7 +275,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Update connection to the newly selected server and refresh
 			currentConnection = server.createServerAdapter();
 			applicationSettings.setLastUsedServer(server);
-			// Clear the currently shown list of torrent and perhaps the details
+			navigationSpinnerAdapter.updateCurrentServer(currentConnection);
+			if (forceNewConnection)
+				navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
+
+			// Clear the currently shown list of torrents and perhaps the details
 			fragmentTorrents.clear();
 			if (fragmentDetails != null) {
 				fragmentDetails.clear();
@@ -288,22 +295,13 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (item instanceof NavigationFilter) {
 			currentFilter = (NavigationFilter) item;
 			fragmentTorrents.applyFilter(currentFilter);
+			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
 			// Clear the details view
 			if (fragmentDetails != null) {
 				fragmentDetails.clear();
 			}
 		}
 
-	}
-
-	@Override
-	public String getActiveFilterText() {
-		return currentFilter.getName();
-	}
-
-	@Override
-	public String getActiveServerText() {
-		return currentConnection.getSettings().getName();
 	}
 
 	/**

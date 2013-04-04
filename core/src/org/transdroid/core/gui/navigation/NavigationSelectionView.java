@@ -19,33 +19,18 @@ public class NavigationSelectionView extends LinearLayout {
 	@ViewById
 	protected TextView serverText;
 	
-	private NavigationFilterManager navigationFilterManager;
-	
 	public NavigationSelectionView(Context context) {
 		super(context);
 	}
 
 	/**
-	 * Stores which screen, or manager, handles navigation selection and display
-	 * @param manager The navigation manager, which knows about the currently selected filter and server
-	 * @return Itself, for method chaining
+	 * Binds the names of the current connected server and selected filter to this navigation view.
+	 * @param currentServer The name of the server currently connected to
+	 * @param currentFilter The name of the filter that is currently selected
 	 */
-	public NavigationSelectionView setNavigationFilterManager(NavigationFilterManager manager) {
-		this.navigationFilterManager = manager;
-		return this;
-	}
-	
-	public void bind() {
-		filterText.setText(navigationFilterManager.getActiveFilterText());
-		serverText.setText(navigationFilterManager.getActiveServerText());
-	}
-	
-	/**
-	 * Interface that the manager of navigation (selecting servers and filters) should implement
-	 */
-	public interface NavigationFilterManager {
-		String getActiveFilterText();
-		String getActiveServerText();
+	public void bind(String currentServer, String currentFilter) {
+		serverText.setText(currentServer);
+		filterText.setText(currentFilter);
 	}
 	
 }

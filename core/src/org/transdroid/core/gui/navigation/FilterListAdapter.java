@@ -7,7 +7,6 @@ import org.androidannotations.annotations.RootContext;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
-import org.transdroid.core.gui.navigation.NavigationSelectionView.NavigationFilterManager;
 import org.transdroid.core.gui.navigation.StatusType.StatusTypeFilter;
 
 import android.content.Context;
@@ -28,20 +27,9 @@ public class FilterListAdapter extends MergeAdapter {
 	private SimpleListItemAdapter serverItems = null;
 	private SimpleListItemAdapter statusTypeItems = null;
 	private SimpleListItemAdapter labelItems = null;
-	protected NavigationFilterManager navigationFilterManager;
 	private FilterSeparatorView statusTypeSeparator;
 	private FilterSeparatorView labelSeperator;
 	private FilterSeparatorView serverSeparator;
-
-	/**
-	 * Stores which screen, or manager, handles navigation selection and display
-	 * @param manager The navigation manager, which knows about the currently selected filter and server
-	 * @return Itself, for method chaining
-	 */
-	public FilterListAdapter setNavigationFilterManager(NavigationFilterManager manager) {
-		this.navigationFilterManager = manager;
-		return this;
-	}
 
 	/**
 	 * Update the list of available servers
