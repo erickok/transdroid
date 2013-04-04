@@ -9,12 +9,14 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.InstanceState;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
+import org.transdroid.core.app.search.BarcodeHelper;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
@@ -33,6 +35,7 @@ import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
@@ -95,11 +98,9 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@InstanceState
 	protected boolean turleModeEnabled = false;
 
-	// Torrents list components
+	// Contained torrent and details fragments
 	@FragmentById(resName = "torrent_list")
 	protected TorrentsFragment fragmentTorrents;
-
-	// Details view components
 	@FragmentById(resName = "torrent_details")
 	protected DetailsFragment fragmentDetails;
 
@@ -322,6 +323,30 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// TODO: Handle start intent
 	}
 
+	@OptionsItem(resName = "action_add_fromurl")
+	protected void startUrlEntryDialog() {
+		// TODO: Open URL input dialog
+	}
+
+	@OptionsItem(resName = "action_add_fromfile")
+	protected void startFilePicker() {
+		// TODO: Start file picker
+	}
+
+	@OptionsItem(resName = "action_add_frombarcode")
+	protected void startBarcodeScanner() {
+		BarcodeHelper.startBarcodeScanner(this);
+	}
+
+	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE)
+	public void onBarcodeScanned(int resultCode, Intent data) {
+		String query = BarcodeHelper.handleScanResult(this, resultCode, data);
+		if (query.startsWith("http"))
+			addTorrentByUrl(query, "QR code result"); // No torrent title known
+		else
+			startSearch(query, false, null, false);
+	}
+	
 	@OptionsItem(resName = "action_refresh")
 	protected void refreshScreen() {
 		fragmentTorrents.updateIsLoading(true);
@@ -338,6 +363,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@OptionsItem(resName = "action_disableturtle")
 	protected void disableTurtleMode() {
 		updateTurtleMode(false);
+	}
+
+	@OptionsItem(resName = "action_filter")
+	protected void filterList() {
 	}
 
 	@OptionsItem(resName = "action_settings")
@@ -377,6 +406,17 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (result instanceof GetStatsTaskSuccessResult) {
 			// Success; no need to retrieve it again - just update the visual indicator
 			onTurtleModeRetrieved(enable);
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@Background
+	public void addTorrentByUrl(String url, String title) {
+		DaemonTaskResult result = AddByUrlTask.create(currentConnection, url, title).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_added, title);
+			refreshTorrents();
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}

@@ -86,7 +86,7 @@
 	<string name="labels_newlabel">New label</string>
 	<string name="labels_no_support">Setting a label is not supported by your client</string>
 	
-	<string name="result_added">Torrent added (refreshing)</string>
+	<string name="result_added">%1$s added (refreshing)</string>
 	<string name="result_removed">%1$s removed</string>
 	<string name="result_removed_with_data">%1$s removed and data deleted</string>
 	<string name="result_resumed">%1$s resumed (refreshing)</string>
@@ -103,6 +103,7 @@
 	
 	<string name="search_torrentsearch">Torrent search</string>
 	<string name="search_hint">Search for torrents</string>
+	<string name="search_barcodescannernotfound">The Barcode Scanner could not be found. Would you like to install it from the Android Market?</string>
 	
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
