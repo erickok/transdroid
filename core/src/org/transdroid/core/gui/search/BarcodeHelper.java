@@ -1,7 +1,7 @@
-package org.transdroid.core.app.search;
+package org.transdroid.core.gui.search;
 
 import org.transdroid.core.R;
-import org.transdroid.core.gui.TorrentsActivity;
+import org.transdroid.core.app.search.GoogleWebSearchBarcodeResolver;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -38,7 +38,8 @@ public class BarcodeHelper {
 							.setPositiveButton(android.R.string.yes, new OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									activity.startActivity(new Intent(Intent.ACTION_VIEW, SCANNER_MARKET_URI));
+									if (activity != null)
+										activity.startActivity(new Intent(Intent.ACTION_VIEW, SCANNER_MARKET_URI));
 								}
 							}).setNegativeButton(android.R.string.no, null).create();
 				};
@@ -54,7 +55,7 @@ public class BarcodeHelper {
 	 * @return A String that can be used as new search query, or null if the bar code could not be scanned or no query
 	 *         can be constructed for it
 	 */
-	public static String handleScanResult(TorrentsActivity activity, int resultCode, Intent data) {
+	public static String handleScanResult(int resultCode, Intent data) {
 		String contents = data.getStringExtra("SCAN_RESULT");
 		String formatName = data.getStringExtra("SCAN_RESULT_FORMAT");
 		if (formatName != null && formatName.equals("QR_CODE")) {

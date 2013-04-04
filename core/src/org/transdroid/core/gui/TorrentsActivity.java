@@ -1,5 +1,9 @@
 package org.transdroid.core.gui;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +20,6 @@ import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
-import org.transdroid.core.app.search.BarcodeHelper;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
@@ -31,10 +34,15 @@ import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.StatusType;
+import org.transdroid.core.gui.search.BarcodeHelper;
+import org.transdroid.core.gui.search.FilePickerHelper;
+import org.transdroid.core.gui.search.UrlEntryDialog;
 import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.task.AddByFileTask;
+import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
@@ -56,6 +64,7 @@ import org.transdroid.daemon.util.DLog;
 
 import android.annotation.TargetApi;
 import android.app.SearchManager;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -147,7 +156,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		getSupportActionBar().setSelectedNavigationItem(lastUsed.getOrder());
 
 		// Handle any start up intents
-		if (firstStart) {
+		if (firstStart && getIntent() != null) {
 			handleStartIntent();
 		}
 
@@ -320,17 +329,69 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	 * If required, add torrents, switch to a specific server, etc.
 	 */
 	protected void handleStartIntent() {
-		// TODO: Handle start intent
+		
+		Intent intent = getIntent();
+		Uri dataUri = intent.getData();
+		String data = intent.getDataString();
+		String action = intent.getAction();
+		
+		if (action.equals("org.transdroid.ADD_MULTIPLE")) {
+			// Intent should have some extras pointing to possibly multiple torrents
+    		String[] urls = intent.getStringArrayExtra("TORRENT_URLS");
+    		String[] titles = intent.getStringArrayExtra("TORRENT_TITLES");
+    		if (urls != null) {
+	    		for (int i = 0; i < urls.length; i++) {
+	    			addTorrentByUrl(urls[i], (titles != null && titles.length >= i? titles[i]: "Torrent"));
+	    		}
+    		}
+    		return;
+		}
+		
+		if (dataUri.getScheme() != null && dataUri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+			addTorrentFromDownloads(dataUri);
+			return;
+		}
+
+		if (dataUri.getScheme().equals("http") || dataUri.getScheme().equals("https")) {
+			String title = data.substring(data.lastIndexOf("/"));
+			if (intent.hasExtra("TORRENT_TITLE")) {
+				title = intent.getStringExtra("TORRENT_TITLE");
+			}
+			addTorrentByUrl(data, title);
+			return;
+		}
+
+		if (dataUri.getScheme().equals("magnet")) {
+			addTorrentByMagnetUrl(data);
+			return;
+		}
+
+		if (dataUri.getScheme().equals("file")) {
+			String title = data.substring(data.lastIndexOf("/"));
+			addTorrentByFile(data, title);
+			return;
+		}
+		
 	}
 
 	@OptionsItem(resName = "action_add_fromurl")
 	protected void startUrlEntryDialog() {
-		// TODO: Open URL input dialog
+		UrlEntryDialog.startUrlEntry(this);
 	}
 
 	@OptionsItem(resName = "action_add_fromfile")
 	protected void startFilePicker() {
-		// TODO: Start file picker
+		FilePickerHelper.startFilePicker(this);
+	}
+
+	@Background
+	@OnActivityResult(FilePickerHelper.ACTIVITY_FILEPICKER)
+	public void onFilePicked(int resultCode, Intent data) {
+		// We should have received an Intent with a local torrent's Uri as data from the file picker
+		if (data != null && data.getData() != null && !data.getData().equals("")) {
+			String url = data.getData().getPath();
+			addTorrentByFile(data.getData().toString(), url.substring(url.lastIndexOf("/")));
+		}
 	}
 
 	@OptionsItem(resName = "action_add_frombarcode")
@@ -338,15 +399,17 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		BarcodeHelper.startBarcodeScanner(this);
 	}
 
+	@Background
 	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE)
 	public void onBarcodeScanned(int resultCode, Intent data) {
-		String query = BarcodeHelper.handleScanResult(this, resultCode, data);
+		// We receive from the helper either a URL (as string) or a query we can start a search for
+		String query = BarcodeHelper.handleScanResult(resultCode, data);
 		if (query.startsWith("http"))
 			addTorrentByUrl(query, "QR code result"); // No torrent title known
 		else
 			startSearch(query, false, null, false);
 	}
-	
+
 	@OptionsItem(resName = "action_refresh")
 	protected void refreshScreen() {
 		fragmentTorrents.updateIsLoading(true);
@@ -412,13 +475,72 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	}
 
 	@Background
-	public void addTorrentByUrl(String url, String title) {
+	protected void addTorrentByUrl(String url, String title) {
 		DaemonTaskResult result = AddByUrlTask.create(currentConnection, url, title).execute();
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_added, title);
 			refreshTorrents();
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@Background
+	protected void addTorrentByMagnetUrl(String url) {
+		DaemonTaskResult result = AddByMagnetUrlTask.create(currentConnection, url).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_added, "Torrent");
+			refreshTorrents();
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	@Background
+	protected void addTorrentByFile(String localFile, String title) {
+		DaemonTaskResult result = AddByFileTask.create(currentConnection, localFile).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_added, title);
+			refreshTorrents();
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
+	private void addTorrentFromDownloads(Uri contentUri) {
+
+		InputStream input = null;
+		try {
+			// Open the content uri as input stream
+			input = getContentResolver().openInputStream(contentUri);
+			
+			// Write a temporary file with the torrent contents
+			File tempFile = File.createTempFile("transdroid_", ".torrent", getCacheDir());
+			FileOutputStream output = new FileOutputStream(tempFile);
+			try {
+				final byte[] buffer = new byte[1024];
+				int read;
+				while ((read = input.read(buffer)) != -1)
+					output.write(buffer, 0, read);
+				output.flush();
+				String fileName = Uri.fromFile(tempFile).toString();
+				addTorrentByFile(fileName, fileName.substring(fileName.lastIndexOf("/")));
+			} finally {
+				output.close();
+			}
+		} catch (SecurityException e) {
+			// No longer access to this file
+			Crouton.showText(this, R.string.error_torrentfile, navigationHelper.CROUTON_ERROR_STYLE);
+		} catch (IOException e1) {
+			// Can't write temporary file
+			Crouton.showText(this, R.string.error_torrentfile, navigationHelper.CROUTON_ERROR_STYLE);
+		} finally {
+			try {
+				if (input != null)
+					input.close();
+			} catch (IOException e) {
+				Crouton.showText(this, R.string.error_torrentfile, navigationHelper.CROUTON_ERROR_STYLE);
+			}
 		}
 	}
 
