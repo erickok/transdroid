@@ -241,14 +241,16 @@ public class RtorrentAdapter implements IDaemonAdapter {
 			initialise();
 		}
 		
+		String params = "";
+		for (Object arg : arguments) params += " " + arg.toString();
 		try {
-			String params = "";
-			for (Object arg : arguments) params += " " + arg.toString();
-			DLog.d(LOG_NAME, "Calling " + serverMethod + " with params [" + (params.length() > 300? params.substring(0, 300) + "...": params) + " ]");
+			DLog.d(LOG_NAME, "Calling " + serverMethod + " with params [" + (params.length() > 100? params.substring(0, 100) + "...": params) + " ]");
 			return rpcclient.call(serverMethod, arguments);
 		} catch (XMLRPCException e) {
 			DLog.d(LOG_NAME, e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, "Error making call to " + serverMethod + " with params " + arguments.toString() + ": " + e.toString());
+			if (e.getCause() instanceof DaemonException)
+				throw (DaemonException) e.getCause();
+			throw new DaemonException(ExceptionType.ConnectionError, "Error making call to " + serverMethod + " with params [" + (params.length() > 100? params.substring(0, 100) + "...": params) + " ]: " + e.toString());
 		}
 		
 	}

@@ -6,6 +6,7 @@ import java.util.Date;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EBean.Scope;
 import org.androidannotations.annotations.OrmLiteDao;
+import org.transdroid.daemon.util.ITLogger;
 
 import android.content.Context;
 
@@ -17,14 +18,20 @@ import com.j256.ormlite.stmt.DeleteBuilder;
  * @author Eric Kok
  */
 @EBean(scope = Scope.Singleton)
-public class Log {
+public class Log implements ITLogger {
 
 	public static final String LOG_NAME = "Transdroid";
 	private static final long MAX_LOG_AGE = 15 * 60 * 1000; // 15 minutes
 	
+	// Access to resources and database in local singleton instance
+	private Context context;
 	@OrmLiteDao(helper = DatabaseHelper.class, model = ErrorLogEntry.class)
 	Dao<ErrorLogEntry, Integer> errorLogDao;
 
+	protected Log(Context context) {
+		this.context = context;
+	}
+	
 	protected void log(String logName, int priority, String message) {
 		android.util.Log.println(priority, LOG_NAME, message);
 		try {
@@ -49,6 +56,16 @@ public class Log {
 	
 	public static void d(Context caller, String message) {
 		Log_.getInstance_(caller).log(caller.getClass().toString(), android.util.Log.DEBUG, message);
+	}
+
+	@Override
+	public void d(String self, String msg) {
+		Log.d(context, msg);
+	}
+
+	@Override
+	public void e(String self, String msg) {
+		Log.e(context, msg);
 	}
 
 }

@@ -3,8 +3,7 @@
 	android:layout_width="wrap_content"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
-	android:paddingLeft="@dimen/margin_default"
-	android:paddingRight="@dimen/margin_default" >
+	android:paddingRight="@dimen/margin_half" >
 
 	<TextView
 		android:id="@+id/filter_text"

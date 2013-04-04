@@ -12,6 +12,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:textSize="17sp"
-		android:textIsSelectable="true" />
+		android:textIsSelectable="false" />
 
 </FrameLayout>

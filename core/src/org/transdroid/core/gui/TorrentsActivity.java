@@ -20,9 +20,8 @@ import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.log.Log_;
 import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.navigation.NavigationFilter;
-import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.NavigationSelectionView.NavigationFilterManager;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.settings.*;
@@ -45,6 +44,7 @@ import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
+import org.transdroid.daemon.util.DLog;
 
 import android.annotation.TargetApi;
 import android.app.SearchManager;
@@ -116,18 +116,21 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			navigationListAdapter = FilterListAdapter_.getInstance_(this);
 			navigationListAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));
 			// Add an empty labels list (which will be updated later, but the adapter needs to be created now)
-			navigationListAdapter.updateLabels(new ArrayList<SimpleListItem>());
+			navigationListAdapter.updateLabels(new ArrayList<Label>());
 			filtersList.setAdapter(navigationListAdapter);
 			filtersList.setOnItemSelectedListener(onFilterListItemSelected);
 		} else {
 			// Add status types directly to the action bar spinner
 			navigationSpinnerAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));
 			// Add an empty labels list (which will be updated later, but the adapter needs to be created now)
-			navigationSpinnerAdapter.updateLabels(new ArrayList<SimpleListItem>());
+			navigationSpinnerAdapter.updateLabels(new ArrayList<Label>());
 		}
 		// Now that all items (or at least their adapters) have been added
 		getSupportActionBar().setListNavigationCallbacks(navigationSpinnerAdapter, this);
 		currentFilter = StatusType.getShowAllType(this);
+
+		// Log messages from the server daemons using our singleton logger
+		DLog.setLogger(Log_.getInstance_(this));
 
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
@@ -497,7 +500,14 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (fragmentDetails != null) {
 			fragmentDetails.perhapsUpdateTorrent(torrents);
 		}
-		// TODO: Update local list of labels
+		// Update local list of labels in the navigation
+		if (navigationListAdapter != null) {
+			// Labels are shown in the dedicated side navigation
+			navigationListAdapter.updateLabels(Label.convertToNavigationLabels(labels));
+		} else {
+			// Labels are shown in the action bar spinner
+			navigationSpinnerAdapter.updateLabels(Label.convertToNavigationLabels(labels));
+		}
 	}
 
 	@UiThread

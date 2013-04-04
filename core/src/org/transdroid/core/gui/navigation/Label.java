@@ -13,12 +13,14 @@ import android.os.Parcelable;
  * Represents some label that is active or available on the server.
  * @author Eric Kok
  */
-public class Label extends org.transdroid.daemon.Label implements SimpleListItem, NavigationFilter {
+public class Label implements SimpleListItem, NavigationFilter {
 
 	private final String name;
+	private final int count;
 
-	public Label(String name) {
-		this.name = name;
+	public Label(org.transdroid.daemon.Label daemonLabel) {
+		this.name = daemonLabel.getName();
+		this.count = daemonLabel.getCount();
 	}
 
 	@Override
@@ -26,6 +28,10 @@ public class Label extends org.transdroid.daemon.Label implements SimpleListItem
 		return this.name;
 	}
 
+	public int getCount() {
+		return count;
+	}
+	
 	@Override
 	public boolean matches(Torrent torrent) {
 		return torrent.getLabelName() != null && torrent.getLabelName().equals(name);
@@ -36,13 +42,14 @@ public class Label extends org.transdroid.daemon.Label implements SimpleListItem
 			return null;
 		List<Label> localLabels = new ArrayList<Label>();
 		for (org.transdroid.daemon.Label label : daemonLabels) {
-			localLabels.add(new Label(label.getName()));
+			localLabels.add(new Label(label));
 		}
 		return localLabels;
 	}
 	
 	private Label(Parcel in) {
 		this.name = in.readString();
+		this.count = in.readInt();
 	}
 
     public static final Parcelable.Creator<Label> CREATOR = new Parcelable.Creator<Label>() {
@@ -63,6 +70,7 @@ public class Label extends org.transdroid.daemon.Label implements SimpleListItem
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(name);
+		dest.writeInt(count);
 	}
 	
 }
