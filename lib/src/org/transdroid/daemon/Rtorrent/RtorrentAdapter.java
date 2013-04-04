@@ -27,13 +27,17 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.base64.android.Base64;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.Label;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
@@ -77,6 +81,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 	private DaemonSettings settings;
 	private XMLRPCClient rpcclient;
+	private List<Label> lastKnownLabels = null;
 
 	public RtorrentAdapter(DaemonSettings settings) {
 		this.settings = settings;
@@ -90,7 +95,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 			case Retrieve:
 
 				Object result = makeRtorrentCall("d.multicall", new String[] { "main", "d.get_hash=", "d.get_name=", "d.get_state=", "d.get_down_rate=", "d.get_up_rate=", "d.get_peers_connected=", "d.get_peers_not_connected=", "d.get_peers_accounted=", "d.get_bytes_done=", "d.get_up_total=", "d.get_size_bytes=", "d.get_creation_date=", "d.get_left_bytes=", "d.get_complete=", "d.is_active=", "d.is_hash_checking=", "d.get_base_path=", "d.get_base_filename=", "d.get_message=", "d.get_custom=addtime", "d.get_custom=seedingtime", "d.get_custom1=" });
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result),null);
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result), lastKnownLabels);
 
 			case GetTorrentDetails:
 
@@ -277,10 +282,8 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						
 			// Parse torrent list from response
 			// Formatted as Object[][], see http://libtorrent.rakshasa.no/wiki/RTorrentCommands#Download
-			// 'Labels' are supported in rTorrent as 'groups' that can become the 'active view';
-			// support for this is not trivial since it requires multiple calls to get all the info at best
-			// (if it is even feasible with the current approach)
 			List<Torrent> torrents = new ArrayList<Torrent>();
+			Map<String, Integer> labels = new HashMap<String, Integer>();
 			Object[] responseList = (Object[]) response;
 			for (int i = 0; i < responseList.length; i++) {
 				
@@ -296,7 +299,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				} catch (NumberFormatException e) {
 					// Not a number (timestamp); ignore and fall back to using creationtime
 				}
-				if(addtime != null)
+				if (addtime != null)
 					// Successfully received the addtime from rTorrent (which is a String like '1337089336\n')
 					added = new Date(addtime * 1000L);
 				else {
@@ -315,7 +318,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				} catch (NumberFormatException e) {
 					// Not a number (timestamp); ignore and fall back to using creationtime
 				}
-				if(seedingtime != null)
+				if (seedingtime != null)
 					// Successfully received the seedingtime from rTorrent (which is a String like '1337089336\n')
 					finished = new Date(seedingtime * 1000L);
 				
@@ -323,7 +326,13 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				String label = null;
 				try {
 					label = URLDecoder.decode((String)info[21], "UTF-8");
-				} catch (UnsupportedEncodingException e) {					
+					if (labels.containsKey(label)) {
+						labels.put(label, labels.get(label) + 1);
+					} else {
+						labels.put(label, 0);
+					}
+				} catch (UnsupportedEncodingException e) {		
+					// Can't decode label name; ignore it
 				}
 				
 				if (info[3] instanceof Long) {
@@ -387,6 +396,11 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						settings.getType()));
 					
 				}
+			}
+			lastKnownLabels = new ArrayList<Label>();
+			for (Entry<String, Integer> pair : labels.entrySet()) {
+				if (pair.getKey() != null)
+					lastKnownLabels.add(new Label(pair.getKey(), pair.getValue()));
 			}
 			return torrents;
 			

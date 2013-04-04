@@ -10,6 +10,7 @@ import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.navigation.NavigationSelectionView.NavigationFilterManager;
 
 import android.content.Context;
+import android.view.View;
 
 import com.commonsware.cwac.merge.MergeAdapter;
 
@@ -27,6 +28,9 @@ public class FilterListAdapter extends MergeAdapter {
 	private SimpleListItemAdapter statusTypeItems = null;
 	private SimpleListItemAdapter labelItems = null;
 	protected NavigationFilterManager navigationFilterManager;
+	private FilterSeparatorView statusTypeSeparator;
+	private FilterSeparatorView labelSeperator;
+	private FilterSeparatorView serverSeparator;
 
 	/**
 	 * Stores which screen, or manager, handles navigation selection and display
@@ -37,19 +41,23 @@ public class FilterListAdapter extends MergeAdapter {
 		this.navigationFilterManager = manager;
 		return this;
 	}
-	
+
 	/**
 	 * Update the list of available servers
 	 * @param servers The new list of available servers
 	 */
 	public void updateServers(List<? extends SimpleListItem> servers) {
 		if (this.serverItems == null && servers != null) {
-			addView(FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_servers)), false);
+			serverSeparator = FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_servers));
+			serverSeparator.setVisibility(serverItems.isEmpty()? View.GONE: View.VISIBLE);
+			addView(serverSeparator, false);
 			this.serverItems = new SimpleListItemAdapter(context, servers);
 			addAdapter(serverItems);
 		} else if (this.serverItems != null && servers != null) {
+			serverSeparator.setVisibility(serverItems.isEmpty()? View.GONE: View.VISIBLE);
 			this.serverItems.update(servers);
 		} else {
+			serverSeparator.setVisibility(View.GONE);
 			this.serverItems = null;
 		}
 	}
@@ -60,12 +68,17 @@ public class FilterListAdapter extends MergeAdapter {
 	 */
 	public void updateStatusTypes(List<? extends SimpleListItem> statusTypes) {
 		if (this.statusTypeItems == null && statusTypes != null) {
-			addView(FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_status)), false);
+			statusTypeSeparator = FilterSeparatorView_.build(context).setText(
+					context.getString(R.string.navigation_status));
+			statusTypeSeparator.setVisibility(statusTypeItems.isEmpty()? View.GONE: View.VISIBLE);
+			addView(statusTypeSeparator, false);
 			this.statusTypeItems = new SimpleListItemAdapter(context, statusTypes);
 			addAdapter(statusTypeItems);
 		} else if (this.statusTypeItems != null && statusTypes != null) {
+			statusTypeSeparator.setVisibility(statusTypeItems.isEmpty()? View.GONE: View.VISIBLE);
 			this.statusTypeItems.update(statusTypes);
 		} else {
+			statusTypeSeparator.setVisibility(View.GONE);
 			this.statusTypeItems = null;
 		}
 	}
@@ -76,14 +89,18 @@ public class FilterListAdapter extends MergeAdapter {
 	 */
 	public void updateLabels(List<? extends SimpleListItem> labels) {
 		if (this.labelItems == null && labels != null) {
-			addView(FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_labels)), false);
+			labelSeperator = FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_labels));
+			labelSeperator.setVisibility(labelItems.isEmpty()? View.GONE: View.VISIBLE);
+			addView(labelSeperator, false);
 			this.labelItems = new SimpleListItemAdapter(context, labels);
 			addAdapter(labelItems);
 		} else if (this.serverItems != null && labels != null) {
+			labelSeperator.setVisibility(labelItems.isEmpty()? View.GONE: View.VISIBLE);
 			this.labelItems.update(labels);
 		} else {
+			labelSeperator.setVisibility(View.GONE);
 			this.labelItems = null;
 		}
 	}
-	
+
 }
