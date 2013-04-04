@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:paddingTop="@dimen/margin_half"
-	android:paddingBottom="@dimen/margin_half"
-	android:orientation="horizontal" >
+	android:paddingLeft="@dimen/margin_half"
+	android:paddingRight="@dimen/margin_half" >
 
 	<TextView
 		android:id="@+id/separator_text"
+		style="@style/SectionHeader"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:textIsSelectable="false"
-		style="@style/SectionHeader" />
+		android:textIsSelectable="false" />
 
-</LinearLayout>
+</FrameLayout>

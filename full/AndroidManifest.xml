@@ -19,8 +19,11 @@
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-	
+
+	<uses-feature
+		android:name="android.hardware.touchscreen"
+		android:required="false" />
+
 	<application
 		android:allowBackup="true"
 		android:icon="@drawable/ic_launcher"
@@ -30,10 +33,10 @@
 		<!-- Main activities -->
 		<activity
 			android:name="org.transdroid.core.gui.TorrentsActivity_"
-			android:label="@string/app_name"
 			android:icon="@drawable/ic_activity_torrents"
-			android:uiOptions="splitActionBarWhenNarrow"
-			android:theme="@style/TransdroidTheme" >
+			android:label="@string/app_name"
+			android:theme="@style/TransdroidTheme"
+			android:uiOptions="splitActionBarWhenNarrow" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
@@ -45,13 +48,13 @@
 
 			<meta-data
 				android:name="android.app.default_searchable"
-				android:value="org.transdroid.gui.search.Search" />
+				android:value="org.transdroid.core.gui.SearchActivity_" />
 		</activity>
 		<activity
 			android:name="org.transdroid.core.gui.DetailsActivity_"
 			android:icon="@drawable/ic_activity_torrents"
-			android:uiOptions="splitActionBarWhenNarrow"
-			android:theme="@style/TransdroidTheme" >
+			android:theme="@style/TransdroidTheme"
+			android:uiOptions="splitActionBarWhenNarrow" >
 		</activity>
 
 		<!-- Settings screens -->
@@ -62,12 +65,12 @@
 		<activity android:name="org.transdroid.core.gui.settings.NotificationSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.settings.SystemSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.navigation.DialogHelper_" />
-		
+
 		<!-- Search -->
 		<activity
-			android:name="org.transdroid.core.gui.SearchActivity"
-			android:label="@string/search_torrentsearch"
+			android:name="org.transdroid.core.gui.SearchActivity_"
 			android:icon="@drawable/ic_activity_torrents"
+			android:label="@string/search_torrentsearch"
 			android:theme="@style/TransdroidTheme" >
 			<intent-filter>
 				<action android:name="android.intent.action.SEARCH" />

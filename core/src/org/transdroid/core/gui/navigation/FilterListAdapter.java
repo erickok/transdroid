@@ -10,9 +10,6 @@ import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.navigation.NavigationSelectionView.NavigationFilterManager;
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.SpinnerAdapter;
 
 import com.commonsware.cwac.merge.MergeAdapter;
 
@@ -22,14 +19,14 @@ import com.commonsware.cwac.merge.MergeAdapter;
  * @author Eric Kok
  */
 @EBean
-public class FilterListAdapter extends MergeAdapter implements SpinnerAdapter {
+public class FilterListAdapter extends MergeAdapter {
 
 	@RootContext
 	protected Context context;
 	private SimpleListItemAdapter serverItems = null;
 	private SimpleListItemAdapter statusTypeItems = null;
 	private SimpleListItemAdapter labelItems = null;
-	private NavigationFilterManager navigationFilterManager;
+	protected NavigationFilterManager navigationFilterManager;
 
 	/**
 	 * Stores which screen, or manager, handles navigation selection and display
@@ -87,18 +84,6 @@ public class FilterListAdapter extends MergeAdapter implements SpinnerAdapter {
 		} else {
 			this.labelItems = null;
 		}
-	}
-
-	@Override
-	public View getDropDownView(int position, View convertView, ViewGroup parent) {
-		NavigationSelectionView filterItemView;
-		if (convertView == null || !(convertView instanceof NavigationSelectionView)) {
-			filterItemView = NavigationSelectionView_.build(context).setNavigationFilterManager(navigationFilterManager);
-		} else {
-			filterItemView = (NavigationSelectionView) convertView;
-		}
-		filterItemView.bind();
-		return filterItemView;
 	}
 	
 }

@@ -4,16 +4,16 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import android.content.Context;
-import android.widget.LinearLayout;
+import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /**
  * A list item that shows a sub header or separator (in underlined Holo style).
- * 
  * @author Eric Kok
  */
 @EViewGroup(resName="list_item_separator")
-public class FilterSeparatorView extends LinearLayout {
+public class FilterSeparatorView extends FrameLayout {
 
 	protected String text;
 	
@@ -31,6 +31,8 @@ public class FilterSeparatorView extends LinearLayout {
 	 */
 	public FilterSeparatorView setText(String text) {
 		separatorText.setText(text);
+		setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.WRAP_CONTENT,
+				AbsListView.LayoutParams.WRAP_CONTENT));
 		return this;
 	}
 	

@@ -4,7 +4,7 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import android.content.Context;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /**
@@ -12,7 +12,7 @@ import android.widget.TextView;
  * @author Eric Kok
  */
 @EViewGroup(resName="list_item_filter")
-public class SimpleListItemView extends LinearLayout {
+public class SimpleListItemView extends FrameLayout {
 
 	@ViewById
 	protected TextView itemText;

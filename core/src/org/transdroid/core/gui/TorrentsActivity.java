@@ -105,20 +105,26 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Set up navigation, with an action bar spinner and possibly (if room) with a filter list
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		getSupportActionBar().setHomeButtonEnabled(false);
-		navigationSpinnerAdapter = FilterListAdapter_.getInstance_(this).setNavigationFilterManager(this);
+		getSupportActionBar().setDisplayShowTitleEnabled(false);
+		navigationSpinnerAdapter = FilterListDropDownAdapter_.getInstance_(this).setNavigationFilterManager(this);
 		// Servers are always added to the action bar spinner
 		navigationSpinnerAdapter.updateServers(applicationSettings.getServerSettings());
-		getSupportActionBar().setListNavigationCallbacks(navigationSpinnerAdapter, this);
 		if (filtersList != null) {
-			// There was room for a dedicated filter list; add the status types
+			// There was room for a dedicated filter list; create adapter and add the status types
 			navigationListAdapter = FilterListAdapter_.getInstance_(this);
-			filtersList.setAdapter(navigationListAdapter);
 			navigationListAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));
+			// Add an empty labels list (which will be updated later, but the adapter needs to be created now)
+			navigationListAdapter.updateLabels(new ArrayList<SimpleListItem>());
+			filtersList.setAdapter(navigationListAdapter);
 			filtersList.setOnItemSelectedListener(onFilterListItemSelected);
 		} else {
 			// Add status types directly to the action bar spinner
 			navigationSpinnerAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));
+			// Add an empty labels list (which will be updated later, but the adapter needs to be created now)
+			navigationSpinnerAdapter.updateLabels(new ArrayList<SimpleListItem>());
 		}
+		// Now that all items (or at least their adapters) have been added
+		getSupportActionBar().setListNavigationCallbacks(navigationSpinnerAdapter, this);
 		currentFilter = StatusType.getShowAllType(this);
 
 		// Connect to the last used server
