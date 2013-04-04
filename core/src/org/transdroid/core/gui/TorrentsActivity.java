@@ -23,7 +23,6 @@ import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.log.Log_;
 import org.transdroid.core.gui.navigation.*;
 import org.transdroid.core.gui.navigation.NavigationSelectionView.NavigationFilterManager;
-import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.settings.*;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
@@ -162,8 +161,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			return;
 		}
 		// TODO: See if this does not mean the refresh is called twice (first in onCreate)
-		// There is a server now: select it to establish a connection
-		filterSelected(lastUsed);
+		// There is a server know (now): forcefully select it to establish a connection
+		filterSelected(lastUsed, true);
 	}
 
 	@TargetApi(Build.VERSION_CODES.FROYO)
@@ -230,7 +229,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		Object item = navigationSpinnerAdapter.getItem(itemPosition);
 		if (item instanceof SimpleListItem) {
 			// A filter item was selected form the navigation spinner
-			filterSelected((SimpleListItem) item);
+			filterSelected((SimpleListItem) item, false);
 			return true;
 		}
 		// A header was selected; no action
@@ -243,7 +242,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected OnItemSelectedListener onFilterListItemSelected = new OnItemSelectedListener() {
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-			filterSelected((SimpleListItem) filtersList.getAdapter().getItem(position));
+			filterSelected((SimpleListItem) filtersList.getAdapter().getItem(position), false);
 		}
 
 		@Override
@@ -254,10 +253,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	/**
 	 * A new filter was selected; update the view over the current data
-	 * @param selected True if the filter item was selected, false if it was deselected
 	 * @param item The touched filter item
+	 * @param forceNewConnection Whether a new connection should be initialised regardless of the old server selection
 	 */
-	protected void filterSelected(SimpleListItem item) {
+	protected void filterSelected(SimpleListItem item, boolean forceNewConnection) {
 
 		// Server selection
 		if (item instanceof ServerSetting) {
@@ -265,6 +264,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 			if (currentConnection != null && server.equals(currentConnection.getSettings())) {
 				// Already connected to this server; just ask for a refresh instead
+				fragmentTorrents.updateIsLoading(true);
 				refreshTorrents();
 				return;
 			}
@@ -277,6 +277,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			if (fragmentDetails != null) {
 				fragmentDetails.clear();
 			}
+			fragmentTorrents.updateIsLoading(true);
 			updateFragmentVisibility(true);
 			refreshTorrents();
 			return;
@@ -325,6 +326,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	@OptionsItem(resName = "action_refresh")
 	protected void refreshScreen() {
+		fragmentTorrents.updateIsLoading(true);
 		refreshTorrents();
 		if (Daemon.supportsStats(currentConnection.getType()))
 			getAdditionalStats();
@@ -352,9 +354,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	@Background
 	protected void refreshTorrents() {
-		fragmentTorrents.updateIsLoading(true);
 		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute();
-		fragmentTorrents.updateIsLoading(false);
 		if (result instanceof RetrieveTaskSuccessResult) {
 			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
 					((RetrieveTaskSuccessResult) result).getLabels());
@@ -489,24 +489,28 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		Log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
 		Crouton.showText(this, error, navigationHelper.CROUTON_ERROR_STYLE);
+		fragmentTorrents.updateIsLoading(false);
 		fragmentTorrents.updateError(error);
 	}
 
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
 		// Report the newly retrieved list of torrents to the torrents fragment
+		fragmentTorrents.updateIsLoading(false);
 		fragmentTorrents.updateTorrents(new ArrayList<Torrent>(torrents));
 		// Update the details fragment if the currently shown torrent is in the newly retrieved list
 		if (fragmentDetails != null) {
 			fragmentDetails.perhapsUpdateTorrent(torrents);
 		}
 		// Update local list of labels in the navigation
+		List<Label> navigationLabels = Label.convertToNavigationLabels(labels,
+				getResources().getString(R.string.labels_unlabeled));
 		if (navigationListAdapter != null) {
 			// Labels are shown in the dedicated side navigation
-			navigationListAdapter.updateLabels(Label.convertToNavigationLabels(labels));
+			navigationListAdapter.updateLabels(navigationLabels);
 		} else {
 			// Labels are shown in the action bar spinner
-			navigationSpinnerAdapter.updateLabels(Label.convertToNavigationLabels(labels));
+			navigationSpinnerAdapter.updateLabels(navigationLabels);
 		}
 	}
 

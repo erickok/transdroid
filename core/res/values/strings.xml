@@ -52,14 +52,14 @@
 	<string name="navigation_status_onlyactive">Active</string>
 	<string name="navigation_status_onlyinactive">Inactive</string>
 	
-	<string name="status_status">Status: %1$s</string>
+	<string name="status_status">STATUS: %1$s</string>
 	<string name="status_waiting">Waiting to check&#8230;</string>
 	<string name="status_checking">Verifying local data&#8230;</string>
 	<string name="status_waitingtodl">Waiting to download %s</string>
 	<string name="status_error">Error&#8230;</string>
 	<string name="status_size1">%1$s OF %2$s (%3$s)</string>
 	<string name="status_size2">%1$s, UPLOADED %2$s</string>
-	<string name="status_sincedate">SINCE $1%s</string>
+	<string name="status_sincedate">SINCE %1$s</string>
 	<string name="status_eta">~ %1$s</string>
 	<string name="status_etalong">ETA %1$s</string>
 	<string name="status_unknowneta">UNKNOWN ETA</string>

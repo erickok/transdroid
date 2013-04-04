@@ -86,6 +86,9 @@ public enum StatusType {
 			return name;
 		}
 
+		/**
+		 * Returns true if the torrent status matches this (selected) status type, false otherwise
+		 */
 		@Override
 		public boolean matches(Torrent torrent) {
 			switch (statusType) {

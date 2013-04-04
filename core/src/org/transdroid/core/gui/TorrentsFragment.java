@@ -7,10 +7,10 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
-import org.transdroid.core.gui.lists.*;
+import org.transdroid.core.gui.lists.TorrentsAdapter;
+import org.transdroid.core.gui.lists.TorrentsAdapter_;
 import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.daemon.Torrent;
 
@@ -83,7 +83,7 @@ public class TorrentsFragment extends SherlockFragment {
 	 */
 	public void applyFilter(NavigationFilter currentFilter) {
 		this.currentFilter = currentFilter;
-		if (torrents != null) {
+		if (torrents != null && currentFilter != null) {
 			// Build a local list of torrents that match the selected navigation filter
 			ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>();
 			for (Torrent torrent : torrents) {
@@ -91,6 +91,9 @@ public class TorrentsFragment extends SherlockFragment {
 					filteredTorrents.add(torrent);
 			}
 			((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);
+		} else if (torrents != null) {
+			// No need to filter any torrents; directly show the full list
+			((TorrentsAdapter) torrentsList.getAdapter()).update(torrents);
 		}
 		updateViewVisibility();
 	}
@@ -171,7 +174,7 @@ public class TorrentsFragment extends SherlockFragment {
 
 	/**
 	 * Updates the shown screen depending on whether we have a connection (so torrents can be shown) or not (in case we
-	 * need to show a message suggesting help)
+	 * need to show a message suggesting help). This should only ever be called on the UI thread.
 	 * @param hasAConnection True if the user has servers configured and therefore has a connection that can be used
 	 */
 	public void updateConnectionStatus(boolean hasAConnection) {
@@ -184,7 +187,8 @@ public class TorrentsFragment extends SherlockFragment {
 	}
 
 	/**
-	 * Updates the shown screen depending on whether the torrents are loading
+	 * Updates the shown screen depending on whether the torrents are loading. This should only ever be called on the UI
+	 * thread.
 	 * @param isLoading True if the list of torrents is (re)loading, false otherwise
 	 */
 	public void updateIsLoading(boolean isLoading) {
@@ -197,7 +201,8 @@ public class TorrentsFragment extends SherlockFragment {
 	}
 
 	/**
-	 * Updates the shown screen depending on whether a connection error occurred
+	 * Updates the shown screen depending on whether a connection error occurred. This should only ever be called on the
+	 * UI thread.
 	 * @param connectionErrorMessage The error message from the last failed connection attempt, or null to clear the
 	 *            visible error text
 	 */
@@ -211,8 +216,7 @@ public class TorrentsFragment extends SherlockFragment {
 		}
 	}
 
-	@UiThread
-	protected void updateViewVisibility() {
+	private void updateViewVisibility() {
 		if (!hasAConnection) {
 			torrentsList.setVisibility(View.GONE);
 			emptyText.setVisibility(View.GONE);
@@ -222,10 +226,10 @@ public class TorrentsFragment extends SherlockFragment {
 			return;
 		}
 		boolean isEmpty = torrents == null || torrentsList.getAdapter().isEmpty();
-		boolean hasError = connectionErrorMessage == null;
+		boolean hasError = connectionErrorMessage != null;
 		nosettingsText.setVisibility(View.GONE);
-		errorText.setVisibility(hasError? View.VISIBLE : View.GONE);
-		torrentsList.setVisibility(!hasError && !isLoading && !isEmpty ? View.GONE : View.VISIBLE);
+		errorText.setVisibility(hasError ? View.VISIBLE : View.GONE);
+		torrentsList.setVisibility(!hasError && !isLoading && !isEmpty ? View.VISIBLE : View.GONE);
 		loadingProgress.setVisibility(!hasError && isLoading ? View.VISIBLE : View.GONE);
 		emptyText.setVisibility(!hasError && !isLoading && isEmpty ? View.VISIBLE : View.GONE);
 	}
