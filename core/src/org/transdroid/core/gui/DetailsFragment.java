@@ -75,8 +75,8 @@ public class DetailsFragment extends SherlockFragment {
 		((DetailsAdapter) detailsList.getAdapter()).updateTorrent(newTorrent);
 		// Make the list (with details header) visible
 		detailsList.setVisibility(View.VISIBLE);
-		emptyText.setVisibility(isLoadingTorrent? View.INVISIBLE: View.VISIBLE);
-		loadingProgress.setVisibility(!isLoadingTorrent? View.VISIBLE: View.INVISIBLE);
+		emptyText.setVisibility(View.GONE);
+		loadingProgress.setVisibility(View.GONE);
 		// Also update the available actions in the action bar
 		getActivity().supportInvalidateOptionsMenu();
 	}
@@ -122,8 +122,9 @@ public class DetailsFragment extends SherlockFragment {
 	 */
 	public void clear() {
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));
-		detailsList.setVisibility(View.INVISIBLE);
-		emptyText.setVisibility(View.VISIBLE);
+		detailsList.setVisibility(View.GONE);
+		emptyText.setVisibility(!isLoadingTorrent? View.VISIBLE: View.GONE);
+		loadingProgress.setVisibility(isLoadingTorrent? View.VISIBLE: View.GONE);
 		torrent = null;
 		torrentDetails = null;
 		torrentFiles = null;
