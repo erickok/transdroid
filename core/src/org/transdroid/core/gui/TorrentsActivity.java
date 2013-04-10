@@ -24,12 +24,8 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.log.Log;
-import org.transdroid.core.gui.log.Log_;
-import org.transdroid.core.gui.navigation.FilterListAdapter;
-import org.transdroid.core.gui.navigation.FilterListAdapter_;
-import org.transdroid.core.gui.navigation.FilterListDropDownAdapter;
-import org.transdroid.core.gui.navigation.FilterListDropDownAdapter_;
+import org.transdroid.core.gui.log.*;
+import org.transdroid.core.gui.navigation.*;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.NavigationHelper;
@@ -37,7 +33,7 @@ import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
-import org.transdroid.core.gui.settings.MainSettingsActivity_;
+import org.transdroid.core.gui.settings.*;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
@@ -475,7 +471,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	}
 
 	@Background
-	protected void addTorrentByUrl(String url, String title) {
+	public void addTorrentByUrl(String url, String title) {
 		DaemonTaskResult result = AddByUrlTask.create(currentConnection, url, title).execute();
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_added, title);
