@@ -101,6 +101,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 	@OptionsItem(resName = "action_refresh")
 	protected void refreshScreen() {
+		fragmentDetails.updateIsLoading(true);
 		refreshTorrent();
 		refreshTorrentDetails();
 		refreshTorrentFiles();
@@ -108,9 +109,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 	@Background
 	protected void refreshTorrent() {
-		fragmentDetails.updateIsLoading(true);
 		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute();
-		fragmentDetails.updateIsLoading(false);
 		if (result instanceof RetrieveTaskSuccessResult) {
 			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
 					((RetrieveTaskSuccessResult) result).getLabels());
@@ -246,6 +245,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result) {
 		Log.i(this, result.getException().toString());
+		fragmentDetails.updateIsLoading(false);
 		Crouton.showText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
 				navigationHelper.CROUTON_ERROR_STYLE);
 	}
@@ -253,6 +253,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
 		// Update the details fragment
+		fragmentDetails.updateIsLoading(false);
 		fragmentDetails.perhapsUpdateTorrent(torrents);
 	}
 

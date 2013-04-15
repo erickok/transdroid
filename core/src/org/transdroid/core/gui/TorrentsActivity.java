@@ -325,29 +325,36 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	 * If required, add torrents, switch to a specific server, etc.
 	 */
 	protected void handleStartIntent() {
-		
+
 		Intent intent = getIntent();
 		Uri dataUri = intent.getData();
 		String data = intent.getDataString();
 		String action = intent.getAction();
-		
-		if (action.equals("org.transdroid.ADD_MULTIPLE")) {
+
+		// Adding multiple torrents at the same time (as found in the Intent extras Bundle)
+		if (action != null && action.equals("org.transdroid.ADD_MULTIPLE")) {
 			// Intent should have some extras pointing to possibly multiple torrents
-    		String[] urls = intent.getStringArrayExtra("TORRENT_URLS");
-    		String[] titles = intent.getStringArrayExtra("TORRENT_TITLES");
-    		if (urls != null) {
-	    		for (int i = 0; i < urls.length; i++) {
-	    			addTorrentByUrl(urls[i], (titles != null && titles.length >= i? titles[i]: "Torrent"));
-	    		}
-    		}
-    		return;
+			String[] urls = intent.getStringArrayExtra("TORRENT_URLS");
+			String[] titles = intent.getStringArrayExtra("TORRENT_TITLES");
+			if (urls != null) {
+				for (int i = 0; i < urls.length; i++) {
+					addTorrentByUrl(urls[i], (titles != null && titles.length >= i ? titles[i] : "Torrent"));
+				}
+			}
+			return;
 		}
+
+		// Add a torrent from a local or remote data URI?
+		if (dataUri == null)
+			return;
 		
+		// Adding a torrent from the Android downloads manager
 		if (dataUri.getScheme() != null && dataUri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
 			addTorrentFromDownloads(dataUri);
 			return;
 		}
 
+		// Adding a torrent from http or https URL
 		if (dataUri.getScheme().equals("http") || dataUri.getScheme().equals("https")) {
 			String title = data.substring(data.lastIndexOf("/"));
 			if (intent.hasExtra("TORRENT_TITLE")) {
@@ -357,17 +364,19 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			return;
 		}
 
+		// Adding a torrent from magnet URL
 		if (dataUri.getScheme().equals("magnet")) {
 			addTorrentByMagnetUrl(data);
 			return;
 		}
 
+		// Adding a local .torrent file
 		if (dataUri.getScheme().equals("file")) {
 			String title = data.substring(data.lastIndexOf("/"));
 			addTorrentByFile(data, title);
 			return;
 		}
-		
+
 	}
 
 	@OptionsItem(resName = "action_add_fromurl")
@@ -509,7 +518,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		try {
 			// Open the content uri as input stream
 			input = getContentResolver().openInputStream(contentUri);
-			
+
 			// Write a temporary file with the torrent contents
 			File tempFile = File.createTempFile("transdroid_", ".torrent", getCacheDir());
 			FileOutputStream output = new FileOutputStream(tempFile);

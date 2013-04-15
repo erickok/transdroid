@@ -34,9 +34,13 @@ public class ErrorLogSender {
 			body.append("\n");
 			body.append(navigationHelper.getAppNameAndVersion());
 			body.append("\n");
-			body.append(serverSetting.getType().toString());
-			body.append(" settings: ");
-			body.append(serverSetting.getHumanReadableIdentifier());
+			if (serverSetting == null) {
+				body.append("(No server settings)");
+			} else {
+				body.append(serverSetting.getType().toString());
+				body.append(" settings: ");
+				body.append(serverSetting.getHumanReadableIdentifier());
+			}
 			body.append("\n\nConnection and error log:");
 
 			// Print the individual error log messages as stored in the database

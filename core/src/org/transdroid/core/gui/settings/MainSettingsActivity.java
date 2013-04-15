@@ -86,6 +86,8 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		ListPreference setSite = (ListPreference) findPreference("header_setsearchsite");
 		// Retrieve the available in-app search sites (using the Torrent Search package)
 		List<SearchSite> searchsites = searchHelper.getAvailableSites();
+		if (searchsites == null)
+			searchsites = new ArrayList<SearchSite>();
 		List<String> siteNames = new ArrayList<String>(websearches.size() + searchsites.size());
 		List<String> siteValues = new ArrayList<String>(websearches.size() + searchsites.size());
 		for (SearchSite searchSite : searchsites) {

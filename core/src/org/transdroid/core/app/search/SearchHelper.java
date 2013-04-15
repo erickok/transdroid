@@ -7,6 +7,7 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EBean.Scope;
 import org.androidannotations.annotations.RootContext;
 
+import android.content.ContentProviderClient;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -49,8 +50,15 @@ public class SearchHelper {
 	 */
 	public List<SearchSite> getAvailableSites() {
 
-		// Try to access the TorrentSitesProvider to retrieve all available in-app torrent search sites
+		// Try to access the TorrentSitesProvider of the Torrent Search app
 		Uri uri = Uri.parse("content://org.transdroid.search.torrentsitesprovider/sites");
+		ContentProviderClient test = context.getContentResolver().acquireContentProviderClient(uri);
+		if (test == null) {
+			// Torrent Search package is not yet installed
+			return null;
+		}
+		
+		// Query the available in-app torrent search sites
 		Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
 		if (cursor.moveToFirst()) {
 			List<SearchSite> sites = new ArrayList<SearchSite>();
@@ -63,7 +71,6 @@ public class SearchHelper {
 			return sites;
 		}
 
-		// Torrent Search package is not yet installed
 		return null;
 
 	}

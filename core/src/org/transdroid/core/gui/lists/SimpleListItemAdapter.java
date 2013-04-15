@@ -20,7 +20,7 @@ public class SimpleListItemAdapter extends BaseAdapter {
 
 	/**
 	 * Allows updating of the full data list underlying this adapter, replacing all items
-	 * @param newItems The new list of filter items to display
+	 * @param newItems The new list of simple list items to display
 	 */
 	public void update(List<? extends SimpleListItem> newItems) {
 		this.items = newItems;

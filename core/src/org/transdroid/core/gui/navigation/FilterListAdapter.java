@@ -6,7 +6,6 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.navigation.StatusType.StatusTypeFilter;
 
 import android.content.Context;
@@ -24,9 +23,9 @@ public class FilterListAdapter extends MergeAdapter {
 
 	@RootContext
 	protected Context context;
-	private SimpleListItemAdapter serverItems = null;
-	private SimpleListItemAdapter statusTypeItems = null;
-	private SimpleListItemAdapter labelItems = null;
+	private FilterListItemAdapter serverItems = null;
+	private FilterListItemAdapter statusTypeItems = null;
+	private FilterListItemAdapter labelItems = null;
 	private FilterSeparatorView statusTypeSeparator;
 	private FilterSeparatorView labelSeperator;
 	private FilterSeparatorView serverSeparator;
@@ -40,7 +39,7 @@ public class FilterListAdapter extends MergeAdapter {
 			serverSeparator = FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_servers));
 			serverSeparator.setVisibility(servers.isEmpty()? View.GONE: View.VISIBLE);
 			addView(serverSeparator, false);
-			this.serverItems = new SimpleListItemAdapter(context, servers);
+			this.serverItems = new FilterListItemAdapter(context, servers);
 			addAdapter(serverItems);
 		} else if (this.serverItems != null && servers != null) {
 			serverSeparator.setVisibility(serverItems.isEmpty()? View.GONE: View.VISIBLE);
@@ -61,7 +60,7 @@ public class FilterListAdapter extends MergeAdapter {
 					context.getString(R.string.navigation_status));
 			statusTypeSeparator.setVisibility(statusTypes.isEmpty()? View.GONE: View.VISIBLE);
 			addView(statusTypeSeparator, false);
-			this.statusTypeItems = new SimpleListItemAdapter(context, statusTypes);
+			this.statusTypeItems = new FilterListItemAdapter(context, statusTypes);
 			addAdapter(statusTypeItems);
 		} else if (this.statusTypeItems != null && statusTypes != null) {
 			statusTypeSeparator.setVisibility(statusTypeItems.isEmpty()? View.GONE: View.VISIBLE);
@@ -81,7 +80,7 @@ public class FilterListAdapter extends MergeAdapter {
 			labelSeperator = FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_labels));
 			labelSeperator.setVisibility(labels.isEmpty()? View.GONE: View.VISIBLE);
 			addView(labelSeperator, false);
-			this.labelItems = new SimpleListItemAdapter(context, labels);
+			this.labelItems = new FilterListItemAdapter(context, labels);
 			addAdapter(labelItems);
 		} else if (this.labelItems != null && labels != null) {
 			labelSeperator.setVisibility(labelItems.isEmpty()? View.GONE: View.VISIBLE);

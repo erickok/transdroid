@@ -1,23 +1,24 @@
-package org.transdroid.core.gui.lists;
+package org.transdroid.core.gui.navigation;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
+import org.transdroid.core.gui.lists.SimpleListItem;
 
 import android.content.Context;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /**
- * View that represents some {@link SimpleListItem} object and simple prints out the text (in proper style)
+ * View that represents some {@link SimpleListItem} object used to represent a navigation filter item
  * @author Eric Kok
  */
-@EViewGroup(resName="list_item_simple")
-public class SimpleListItemView extends FrameLayout {
+@EViewGroup(resName="list_item_filter")
+public class FilterListItemView extends FrameLayout {
 
 	@ViewById
 	protected TextView itemText;
 	
-	public SimpleListItemView(Context context) {
+	public FilterListItemView(Context context) {
 		super(context);
 	}
 
