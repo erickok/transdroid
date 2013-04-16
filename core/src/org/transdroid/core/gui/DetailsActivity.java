@@ -88,8 +88,6 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 		// Show details and load fine stats and torrent files
 		fragmentDetails.updateTorrent(torrent);
-		refreshTorrentDetails();
-		refreshTorrentFiles();
 
 	}
 
@@ -103,8 +101,6 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	protected void refreshScreen() {
 		fragmentDetails.updateIsLoading(true);
 		refreshTorrent();
-		refreshTorrentDetails();
-		refreshTorrentFiles();
 	}
 
 	@Background
@@ -119,24 +115,24 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	}
 
 	@Background
-	protected void refreshTorrentDetails() {
+	public void refreshTorrentDetails(Torrent torrent) {
 		if (!Daemon.supportsFineDetails(torrent.getDaemon()))
 			return;
 		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute();
 		if (result instanceof GetTorrentDetailsTaskSuccessResult) {
-			onTorrentDetailsRetrieved(((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
+			onTorrentDetailsRetrieved(torrent, ((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
 	}
 
 	@Background
-	protected void refreshTorrentFiles() {
+	public void refreshTorrentFiles(Torrent torrent) {
 		if (!Daemon.supportsFileListing(torrent.getDaemon()))
 			return;
 		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute();
 		if (result instanceof GetFileListTaskSuccessResult) {
-			onTorrentFilesRetrieved(((GetFileListTaskSuccessResult) result).getFiles());
+			onTorrentFilesRetrieved(torrent, ((GetFileListTaskSuccessResult) result).getFiles());
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
@@ -243,6 +239,18 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	}
 
 	@UiThread
+	protected void onTorrentDetailsRetrieved(Torrent torrent, TorrentDetails torrentDetails) {
+		// Update the details fragment with the new fine details for the shown torrent
+		fragmentDetails.updateTorrentDetails(torrent, torrentDetails);
+	}
+
+	@UiThread
+	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
+		// Update the details fragment with the newly retrieved list of files
+		fragmentDetails.updateTorrentFiles(torrent, new ArrayList<TorrentFile>(torrentFiles));
+	}
+
+	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result) {
 		Log.i(this, result.getException().toString());
 		fragmentDetails.updateIsLoading(false);
@@ -255,18 +263,6 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		// Update the details fragment
 		fragmentDetails.updateIsLoading(false);
 		fragmentDetails.perhapsUpdateTorrent(torrents);
-	}
-
-	@UiThread
-	protected void onTorrentDetailsRetrieved(TorrentDetails torrentDetails) {
-		// Update the details fragment with the new fine details for the shown torrent
-		fragmentDetails.updateTorrentDetails(torrentDetails);
-	}
-
-	@UiThread
-	protected void onTorrentFilesRetrieved(List<TorrentFile> torrentFiles) {
-		// Update the details fragment with the newly retrieved list of files
-		fragmentDetails.updateTorrentFiles(new ArrayList<TorrentFile>(torrentFiles));
 	}
 
 }

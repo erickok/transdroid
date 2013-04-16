@@ -26,10 +26,6 @@ import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.*;
 import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.navigation.Label;
-import org.transdroid.core.gui.navigation.NavigationFilter;
-import org.transdroid.core.gui.navigation.NavigationHelper;
-import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
@@ -37,14 +33,20 @@ import org.transdroid.core.gui.settings.*;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.TorrentDetails;
+import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
+import org.transdroid.daemon.task.GetFileListTask;
+import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetStatsTask;
 import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
+import org.transdroid.daemon.task.GetTorrentDetailsTask;
+import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
 import org.transdroid.daemon.task.PauseTask;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.ResumeTask;
@@ -317,8 +319,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	private void updateFragmentVisibility(boolean hasServerSettings) {
 		if (filtersList != null)
 			filtersList.setVisibility(hasServerSettings ? View.VISIBLE : View.GONE);
-		if (fragmentDetails != null)
-			getSupportFragmentManager().beginTransaction().hide(fragmentDetails).commit();
+		if (fragmentDetails != null) {
+			if (hasServerSettings)
+				getSupportFragmentManager().beginTransaction().show(fragmentDetails).commit();
+			else
+				getSupportFragmentManager().beginTransaction().hide(fragmentDetails).commit();
+		}
 	}
 
 	/**
@@ -447,6 +453,22 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.transdroid.org/download/")));
 	}
 
+	/**
+	 * Shows the a details fragment for the given torrent, either in the dedicated details fragment pane, in the same
+	 * pane as the torrent list was displayed or by starting a details activity.
+	 * @param torrent The torrent to show detailed statistics for
+	 */
+	public void openDetails(Torrent torrent) {
+		if (fragmentDetails != null) {
+			fragmentDetails.updateTorrent(torrent);
+		} else if (filtersList != null) {
+			getSupportFragmentManager().beginTransaction().add(R.id.torrent_list, DetailsFragment_.builder().build())
+					.addToBackStack(null).commit();
+		} else {
+			DetailsActivity_.intent(this).torrent(torrent).start();
+		}
+	}
+
 	@Background
 	protected void refreshTorrents() {
 		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute();
@@ -454,7 +476,31 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
 					((RetrieveTaskSuccessResult) result).getLabels());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, true);
+		}
+	}
+
+	@Background
+	public void refreshTorrentDetails(Torrent torrent) {
+		if (!Daemon.supportsFineDetails(currentConnection.getType()))
+			return;
+		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute();
+		if (result instanceof GetTorrentDetailsTaskSuccessResult) {
+			onTorrentDetailsRetrieved(torrent, ((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result, false);
+		}
+	}
+
+	@Background
+	public void refreshTorrentFiles(Torrent torrent) {
+		if (!Daemon.supportsFileListing(currentConnection.getType()))
+			return;
+		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute();
+		if (result instanceof GetFileListTaskSuccessResult) {
+			onTorrentFilesRetrieved(torrent, ((GetFileListTaskSuccessResult) result).getFiles());
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -464,7 +510,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (result instanceof GetStatsTaskSuccessResult) {
 			onTurtleModeRetrieved(((GetStatsTaskSuccessResult) result).isAlternativeModeEnabled());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -475,7 +521,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Success; no need to retrieve it again - just update the visual indicator
 			onTurtleModeRetrieved(enable);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -486,7 +532,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_added, title);
 			refreshTorrents();
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -497,7 +543,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_added, "Torrent");
 			refreshTorrents();
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -508,7 +554,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_added, title);
 			refreshTorrents();
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -557,7 +603,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_resumed);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -569,7 +615,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_paused);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -581,7 +627,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_started);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -593,7 +639,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_stopped);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -605,7 +651,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			onTaskSucceeded((DaemonTaskSuccessResult) result, withData ? R.string.result_removed_with_data
 					: R.string.result_removed);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -617,7 +663,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_labelset, newLabel);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -628,7 +674,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_trackersupdated);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -639,7 +685,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_locationset, newLocation);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -650,12 +696,13 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	}
 
 	@UiThread
-	protected void onCommunicationError(DaemonTaskFailureResult result) {
+	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
 		Log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
 		Crouton.showText(this, error, navigationHelper.CROUTON_ERROR_STYLE);
 		fragmentTorrents.updateIsLoading(false);
-		fragmentTorrents.updateError(error);
+		if (isCritical)
+			fragmentTorrents.updateError(error);
 	}
 
 	@UiThread
@@ -677,6 +724,20 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Labels are shown in the action bar spinner
 			navigationSpinnerAdapter.updateLabels(navigationLabels);
 		}
+	}
+
+	@UiThread
+	protected void onTorrentDetailsRetrieved(Torrent torrent, TorrentDetails torrentDetails) {
+		// Update the details fragment with the new fine details for the shown torrent
+		if (fragmentDetails != null)
+			fragmentDetails.updateTorrentDetails(torrent, torrentDetails);
+	}
+
+	@UiThread
+	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
+		// Update the details fragment with the newly retrieved list of files
+		if (fragmentDetails != null)
+			fragmentDetails.updateTorrentFiles(torrent, new ArrayList<TorrentFile>(torrentFiles));
 	}
 
 	@UiThread

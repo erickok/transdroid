@@ -13,4 +13,6 @@ public interface TorrentTasksExecutor {
 	void updateLabel(Torrent torrent, String newLabel);
 	void updateTrackers(Torrent torrent, List<String> newTrackers);
 	void updateLocation(Torrent torrent, String newLocation);
+	void refreshTorrentDetails(Torrent torrent);
+	void refreshTorrentFiles(Torrent torrent);
 }

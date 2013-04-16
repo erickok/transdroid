@@ -169,7 +169,7 @@ public class TorrentsFragment extends SherlockFragment {
 
 	@ItemClick(resName = "torrent_list")
 	protected void torrentsListClicked(Torrent torrent) {
-		DetailsActivity_.intent(getActivity()).torrent(torrent).start();
+		((TorrentsActivity)getActivity()).openDetails(torrent);
 	}
 
 	/**

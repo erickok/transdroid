@@ -42,7 +42,7 @@ public class FilterListAdapter extends MergeAdapter {
 			this.serverItems = new FilterListItemAdapter(context, servers);
 			addAdapter(serverItems);
 		} else if (this.serverItems != null && servers != null) {
-			serverSeparator.setVisibility(serverItems.isEmpty()? View.GONE: View.VISIBLE);
+			serverSeparator.setVisibility(servers.isEmpty()? View.GONE: View.VISIBLE);
 			this.serverItems.update(servers);
 		} else {
 			serverSeparator.setVisibility(View.GONE);
@@ -63,7 +63,7 @@ public class FilterListAdapter extends MergeAdapter {
 			this.statusTypeItems = new FilterListItemAdapter(context, statusTypes);
 			addAdapter(statusTypeItems);
 		} else if (this.statusTypeItems != null && statusTypes != null) {
-			statusTypeSeparator.setVisibility(statusTypeItems.isEmpty()? View.GONE: View.VISIBLE);
+			statusTypeSeparator.setVisibility(statusTypes.isEmpty()? View.GONE: View.VISIBLE);
 			this.statusTypeItems.update(statusTypes);
 		} else {
 			statusTypeSeparator.setVisibility(View.GONE);
@@ -83,7 +83,7 @@ public class FilterListAdapter extends MergeAdapter {
 			this.labelItems = new FilterListItemAdapter(context, labels);
 			addAdapter(labelItems);
 		} else if (this.labelItems != null && labels != null) {
-			labelSeperator.setVisibility(labelItems.isEmpty()? View.GONE: View.VISIBLE);
+			labelSeperator.setVisibility(labels.isEmpty()? View.GONE: View.VISIBLE);
 			this.labelItems.update(labels);
 		} else {
 			labelSeperator.setVisibility(View.GONE);

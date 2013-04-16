@@ -59,14 +59,14 @@ public class DetailsFragment extends SherlockFragment {
 		if (torrent != null)
 			updateTorrent(torrent);
 		if (torrentDetails != null)
-			updateTorrentDetails(torrentDetails);
+			updateTorrentDetails(torrent, torrentDetails);
 		if (torrentFiles != null)
-			updateTorrentFiles(torrentFiles);
+			updateTorrentFiles(torrent, torrentFiles);
 
 	}
 
 	/**
-	 * Updates the details adapter header to show the new torrent data
+	 * Updates the details adapter header to show the new torrent data.
 	 * @param newTorrent The new torrent object
 	 */
 	public void updateTorrent(Torrent newTorrent) {
@@ -79,13 +79,20 @@ public class DetailsFragment extends SherlockFragment {
 		loadingProgress.setVisibility(View.GONE);
 		// Also update the available actions in the action bar
 		getActivity().supportInvalidateOptionsMenu();
+		// Refresh the detailed statistics (errors) and list of files
+		getTasksExecutor().refreshTorrentDetails(torrent);
+		getTasksExecutor().refreshTorrentFiles(torrent);
 	}
 
 	/**
-	 * Updates the details adapter to show the list of trackers and tracker errors
+	 * Updates the details adapter to show the list of trackers and tracker errors.
+	 * @param checkTorrent The torrent for which the details were retrieved
 	 * @param newTorrentDetails The new fine details object of some torrent
 	 */
-	public void updateTorrentDetails(TorrentDetails newTorrentDetails) {
+	public void updateTorrentDetails(Torrent checkTorrent, TorrentDetails newTorrentDetails) {
+		// Check if these are actually the details of the torrent we are now showing
+		if (!torrent.getUniqueID().equals(checkTorrent.getUniqueID()))
+			return;
 		this.torrentDetails = newTorrentDetails;
 		((DetailsAdapter) detailsList.getAdapter()).updateTrackers(SimpleListItemAdapter.SimpleStringItem
 				.wrapStringsList(newTorrentDetails.getTrackers()));
@@ -94,20 +101,27 @@ public class DetailsFragment extends SherlockFragment {
 	}
 
 	/**
-	 * Updates the list adapter to show a new list of torrent files, replacing the old files list
+	 * Updates the list adapter to show a new list of torrent files, replacing the old files list.
+	 * @param checkTorrent The torrent for which the details were retrieved
 	 * @param newTorrents The new, updated list of torrent file objects
 	 */
-	public void updateTorrentFiles(ArrayList<TorrentFile> newTorrentFiles) {
+	public void updateTorrentFiles(Torrent checkTorrent, ArrayList<TorrentFile> newTorrentFiles) {
+		// Check if these are actually the details of the torrent we are now showing
+		if (!torrent.getUniqueID().equals(checkTorrent.getUniqueID()))
+			return;
 		this.torrentFiles = newTorrentFiles;
 		((DetailsAdapter) detailsList.getAdapter()).updateTorrentFiles(newTorrentFiles);
 	}
 
 	/**
 	 * Can be called if some outside activity returned new torrents, so we can perhaps piggyback on this by update our 
-	 * data as well
+	 * data as well.
 	 * @param torrents The last of retrieved torrents
 	 */
 	public void perhapsUpdateTorrent(List<Torrent> torrents) {
+		// Only try to update if we actually were showing a torrent
+		if (this.torrent == null || torrents == null)
+			return;
 		for (Torrent newTorrent : torrents) {
 			if (newTorrent.getUniqueID().equals(this.torrent.getUniqueID())) {
 				// Found, so we can update our data as well
