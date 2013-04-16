@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
@@ -36,6 +37,7 @@ public class DetailsFragment extends SherlockFragment {
 
 	// Local data
 	@InstanceState
+	@FragmentArg
 	protected Torrent torrent = null;
 	@InstanceState
 	protected TorrentDetails torrentDetails = null;
