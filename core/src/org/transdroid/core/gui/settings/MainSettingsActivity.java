@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
 import org.transdroid.core.R;
 import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchSite;
@@ -12,10 +13,14 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.WebsearchSetting;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.settings.RssfeedPreference.OnRssfeedClickedListener;
 import org.transdroid.core.gui.settings.ServerPreference.OnServerClickedListener;
 import org.transdroid.core.gui.settings.WebsearchPreference.OnWebsearchClickedListener;
 
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -46,6 +51,8 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		if (getPreferenceScreen() != null)
 			getPreferenceScreen().removeAll();
@@ -102,6 +109,12 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		setSite.setEntries(siteNames.toArray(new String[siteNames.size()]));
 		setSite.setEntryValues(siteValues.toArray(new String[siteValues.size()]));
 		
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	@OptionsItem(android.R.id.home)
+	protected void navigateUp() {
+		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 
 	@Override

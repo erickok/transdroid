@@ -2,14 +2,17 @@ package org.transdroid.core.gui.settings;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.gui.log.ErrorLogSender;
 import org.transdroid.core.gui.navigation.DialogHelper;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -33,6 +36,8 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
 		// Just load the system-related preferences from XML
 		addPreferencesFromResource(R.xml.pref_system);
 		
@@ -43,6 +48,12 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		findPreference("system_importsettings").setOnPreferenceClickListener(onImportSettingsClick);
 		findPreference("system_exportsettings").setOnPreferenceClickListener(onExportSettingsClick);
 		findPreference("system_about").setOnPreferenceClickListener(onAboutClick);
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	@OptionsItem(android.R.id.home)
+	protected void navigateUp() {
+		MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 
 	private OnPreferenceClickListener onSendLogClick = new OnPreferenceClickListener() {
@@ -104,4 +115,5 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		}
 		return null;
 	};
+	
 }

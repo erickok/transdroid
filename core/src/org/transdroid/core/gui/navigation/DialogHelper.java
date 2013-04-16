@@ -4,10 +4,12 @@ import java.io.Serializable;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.transdroid.core.gui.TorrentsActivity_;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 
@@ -32,6 +34,7 @@ public class DialogHelper extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(dialog.getDialogLayoutId());
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
@@ -40,9 +43,14 @@ public class DialogHelper extends SherlockActivity {
         menuInflater.inflate(dialog.getDialogMenuId(), menu);
         return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			// Action bar up button clicked; navigate up all the way back to the torrents activity
+			TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+			return true;
+		}
 		return dialog.onMenuItemSelected(this, item.getItemId());
 	}
 	

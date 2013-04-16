@@ -297,7 +297,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 			// Clear the currently shown list of torrents and perhaps the details
 			fragmentTorrents.clear();
-			if (fragmentDetails != null) {
+			if (fragmentDetails != null && fragmentDetails.getActivity() != null) {
 				fragmentDetails.clear();
 			}
 			fragmentTorrents.updateIsLoading(true);

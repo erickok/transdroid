@@ -7,7 +7,10 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings_;
 import org.transdroid.daemon.Daemon;
 
+import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
@@ -27,6 +30,8 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
 		// Load the raw preferences to show in this screen
 		init(R.xml.pref_server, ApplicationSettings_.getInstance_(this).getMaxServer());
 		initTextPreference("server_name");
@@ -50,6 +55,12 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		initBooleanPreference("server_ssltrustall", false, "server_sslenabled");
 		initTextPreference("server_ssltrustkey", null, "server_sslenabled");
 
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	@OptionsItem(android.R.id.home)
+	protected void navigateUp() {
+		MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 
 	@OptionsItem(resName = "action_removesettings")
