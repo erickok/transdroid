@@ -45,5 +45,10 @@ public class FilterListDropDownAdapter extends FilterListAdapter {
 		if (navigationSelectionView != null)
 			navigationSelectionView.bind(this.currentServer, this.currentFilter);
 	}
+
+	public void hideServersLabel() {
+		serverSeparator.setVisibility(View.INVISIBLE);
+		notifyDataSetInvalidated();
+	}
 	
 }

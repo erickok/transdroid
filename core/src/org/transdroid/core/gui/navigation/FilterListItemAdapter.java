@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.lists.SimpleListItemView;
-import org.transdroid.core.gui.lists.SimpleListItemView_;
 
 import android.content.Context;
 import android.view.View;
@@ -47,11 +46,11 @@ public class FilterListItemAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		SimpleListItemView filterItemView;
+		FilterListItemView filterItemView;
 		if (convertView == null || !(convertView instanceof SimpleListItemView)) {
-			filterItemView = SimpleListItemView_.build(context);
+			filterItemView = FilterListItemView_.build(context);
 		} else {
-			filterItemView = (SimpleListItemView) convertView;
+			filterItemView = (FilterListItemView) convertView;
 		}
 		filterItemView.bind(getItem(position));
 		return filterItemView;

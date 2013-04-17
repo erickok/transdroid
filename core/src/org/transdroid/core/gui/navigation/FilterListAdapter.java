@@ -26,9 +26,9 @@ public class FilterListAdapter extends MergeAdapter {
 	private FilterListItemAdapter serverItems = null;
 	private FilterListItemAdapter statusTypeItems = null;
 	private FilterListItemAdapter labelItems = null;
-	private FilterSeparatorView statusTypeSeparator;
-	private FilterSeparatorView labelSeperator;
-	private FilterSeparatorView serverSeparator;
+	protected FilterSeparatorView statusTypeSeparator;
+	protected FilterSeparatorView labelSeperator;
+	protected FilterSeparatorView serverSeparator;
 
 	/**
 	 * Update the list of available servers

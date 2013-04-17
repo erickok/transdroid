@@ -132,6 +132,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 		// Check if there was room for a dedicated filter list (i.e. on tablets)
 		if (filtersList != null) {
+			// The action bar spinner doesn't have to show the 'servers' label, as it will only contain servers
+			navigationSpinnerAdapter.hideServersLabel();
 			// Create dedicated side list adapter and add the status types
 			navigationListAdapter = FilterListAdapter_.getInstance_(this);
 			navigationListAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));

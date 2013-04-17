@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /**
- * View that represents some {@link SimpleListItem} object used to represent a navigation filter item
+ * View that represents some {@link SimpleListItem} object specifically used to represent a navigation filter item.
  * @author Eric Kok
  */
 @EViewGroup(resName="list_item_filter")
