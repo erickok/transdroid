@@ -14,6 +14,7 @@
         <item>rTorrent</item>
         <item>Torrentflux-b4rt</item>
         <item>Transmission</item>
+        <item>Synology</item>
         <item>µTorrent</item>
         <item>Vuze</item>
     </string-array>
@@ -29,6 +30,7 @@
         <item>daemon_rtorrent</item>
         <item>daemon_tfb4rt</item>
         <item>daemon_transmission</item>
+        <item>daemon_synology</item>
         <item>daemon_utorrent</item>
         <item>daemon_vuze</item>
     </string-array>
