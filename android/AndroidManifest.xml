@@ -19,7 +19,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.transdroid"
 	android:versionName="1.1.14" 
-	android:versionCode="159"
+	android:versionCode="160"
 	android:installLocation="auto">
 	
 	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="16" />
@@ -52,26 +52,13 @@
         		<category android:name="android.intent.category.DEFAULT" />
         		<category android:name="android.intent.category.BROWSABLE" />
         		<data android:mimeType="application/x-bittorrent" />
-        		<data android:scheme="http" android:mimeType="application/x-bittorrent" />
-            </intent-filter>
-            <intent-filter>
-        		<action android:name="android.intent.action.VIEW" />
-        		<category android:name="android.intent.category.DEFAULT" />
-        		<category android:name="android.intent.category.BROWSABLE" />
-        		<data android:scheme="http" android:host="*" android:pathPattern=".*\\.torrent" />
-            </intent-filter>
-            <intent-filter>
-        		<action android:name="android.intent.action.VIEW" />
-        		<category android:name="android.intent.category.DEFAULT" />
-        		<category android:name="android.intent.category.BROWSABLE" />
-        		<data android:mimeType="application/x-bittorrent" />
         		<data android:scheme="file" android:mimeType="application/x-bittorrent" />
             </intent-filter>
             <intent-filter>
         		<action android:name="android.intent.action.VIEW" />
         		<category android:name="android.intent.category.DEFAULT" />
         		<category android:name="android.intent.category.BROWSABLE" />
-        		<data android:pathPattern=".*\\.torrent" />
+        		<data android:scheme="file" android:pathPattern=".*\\.torrent" />
             </intent-filter>
             <intent-filter>
         		<action android:name="android.intent.action.VIEW" />
