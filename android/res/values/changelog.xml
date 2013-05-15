@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="changes">
+Transdroid 1.1.15\n
+- Synology NAS support, by Erwan Loisant\n
+- Do not capture HTTP torrent links (to support private trackers)\n
+\n
+Transdroid 1.1.14\n
+- (Beta release only)\n
+\n
 Transdroid 1.1.13\n
 - Fix crash on pre-Android 2.3 devices\n
 - Sort \'no eta\' torrents as last instead of first\n

@@ -18,7 +18,7 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.transdroid"
-	android:versionName="1.1.14" 
+	android:versionName="1.1.15" 
 	android:versionCode="160"
 	android:installLocation="auto">
 	
