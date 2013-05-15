@@ -4,7 +4,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.ApplicationSettings_;
+import org.transdroid.core.app.settings.*;
 import org.transdroid.daemon.Daemon;
 
 import android.annotation.TargetApi;

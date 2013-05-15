@@ -24,25 +24,18 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.log.Log;
-import org.transdroid.core.gui.log.Log_;
-import org.transdroid.core.gui.navigation.FilterListAdapter;
-import org.transdroid.core.gui.navigation.FilterListAdapter_;
-import org.transdroid.core.gui.navigation.FilterListDropDownAdapter;
-import org.transdroid.core.gui.navigation.FilterListDropDownAdapter_;
-import org.transdroid.core.gui.navigation.Label;
-import org.transdroid.core.gui.navigation.NavigationFilter;
-import org.transdroid.core.gui.navigation.NavigationHelper;
-import org.transdroid.core.gui.navigation.StatusType;
+import org.transdroid.core.gui.log.*;
+import org.transdroid.core.gui.navigation.*;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
-import org.transdroid.core.gui.settings.MainSettingsActivity_;
+import org.transdroid.core.gui.settings.*;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
+import org.transdroid.daemon.TorrentsSortBy;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -219,7 +212,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			menu.findItem(R.id.action_filter).setVisible(false);
 			menu.findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 			menu.findItem(R.id.action_help).setVisible(true);
-			fragmentTorrents.updateConnectionStatus(false);
+			if (fragmentTorrents != null)
+				fragmentTorrents.updateConnectionStatus(false);
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			return true;
 		}
@@ -236,7 +230,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		menu.findItem(R.id.action_filter).setVisible(true);
 		menu.findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 		menu.findItem(R.id.action_help).setVisible(false);
-		fragmentTorrents.updateConnectionStatus(true);
+		if (fragmentTorrents != null)
+			fragmentTorrents.updateConnectionStatus(true);
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		return true;
@@ -461,6 +456,36 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@OptionsItem(resName = "action_help")
 	protected void openHelp() {
 		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.transdroid.org/download/")));
+	}
+
+	@OptionsItem(resName = "action_sort_byname")
+	protected void sortByName() {
+		fragmentTorrents.sortBy(TorrentsSortBy.Alphanumeric);
+	}
+
+	@OptionsItem(resName = "action_sort_status")
+	protected void sortByStatus() {
+		fragmentTorrents.sortBy(TorrentsSortBy.Status);
+	}
+
+	@OptionsItem(resName = "action_sort_done")
+	protected void sortByDateDone() {
+		fragmentTorrents.sortBy(TorrentsSortBy.DateDone);
+	}
+
+	@OptionsItem(resName = "action_sort_added")
+	protected void sortByDateAdded() {
+		fragmentTorrents.sortBy(TorrentsSortBy.DateAdded);
+	}
+
+	@OptionsItem(resName = "action_sort_upspeed")
+	protected void sortByUpspeed() {
+		fragmentTorrents.sortBy(TorrentsSortBy.UploadSpeed);
+	}
+
+	@OptionsItem(resName = "action_sort_ratio")
+	protected void sortByRatio() {
+		fragmentTorrents.sortBy(TorrentsSortBy.Ratio);
 	}
 
 	/**

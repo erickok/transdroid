@@ -1,18 +1,24 @@
 package org.transdroid.core.gui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
+import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.gui.lists.TorrentsAdapter;
 import org.transdroid.core.gui.lists.TorrentsAdapter_;
 import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.TorrentsComparator;
+import org.transdroid.daemon.TorrentsSortBy;
 
 import android.view.View;
 import android.widget.ProgressBar;
@@ -29,10 +35,16 @@ import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat
 public class TorrentsFragment extends SherlockFragment {
 
 	// Local data
+	@Bean
+	protected ApplicationSettings applicationSettings;
 	@InstanceState
 	protected ArrayList<Torrent> torrents = null;
 	@InstanceState
 	protected NavigationFilter currentFilter = null;
+	@InstanceState
+	protected TorrentsSortBy currentSortOrder = TorrentsSortBy.Alphanumeric;
+	@InstanceState
+	protected boolean currentSortDescending = false;
 	@InstanceState
 	protected boolean hasAConnection = false;
 	@InstanceState
@@ -54,6 +66,8 @@ public class TorrentsFragment extends SherlockFragment {
 
 	@AfterViews
 	protected void init() {
+		this.currentSortOrder = applicationSettings.getLastUsedSortOrder();
+		this.currentSortDescending = applicationSettings.getLastUsedSortDescending();
 		torrentsList.setAdapter(TorrentsAdapter_.getInstance_(getActivity()));
 		torrentsList.setMultiChoiceModeListener(onTorrentsSelected);
 		if (torrents != null)
@@ -70,7 +84,7 @@ public class TorrentsFragment extends SherlockFragment {
 	}
 
 	/**
-	 * Clear currently visible list of torrents
+	 * Clears the currently visible list of torrents.
 	 */
 	public void clear() {
 		this.connectionErrorMessage = null;
@@ -78,16 +92,39 @@ public class TorrentsFragment extends SherlockFragment {
 	}
 
 	/**
-	 * Apply a filter on the current list of all torrents, showing the appropriate sublist of torrents only
-	 * @param currentFilter
+	 * Stores the new sort order (for future refreshes) and sorts the current visible list. If the given new sort
+	 * property equals the existing property, the list sort order is reversed instead.
+	 * @param newSortOrder The sort order that the user selected.
 	 */
-	public void applyFilter(NavigationFilter currentFilter) {
-		this.currentFilter = currentFilter;
-		if (torrents != null && currentFilter != null) {
+	public void sortBy(TorrentsSortBy newSortOrder) {
+		// Update the sort order property and direction and store this last used setting
+		if (this.currentSortOrder == newSortOrder) {
+			this.currentSortDescending = !this.currentSortDescending;
+		} else {
+			this.currentSortOrder = newSortOrder;
+			this.currentSortDescending = false;
+		}
+		applicationSettings.setLastUsedSortOrder(this.currentSortOrder, this.currentSortDescending);
+		// Get the server daemon type directly form the local list of torrents, if it's not empty
+		Daemon serverType = (this.torrents != null && this.torrents.size() > 0 ? this.torrents.get(0).getDaemon()
+				: Daemon.Transmission);
+		Collections.sort(this.torrents, new TorrentsComparator(serverType, this.currentSortOrder,
+				this.currentSortDescending));
+		// Show the new resorted list
+		applyFilter(this.currentFilter);
+	}
+	
+	/**
+	 * Apply a filter on the current list of all torrents, showing the appropriate sublist of torrents only
+	 * @param newFilter The new filter to apply to the local list of torrents
+	 */
+	public void applyFilter(NavigationFilter newFilter) {
+		this.currentFilter = newFilter;
+		if (torrents != null && newFilter != null) {
 			// Build a local list of torrents that match the selected navigation filter
 			ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>();
 			for (Torrent torrent : torrents) {
-				if (currentFilter.matches(torrent))
+				if (newFilter.matches(torrent))
 					filteredTorrents.add(torrent);
 			}
 			((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);

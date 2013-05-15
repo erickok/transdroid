@@ -13,7 +13,7 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.WebsearchSetting;
-import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.*;
 import org.transdroid.core.gui.settings.RssfeedPreference.OnRssfeedClickedListener;
 import org.transdroid.core.gui.settings.ServerPreference.OnServerClickedListener;
 import org.transdroid.core.gui.settings.WebsearchPreference.OnWebsearchClickedListener;

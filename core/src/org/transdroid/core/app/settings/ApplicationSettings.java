@@ -8,6 +8,7 @@ import org.androidannotations.annotations.EBean.Scope;
 import org.androidannotations.annotations.RootContext;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.OS;
+import org.transdroid.daemon.TorrentsSortBy;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -318,6 +319,35 @@ public class ApplicationSettings {
 		edit.remove("rssfeed_reqauth_" + max);
 		edit.commit();
 		
+	}
+
+	/**
+	 * Registers the torrents list sort order as being last used by the user
+	 * @param currentSortOrder The sort order property the user selected last
+	 * @param currentSortAscending The sort order direction that was last used
+	 */
+	public void setLastUsedSortOrder(TorrentsSortBy currentSortOrder, boolean currentSortAscending) {
+		prefs.edit().putInt("system_lastusedsortorder", currentSortOrder.getCode()).commit();
+		prefs.edit().putBoolean("system_lastusedsortdirection", currentSortAscending).commit();
+	}
+
+	/**
+	 * Returns the sort order property that the user last used. Use together with {@link #getLastUsedSortDescending()} to
+	 * get the full last used sort settings.
+	 * @return The last used sort order enumeration value
+	 */
+	public TorrentsSortBy getLastUsedSortOrder() {
+		return TorrentsSortBy.getStatus(prefs.getInt("system_lastusedsortorder", TorrentsSortBy.Alphanumeric.getCode()));
+	}
+
+	/**
+	 * Returns the sort order direction that the user last used. Use together with {@link #getLastUsedSortOrder()} to
+	 * get the full last used sort settings.
+	 * @return True if the last used sort direction was descending, false otherwise (i.e. the default ascending
+	 *         direction)
+	 */
+	public boolean getLastUsedSortDescending() {
+		return prefs.getBoolean("system_lastusedsortdirection", false);
 	}
 
 }
