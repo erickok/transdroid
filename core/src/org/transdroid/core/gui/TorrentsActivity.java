@@ -307,7 +307,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Status type or label selection - both of which are navigation filters
 		if (item instanceof NavigationFilter) {
 			currentFilter = (NavigationFilter) item;
-			fragmentTorrents.applyFilter(currentFilter);
+			fragmentTorrents.applyNavigationFilter(currentFilter);
 			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
 			// Clear the details view
 			if (fragmentDetails != null) {
@@ -444,10 +444,6 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		updateTurtleMode(false);
 	}
 
-	@OptionsItem(resName = "action_filter")
-	protected void filterList() {
-	}
-
 	@OptionsItem(resName = "action_settings")
 	protected void openSettings() {
 		MainSettingsActivity_.intent(this).start();
@@ -486,6 +482,19 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@OptionsItem(resName = "action_sort_ratio")
 	protected void sortByRatio() {
 		fragmentTorrents.sortBy(TorrentsSortBy.Ratio);
+	}
+
+	@OptionsItem(resName = "action_filter")
+	protected void startFilterEntryDialog() {
+		FilterEntryDialog.startFilterEntry(this);
+	}
+
+	/**
+	 * Redirect the newly entered list filter to the torrents fragment.
+	 * @param newFilterText The newly entered filter (or empty to clear the current filter).
+	 */
+	public void filterTorrents(String newFilterText) {
+		fragmentTorrents.applyTextFilter(newFilterText);
 	}
 
 	/**

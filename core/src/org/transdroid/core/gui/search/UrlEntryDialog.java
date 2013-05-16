@@ -3,11 +3,13 @@ package org.transdroid.core.gui.search;
 import org.transdroid.core.gui.TorrentsActivity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 public class UrlEntryDialog {
@@ -22,6 +24,8 @@ public class UrlEntryDialog {
 			public android.app.Dialog onCreateDialog(android.os.Bundle savedInstanceState) {
 				final EditText urlInput = new EditText(activity);
 				urlInput.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+				((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(
+						InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 				return new AlertDialog.Builder(activity).setView(urlInput)
 						.setPositiveButton(android.R.string.ok, new OnClickListener() {
 							@Override

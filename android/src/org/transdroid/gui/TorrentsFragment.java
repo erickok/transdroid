@@ -1749,7 +1749,7 @@ public class TorrentsFragment extends SherlockFragment implements IDaemonCallbac
 				
 				// Sort the new list of torrents
 				allTorrents = ((RetrieveTaskSuccessResult) result).getTorrents();
-				Collections.sort(allTorrents, new TorrentsComparator(daemon, sortSetting, sortReversed));
+				Collections.sort(allTorrents, new TorrentsComparator(daemon.getType(), sortSetting, sortReversed));
 
 				// Sort the new list of labels
 				allLabels = ((RetrieveTaskSuccessResult) result).getLabels();
@@ -1936,7 +1936,7 @@ public class TorrentsFragment extends SherlockFragment implements IDaemonCallbac
 		if (!(getTorrentListAdapter() == null || getTorrentListAdapter().getCount() == 0)) {
 			
 			// Sort the shown list of torrents using the new sortBy criteria
-			Collections.sort(allTorrents, new TorrentsComparator(daemon, sortSetting, sortReversed));
+			Collections.sort(allTorrents, new TorrentsComparator(daemon.getType(), sortSetting, sortReversed));
 			updateTorrentsView(true);
 			
 		}

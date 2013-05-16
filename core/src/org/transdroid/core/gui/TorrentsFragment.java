@@ -2,7 +2,9 @@ package org.transdroid.core.gui;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -40,11 +42,13 @@ public class TorrentsFragment extends SherlockFragment {
 	@InstanceState
 	protected ArrayList<Torrent> torrents = null;
 	@InstanceState
-	protected NavigationFilter currentFilter = null;
+	protected NavigationFilter currentNavigationFilter = null;
 	@InstanceState
 	protected TorrentsSortBy currentSortOrder = TorrentsSortBy.Alphanumeric;
 	@InstanceState
 	protected boolean currentSortDescending = false;
+	@InstanceState
+	protected String currentTextFilter = null;
 	@InstanceState
 	protected boolean hasAConnection = false;
 	@InstanceState
@@ -80,7 +84,7 @@ public class TorrentsFragment extends SherlockFragment {
 	 */
 	public void updateTorrents(ArrayList<Torrent> newTorrents) {
 		torrents = newTorrents;
-		applyFilter(null); // Resets the filter and shown list of torrents
+		applyNavigationFilter(null); // Resets the filter and shown list of torrents
 	}
 
 	/**
@@ -88,7 +92,9 @@ public class TorrentsFragment extends SherlockFragment {
 	 */
 	public void clear() {
 		this.connectionErrorMessage = null;
-		updateTorrents(null);
+		this.currentTextFilter = null;
+		this.currentNavigationFilter = null;
+		applyAllFilters();
 	}
 
 	/**
@@ -111,27 +117,51 @@ public class TorrentsFragment extends SherlockFragment {
 		Collections.sort(this.torrents, new TorrentsComparator(serverType, this.currentSortOrder,
 				this.currentSortDescending));
 		// Show the new resorted list
-		applyFilter(this.currentFilter);
+		applyAllFilters();
+	}
+	
+	public void applyTextFilter(String newTextFilter) {
+		this.currentTextFilter = newTextFilter;
+		// TODO: Actually apply text filter
+		// Show the new filtered list
+		applyAllFilters();
 	}
 	
 	/**
 	 * Apply a filter on the current list of all torrents, showing the appropriate sublist of torrents only
 	 * @param newFilter The new filter to apply to the local list of torrents
 	 */
-	public void applyFilter(NavigationFilter newFilter) {
-		this.currentFilter = newFilter;
-		if (torrents != null && newFilter != null) {
-			// Build a local list of torrents that match the selected navigation filter
-			ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>();
-			for (Torrent torrent : torrents) {
-				if (newFilter.matches(torrent))
-					filteredTorrents.add(torrent);
-			}
-			((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);
-		} else if (torrents != null) {
-			// No need to filter any torrents; directly show the full list
-			((TorrentsAdapter) torrentsList.getAdapter()).update(torrents);
+	public void applyNavigationFilter(NavigationFilter newFilter) {
+		this.currentNavigationFilter = newFilter;
+		applyAllFilters();
+	}
+	
+	private void applyAllFilters() {
+		
+		// No torrents? Directly update views accordingly 
+		if (torrents == null) {
+			updateViewVisibility();
+			return;
 		}
+		
+		// Filter the list of torrents to show according to navigation and text filters
+		ArrayList<Torrent> filteredTorrents = torrents;
+		if (torrents != null && currentNavigationFilter != null) {
+			// Remove torrents that do not match the selected navigation filter
+			for (Iterator<Torrent> torrentIter = torrents.iterator(); torrentIter.hasNext();) {
+				if (!currentNavigationFilter.matches(torrentIter.next()))
+					torrentIter.remove();
+			}
+		}
+		if (torrents != null && currentTextFilter != null) {
+			// Remove torrent that do not contain the text filter string
+			for (Iterator<Torrent> torrentIter = torrents.iterator(); torrentIter.hasNext();) {
+				if (!torrentIter.next().getName().toLowerCase(Locale.getDefault())
+						.contains(currentTextFilter.toLowerCase(Locale.getDefault())))
+					torrentIter.remove();
+			}
+		}
+		((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);
 		updateViewVisibility();
 	}
 
