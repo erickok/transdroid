@@ -39,7 +39,7 @@
 		android:layout_toRightOf="@id/separator"
 		android:layout_marginTop="@dimen/margin_half"
 		android:layout_marginLeft="@dimen/margin_half"
-		android:textColor="#fff"
+		android:textColor="@color/text_bright"
 		android:textSize="33sp"
 		android:fontFamily="sans-serif-light"
 		android:textIsSelectable="false" />
@@ -51,7 +51,7 @@
 		android:layout_alignBaseline="@id/uploaded_text"
 		android:layout_toRightOf="@id/uploaded_text"
 		android:layout_marginLeft="4dip"
-		android:textColor="#fff"
+		android:textColor="@color/text_bright"
 		android:fontFamily="sans-serif-light"
 		android:textIsSelectable="false" />
 	
@@ -74,7 +74,7 @@
 		android:layout_marginLeft="@dimen/margin_half"
 		android:layout_marginBottom="4dip"
 		android:textSize="22sp"
-		android:textColor="#fff"
+		android:textColor="@color/text_bright"
 		android:fontFamily="sans-serif-light"
 		android:textIsSelectable="false" />
 	
@@ -95,7 +95,7 @@
 		android:layout_alignBaseline="@id/uploadedunit_text"
 		android:layout_toLeftOf="@id/separator"
 		android:layout_marginRight="@dimen/margin_half"
-		android:textColor="#fff"
+		android:textColor="@color/text_bright"
 		android:fontFamily="sans-serif-light"
 		android:textIsSelectable="false" />
 	
@@ -106,7 +106,7 @@
 		android:layout_alignBaseline="@id/uploadedunit_text"
 		android:layout_toLeftOf="@id/downloadedunit_text"
 		android:layout_marginRight="4dip"
-		android:textColor="#fff"
+		android:textColor="@color/text_bright"
 		android:textSize="33sp"
 		android:fontFamily="sans-serif-light"
 		android:textIsSelectable="false" />
@@ -129,7 +129,7 @@
 		android:layout_toLeftOf="@id/separator"
 		android:layout_marginRight="@dimen/margin_half"
 		android:textSize="22sp"
-		android:textColor="#fff"
+		android:textColor="@color/text_bright"
 		android:fontFamily="sans-serif-light"
 		android:textIsSelectable="false" />
 	

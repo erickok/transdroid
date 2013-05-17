@@ -33,7 +33,7 @@
 		<!-- Main activities -->
 		<activity
 			android:name="org.transdroid.core.gui.TorrentsActivity_"
-			android:icon="@drawable/ic_activity_torrents"
+			android:icon="@drawable/ic_launcher"
 			android:label="@string/app_name"
 			android:theme="@style/TransdroidTheme"
 			android:uiOptions="splitActionBarWhenNarrow" >
@@ -52,7 +52,7 @@
 		</activity>
 		<activity
 			android:name="org.transdroid.core.gui.DetailsActivity_"
-			android:icon="@drawable/ic_activity_torrents"
+			android:icon="@drawable/ic_launcher"
 			android:theme="@style/TransdroidTheme"
 			android:uiOptions="splitActionBarWhenNarrow" >
 		</activity>
@@ -69,7 +69,7 @@
 		<!-- Search -->
 		<activity
 			android:name="org.transdroid.core.gui.SearchActivity_"
-			android:icon="@drawable/ic_activity_torrents"
+			android:icon="@drawable/ic_launcher"
 			android:label="@string/search_torrentsearch"
 			android:theme="@style/TransdroidTheme" >
 			<intent-filter>

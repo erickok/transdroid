@@ -20,7 +20,7 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentTop="true"
 		android:layout_toRightOf="@+id/file_checkbox"
-		android:textColor="#fff"
+		android:textColor="@color/text_bright"
 		android:textSize="15sp"
 		android:textIsSelectable="false"
 		android:focusable="false" />
