@@ -91,6 +91,7 @@ public class TorrentsFragment extends SherlockFragment {
 	 * Clears the currently visible list of torrents.
 	 */
 	public void clear() {
+		this.torrents = null;
 		this.connectionErrorMessage = null;
 		this.currentTextFilter = null;
 		this.currentNavigationFilter = null;

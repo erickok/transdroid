@@ -100,6 +100,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected ApplicationSettings applicationSettings;
 	@InstanceState
 	boolean firstStart = true;
+	boolean skipNextOnNavigationItemSelectedCall = false;
 	private IDaemonAdapter currentConnection = null;
 	@InstanceState
 	protected NavigationFilter currentFilter = null;
@@ -154,7 +155,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			return;
 		}
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
-		getSupportActionBar().setSelectedNavigationItem(lastUsed.getOrder());
+		getSupportActionBar().setSelectedNavigationItem(lastUsed.getOrder() + 1);
+		skipNextOnNavigationItemSelectedCall = true;
 
 		// Handle any start up intents
 		if (firstStart && getIntent() != null) {
@@ -242,6 +244,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	 */
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		if (skipNextOnNavigationItemSelectedCall) {
+			skipNextOnNavigationItemSelectedCall = false;
+			return false;
+		}
 		Object item = navigationSpinnerAdapter.getItem(itemPosition);
 		if (item instanceof SimpleListItem) {
 			// A filter item was selected form the navigation spinner
@@ -297,9 +303,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			if (fragmentDetails != null && fragmentDetails.getActivity() != null) {
 				fragmentDetails.clear();
 			}
-			fragmentTorrents.updateIsLoading(true);
 			updateFragmentVisibility(true);
-			refreshTorrents();
+			refreshScreen();
 			return;
 
 		}
@@ -558,7 +563,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Background
 	protected void updateTurtleMode(boolean enable) {
 		DaemonTaskResult result = SetAlternativeModeTask.create(currentConnection, enable).execute();
-		if (result instanceof GetStatsTaskSuccessResult) {
+		if (result instanceof DaemonTaskSuccessResult) {
 			// Success; no need to retrieve it again - just update the visual indicator
 			onTurtleModeRetrieved(enable);
 		} else {

@@ -112,7 +112,7 @@ public class ApplicationSettings {
 			edit.putBoolean("server_ssltrustall_" + i, prefs.getBoolean("server_ssltrustall_" + (i + 1), false));
 			edit.putString("server_ssltrustkey_" + i, prefs.getString("server_ssltrustkey_" + (i + 1), null));
 			edit.putString("server_folder_" + i, prefs.getString("server_folder_" + (i + 1), null));
-			edit.putBoolean("server_useauth_" + i, prefs.getBoolean("server_useauth_" + (i + 1), false));
+			edit.putBoolean("server_useauth_" + i, prefs.getBoolean("server_useauth_" + (i + 1), true));
 			edit.putString("server_user_" + i, prefs.getString("server_user_" + (i + 1), null));
 			edit.putString("server_pass_" + i, prefs.getString("server_pass_" + (i + 1), null));
 			edit.putString("server_extrapass_" + i, prefs.getString("server_extrapass_" + (i + 1), null));
@@ -121,7 +121,7 @@ public class ApplicationSettings {
 			edit.putString("server_ftpurl_" + i, prefs.getString("server_ftpurl_" + (i + 1), null));
 			edit.putString("server_ftppass_" + i, prefs.getString("server_ftppass_" + (i + 1), null));
 			edit.putString("server_timeout_" + i, prefs.getString("server_timeout_" + (i + 1), null));
-			edit.putBoolean("server_alarmfinished_" + i, prefs.getBoolean("server_alarmfinished_" + (i + 1), false));
+			edit.putBoolean("server_alarmfinished_" + i, prefs.getBoolean("server_alarmfinished_" + (i + 1), true));
 			edit.putBoolean("server_alarmfinished_" + i, prefs.getBoolean("server_alarmfinished_" + (i + 1), false));
 		}
 
