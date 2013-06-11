@@ -2,5 +2,6 @@
 
 	<dimen name="margin_default">16dp</dimen>
 	<dimen name="margin_half">8dp</dimen>
+	<dimen name="margin_torrentlistleft">16dp</dimen>
 
 </resources>
