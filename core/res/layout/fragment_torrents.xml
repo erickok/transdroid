@@ -17,7 +17,7 @@
 		android:layout_height="128dp"
 		android:layout_gravity="center"
 		android:indeterminate="true"
-		android:indeterminateDrawable="@drawable/loading_progress_dark"
+		android:indeterminateDrawable="?attr/loading_progress"
 		android:indeterminateOnly="true"
 		android:visibility="visible" />
 

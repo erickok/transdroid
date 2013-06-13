@@ -112,22 +112,15 @@ public class TorrentsFragment extends SherlockFragment {
 			this.currentSortDescending = false;
 		}
 		applicationSettings.setLastUsedSortOrder(this.currentSortOrder, this.currentSortDescending);
-		// Get the server daemon type directly form the local list of torrents, if it's not empty
-		Daemon serverType = (this.torrents != null && this.torrents.size() > 0 ? this.torrents.get(0).getDaemon()
-				: Daemon.Transmission);
-		Collections.sort(this.torrents, new TorrentsComparator(serverType, this.currentSortOrder,
-				this.currentSortDescending));
-		// Show the new resorted list
 		applyAllFilters();
 	}
-	
+
 	public void applyTextFilter(String newTextFilter) {
 		this.currentTextFilter = newTextFilter;
-		// TODO: Actually apply text filter
 		// Show the new filtered list
 		applyAllFilters();
 	}
-	
+
 	/**
 	 * Apply a filter on the current list of all torrents, showing the appropriate sublist of torrents only
 	 * @param newFilter The new filter to apply to the local list of torrents
@@ -136,15 +129,18 @@ public class TorrentsFragment extends SherlockFragment {
 		this.currentNavigationFilter = newFilter;
 		applyAllFilters();
 	}
-	
+
 	private void applyAllFilters() {
-		
-		// No torrents? Directly update views accordingly 
+
+		// No torrents? Directly update views accordingly
 		if (torrents == null) {
 			updateViewVisibility();
 			return;
 		}
-		
+
+		// Get the server daemon type directly form the local list of torrents, if it's not empty
+		Daemon serverType = (this.torrents.size() > 0 ? this.torrents.get(0).getDaemon() : Daemon.Transmission);
+
 		// Filter the list of torrents to show according to navigation and text filters
 		ArrayList<Torrent> filteredTorrents = torrents;
 		if (torrents != null && currentNavigationFilter != null) {
@@ -162,6 +158,11 @@ public class TorrentsFragment extends SherlockFragment {
 					torrentIter.remove();
 			}
 		}
+
+		// Sort the list of filtered torrents
+		Collections.sort(this.torrents, new TorrentsComparator(serverType, this.currentSortOrder,
+				this.currentSortDescending));
+
 		((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);
 		updateViewVisibility();
 	}
@@ -237,7 +238,7 @@ public class TorrentsFragment extends SherlockFragment {
 
 	@ItemClick(resName = "torrent_list")
 	protected void torrentsListClicked(Torrent torrent) {
-		((TorrentsActivity)getActivity()).openDetails(torrent);
+		((TorrentsActivity) getActivity()).openDetails(torrent);
 	}
 
 	/**
