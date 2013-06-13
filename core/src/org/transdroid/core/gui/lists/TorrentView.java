@@ -14,7 +14,7 @@ import android.widget.TextView;
  * View that represents some {@link Torrent} object and displays progress, status, speeds, etc.
  * @author Eric Kok
  */
-@EViewGroup(resName = "list_item_torrent2")
+@EViewGroup(resName = "list_item_torrent")
 public class TorrentView extends TorrentStatusLayout {
 
 	@ViewById

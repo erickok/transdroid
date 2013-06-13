@@ -19,7 +19,7 @@
 
 <resources>
 
-    <style name="Theme.Transdroid2" parent="@style/Theme.Sherlock.Light">
+    <style name="Theme.Transdroid.Light" parent="@style/Theme.Sherlock.Light">
         <item name="android:actionBarItemBackground">@drawable/selectable_background_transdroid2</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Transdroid2</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Transdroid2</item>

@@ -4,4 +4,23 @@
 		<attr name="progress" format="integer" />
 		<attr name="isActive" format="boolean" />
 	</declare-styleable>
+	
+	<!-- Themeable drawables, such as action bar icons -->
+	<attr name="ic_action_discard" format="reference"/>
+	<attr name="ic_action_labels" format="reference"/>
+	<attr name="ic_action_new" format="reference"/>
+	<attr name="ic_action_pause" format="reference"/>
+	<attr name="ic_action_refresh" format="reference"/>
+	<attr name="ic_action_remove" format="reference"/>
+	<attr name="ic_action_resume" format="reference"/>
+	<attr name="ic_action_rss" format="reference"/>
+	<attr name="ic_action_search" format="reference"/>
+	<attr name="ic_action_sort_by_size" format="reference"/>
+	<attr name="ic_action_start" format="reference"/>
+	<attr name="ic_action_stop" format="reference"/>
+	<attr name="ic_action_website" format="reference"/>
+	<attr name="loading_progress" format="reference"/>
+	<attr name="selectable_background_transdroid" format="reference"/>
+	<attr name="text_bright" format="reference" />
+	<attr name="text_actionbar" format="reference" />
 </resources>

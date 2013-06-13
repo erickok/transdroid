@@ -8,7 +8,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:choiceMode="multipleChoiceModal"
-		android:listSelector="@drawable/selectable_background_transdroid"
+		android:listSelector="?attr/selectable_background_transdroid"
 		android:visibility="gone" />
 
 	<ProgressBar
@@ -17,7 +17,7 @@
 		android:layout_height="128dp"
 		android:layout_gravity="center"
 		android:indeterminate="true"
-		android:indeterminateDrawable="@drawable/loading_progress"
+		android:indeterminateDrawable="@drawable/loading_progress_dark"
 		android:indeterminateOnly="true"
 		android:visibility="visible" />
 
@@ -27,7 +27,7 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:drawablePadding="8dip"
-		android:drawableTop="@drawable/ic_empty_details"
+		android:drawableTop="?attr/loading_progress"
 		android:gravity="center"
 		android:maxWidth="400dip"
 		android:padding="@dimen/margin_default"
@@ -41,7 +41,7 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:drawablePadding="8dip"
-		android:drawableTop="@drawable/ic_empty_details"
+		android:drawableTop="?attr/loading_progress"
 		android:gravity="center"
 		android:maxWidth="400dip"
 		android:padding="@dimen/margin_default"
@@ -54,7 +54,7 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:drawablePadding="8dip"
-		android:drawableTop="@drawable/ic_empty_details"
+		android:drawableTop="?attr/loading_progress"
 		android:gravity="center"
 		android:maxWidth="400dip"
 		android:padding="@dimen/margin_default"

@@ -7,6 +7,12 @@
 		android:summary="@string/pref_checkupdates_info"
 		android:defaultValue="true" />
 	
+	<CheckBoxPreference
+		android:key="system_usedarktheme"
+		android:title="@string/pref_usedarktheme"
+		android:summary="@string/pref_usedarktheme_info"
+		android:defaultValue="false" />
+	
 	<Preference
 		android:key="system_sendlog"
 		android:title="@string/pref_sendlog"

@@ -17,5 +17,5 @@
 -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@color/pressed_transdroid" />
+    <solid android:color="@color/pressed_transdroid_dark" />
 </shape>

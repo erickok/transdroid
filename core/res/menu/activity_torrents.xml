@@ -2,7 +2,7 @@
 
 	<item
 		android:id="@+id/action_add"
-		android:icon="@drawable/ic_action_new"
+		android:icon="?attr/ic_action_new"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_add">
 		<menu>
@@ -13,12 +13,12 @@
 	</item>
 	<item
 		android:id="@+id/action_search"
-		android:icon="@drawable/ic_action_search"
+		android:icon="?attr/ic_action_search"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_search"/>
 	<item
 		android:id="@+id/action_rss"
-		android:icon="@drawable/ic_action_rss"
+		android:icon="?attr/ic_action_rss"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_rss"/>
 	<item
@@ -33,12 +33,12 @@
 		android:title="@string/action_disableturtle"/>
 	<item
 		android:id="@+id/action_refresh"
-		android:icon="@drawable/ic_action_refresh"
+		android:icon="?attr/ic_action_refresh"
 		android:showAsAction="always"
 		android:title="@string/action_refresh"/>
 	<item
 		android:id="@+id/action_sort"
-		android:icon="@drawable/ic_action_sort_by_size"
+		android:icon="?attr/ic_action_sort_by_size"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_sort">
 		<menu>

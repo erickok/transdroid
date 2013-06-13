@@ -9,7 +9,7 @@
 		android:id="@+id/filter_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:textColor="@color/text_bright"
+		android:textColor="?attr/text_actionbar"
 		android:textIsSelectable="false"
 		android:textSize="17sp" />
 
@@ -18,7 +18,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="-4dip"
-		android:textColor="@color/text_bright"
+		android:textColor="?attr/text_actionbar"
 		android:textIsSelectable="false"
 		android:textSize="14sp" />
 

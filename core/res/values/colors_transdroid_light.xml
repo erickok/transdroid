@@ -18,5 +18,8 @@
 -->
 
 <resources>
-    <color name="pressed_transdroid2">#CC8ACC12</color>
+    <color name="pressed_transdroid_light">#CC8ACC12</color>
+    <color name="background_light">#fff</color>
+    <color name="text_bright_light">#000</color>
+    <color name="text_actionbar_light">#000</color>
 </resources>

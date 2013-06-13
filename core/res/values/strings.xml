@@ -172,6 +172,8 @@
 	<string name="pref_system">System</string>
 	<string name="pref_checkupdates">Check for updates</string>
 	<string name="pref_checkupdates_info">Check transdroid.org for latest app version</string>
+	<string name="pref_usedarktheme">Use dark UI theme</string>
+	<string name="pref_usedarktheme_info">Requires a restart to take effect</string>
 	<string name="pref_import">Import settings</string>
 	<string name="pref_export">Export settings</string>
 	<string name="pref_sendlog">Send error log</string>

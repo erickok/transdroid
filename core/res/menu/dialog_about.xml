@@ -2,7 +2,7 @@
 
 	<item
 		android:id="@+id/action_visitwebsite"
-		android:icon="@drawable/ic_action_website"
+		android:icon="?attr/ic_action_website"
 		android:showAsAction="always"
 		android:title="@string/action_visitwebsite" />
 

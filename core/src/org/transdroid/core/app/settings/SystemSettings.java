@@ -26,5 +26,9 @@ public class SystemSettings {
 	public boolean checkForUpdates() {
 		return prefs.getBoolean("system_checkupdates", true);
 	}
+
+	public boolean useDarkTheme() {
+		return prefs.getBoolean("system_usedarktheme", false);
+	}
 	
 }

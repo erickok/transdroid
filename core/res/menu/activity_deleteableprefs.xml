@@ -2,7 +2,7 @@
 
 	<item
 		android:id="@+id/action_removesettings"
-		android:icon="@drawable/ic_action_discard"
+		android:icon="?attr/ic_action_discard"
 		android:showAsAction="always"
 		android:title="@string/action_removesettings"/>
 

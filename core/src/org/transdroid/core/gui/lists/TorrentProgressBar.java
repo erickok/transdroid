@@ -70,7 +70,7 @@ public class TorrentProgressBar extends View {
 		inactiveDonePaint.setColor(0xFFA759D4);	// Purple
 		inactivePaint.setColor(0xFF9E9E9E);		// Grey
 		progressPaint.setColor(0xFF42A8FA);		// Blue
-		donePaint.setColor(0xFF8CCF29);			// Green
+		donePaint.setColor(0xFF8ACC12);			// Green
 		errorPaint.setColor(0xFFDE3939);		// Red
 	}
 
