@@ -141,10 +141,9 @@ public class DetailsFragment extends SherlockFragment {
 		detailsList.setVisibility(View.GONE);
 		emptyText.setVisibility(!isLoadingTorrent? View.VISIBLE: View.GONE);
 		loadingProgress.setVisibility(isLoadingTorrent? View.VISIBLE: View.GONE);
-		torrent = null;
+		// Note: this.torrent is not cleared as we need to know later what the fragment was originally bound to
 		torrentDetails = null;
 		torrentFiles = null;
-		getActivity().supportInvalidateOptionsMenu();
 	}
 
 	/**

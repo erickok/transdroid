@@ -113,6 +113,8 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	protected void refreshScreen() {
 		fragmentDetails.updateIsLoading(true);
 		refreshTorrent();
+		refreshTorrentDetails(torrent);
+		refreshTorrentFiles(torrent);
 	}
 
 	@Background

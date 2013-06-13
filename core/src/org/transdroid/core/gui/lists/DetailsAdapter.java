@@ -90,7 +90,7 @@ public class DetailsAdapter extends MergeAdapter {
 	 * @param trackers The new list of trackers known for this torrent, or null if the list and header should be hidden
 	 */
 	public void updateTrackers(List<? extends SimpleListItem> trackers) {
-		if (trackers == null) {
+		if (trackers == null || trackers.isEmpty()) {
 			trackersAdapter.update(new ArrayList<SimpleListItemAdapter.SimpleStringItem>());
 			trackersSeparatorView.setVisibility(View.GONE);
 		} else {
@@ -104,7 +104,7 @@ public class DetailsAdapter extends MergeAdapter {
 	 * @param errors The new list of errors known for this torrent, or null if the list and header should be hidden
 	 */
 	public void updateErrors(List<? extends SimpleListItem> errors) {
-		if (errors == null) {
+		if (errors == null || errors.isEmpty()) {
 			errorsAdapter.update(new ArrayList<SimpleListItemAdapter.SimpleStringItem>());
 			errorsSeparatorView.setVisibility(View.GONE);
 		} else {
