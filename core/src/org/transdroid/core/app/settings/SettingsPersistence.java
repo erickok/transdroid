@@ -194,7 +194,7 @@ public class SettingsPersistence {
 			server.put("downloads_dir", prefs.getString("server_downloaddir_" + postfixi, null));
 			server.put("base_ftp_url", prefs.getString("server_ftpurl_" + postfixi, null));
 			server.put("ftp_password", prefs.getString("server_ftppass_" + postfixi, null));
-			server.put("server_timeout", prefs.getString("server_ftppass_" + postfixi, null));
+			server.put("server_timeout", prefs.getString("server_timeout_" + postfixi, null));
 			server.put("download_alarm", prefs.getBoolean("server_alarmfinished_" + postfixi, false));
 			server.put("new_torrent_alarm", prefs.getBoolean("server_alarmnew_" + postfixi, false));
 

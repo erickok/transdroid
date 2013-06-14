@@ -71,16 +71,16 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	@FragmentById(resName = "torrent_details")
 	protected DetailsFragment fragmentDetails;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-    	// Set the theme according to the user preference
-    	if (SystemSettings_.getInstance_(this).useDarkTheme()) {
-    		setTheme(R.style.TransdroidTheme_Dark);
-    		getSupportActionBar().setIcon(R.drawable.ic_activity_torrents);
-    	}
-        super.onCreate(savedInstanceState);
-    }
-    
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// Set the theme according to the user preference
+		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
+			setTheme(R.style.TransdroidTheme_Dark);
+			getSupportActionBar().setIcon(R.drawable.ic_activity_torrents);
+		}
+		super.onCreate(savedInstanceState);
+	}
+
 	@AfterViews
 	protected void init() {
 
@@ -158,7 +158,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		torrent.mimicResume();
 		DaemonTaskResult result = ResumeTask.create(currentConnection, torrent).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_resumed);
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_resumed, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
@@ -170,7 +170,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		torrent.mimicPause();
 		DaemonTaskResult result = PauseTask.create(currentConnection, torrent).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_paused);
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_paused, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
@@ -182,7 +182,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		torrent.mimicStart();
 		DaemonTaskResult result = StartTask.create(currentConnection, torrent, forced).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_started);
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_started, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
@@ -194,7 +194,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		torrent.mimicStop();
 		DaemonTaskResult result = StopTask.create(currentConnection, torrent).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_stopped);
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_stopped, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
@@ -205,8 +205,9 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	public void removeTorrent(Torrent torrent, boolean withData) {
 		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, withData ? R.string.result_removed_with_data
-					: R.string.result_removed);
+			onTaskSucceeded(
+					(DaemonTaskSuccessResult) result,
+					getString(withData ? R.string.result_removed_with_data : R.string.result_removed, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
@@ -218,7 +219,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		torrent.mimicNewLabel(newLabel);
 		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_labelset, newLabel);
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_labelset, newLabel));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
@@ -229,7 +230,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	public void updateTrackers(Torrent torrent, List<String> newTrackers) {
 		DaemonTaskResult result = SetTrackersTask.create(currentConnection, torrent, newTrackers).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_trackersupdated);
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_trackersupdated));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
@@ -240,16 +241,18 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	public void updateLocation(Torrent torrent, String newLocation) {
 		DaemonTaskResult result = SetDownloadLocationTask.create(currentConnection, torrent, newLocation).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, R.string.result_locationset, newLocation);
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_locationset, newLocation));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
 	}
 
 	@UiThread
-	protected void onTaskSucceeded(DaemonTaskSuccessResult result, int successMessageId, String... messageParams) {
-		Crouton.showText(this, getString(successMessageId, (Object[]) messageParams),
-				navigationHelper.CROUTON_INFO_STYLE);
+	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
+		// Refresh the screen as well
+		refreshTorrent();
+		refreshTorrentDetails(torrent);
+		Crouton.showText(this, successMessage, navigationHelper.CROUTON_INFO_STYLE);
 	}
 
 	@UiThread

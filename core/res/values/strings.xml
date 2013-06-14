@@ -90,12 +90,12 @@
 	<string name="result_removed">%1$s removed</string>
 	<string name="result_removed_with_data">%1$s removed and data deleted</string>
 	<string name="result_resumed">%1$s resumed (refreshing)</string>
-	<string name="result_stopped">%1$s stopped</string>
+	<string name="result_stopped">%1$s stopped (refreshing)</string>
 	<string name="result_started">%1$s started (refreshing)</string>
-	<string name="result_paused">%1$s paused</string>
-	<string name="result_paused_all">Torrents paused</string>
+	<string name="result_paused">%1$s paused (refreshing)</string>
+	<string name="result_paused_all">Torrents paused (refreshing)</string>
 	<string name="result_resumed_all">Torrents resumed (refreshing)</string>
-	<string name="result_stopped_all">Torrents stopped</string>
+	<string name="result_stopped_all">Torrents stopped (refreshing)</string>
 	<string name="result_started_all">Torrents started (refreshing)</string>
 	<string name="result_trackersupdated">Trackers updated</string>
 	<string name="result_labelset">Label set to \'%1$s\'</string>
