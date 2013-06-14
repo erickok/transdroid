@@ -291,7 +291,8 @@ public class ApplicationSettings {
 		return new RssfeedSetting(order, 
 				prefs.getString("rssfeed_name_" + order, null), 
 				prefs.getString("rssfeed_url_" + order, null), 
-				prefs.getBoolean("rssfeed_reqauth_" + order, false));
+				prefs.getBoolean("rssfeed_reqauth_" + order, false), 
+				prefs.getString("rssfeed_lastnew_" + order, null));
 		// @formatter:on
 	}
 
@@ -311,12 +312,14 @@ public class ApplicationSettings {
 			edit.putString("rssfeed_name_" + i, prefs.getString("rssfeed_name_" + (i + 1), null));
 			edit.putString("rssfeed_url_" + i, prefs.getString("rssfeed_url_" + (i + 1), null));
 			edit.putBoolean("rssfeed_reqauth_" + i, prefs.getBoolean("rssfeed_reqauth_" + (i + 1), false));
+			edit.putString("rssfeed_lastnew_" + i, prefs.getString("rssfeed_lastnew_" + (i + 1), null));
 		}
 
 		// Remove the last settings, of which we are now sure are no longer required
 		edit.remove("rssfeed_name_" + max);
 		edit.remove("rssfeed_url_" + max);
 		edit.remove("rssfeed_reqauth_" + max);
+		edit.remove("rssfeed_lastnew_" + max);
 		edit.commit();
 		
 	}

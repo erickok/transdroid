@@ -175,7 +175,11 @@
 	<string name="pref_usedarktheme">Use dark UI theme</string>
 	<string name="pref_usedarktheme_info">Requires a restart to take effect</string>
 	<string name="pref_import">Import settings</string>
+	<string name="pref_import_dialog">Transdroid will try to import server, web search, RSS and system settings from: %1$s</string>
+	<string name="pref_import_success">Settings successfully imported</string>
 	<string name="pref_export">Export settings</string>
+	<string name="pref_export_dialog">Transdroid will export server (including passwords), web search, RSS and system settings to the following plain text JSON file: %1$s</string>
+	<string name="pref_export_success">Settings successfully exported</string>
 	<string name="pref_sendlog">Send error log</string>
 	<string name="pref_sendlog_info">Get support or report a bug</string>
 	<string name="pref_installhelp">View install guides</string>
@@ -259,7 +263,8 @@
 	<string name="error_norssfeed">URL is not a (valid) RSS feed</string>
 	<string name="error_media_not_available">SD card not available to read/write</string>
 	<string name="error_no_valid_settings_file">File does not seem to contain Transdroid settings</string>
-	<string name="error_file_not_found">There is no settings file found</string>
+	<string name="error_file_not_found">The settings file could not be found</string>
+	<string name="error_cant_write_settings_file">Can\'t write to the settings file</string>
 	
 	<string name="system_name" translatable="false">Transdroid</string>
 	<string name="system_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>

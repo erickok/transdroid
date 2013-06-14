@@ -19,12 +19,12 @@ public class RssfeedSetting implements SimpleListItem {
 	private final boolean requiresAuth;
 	private String lastNew;
 
-	public RssfeedSetting(int order, String name, String baseUrl, boolean needsAuth) {
+	public RssfeedSetting(int order, String name, String baseUrl, boolean needsAuth, String lastNew) {
 		this.order = order;
 		this.name = name;
 		this.url = baseUrl;
 		this.requiresAuth = needsAuth;
-		this.lastNew = null;
+		this.lastNew = lastNew;
 	}
 
 	public int getOrder() {
@@ -55,6 +55,7 @@ public class RssfeedSetting implements SimpleListItem {
 	 * @return The last new item's URL as URL-encoded string
 	 */
 	public String getLastNew() {
+		// TODO: Persist this into Preferences
 		return this.lastNew;
 	}
 

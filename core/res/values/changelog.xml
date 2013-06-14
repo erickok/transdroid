@@ -4,7 +4,6 @@
 Transdroid 2.0.0-alpha1\n
 - Totally reworked Holo-style interface\n
 - Provide tablet interface on smaller tablets\n
-- Automatically switch between local and remote IP configurations\n
 \n
 Older changes: http://www.transdroid.org/about/changelog/
 </string>

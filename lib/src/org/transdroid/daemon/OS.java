@@ -12,6 +12,21 @@ public enum OS {
 		@Override public String getPathSeperator() { return "/"; }
 	};
 	
+	public static String toCode(OS os) {
+		if (os == null)
+			return null;
+		switch (os) {
+		case Windows:
+			return "type_windows";
+		case Mac:
+			return "type_mac";
+		case Linux:
+			return "type_linux";
+		default:
+			return null;
+		}
+	}
+	
 	public static OS fromCode(String osCode) {
 		if (osCode == null) {
 			return null;

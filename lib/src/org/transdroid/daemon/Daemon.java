@@ -105,6 +105,45 @@ public enum Daemon {
 	};
 	
 	public abstract IDaemonAdapter createAdapter(DaemonSettings settings);
+	
+	/**
+	 * Returns the code as used in preferences matching the given daemon type
+	 * @return A string of the form 'daemon_<type>' that represents the daemon's enum value
+	 */
+	public static String toCode(Daemon type) {
+		if (type == null)
+			return null;
+		switch (type) {
+		case BitComet:
+			return "daemon_bitcomet";
+		case Bitflu:
+			return "daemon_bitflue";
+		case BitTorrent:
+			return "daemon_bittorrent";
+		case BuffaloNas:
+			return "daemon_buffalonas";
+		case Deluge:
+			return "daemon_deluge";
+		case DLinkRouterBT:
+			return "daemon_dlinkrouterbt";
+		case KTorrent:
+			return "daemon_ktorrent";
+		case qBittorrent:
+			return "daemon_qbittorrent";
+		case rTorrent:
+			return "daemon_rtorrent";
+		case Tfb4rt:
+			return "daemon_tfb4rt";
+		case Transmission:
+			return "daemon_transmission";
+		case uTorrent:
+			return "daemon_utorrent";
+		case Vuze:
+			return "daemon_vuze";
+		default:
+			return null;
+		}
+	}
 
 	/**
 	 * Returns the daemon enum type based on the code used in the user preferences.
@@ -114,6 +153,9 @@ public enum Daemon {
 	public static Daemon fromCode(String daemonCode) {
 		if (daemonCode == null) {
 			return null;
+		}
+		if (daemonCode.equals("daemon_bitcomet")) {
+			return BitComet;
 		}
 		if (daemonCode.equals("daemon_bitflu")) {
 			return Bitflu;
@@ -150,9 +192,6 @@ public enum Daemon {
 		}
 		if (daemonCode.equals("daemon_vuze")) {
 			return Vuze;
-		}
-		if (daemonCode.equals("daemon_bitcomet")) {
-			return BitComet;
 		}
 		return null;
 	}
