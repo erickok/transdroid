@@ -74,6 +74,7 @@ public class TorrentsFragment extends SherlockFragment {
 		this.currentSortDescending = applicationSettings.getLastUsedSortDescending();
 		torrentsList.setAdapter(TorrentsAdapter_.getInstance_(getActivity()));
 		torrentsList.setMultiChoiceModeListener(onTorrentsSelected);
+		torrentsList.setFastScrollEnabled(true);
 		if (torrents != null)
 			updateTorrents(torrents);
 	}
@@ -142,17 +143,17 @@ public class TorrentsFragment extends SherlockFragment {
 		Daemon serverType = (this.torrents.size() > 0 ? this.torrents.get(0).getDaemon() : Daemon.Transmission);
 
 		// Filter the list of torrents to show according to navigation and text filters
-		ArrayList<Torrent> filteredTorrents = torrents;
-		if (torrents != null && currentNavigationFilter != null) {
+		ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>(torrents);
+		if (filteredTorrents != null && currentNavigationFilter != null) {
 			// Remove torrents that do not match the selected navigation filter
-			for (Iterator<Torrent> torrentIter = torrents.iterator(); torrentIter.hasNext();) {
+			for (Iterator<Torrent> torrentIter = filteredTorrents.iterator(); torrentIter.hasNext();) {
 				if (!currentNavigationFilter.matches(torrentIter.next()))
 					torrentIter.remove();
 			}
 		}
-		if (torrents != null && currentTextFilter != null) {
+		if (filteredTorrents != null && currentTextFilter != null) {
 			// Remove torrent that do not contain the text filter string
-			for (Iterator<Torrent> torrentIter = torrents.iterator(); torrentIter.hasNext();) {
+			for (Iterator<Torrent> torrentIter = filteredTorrents.iterator(); torrentIter.hasNext();) {
 				if (!torrentIter.next().getName().toLowerCase(Locale.getDefault())
 						.contains(currentTextFilter.toLowerCase(Locale.getDefault())))
 					torrentIter.remove();
@@ -160,7 +161,7 @@ public class TorrentsFragment extends SherlockFragment {
 		}
 
 		// Sort the list of filtered torrents
-		Collections.sort(this.torrents, new TorrentsComparator(serverType, this.currentSortOrder,
+		Collections.sort(filteredTorrents, new TorrentsComparator(serverType, this.currentSortOrder,
 				this.currentSortDescending));
 
 		((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);

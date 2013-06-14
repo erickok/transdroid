@@ -24,7 +24,8 @@
 	<View
 		android:id="@+id/separator"
 		android:layout_width="2dip"
-		android:layout_height="110dip"
+		android:layout_height="@dimen/ui_details_seperator"
+		android:textSize="@dimen/text_enlargednumbers"
 		android:layout_below="@id/dateadded_text"
 		android:layout_centerHorizontal="true"
 		android:layout_marginTop="@dimen/margin_default"
@@ -40,7 +41,7 @@
 		android:layout_marginTop="@dimen/margin_half"
 		android:layout_marginLeft="@dimen/margin_half"
 		android:textColor="?attr/text_bright"
-		android:textSize="33sp"
+		android:textSize="@dimen/text_hugenumbers"
 		android:fontFamily="sans-serif-light"
 		android:textIsSelectable="false" />
 	
@@ -62,7 +63,7 @@
 		android:layout_below="@id/uploaded_text"
 		android:layout_toRightOf="@id/separator"
 		android:layout_marginLeft="@dimen/margin_half"
-		android:textSize="12sp"
+		android:textSize="@dimen/text_small"
 		android:textIsSelectable="false" />
 	
 	<TextView
@@ -73,7 +74,7 @@
 		android:layout_toRightOf="@id/separator"
 		android:layout_marginLeft="@dimen/margin_half"
 		android:layout_marginBottom="4dip"
-		android:textSize="22sp"
+		android:textSize="@dimen/text_enlargednumbers"
 		android:textColor="?attr/text_bright"
 		android:fontFamily="sans-serif-light"
 		android:textIsSelectable="false" />
@@ -85,7 +86,7 @@
 		android:layout_below="@id/upspeed_text"
 		android:layout_toRightOf="@id/separator"
 		android:layout_marginLeft="@dimen/margin_half"
-		android:textSize="12sp"
+		android:textSize="@dimen/text_small"
 		android:textIsSelectable="false" />
 	
 	<TextView
@@ -107,7 +108,7 @@
 		android:layout_toLeftOf="@id/downloadedunit_text"
 		android:layout_marginRight="4dip"
 		android:textColor="?attr/text_bright"
-		android:textSize="33sp"
+		android:textSize="@dimen/text_hugenumbers"
 		android:fontFamily="sans-serif-light"
 		android:textIsSelectable="false" />
 	
@@ -118,7 +119,7 @@
 		android:layout_alignBaseline="@id/ratio_text"
 		android:layout_toLeftOf="@id/separator"
 		android:layout_marginRight="@dimen/margin_half"
-		android:textSize="12sp"
+		android:textSize="@dimen/text_small"
 		android:textIsSelectable="false" />
 	
 	<TextView
@@ -128,7 +129,7 @@
 		android:layout_alignBaseline="@id/upspeed_text"
 		android:layout_toLeftOf="@id/separator"
 		android:layout_marginRight="@dimen/margin_half"
-		android:textSize="22sp"
+		android:textSize="@dimen/text_enlargednumbers"
 		android:textColor="?attr/text_bright"
 		android:fontFamily="sans-serif-light"
 		android:textIsSelectable="false" />
@@ -140,7 +141,7 @@
 		android:layout_alignBaseline="@id/seeders_text"
 		android:layout_toLeftOf="@id/separator"
 		android:layout_marginRight="@dimen/margin_half"
-		android:textSize="12sp"
+		android:textSize="@dimen/text_small"
 		android:textIsSelectable="false" />
 	
 	<TextView

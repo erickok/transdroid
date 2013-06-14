@@ -11,7 +11,7 @@
 		android:layout_height="wrap_content"
 		android:textColor="?attr/text_actionbar"
 		android:textIsSelectable="false"
-		android:textSize="17sp" />
+		android:textSize="@dimen/ui_navigation_filter" />
 
 	<TextView
 		android:id="@+id/server_text"
@@ -20,6 +20,6 @@
 		android:layout_marginTop="-4dip"
 		android:textColor="?attr/text_actionbar"
 		android:textIsSelectable="false"
-		android:textSize="14sp" />
+		android:textSize="@dimen/ui_navigation_server" />
 
 </LinearLayout>

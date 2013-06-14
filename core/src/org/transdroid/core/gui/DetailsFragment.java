@@ -58,6 +58,7 @@ public class DetailsFragment extends SherlockFragment {
 	protected void init() {
 
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));
+		detailsList.setFastScrollEnabled(true);
 		if (torrent != null)
 			updateTorrent(torrent);
 		if (torrentDetails != null)

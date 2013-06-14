@@ -25,12 +25,20 @@ import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.log.*;
-import org.transdroid.core.gui.navigation.*;
+import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.log.Log_;
+import org.transdroid.core.gui.navigation.FilterListAdapter;
+import org.transdroid.core.gui.navigation.FilterListAdapter_;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter_;
+import org.transdroid.core.gui.navigation.Label;
+import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
-import org.transdroid.core.gui.settings.*;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
@@ -71,7 +79,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
@@ -146,7 +154,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Add an empty labels list (which will be updated later, but the adapter needs to be created now)
 			navigationListAdapter.updateLabels(new ArrayList<Label>());
 			filtersList.setAdapter(navigationListAdapter);
-			filtersList.setOnItemSelectedListener(onFilterListItemSelected);
+			filtersList.setOnItemClickListener(onFilterListItemClicked);
 		} else {
 			// Add status types directly to the action bar spinner
 			navigationSpinnerAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));
@@ -270,18 +278,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		return false;
 	}
 
-	// Handles clicks (selections) on the dedicated list of filter items (if it exists)
-	// NOTE: Unfortunately we cannot use the @ItemSelect(R.id.filters_list) annotation as it throws NPE exceptions when
-	// the list doesn't exist (read: on small screens)
-	protected OnItemSelectedListener onFilterListItemSelected = new OnItemSelectedListener() {
+	// Handles item selections on the dedicated list of filter items
+	private OnItemClickListener onFilterListItemClicked = new OnItemClickListener() {
 		@Override
-		public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			filtersList.setItemChecked(position, true);
 			filterSelected((SimpleListItem) filtersList.getAdapter().getItem(position), false);
-		}
-
-		@Override
-		public void onNothingSelected(AdapterView<?> parent) {
-			// TODO: Check if this happens
 		}
 	};
 

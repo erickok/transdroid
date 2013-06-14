@@ -14,7 +14,7 @@
 		android:paddingTop="@dimen/margin_half"
 		android:textColor="?attr/text_bright"
 		android:textIsSelectable="false"
-		android:textSize="15sp" />
+		android:textSize="@dimen/text_enlarged" />
 
 	<TextView
 		android:id="@+id/ratio_text"
@@ -26,7 +26,7 @@
 		android:layout_marginTop="4.0dip"
 		android:paddingBottom="@dimen/margin_half"
 		android:textIsSelectable="false"
-		android:textSize="12sp" />
+		android:textSize="@dimen/text_small" />
 
 	<ImageView
 		android:id="@+id/priority_image"
@@ -47,7 +47,7 @@
 		android:layout_marginLeft="@dimen/margin_torrentlistleft"
 		android:layout_toLeftOf="@id/priority_image"
 		android:textIsSelectable="false"
-		android:textSize="12sp" />
+		android:textSize="@dimen/text_small" />
 
 	<org.transdroid.core.gui.lists.TorrentProgressBar
 		android:id="@+id/torrent_progressbar"
@@ -66,7 +66,7 @@
 		android:layout_marginTop="@dimen/margin_half"
 		android:paddingBottom="@dimen/margin_half"
 		android:textIsSelectable="false"
-		android:textSize="12sp" />
+		android:textSize="@dimen/text_small" />
 
 	<TextView
 		android:id="@+id/peers_text"
@@ -78,6 +78,6 @@
 		android:layout_toLeftOf="@id/speed_text"
 		android:paddingBottom="@dimen/margin_half"
 		android:textIsSelectable="false"
-		android:textSize="12sp" />
+		android:textSize="@dimen/text_small" />
 
 </org.transdroid.core.gui.lists.TorrentStatusLayout>
