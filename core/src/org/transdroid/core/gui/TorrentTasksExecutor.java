@@ -2,7 +2,9 @@ package org.transdroid.core.gui;
 
 import java.util.List;
 
+import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.TorrentFile;
 
 public interface TorrentTasksExecutor {
 	void resumeTorrent(Torrent torrent);
@@ -15,4 +17,5 @@ public interface TorrentTasksExecutor {
 	void updateLocation(Torrent torrent, String newLocation);
 	void refreshTorrentDetails(Torrent torrent);
 	void refreshTorrentFiles(Torrent torrent);
+	void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority);
 }

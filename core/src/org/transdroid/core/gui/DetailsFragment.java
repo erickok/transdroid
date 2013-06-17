@@ -13,7 +13,9 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.gui.lists.DetailsAdapter;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
+import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
@@ -23,8 +25,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SherlockListView;
+import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
  * Fragment that shows detailed statistics about some torrent. These come from some already fetched {@link Torrent}
@@ -57,7 +64,10 @@ public class DetailsFragment extends SherlockFragment {
 	@AfterViews
 	protected void init() {
 
+		// Set up details adapter (itself containing the actual lists to show), which allows multi-select and fast
+		// scrolling
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));
+		detailsList.setMultiChoiceModeListener(onDetailsSelected);
 		detailsList.setFastScrollEnabled(true);
 		if (torrent != null)
 			updateTorrent(torrent);
@@ -232,6 +242,70 @@ public class DetailsFragment extends SherlockFragment {
 	protected void updateTrackers() {
 		// TODO: Show trackers edit dialog
 	}
+
+	private MultiChoiceModeListenerCompat onDetailsSelected = new MultiChoiceModeListenerCompat() {
+
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			// Show contextual action bar to start/stop/remove/etc. torrents in batch mode
+			mode.getMenuInflater().inflate(R.menu.fragment_details_file, menu);
+			return true;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+			// Get checked torrents
+			List<TorrentFile> checked = new ArrayList<TorrentFile>();
+			for (int i = 0; i < detailsList.getCheckedItemPositions().size(); i++) {
+				if (detailsList.getCheckedItemPositions().valueAt(i)
+						&& detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)) instanceof TorrentFile)
+					checked.add((TorrentFile) detailsList.getAdapter().getItem(
+							detailsList.getCheckedItemPositions().keyAt(i)));
+			}
+
+			int itemId = item.getItemId();
+			if (itemId == R.id.action_download) {
+				// TODO: Start FTP download command for the selected torrents
+				Crouton.showText(getActivity(), "TODO: Start FTP download command for the selected torrents",
+						NavigationHelper.CROUTON_INFO_STYLE);
+				//for (TorrentFile file : checked) {
+				//}
+				mode.finish();
+				return true;
+			} else {
+				Priority priority = Priority.Normal;
+				if (itemId == R.id.action_priority_low)
+					priority = Priority.Low;
+				getTasksExecutor().updatePriority(torrent, checked, priority);
+				mode.finish();
+				return true;
+			}
+		}
+
+		@Override
+		public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+			// Show the number of selected files in the CAB
+			// torrentsList.getCheckedItemPositions().size() ?
+			int checkedCount = 0;
+			for (int i = 0; i < detailsList.getCheckedItemPositions().size(); i++) {
+				if (detailsList.getCheckedItemPositions().valueAt(i)
+						&& detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)) instanceof TorrentFile)
+					checkedCount++;
+			}
+			mode.setTitle(getResources().getQuantityString(R.plurals.navigation_filesselected, checkedCount, checkedCount));
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+		}
+
+	};
 
 	/**
 	 * Returns the object responsible for executing torrent tasks against a connected server

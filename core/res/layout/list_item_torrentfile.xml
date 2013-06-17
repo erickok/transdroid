@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fr.marvinlabs.widget.CheckableRelativeLayout
+<org.transdroid.core.gui.lists.TorrentFilePriorityLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content" 
 	android:orientation="vertical" 
 	android:paddingTop="@dimen/margin_half"
 	android:paddingBottom="@dimen/margin_half"
-	android:paddingRight="@dimen/margin_default">
+	android:paddingLeft="@dimen/margin_default"
+	android:paddingRight="@dimen/margin_default"
+	android:background="?attr/selectable_background_transdroid">
 	
-	<fr.marvinlabs.widget.InertCheckBox
-		android:id="@+id/file_checkbox"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:focusable="false" />
-		
 	<TextView
 		android:id="@+id/name_text"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true"
-		android:layout_toRightOf="@+id/file_checkbox"
 		android:textColor="?attr/text_bright"
 		android:textSize="@dimen/text_enlarged"
 		android:textIsSelectable="false"
@@ -42,21 +36,8 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@+id/progress_text"
-		android:layout_alignBottom="@+id/progress_text"
-		android:layout_toRightOf="@+id/priority_image"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small"
 		android:focusable="false" />
-
-	<ImageView
-		android:id="@+id/priority_image"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignLeft="@+id/name_text"
-		android:layout_below="@+id/name_text"
-		android:layout_marginTop="4dip"
-		android:layout_marginRight="@dimen/margin_half"
-		android:contentDescription="@string/status_priority_normal"
-		android:focusable="false" />
-
-</fr.marvinlabs.widget.CheckableRelativeLayout>
+	
+</org.transdroid.core.gui.lists.TorrentFilePriorityLayout>

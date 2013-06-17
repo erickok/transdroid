@@ -4,7 +4,8 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:paddingRight="@dimen/margin_default" >
+	android:paddingRight="@dimen/margin_default"
+	android:background="?attr/selectable_background_transdroid" >
 
 	<TextView
 		android:id="@+id/name_text"
@@ -35,8 +36,7 @@
 		android:layout_alignBottom="@id/ratio_text"
 		android:layout_marginLeft="@dimen/margin_half"
 		android:layout_toLeftOf="@id/ratio_text"
-		android:contentDescription="@string/status_priority_normal"
-		android:src="@drawable/ic_priority_normal" />
+		android:contentDescription="@string/status_priority_normal" />
 
 	<TextView
 		android:id="@+id/progress_text"

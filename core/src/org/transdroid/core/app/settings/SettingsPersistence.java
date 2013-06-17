@@ -18,6 +18,11 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Environment;
 
+/**
+ * Singleton class that can persist user settings (servers, RSS feeds, etc.) to and from a plain text JSON file.
+ * 
+ * @author Eric Kok
+ */
 @EBean(scope = Scope.Singleton)
 public class SettingsPersistence {
 

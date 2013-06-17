@@ -26,14 +26,14 @@ public class NavigationHelper {
 	/**
 	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display error messages.
 	 */
-	public Style CROUTON_ERROR_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_error).setTextSize(13)
-			.setDuration(2500).build();
-	
+	public static Style CROUTON_ERROR_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_error)
+			.setTextSize(13).setDuration(2500).build();
+
 	/**
 	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display info messages.
 	 */
-	public Style CROUTON_INFO_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_info).setTextSize(13)
-			.setDuration(1500).build();
+	public static Style CROUTON_INFO_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_info)
+			.setTextSize(13).setDuration(1500).build();
 
 	/**
 	 * Whether any search-related UI components should be shown in the interface. At the moment returns false only if we

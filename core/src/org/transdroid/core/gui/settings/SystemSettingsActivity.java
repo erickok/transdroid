@@ -42,8 +42,6 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 	protected static final String INSTALLHELP_URI = "http://www.transdroid.org/download/";
 
 	@Bean
-	protected NavigationHelper navigationHelper;
-	@Bean
 	protected ApplicationSettings applicationSettings;
 	@Bean
 	protected ErrorLogSender errorLogSender;
@@ -160,13 +158,13 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 			try {
 				settingsPersistence.importSettings(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
 				Crouton.showText(SystemSettingsActivity.this, R.string.pref_import_success,
-						navigationHelper.CROUTON_INFO_STYLE);
+						NavigationHelper.CROUTON_INFO_STYLE);
 			} catch (FileNotFoundException e) {
 				Crouton.showText(SystemSettingsActivity.this, R.string.error_file_not_found,
-						navigationHelper.CROUTON_ERROR_STYLE);
+						NavigationHelper.CROUTON_ERROR_STYLE);
 			} catch (JSONException e) {
 				Crouton.showText(SystemSettingsActivity.this, R.string.error_no_valid_settings_file,
-						navigationHelper.CROUTON_ERROR_STYLE);
+						NavigationHelper.CROUTON_ERROR_STYLE);
 			}
 		}
 	};
@@ -178,13 +176,13 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 			try {
 				settingsPersistence.exportSettings(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
 				Crouton.showText(SystemSettingsActivity.this, R.string.pref_export_success,
-						navigationHelper.CROUTON_INFO_STYLE);
+						NavigationHelper.CROUTON_INFO_STYLE);
 			} catch (JSONException e) {
 				Crouton.showText(SystemSettingsActivity.this, R.string.error_cant_write_settings_file,
-						navigationHelper.CROUTON_ERROR_STYLE);
+						NavigationHelper.CROUTON_ERROR_STYLE);
 			} catch (IOException e) {
 				Crouton.showText(SystemSettingsActivity.this, R.string.error_cant_write_settings_file,
-						navigationHelper.CROUTON_ERROR_STYLE);
+						NavigationHelper.CROUTON_ERROR_STYLE);
 			}
 		}
 	};

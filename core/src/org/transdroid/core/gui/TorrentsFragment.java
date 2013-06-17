@@ -70,13 +70,18 @@ public class TorrentsFragment extends SherlockFragment {
 
 	@AfterViews
 	protected void init() {
+
+		// Load the requested sort order from the user settings
 		this.currentSortOrder = applicationSettings.getLastUsedSortOrder();
 		this.currentSortDescending = applicationSettings.getLastUsedSortDescending();
+
+		// Set up the list adapter, which allows multi-select and fast scrolling
 		torrentsList.setAdapter(TorrentsAdapter_.getInstance_(getActivity()));
 		torrentsList.setMultiChoiceModeListener(onTorrentsSelected);
 		torrentsList.setFastScrollEnabled(true);
 		if (torrents != null)
 			updateTorrents(torrents);
+
 	}
 
 	/**
@@ -183,8 +188,9 @@ public class TorrentsFragment extends SherlockFragment {
 			// Get checked torrents
 			List<Torrent> checked = new ArrayList<Torrent>();
 			for (int i = 0; i < torrentsList.getCheckedItemPositions().size(); i++) {
-				if (torrentsList.getCheckedItemPositions().get(i))
-					checked.add((Torrent) torrentsList.getAdapter().getItem(i));
+				if (torrentsList.getCheckedItemPositions().valueAt(i))
+					checked.add((Torrent) torrentsList.getAdapter().getItem(
+							torrentsList.getCheckedItemPositions().keyAt(i)));
 			}
 
 			int itemId = item.getItemId();
@@ -223,7 +229,15 @@ public class TorrentsFragment extends SherlockFragment {
 
 		@Override
 		public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-			// TODO: Update title or otherwise show number of selected torrents?
+			// Show the number of selected torrents in the CAB
+			// torrentsList.getCheckedItemPositions().size() ?
+			int checkedCount = 0;
+			for (int i = 0; i < torrentsList.getCheckedItemPositions().size(); i++) {
+				if (torrentsList.getCheckedItemPositions().valueAt(i))
+					checkedCount++;
+			}
+			mode.setTitle(getResources().getQuantityString(R.plurals.navigation_torrentsselected, checkedCount,
+					checkedCount));
 		}
 
 		@Override

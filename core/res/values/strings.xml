@@ -51,6 +51,14 @@
 	<string name="navigation_status_onlyup">Uploading</string>
 	<string name="navigation_status_onlyactive">Active</string>
 	<string name="navigation_status_onlyinactive">Inactive</string>
+	<plurals name="navigation_torrentsselected">
+		<item quantity="one">%1$d torrent selected</item>
+		<item quantity="other">%1$d torrents selected</item>
+	</plurals>
+	<plurals name="navigation_filesselected">
+		<item quantity="one">%1$d files selected</item>
+		<item quantity="other">%1$d files selected</item>
+	</plurals>
 	
 	<string name="status_status">STATUS: %1$s</string>
 	<string name="status_waiting">Waiting to check&#8230;</string>
@@ -100,6 +108,7 @@
 	<string name="result_trackersupdated">Trackers updated</string>
 	<string name="result_labelset">Label set to \'%1$s\'</string>
 	<string name="result_locationset">Torrent moved to \'%1$s\'</string>
+	<string name="result_priotitiesset">File priorities updated</string>
 	
 	<string name="search_torrentsearch">Torrent search</string>
 	<string name="search_hint">Search for torrents</string>

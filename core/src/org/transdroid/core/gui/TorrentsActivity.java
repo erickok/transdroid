@@ -31,6 +31,7 @@ import org.transdroid.core.gui.search.UrlEntryDialog;
 import org.transdroid.core.gui.settings.*;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
@@ -54,6 +55,7 @@ import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetAlternativeModeTask;
 import org.transdroid.daemon.task.SetDownloadLocationTask;
+import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.StartTask;
@@ -631,16 +633,16 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			}
 		} catch (SecurityException e) {
 			// No longer access to this file
-			Crouton.showText(this, R.string.error_torrentfile, navigationHelper.CROUTON_ERROR_STYLE);
+			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 		} catch (IOException e1) {
 			// Can't write temporary file
-			Crouton.showText(this, R.string.error_torrentfile, navigationHelper.CROUTON_ERROR_STYLE);
+			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 		} finally {
 			try {
 				if (input != null)
 					input.close();
 			} catch (IOException e) {
-				Crouton.showText(this, R.string.error_torrentfile, navigationHelper.CROUTON_ERROR_STYLE);
+				Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 			}
 		}
 	}
@@ -739,18 +741,30 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		}
 	}
 
+	@Background
+	@Override
+	public void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority) {
+		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority,
+				new ArrayList<TorrentFile>(files)).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result, false);
+		}
+	}
+
 	@UiThread
 	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
 		// Refresh the screen as well
 		refreshScreen();
-		Crouton.showText(this, successMessage, navigationHelper.CROUTON_INFO_STYLE);
+		Crouton.showText(this, successMessage, NavigationHelper.CROUTON_INFO_STYLE);
 	}
 
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
 		Log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
-		Crouton.showText(this, error, navigationHelper.CROUTON_ERROR_STYLE);
+		Crouton.showText(this, error, NavigationHelper.CROUTON_ERROR_STYLE);
 		fragmentTorrents.updateIsLoading(false);
 		if (isCritical)
 			fragmentTorrents.updateError(error);

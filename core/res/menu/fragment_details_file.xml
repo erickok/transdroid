@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
 	<item
-		android:id="@+id/action_off"
+		android:id="@+id/action_priority_off"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_priority_off" />
 	<item
@@ -16,10 +16,6 @@
 		android:id="@+id/action_priority_high"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_priority_high" />
-	<item
-		android:id="@+id/action_remoteplay"
-		android:showAsAction="ifRoom"
-		android:title="@string/action_remoteplay" />
 	<item
 		android:id="@+id/action_download"
 		android:showAsAction="ifRoom"

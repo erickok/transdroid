@@ -14,14 +14,13 @@ import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.ApplicationSettings;
-import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
@@ -38,6 +37,7 @@ import org.transdroid.daemon.task.ResumeTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetDownloadLocationTask;
+import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.StartTask;
@@ -247,12 +247,24 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		}
 	}
 
+	@Background
+	@Override
+	public void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority) {
+		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority,
+				new ArrayList<TorrentFile>(files)).execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result);
+		}
+	}
+
 	@UiThread
 	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
 		// Refresh the screen as well
 		refreshTorrent();
 		refreshTorrentDetails(torrent);
-		Crouton.showText(this, successMessage, navigationHelper.CROUTON_INFO_STYLE);
+		Crouton.showText(this, successMessage, NavigationHelper.CROUTON_INFO_STYLE);
 	}
 
 	@UiThread
@@ -272,7 +284,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		Log.i(this, result.getException().toString());
 		fragmentDetails.updateIsLoading(false);
 		Crouton.showText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
-				navigationHelper.CROUTON_ERROR_STYLE);
+				NavigationHelper.CROUTON_ERROR_STYLE);
 	}
 
 	@UiThread
