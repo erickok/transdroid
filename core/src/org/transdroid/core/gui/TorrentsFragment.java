@@ -33,6 +33,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SherlockListView;
 import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
 
+/**
+ * Fragment that shows a list of torrents that are active on the server. It supports sorting and filtering and can show
+ * connection progress and issues. However, actual task starting and execution and overall navigation elements are part
+ * of the containing activity, not this fragment.
+ * @author Eric Kok
+ */
 @EFragment(resName = "fragment_torrents")
 public class TorrentsFragment extends SherlockFragment {
 
@@ -95,7 +101,7 @@ public class TorrentsFragment extends SherlockFragment {
 
 	/**
 	 * Clears the currently visible list of torrents.
-	 * @param b 
+	 * @param b
 	 */
 	public void clear(boolean clearError) {
 		this.torrents = null;

@@ -1,6 +1,7 @@
 package org.transdroid.core.gui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.androidannotations.annotations.AfterViews;
@@ -35,11 +36,12 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
  * Fragment that shows detailed statistics about some torrent. These come from some already fetched {@link Torrent}
- * object, but it also retrieves further detailed statistics.
+ * object, but it also retrieves further detailed statistics. The actual execution of tasks is performed by the activity
+ * that contains this fragment, as per the {@link TorrentTasksExecutor} interface.
  * @author Eric Kok
  */
-@EFragment(resName="fragment_details")
-@OptionsMenu(resName="fragment_details")
+@EFragment(resName = "fragment_details")
+@OptionsMenu(resName = "fragment_details")
 public class DetailsFragment extends SherlockFragment {
 
 	// Local data
@@ -54,7 +56,7 @@ public class DetailsFragment extends SherlockFragment {
 	protected boolean isLoadingTorrent = false;
 
 	// Views
-	@ViewById(resName="details_list")
+	@ViewById(resName = "details_list")
 	protected SherlockListView detailsList;
 	@ViewById
 	protected TextView emptyText;
@@ -122,12 +124,13 @@ public class DetailsFragment extends SherlockFragment {
 		// Check if these are actually the details of the torrent we are now showing
 		if (!torrent.getUniqueID().equals(checkTorrent.getUniqueID()))
 			return;
+		Collections.sort(newTorrentFiles);
 		this.torrentFiles = newTorrentFiles;
 		((DetailsAdapter) detailsList.getAdapter()).updateTorrentFiles(newTorrentFiles);
 	}
 
 	/**
-	 * Can be called if some outside activity returned new torrents, so we can perhaps piggyback on this by update our 
+	 * Can be called if some outside activity returned new torrents, so we can perhaps piggyback on this by update our
 	 * data as well.
 	 * @param torrents The last of retrieved torrents
 	 */
@@ -150,8 +153,8 @@ public class DetailsFragment extends SherlockFragment {
 	public void clear() {
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));
 		detailsList.setVisibility(View.GONE);
-		emptyText.setVisibility(!isLoadingTorrent? View.VISIBLE: View.GONE);
-		loadingProgress.setVisibility(isLoadingTorrent? View.VISIBLE: View.GONE);
+		emptyText.setVisibility(!isLoadingTorrent ? View.VISIBLE : View.GONE);
+		loadingProgress.setVisibility(isLoadingTorrent ? View.VISIBLE : View.GONE);
 		// Note: this.torrent is not cleared as we need to know later what the fragment was originally bound to
 		torrentDetails = null;
 		torrentFiles = null;
@@ -170,7 +173,7 @@ public class DetailsFragment extends SherlockFragment {
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		
+
 		if (torrent == null) {
 			menu.findItem(R.id.action_resume).setVisible(false);
 			menu.findItem(R.id.action_pause).setVisible(false);
@@ -195,50 +198,50 @@ public class DetailsFragment extends SherlockFragment {
 		menu.findItem(R.id.action_setlabel).setVisible(setLabel);
 		boolean setTrackers = Daemon.supportsSetTrackers(torrent.getDaemon());
 		menu.findItem(R.id.action_updatetrackers).setVisible(setTrackers);
-		
+
 	}
 
-	@OptionsItem(resName="action_resume")
+	@OptionsItem(resName = "action_resume")
 	protected void resumeTorrent() {
 		getTasksExecutor().resumeTorrent(torrent);
 	}
 
-	@OptionsItem(resName="action_pause")
+	@OptionsItem(resName = "action_pause")
 	protected void pauseTorrent() {
 		getTasksExecutor().pauseTorrent(torrent);
 	}
 
-	@OptionsItem(resName="action_start_default")
+	@OptionsItem(resName = "action_start_default")
 	protected void startTorrentDefault() {
 		getTasksExecutor().startTorrent(torrent, false);
 	}
 
-	@OptionsItem(resName="action_start_forced")
+	@OptionsItem(resName = "action_start_forced")
 	protected void startTorrentForced() {
 		getTasksExecutor().startTorrent(torrent, true);
 	}
 
-	@OptionsItem(resName="action_stop")
+	@OptionsItem(resName = "action_stop")
 	protected void stopTorrent() {
 		getTasksExecutor().stopTorrent(torrent);
 	}
 
-	@OptionsItem(resName="action_remove_default")
+	@OptionsItem(resName = "action_remove_default")
 	protected void removeTorrentDefault() {
 		getTasksExecutor().removeTorrent(torrent, false);
 	}
 
-	@OptionsItem(resName="action_remove_withdata")
+	@OptionsItem(resName = "action_remove_withdata")
 	protected void removeTorrentWithData() {
 		getTasksExecutor().removeTorrent(torrent, true);
 	}
 
-	@OptionsItem(resName="action_setlabel")
+	@OptionsItem(resName = "action_setlabel")
 	protected void setLabel() {
 		// TODO: Show label selection dialog
 	}
 
-	@OptionsItem(resName="action_updatetrackers")
+	@OptionsItem(resName = "action_updatetrackers")
 	protected void updateTrackers() {
 		// TODO: Show trackers edit dialog
 	}
@@ -269,8 +272,8 @@ public class DetailsFragment extends SherlockFragment {
 				// TODO: Start FTP download command for the selected torrents
 				Crouton.showText(getActivity(), "TODO: Start FTP download command for the selected torrents",
 						NavigationHelper.CROUTON_INFO_STYLE);
-				//for (TorrentFile file : checked) {
-				//}
+				// for (TorrentFile file : checked) {
+				// }
 				mode.finish();
 				return true;
 			} else {
@@ -297,7 +300,8 @@ public class DetailsFragment extends SherlockFragment {
 						&& detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)) instanceof TorrentFile)
 					checkedCount++;
 			}
-			mode.setTitle(getResources().getQuantityString(R.plurals.navigation_filesselected, checkedCount, checkedCount));
+			mode.setTitle(getResources().getQuantityString(R.plurals.navigation_filesselected, checkedCount,
+					checkedCount));
 		}
 
 		@Override
@@ -319,5 +323,5 @@ public class DetailsFragment extends SherlockFragment {
 		// NOTE: Assumes the activity implements all the required torrent tasks
 		return (TorrentTasksExecutor) getActivity();
 	}
-	
+
 }

@@ -83,6 +83,13 @@ import com.actionbarsherlock.widget.SearchView;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
+/**
+ * Main activity that holds the fragment that shows the torrents list, presents a way to filter the list (via an action
+ * bar spinner or list side list) and potentially shows a torrent details fragment too, if there is room. Task execution
+ * such as loading of and adding torrents is performs in this activity, using background methods. Finally, the activity
+ * offers navigation elements such as access to settings and showing connection issues.
+ * @author Eric Kok
+ */
 @EActivity(resName = "activity_torrents")
 @OptionsMenu(resName = "activity_torrents")
 public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor {
@@ -700,8 +707,9 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	public void removeTorrent(Torrent torrent, boolean withData) {
 		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(withData ? R.string.result_removed_with_data
-					: R.string.result_removed, torrent.getName()));
+			onTaskSucceeded(
+					(DaemonTaskSuccessResult) result,
+					getString(withData ? R.string.result_removed_with_data : R.string.result_removed, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}

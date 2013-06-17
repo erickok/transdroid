@@ -52,6 +52,12 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
+/**
+ * An activity that holds a single torrents details fragment. It is used on devices (i.e. phones) where there is no room
+ * to show details in the {@link TorrentsActivity} directly. Task execution, such as loading of more details and
+ * updating file priorities, is performed in this activity via background methods.
+ * @author Eric Kok
+ */
 @EActivity(resName = "activity_details")
 @OptionsMenu(resName = "activity_details")
 public class DetailsActivity extends SherlockFragmentActivity implements TorrentTasksExecutor {
