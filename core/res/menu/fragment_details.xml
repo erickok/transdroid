@@ -42,6 +42,7 @@
 		android:title="@string/action_setlabel" />
 	<item
 		android:id="@+id/action_updatetrackers"
+		android:icon="?attr/ic_action_trackers"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_updatetrackers" />
 

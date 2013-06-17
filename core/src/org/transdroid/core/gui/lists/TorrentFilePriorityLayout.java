@@ -9,10 +9,16 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import fr.marvinlabs.widget.CheckableRelativeLayout;
 
+/**
+ * A relative layout that that is checkable (to be used in a contextual action bar) and shows a coloured bar in the far
+ * left indicating the priority of the represented file. The darker the green, the higher the priority, while grey means
+ * the file isn't downloaded at all.
+ * @author Eric Kok
+ */
 public class TorrentFilePriorityLayout extends CheckableRelativeLayout {
 
 	private final float scale = getContext().getResources().getDisplayMetrics().density;
-	private final int WIDTH = (int) (5 * scale + 0.5f);
+	private final int WIDTH = (int) (6 * scale + 0.5f);
 
 	private Priority priority = null;
 	private final Paint offPaint = new Paint();
@@ -34,10 +40,10 @@ public class TorrentFilePriorityLayout extends CheckableRelativeLayout {
 	}
 
 	private void initPaints() {
-		offPaint.setColor(0xFF9E9E9E);		// Grey
-		lowPaint.setColor(0x778ACC12);		// Very Light green
-		normalPaint.setColor(0xBB8ACC12);		// Light green
-		highPaint.setColor(0xFF8ACC12);			// Green
+		offPaint.setColor(0xFF9E9E9E); // Grey
+		lowPaint.setColor(0xFFC8E88E); // Light green
+		normalPaint.setColor(0xFF8ACC12); // Normal green
+		highPaint.setColor(0xFF4B6617); // Dark green
 	}
 
 	public void setPriority(Priority priority) {
@@ -56,7 +62,7 @@ public class TorrentFilePriorityLayout extends CheckableRelativeLayout {
 		if (priority == null) {
 			return;
 		}
-		
+
 		switch (priority) {
 		case Low:
 			canvas.drawRect(fullRect, lowPaint);

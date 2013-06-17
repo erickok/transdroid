@@ -305,7 +305,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 				navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
 
 			// Clear the currently shown list of torrents and perhaps the details
-			fragmentTorrents.clear();
+			fragmentTorrents.clear(true);
 			if (fragmentDetails != null && fragmentDetails.getActivity() != null) {
 				fragmentDetails.clear();
 			}
@@ -701,7 +701,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute();
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(withData ? R.string.result_removed_with_data
-					: R.string.result_removed));
+					: R.string.result_removed, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}

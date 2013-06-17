@@ -9,6 +9,10 @@
 		<item name="ic_action_labels">@drawable/ic_action_labels_light</item>
 		<item name="ic_action_new">@drawable/ic_action_new_light</item>
 		<item name="ic_action_pause">@drawable/ic_action_pause_light</item>
+		<item name="ic_action_priority_off">@drawable/ic_action_priority_off_light</item>
+		<item name="ic_action_priority_low">@drawable/ic_action_priority_low_light</item>
+		<item name="ic_action_priority_normal">@drawable/ic_action_priority_normal_light</item>
+		<item name="ic_action_priority_high">@drawable/ic_action_priority_high_light</item>
 		<item name="ic_action_refresh">@drawable/ic_action_refresh_light</item>
 		<item name="ic_action_remove">@drawable/ic_action_remove_light</item>
 		<item name="ic_action_resume">@drawable/ic_action_resume_light</item>
@@ -17,6 +21,7 @@
 		<item name="ic_action_sort_by_size">@drawable/ic_action_sort_by_size_light</item>
 		<item name="ic_action_start">@drawable/ic_action_start_light</item>
 		<item name="ic_action_stop">@drawable/ic_action_stop_light</item>
+		<item name="ic_action_trackers">@drawable/ic_action_trackers_light</item>
 		<item name="ic_action_website">@drawable/ic_action_website_light</item>
 		<item name="loading_progress">@drawable/loading_progress_light</item>
 		<item name="selectable_background_transdroid">@drawable/selectable_background_transdroid2</item>
@@ -33,6 +38,10 @@
 		<item name="ic_action_labels">@drawable/ic_action_labels_dark</item>
 		<item name="ic_action_new">@drawable/ic_action_new_dark</item>
 		<item name="ic_action_pause">@drawable/ic_action_pause_dark</item>
+		<item name="ic_action_priority_off">@drawable/ic_action_priority_off_dark</item>
+		<item name="ic_action_priority_low">@drawable/ic_action_priority_low_dark</item>
+		<item name="ic_action_priority_normal">@drawable/ic_action_priority_normal_dark</item>
+		<item name="ic_action_priority_high">@drawable/ic_action_priority_high_dark</item>
 		<item name="ic_action_refresh">@drawable/ic_action_refresh_dark</item>
 		<item name="ic_action_remove">@drawable/ic_action_remove_dark</item>
 		<item name="ic_action_resume">@drawable/ic_action_resume_dark</item>
@@ -41,6 +50,7 @@
 		<item name="ic_action_sort_by_size">@drawable/ic_action_sort_by_size_dark</item>
 		<item name="ic_action_start">@drawable/ic_action_start_dark</item>
 		<item name="ic_action_stop">@drawable/ic_action_stop_dark</item>
+		<item name="ic_action_trackers">@drawable/ic_action_trackers_dark</item>
 		<item name="ic_action_website">@drawable/ic_action_website_dark</item>
 		<item name="loading_progress">@drawable/loading_progress_light</item>
 		<item name="selectable_background_transdroid">@drawable/selectable_background_transdroid</item>

@@ -274,9 +274,13 @@ public class DetailsFragment extends SherlockFragment {
 				mode.finish();
 				return true;
 			} else {
-				Priority priority = Priority.Normal;
+				Priority priority = Priority.Off;
 				if (itemId == R.id.action_priority_low)
 					priority = Priority.Low;
+				if (itemId == R.id.action_priority_normal)
+					priority = Priority.Normal;
+				if (itemId == R.id.action_priority_high)
+					priority = Priority.High;
 				getTasksExecutor().updatePriority(torrent, checked, priority);
 				mode.finish();
 				return true;

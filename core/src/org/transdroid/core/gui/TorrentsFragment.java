@@ -95,10 +95,12 @@ public class TorrentsFragment extends SherlockFragment {
 
 	/**
 	 * Clears the currently visible list of torrents.
+	 * @param b 
 	 */
-	public void clear() {
+	public void clear(boolean clearError) {
 		this.torrents = null;
-		this.connectionErrorMessage = null;
+		if (clearError)
+			this.connectionErrorMessage = null;
 		this.currentTextFilter = null;
 		this.currentNavigationFilter = null;
 		applyAllFilters();
@@ -264,7 +266,7 @@ public class TorrentsFragment extends SherlockFragment {
 	public void updateConnectionStatus(boolean hasAConnection) {
 		this.hasAConnection = hasAConnection;
 		if (!hasAConnection) {
-			clear(); // Indirectly also calls updateViewVisibility()
+			clear(true); // Indirectly also calls updateViewVisibility()
 		} else {
 			updateViewVisibility();
 		}
@@ -278,7 +280,7 @@ public class TorrentsFragment extends SherlockFragment {
 	public void updateIsLoading(boolean isLoading) {
 		this.isLoading = isLoading;
 		if (isLoading) {
-			clear(); // Indirectly also calls updateViewVisibility()
+			clear(true); // Indirectly also calls updateViewVisibility()
 		} else {
 			updateViewVisibility();
 		}
@@ -294,7 +296,7 @@ public class TorrentsFragment extends SherlockFragment {
 		this.connectionErrorMessage = connectionErrorMessage;
 		errorText.setText(connectionErrorMessage);
 		if (connectionErrorMessage != null) {
-			clear(); // Indirectly also calls updateViewVisibility()
+			clear(false); // Indirectly also calls updateViewVisibility()
 		} else {
 			updateViewVisibility();
 		}

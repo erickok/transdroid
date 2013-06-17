@@ -217,7 +217,7 @@ public enum Daemon {
         		return 80;
         	}
         case Deluge:
-        	return 8112;
+       		return 8112;
         case Transmission:
         	return 9091;
         case Bitflu:

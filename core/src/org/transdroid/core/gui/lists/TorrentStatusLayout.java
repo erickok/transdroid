@@ -9,10 +9,16 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import fr.marvinlabs.widget.CheckableRelativeLayout;
 
+/**
+ * A relative layout that is checkable (to be used in a contextual action bar) and shows a coloured bar in the far left
+ * indicating the status of the represented torrent. Active downloads are blue, seeding torrents are green, errors are
+ * red, etc.
+ * @author Eric Kok
+ */
 public class TorrentStatusLayout extends CheckableRelativeLayout {
 
 	private final float scale = getContext().getResources().getDisplayMetrics().density;
-	private final int WIDTH = (int) (5 * scale + 0.5f);
+	private final int WIDTH = (int) (6 * scale + 0.5f);
 
 	private TorrentStatus status = null;
 	private final Paint inactiveDonePaint = new Paint();
@@ -42,6 +48,11 @@ public class TorrentStatusLayout extends CheckableRelativeLayout {
 		errorPaint.setColor(0xFFDE3939);		// Red
 	}
 
+	/**
+	 * Registers the status of the represented torrent and invalidates the view so the status colour will be updated
+	 * accordingly.
+	 * @param status
+	 */
 	public void setStatus(TorrentStatus status) {
 		this.status = status;
 		this.invalidate();
