@@ -101,6 +101,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected SherlockListView filtersList;
 	protected FilterListAdapter navigationListAdapter = null;
 	protected FilterListDropDownAdapter navigationSpinnerAdapter = null;
+	protected ServerStatusView serverStatusView;
 	@SystemService
 	protected SearchManager searchManager;
 
@@ -135,10 +136,14 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@AfterViews
 	protected void init() {
 
-		// Set up navigation, with an action bar spinner and possibly (if room) with a filter list
+		// Set up navigation, with an action bar spinner, server status indicator and possibly (if room) with a filter
+		// list
+		serverStatusView = ServerStatusView_.build(this);
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		getSupportActionBar().setHomeButtonEnabled(false);
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
+		getSupportActionBar().setDisplayShowCustomEnabled(true);
+		getSupportActionBar().setCustomView(serverStatusView);
 		navigationSpinnerAdapter = FilterListDropDownAdapter_.getInstance_(this);
 		// Servers are always added to the action bar spinner
 		navigationSpinnerAdapter.updateServers(applicationSettings.getServerSettings());
@@ -780,13 +785,16 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
+		
 		// Report the newly retrieved list of torrents to the torrents fragment
 		fragmentTorrents.updateIsLoading(false);
 		fragmentTorrents.updateTorrents(new ArrayList<Torrent>(torrents));
+		
 		// Update the details fragment if the currently shown torrent is in the newly retrieved list
 		if (fragmentDetails != null) {
 			fragmentDetails.perhapsUpdateTorrent(torrents);
 		}
+		
 		// Update local list of labels in the navigation
 		List<Label> navigationLabels = Label.convertToNavigationLabels(labels,
 				getResources().getString(R.string.labels_unlabeled));
@@ -797,6 +805,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Labels are shown in the action bar spinner
 			navigationSpinnerAdapter.updateLabels(navigationLabels);
 		}
+		
+		// Update the server status (counts and speeds) in the action bar
+		serverStatusView.update(torrents);
+		
 	}
 
 	@UiThread

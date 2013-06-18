@@ -14,14 +14,14 @@
 	<dimen name="text_label">12sp</dimen>
 	
 	<!-- UI elements -->
-	<dimen name="ui_navigation_filter">17sp</dimen>
-	<dimen name="ui_navigation_server">14sp</dimen>
+	<dimen name="ui_navigation_filter">15sp</dimen>
+	<dimen name="ui_navigation_server">12sp</dimen>
 	<dimen name="ui_details_seperator">110dp</dimen>
-	<dimen name="ui_serverstatus_margin">2dp</dimen>
-	<dimen name="ui_serverstatus_signmargin">3dp</dimen>
-	<dimen name="ui_serverstatus_bignumber">21sp</dimen>
-	<dimen name="ui_serverstatus_sign">15sp</dimen>
-	<dimen name="ui_serverstatus_smallnumber">13sp</dimen>
+	<dimen name="ui_serverstatus_margin">1dp</dimen>
+	<dimen name="ui_serverstatus_signmargin">2dp</dimen>
+	<dimen name="ui_serverstatus_bignumber">19sp</dimen>
+	<dimen name="ui_serverstatus_sign">12sp</dimen>
+	<dimen name="ui_serverstatus_smallnumber">12sp</dimen>
 	<dimen name="ui_serverstatus_width">53dp</dimen>
 	
 </resources>

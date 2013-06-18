@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="?attr/actionBarSize"
+	android:layout_marginRight="@dimen/margin_default"
+	android:layout_marginTop="@dimen/ui_serverstatus_margin"
+	android:background="?attr/selectable_background_transdroid"
+	android:clickable="true"
+	android:focusable="true" >
+
+	<TextView
+		android:id="@+id/upcount_sign"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:fontFamily="sans-serif-light"
+		android:paddingTop="@dimen/ui_serverstatus_signmargin"
+		android:text="↑"
+		android:textColor="?attr/text_bright"
+		android:textSize="@dimen/ui_serverstatus_sign"
+		android:visibility="invisible"
+		tools:ignore="HardcodedText" />
+
+	<TextView
+		android:id="@+id/upcount_text"
+		android:layout_width="@dimen/ui_serverstatus_width"
+		android:layout_height="wrap_content"
+		android:layout_toLeftOf="@id/upcount_sign"
+		android:fontFamily="sans-serif-light"
+		android:gravity="end"
+		android:textColor="?attr/text_bright"
+		android:textSize="@dimen/ui_serverstatus_bignumber" />
+
+	<TextView
+		android:id="@+id/downcount_sign"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toLeftOf="@id/upcount_text"
+		android:fontFamily="sans-serif-light"
+		android:paddingTop="@dimen/ui_serverstatus_signmargin"
+		android:text="↓"
+		android:textColor="?attr/text_bright"
+		android:textSize="@dimen/ui_serverstatus_sign"
+		android:visibility="invisible"
+		tools:ignore="HardcodedText" />
+
+	<TextView
+		android:id="@+id/downcount_text"
+		android:layout_width="@dimen/ui_serverstatus_width"
+		android:layout_height="wrap_content"
+		android:layout_toLeftOf="@id/downcount_sign"
+		android:fontFamily="sans-serif-light"
+		android:gravity="end"
+		android:textColor="?attr/text_bright"
+		android:textSize="@dimen/ui_serverstatus_bignumber" />
+
+	<TextView
+		android:id="@+id/upspeed_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@id/upcount_text"
+		android:layout_alignParentRight="true"
+		android:layout_below="@id/upcount_text"
+		android:layout_marginTop="-4dip"
+		android:fontFamily="sans-serif-light"
+		android:gravity="end"
+		android:textColor="?attr/text_bright"
+		android:textSize="@dimen/ui_serverstatus_smallnumber" />
+
+	<TextView
+		android:id="@+id/downspeed_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@id/downcount_text"
+		android:layout_alignRight="@id/downcount_sign"
+		android:layout_below="@id/downcount_text"
+		android:layout_marginTop="-4dip"
+		android:fontFamily="sans-serif-light"
+		android:gravity="end"
+		android:textColor="?attr/text_bright"
+		android:textSize="@dimen/ui_serverstatus_smallnumber" />
+
+</RelativeLayout>
