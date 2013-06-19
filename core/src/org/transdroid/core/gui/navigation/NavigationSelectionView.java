@@ -11,7 +11,7 @@ import android.widget.TextView;
  * View that displays the user-selected server and display filter inside the action bar list navigation spinner
  * @author Eric Kok
  */
-@EViewGroup(resName="list_item_navigation")
+@EViewGroup(resName="actionbar_navigation")
 public class NavigationSelectionView extends LinearLayout {
 
 	@ViewById

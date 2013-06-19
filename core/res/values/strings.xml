@@ -70,11 +70,12 @@
 	<string name="status_sincedate">SINCE %1$s</string>
 	<string name="status_eta">~ %1$s</string>
 	<string name="status_etalong">ETA %1$s</string>
+	<string name="status_ofsize">OF %1$s</string>
 	<string name="status_unknowneta">UNKNOWN ETA</string>
 	<string name="status_ratio">RATIO %1$s</string>
 	<string name="status_peers">%1$s OF %2$s PEERS</string>
 	<string name="status_speed_up" translatable="false">↑ %1$s</string>
-	<string name="status_speed_down" translatable="false">↓ %1$s</string>
+	<string name="status_speed_down" translatable="false">%1$s ↓</string>
 	<string name="status_downloading">Downloading</string>
 	<string name="status_seeding">Seeding</string>
 	<string name="status_paused">Paused</string>

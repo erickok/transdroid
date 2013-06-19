@@ -1,35 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.transdroid.core.gui.lists.TorrentFilePriorityLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content" 
-	android:orientation="vertical" 
-	android:paddingTop="@dimen/margin_half"
+<org.transdroid.core.gui.lists.TorrentFilePriorityLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:background="?attr/selectable_background_transdroid"
+	android:orientation="vertical"
 	android:paddingBottom="@dimen/margin_half"
 	android:paddingLeft="@dimen/margin_default"
 	android:paddingRight="@dimen/margin_default"
-	android:background="?attr/selectable_background_transdroid">
-	
+	android:paddingTop="@dimen/margin_half" >
+
 	<TextView
 		android:id="@+id/name_text"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:fontFamily="sans-serif-condensed"
 		android:textColor="?attr/text_bright"
-		android:textSize="@dimen/text_enlarged"
 		android:textIsSelectable="false"
-		android:focusable="false" />
-		
+		android:textSize="@dimen/text_enlarged" />
+
 	<TextView
 		android:id="@+id/progress_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/name_text"
 		android:layout_alignParentRight="true"
+		android:layout_below="@id/name_text"
 		android:layout_marginLeft="@dimen/margin_half"
 		android:layout_marginTop="4dip"
-		android:textSize="@dimen/text_small"
 		android:textIsSelectable="false"
-		android:focusable="false" />
+		android:textSize="@dimen/text_small" />
 
 	<TextView
 		android:id="@+id/sizes_text"
@@ -37,7 +35,6 @@
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@+id/progress_text"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small"
-		android:focusable="false" />
-	
+		android:textSize="@dimen/text_small" />
+
 </org.transdroid.core.gui.lists.TorrentFilePriorityLayout>

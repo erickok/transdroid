@@ -8,6 +8,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.TypefaceSpan;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -76,6 +79,18 @@ public class NavigationHelper {
 	 */
 	public boolean enableRssUi() {
 		return !context.getPackageName().equals("org.transdroid.lite");
+	}
+
+	/**
+	 * Converts a string into a {@link Spannable} that displays the string in the Roboto Condensed font
+	 * @param string A plain text {@link String}
+	 * @return A {@link Spannable} that can be applied to supporting views (such as the action bar title) so that the
+	 *         input string will be displayed using the Roboto Condensed font (if the OS has this)
+	 */
+	public static SpannableString buildCondensedFontString(String string) {
+		SpannableString s = new SpannableString(string);
+		s.setSpan(new TypefaceSpan("sans-serif-condensed"), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		return s;
 	}
 
 }

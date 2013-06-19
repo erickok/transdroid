@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.transdroid.core.gui.lists.TorrentStatusLayout 
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<org.transdroid.core.gui.lists.TorrentStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
+	android:background="?attr/selectable_background_transdroid"
 	android:orientation="vertical"
-	android:paddingRight="@dimen/margin_default"
-	android:background="?attr/selectable_background_transdroid" >
+	android:paddingRight="@dimen/margin_default" >
 
 	<TextView
 		android:id="@+id/name_text"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="@dimen/margin_torrentlistleft"
+		android:fontFamily="sans-serif-condensed"
 		android:paddingTop="@dimen/margin_half"
 		android:textColor="?attr/text_bright"
 		android:textIsSelectable="false"

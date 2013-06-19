@@ -1,22 +1,8 @@
 <resources>
 
-	<!-- Margins -->
-	<dimen name="margin_default">16dp</dimen>
-	<dimen name="margin_half">8dp</dimen>
-	<dimen name="margin_torrentlistleft">16dp</dimen>
-
-	<!-- Text sizes -->
-	<dimen name="text_small">12sp</dimen>
-	<dimen name="text_default">15sp</dimen>
-	<dimen name="text_enlarged">15sp</dimen>
-	<dimen name="text_enlargednumbers">22sp</dimen>
-	<dimen name="text_hugenumbers">33sp</dimen>
-	<dimen name="text_label">12sp</dimen>
-	
 	<!-- UI elements -->
 	<dimen name="ui_navigation_filter">15sp</dimen>
 	<dimen name="ui_navigation_server">12sp</dimen>
-	<dimen name="ui_details_seperator">110dp</dimen>
 	<dimen name="ui_serverstatus_margin">1dp</dimen>
 	<dimen name="ui_serverstatus_signmargin">2dp</dimen>
 	<dimen name="ui_serverstatus_bignumber">19sp</dimen>

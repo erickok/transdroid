@@ -24,6 +24,8 @@ public class TorrentDetailsView extends RelativeLayout {
 	@ViewById
 	protected TextView labelText, dateaddedText, uploadedText, uploadedunitText, ratioText, upspeedText, seedersText,
 			downloadedunitText, downloadedText, totalsizeText, downspeedText, leechersText, statusText;
+	@ViewById
+	protected TorrentStatusLayout statusLayout;
 
 	public TorrentDetailsView(Context context) {
 		super(context);
@@ -64,6 +66,7 @@ public class TorrentDetailsView extends RelativeLayout {
 			dateaddedText.setVisibility(View.INVISIBLE);
 		}
 		
+		statusLayout.setStatus(torrent.getStatusCode());
 		statusText.setText(getResources().getString(R.string.status_status, local.getProgressStatusEta(getResources())));
 		ratioText.setText(getResources().getString(R.string.status_ratio, local.getRatioString()));
 		// TODO: Implement separate numbers of seeders and leechers
@@ -75,7 +78,8 @@ public class TorrentDetailsView extends RelativeLayout {
 		// TODO: Add field that displays availability
 
 		// Sizes and speeds texts
-		totalsizeText.setText(FileSizeConverter.getSize(torrent.getTotalSize()));
+		totalsizeText.setText(getResources().getString(R.string.status_ofsize,
+				FileSizeConverter.getSize(torrent.getTotalSize())));
 		downloadedText.setText(FileSizeConverter.getSize(torrent.getDownloadedEver(), false));
 		downloadedunitText.setText(FileSizeConverter.getSizeUnit(torrent.getDownloadedEver()).toString());
 		uploadedText.setText(FileSizeConverter.getSize(torrent.getUploadedEver(), false));

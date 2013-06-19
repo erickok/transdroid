@@ -3,18 +3,16 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="?attr/actionBarSize"
-	android:layout_marginRight="@dimen/margin_default"
-	android:layout_marginTop="@dimen/ui_serverstatus_margin"
+	android:paddingRight="@dimen/margin_default"
+	android:paddingTop="@dimen/ui_serverstatus_margin"
 	android:background="?attr/selectable_background_transdroid"
-	android:clickable="true"
-	android:focusable="true" >
+	android:clickable="true" >
 
 	<TextView
 		android:id="@+id/upcount_sign"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentRight="true"
-		android:fontFamily="sans-serif-light"
 		android:paddingTop="@dimen/ui_serverstatus_signmargin"
 		android:text="↑"
 		android:textColor="?attr/text_bright"
@@ -27,7 +25,6 @@
 		android:layout_width="@dimen/ui_serverstatus_width"
 		android:layout_height="wrap_content"
 		android:layout_toLeftOf="@id/upcount_sign"
-		android:fontFamily="sans-serif-light"
 		android:gravity="end"
 		android:textColor="?attr/text_bright"
 		android:textSize="@dimen/ui_serverstatus_bignumber" />
@@ -37,7 +34,6 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_toLeftOf="@id/upcount_text"
-		android:fontFamily="sans-serif-light"
 		android:paddingTop="@dimen/ui_serverstatus_signmargin"
 		android:text="↓"
 		android:textColor="?attr/text_bright"
@@ -50,7 +46,6 @@
 		android:layout_width="@dimen/ui_serverstatus_width"
 		android:layout_height="wrap_content"
 		android:layout_toLeftOf="@id/downcount_sign"
-		android:fontFamily="sans-serif-light"
 		android:gravity="end"
 		android:textColor="?attr/text_bright"
 		android:textSize="@dimen/ui_serverstatus_bignumber" />
@@ -63,7 +58,6 @@
 		android:layout_alignParentRight="true"
 		android:layout_below="@id/upcount_text"
 		android:layout_marginTop="-4dip"
-		android:fontFamily="sans-serif-light"
 		android:gravity="end"
 		android:textColor="?attr/text_bright"
 		android:textSize="@dimen/ui_serverstatus_smallnumber" />
@@ -76,7 +70,6 @@
 		android:layout_alignRight="@id/downcount_sign"
 		android:layout_below="@id/downcount_text"
 		android:layout_marginTop="-4dip"
-		android:fontFamily="sans-serif-light"
 		android:gravity="end"
 		android:textColor="?attr/text_bright"
 		android:textSize="@dimen/ui_serverstatus_smallnumber" />

@@ -98,7 +98,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 		// Simple action bar with up, torrent name as title and refresh button
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setTitle(torrent.getName());
+		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
 
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
