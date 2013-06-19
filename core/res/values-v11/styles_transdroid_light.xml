@@ -17,34 +17,26 @@
      limitations under the License.
 -->
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.Transdroid.Light" parent="@style/Theme.Sherlock.Light">
         <item name="android:popupMenuStyle">@style/PopupMenu.Transdroid2</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Transdroid2</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Transdroid2</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav.Transdroid2</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Solid.Transdroid2</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Transdroid.Light</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Transdroid.Light</item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.Transdroid.Light</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Transdroid.Light</item>
         <item name="android:actionModeBackground">@drawable/cab_background_top_transdroid2</item>
-        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Transdroid2</item>
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Transdroid.Light</item>
         
         
     </style>
 
-    <style name="ActionBar.Solid.Transdroid2" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
+    <style name="ActionBar.Solid.Transdroid.Light" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
         <item name="android:background">@drawable/ab_solid_transdroid2</item>
-        <item name="android:progressBarStyle">@style/ProgressBar.Transdroid2</item>
     </style>
 
-    <style name="ActionBar.Transparent.Transdroid2" parent="@style/Widget.Sherlock.Light.ActionBar">
+    <style name="ActionBar.Transparent.Transdroid.Light" parent="@style/Widget.Sherlock.Light.ActionBar">
         <item name="android:background">@drawable/ab_transparent_transdroid2</item>
-        <item name="android:progressBarStyle">@style/ProgressBar.Transdroid2</item>
     </style>
     
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.Transdroid2.Widget" parent="@style/Theme.Sherlock">
-        <item name="android:popupMenuStyle">@style/PopupMenu.Transdroid2</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Transdroid2</item>
-    </style>
-
 </resources>

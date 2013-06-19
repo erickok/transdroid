@@ -1,5 +1,15 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <style name="PopupMenu.Transdroid2" parent="@style/Widget.Sherlock.Light.ListPopupWindow">	
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid2</item>
+		<item name="android:fontFamily">sans-serif</item>
+    </style>
+	
+    <style name="PopupMenu.Transdroid.Dark" parent="@style/Widget.Sherlock.ListPopupWindow">	
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid</item>
+		<item name="android:fontFamily">sans-serif</item>
+    </style>
+	
 	<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->
 	<style name="SectionHeader" parent="android:Widget.Holo.Light.TextView">
 		<item name="android:drawableBottom">@drawable/section_header</item>
@@ -13,7 +23,6 @@
 	
 	<style name="DefaultTextView" parent="android:Widget.Holo.Light.TextView">
 		<item name="android:textSize">@dimen/text_default</item>
-		<item name="android:fontFamily">sans-serif-light</item>
 	</style>
 
 	<style name="LabelTextView" parent="android:Widget.Holo.Light.TextView">

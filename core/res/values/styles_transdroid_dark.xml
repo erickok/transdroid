@@ -20,46 +20,36 @@
 
     <style name="Theme.Transdroid.Dark" parent="@style/Theme.Sherlock">
         <item name="actionBarItemBackground">@drawable/selectable_background_transdroid</item>
-        <item name="popupMenuStyle">@style/transdroid_PopupMenu</item>
-        <item name="dropDownListViewStyle">@style/transdroid_DropDownListView</item>
-        <item name="actionBarTabStyle">@style/transdroid_ActionBarTabStyle</item>
-        <item name="actionDropDownStyle">@style/transdroid_DropDownNav</item>
-        <item name="actionBarStyle">@style/transdroid_solid_ActionBar</item>
+        <item name="popupMenuStyle">@style/PopupMenu.Transdroid.Dark</item>
+        <item name="dropDownListViewStyle">@style/DropDownListView.Transdroid.Dark</item>
+        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Transdroid.Dark</item>
+        <item name="actionDropDownStyle">@style/DropDownNav.Transdroid.Dark</item>
+        <item name="actionBarStyle">@style/ActionBar.Solid.Transdroid.Dark</item>
     </style>
 
-    <style name="transdroid_solid_ActionBar" parent="@style/Widget.Sherlock.ActionBar.Solid">
+    <style name="ActionBar.Solid.Transdroid.Dark" parent="@style/Widget.Sherlock.ActionBar.Solid">
         <item name="background">@drawable/ab_solid_transdroid</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_transdroid</item>
         <item name="backgroundSplit">@drawable/ab_bottom_solid_transdroid</item>
-        <item name="progressBarStyle">@style/transdroid_ProgressBar</item>
 
         <item name="android:background">@drawable/ab_solid_transdroid</item>
-        <item name="android:progressBarStyle">@style/transdroid_ProgressBar</item>
     </style>
 
-    <style name="transdroid_transparent_ActionBar" parent="@style/Widget.Sherlock.ActionBar">
-        <item name="background">@drawable/ab_transparent_transdroid</item>
-        <item name="progressBarStyle">@style/transdroid_ProgressBar</item>
-        
-        <item name="android:background">@drawable/ab_transparent_transdroid</item>
-        <item name="android:progressBarStyle">@style/transdroid_ProgressBar</item>
-    </style>
-	
-    <style name="transdroid_PopupMenu" parent="@style/Widget.Sherlock.ListPopupWindow">	
+    <style name="PopupMenu.Transdroid.Dark" parent="@style/Widget.Sherlock.ListPopupWindow">	
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid</item>	
     </style>
 	
-    <style name="transdroid_DropDownListView" parent="@style/Widget.Sherlock.ListView.DropDown">
+    <style name="DropDownListView.Transdroid.Dark" parent="@style/Widget.Sherlock.ListView.DropDown">
         <item name="android:listSelector">@drawable/selectable_background_transdroid</item>
     </style>
 
-    <style name="transdroid_ActionBarTabStyle" parent="@style/Widget.Sherlock.ActionBar.TabView">
+    <style name="ActionBarTabStyle.Transdroid.Dark" parent="@style/Widget.Sherlock.ActionBar.TabView">
         <item name="background">@drawable/tab_indicator_ab_transdroid</item>
 
         <item name="android:background">@drawable/tab_indicator_ab_transdroid</item>
     </style>
 	
-    <style name="transdroid_DropDownNav" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
+    <style name="DropDownNav.Transdroid.Dark" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
         <item name="background">@drawable/spinner_background_ab_transdroid</item>
 
         <item name="android:background">@drawable/spinner_background_ab_transdroid</item>
@@ -67,16 +57,4 @@
         <item name="android:dropDownSelector">@drawable/selectable_background_transdroid</item>
     </style>
     
-    <style name="transdroid_ProgressBar" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_horizontal_transdroid</item>
-    </style>
-    
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.transdroid.widget" parent="@style/Theme.Sherlock">
-        <item name="popupMenuStyle">@style/transdroid_PopupMenu</item>
-        <item name="dropDownListViewStyle">@style/transdroid_DropDownListView</item>
-        
-        <item name="android:dropDownListViewStyle">@style/transdroid_DropDownListView</item>
-    </style>
-
 </resources>
