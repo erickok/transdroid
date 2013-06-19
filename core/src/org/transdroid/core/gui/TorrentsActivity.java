@@ -205,6 +205,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		filterSelected(lastUsed, true);
 	}
 
+	@Override
+	protected void onDestroy() {
+		Crouton.cancelAllCroutons();
+		super.onDestroy();
+	}
+
 	@TargetApi(Build.VERSION_CODES.FROYO)
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

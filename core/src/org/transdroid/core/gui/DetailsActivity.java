@@ -108,6 +108,12 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		fragmentDetails.updateTorrent(torrent);
 
 	}
+	
+	@Override
+	protected void onDestroy() {
+		Crouton.cancelAllCroutons();
+		super.onDestroy();
+	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@OptionsItem(android.R.id.home)

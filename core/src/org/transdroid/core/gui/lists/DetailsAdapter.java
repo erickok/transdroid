@@ -37,26 +37,26 @@ public class DetailsAdapter extends MergeAdapter {
 		// Torrent details header
 		torrentDetailsView = TorrentDetailsView_.build(context);
 		torrentDetailsView.setVisibility(View.GONE);
-		addView(torrentDetailsView, true);
+		addView(torrentDetailsView, false);
 		
 		// Trackers
 		trackersSeparatorView = FilterSeparatorView_.build(context).setText(context.getString(R.string.status_trackers));
 		trackersSeparatorView.setVisibility(View.GONE);
-		addView(trackersSeparatorView, true);
+		addView(trackersSeparatorView, false);
 		this.trackersAdapter = new SimpleListItemAdapter(context, new ArrayList<SimpleListItem>());
 		addAdapter(trackersAdapter);
 		
 		// Tracker errors
 		errorsSeparatorView = FilterSeparatorView_.build(context).setText(context.getString(R.string.status_errors));
 		errorsSeparatorView.setVisibility(View.GONE);
-		addView(errorsSeparatorView, true);
+		addView(errorsSeparatorView, false);
 		this.errorsAdapter = new SimpleListItemAdapter(context, new ArrayList<SimpleListItem>());
 		addAdapter(errorsAdapter);
 		
 		// Torrent files
 		torrentFilesSeparatorView = FilterSeparatorView_.build(context).setText(context.getString(R.string.status_files));
 		torrentFilesSeparatorView.setVisibility(View.GONE);
-		addView(torrentFilesSeparatorView, true);
+		addView(torrentFilesSeparatorView, false);
 		this.torrentFilesAdapter = new TorrentFilesAdapter(context, new ArrayList<TorrentFile>());
 		addAdapter(torrentFilesAdapter);
 		
