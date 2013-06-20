@@ -23,6 +23,7 @@
 	
 	<style name="DefaultTextView" parent="android:Widget.Holo.Light.TextView">
 		<item name="android:textSize">@dimen/text_default</item>
+		<item name="android:fontFamily">sans-serif-light</item>
 	</style>
 
 	<style name="LabelTextView" parent="android:Widget.Holo.Light.TextView">

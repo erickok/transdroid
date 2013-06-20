@@ -17,6 +17,7 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.gui.lists.TorrentsAdapter;
 import org.transdroid.core.gui.lists.TorrentsAdapter_;
 import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.SelectionManagerMode;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentsComparator;
@@ -182,15 +183,23 @@ public class TorrentsFragment extends SherlockFragment {
 	}
 
 	private MultiChoiceModeListenerCompat onTorrentsSelected = new MultiChoiceModeListenerCompat() {
-
+		
+		SelectionManagerMode selectionManagerMode;
+		
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Show contextual action bar to start/stop/remove/etc. torrents in batch mode
 			mode.getMenuInflater().inflate(R.menu.fragment_torrents_cab, menu);
+			selectionManagerMode = new SelectionManagerMode(torrentsList, R.plurals.navigation_torrentsselected);
+			selectionManagerMode.onCreateActionMode(mode, menu);
 			return true;
 		}
 
 		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return selectionManagerMode.onPrepareActionMode(mode, menu);
+		}
+
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
 			// Get checked torrents
@@ -237,24 +246,12 @@ public class TorrentsFragment extends SherlockFragment {
 
 		@Override
 		public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-			// Show the number of selected torrents in the CAB
-			// torrentsList.getCheckedItemPositions().size() ?
-			int checkedCount = 0;
-			for (int i = 0; i < torrentsList.getCheckedItemPositions().size(); i++) {
-				if (torrentsList.getCheckedItemPositions().valueAt(i))
-					checkedCount++;
-			}
-			mode.setTitle(getResources().getQuantityString(R.plurals.navigation_torrentsselected, checkedCount,
-					checkedCount));
-		}
-
-		@Override
-		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-			return false;
+			selectionManagerMode.onItemCheckedStateChanged(mode, position, id, checked);
 		}
 
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
+			selectionManagerMode.onDestroyActionMode(mode);
 		}
 
 	};

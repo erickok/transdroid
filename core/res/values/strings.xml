@@ -59,6 +59,8 @@
 		<item quantity="one">%1$d files selected</item>
 		<item quantity="other">%1$d files selected</item>
 	</plurals>
+	<string name="navigation_selectall">Select all</string>
+	<string name="navigation_invertselection">Invert selection</string>
 	
 	<string name="status_status">STATUS: %1$s</string>
 	<string name="status_waiting">Waiting to check&#8230;</string>
