@@ -1,0 +1,13 @@
+<resources>
+
+	<!-- UI elements -->
+	<dimen name="ui_navigation_filter">15sp</dimen>
+	<dimen name="ui_navigation_server">12sp</dimen>
+	<dimen name="ui_serverstatus_margin">1dp</dimen>
+	<dimen name="ui_serverstatus_signmargin">2dp</dimen>
+	<dimen name="ui_serverstatus_bignumber">19sp</dimen>
+	<dimen name="ui_serverstatus_sign">12sp</dimen>
+	<dimen name="ui_serverstatus_smallnumber">12sp</dimen>
+	<dimen name="ui_serverstatus_width">53dp</dimen>
+	
+</resources>

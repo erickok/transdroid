@@ -214,7 +214,8 @@ public class BitfluAdapter implements IDaemonAdapter {
 						null,     // label
 						null,     // Not available
 						null,     // Not available
-						null));   // Not available
+						null,   // Not available
+						settings.getType()));
 			}
 		}
 		// Return the list

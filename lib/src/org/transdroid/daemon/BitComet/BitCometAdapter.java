@@ -480,7 +480,8 @@ public class BitCometAdapter implements IDaemonAdapter {
 							comment,
 							dateAdded,
 							null,
-							null));
+							null,
+							settings.getType()));
 				}
 			}
 		}
@@ -557,7 +558,8 @@ public class BitCometAdapter implements IDaemonAdapter {
 							label,
 							dateAdded,
 							null,
-							null)); // Not supported in the web interface
+							null, // Not supported in the web interface
+							settings.getType()));
 					
 					id++; // Stop/start/etc. requests are made by ID, which is the order number in the returned XML list :-S
 					
