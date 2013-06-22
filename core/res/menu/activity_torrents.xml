@@ -1,0 +1,66 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item
+		android:id="@+id/action_add"
+		android:icon="?attr/ic_action_new"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_add">
+		<menu>
+			<item android:id="@+id/action_add_fromurl" android:title="@string/action_addfromurl" />
+			<item android:id="@+id/action_add_fromfile" android:title="@string/action_addfromfile" />
+			<item android:id="@+id/action_add_frombarcode" android:title="@string/action_scanbarcode" />
+		</menu>
+	</item>
+	<item
+		android:id="@+id/action_search"
+		android:icon="?attr/ic_action_search"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_search"/>
+	<item
+		android:id="@+id/action_rss"
+		android:icon="?attr/ic_action_rss"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_rss"/>
+	<item
+		android:id="@+id/action_enableturtle"
+		android:icon="@drawable/ic_action_turtle_disabled"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_enableturtle"/>
+	<item
+		android:id="@+id/action_disableturtle"
+		android:showAsAction="ifRoom"
+		android:icon="@drawable/ic_action_turtle_enabled"
+		android:title="@string/action_disableturtle"/>
+	<item
+		android:id="@+id/action_refresh"
+		android:icon="?attr/ic_action_refresh"
+		android:showAsAction="always"
+		android:title="@string/action_refresh"/>
+	<item
+		android:id="@+id/action_sort"
+		android:icon="?attr/ic_action_sort_by_size"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_sort">
+		<menu>
+			<item android:id="@+id/action_sort_byname" android:title="@string/action_sort_alpha" />
+			<item android:id="@+id/action_sort_status" android:title="@string/action_sort_status" />
+			<item android:id="@+id/action_sort_done" android:title="@string/action_sort_done" />
+			<item android:id="@+id/action_sort_added" android:title="@string/action_sort_added" />
+			<item android:id="@+id/action_sort_upspeed" android:title="@string/action_sort_upspeed" />
+			<item android:id="@+id/action_sort_ratio" android:title="@string/action_sort_ratio" />
+		</menu>
+	</item>
+	<item
+		android:id="@+id/action_filter"
+		android:showAsAction="never"
+		android:title="@string/action_filter"/>
+	<item
+		android:id="@+id/action_help"
+		android:showAsAction="always"
+		android:title="@string/action_help"/>
+	<item
+		android:id="@+id/action_settings"
+		android:showAsAction="always"
+		android:title="@string/action_settings"/>
+
+</menu>

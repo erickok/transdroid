@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentStatus;
@@ -85,7 +86,8 @@ public class StatsParser {
 							null, // Not supported in the web interface
 							null, // Not supported in the web interface
 							null, // Not supported in the web interface
-							null)); // Not supported in the web interface
+							null, // Not supported in the web interface
+							Daemon.KTorrent));
 					id++; // Stop/start/etc. requests are made by ID, which is the order number in the returned XML list :-S
 					
 				} else if (next == XmlPullParser.START_TAG && name.equals("torrent")){

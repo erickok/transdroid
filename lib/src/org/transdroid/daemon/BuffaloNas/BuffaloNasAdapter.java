@@ -281,7 +281,8 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 					null,
 					null,
 					null,
-					null));
+					null,
+					settings.getType()));
 		}
 		
 		// Return the list

@@ -1,0 +1,49 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item
+		android:id="@+id/action_resume"
+		android:icon="?attr/ic_action_resume"
+		android:showAsAction="always"
+		android:title="@string/action_resume" />
+	<item
+		android:id="@+id/action_pause"
+		android:icon="?attr/ic_action_pause"
+		android:showAsAction="always"
+		android:title="@string/action_pause" />
+	<item
+		android:id="@+id/action_start"
+		android:icon="?attr/ic_action_start"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_start">
+		<menu>
+			<item android:id="@+id/action_start_default" android:title="@string/action_start_default" />
+			<item android:id="@+id/action_start_forced" android:title="@string/action_start_forced" />
+		</menu>
+	</item>
+	<item
+		android:id="@+id/action_stop"
+		android:icon="?attr/ic_action_stop"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_stop" />
+	<item
+		android:id="@+id/action_remove"
+		android:icon="?attr/ic_action_remove"
+		android:showAsAction="always"
+		android:title="@string/action_remove">
+		<menu>
+			<item android:id="@+id/action_remove_default" android:title="@string/action_remove_default" />
+			<item android:id="@+id/action_remove_withdata" android:title="@string/action_remove_withdata" />
+		</menu>
+	</item>
+	<item
+		android:id="@+id/action_setlabel"
+		android:icon="?attr/ic_action_labels"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_setlabel" />
+	<item
+		android:id="@+id/action_updatetrackers"
+		android:icon="?attr/ic_action_trackers"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_updatetrackers" />
+
+</menu>

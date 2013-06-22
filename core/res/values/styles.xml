@@ -1,0 +1,85 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<style name="TransdroidTheme" parent="Theme.Transdroid.Light">
+		<!-- All customizations that are NOT specific to a particular API-level can go here. -->
+		<item name="android:textViewStyle">@style/DefaultTextView</item>
+		<item name="android:windowBackground">@color/background_light</item>
+		
+		<item name="ic_action_discard">@drawable/ic_action_discard_light</item>
+		<item name="ic_action_labels">@drawable/ic_action_labels_light</item>
+		<item name="ic_action_new">@drawable/ic_action_new_light</item>
+		<item name="ic_action_pause">@drawable/ic_action_pause_light</item>
+		<item name="ic_action_priority_off">@drawable/ic_action_priority_off_light</item>
+		<item name="ic_action_priority_low">@drawable/ic_action_priority_low_light</item>
+		<item name="ic_action_priority_normal">@drawable/ic_action_priority_normal_light</item>
+		<item name="ic_action_priority_high">@drawable/ic_action_priority_high_light</item>
+		<item name="ic_action_refresh">@drawable/ic_action_refresh_light</item>
+		<item name="ic_action_remove">@drawable/ic_action_remove_light</item>
+		<item name="ic_action_resume">@drawable/ic_action_resume_light</item>
+		<item name="ic_action_rss">@drawable/ic_action_rss_light</item>
+		<item name="ic_action_search">@drawable/ic_action_search_light</item>
+		<item name="ic_action_sort_by_size">@drawable/ic_action_sort_by_size_light</item>
+		<item name="ic_action_start">@drawable/ic_action_start_light</item>
+		<item name="ic_action_stop">@drawable/ic_action_stop_light</item>
+		<item name="ic_action_trackers">@drawable/ic_action_trackers_light</item>
+		<item name="ic_action_website">@drawable/ic_action_website_light</item>
+		<item name="loading_progress">@drawable/loading_progress_light</item>
+		<item name="selectable_background_transdroid">@drawable/selectable_background_transdroid2</item>
+		<item name="text_bright">@color/text_bright_light</item>
+		<item name="text_actionbar">@color/text_actionbar_light</item>
+	</style>
+
+	<style name="TransdroidTheme.Dark" parent="Theme.Transdroid.Dark">
+		<!-- All customizations that are NOT specific to a particular API-level can go here. -->
+		<item name="android:textViewStyle">@style/DefaultTextView</item>
+		<item name="android:windowBackground">@color/background_dark</item>
+		
+		<item name="ic_action_discard">@drawable/ic_action_discard_dark</item>
+		<item name="ic_action_labels">@drawable/ic_action_labels_dark</item>
+		<item name="ic_action_new">@drawable/ic_action_new_dark</item>
+		<item name="ic_action_pause">@drawable/ic_action_pause_dark</item>
+		<item name="ic_action_priority_off">@drawable/ic_action_priority_off_dark</item>
+		<item name="ic_action_priority_low">@drawable/ic_action_priority_low_dark</item>
+		<item name="ic_action_priority_normal">@drawable/ic_action_priority_normal_dark</item>
+		<item name="ic_action_priority_high">@drawable/ic_action_priority_high_dark</item>
+		<item name="ic_action_refresh">@drawable/ic_action_refresh_dark</item>
+		<item name="ic_action_remove">@drawable/ic_action_remove_dark</item>
+		<item name="ic_action_resume">@drawable/ic_action_resume_dark</item>
+		<item name="ic_action_rss">@drawable/ic_action_rss_dark</item>
+		<item name="ic_action_search">@drawable/ic_action_search_dark</item>
+		<item name="ic_action_sort_by_size">@drawable/ic_action_sort_by_size_dark</item>
+		<item name="ic_action_start">@drawable/ic_action_start_dark</item>
+		<item name="ic_action_stop">@drawable/ic_action_stop_dark</item>
+		<item name="ic_action_trackers">@drawable/ic_action_trackers_dark</item>
+		<item name="ic_action_website">@drawable/ic_action_website_dark</item>
+		<item name="loading_progress">@drawable/loading_progress_light</item>
+		<item name="selectable_background_transdroid">@drawable/selectable_background_transdroid</item>
+		<item name="text_bright">@color/text_bright_dark</item>
+		<item name="text_actionbar">@color/text_actionbar_dark</item>
+	</style>
+	
+	<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->
+	<style name="SectionHeader" parent="android:Widget.Holo.Light.TextView">
+		<item name="android:drawableBottom">@drawable/section_header</item>
+		<item name="android:drawablePadding">4dp</item>
+		<item name="android:layout_marginTop">8dp</item>
+		<item name="android:paddingLeft">4dp</item>
+		<item name="android:textColor">@color/green</item>
+		<item name="android:textSize">14sp</item>
+	</style>
+
+	<style name="DefaultTextView" parent="android:Widget.Holo.Light.TextView">
+		<item name="android:textSize">@dimen/text_default</item>
+	</style>
+
+	<style name="LabelTextView" parent="android:Widget.Holo.Light.TextView">
+		<item name="android:textSize">@dimen/text_label</item>
+		<item name="android:background">#333</item>
+		<item name="android:textColor">#fff</item>
+		<item name="android:paddingLeft">4dip</item>
+		<item name="android:paddingRight">4dip</item>
+		<item name="android:paddingTop">2dip</item>
+		<item name="android:paddingBottom">2dip</item>
+	</style>
+	
+</resources>

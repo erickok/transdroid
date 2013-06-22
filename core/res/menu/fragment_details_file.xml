@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item
+		android:id="@+id/action_priority_off"
+		android:icon="?attr/ic_action_priority_off"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_priority_off" />
+	<item
+		android:id="@+id/action_priority_low"
+		android:icon="?attr/ic_action_priority_low"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_priority_low" />
+	<item
+		android:id="@+id/action_priority_normal"
+		android:icon="?attr/ic_action_priority_normal"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_priority_normal" />
+	<item
+		android:id="@+id/action_priority_high"
+		android:icon="?attr/ic_action_priority_high"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_priority_high" />
+	<item
+		android:id="@+id/action_download"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_download" />
+
+</menu>

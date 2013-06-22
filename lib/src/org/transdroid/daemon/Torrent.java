@@ -55,6 +55,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 	final private Date dateAdded;
 	final private Date dateDone;
 	final private String error;
+	final private Daemon daemon;
 	
 	//public long getID() { return id; }
 	//public String getHash() { return hash; }
@@ -80,6 +81,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 	public Date getDateAdded() { return dateAdded; }
 	public Date getDateDone() { return dateDone; }
 	public String getError() { return error; }
+	public Daemon getDaemon() { return daemon; }
 	
 	private Torrent(Parcel in) {
 		this.id = in.readLong();
@@ -108,12 +110,13 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 		long lDateDone = in.readLong();
 		this.dateDone = (lDateDone == -1)? null: new Date(lDateDone);
 		this.error = in.readString();
+		this.daemon = Daemon.valueOf(in.readString());
 	}
 	
 	public Torrent(long id, String hash, String name, TorrentStatus statusCode, String locationDir, int rateDownload, int rateUpload, 
 			int peersGettingFromUs, int peersSendingToUs, int peersConnected, int peersKnown, int eta, 
 			long downloadedEver, long uploadedEver, long totalSize, float partDone, float available, String label, 
-			Date dateAdded, Date realDateDone, String error) {
+			Date dateAdded, Date realDateDone, String error, Daemon daemon) {
 		this.id = id;
 		this.hash = hash;
 		this.name = name;
@@ -148,6 +151,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 			}
 		}
 		this.error = error;
+		this.daemon = daemon;
 	}
 	
 	/**
@@ -295,6 +299,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 		dest.writeLong((dateAdded == null)? -1: dateAdded.getTime());
 		dest.writeLong((dateDone == null)? -1: dateDone.getTime());
 		dest.writeString(error);
+		dest.writeString(daemon.name());
 	}
 	
 }

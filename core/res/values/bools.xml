@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- Used to determine if a device is 'small', i.e. a phone; for reference: a Nexus 7's smallest width is 533dip -->
+	<bool name="show_dialog_fullscreen">true</bool>
+</resources>
