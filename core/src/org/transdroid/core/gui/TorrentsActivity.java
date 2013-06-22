@@ -359,6 +359,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			else
 				getSupportFragmentManager().beginTransaction().hide(fragmentDetails).commit();
 		}
+		supportInvalidateOptionsMenu();
 	}
 
 	/**
