@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent" >
+
+	<com.actionbarsherlock.view.SherlockListView
+		android:id="@+id/rssfeeds_list"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:choiceMode="singleChoice"
+		android:listSelector="?attr/selectable_background_transdroid"
+		android:visibility="gone" />
+
+	<TextView
+		android:id="@+id/nosettings_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:drawablePadding="8dip"
+		android:drawableTop="?attr/loading_progress"
+		android:gravity="center"
+		android:maxWidth="400dip"
+		android:padding="@dimen/margin_default"
+		android:text="@string/navigation_nosettings"
+		android:textIsSelectable="false"
+		android:visibility="gone" />
+
+</FrameLayout>

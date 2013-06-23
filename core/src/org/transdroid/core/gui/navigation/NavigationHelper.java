@@ -11,6 +11,15 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.TypefaceSpan;
+
+import com.nostra13.universalimageloader.cache.disc.impl.FileCountLimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration.Builder;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -25,6 +34,7 @@ public class NavigationHelper {
 
 	@RootContext
 	protected Context context;
+	private static ImageLoader imageCache;
 
 	/**
 	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display error messages.
@@ -37,6 +47,24 @@ public class NavigationHelper {
 	 */
 	public static Style CROUTON_INFO_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_info)
 			.setTextSize(13).setDuration(1500).build();
+
+	/**
+	 * Returns (and initialises, if needed) an image cache that uses memory and (1MB) local storage.
+	 * @return An image cache that loads web images synchronously and transparently
+	 */
+	public ImageLoader getImageCache() {
+		if (imageCache == null) {
+			imageCache = ImageLoader.getInstance();
+			Builder imageCacheBuilder = new Builder(context).defaultDisplayImageOptions(
+					new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc()
+							.imageScaleType(ImageScaleType.IN_SAMPLE_INT).build()).memoryCache(
+					new UsingFreqLimitedMemoryCache(1024 * 1024));
+			imageCacheBuilder.discCache(new FileCountLimitedDiscCache(context.getCacheDir(),
+					new Md5FileNameGenerator(), 25));
+			imageCache.init(imageCacheBuilder.build());
+		}
+		return imageCache;
+	}
 
 	/**
 	 * Whether any search-related UI components should be shown in the interface. At the moment returns false only if we

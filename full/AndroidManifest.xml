@@ -91,6 +91,12 @@
 				android:resource="@xml/searchable" />
 		</activity>
 
+		<!-- RSS -->
+		<activity
+			android:name="org.transdroid.core.gui.rss.RssfeedsActivity_"
+			android:label="@string/action_rss"
+			android:theme="@style/TransdroidTheme" />
+			
 		<provider
 			android:name="org.transdroid.core.gui.SearchHistoryProvider"
 			android:authorities="org.transdroid.core.gui.SearchHistoryProvider"
