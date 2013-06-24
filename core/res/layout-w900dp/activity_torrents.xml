@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- This layout is for 7" tablets in landscape and 10" tablets and shows torrents, filters and details. -->
+<!-- This layout is for 7" and 10" tablets in landscape shows torrents, filters and details. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"

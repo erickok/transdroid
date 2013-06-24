@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- This layout is for 7" and 10" tablets in portrait and shows torrents and filters. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="horizontal"
 	android:baselineAligned="false"
-	tools:context=".TorrentsActivity" >
+	tools:context=".RssfeedsActivity" >
 
-	<com.actionbarsherlock.view.SherlockListView
-		android:id="@+id/filters_list"
+	<fragment
+		android:id="@+id/rssfeeds_list"
 		android:layout_width="0dip"
 		android:layout_height="match_parent"
 		android:layout_weight="1"
-		android:choiceMode="singleChoice"
-		android:listSelector="?attr/selectable_background_transdroid" />
+		class="org.transdroid.core.gui.rss.RssFeedsFragment_"
+		tools:layout="@layout/fragment_rssfeeds" />
 	
 	<fragment
-		android:id="@+id/torrent_list"
+		android:id="@+id/rssitems_list"
 		android:layout_width="0dip"
 		android:layout_height="match_parent"
-		android:layout_weight="3"
-		class="org.transdroid.core.gui.TorrentsFragment_"
-		tools:layout="@layout/fragment_torrents" />
-
+		android:layout_weight="1"
+		class="org.transdroid.core.gui.rss.RssItemsFragment_"
+		tools:layout="@layout/fragment_rssitems" />
+	
 </LinearLayout>

@@ -54,14 +54,22 @@ public class NavigationHelper {
 	 */
 	public ImageLoader getImageCache() {
 		if (imageCache == null) {
+			// @formatter:off
 			imageCache = ImageLoader.getInstance();
-			Builder imageCacheBuilder = new Builder(context).defaultDisplayImageOptions(
-					new DisplayImageOptions.Builder().cacheInMemory().cacheOnDisc()
-							.imageScaleType(ImageScaleType.IN_SAMPLE_INT).build()).memoryCache(
-					new UsingFreqLimitedMemoryCache(1024 * 1024));
-			imageCacheBuilder.discCache(new FileCountLimitedDiscCache(context.getCacheDir(),
-					new Md5FileNameGenerator(), 25));
+			Builder imageCacheBuilder = new Builder(context)
+				.defaultDisplayImageOptions(
+						new DisplayImageOptions.Builder()
+						.cacheInMemory()
+						.cacheOnDisc()
+						.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+						.showImageForEmptyUri(R.drawable.ic_launcher)
+						.build())
+				.memoryCache(
+						new UsingFreqLimitedMemoryCache(1024 * 1024))
+				.discCache(
+						new FileCountLimitedDiscCache(context.getCacheDir(), new Md5FileNameGenerator(), 25));
 			imageCache.init(imageCacheBuilder.build());
+			// @formatter:on
 		}
 		return imageCache;
 	}

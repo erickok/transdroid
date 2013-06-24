@@ -1,11 +1,11 @@
 package org.transdroid.core.gui.rss;
 
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.rssparser.Channel;
 
 import android.content.Context;
 import android.view.View;
@@ -39,25 +39,28 @@ public class RssfeedView extends LinearLayout {
 		super(context);
 	}
 
-	public void bind(RssfeedSetting rssfeed) {
+	public void bind(RssfeedLoader rssfeedLoader) {
 
-		nameText.setText(rssfeed.getName());
-		faviconImage.setImageDrawable(null);
-		loadingProgress.setVisibility(View.VISIBLE);
-		newcountText.setVisibility(View.VISIBLE);
+		// Show the RSS feed name and either a loading indicator or the number of new items
+		nameText.setText(rssfeedLoader.getSetting().getName());
+		if (rssfeedLoader.hasError() || rssfeedLoader.getChannel() != null) {
+			loadingProgress.setVisibility(View.GONE);
+			newcountText.setVisibility(View.VISIBLE);
+			newcountText.setText(rssfeedLoader.hasError()? "?": Integer.toString(rssfeedLoader.getNewCount()));
+		} else {
+			loadingProgress.setVisibility(View.VISIBLE);
+			newcountText.setVisibility(View.GONE);
+		}
 		
-		// Load the RSS feed site' favicon
+		// Clear and then asynchronously load the RSS feed site' favicon
 		// Uses the g.etfv.co service to resolve the favicon of any feed URL
-		navigationHelper.getImageCache().displayImage(String.format(GETFVO_URL, rssfeed), faviconImage);
-		
-		// Refresh the number of new items in this feed
-		refreshNewCount();
+		faviconImage.setImageDrawable(null);
+		navigationHelper.getImageCache().displayImage(String.format(GETFVO_URL, rssfeedLoader), faviconImage);
 		
 	}
 
-	@Background
-	protected void refreshNewCount() {
-		// TODO: Implement
+	public Channel getChannel() {
+		return null;
 	}
 
 }

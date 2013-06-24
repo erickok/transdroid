@@ -1,6 +1,7 @@
 package org.transdroid.core.app.settings;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.androidannotations.annotations.EBean;
@@ -64,40 +65,30 @@ public class ApplicationSettings {
 		Daemon type = Daemon.fromCode(prefs.getString("server_type_" + order, null));
 		boolean ssl = prefs.getBoolean("server_sslenabled_" + order, false);
 		String defaultPort = Integer.toString(Daemon.getDefaultPortNumber(type, ssl));
-		return new ServerSetting(order, 
-				prefs.getString("server_name_" + order, null), 
-				type, 
-				prefs.getString("server_address_" + order, null), 
-				prefs.getString("server_localaddress_" + order, null), 
-				prefs.getString("server_localnetwork_" + order, null),
-				Integer.parseInt(prefs.getString("server_port_" + order, defaultPort)), 
-				ssl, 
-				prefs.getBoolean("server_ssltrustall_" + order, false), 
-				prefs.getString("server_ssltrustkey_" + order, null), 
-				prefs.getString("server_folder_" + order, null),
-				prefs.getBoolean("server_useauth_" + order, true), 
-				prefs.getString("server_user_" + order, null),
-				prefs.getString("server_pass_" + order, null), 
-				prefs.getString("server_extrapass_" + order, null),
-				OS.fromCode(prefs.getString("server_os_" + order, "type_linux")), 
-				prefs.getString("server_downloaddir_" + order, null), 
-				prefs.getString("server_ftpurl_" + order, null),
-				prefs.getString("server_ftppass_" + order, null), 
-				Integer.parseInt(prefs.getString("server_timeout_"+ order, "8")), 
-				prefs.getBoolean("server_alarmfinished_" + order, true), 
-				prefs.getBoolean("server_alarmnew_" + order, false), false);
+		return new ServerSetting(order, prefs.getString("server_name_" + order, null), type, prefs.getString(
+				"server_address_" + order, null), prefs.getString("server_localaddress_" + order, null),
+				prefs.getString("server_localnetwork_" + order, null), Integer.parseInt(prefs.getString("server_port_"
+						+ order, defaultPort)), ssl, prefs.getBoolean("server_ssltrustall_" + order, false),
+				prefs.getString("server_ssltrustkey_" + order, null), prefs.getString("server_folder_" + order, null),
+				prefs.getBoolean("server_useauth_" + order, true), prefs.getString("server_user_" + order, null),
+				prefs.getString("server_pass_" + order, null), prefs.getString("server_extrapass_" + order, null),
+				OS.fromCode(prefs.getString("server_os_" + order, "type_linux")), prefs.getString("server_downloaddir_"
+						+ order, null), prefs.getString("server_ftpurl_" + order, null), prefs.getString(
+						"server_ftppass_" + order, null), Integer.parseInt(prefs.getString("server_timeout_" + order,
+						"8")), prefs.getBoolean("server_alarmfinished_" + order, true), prefs.getBoolean(
+						"server_alarmnew_" + order, false), false);
 		// @formatter:on
 	}
 
 	/**
-	 * Removes all settings related to a configured server. Since servers are ordered, the order of the remaining 
+	 * Removes all settings related to a configured server. Since servers are ordered, the order of the remaining
 	 * servers will be updated accordingly.
 	 * @param order The identifying order number/key of the settings to remove
 	 */
 	public void removeServerSettings(int order) {
 		if (prefs.getString("server_type_" + order, null) == null)
 			return; // The settings that were requested to be removed do not exist
-		
+
 		// Copy all settings higher than the supplied order number to the previous spot
 		Editor edit = prefs.edit();
 		int max = getMaxServer();
@@ -148,7 +139,7 @@ public class ApplicationSettings {
 		edit.remove("server_alarmfinished_" + max);
 		edit.remove("server_alarmfinished_" + max);
 		edit.commit();
-		
+
 	}
 
 	/**
@@ -228,9 +219,8 @@ public class ApplicationSettings {
 	 */
 	public WebsearchSetting getWebsearchSetting(int order) {
 		// @formatter:off
-		return new WebsearchSetting(order, 
-				prefs.getString("websearch_name_" + order, null), 
-				prefs.getString("websearch_baseurl_" + order, null));
+		return new WebsearchSetting(order, prefs.getString("websearch_name_" + order, null), prefs.getString(
+				"websearch_baseurl_" + order, null));
 		// @formatter:on
 	}
 
@@ -242,7 +232,7 @@ public class ApplicationSettings {
 	public void removeWebsearchSettings(int order) {
 		if (prefs.getString("websearch_baseurl_" + order, null) == null)
 			return; // The settings that were requested to be removed do not exist
-		
+
 		// Copy all settings higher than the supplied order number to the previous spot
 		Editor edit = prefs.edit();
 		int max = getMaxWebsearch();
@@ -255,7 +245,7 @@ public class ApplicationSettings {
 		edit.remove("websearch_name_" + max);
 		edit.remove("websearch_baseurl_" + max);
 		edit.commit();
-		
+
 	}
 
 	/**
@@ -288,11 +278,10 @@ public class ApplicationSettings {
 	 */
 	public RssfeedSetting getRssfeedSetting(int order) {
 		// @formatter:off
-		return new RssfeedSetting(order, 
-				prefs.getString("rssfeed_name_" + order, null), 
-				prefs.getString("rssfeed_url_" + order, null), 
-				prefs.getBoolean("rssfeed_reqauth_" + order, false), 
-				prefs.getString("rssfeed_lastnew_" + order, null));
+		long lastViewed = prefs.getLong("rssfeed_lastviewed_" + order, -1);
+		return new RssfeedSetting(order, prefs.getString("rssfeed_name_" + order, null), prefs.getString("rssfeed_url_"
+				+ order, null), prefs.getBoolean("rssfeed_reqauth_" + order, false), lastViewed == -1L ? null
+				: new Date(lastViewed));
 		// @formatter:on
 	}
 
@@ -304,7 +293,7 @@ public class ApplicationSettings {
 	public void removeRssfeedSettings(int order) {
 		if (prefs.getString("rssfeed_url_" + order, null) == null)
 			return; // The settings that were requested to be removed do not exist
-		
+
 		// Copy all settings higher than the supplied order number to the previous spot
 		Editor edit = prefs.edit();
 		int max = getMaxRssfeed();
@@ -312,16 +301,30 @@ public class ApplicationSettings {
 			edit.putString("rssfeed_name_" + i, prefs.getString("rssfeed_name_" + (i + 1), null));
 			edit.putString("rssfeed_url_" + i, prefs.getString("rssfeed_url_" + (i + 1), null));
 			edit.putBoolean("rssfeed_reqauth_" + i, prefs.getBoolean("rssfeed_reqauth_" + (i + 1), false));
-			edit.putString("rssfeed_lastnew_" + i, prefs.getString("rssfeed_lastnew_" + (i + 1), null));
+			edit.putLong("rssfeed_lastviewed_" + i, prefs.getLong("rssfeed_lastviewed_" + (i + 1), -1));
 		}
 
 		// Remove the last settings, of which we are now sure are no longer required
 		edit.remove("rssfeed_name_" + max);
 		edit.remove("rssfeed_url_" + max);
 		edit.remove("rssfeed_reqauth_" + max);
-		edit.remove("rssfeed_lastnew_" + max);
+		edit.remove("rssfeed_lastviewed_" + max);
 		edit.commit();
-		
+
+	}
+
+	/**
+	 * Registers for some RSS feed (as identified by its order numbe/key) the last date and time that it was viewed by
+	 * the user. This is used to determine which items in an RSS feed are 'new'. Warning: any previously retrieved
+	 * {@link RssfeedSetting} object is now no longer in sync, as this will not automatically be updated in the object.
+	 * Use {@link #getRssfeedSetting(int)} to get fresh data.
+	 * @param order The identifying order number/key of the settings of te RSS feed that was viewed
+	 * @param lastViewed The date and time that the feed was last viewed; typically now
+	 */
+	public void setRssfeedLastViewer(int order, Date lastViewed) {
+		if (prefs.getString("rssfeed_url_" + order, null) == null)
+			return; // The settings that were requested to be removed do not exist
+		prefs.edit().putLong("rssfeed_lastviewed_" + order, lastViewed.getTime()).commit();
 	}
 
 	/**
@@ -335,12 +338,13 @@ public class ApplicationSettings {
 	}
 
 	/**
-	 * Returns the sort order property that the user last used. Use together with {@link #getLastUsedSortDescending()} to
-	 * get the full last used sort settings.
+	 * Returns the sort order property that the user last used. Use together with {@link #getLastUsedSortDescending()}
+	 * to get the full last used sort settings.
 	 * @return The last used sort order enumeration value
 	 */
 	public TorrentsSortBy getLastUsedSortOrder() {
-		return TorrentsSortBy.getStatus(prefs.getInt("system_lastusedsortorder", TorrentsSortBy.Alphanumeric.getCode()));
+		return TorrentsSortBy
+				.getStatus(prefs.getInt("system_lastusedsortorder", TorrentsSortBy.Alphanumeric.getCode()));
 	}
 
 	/**

@@ -1,10 +1,8 @@
 package org.transdroid.core.gui.rss;
 
-import java.util.Date;
-
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
-import org.ifies.android.sax.Item;
+import org.transdroid.core.rssparser.Item;
 
 import android.content.Context;
 import android.text.format.DateUtils;
@@ -25,12 +23,12 @@ public class RssitemView extends RssitemStatusLayout {
 		super(context);
 	}
 
-	public void bind(Item rssitem, Date lastViewedItem) {
+	public void bind(Item rssitem) {
 
 		nameText.setText(rssitem.getTitle());
 		dateText.setText(DateUtils.getRelativeDateTimeString(getContext(), rssitem.getPubdate().getTime(),
 				DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_MONTH));
-		setIsNew(rssitem.getPubdate().after(lastViewedItem));
+		setIsNew(rssitem.isNew());
 
 	}
 

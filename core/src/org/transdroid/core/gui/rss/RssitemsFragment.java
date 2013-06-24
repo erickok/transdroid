@@ -1,14 +1,11 @@
 package org.transdroid.core.gui.rss;
 
-import java.util.Date;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ViewById;
-import org.ifies.android.sax.Channel;
+import org.transdroid.core.rssparser.Channel;
 
 import android.widget.TextView;
 
@@ -22,12 +19,8 @@ import com.actionbarsherlock.view.SherlockListView;
 @EFragment(resName = "fragment_rssitems")
 public class RssitemsFragment extends SherlockFragment {
 
-	@FragmentArg
 	@InstanceState
-	protected Channel rssfeed;
-	@FragmentArg
-	@InstanceState
-	protected Date lastViewedItem;
+	protected Channel rssfeed = null;
 	
 	// Views
 	@ViewById(resName = "rssfeeds_list")
@@ -39,11 +32,17 @@ public class RssitemsFragment extends SherlockFragment {
 
 	@AfterViews
 	protected void init() {
-
 		rssitemsList.setAdapter(rssitemsAdapter);
-		rssitemsAdapter.setLastItemViewed(lastViewedItem);
-		rssitemsAdapter.update(rssfeed);
+		update(rssfeed);
+	}
 
+	/**
+	 * Update the shown RSS items in the list and the known last view date. This is automatically called when the
+	 * fragment is instantiated by its build, but should be manually called if it was instantiated empty.
+	 * @param rssfeed The RSS feed Channel object that was retrieved
+	 */
+	public void update(Channel rssfeed) {
+		rssitemsAdapter.update(rssfeed);
 	}
 
 }

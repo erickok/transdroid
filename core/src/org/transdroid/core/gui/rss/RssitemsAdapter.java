@@ -1,11 +1,9 @@
 package org.transdroid.core.gui.rss;
 
-import java.util.Date;
-
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
-import org.ifies.android.sax.Channel;
-import org.ifies.android.sax.Item;
+import org.transdroid.core.rssparser.Channel;
+import org.transdroid.core.rssparser.Item;
 
 import android.content.Context;
 import android.view.View;
@@ -20,7 +18,6 @@ import android.widget.BaseAdapter;
 public class RssitemsAdapter extends BaseAdapter {
 
 	private Channel rssfeed = null;
-	private Date lastViewedItem;
 	
 	@RootContext
 	protected Context context;
@@ -31,16 +28,6 @@ public class RssitemsAdapter extends BaseAdapter {
 	 */
 	public void update(Channel rssfeed) {
 		this.rssfeed = rssfeed;
-		notifyDataSetChanged();
-	}
-	
-	/**
-	 * Registers the date that the user last viewed this feed. Any RSS items after this date will be visually marked as
-	 * new.
-	 * @param lastViewedItem The date after which RSS items should be marked as new
-	 */
-	public void setLastItemViewed(Date lastViewedItem) {
-		this.lastViewedItem = lastViewedItem;
 		notifyDataSetChanged();
 	}
 	
@@ -76,7 +63,7 @@ public class RssitemsAdapter extends BaseAdapter {
 		} else {
 			rssitemView = (RssitemView) convertView;
 		}
-		rssitemView.bind(getItem(position), lastViewedItem);
+		rssitemView.bind(getItem(position));
 		return rssitemView;
 	}
 

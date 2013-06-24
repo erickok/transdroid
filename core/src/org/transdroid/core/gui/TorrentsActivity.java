@@ -25,6 +25,7 @@ import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.*;
 import org.transdroid.core.gui.navigation.*;
+import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
@@ -472,6 +473,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@OptionsItem(resName = "action_disableturtle")
 	protected void disableTurtleMode() {
 		updateTurtleMode(false);
+	}
+
+	@OptionsItem(resName = "action_rss")
+	protected void openRss() {
+		RssfeedsActivity_.intent(this).start();
 	}
 
 	@OptionsItem(resName = "action_settings")
