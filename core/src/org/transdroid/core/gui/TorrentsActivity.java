@@ -25,7 +25,7 @@ import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.*;
 import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.rss.RssfeedsActivity_;
+import org.transdroid.core.gui.rss.*;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
@@ -374,6 +374,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		String action = intent.getAction();
 
 		// Adding multiple torrents at the same time (as found in the Intent extras Bundle)
+
 		if (action != null && action.equals("org.transdroid.ADD_MULTIPLE")) {
 			// Intent should have some extras pointing to possibly multiple torrents
 			String[] urls = intent.getStringArrayExtra("TORRENT_URLS");

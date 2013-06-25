@@ -2,6 +2,7 @@
 <resources>
 	
 	<string name="action_add">Add</string>
+	<string name="action_addall">Add all</string>
 	<string name="action_addfromfile">From file</string>
 	<string name="action_addfromurl">From URL</string>
 	<string name="action_scanbarcode">Scan barcode</string>
@@ -118,8 +119,13 @@
 	<string name="search_barcodescannernotfound">The Barcode Scanner could not be found. Would you like to install it from the Play Store?</string>
 	<string name="search_filemanagernotfound">No compatible file manager could not be found. Would you like to install IO File Manager from the Play Store?</string>
 	
+	<string name="rss_feeds">RSS feeds</string>
 	<string name="rss_nosettings">You have not defined any RSS feeds yet to monitor. Torrent-specific RSS feeds keep you up to date with new releases and you are notified of new items.</string>
 	<string name="rss_empty">The RSS feed is not available or it contains no items</string>
+	<plurals name="rss_itemsselected">
+		<item quantity="one">%1$d item selected</item>
+		<item quantity="other">%1$d items selected</item>
+	</plurals>
 	
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>

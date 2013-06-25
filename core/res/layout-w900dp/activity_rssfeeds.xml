@@ -12,7 +12,7 @@
 		android:layout_width="0dip"
 		android:layout_height="match_parent"
 		android:layout_weight="1"
-		class="org.transdroid.core.gui.rss.RssFeedsFragment_"
+		class="org.transdroid.core.gui.rss.RssfeedsFragment_"
 		tools:layout="@layout/fragment_rssfeeds" />
 	
 	<fragment
@@ -20,7 +20,7 @@
 		android:layout_width="0dip"
 		android:layout_height="match_parent"
 		android:layout_weight="1"
-		class="org.transdroid.core.gui.rss.RssItemsFragment_"
+		class="org.transdroid.core.gui.rss.RssitemsFragment_"
 		tools:layout="@layout/fragment_rssitems" />
 	
 </LinearLayout>

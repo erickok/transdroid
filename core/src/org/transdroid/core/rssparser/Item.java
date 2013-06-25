@@ -6,6 +6,7 @@ package org.transdroid.core.rssparser;
 
 import java.util.Date;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -19,7 +20,7 @@ public class Item implements Parcelable {
 	private String enclosureUrl;
 	private String enclosureType;
 	private long enclosureLength;
-	
+
 	/**
 	 * isNew is not parsed from the RSS feed but may be set using {@link #setIsNew(boolean)} manually
 	 */
@@ -98,9 +99,9 @@ public class Item implements Parcelable {
 	}
 
 	/**
-	 * Returns 'the' item link, which preferably is the enclosure url, but otherwise the link (or null if that is empty
-	 * too).
-	 * @return A single link url to be used
+	 * Returns 'the' item link as string, which preferably is the enclosure URL, but otherwise the link (or null if that
+	 * is empty too).
+	 * @return A single link URL string to be used
 	 */
 	public String getTheLink() {
 		if (this.getEnclosureUrl() != null) {
@@ -108,6 +109,16 @@ public class Item implements Parcelable {
 		} else {
 			return this.getLink();
 		}
+	}
+
+	/**
+	 * Returns 'the' item link as URI, which preferably is the enclosure URL, but otherwise the link (or null if that is
+	 * empty too).
+	 * @return A single link URI to be used
+	 */
+	public Uri getTheLinkUri() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -125,7 +136,7 @@ public class Item implements Parcelable {
 		out.writeString(enclosureUrl);
 		out.writeString(enclosureType);
 		out.writeLong(enclosureLength);
-		out.writeInt(isNew? 1: 0);
+		out.writeInt(isNew ? 1 : 0);
 	}
 
 	public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
@@ -151,7 +162,7 @@ public class Item implements Parcelable {
 		enclosureUrl = in.readString();
 		enclosureType = in.readString();
 		enclosureLength = in.readLong();
-		isNew = in.readInt() == 1? true: false;
+		isNew = in.readInt() == 1 ? true : false;
 	}
 
 }

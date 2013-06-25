@@ -9,7 +9,7 @@
 		android:id="@+id/rssfitems_list"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		class="org.transdroid.core.gui.rss.RssItemsFragment_"
+		class="org.transdroid.core.gui.rss.RssitemsFragment_"
 		tools:layout="@layout/fragment_rssitems" />
 
 </FrameLayout>

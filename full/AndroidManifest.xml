@@ -44,6 +44,21 @@
 			<intent-filter>
 				<action android:name="android.intent.action.SEARCH" />
 			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+        		<category android:name="android.intent.category.DEFAULT" />
+        		<category android:name="android.intent.category.BROWSABLE" />
+        		<data android:mimeType="application/x-bittorrent" />
+        		<data android:scheme="http" android:mimeType="application/x-bittorrent" />
+        		<data android:scheme="http" android:pathPattern=".*\\.torrent" />
+        		<data android:scheme="https" android:mimeType="application/x-bittorrent" />
+        		<data android:scheme="https" android:pathPattern=".*\\.torrent" />
+        		<data android:scheme="file" android:mimeType="application/x-bittorrent" />
+        		<data android:scheme="file" android:pathPattern=".*\\.torrent" />
+        		<data android:scheme="content" android:mimeType="application/x-bittorrent" />
+        		<data android:scheme="content" android:pathPattern=".*\\.torrent" />
+        		<data android:scheme="magnet" />
+			</intent-filter>
 
 			<meta-data
 				android:name="android.app.default_searchable"
@@ -94,7 +109,11 @@
 		<!-- RSS -->
 		<activity
 			android:name="org.transdroid.core.gui.rss.RssfeedsActivity_"
-			android:label="@string/action_rss"
+			android:label="@string/rss_feeds"
+			android:theme="@style/TransdroidTheme" />
+		<activity
+			android:name="org.transdroid.core.gui.rss.RssitemsActivity_"
+			android:label="@string/rss_feeds"
 			android:theme="@style/TransdroidTheme" />
 			
 		<provider
