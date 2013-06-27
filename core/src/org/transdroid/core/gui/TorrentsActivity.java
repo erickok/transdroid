@@ -1,11 +1,14 @@
 package org.transdroid.core.gui;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -19,17 +22,33 @@ import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.*;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.log.*;
-import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.rss.*;
+import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.log.Log_;
+import org.transdroid.core.gui.navigation.FilterListAdapter;
+import org.transdroid.core.gui.navigation.FilterListAdapter_;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter_;
+import org.transdroid.core.gui.navigation.Label;
+import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.StatusType;
+import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
-import org.transdroid.core.gui.settings.*;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -62,6 +81,7 @@ import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
 import org.transdroid.daemon.util.DLog;
+import org.transdroid.daemon.util.HttpHelper;
 
 import android.annotation.TargetApi;
 import android.app.SearchManager;
@@ -185,6 +205,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 		// Handle any start up intents
 		if (firstStart && getIntent() != null) {
+			currentConnection = lastUsed.createServerAdapter();
 			handleStartIntent();
 		}
 
@@ -399,11 +420,32 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 		// Adding a torrent from http or https URL
 		if (dataUri.getScheme().equals("http") || dataUri.getScheme().equals("https")) {
-			String title = data.substring(data.lastIndexOf("/"));
-			if (intent.hasExtra("TORRENT_TITLE")) {
-				title = intent.getStringExtra("TORRENT_TITLE");
+
+			// Check if the target URL is also defined as a web search in the user's settings
+			List<WebsearchSetting> websearches = applicationSettings.getWebsearchSettings();
+			WebsearchSetting match = null;
+			for (WebsearchSetting setting : websearches) {
+				Uri uri = Uri.parse(setting.getBaseUrl());
+				if (uri.getHost() != null && uri.getHost().equals(dataUri.getHost())) {
+					match = setting;
+					break;
+				}
 			}
-			addTorrentByUrl(data, title);
+
+			// If the URL is also a web search and it defines cookies, use the cookies by downloading the targeted
+			// torrent file (while supplies the cookies to the HTTP request) instead of sending the URL directly to the
+			// torrent client
+			if (match != null && match.getCookies() != null) {
+				addTorrentFromWeb(data, match);
+			} else {
+				// Normally send the URL to the torrent client; the title we show is just the 'file name'
+				// TODO: Make a better effort in determining the title (check query string, clean special chars)
+				String title = data.substring(data.lastIndexOf("/") + 1);
+				if (intent.hasExtra("TORRENT_TITLE")) {
+					title = intent.getStringExtra("TORRENT_TITLE");
+				}
+				addTorrentByUrl(data, title);
+			}
 			return;
 		}
 
@@ -413,9 +455,9 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			return;
 		}
 
-		// Adding a local .torrent file
+		// Adding a local .torrent file; the title we show is just the file name
 		if (dataUri.getScheme().equals("file")) {
-			String title = data.substring(data.lastIndexOf("/"));
+			String title = data.substring(data.lastIndexOf("/") + 1);
 			addTorrentByFile(data, title);
 			return;
 		}
@@ -638,13 +680,61 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	private void addTorrentFromDownloads(Uri contentUri) {
 
-		InputStream input = null;
 		try {
-			// Open the content uri as input stream
-			input = getContentResolver().openInputStream(contentUri);
+			// Open the content uri as input stream and this via a local temporary file
+			addTorrentFromStream(getContentResolver().openInputStream(contentUri));
+		} catch (SecurityException e) {
+			// No longer access to this file
+			Log.e(this, "No access given to " + contentUri.toString() + ": " + e.toString());
+			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+		} catch (FileNotFoundException e) {
+			Log.e(this, contentUri.toString() + " does not exist: " + e.toString());
+			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+		}
+	}
 
+	@Background
+	protected void addTorrentFromWeb(String url, WebsearchSetting websearchSetting) {
+
+		try {
+			// Cookies are taken from the websearchSetting that we already matched against this target URL
+			DefaultHttpClient httpclient = HttpHelper.createStandardHttpClient(false, null, null, true, null, 10000,
+					null, -1);
+			Map<String, String> cookies = HttpHelper.parseCookiePairs(websearchSetting.getCookies());
+			String domain = Uri.parse(url).getHost();
+			for (Entry<String, String> pair : cookies.entrySet()) {
+				BasicClientCookie cookie = new BasicClientCookie(pair.getKey(), pair.getValue());
+				cookie.setPath("/");
+				cookie.setDomain(domain);
+				httpclient.getCookieStore().addCookie(cookie);
+			}
+
+			// Download the torrent at the specified URL (which will first be written to a temporary file)
+			// If we get an HTTP 401, 403 or 404 response, show an error to the user
+			HttpResponse response = httpclient.execute(new HttpGet(url));
+			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED
+					|| response.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN
+					|| response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+				Log.e(this, "Can't retrieve web torrent " + url + ": Unexpected HTTP response status code "
+						+ response.getStatusLine().toString());
+				Crouton.showText(this, R.string.error_401, NavigationHelper.CROUTON_ERROR_STYLE);
+				return;
+			}
+			InputStream input = response.getEntity().getContent();
+			addTorrentFromStream(input);
+		} catch (Exception e) {
+			Log.e(this, "Can't retrieve web torrent " + url + ": " + e.toString());
+			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+		}
+	}
+
+	@Background
+	protected void addTorrentFromStream(InputStream input) {
+
+		File tempFile = new File("/not/yet/set");
+		try {
 			// Write a temporary file with the torrent contents
-			File tempFile = File.createTempFile("transdroid_", ".torrent", getCacheDir());
+			tempFile = File.createTempFile("transdroid_", ".torrent", getCacheDir());
 			FileOutputStream output = new FileOutputStream(tempFile);
 			try {
 				final byte[] buffer = new byte[1024];
@@ -657,17 +747,15 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			} finally {
 				output.close();
 			}
-		} catch (SecurityException e) {
-			// No longer access to this file
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
-		} catch (IOException e1) {
-			// Can't write temporary file
+		} catch (IOException e) {
+			Log.e(this, "Can't write input stream to " + tempFile.toString() + ": " + e.toString());
 			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 		} finally {
 			try {
 				if (input != null)
 					input.close();
 			} catch (IOException e) {
+				Log.e(this, "Error closing the input stream " + tempFile.toString() + ": " + e.toString());
 				Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 			}
 		}
@@ -725,7 +813,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Override
 	public void removeTorrent(Torrent torrent, boolean withData) {
 		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute();
-		if (result instanceof DaemonTaskResult) {
+		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded(
 					(DaemonTaskSuccessResult) result,
 					getString(withData ? R.string.result_removed_with_data : R.string.result_removed, torrent.getName()));
@@ -799,16 +887,16 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
-		
+
 		// Report the newly retrieved list of torrents to the torrents fragment
 		fragmentTorrents.updateIsLoading(false);
 		fragmentTorrents.updateTorrents(new ArrayList<Torrent>(torrents));
-		
+
 		// Update the details fragment if the currently shown torrent is in the newly retrieved list
 		if (fragmentDetails != null) {
 			fragmentDetails.perhapsUpdateTorrent(torrents);
 		}
-		
+
 		// Update local list of labels in the navigation
 		List<Label> navigationLabels = Label.convertToNavigationLabels(labels,
 				getResources().getString(R.string.labels_unlabeled));
@@ -819,10 +907,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Labels are shown in the action bar spinner
 			navigationSpinnerAdapter.updateLabels(navigationLabels);
 		}
-		
+
 		// Update the server status (counts and speeds) in the action bar
 		serverStatusView.update(torrents);
-		
+
 	}
 
 	@UiThread

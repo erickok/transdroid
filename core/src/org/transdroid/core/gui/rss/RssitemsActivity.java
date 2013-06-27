@@ -18,7 +18,7 @@ import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
-@EActivity(resName = "activity_rssfeeds")
+@EActivity(resName = "activity_rssitems")
 public class RssitemsActivity extends SherlockFragmentActivity {
 
 	@Extra
@@ -51,7 +51,7 @@ public class RssitemsActivity extends SherlockFragmentActivity {
 		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeed.getTitle()));
 
 		// Get the intent extras and show them to the already loaded fragment
-		fragmentItems.update(rssfeed);
+		fragmentItems.update(rssfeed, false);
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

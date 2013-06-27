@@ -182,7 +182,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 		// Read JSON response
 		InputStream instream = response.getEntity().getContent();
-		String result = HttpHelper.ConvertStreamToString(instream);
+		String result = HttpHelper.convertStreamToString(instream);
 
 		// If the upload succeeded, add the torrent file on the server
 		// For this we need the file name, which is now send as a JSON object like:
@@ -477,7 +477,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 				// Still no session cookie?
 				if (sessionCookie == null) {
 					// Set error message and cancel the action that was requested
-					throw new DaemonException(ExceptionType.AuthenticationFailure, "Password error? Server time difference? No (valid) cookie in response and JSON was: " + HttpHelper.ConvertStreamToString(instream));
+					throw new DaemonException(ExceptionType.AuthenticationFailure, "Password error? Server time difference? No (valid) cookie in response and JSON was: " + HttpHelper.convertStreamToString(instream));
 				}
 
 			}
@@ -509,7 +509,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 				// Read JSON response
 				InputStream instream = entity.getContent();
-				String result = HttpHelper.ConvertStreamToString(instream);
+				String result = HttpHelper.convertStreamToString(instream);
 				JSONObject json = new JSONObject(result);
 				instream.close();
 

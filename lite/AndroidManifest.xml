@@ -23,12 +23,13 @@
 	<uses-feature
 		android:name="android.hardware.touchscreen"
 		android:required="false" />
-	
+
 	<application
 		android:allowBackup="true"
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/system_name"
-		android:theme="@style/Theme.Sherlock" >
+		android:theme="@style/Theme.Sherlock"
+		android:hardwareAccelerated="true" >
 
 		<!-- Main activities -->
 		<activity
@@ -44,11 +45,104 @@
 			<intent-filter>
 				<action android:name="android.intent.action.SEARCH" />
 			</intent-filter>
+			<intent-filter>
+				<action android:name="org.transdroid.ADD_MULTIPLE" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:mimeType="application/x-bittorrent"
+					android:scheme="http" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:pathPattern=".*\\.torrent"
+					android:scheme="http" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:mimeType="application/x-bittorrent"
+					android:scheme="https" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:pathPattern=".*\\.torrent"
+					android:scheme="https" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:mimeType="application/x-bittorrent"
+					android:scheme="file" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:pathPattern=".*\\.torrent"
+					android:scheme="file" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:mimeType="application/x-bittorrent"
+					android:scheme="content" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:pathPattern=".*\\.torrent"
+					android:scheme="content" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:scheme="magnet" />
+			</intent-filter>
 		</activity>
 		<activity
 			android:name="org.transdroid.core.gui.DetailsActivity_"
-			android:uiOptions="splitActionBarWhenNarrow"
-			android:theme="@style/TransdroidTheme" >
+			android:theme="@style/TransdroidTheme"
+			android:uiOptions="splitActionBarWhenNarrow" >
 		</activity>
 
 		<!-- Settings screens -->
@@ -59,7 +153,6 @@
 		<activity android:name="org.transdroid.core.gui.settings.NotificationSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.settings.SystemSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.navigation.DialogHelper_" />
-
 	</application>
 
 </manifest>

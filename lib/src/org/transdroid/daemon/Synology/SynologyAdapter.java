@@ -427,7 +427,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 				}
 				// Read JSON response
 				java.io.InputStream instream = entity.getContent();
-				String result = HttpHelper.ConvertStreamToString(instream);
+				String result = HttpHelper.convertStreamToString(instream);
 				JSONObject json;
 				json = new JSONObject(result);
 				instream.close();

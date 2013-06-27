@@ -302,7 +302,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 
 			// Read JSON response
 			InputStream instream = response.getEntity().getContent();
-			String result = HttpHelper.ConvertStreamToString(instream);
+			String result = HttpHelper.convertStreamToString(instream);
 			if ((result.equals("") || result.trim().equals("invalid request"))) {
 				authtoken = null;
 				throw new DaemonException(ExceptionType.AuthenticationFailure, "Response was '" + result.replace("\n", "") + "' instead of a proper JSON object (and we used auth token '" + authtoken + "')");
@@ -341,7 +341,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 				throw new DaemonException(ExceptionType.ConnectionError, "Not found (404); server doesn't exist or is inaccessible");
 			}
 			InputStream instream = response.getEntity().getContent();
-			String result = HttpHelper.ConvertStreamToString(instream);
+			String result = HttpHelper.convertStreamToString(instream);
 			authtoken = result.replaceAll("\\<.*?>","").trim();
 
 		}
@@ -366,7 +366,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 
 		// Read JSON response
 		InputStream instream = response.getEntity().getContent();
-		String result = HttpHelper.ConvertStreamToString(instream);
+		String result = HttpHelper.convertStreamToString(instream);
 		JSONObject json = new JSONObject(result);
 		instream.close();
 		return json;

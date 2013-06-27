@@ -65,18 +65,28 @@ public class ApplicationSettings {
 		Daemon type = Daemon.fromCode(prefs.getString("server_type_" + order, null));
 		boolean ssl = prefs.getBoolean("server_sslenabled_" + order, false);
 		String defaultPort = Integer.toString(Daemon.getDefaultPortNumber(type, ssl));
-		return new ServerSetting(order, prefs.getString("server_name_" + order, null), type, prefs.getString(
-				"server_address_" + order, null), prefs.getString("server_localaddress_" + order, null),
-				prefs.getString("server_localnetwork_" + order, null), Integer.parseInt(prefs.getString("server_port_"
-						+ order, defaultPort)), ssl, prefs.getBoolean("server_ssltrustall_" + order, false),
-				prefs.getString("server_ssltrustkey_" + order, null), prefs.getString("server_folder_" + order, null),
-				prefs.getBoolean("server_useauth_" + order, true), prefs.getString("server_user_" + order, null),
-				prefs.getString("server_pass_" + order, null), prefs.getString("server_extrapass_" + order, null),
-				OS.fromCode(prefs.getString("server_os_" + order, "type_linux")), prefs.getString("server_downloaddir_"
-						+ order, null), prefs.getString("server_ftpurl_" + order, null), prefs.getString(
-						"server_ftppass_" + order, null), Integer.parseInt(prefs.getString("server_timeout_" + order,
-						"8")), prefs.getBoolean("server_alarmfinished_" + order, true), prefs.getBoolean(
-						"server_alarmnew_" + order, false), false);
+		return new ServerSetting(order, 
+				prefs.getString("server_name_" + order, null), type, 
+				prefs.getString("server_address_" + order, null), 
+				prefs.getString("server_localaddress_" + order, null),
+				prefs.getString("server_localnetwork_" + order, null), 
+				Integer.parseInt(prefs.getString("server_port_" + order, defaultPort)), 
+				ssl, 
+				prefs.getBoolean("server_ssltrustall_" + order, false),
+				prefs.getString("server_ssltrustkey_" + order, null), 
+				prefs.getString("server_folder_" + order, null),
+				prefs.getBoolean("server_useauth_" + order, true), 
+				prefs.getString("server_user_" + order, null),
+				prefs.getString("server_pass_" + order, null), 
+				prefs.getString("server_extrapass_" + order, null),
+				OS.fromCode(prefs.getString("server_os_" + order, "type_linux")), 
+				prefs.getString("server_downloaddir_" + order, null), 
+				prefs.getString("server_ftpurl_" + order, null), 
+				prefs.getString("server_ftppass_" + order, null), 
+				Integer.parseInt(prefs.getString("server_timeout_" + order, "8")), 
+				prefs.getBoolean("server_alarmfinished_" + order, true), 
+				prefs.getBoolean("server_alarmnew_" + order, false), 
+				false);
 		// @formatter:on
 	}
 
@@ -219,8 +229,10 @@ public class ApplicationSettings {
 	 */
 	public WebsearchSetting getWebsearchSetting(int order) {
 		// @formatter:off
-		return new WebsearchSetting(order, prefs.getString("websearch_name_" + order, null), prefs.getString(
-				"websearch_baseurl_" + order, null));
+		return new WebsearchSetting(order, 
+				prefs.getString("websearch_name_" + order, null), 
+				prefs.getString("websearch_baseurl_" + order, null), 
+				prefs.getString("websearch_cookies_" + order, null));
 		// @formatter:on
 	}
 
@@ -239,11 +251,13 @@ public class ApplicationSettings {
 		for (int i = order; i < max; i++) {
 			edit.putString("websearch_name_" + i, prefs.getString("websearch_name_" + (i + 1), null));
 			edit.putString("websearch_baseurl_" + i, prefs.getString("websearch_baseurl_" + (i + 1), null));
+			edit.putString("websearch_cookies_" + i, prefs.getString("websearch_cookies_" + (i + 1), null));
 		}
 
 		// Remove the last settings, of which we are now sure are no longer required
 		edit.remove("websearch_name_" + max);
 		edit.remove("websearch_baseurl_" + max);
+		edit.remove("websearch_cookies_" + max);
 		edit.commit();
 
 	}
@@ -279,9 +293,11 @@ public class ApplicationSettings {
 	public RssfeedSetting getRssfeedSetting(int order) {
 		// @formatter:off
 		long lastViewed = prefs.getLong("rssfeed_lastviewed_" + order, -1);
-		return new RssfeedSetting(order, prefs.getString("rssfeed_name_" + order, null), prefs.getString("rssfeed_url_"
-				+ order, null), prefs.getBoolean("rssfeed_reqauth_" + order, false), lastViewed == -1L ? null
-				: new Date(lastViewed));
+		return new RssfeedSetting(order, 
+				prefs.getString("rssfeed_name_" + order, null), 
+				prefs.getString("rssfeed_url_" + order, null), 
+				prefs.getBoolean("rssfeed_reqauth_" + order, false), 
+				lastViewed == -1L ? null: new Date(lastViewed));
 		// @formatter:on
 	}
 

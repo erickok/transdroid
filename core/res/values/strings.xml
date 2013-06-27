@@ -121,7 +121,10 @@
 	
 	<string name="rss_feeds">RSS feeds</string>
 	<string name="rss_nosettings">You have not defined any RSS feeds yet to monitor. Torrent-specific RSS feeds keep you up to date with new releases and you are notified of new items.</string>
+	<string name="rss_noselection">Select an RSS feed to view the new items</string>
 	<string name="rss_empty">The RSS feed is not available or it contains no items</string>
+	<string name="rss_notloaded">Sorry, please wait until the RSS feed is loaded</string>
+	<string name="rss_error">Sorry, this RSS feed could not be loaded at this time</string>
 	<plurals name="rss_itemsselected">
 		<item quantity="one">%1$d item selected</item>
 		<item quantity="other">%1$d items selected</item>
@@ -140,6 +143,8 @@
 	<string name="pref_name_optional">Optional personal name</string>
 	<string name="pref_searchurl">Direct search URL</string>
 	<string name="pref_searchurl_info">%s will be replaced by the search query</string>
+	<string name="pref_cookies">Cookies</string>
+	<string name="pref_cookies_info">Optional; use the key1=value1;key2=value2 format</string>
 	<string name="pref_feedurl">Feed URL</string>
 	<string name="pref_reqauth">Requires authentication</string>
 	<string name="pref_reqauth_info">Opens links in the webbrowser for user login</string>

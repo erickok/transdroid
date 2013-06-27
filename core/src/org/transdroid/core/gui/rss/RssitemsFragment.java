@@ -15,6 +15,7 @@ import org.transdroid.core.rssparser.Channel;
 import org.transdroid.core.rssparser.Item;
 
 import android.content.Intent;
+import android.view.View;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -33,9 +34,11 @@ public class RssitemsFragment extends SherlockFragment {
 
 	@InstanceState
 	protected Channel rssfeed = null;
-	
+	@InstanceState
+	protected boolean hasError = false;
+
 	// Views
-	@ViewById(resName = "rssfeeds_list")
+	@ViewById(resName = "rssitems_list")
 	protected SherlockListView rssitemsList;
 	@Bean
 	protected RssitemsAdapter rssitemsAdapter;
@@ -48,17 +51,34 @@ public class RssitemsFragment extends SherlockFragment {
 		// Set up the list adapter, which allows multi-select
 		rssitemsList.setAdapter(rssitemsAdapter);
 		rssitemsList.setMultiChoiceModeListener(onItemsSelected);
-		update(rssfeed);
-		
+		update(rssfeed, hasError);
+
 	}
 
 	/**
-	 * Update the shown RSS items in the list and the known last view date. This is automatically called when the
-	 * fragment is instantiated by its build, but should be manually called if it was instantiated empty.
-	 * @param rssfeed The RSS feed Channel object that was retrieved
+	 * Update the shown RSS items in the list.
+	 * @param channel The loaded RSS content channel object
+	 * @param hasError True if there were errors in loading the channel, in which case an error text is shown; false
+	 *            otherwise
 	 */
-	public void update(Channel rssfeed) {
-		rssitemsAdapter.update(rssfeed);
+	public void update(Channel channel, boolean hasError) {
+		rssitemsAdapter.update(channel);
+		rssitemsList.setVisibility(View.GONE);
+		emptyText.setVisibility(View.VISIBLE);
+		if (hasError) {
+			emptyText.setText(R.string.rss_error);
+			return;
+		}
+		if (channel == null) {
+			emptyText.setText(R.string.rss_noselection);
+			return;
+		}
+		if (channel.getItems().size() == 0) {
+			emptyText.setText(R.string.rss_empty);
+			return;
+		}
+		rssitemsList.setVisibility(View.VISIBLE);
+		emptyText.setVisibility(View.INVISIBLE);
 	}
 
 	@ItemClick(resName = "rssitems_list")
@@ -67,9 +87,9 @@ public class RssitemsFragment extends SherlockFragment {
 	}
 
 	private MultiChoiceModeListenerCompat onItemsSelected = new MultiChoiceModeListenerCompat() {
-		
+
 		SelectionManagerMode selectionManagerMode;
-		
+
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Show contextual action bar to add items in batch mode
@@ -90,8 +110,7 @@ public class RssitemsFragment extends SherlockFragment {
 			List<Item> checked = new ArrayList<Item>();
 			for (int i = 0; i < rssitemsList.getCheckedItemPositions().size(); i++) {
 				if (rssitemsList.getCheckedItemPositions().valueAt(i))
-					checked.add(rssitemsAdapter.getItem(
-							rssitemsList.getCheckedItemPositions().keyAt(i)));
+					checked.add(rssitemsAdapter.getItem(rssitemsList.getCheckedItemPositions().keyAt(i)));
 			}
 
 			int itemId = item.getItemId();
@@ -102,8 +121,8 @@ public class RssitemsFragment extends SherlockFragment {
 				String[] urls = new String[checked.size()];
 				String[] titles = new String[checked.size()];
 				for (int i = 0; i < checked.size(); i++) {
-					urls[i] = checked.get(0).getTheLink();
-					titles[i] = checked.get(0).getTitle();
+					urls[i] = checked.get(i).getTheLink();
+					titles[i] = checked.get(i).getTitle();
 				}
 				intent.putExtra("TORRENT_URLS", urls);
 				intent.putExtra("TORRENT_TITLES", titles);

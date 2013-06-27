@@ -253,7 +253,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 				
 				// Read HTTP response
 				java.io.InputStream instream = entity.getContent();
-				String result = HttpHelper.ConvertStreamToString(instream);
+				String result = HttpHelper.convertStreamToString(instream);
 				instream.close();
 				
 				// Return raw result
@@ -288,7 +288,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 				
 				// Read BitComet response
 				java.io.InputStream instream = entity.getContent();
-				String result = HttpHelper.ConvertStreamToString(instream);
+				String result = HttpHelper.convertStreamToString(instream);
 				instream.close();
 				
 				int idx = result.indexOf("save_path' value='")+18;
@@ -307,7 +307,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 				if (entity != null) {
 					// Check BitComet response
 					instream = entity.getContent();
-					result = HttpHelper.ConvertStreamToString(instream);
+					result = HttpHelper.convertStreamToString(instream);
 					instream.close();
 					if (result.indexOf("failed!") > 0) throw new Exception("Adding torrent file failed");
 				}
@@ -340,7 +340,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 				
 				// Read BitComet response
 				java.io.InputStream instream = entity.getContent();
-				String result = HttpHelper.ConvertStreamToString(instream);
+				String result = HttpHelper.convertStreamToString(instream);
 				instream.close();
 				
 				int idx = result.indexOf("save_path' value='")+18;
@@ -364,7 +364,7 @@ public class BitCometAdapter implements IDaemonAdapter {
 				if (entity != null) {
 					// Check BitComet response
 					instream = entity.getContent();
-					result = HttpHelper.ConvertStreamToString(instream);
+					result = HttpHelper.convertStreamToString(instream);
 					instream.close();
 					if (result.indexOf("failed!") > 0) {
 						throw new Exception("Adding URL failed");

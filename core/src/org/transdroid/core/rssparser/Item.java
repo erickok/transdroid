@@ -117,8 +117,7 @@ public class Item implements Parcelable {
 	 * @return A single link URI to be used
 	 */
 	public Uri getTheLinkUri() {
-		// TODO Auto-generated method stub
-		return null;
+		return Uri.parse(getTheLink());
 	}
 
 	@Override

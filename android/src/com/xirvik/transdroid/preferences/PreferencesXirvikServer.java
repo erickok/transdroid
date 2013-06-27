@@ -230,7 +230,7 @@ public class PreferencesXirvikServer extends PreferenceActivity {
 						String url = "https://" + serverValue + ":443/browsers_addons/transdroid_autoconf.txt";
 						HttpResponse request = httpclient.execute(new HttpGet(url));
 						InputStream stream = request.getEntity().getContent();
-						String folderVal = HttpHelper.ConvertStreamToString(stream).trim();
+						String folderVal = HttpHelper.convertStreamToString(stream).trim();
 						if (folderVal.startsWith("<?xml")) {
 							folderVal = null;
 						}

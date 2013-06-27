@@ -17,11 +17,13 @@ public class WebsearchSetting implements SimpleListItem {
 	private final int order;
 	private final String name;
 	private final String baseUrl;
+	private final String cookies;
 
-	public WebsearchSetting(int order, String name, String baseUrl) {
+	public WebsearchSetting(int order, String name, String baseUrl, String cookies) {
 		this.order = order;
 		this.name = name;
 		this.baseUrl = baseUrl;
+		this.cookies = cookies;
 	}
 
 	public int getOrder() {
@@ -43,6 +45,10 @@ public class WebsearchSetting implements SimpleListItem {
 		return baseUrl;
 	}
 
+	public String getCookies() {
+		return cookies;
+	}
+	
 	public String getKey() {
 		return KEY_PREFIX + getOrder();
 	}

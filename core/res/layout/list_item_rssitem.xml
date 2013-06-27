@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.transdroid.core.gui.lists.RssitemStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.transdroid.core.gui.rss.RssitemStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:background="?attr/selectable_background_transdroid"
@@ -14,7 +14,7 @@
 		android:layout_height="wrap_content"
 		android:fontFamily="sans-serif-condensed"
 		android:textColor="?attr/text_bright"
-		android:textIsSelectable="true"
+		android:textIsSelectable="false"
 		android:textSize="@dimen/text_enlarged" />
 
 	<TextView
@@ -26,4 +26,4 @@
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small" />
 
-</org.transdroid.core.gui.lists.RssitemStatusLayout>
+</org.transdroid.core.gui.rss.RssitemStatusLayout>

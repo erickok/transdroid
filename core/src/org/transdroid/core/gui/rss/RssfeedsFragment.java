@@ -61,9 +61,14 @@ public class RssfeedsFragment extends SherlockFragment {
 		MainSettingsActivity_.intent(getActivity()).start();
 	}
 
+	@OptionsItem(resName = "action_refresh")
+	protected void refreshScreen() {
+		((RssfeedsActivity)getActivity()).refreshFeeds();
+	}
+
 	@ItemClick(resName = "rssfeeds_list")
 	protected void onFeedClicked(RssfeedLoader loader) {
-		((RssfeedsActivity)getActivity()).openRssfeed(loader);
+		((RssfeedsActivity)getActivity()).openRssfeed(loader, true);
 	}
 	
 	/**

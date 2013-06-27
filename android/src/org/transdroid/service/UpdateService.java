@@ -134,7 +134,7 @@ public class UpdateService extends IntentService {
 		// Retrieve what is the latest released app version
 		HttpResponse request = httpclient.execute(new HttpGet(url));
 		InputStream stream = request.getEntity().getContent();
-		String appVersion[] = HttpHelper.ConvertStreamToString(stream).split("\\|");
+		String appVersion[] = HttpHelper.convertStreamToString(stream).split("\\|");
 		stream.close();
 		return appVersion;
 

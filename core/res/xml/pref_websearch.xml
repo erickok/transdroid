@@ -13,4 +13,10 @@
 		android:summary="@string/pref_searchurl_info"
 		android:inputType="textUri" />
 	
+	<EditTextPreference
+		android:key="websearch_cookies"
+		android:title="@string/pref_cookies"
+		android:summary="@string/pref_cookies_info"
+		android:inputType="textUri" />
+	
 </PreferenceScreen>

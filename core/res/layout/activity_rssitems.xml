@@ -6,7 +6,7 @@
 	tools:context=".RssItemsActivity" >
 
 	<fragment
-		android:id="@+id/rssfitems_list"
+		android:id="@+id/rssitems_list"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		class="org.transdroid.core.gui.rss.RssitemsFragment_"

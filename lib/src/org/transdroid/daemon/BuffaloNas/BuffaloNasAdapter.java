@@ -178,7 +178,7 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 				
 				// Read JSON response
 				java.io.InputStream instream = entity.getContent();
-				String result = HttpHelper.ConvertStreamToString(instream);
+				String result = HttpHelper.convertStreamToString(instream);
 				instream.close();
 				
 				// Return raw result

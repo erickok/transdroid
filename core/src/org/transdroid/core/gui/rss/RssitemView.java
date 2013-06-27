@@ -26,8 +26,9 @@ public class RssitemView extends RssitemStatusLayout {
 	public void bind(Item rssitem) {
 
 		nameText.setText(rssitem.getTitle());
-		dateText.setText(DateUtils.getRelativeDateTimeString(getContext(), rssitem.getPubdate().getTime(),
-				DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_MONTH));
+		dateText.setText(rssitem.getPubdate() == null ? "" : DateUtils.getRelativeDateTimeString(getContext(), rssitem
+				.getPubdate().getTime(), DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS,
+				DateUtils.FORMAT_ABBREV_MONTH));
 		setIsNew(rssitem.isNew());
 
 	}

@@ -45,19 +45,105 @@
 				<action android:name="android.intent.action.SEARCH" />
 			</intent-filter>
 			<intent-filter>
+				<action android:name="org.transdroid.ADD_MULTIPLE" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
-        		<category android:name="android.intent.category.DEFAULT" />
-        		<category android:name="android.intent.category.BROWSABLE" />
-        		<data android:mimeType="application/x-bittorrent" />
-        		<data android:scheme="http" android:mimeType="application/x-bittorrent" />
-        		<data android:scheme="http" android:pathPattern=".*\\.torrent" />
-        		<data android:scheme="https" android:mimeType="application/x-bittorrent" />
-        		<data android:scheme="https" android:pathPattern=".*\\.torrent" />
-        		<data android:scheme="file" android:mimeType="application/x-bittorrent" />
-        		<data android:scheme="file" android:pathPattern=".*\\.torrent" />
-        		<data android:scheme="content" android:mimeType="application/x-bittorrent" />
-        		<data android:scheme="content" android:pathPattern=".*\\.torrent" />
-        		<data android:scheme="magnet" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:mimeType="application/x-bittorrent"
+					android:host="*"
+					android:scheme="http" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:pathPattern=".*\\.torrent"
+					android:host="*"
+					android:scheme="http" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:mimeType="application/x-bittorrent"
+					android:host="*"
+					android:scheme="https" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:pathPattern=".*\\.torrent"
+					android:host="*"
+					android:scheme="https" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:mimeType="application/x-bittorrent"
+					android:host="*"
+					android:scheme="file" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:pathPattern=".*\\.torrent"
+					android:host="*"
+					android:scheme="file" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:mimeType="application/x-bittorrent"
+					android:host="*"
+					android:scheme="content" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:pathPattern=".*\\.torrent"
+					android:host="*"
+					android:scheme="content" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:scheme="magnet" />
 			</intent-filter>
 
 			<meta-data
@@ -115,7 +201,7 @@
 			android:name="org.transdroid.core.gui.rss.RssitemsActivity_"
 			android:label="@string/rss_feeds"
 			android:theme="@style/TransdroidTheme" />
-			
+
 		<provider
 			android:name="org.transdroid.core.gui.SearchHistoryProvider"
 			android:authorities="org.transdroid.core.gui.SearchHistoryProvider"

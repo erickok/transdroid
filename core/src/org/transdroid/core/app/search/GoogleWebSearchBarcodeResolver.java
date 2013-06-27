@@ -44,7 +44,7 @@ public class GoogleWebSearchBarcodeResolver {
 			HttpGet httpget = new HttpGet(callUrl);
 			HttpResponse response = httpclient.execute(httpget);
 	        InputStream instream = response.getEntity().getContent();
-	        String result = HttpHelper.ConvertStreamToString(instream);
+	        String result = HttpHelper.convertStreamToString(instream);
 			JSONArray results = new JSONObject(result).getJSONObject("responseData").getJSONArray("results");
 			
 			// We will combine and filter multiple results, if there are any

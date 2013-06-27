@@ -55,7 +55,8 @@ public class RssfeedView extends LinearLayout {
 		// Clear and then asynchronously load the RSS feed site' favicon
 		// Uses the g.etfv.co service to resolve the favicon of any feed URL
 		faviconImage.setImageDrawable(null);
-		navigationHelper.getImageCache().displayImage(String.format(GETFVO_URL, rssfeedLoader), faviconImage);
+		navigationHelper.getImageCache().displayImage(String.format(GETFVO_URL, rssfeedLoader.getSetting().getUrl()),
+				faviconImage);
 		
 	}
 

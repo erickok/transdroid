@@ -110,7 +110,7 @@ public class HttpHelper {
      * 
      * Taken from http://senior.ceng.metu.edu.tr/2009/praeda/2009/01/11/a-simple-restful-client-at-android/
      */
-    public static String ConvertStreamToString(InputStream is, String encoding) throws UnsupportedEncodingException {
+    public static String convertStreamToString(InputStream is, String encoding) throws UnsupportedEncodingException {
     	InputStreamReader isr;
     	if (encoding != null) {
     		isr = new InputStreamReader(is, encoding);
@@ -137,9 +137,9 @@ public class HttpHelper {
         return sb.toString();
     }
     
-    public static String ConvertStreamToString(InputStream is) {
+    public static String convertStreamToString(InputStream is) {
     	try {
-			return ConvertStreamToString(is, null);
+			return convertStreamToString(is, null);
 		} catch (UnsupportedEncodingException e) {
 			// Since this is going to use the default encoding, it is never going to crash on an UnsupportedEncodingException
 			e.printStackTrace();

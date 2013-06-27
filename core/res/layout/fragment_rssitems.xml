@@ -21,8 +21,7 @@
 		android:gravity="center"
 		android:maxWidth="400dip"
 		android:padding="@dimen/margin_default"
-		android:text="@string/rss_empty"
-		android:textIsSelectable="false"
-		android:visibility="gone" />
+		android:text="@string/rss_noselection"
+		android:textIsSelectable="false" />
 
 </FrameLayout>

@@ -155,7 +155,7 @@ public class BitfluAdapter implements IDaemonAdapter {
 
 			// Read JSON response
 			InputStream instream = response.getEntity().getContent();
-			String result        = HttpHelper.ConvertStreamToString(instream);
+			String result        = HttpHelper.convertStreamToString(instream);
 			int httpstatus       = response.getStatusLine().getStatusCode();
 			
 			if(httpstatus != 200) {

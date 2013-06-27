@@ -36,7 +36,7 @@ public class RssfeedLoader {
 				newCount++;
 				item.setIsNew(true);
 			} else {
-				item.setIsNew(true);
+				item.setIsNew(false);
 			}
 		}
 	}

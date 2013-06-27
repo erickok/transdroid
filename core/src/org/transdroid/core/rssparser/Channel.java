@@ -137,6 +137,7 @@ public class Channel implements Parcelable {
 	};
 
 	private Channel(Parcel in) {
+		this();
 		id = in.readInt();
 		title = in.readString();
 		link = in.readString();

@@ -30,6 +30,7 @@ public class WebsearchSettingsActivity extends KeyBoundPreferencesActivity {
 		init(R.xml.pref_websearch, ApplicationSettings_.getInstance_(this).getMaxWebsearch());
 		initTextPreference("websearch_name");
 		initTextPreference("websearch_baseurl");
+		initTextPreference("websearch_cookies");
 
 	}
 
