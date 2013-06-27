@@ -31,6 +31,7 @@ public class RssfeedSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("rssfeed_name");
 		initTextPreference("rssfeed_url");
 		initBooleanPreference("rssfeed_reqauth");
+		// TODO: Replace this for cookies support like web searches
 
 	}
 

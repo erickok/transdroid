@@ -11,7 +11,8 @@
 		android:divider="@null"
 		android:dividerHeight="0dip"
 		android:listSelector="?attr/selectable_background_transdroid"
-		android:visibility="gone" />
+		android:background="@drawable/details_list_background"
+		android:visibility="visible" />
 
 	<ProgressBar
 		android:id="@+id/loading_progress"

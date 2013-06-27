@@ -28,7 +28,8 @@
 		android:allowBackup="true"
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/system_name"
-		android:theme="@style/Theme.Sherlock" >
+		android:theme="@style/Theme.Sherlock"
+		android:hardwareAccelerated="true" >
 
 		<!-- Main activities -->
 		<activity
