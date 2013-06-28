@@ -64,7 +64,9 @@ public class SelectionManagerMode implements MultiChoiceModeListenerCompat, OnMo
 	public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 		int checkedCount = 0;
 		for (int i = 0; i < managedList.getCheckedItemPositions().size(); i++) {
-			if (managedList.getCheckedItemPositions().valueAt(i))
+			if (managedList.getCheckedItemPositions().valueAt(i)
+					&& (onlyCheckClass == null || onlyCheckClass.isInstance(managedList.getItemAtPosition(managedList
+							.getCheckedItemPositions().keyAt(i)))))
 				checkedCount++;
 		}
 		((SelectionModificationSpinner) mode.getCustomView()).updateTitle(managedList.getContext().getResources()

@@ -36,6 +36,7 @@ public class DetailsAdapter extends MergeAdapter {
 		// Torrent details header
 		torrentDetailsView = TorrentDetailsView_.build(context);
 		torrentDetailsViewAdapter = new ViewHolderAdapter(torrentDetailsView);
+		torrentDetailsViewAdapter.setViewEnabled(false);
 		torrentDetailsViewAdapter.setViewVisibility(View.GONE);
 		addAdapter(torrentDetailsViewAdapter);
 

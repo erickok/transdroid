@@ -69,14 +69,14 @@ public class SimpleListItemAdapter extends BaseAdapter {
 		/**
 		 * Wraps a simple string of strings into a list of SimpleStringItem to add as data to a
 		 * {@link SimpleListItemAdapter}
-		 * @param errorStrings A list of string
+		 * @param strings A list of string
 		 * @return A list of SimpleStringItem objects representing the input strings
 		 */
-		public static List<SimpleStringItem> wrapStringsList(List<String> errorStrings) {
+		public static List<SimpleStringItem> wrapStringsList(List<String> strings) {
 			ArrayList<SimpleStringItem> errors = new ArrayList<SimpleStringItem>();
-			if (errorStrings != null) {
-				for (String errorString : errorStrings) {
-					errors.add(new SimpleStringItem(errorString));
+			if (strings != null) {
+				for (String string : strings) {
+					errors.add(new SimpleStringItem(string));
 				}
 			}
 			return errors;
