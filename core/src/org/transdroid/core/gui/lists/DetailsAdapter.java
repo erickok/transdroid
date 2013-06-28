@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.transdroid.core.R;
-import org.transdroid.core.gui.navigation.FilterSeparatorView;
 import org.transdroid.core.gui.navigation.FilterSeparatorView_;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentFile;
 
 import android.content.Context;
+import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
-import com.commonsware.cwac.merge.MergeAdapter;
 
 /**
  * List adapter that holds a header view showing torrent details and show the list list contained by the torrent.
@@ -22,12 +20,13 @@ import com.commonsware.cwac.merge.MergeAdapter;
  */
 public class DetailsAdapter extends MergeAdapter {
 
+	private ViewHolderAdapter torrentDetailsViewAdapter = null;
 	private TorrentDetailsView torrentDetailsView = null;
-	private FilterSeparatorView trackersSeparatorView = null;
+	private ViewHolderAdapter trackersSeparatorAdapter = null;
 	private SimpleListItemAdapter trackersAdapter = null;
-	private FilterSeparatorView errorsSeparatorView = null;
+	private ViewHolderAdapter errorsSeparatorAdapter = null;
 	private SimpleListItemAdapter errorsAdapter = null;
-	private FilterSeparatorView torrentFilesSeparatorView = null;
+	private ViewHolderAdapter torrentFilesSeparatorAdapter = null;
 	private TorrentFilesAdapter torrentFilesAdapter = null;
 
 	public DetailsAdapter(Context context) {
@@ -36,41 +35,49 @@ public class DetailsAdapter extends MergeAdapter {
 
 		// Torrent details header
 		torrentDetailsView = TorrentDetailsView_.build(context);
-		torrentDetailsView.setVisibility(View.GONE);
-		addView(torrentDetailsView, false);
-		
+		torrentDetailsViewAdapter = new ViewHolderAdapter(torrentDetailsView);
+		torrentDetailsViewAdapter.setViewVisibility(View.GONE);
+		addAdapter(torrentDetailsViewAdapter);
+
+		// Tracker errors
+		errorsSeparatorAdapter = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(
+				context.getString(R.string.status_errors)));
+		errorsSeparatorAdapter.setViewEnabled(false);
+		errorsSeparatorAdapter.setViewVisibility(View.GONE);
+		addAdapter(errorsSeparatorAdapter);
+		this.errorsAdapter = new SimpleListItemAdapter(context, new ArrayList<SimpleListItem>());
+		this.errorsAdapter.setAutoLinkMask(Linkify.WEB_URLS);
+		addAdapter(errorsAdapter);
+
 		// Trackers
-		trackersSeparatorView = FilterSeparatorView_.build(context).setText(context.getString(R.string.status_trackers));
-		trackersSeparatorView.setVisibility(View.GONE);
-		addView(trackersSeparatorView, false);
+		trackersSeparatorAdapter = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(
+				context.getString(R.string.status_trackers)));
+		trackersSeparatorAdapter.setViewEnabled(false);
+		trackersSeparatorAdapter.setViewVisibility(View.GONE);
+		addAdapter(trackersSeparatorAdapter);
 		this.trackersAdapter = new SimpleListItemAdapter(context, new ArrayList<SimpleListItem>());
 		addAdapter(trackersAdapter);
-		
-		// Tracker errors
-		errorsSeparatorView = FilterSeparatorView_.build(context).setText(context.getString(R.string.status_errors));
-		errorsSeparatorView.setVisibility(View.GONE);
-		addView(errorsSeparatorView, false);
-		this.errorsAdapter = new SimpleListItemAdapter(context, new ArrayList<SimpleListItem>());
-		addAdapter(errorsAdapter);
-		
+
 		// Torrent files
-		torrentFilesSeparatorView = FilterSeparatorView_.build(context).setText(context.getString(R.string.status_files));
-		torrentFilesSeparatorView.setVisibility(View.GONE);
-		addView(torrentFilesSeparatorView, false);
+		torrentFilesSeparatorAdapter = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(
+				context.getString(R.string.status_files)));
+		torrentFilesSeparatorAdapter.setViewEnabled(false);
+		torrentFilesSeparatorAdapter.setViewVisibility(View.GONE);
+		addAdapter(torrentFilesSeparatorAdapter);
 		this.torrentFilesAdapter = new TorrentFilesAdapter(context, new ArrayList<TorrentFile>());
 		addAdapter(torrentFilesAdapter);
-		
+
 	}
-	
+
 	/**
 	 * Update the torrent data in the details header of this merge adapter
 	 * @param torrent The torrent for which detailed data is shown
 	 */
 	public void updateTorrent(Torrent torrent) {
 		torrentDetailsView.update(torrent);
-		torrentDetailsView.setVisibility(torrent == null? View.GONE: View.VISIBLE);
+		torrentDetailsViewAdapter.setViewVisibility(torrent == null ? View.GONE : View.VISIBLE);
 	}
-	
+
 	/**
 	 * Update the list of files contained in this torrent
 	 * @param torrentFiles The new list of files, or null if the list and header should be hidden
@@ -78,10 +85,10 @@ public class DetailsAdapter extends MergeAdapter {
 	public void updateTorrentFiles(List<TorrentFile> torrentFiles) {
 		if (torrentFiles == null) {
 			torrentFilesAdapter.update(new ArrayList<TorrentFile>());
-			torrentFilesSeparatorView.setVisibility(View.GONE);
+			torrentFilesSeparatorAdapter.setViewVisibility(View.GONE);
 		} else {
 			torrentFilesAdapter.update(torrentFiles);
-			torrentFilesSeparatorView.setVisibility(View.VISIBLE);
+			torrentFilesSeparatorAdapter.setViewVisibility(View.VISIBLE);
 		}
 	}
 
@@ -92,10 +99,10 @@ public class DetailsAdapter extends MergeAdapter {
 	public void updateTrackers(List<? extends SimpleListItem> trackers) {
 		if (trackers == null || trackers.isEmpty()) {
 			trackersAdapter.update(new ArrayList<SimpleListItemAdapter.SimpleStringItem>());
-			trackersSeparatorView.setVisibility(View.GONE);
+			trackersSeparatorAdapter.setViewVisibility(View.GONE);
 		} else {
 			trackersAdapter.update(trackers);
-			trackersSeparatorView.setVisibility(View.VISIBLE);
+			trackersSeparatorAdapter.setViewVisibility(View.VISIBLE);
 		}
 	}
 
@@ -106,10 +113,10 @@ public class DetailsAdapter extends MergeAdapter {
 	public void updateErrors(List<? extends SimpleListItem> errors) {
 		if (errors == null || errors.isEmpty()) {
 			errorsAdapter.update(new ArrayList<SimpleListItemAdapter.SimpleStringItem>());
-			errorsSeparatorView.setVisibility(View.GONE);
+			errorsSeparatorAdapter.setViewVisibility(View.GONE);
 		} else {
 			errorsAdapter.update(errors);
-			errorsSeparatorView.setVisibility(View.VISIBLE);
+			errorsSeparatorAdapter.setViewVisibility(View.VISIBLE);
 		}
 	}
 
@@ -122,7 +129,7 @@ public class DetailsAdapter extends MergeAdapter {
 		updateErrors(null);
 		updateTrackers(null);
 	}
-	
+
 	protected static class TorrentFilesAdapter extends BaseAdapter {
 
 		private final Context context;

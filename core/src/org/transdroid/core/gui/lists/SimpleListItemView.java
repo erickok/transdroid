@@ -21,8 +21,10 @@ public class SimpleListItemView extends FrameLayout {
 		super(context);
 	}
 
-	public void bind(SimpleListItem filterItem) {
+	public void bind(SimpleListItem filterItem, int autoLinkMask) {
 		itemText.setText(filterItem.getName());
+		if (autoLinkMask > 0)
+			itemText.setAutoLinkMask(autoLinkMask);
 	}
 	
 }

@@ -12,6 +12,7 @@ public class SimpleListItemAdapter extends BaseAdapter {
 
 	private final Context context;
 	private List<? extends SimpleListItem> items;
+	private int autoLinkMask = 0;
 
 	public SimpleListItemAdapter(Context context, List<? extends SimpleListItem> items) {
 		this.context = context;
@@ -25,6 +26,10 @@ public class SimpleListItemAdapter extends BaseAdapter {
 	public void update(List<? extends SimpleListItem> newItems) {
 		this.items = newItems;
 		notifyDataSetChanged();
+	}
+
+	public void setAutoLinkMask(int autoLinkMask) {
+		this.autoLinkMask = autoLinkMask; 
 	}
 
 	@Override
@@ -50,7 +55,7 @@ public class SimpleListItemAdapter extends BaseAdapter {
 		} else {
 			filterItemView = (SimpleListItemView) convertView;
 		}
-		filterItemView.bind(getItem(position));
+		filterItemView.bind(getItem(position), autoLinkMask);
 		return filterItemView;
 	}
 

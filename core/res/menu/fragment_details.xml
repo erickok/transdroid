@@ -4,17 +4,20 @@
 		android:id="@+id/action_resume"
 		android:icon="?attr/ic_action_resume"
 		android:showAsAction="always"
-		android:title="@string/action_resume" />
+		android:title="@string/action_resume"
+		android:orderInCategory="200" />
 	<item
 		android:id="@+id/action_pause"
 		android:icon="?attr/ic_action_pause"
 		android:showAsAction="always"
-		android:title="@string/action_pause" />
+		android:title="@string/action_pause"
+		android:orderInCategory="201" />
 	<item
 		android:id="@+id/action_start"
 		android:icon="?attr/ic_action_start"
 		android:showAsAction="ifRoom"
-		android:title="@string/action_start">
+		android:title="@string/action_start"
+		android:orderInCategory="202">
 		<menu>
 			<item android:id="@+id/action_start_default" android:title="@string/action_start_default" />
 			<item android:id="@+id/action_start_forced" android:title="@string/action_start_forced" />
@@ -24,12 +27,14 @@
 		android:id="@+id/action_stop"
 		android:icon="?attr/ic_action_stop"
 		android:showAsAction="ifRoom"
-		android:title="@string/action_stop" />
+		android:title="@string/action_stop"
+		android:orderInCategory="203" />
 	<item
 		android:id="@+id/action_remove"
 		android:icon="?attr/ic_action_remove"
 		android:showAsAction="always"
-		android:title="@string/action_remove">
+		android:title="@string/action_remove"
+		android:orderInCategory="204">
 		<menu>
 			<item android:id="@+id/action_remove_default" android:title="@string/action_remove_default" />
 			<item android:id="@+id/action_remove_withdata" android:title="@string/action_remove_withdata" />
@@ -39,11 +44,13 @@
 		android:id="@+id/action_setlabel"
 		android:icon="?attr/ic_action_labels"
 		android:showAsAction="ifRoom"
-		android:title="@string/action_setlabel" />
+		android:title="@string/action_setlabel"
+		android:orderInCategory="205" />
 	<item
 		android:id="@+id/action_updatetrackers"
 		android:icon="?attr/ic_action_trackers"
 		android:showAsAction="ifRoom"
-		android:title="@string/action_updatetrackers" />
+		android:title="@string/action_updatetrackers"
+		android:orderInCategory="206" />
 
 </menu>

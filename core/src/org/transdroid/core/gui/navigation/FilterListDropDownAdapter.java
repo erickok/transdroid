@@ -47,7 +47,7 @@ public class FilterListDropDownAdapter extends FilterListAdapter {
 	}
 
 	public void hideServersLabel() {
-		serverSeparator.setVisibility(View.INVISIBLE);
+		serverSeparator.setViewVisibility(View.GONE);
 		notifyDataSetInvalidated();
 	}
 	

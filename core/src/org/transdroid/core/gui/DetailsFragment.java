@@ -266,7 +266,7 @@ public class DetailsFragment extends SherlockFragment {
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Show contextual action bar to start/stop/remove/etc. torrents in batch mode
-			mode.getMenuInflater().inflate(R.menu.fragment_details_file, menu);
+			mode.getMenuInflater().inflate(R.menu.fragment_details_cab, menu);
 			selectionManagerMode = new SelectionManagerMode(detailsList, R.plurals.navigation_filesselected);
 			selectionManagerMode.setOnlyCheckClass(TorrentFile.class);
 			selectionManagerMode.onCreateActionMode(mode, menu);
