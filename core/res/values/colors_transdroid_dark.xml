@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- File created by the Android Action Bar Style Generator
 
+     Copyright (C) 2011 The Android Open Source Project
      Copyright (C) 2012 readyState Software Ltd
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +19,7 @@
 
 <resources>
     <color name="pressed_transdroid_dark">#CCaada62</color>
-   	<color name="divider_grey">#d4d4d4</color>
+   	<color name="divider_dark">#d4d4d4</color>
     <color name="background_dark">#000</color>
     <color name="text_bright_dark">#fff</color>
     <color name="text_actionbar_dark">#fff</color>

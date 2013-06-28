@@ -12,9 +12,11 @@ import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
+import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.DetailsAdapter;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.Priority;
@@ -67,6 +69,16 @@ public class DetailsFragment extends SherlockFragment {
 	@AfterViews
 	protected void init() {
 
+		// On large screens where this fragment is shown next to the torrents list, we show a continues grey vertical
+		// line to separate the lists visually
+		if (!NavigationHelper_.getInstance_(getActivity()).isSmallScreen()) {
+			if (SystemSettings_.getInstance_(getActivity()).useDarkTheme()) {
+				detailsList.setBackgroundResource(R.drawable.details_list_background_dark);
+			} else {
+				detailsList.setBackgroundResource(R.drawable.details_list_background_light);
+			}
+		}
+		
 		// Set up details adapter (itself containing the actual lists to show), which allows multi-select and fast
 		// scrolling
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));

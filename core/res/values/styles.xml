@@ -27,7 +27,6 @@
 		<item name="selectable_background_transdroid">@drawable/selectable_background_transdroid2</item>
 		<item name="text_bright">@color/text_bright_light</item>
 		<item name="text_actionbar">@color/text_actionbar_light</item>
-    	<item name="details_list_line">@drawable/details_list_line_light</item>
 	</style>
 
 	<style name="TransdroidTheme.Dark" parent="Theme.Transdroid.Dark">
@@ -57,7 +56,6 @@
 		<item name="selectable_background_transdroid">@drawable/selectable_background_transdroid</item>
 		<item name="text_bright">@color/text_bright_dark</item>
 		<item name="text_actionbar">@color/text_actionbar_dark</item>
-    	<item name="details_list_line">@drawable/details_list_line_dark</item>
 	</style>
 	
 	<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->

@@ -28,5 +28,4 @@
 	<attr name="selectable_background_transdroid" format="reference"/>
 	<attr name="text_bright" format="reference" />
 	<attr name="text_actionbar" format="reference" />
-	<attr name="details_list_line" format="reference" />
 </resources>
