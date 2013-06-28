@@ -461,7 +461,16 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	 * @return The URL of the RPC API
 	 */
 	private String buildWebUIUrl() {
-		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + (settings.getFolder() == null? "": settings.getFolder()) + "/transmission/rpc";
+		String folder = "/transmission";
+		if (settings.getFolder() == null || settings.getFolder().trim().isEmpty()) {
+			// Allow the user's folder setting to override /transmission (as per Transmission's rpc-url option)
+			folder = settings.getFolder().trim();
+			// Strip any trailing slashes
+			if (folder.endsWith("/"))
+				folder = folder.substring(0, folder.length() - 1);
+		}
+		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + folder
+				+ "/rpc";
 	}
 
 	private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONObject response) throws JSONException {
