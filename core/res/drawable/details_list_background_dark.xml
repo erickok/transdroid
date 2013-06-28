@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-	<item android:drawable="@color/divider_dark" />
-	<item android:left="6dp" android:drawable="@color/background_dark" />
+	<item android:left="2dp" android:drawable="@color/divider_dark" />
+	<item android:left="4dp" android:drawable="@color/background_dark" />
 </layer-list>

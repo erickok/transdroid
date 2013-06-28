@@ -19,7 +19,7 @@
 
 <resources>
     <color name="pressed_transdroid_dark">#CCaada62</color>
-   	<color name="divider_dark">#d4d4d4</color>
+   	<color name="divider_dark">#303030</color>
     <color name="background_dark">#000</color>
     <color name="text_bright_dark">#fff</color>
     <color name="text_actionbar_dark">#fff</color>
