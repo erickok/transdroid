@@ -258,7 +258,11 @@ public class SherlockListView extends ListView {
 			if (child instanceof Checkable) {
 				((Checkable) child).setChecked(getCheckedItemPositions().get(position));
 			} else if (useActivated) {
-				child.setActivated(getCheckedItemPositions().get(position));
+				// TODO: Investigate the impact of this hack fix
+				// (API level < 11 devices still get to this code point when clicking teh CAB done button)
+				if (android.os.Build.VERSION.SDK_INT > 11) {
+					child.setActivated(getCheckedItemPositions().get(position));
+				}
 			}
 		}
 	}
