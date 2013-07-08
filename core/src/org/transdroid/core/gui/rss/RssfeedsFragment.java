@@ -53,7 +53,8 @@ public class RssfeedsFragment extends SherlockFragment {
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		menu.findItem(R.id.action_settings).setShowAsAction(
-				rssfeedsAdapter.getCount() == 0 ? MenuItem.SHOW_AS_ACTION_ALWAYS : MenuItem.SHOW_AS_ACTION_NEVER);
+				rssfeedsAdapter == null || rssfeedsAdapter.getCount() == 0 ? MenuItem.SHOW_AS_ACTION_ALWAYS
+						: MenuItem.SHOW_AS_ACTION_NEVER);
 	}
 
 	@OptionsItem(resName = "action_settings")

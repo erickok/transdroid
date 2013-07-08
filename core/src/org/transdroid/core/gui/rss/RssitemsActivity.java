@@ -23,6 +23,8 @@ public class RssitemsActivity extends SherlockFragmentActivity {
 
 	@Extra
 	protected Channel rssfeed = null;
+	@Extra
+	protected String rssfeedName;
 
 	@FragmentById(resName = "rssitems_list")
 	protected RssitemsFragment fragmentItems;
@@ -48,7 +50,7 @@ public class RssitemsActivity extends SherlockFragmentActivity {
 
 		// Simple action bar with up button and torrent name as title
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeed.getTitle()));
+		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeedName));
 
 		// Get the intent extras and show them to the already loaded fragment
 		fragmentItems.update(rssfeed, false);

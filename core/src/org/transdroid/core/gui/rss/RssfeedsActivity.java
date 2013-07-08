@@ -21,8 +21,10 @@ import org.transdroid.core.rssparser.RssParser;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
@@ -119,24 +121,26 @@ public class RssfeedsActivity extends SherlockFragmentActivity {
 	}
 
 	/**
-	 * Opens an RSS feed in the dedicated fragment (if there was space in the UI) or a new {@link RssitemsActivity}. 
-	 * Optionally this also registers in the user preferences that the feed was now viewed, so that in the future the 
+	 * Opens an RSS feed in the dedicated fragment (if there was space in the UI) or a new {@link RssitemsActivity}.
+	 * Optionally this also registers in the user preferences that the feed was now viewed, so that in the future the
 	 * new items can be properly marked.
 	 * @param loader The RSS feed loader (with settings and the loaded content channel) to show
-	 * @param markAsViewedNow True if the user settings should be updated to reflect this feed's last viewed date; false otherwise
+	 * @param markAsViewedNow True if the user settings should be updated to reflect this feed's last viewed date; false
+	 *            otherwise
 	 */
 	public void openRssfeed(RssfeedLoader loader, boolean markAsViewedNow) {
-		
+
 		// The RSS feed content was loaded and can now be shown in the dedicated fragment or a new activity
 		if (fragmentItems != null) {
 
-			// If desired, update the lastViewedDate of this feed in the user setting; this won't be loaded until the RSS 
+			// If desired, update the lastViewedDate of this feed in the user setting; this won't be loaded until the
+			// RSS
 			// feeds screen in opened again.
 			if (!loader.hasError() && loader.getChannel() != null && markAsViewedNow) {
 				applicationSettings.setRssfeedLastViewer(loader.getSetting().getOrder(), new Date());
 			}
 			fragmentItems.update(loader.getChannel(), loader.hasError());
-			
+
 		} else {
 
 			// Error message or not yet loaded? Show a toast message instead of opening the items activity
@@ -148,17 +152,25 @@ public class RssfeedsActivity extends SherlockFragmentActivity {
 				Crouton.showText(this, R.string.rss_notloaded, NavigationHelper.CROUTON_INFO_STYLE);
 				return;
 			}
-			
-			// If desired, update the lastViewedDate of this feed in the user setting; this won't be loaded until the RSS 
+
+			// If desired, update the lastViewedDate of this feed in the user setting; this won't be loaded until the
+			// RSS
 			// feeds screen in opened again
 			if (markAsViewedNow) {
 				applicationSettings.setRssfeedLastViewer(loader.getSetting().getOrder(), new Date());
 			}
-			
-			RssitemsActivity_.intent(this).rssfeed(loader.getChannel()).start();
-			
+
+			String name = loader.getChannel().getTitle();
+			if (TextUtils.isEmpty(name))
+				name = loader.getSetting().getName();
+			if (TextUtils.isEmpty(name) && !TextUtils.isEmpty(loader.getSetting().getUrl())) {
+				String host = Uri.parse(loader.getSetting().getUrl()).getHost();
+				name = host;
+			}
+			RssitemsActivity_.intent(this).rssfeed(loader.getChannel()).rssfeedName(name).start();
+
 		}
-		
+
 	}
 
 }

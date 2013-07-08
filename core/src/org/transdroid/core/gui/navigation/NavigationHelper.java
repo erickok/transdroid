@@ -124,6 +124,8 @@ public class NavigationHelper {
 	 *         input string will be displayed using the Roboto Condensed font (if the OS has this)
 	 */
 	public static SpannableString buildCondensedFontString(String string) {
+		if (string == null)
+			return null;
 		SpannableString s = new SpannableString(string);
 		s.setSpan(new TypefaceSpan("sans-serif-condensed"), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return s;
