@@ -462,7 +462,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	 */
 	private String buildWebUIUrl() {
 		String folder = "/transmission";
-		if (settings.getFolder() == null || settings.getFolder().trim().isEmpty()) {
+		if (settings.getFolder() != null && !settings.getFolder().trim().equals("")) {
 			// Allow the user's folder setting to override /transmission (as per Transmission's rpc-url option)
 			folder = settings.getFolder().trim();
 			// Strip any trailing slashes
