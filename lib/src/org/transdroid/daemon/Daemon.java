@@ -59,6 +59,11 @@ public enum Daemon {
 			return new DelugeAdapter(settings);
 		}
 	},
+	Dummy {
+		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+			return new DummyAdapter(settings);
+		}
+	},
 	DLinkRouterBT {
 		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
 			return new DLinkRouterBTAdapter(settings);
@@ -132,6 +137,8 @@ public enum Daemon {
 			return "daemon_deluge";
 		case DLinkRouterBT:
 			return "daemon_dlinkrouterbt";
+		case Dummy:
+			return "daemon_dummy";
 		case KTorrent:
 			return "daemon_ktorrent";
 		case qBittorrent:
@@ -178,6 +185,9 @@ public enum Daemon {
 		if (daemonCode.equals("daemon_dlinkrouterbt")) {
 			return DLinkRouterBT;
 		}
+		if (daemonCode.equals("daemon_dummy")) {
+			return Dummy;
+		}
 		if (daemonCode.equals("daemon_ktorrent")) {
 			return KTorrent;
 		}
@@ -217,6 +227,7 @@ public enum Daemon {
         case BuffaloNas:
         	return 8080;
         case DLinkRouterBT:
+        case Dummy:
         case rTorrent:
         case Tfb4rt:
         case BitComet:
@@ -240,19 +251,19 @@ public enum Daemon {
 	}
 
 	public static boolean supportsStats(Daemon type) {
-		return type == Transmission || type == Bitflu;
+		return type == Transmission || type == Bitflu || type == Dummy;
 	}
 
 	public static boolean supportsAvailability(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == DLinkRouterBT || type == Transmission || type == Vuze || type == BuffaloNas;
+		return type == uTorrent || type == BitTorrent || type == DLinkRouterBT || type == Transmission || type == Vuze || type == BuffaloNas || type == Dummy;
 	}
 
 	public static boolean supportsFileListing(Daemon type) {
-		return type == Synology || type == Transmission || type == uTorrent || type == BitTorrent || type == KTorrent || type == Deluge || type == rTorrent || type == Vuze || type == DLinkRouterBT || type == Bitflu || type == qBittorrent || type == BuffaloNas || type == BitComet;
+		return type == Synology || type == Transmission || type == uTorrent || type == BitTorrent || type == KTorrent || type == Deluge || type == rTorrent || type == Vuze || type == DLinkRouterBT || type == Bitflu || type == qBittorrent || type == BuffaloNas || type == BitComet || type == Dummy;
 	}
 
 	public static boolean supportsFineDetails(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Daemon.Transmission || type == Deluge || type == rTorrent || type == qBittorrent;
+		return type == uTorrent || type == BitTorrent || type == Daemon.Transmission || type == Deluge || type == rTorrent || type == qBittorrent || type == Dummy;
 	}
 
 	public static boolean needsManualPathSpecified(Daemon type) {
@@ -260,23 +271,23 @@ public enum Daemon {
 	}
 
 	public static boolean supportsFilePaths(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Vuze || type == Deluge || type == Transmission || type == rTorrent || type == KTorrent || type == BuffaloNas;
+		return type == uTorrent || type == BitTorrent || type == Vuze || type == Deluge || type == Transmission || type == rTorrent || type == KTorrent || type == BuffaloNas || type == Dummy;
 	}
 
 	public static boolean supportsStoppingStarting(Daemon type) {
-		return type == uTorrent || type == rTorrent || type == BitTorrent || type == BitComet;
+		return type == uTorrent || type == rTorrent || type == BitTorrent || type == BitComet || type == Dummy;
 	}
 
 	public static boolean supportsForcedStarting(Daemon type) {
-		return type == uTorrent || type == BitTorrent;
+		return type == uTorrent || type == BitTorrent || type == Dummy;
 	}
 
 	public static boolean supportsCustomFolder(Daemon type) {
-		return type == rTorrent || type == Tfb4rt || type == Bitflu || type == Deluge || type == Transmission;
+		return type == rTorrent || type == Tfb4rt || type == Bitflu || type == Deluge || type == Transmission || type == Dummy;
 	}
 
 	public static boolean supportsSetTransferRates(Daemon type) {
-		return type == Deluge || type == Transmission || type == uTorrent || type == BitTorrent || type == Deluge || type == rTorrent || type == Vuze || type == BuffaloNas || type == BitComet;
+		return type == Deluge || type == Transmission || type == uTorrent || type == BitTorrent || type == Deluge || type == rTorrent || type == Vuze || type == BuffaloNas || type == BitComet || type == Dummy;
 	}
 
 	public static boolean supportsAddByFile(Daemon type) {
@@ -285,39 +296,39 @@ public enum Daemon {
 	}
 
 	public static boolean supportsAddByMagnetUrl(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Transmission || type == Synology || type == Deluge || type == Bitflu || type == KTorrent || type == rTorrent || type == qBittorrent || type == BitComet;
+		return type == uTorrent || type == BitTorrent || type == Transmission || type == Synology || type == Deluge || type == Bitflu || type == KTorrent || type == rTorrent || type == qBittorrent || type == BitComet || type == Dummy;
 	}
 	
 	public static boolean supportsRemoveWithData(Daemon type) {
-		return type == uTorrent || type == Vuze || type == Transmission || type == Deluge || type == BitTorrent || type == Tfb4rt || type == DLinkRouterBT || type == Bitflu || type == qBittorrent || type == BuffaloNas || type == BitComet || type == rTorrent;
+		return type == uTorrent || type == Vuze || type == Transmission || type == Deluge || type == BitTorrent || type == Tfb4rt || type == DLinkRouterBT || type == Bitflu || type == qBittorrent || type == BuffaloNas || type == BitComet || type == rTorrent || type == Dummy;
 	}
 
 	public static boolean supportsFilePrioritySetting(Daemon type) {
-		return type == BitTorrent || type == uTorrent || type == Transmission || type == KTorrent || type == rTorrent || type == Vuze || type == Deluge || type == qBittorrent;
+		return type == BitTorrent || type == uTorrent || type == Transmission || type == KTorrent || type == rTorrent || type == Vuze || type == Deluge || type == qBittorrent || type == Dummy;
 	}
 	
 	public static boolean supportsDateAdded(Daemon type) {
-		return type == Vuze || type == Transmission || type == rTorrent || type == Bitflu || type == BitComet;
+		return type == Vuze || type == Transmission || type == rTorrent || type == Bitflu || type == BitComet || type == Dummy;
 	}
 
 	public static boolean supportsLabels(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Deluge || type == BitComet || type == rTorrent; // || type == Vuze
+		return type == uTorrent || type == BitTorrent || type == Deluge || type == BitComet || type == rTorrent || type == Dummy; // || type == Vuze
 	}
 
 	public static boolean supportsSetLabel(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == rTorrent;
+		return type == uTorrent || type == BitTorrent || type == rTorrent || type == Dummy;
 	}
 
 	public static boolean supportsSetDownloadLocation(Daemon type) {
-		return type == Transmission || type == Deluge;
+		return type == Transmission || type == Deluge || type == Dummy;
 	}
 
 	public static boolean supportsSetAlternativeMode(Daemon type) {
-		return type == Transmission;
+		return type == Transmission || type == Dummy;
 	}
 
 	public static boolean supportsSetTrackers(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Deluge;
+		return type == uTorrent || type == BitTorrent || type == Deluge || type == Dummy;
 	}
 
 	public static boolean supportsExtraPassword(Daemon type) {

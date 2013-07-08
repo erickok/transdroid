@@ -84,6 +84,10 @@ public final class TorrentFile implements Parcelable, Comparable<TorrentFile> {
 		return priority;
 	}
 
+	public void mimicPriority(Priority newPriority) {
+		priority = newPriority;
+	}
+
 	public float getPartDone() {
 		return (float)downloaded / (float)totalSize;
 	}
