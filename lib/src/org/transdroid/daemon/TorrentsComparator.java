@@ -28,8 +28,9 @@ import java.util.Comparator;
  */
 public class TorrentsComparator implements Comparator<Torrent> {
 
-	TorrentsSortBy sortBy;
-	boolean reversed;
+	private TorrentsSortBy sortBy;
+	private boolean reversed;
+	private Comparator<String> alphanumComparator = new AlphanumComparator();
 	
 	/**
 	 * Instantiate a torrents comparator. The daemon type is used to check support for comparing on the set property. If
@@ -66,7 +67,7 @@ public class TorrentsComparator implements Comparator<Torrent> {
 			case Ratio:
 				return new Double(tor1.getRatio()).compareTo(new Double(tor2.getRatio()));
 			default:
-				return tor1.getName().toLowerCase().compareTo(tor2.getName().toLowerCase());
+				return alphanumComparator.compare(tor1.getName(), tor2.getName());
 			}
 		} else {
 			switch (sortBy) {
@@ -81,7 +82,7 @@ public class TorrentsComparator implements Comparator<Torrent> {
 			case Ratio:
 				return 0 - new Double(tor1.getRatio()).compareTo(new Double(tor2.getRatio()));
 			default:
-				return 0 - tor1.getName().toLowerCase().compareTo(tor2.getName().toLowerCase());
+				return 0 - alphanumComparator.compare(tor1.getName(), tor2.getName());
 			}
 		}
 	}

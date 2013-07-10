@@ -75,7 +75,9 @@ public class DummyAdapter implements IDaemonAdapter {
 		this.dummyLabels = new ArrayList<Label>();
 		String[] names = new String[] { "Documentary ", "Book ", "CD Image ", "Mix tape ", "App " };
 		String[] labels = new String[] { "docs", "books", "isos", "music", "software" };
-		TorrentStatus[] statuses = new TorrentStatus[] { TorrentStatus.Seeding, TorrentStatus.Downloading, TorrentStatus.Paused, TorrentStatus.Queued, TorrentStatus.Downloading, TorrentStatus.Seeding, TorrentStatus.Error };
+		TorrentStatus[] statuses = new TorrentStatus[] { TorrentStatus.Seeding, TorrentStatus.Downloading, 
+				TorrentStatus.Paused, TorrentStatus.Queued, TorrentStatus.Downloading, TorrentStatus.Seeding, 
+				TorrentStatus.Error };
 		Random random = new Random();
 		for (int i = 1; i < 26; i++) {
 			String name = names[i % names.length] + Integer.toString(i);
@@ -86,8 +88,8 @@ public class DummyAdapter implements IDaemonAdapter {
 			long left = status == TorrentStatus.Downloading ? (long) (size * random.nextDouble()) : 0;
 			int rateDownload = status == TorrentStatus.Downloading ? (int) (1024D * 100D * i * random.nextDouble())
 					: 0;
-			int rateUpload = status == TorrentStatus.Downloading || status == TorrentStatus.Seeding ? (int) (1024D * 1024D * i * random
-					.nextDouble()) : 0;
+			int rateUpload = status == TorrentStatus.Downloading || status == TorrentStatus.Seeding ? 
+					(int) (1024D * 100D * i * random.nextDouble()) : 0;
 			this.dummyTorrents.add(
 					new Torrent(
 							i, 
@@ -140,7 +142,8 @@ public class DummyAdapter implements IDaemonAdapter {
 
 				Torrent t = task.getTargetTorrent();
 				List<TorrentFile> dummyFiles = new ArrayList<TorrentFile>();
-				Priority priorities[] = new Priority[] { Priority.Normal, Priority.Normal, Priority.High, Priority.Low, Priority.Normal };
+				Priority priorities[] = new Priority[] { Priority.Normal, Priority.Normal, Priority.High, Priority.Low, 
+						Priority.Normal };
 				for (int i = 1; i < 16; i++) {
 					String fileName = "file_" + i + ".ext";
 					// Every file has equal part in the total size
@@ -154,7 +157,8 @@ public class DummyAdapter implements IDaemonAdapter {
 
 			case GetStats:
 				
-				return new GetStatsTaskSuccessResult((GetStatsTask) task, alternativeModeEnabled, 1024L * 1024L * 1024L * 100);
+				return new GetStatsTaskSuccessResult((GetStatsTask) task, alternativeModeEnabled, 1024L * 1024L * 
+						1024L * 100);
 				
 			case AddByFile:
 
