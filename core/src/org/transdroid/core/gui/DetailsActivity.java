@@ -47,6 +47,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
@@ -217,12 +218,19 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	public void removeTorrent(Torrent torrent, boolean withData) {
 		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded(
-					(DaemonTaskSuccessResult) result,
-					getString(withData ? R.string.result_removed_with_data : R.string.result_removed, torrent.getName()));
+			// Close the details activity (as the torrent is now removed)
+			closeActivity(getString(withData ? R.string.result_removed_with_data : R.string.result_removed,
+					torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result);
 		}
+	}
+
+	@UiThread
+	protected void closeActivity(String closeText) {
+		finish();
+		if (closeText != null)
+			Toast.makeText(this, closeText, Toast.LENGTH_LONG).show();
 	}
 
 	@Background
