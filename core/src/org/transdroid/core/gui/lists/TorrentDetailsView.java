@@ -84,7 +84,7 @@ public class TorrentDetailsView extends RelativeLayout {
 		downloadedunitText.setText(FileSizeConverter.getSizeUnit(torrent.getDownloadedEver()).toString());
 		uploadedText.setText(FileSizeConverter.getSize(torrent.getUploadedEver(), false));
 		uploadedunitText.setText(FileSizeConverter.getSizeUnit(torrent.getUploadedEver()).toString());
-		downspeedText.setText(getResources().getString(R.string.status_speed_down,
+		downspeedText.setText(getResources().getString(R.string.status_speed_down_details,
 				FileSizeConverter.getSize(torrent.getRateDownload()) + "/s"));
 		upspeedText.setText(getResources().getString(R.string.status_speed_up,
 				FileSizeConverter.getSize(torrent.getRateUpload()) + "/s"));
