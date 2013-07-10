@@ -35,12 +35,17 @@ import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
+import org.transdroid.daemon.task.GetStatsTask;
+import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
+import org.transdroid.daemon.task.SetAlternativeModeTask;
+import org.transdroid.daemon.task.SetDownloadLocationTask;
 import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
+import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.util.DLog;
 
 import android.net.Uri;
@@ -57,6 +62,9 @@ public class DummyAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private List<Torrent> dummyTorrents;
 	private List<Label> dummyLabels;
+	private boolean alternativeModeEnabled = false;
+	private List<String> trackersList = new ArrayList<String>(Arrays.asList("udp://tracker.com/announce:80",
+			"https://torrents.org/announce:443"));
 
 	/**
 	 * Initialises a dummy adapter with some dummy data that may be manipulated.
@@ -69,14 +77,14 @@ public class DummyAdapter implements IDaemonAdapter {
 		String[] labels = new String[] { "docs", "books", "isos", "music", "software" };
 		TorrentStatus[] statuses = new TorrentStatus[] { TorrentStatus.Seeding, TorrentStatus.Downloading, TorrentStatus.Paused, TorrentStatus.Queued, TorrentStatus.Downloading, TorrentStatus.Seeding, TorrentStatus.Error };
 		Random random = new Random();
-		for (int i = 0; i < 25; i++) {
+		for (int i = 1; i < 26; i++) {
 			String name = names[i % names.length] + Integer.toString(i);
 			TorrentStatus status = statuses[i % statuses.length];
 			int peersGetting = status == TorrentStatus.Downloading ? i * random.nextInt(16) : 0;
 			int peersSending = status == TorrentStatus.Downloading ? i * random.nextInt(16) : 0;
 			long size = (long) (1024D * 1024D * 1024D * i * random.nextDouble());
-			long left = status == TorrentStatus.Downloading ? (long) ((double)(size) / random.nextDouble()) : 0;
-			int rateDownload = status == TorrentStatus.Downloading ? (int) (1024D * 1024D * i * random.nextDouble())
+			long left = status == TorrentStatus.Downloading ? (long) (size * random.nextDouble()) : 0;
+			int rateDownload = status == TorrentStatus.Downloading ? (int) (1024D * 100D * i * random.nextDouble())
 					: 0;
 			int rateUpload = status == TorrentStatus.Downloading || status == TorrentStatus.Seeding ? (int) (1024D * 1024D * i * random
 					.nextDouble()) : 0;
@@ -96,7 +104,7 @@ public class DummyAdapter implements IDaemonAdapter {
 							(int) (status == TorrentStatus.Downloading?
 									left / rateDownload: 0), // Eta
 							size - left, 
-							(long)((double)(size - left * 2) * random.nextDouble()), // Up to twice the amount downloaded
+							(long)((double)(size - left) * 3D * random.nextDouble()), // Up to 3 times the amount downloaded
 							size, 
 							(float)(size - left) / size, // Part done
 							1F, // Always 100% available
@@ -108,8 +116,7 @@ public class DummyAdapter implements IDaemonAdapter {
 							settings.getType()));
 		}
 		for (String label : labels) {
-			// TODO: // Add count?
-			dummyLabels.add(new Label(label, 0));
+			dummyLabels.add(new Label(label, 5));
 		}
 	}
 
@@ -125,7 +132,7 @@ public class DummyAdapter implements IDaemonAdapter {
 			case GetTorrentDetails:
 
 				return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, new TorrentDetails(
-						Arrays.asList("udp://tracker.com/announce:80", "https://torrents.org/announce:443"),
+						trackersList,
 						task.getTargetTorrent().getStatusCode() == TorrentStatus.Error ? 
 								Arrays.asList("Trackers not working.", "Files not available.") : null));
 
@@ -133,8 +140,8 @@ public class DummyAdapter implements IDaemonAdapter {
 
 				Torrent t = task.getTargetTorrent();
 				List<TorrentFile> dummyFiles = new ArrayList<TorrentFile>();
-				Priority priorities[] = new Priority[] { Priority.Normal, Priority.High, Priority.High, Priority.Low, Priority.Normal };
-				for (int i = 0; i < 25; i++) {
+				Priority priorities[] = new Priority[] { Priority.Normal, Priority.Normal, Priority.High, Priority.Low, Priority.Normal };
+				for (int i = 1; i < 16; i++) {
 					String fileName = "file_" + i + ".ext";
 					// Every file has equal part in the total size
 					long size = t.getTotalSize() / 25;
@@ -145,6 +152,10 @@ public class DummyAdapter implements IDaemonAdapter {
 				}
 				return new GetFileListTaskSuccessResult((GetFileListTask) task, dummyFiles);
 
+			case GetStats:
+				
+				return new GetStatsTaskSuccessResult((GetStatsTask) task, alternativeModeEnabled, 1024L * 1024L * 1024L * 100);
+				
 			case AddByFile:
 
 				String file = ((AddByFileTask) task).getFile();
@@ -251,9 +262,19 @@ public class DummyAdapter implements IDaemonAdapter {
 
 			case SetTrackers:
 
-				// TODO: Override the trackers?
+				trackersList = new ArrayList<String>(((SetTrackersTask)task).getNewTrackers());
 				return new DaemonTaskSuccessResult(task);
 
+			case SetDownloadLocation:
+				
+				task.getTargetTorrent().mimicNewLocation(((SetDownloadLocationTask) task).getNewLocation());
+				return new DaemonTaskSuccessResult(task);
+				
+			case SetAlternativeMode:
+				
+				alternativeModeEnabled = ((SetAlternativeModeTask) task).isAlternativeModeEnabled();
+				return new DaemonTaskSuccessResult(task);
+				
 			default:
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
 						task.getMethod() + " is not supported by " + getType()));

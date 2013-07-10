@@ -35,7 +35,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 	final private String hash;
 	final private String name;
 	private TorrentStatus statusCode;
-	final private String locationDir;
+	private String locationDir;
 	
 	final private int rateDownload;
 	final private int rateUpload;
@@ -244,6 +244,10 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 
 	public void mimicNewLabel(String newLabel) {
 		label = newLabel;
+	}
+
+	public void mimicNewLocation(String newLocation) {
+		locationDir = newLocation;
 	}
 	
 	@Override
