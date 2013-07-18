@@ -83,7 +83,9 @@ public class RssitemsFragment extends SherlockFragment {
 
 	@ItemClick(resName = "rssitems_list")
 	protected void onItemClicked(Item item) {
-		startActivity(new Intent(Intent.ACTION_VIEW, item.getTheLinkUri()));
+		Intent i = new Intent(Intent.ACTION_VIEW, item.getTheLinkUri());
+		i.putExtra("TORRENT_TITLE", item.getTitle());
+		startActivity(i);
 	}
 
 	private MultiChoiceModeListenerCompat onItemsSelected = new MultiChoiceModeListenerCompat() {

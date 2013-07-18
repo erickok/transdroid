@@ -639,7 +639,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Background
 	public void addTorrentByUrl(String url, String title) {
 		DaemonTaskResult result = AddByUrlTask.create(currentConnection, url, title).execute();
-		if (result instanceof DaemonTaskResult) {
+		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
 			refreshTorrents();
 		} else {
@@ -650,7 +650,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Background
 	protected void addTorrentByMagnetUrl(String url) {
 		DaemonTaskResult result = AddByMagnetUrlTask.create(currentConnection, url).execute();
-		if (result instanceof DaemonTaskResult) {
+		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, "Torrent"));
 			refreshTorrents();
 		} else {
@@ -661,7 +661,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Background
 	protected void addTorrentByFile(String localFile, String title) {
 		DaemonTaskResult result = AddByFileTask.create(currentConnection, localFile).execute();
-		if (result instanceof DaemonTaskResult) {
+		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
 			refreshTorrents();
 		} else {

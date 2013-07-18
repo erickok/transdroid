@@ -121,8 +121,8 @@ public class Channel implements Parcelable {
 		out.writeString(description);
 		out.writeLong(pubDate == null ? -1 : pubDate.getTime());
 		out.writeLong(lastBuildDate);
-		out.writeStringList(categories);
 		out.writeTypedList(items);
+		out.writeStringList(categories);
 		out.writeString(image);
 	}
 
