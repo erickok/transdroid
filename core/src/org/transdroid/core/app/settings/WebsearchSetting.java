@@ -1,6 +1,7 @@
 package org.transdroid.core.app.settings;
 
 import org.transdroid.core.gui.lists.SimpleListItem;
+import org.transdroid.core.gui.search.SearchSetting;
 
 import android.net.Uri;
 import android.text.TextUtils;
@@ -9,7 +10,7 @@ import android.text.TextUtils;
  * Represents a user-specified website that can be searched (by starting the browser, rather than in-app)
  * @author Eric Kok
  */
-public class WebsearchSetting implements SimpleListItem {
+public class WebsearchSetting implements SimpleListItem, SearchSetting {
 
 	private static final String DEFAULT_NAME = "Default";
 	private static final String KEY_PREFIX = "websearch_";

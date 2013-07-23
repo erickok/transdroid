@@ -1,12 +1,13 @@
 package org.transdroid.core.app.search;
 
 import org.transdroid.core.gui.lists.SimpleListItem;
+import org.transdroid.core.gui.search.SearchSetting;
 
 /**
  * Represents an available torrent site that can be searched using the Torrent Search package.
  * @author Eric Kok
  */
-public class SearchSite implements SimpleListItem {
+public class SearchSite implements SimpleListItem, SearchSetting {
 
 	private final int id;
 	private final String key;
@@ -34,6 +35,11 @@ public class SearchSite implements SimpleListItem {
 	}
 
 	public String getRssFeedUrl() {
+		return rssFeedUrl;
+	}
+
+	@Override
+	public String getBaseUrl() {
 		return rssFeedUrl;
 	}
 	

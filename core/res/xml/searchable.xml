@@ -3,6 +3,6 @@
 <searchable xmlns:android="http://schemas.android.com/apk/res/android"
 	android:label="@string/search_torrentsearch"
 	android:hint="@string/search_hint" 
-	android:searchSuggestAuthority="org.transdroid.core.gui.SearchHistoryProvider"
+	android:searchSuggestAuthority="org.transdroid.core.gui.search.SearchHistoryProvider"
 	android:searchSuggestSelection=" ? " />
 	

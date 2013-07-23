@@ -1,12 +1,17 @@
 package org.transdroid.core.app.settings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EBean.Scope;
 import org.androidannotations.annotations.RootContext;
+import org.transdroid.core.app.search.SearchHelper;
+import org.transdroid.core.app.search.SearchSite;
+import org.transdroid.core.gui.search.SearchSetting;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.OS;
 import org.transdroid.daemon.TorrentsSortBy;
@@ -26,6 +31,8 @@ public class ApplicationSettings {
 	@RootContext
 	protected Context context;
 	private SharedPreferences prefs;
+	@Bean
+	protected SearchHelper searchHelper;
 
 	protected ApplicationSettings(Context context) {
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -40,7 +47,7 @@ public class ApplicationSettings {
 		for (int i = 0; i <= getMaxServer(); i++) {
 			servers.add(getServerSetting(i));
 		}
-		return servers;
+		return Collections.unmodifiableList(servers);
 	}
 
 	/**
@@ -208,7 +215,7 @@ public class ApplicationSettings {
 		for (int i = 0; i <= getMaxWebsearch(); i++) {
 			websearches.add(getWebsearchSetting(i));
 		}
-		return websearches;
+		return Collections.unmodifiableList(websearches);
 	}
 
 	/**
@@ -271,7 +278,7 @@ public class ApplicationSettings {
 		for (int i = 0; i <= getMaxRssfeed(); i++) {
 			rssfeeds.add(getRssfeedSetting(i));
 		}
-		return rssfeeds;
+		return Collections.unmodifiableList(rssfeeds);
 	}
 
 	/**
@@ -371,6 +378,86 @@ public class ApplicationSettings {
 	 */
 	public boolean getLastUsedSortDescending() {
 		return prefs.getBoolean("system_lastusedsortdirection", false);
+	}
+
+	/**
+	 * Returns the list of all available in-app search sites as well as all web searches that the user configured.
+	 * @return A list of search settings, all of which are either a {@link SearchSite} or {@link WebsearchSetting}
+	 */
+	public List<SearchSetting> getSearchSettings() {
+		List<SearchSetting> all = new ArrayList<SearchSetting>();
+		all.addAll(searchHelper.getAvailableSites());
+		all.addAll(getWebsearchSettings());
+		return Collections.unmodifiableList(all);
+	}
+	
+	/**
+	 * Returns the settings of the search site that was last used by the user or was selected by the user as default
+	 * site in the main settings. As opposed to getLastUsedSearchSiteKey(int), this method checks whether a site was
+	 * already registered as being last used (or set as default) and checks whether the site still exists. It returns
+	 * the first in-app search site if that fails.
+	 * @return A site settings object of the last used server (or, if not known, the first server), or null if no
+	 *         servers exist
+	 */
+	public SearchSetting getLastUsedSearchSite() {
+		String lastKey = getLastUsedSearchSiteKey();
+		List<SearchSite> allsites = searchHelper.getAvailableSites();
+		int lastWebsearch = -1;
+		try {
+			lastWebsearch = Integer.parseInt(lastKey);
+		} catch (Exception e) {
+			// Not an in-app search site, but probably an in-app search
+		}
+
+		if (lastKey == null) {
+			// No site yet set specified; return the first in-app one, if available
+			if (allsites != null) {
+				return allsites.get(0);
+			}
+			return null;
+		}
+		
+		if (lastWebsearch >= 0) {
+			// The last used site should be a user-configured web search site
+			int max = getMaxWebsearch(); // Zero-based index, so with max == 0 there is 1 server
+			if (max < 0 || lastWebsearch > max) {
+				// No web search sites configured
+				return null;
+			}
+			return getWebsearchSetting(lastWebsearch);
+		}
+		
+		// Should be an in-app search key
+		if (allsites != null) {
+			for (SearchSite searchSite : allsites) {
+				if (searchSite.getKey().equals(lastKey)) {
+					return searchSite;
+				}
+			}
+			// Not found at all; probably a no longer existing web search; return the first in-app one
+			return allsites.get(0);
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Returns the unique key of the site that the used last used or selected as default form the main settings; use
+	 * with getLastUsedSearchSite directly. WARNING: the returned string may no longer refer to a known web search site
+	 * or in-app search settings object.
+	 * @return A string indicating the key of the last used search site, or null if no site was yet used or set as
+	 *         default
+	 */
+	private String getLastUsedSearchSiteKey() {
+		return prefs.getString("header_setsearchsite", null);
+	}
+
+	/**
+	 * Registers the unique key of some web search or in-app search site as being last used by the user
+	 * @param order The key identifying the specific server
+	 */
+	public void setLastUsedSearchSite(String siteKey) {
+		prefs.edit().putString("header_setsearchsite", siteKey).commit();
 	}
 
 }

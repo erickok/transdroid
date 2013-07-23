@@ -38,6 +38,7 @@
 	<string name="action_priority_high">High</string>
 	<string name="action_remoteplay">Remote play in VLC</string>
 	<string name="action_download">Download using (S)FTP</string>
+	<string name="action_showdetails">Show details</string>
 	<string name="action_removesettings">Remove settings</string>
 	<string name="action_visitwebsite">Visit transdroid.org</string>
 	
@@ -117,8 +118,18 @@
 	
 	<string name="search_torrentsearch">Torrent search</string>
 	<string name="search_hint">Search for torrents</string>
+	<string name="search_noresults">No results for your query</string>
+	<string name="search_seeders">S: %1$s</string>
+	<string name="search_leechers">L: %1$s</string>
+	<string name="search_installsearch">This feature requires a one-time installation of the Torrent Search module. Click download to get the install package (apk) from transdroid.org and restart your search.</string>
+	<string name="search_download">Download module</string>
+	<string name="search_openingdetails">Opening details for %1$s</string>
 	<string name="search_barcodescannernotfound">The Barcode Scanner could not be found. Would you like to install it from the Play Store?</string>
 	<string name="search_filemanagernotfound">No compatible file manager could not be found. Would you like to install IO File Manager from the Play Store?</string>
+	<plurals name="search_resutlsselected">
+		<item quantity="one">%1$d result selected</item>
+		<item quantity="other">%1$d results selected</item>
+	</plurals>
 	
 	<string name="rss_feeds">RSS feeds</string>
 	<string name="rss_nosettings">You have not defined any RSS feeds yet to monitor. Torrent-specific RSS feeds keep you up to date with new releases and you are notified of new items.</string>
@@ -130,7 +141,7 @@
 		<item quantity="one">%1$d item selected</item>
 		<item quantity="other">%1$d items selected</item>
 	</plurals>
-	
+		
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
 	<string name="pref_searchsites">Search sites</string>

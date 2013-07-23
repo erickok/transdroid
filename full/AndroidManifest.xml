@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.transdroid.full"
-	android:versionCode="1"
-	android:versionName="2.0-alpha1" >
+	android:versionCode="2"
+	android:versionName="2.0-alpha2" >
 
 	<uses-sdk
 		android:minSdkVersion="7"
@@ -146,10 +146,9 @@
 
 				<data android:scheme="magnet" />
 			</intent-filter>
-
 			<meta-data
 				android:name="android.app.default_searchable"
-				android:value="org.transdroid.core.gui.SearchActivity_" />
+				android:value="org.transdroid.core.gui.search.SearchActivity_" />
 		</activity>
 		<activity
 			android:name="org.transdroid.core.gui.DetailsActivity_"
@@ -168,10 +167,11 @@
 
 		<!-- Search -->
 		<activity
-			android:name="org.transdroid.core.gui.SearchActivity_"
+			android:name="org.transdroid.core.gui.search.SearchActivity_"
 			android:icon="@drawable/ic_launcher"
 			android:label="@string/search_torrentsearch"
-			android:theme="@style/TransdroidTheme" >
+			android:theme="@style/TransdroidTheme"
+			android:launchMode="singleTask" >
 			<intent-filter>
 				<action android:name="android.intent.action.SEARCH" />
 
@@ -186,13 +186,17 @@
 			</intent-filter>
 
 			<meta-data
-				android:name="android.app.default_searchable"
-				android:value="org.transdroid.gui.search.Search" />
-			<meta-data
 				android:name="android.app.searchable"
 				android:resource="@xml/searchable" />
+			<meta-data
+				android:name="android.app.default_searchable"
+				android:value="org.transdroid.core.gui.search.SearchActivity_" />
 		</activity>
-
+	    <provider
+	    	android:name="org.transdroid.core.gui.search.TorrentSearchHistoryProvider" 
+	    	android:authorities="org.transdroid.core.gui.search.TorrentSearchHistoryProvider"
+	    	android:exported="false" />
+		
 		<!-- RSS -->
 		<activity
 			android:name="org.transdroid.core.gui.rss.RssfeedsActivity_"
@@ -203,14 +207,6 @@
 			android:label="@string/rss_feeds"
 			android:theme="@style/TransdroidTheme" />
 
-		<provider
-			android:name="org.transdroid.core.gui.SearchHistoryProvider"
-			android:authorities="org.transdroid.core.gui.SearchHistoryProvider"
-			android:exported="false" />
-
-		<meta-data
-			android:name="android.app.default_searchable"
-			android:value="org.transdroid.core.gui.SearchActivity_" />
 	</application>
 
 </manifest>

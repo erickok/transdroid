@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.transdroid.core.gui.rss.RssitemStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:background="?attr/selectable_background_transdroid"
+	android:paddingBottom="@dimen/margin_half"
+	android:paddingLeft="@dimen/margin_default"
+	android:paddingRight="@dimen/margin_default"
+	android:paddingTop="@dimen/margin_half" >
+
+	<TextView
+		android:id="@+id/name_text"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:fontFamily="sans-serif-condensed"
+		android:textColor="?attr/text_bright"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_enlarged" />
+
+	<TextView
+		android:id="@+id/leechers_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/name_text"
+		android:layout_alignParentRight="true"
+		android:layout_marginTop="4dip"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_small" />
+	
+	<TextView
+		android:id="@+id/seeders_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@id/leechers_text"
+		android:layout_toLeftOf="@id/leechers_text"
+		android:layout_marginRight="@dimen/margin_default"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_small" />
+	
+	<TextView
+		android:id="@+id/size_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@id/leechers_text"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_small" />
+
+	<TextView
+		android:id="@+id/date_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@id/leechers_text"
+		android:layout_toRightOf="@id/size_text"
+		android:layout_marginRight="@dimen/margin_default"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_small" />
+	
+</org.transdroid.core.gui.rss.RssitemStatusLayout>

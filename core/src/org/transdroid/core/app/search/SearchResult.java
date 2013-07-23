@@ -2,11 +2,14 @@ package org.transdroid.core.app.search;
 
 import java.util.Date;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Represents a search result as retrieved by querying the Torrent Search package.
  * @author Eric Kok
  */
-public class SearchResult {
+public class SearchResult implements Parcelable {
 
 	private final int id;
 	private final String name;
@@ -59,6 +62,45 @@ public class SearchResult {
 
 	public String getLeechers() {
 		return leechers;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeInt(id);
+		out.writeString(name);
+		out.writeString(torrentUrl);
+		out.writeString(detailsUrl);
+		out.writeString(size);
+		out.writeLong(addedOn == null ? -1 : addedOn.getTime());
+		out.writeString(seeders);
+		out.writeString(leechers);
+	}
+
+	public static final Parcelable.Creator<SearchResult> CREATOR = new Parcelable.Creator<SearchResult>() {
+		public SearchResult createFromParcel(Parcel in) {
+			return new SearchResult(in);
+		}
+
+		public SearchResult[] newArray(int size) {
+			return new SearchResult[size];
+		}
+	};
+
+	public SearchResult(Parcel in) {
+		id = in.readInt();
+		name = in.readString();
+		torrentUrl = in.readString();
+		detailsUrl = in.readString();
+		size = in.readString();
+		long addedOnIn = in.readLong();
+		addedOn = addedOnIn == -1 ? null : new Date(addedOnIn);
+		seeders = in.readString();
+		leechers = in.readString();
 	}
 
 }

@@ -76,14 +76,14 @@ public class SearchHelper {
 	}
 
 	/**
-	 * Queries the Torrent Search module to search for torrents on the web. This method is synchornous and should always
+	 * Queries the Torrent Search module to search for torrents on the web. This method is synchronous and should always
 	 * be called in a background thread.
 	 * @param query The search query to pass to the torrent site
 	 * @param site The site to search, as retrieved from the TorrentSitesProvider, or null if the Torrent Search package
 	 * @param sortBy.name() The sort order to request from the torrent site, if supported
 	 * @return A list of torrent search results as POJOs, or null if the Torrent Search package is not installed
 	 */
-	public List<SearchResult> search(String query, SearchSite site, SearchSortOrder sortBy) {
+	public ArrayList<SearchResult> search(String query, SearchSite site, SearchSortOrder sortBy) {
 
 		// Try to query the TorrentSearchProvider to search for torrents on the web
 		Uri uri = Uri.parse("content://org.transdroid.search.torrentsearchprovider/search/" + query);
@@ -96,7 +96,7 @@ public class SearchHelper {
 					sortBy.name());
 		}
 		if (cursor.moveToFirst()) {
-			List<SearchResult> results = new ArrayList<SearchResult>();
+			ArrayList<SearchResult> results = new ArrayList<SearchResult>();
 			do {
 				// Read the cursor fields into the SearchResult object
 				results.add(new SearchResult(cursor.getInt(CURSOR_SEARCH_ID), cursor.getString(CURSOR_SEARCH_NAME),
