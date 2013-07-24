@@ -6,6 +6,7 @@ import org.transdroid.core.R;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.text.Spannable;
@@ -34,6 +35,7 @@ public class NavigationHelper {
 
 	@RootContext
 	protected Context context;
+	private Boolean inDebugMode;
 	private static ImageLoader imageCache;
 
 	/**
@@ -86,6 +88,23 @@ public class NavigationHelper {
 			return appName + " " + m.versionName + " (" + m.versionCode + ")";
 		} catch (NameNotFoundException e) {
 			return appName;
+		}
+	}
+
+	/**
+	 * Returns whether the application is running in debug mode, as opposed to release mode. Use to show/hide features
+	 * in the ui based on the build mode.
+	 * @return True if the app is compiled in/running as debug mode, false otherwise
+	 */
+	public boolean inDebugMode() {
+		try {
+			if (inDebugMode == null) {
+				PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+				inDebugMode = (pi.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+			}
+			return inDebugMode;
+		} catch (NameNotFoundException e) {
+			return false;
 		}
 	}
 

@@ -3,9 +3,11 @@ package org.transdroid.core.gui.log;
 import java.sql.SQLException;
 import java.util.Date;
 
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EBean.Scope;
 import org.androidannotations.annotations.OrmLiteDao;
+import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.daemon.util.ITLogger;
 
 import android.content.Context;
@@ -27,13 +29,16 @@ public class Log implements ITLogger {
 	private Context context;
 	@OrmLiteDao(helper = DatabaseHelper.class, model = ErrorLogEntry.class)
 	Dao<ErrorLogEntry, Integer> errorLogDao;
+	@Bean
+	protected NavigationHelper navigationHelper;
 
 	protected Log(Context context) {
 		this.context = context;
 	}
 	
 	protected void log(String logName, int priority, String message) {
-		android.util.Log.println(priority, LOG_NAME, message);
+		if (!navigationHelper.inDebugMode())
+			android.util.Log.println(priority, LOG_NAME, message);
 		try {
 			// Store this log message to the database
 			errorLogDao.create(new ErrorLogEntry(priority, logName, message));
