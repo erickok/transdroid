@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <searchable xmlns:android="http://schemas.android.com/apk/res/android"
+	android:hint="@string/search_hint"
 	android:label="@string/search_torrentsearch"
-	android:hint="@string/search_hint" 
-	android:searchSuggestAuthority="org.transdroid.core.gui.search.SearchHistoryProvider"
-	android:searchSuggestSelection=" ? " />
-	
+	android:searchSuggestAuthority="org.transdroid.core.gui.search.TorrentSearchHistoryProvider"
+	android:searchSuggestThreshold="0"
+	android:searchSuggestSelection=" ?" />

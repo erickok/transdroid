@@ -57,7 +57,7 @@ public class SearchHelper {
 			// Torrent Search package is not yet installed
 			return null;
 		}
-		
+
 		// Query the available in-app torrent search sites
 		Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
 		if (cursor.moveToFirst()) {
@@ -81,7 +81,8 @@ public class SearchHelper {
 	 * @param query The search query to pass to the torrent site
 	 * @param site The site to search, as retrieved from the TorrentSitesProvider, or null if the Torrent Search package
 	 * @param sortBy.name() The sort order to request from the torrent site, if supported
-	 * @return A list of torrent search results as POJOs, or null if the Torrent Search package is not installed
+	 * @return A list of torrent search results as POJOs, or null if the Torrent Search package is not installed or
+	 *         there is no internet connection
 	 */
 	public ArrayList<SearchResult> search(String query, SearchSite site, SearchSortOrder sortBy) {
 
@@ -94,6 +95,10 @@ public class SearchHelper {
 		} else {
 			cursor = context.getContentResolver().query(uri, null, "SITE = ?", new String[] { site.getKey() },
 					sortBy.name());
+		}
+		if (cursor == null) {
+			// The content provider could not load any content (for example when there is no connection)
+			return null;
 		}
 		if (cursor.moveToFirst()) {
 			ArrayList<SearchResult> results = new ArrayList<SearchResult>();

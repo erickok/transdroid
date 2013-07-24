@@ -51,7 +51,7 @@
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@id/leechers_text"
 		android:layout_toRightOf="@id/size_text"
-		android:layout_marginRight="@dimen/margin_default"
+		android:layout_marginLeft="@dimen/margin_default"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small" />
 	
