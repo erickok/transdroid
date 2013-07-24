@@ -13,10 +13,8 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchSite;
-import org.transdroid.core.app.settings.ApplicationSettings;
-import org.transdroid.core.app.settings.SystemSettings_;
-import org.transdroid.core.app.settings.WebsearchSetting;
-import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.app.settings.*;
+import org.transdroid.core.gui.*;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 
 import android.annotation.TargetApi;
@@ -97,8 +95,10 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 		int lastUsedPosition = -1;
 		if (lastUsedSite != null) {
 			for (int i = 0; i < searchSites.size(); i++) {
-				if (searchSites.get(i).getKey().equals(lastUsedSite.getKey()))
+				if (searchSites.get(i).getKey().equals(lastUsedSite.getKey())) {
 					lastUsedPosition = i;
+					break;
+				}
 			}
 		}
 
@@ -117,7 +117,8 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 			// Use the action bar spinner to select sites
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			getSupportActionBar().setDisplayShowTitleEnabled(false);
-			getSupportActionBar().setListNavigationCallbacks(new SearchSettingsDropDownAdapter(this, searchSites), this);
+			getSupportActionBar()
+					.setListNavigationCallbacks(new SearchSettingsDropDownAdapter(this, searchSites), this);
 			// Select the last used site; this also starts the search!
 			if (lastUsedPosition >= 0)
 				getSupportActionBar().setSelectedNavigationItem(lastUsedPosition);
@@ -168,7 +169,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 	}
 
 	private void handleIntent(Intent intent) {
-		lastUsedQuery = getQuery(intent);
+		lastUsedQuery = parseQuery(intent);
 		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(lastUsedQuery));
 
 		// Is this actually a full HTTP URL? Then redirect this request to add the URL directly
@@ -208,7 +209,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 	 * Extracts the query string from the search {@link Intent}
 	 * @return The query string that was entered by the user
 	 */
-	private String getQuery(Intent intent) {
+	private String parseQuery(Intent intent) {
 
 		String query = null;
 		if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
@@ -235,7 +236,9 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 			startActivity(new Intent(Intent.ACTION_VIEW,
 					Uri.parse(String.format(websearch.getBaseUrl(), lastUsedQuery))));
 		} else if (lastUsedSite instanceof SearchSite) {
-			// Ask the resutls fragment to start a search for the specified query
+			// Save the search site currently used to search for future usage
+			applicationSettings.setLastUsedSearchSite((SearchSite) lastUsedSite);
+			// Ask the results fragment to start a search for the specified query
 			fragmentResults.startSearch(lastUsedQuery, (SearchSite) lastUsedSite);
 		}
 	}

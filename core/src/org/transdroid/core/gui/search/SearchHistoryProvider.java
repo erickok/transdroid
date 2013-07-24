@@ -14,7 +14,6 @@ public class SearchHistoryProvider extends SearchRecentSuggestionsProvider {
 	public final static int MODE = DATABASE_MODE_QUERIES;
 
 	public SearchHistoryProvider() {
-		super();
 		setupSuggestions(AUTHORITY, MODE);
 	}
 

@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 public class SearchSettingsDropDownAdapter extends FilterListItemAdapter {
 
 	private final Context context;
-	protected SearchSettingSelectionView searchSettingView = null;
 
 	public SearchSettingsDropDownAdapter(Context context, List<? extends SimpleListItem> items) {
 		super(context, items);
@@ -27,11 +26,14 @@ public class SearchSettingsDropDownAdapter extends FilterListItemAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// This returns the item to show in the action bar spinner
-		if (searchSettingView == null) {
-			searchSettingView = SearchSettingSelectionView_.build(context);
+		SearchSettingSelectionView filterItemView;
+		if (convertView == null || !(convertView instanceof SearchSettingSelectionView)) {
+			filterItemView = SearchSettingSelectionView_.build(context);
+		} else {
+			filterItemView = (SearchSettingSelectionView) convertView;
 		}
-		searchSettingView.bind((SearchSetting) getItem(position));
-		return searchSettingView;
+		filterItemView.bind((SearchSetting) getItem(position));
+		return filterItemView;
 	}
 
 	@Override

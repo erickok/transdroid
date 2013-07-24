@@ -456,8 +456,8 @@ public class ApplicationSettings {
 	 * Registers the unique key of some web search or in-app search site as being last used by the user
 	 * @param order The key identifying the specific server
 	 */
-	public void setLastUsedSearchSite(String siteKey) {
-		prefs.edit().putString("header_setsearchsite", siteKey).commit();
+	public void setLastUsedSearchSite(SearchSite site) {
+		prefs.edit().putString("header_setsearchsite", site.getKey()).commit();
 	}
 
 }
