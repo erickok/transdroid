@@ -28,9 +28,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.*;
-import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.*;
@@ -69,6 +67,7 @@ import org.transdroid.daemon.task.SetDownloadLocationTask;
 import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
+import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
 import org.transdroid.daemon.util.DLog;
@@ -854,6 +853,17 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 				new ArrayList<TorrentFile>(files)).execute();
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result, false);
+		}
+	}
+
+	@Background
+	public void updateMaxSpeeds(Integer maxDownloadSpeed, Integer maxUploadSpeed) {
+		DaemonTaskResult result = SetTransferRatesTask.create(currentConnection, maxUploadSpeed, maxDownloadSpeed)
+				.execute();
+		if (result instanceof DaemonTaskResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_maxspeedsset));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}

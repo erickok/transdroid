@@ -94,6 +94,11 @@
 	<string name="status_trackers">TRACKERS</string>
 	<string name="status_errors">ERRORS</string>
 	<string name="status_files">FILES</string>
+	<string name="status_maxspeed">Maximum transfer speeds</string>
+	<string name="status_maxspeed_down">MAX DOWNLOAD</string>
+	<string name="status_maxspeed_up">MAX UPLOAD</string>
+	<string name="status_maxspeed_unit">KB/S</string>
+	<string name="status_maxspeed_reset">Reset</string>
 	
 	<string name="labels_showall">All labels</string>
 	<string name="labels_unlabeled">Unlabeled</string>
@@ -115,6 +120,7 @@
 	<string name="result_labelset">Label set to \'%1$s\'</string>
 	<string name="result_locationset">Torrent moved to \'%1$s\'</string>
 	<string name="result_priotitiesset">File priorities updated</string>
+	<string name="result_maxspeedsset">Maximum transfer speeds set</string>
 	
 	<string name="search_torrentsearch">Torrent search</string>
 	<string name="search_hint">Search for torrents</string>
@@ -305,6 +311,7 @@
 	<string name="error_no_valid_settings_file">File does not seem to contain Transdroid settings</string>
 	<string name="error_file_not_found">The settings file could not be found</string>
 	<string name="error_cant_write_settings_file">Can\'t write to the settings file</string>
+	<string name="error_notanumber">Please enter a positive number</string>
 	
 	<string name="system_name" translatable="false">Transdroid</string>
 	<string name="system_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>

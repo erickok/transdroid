@@ -33,6 +33,10 @@ Some code/libraries are used in the project:
     Idea: Cyril Mottier
     Apache License, Version 2.0
     https://github.com/keyboardsurfer/Crouton
+  BetterPickers
+    Derek Brameyer
+    Apache License, Version 2.0
+    https://github.com/derekbrameyer/android-betterpickers
   Base16Encoder
     Marc Prud'hommeaux
     Apache OpenJPA

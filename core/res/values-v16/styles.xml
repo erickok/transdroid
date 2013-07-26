@@ -37,4 +37,11 @@
 		<item name="android:fontFamily">sans-serif-condensed</item>
 	</style>
 	
+	<style name="BigNumberButton" parent="android:Widget.Holo">
+		<item name="android:background">@drawable/selectable_background_transdroid</item>
+		<item name="android:padding">@dimen/margin_half</item>
+		<item name="android:textSize">32sp</item>
+		<item name="android:fontFamily">sans-serif-light</item>
+	</style>
+	
 </resources>

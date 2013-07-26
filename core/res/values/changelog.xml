@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="system_changelog">
+Transdroid 2.0.0-alpha3\n
+- Added torrent search\n
+- Setting of max. up/down speeds\n
+\n
 Transdroid 2.0.0-alpha2\n
 - Fixed Transmission adapter folder setting\n
 - Fixed RSS feed screens\n
