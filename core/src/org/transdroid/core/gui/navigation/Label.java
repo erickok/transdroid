@@ -1,6 +1,7 @@
 package org.transdroid.core.gui.navigation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.transdroid.core.gui.lists.SimpleListItem;
@@ -14,7 +15,7 @@ import android.text.TextUtils;
  * Represents some label that is active or available on the server.
  * @author Eric Kok
  */
-public class Label implements SimpleListItem, NavigationFilter {
+public class Label implements SimpleListItem, NavigationFilter, Comparable<Label> {
 
 	private static String unnamedLabelText = null;
 
@@ -45,6 +46,11 @@ public class Label implements SimpleListItem, NavigationFilter {
 		return torrent.getLabelName() != null && torrent.getLabelName().equals(name);
 	}
 
+	@Override
+	public int compareTo(Label another) {
+		return this.name.compareTo(another.getName());
+	}
+
 	/**
 	 * Converts a list of labels as retrieved from a server daemon into a list of labels that can be used in the UI as
 	 * navigation filters.
@@ -61,6 +67,7 @@ public class Label implements SimpleListItem, NavigationFilter {
 		for (org.transdroid.daemon.Label label : daemonLabels) {
 			localLabels.add(new Label(label));
 		}
+		Collections.sort(localLabels);
 		return localLabels;
 	}
 

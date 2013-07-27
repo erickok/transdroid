@@ -123,6 +123,7 @@
 	<string name="result_started_all">Torrents started (refreshing)</string>
 	<string name="result_trackersupdated">Trackers updated</string>
 	<string name="result_labelset">Label set to \'%1$s\'</string>
+	<string name="result_labelremoved">Label removed</string>
 	<string name="result_locationset">Torrent moved to \'%1$s\'</string>
 	<string name="result_priotitiesset">File priorities updated</string>
 	<string name="result_maxspeedsset">Maximum transfer speeds set</string>

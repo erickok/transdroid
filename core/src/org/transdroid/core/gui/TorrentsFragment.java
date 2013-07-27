@@ -3,7 +3,6 @@ package org.transdroid.core.gui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 import org.androidannotations.annotations.AfterViews;
@@ -16,8 +15,11 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.gui.lists.TorrentsAdapter;
 import org.transdroid.core.gui.lists.TorrentsAdapter_;
+import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
+import org.transdroid.core.gui.navigation.SetLabelDialog;
+import org.transdroid.core.gui.navigation.SetLabelDialog.OnLabelPickedListener;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentsComparator;
@@ -41,13 +43,17 @@ import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat
  * @author Eric Kok
  */
 @EFragment(resName = "fragment_torrents")
-public class TorrentsFragment extends SherlockFragment {
+public class TorrentsFragment extends SherlockFragment implements OnLabelPickedListener {
 
 	// Local data
 	@Bean
 	protected ApplicationSettings applicationSettings;
 	@InstanceState
 	protected ArrayList<Torrent> torrents = null;
+	@InstanceState
+	protected ArrayList<Torrent> lastMultiSelectedTorrents;
+	@InstanceState
+	protected ArrayList<Label> currentLabels;
 	@InstanceState
 	protected NavigationFilter currentNavigationFilter = null;
 	@InstanceState
@@ -87,7 +93,7 @@ public class TorrentsFragment extends SherlockFragment {
 		torrentsList.setMultiChoiceModeListener(onTorrentsSelected);
 		torrentsList.setFastScrollEnabled(true);
 		if (torrents != null)
-			updateTorrents(torrents);
+			updateTorrents(torrents, currentLabels);
 
 	}
 
@@ -95,21 +101,24 @@ public class TorrentsFragment extends SherlockFragment {
 	 * Updates the list adapter to show a new list of torrent objects, replacing the old torrents completely
 	 * @param newTorrents The new, updated list of torrents
 	 */
-	public void updateTorrents(ArrayList<Torrent> newTorrents) {
-		torrents = newTorrents;
-		applyNavigationFilter(null); // Resets the filter and shown list of torrents
+	public void updateTorrents(ArrayList<Torrent> newTorrents, ArrayList<Label> currentLabels) {
+		this.torrents = newTorrents;
+		this.currentLabels = currentLabels;
+		applyAllFilters();
 	}
 
 	/**
 	 * Clears the currently visible list of torrents.
 	 * @param b
 	 */
-	public void clear(boolean clearError) {
+	public void clear(boolean clearError, boolean clearFilter) {
 		this.torrents = null;
 		if (clearError)
 			this.connectionErrorMessage = null;
-		this.currentTextFilter = null;
-		this.currentNavigationFilter = null;
+		if (clearFilter) {
+			this.currentTextFilter = null;
+			this.currentNavigationFilter = null;
+		}
 		applyAllFilters();
 	}
 
@@ -203,7 +212,7 @@ public class TorrentsFragment extends SherlockFragment {
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
 			// Get checked torrents
-			List<Torrent> checked = new ArrayList<Torrent>();
+			ArrayList<Torrent> checked = new ArrayList<Torrent>();
 			for (int i = 0; i < torrentsList.getCheckedItemPositions().size(); i++) {
 				if (torrentsList.getCheckedItemPositions().valueAt(i))
 					checked.add((Torrent) torrentsList.getAdapter().getItem(
@@ -236,7 +245,9 @@ public class TorrentsFragment extends SherlockFragment {
 				mode.finish();
 				return true;
 			} else if (itemId == R.id.action_setlabel) {
-				// TODO: Open label selection dialogue
+				lastMultiSelectedTorrents = checked;
+				new SetLabelDialog().setOnLabelPickedListener(TorrentsFragment.this).setCurrentLabels(currentLabels)
+						.show(getFragmentManager(), "SetLabelDialog");
 				mode.finish();
 				return true;
 			} else {
@@ -261,6 +272,13 @@ public class TorrentsFragment extends SherlockFragment {
 		((TorrentsActivity) getActivity()).openDetails(torrent);
 	}
 
+	@Override
+	public void onLabelPicked(String newLabel) {
+		for (Torrent torrent : lastMultiSelectedTorrents) {
+			getTasksExecutor().updateLabel(torrent, newLabel);
+		}
+	}
+
 	/**
 	 * Updates the shown screen depending on whether we have a connection (so torrents can be shown) or not (in case we
 	 * need to show a message suggesting help). This should only ever be called on the UI thread.
@@ -269,7 +287,7 @@ public class TorrentsFragment extends SherlockFragment {
 	public void updateConnectionStatus(boolean hasAConnection) {
 		this.hasAConnection = hasAConnection;
 		if (!hasAConnection) {
-			clear(true); // Indirectly also calls updateViewVisibility()
+			clear(true, true); // Indirectly also calls updateViewVisibility()
 		} else {
 			updateViewVisibility();
 		}
@@ -283,7 +301,7 @@ public class TorrentsFragment extends SherlockFragment {
 	public void updateIsLoading(boolean isLoading) {
 		this.isLoading = isLoading;
 		if (isLoading) {
-			clear(true); // Indirectly also calls updateViewVisibility()
+			clear(true, false); // Indirectly also calls updateViewVisibility()
 		} else {
 			updateViewVisibility();
 		}
@@ -299,7 +317,7 @@ public class TorrentsFragment extends SherlockFragment {
 		this.connectionErrorMessage = connectionErrorMessage;
 		errorText.setText(connectionErrorMessage);
 		if (connectionErrorMessage != null) {
-			clear(false); // Indirectly also calls updateViewVisibility()
+			clear(false, false); // Indirectly also calls updateViewVisibility()
 		} else {
 			updateViewVisibility();
 		}

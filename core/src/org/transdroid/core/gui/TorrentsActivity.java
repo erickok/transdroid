@@ -337,7 +337,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 				navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
 
 			// Clear the currently shown list of torrents and perhaps the details
-			fragmentTorrents.clear(true);
+			fragmentTorrents.clear(true, true);
 			if (fragmentDetails != null && fragmentDetails.getActivity() != null) {
 				fragmentDetails.clear();
 			}
@@ -821,7 +821,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel)
 				.execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_labelset, newLabel));
+			onTaskSucceeded(
+					(DaemonTaskSuccessResult) result,
+					newLabel == null ? getString(R.string.result_labelremoved) : getString(R.string.result_labelset,
+							newLabel));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
@@ -892,9 +895,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
 
+		lastNavigationLabels = Label.convertToNavigationLabels(labels,
+				getResources().getString(R.string.labels_unlabeled));
+		
 		// Report the newly retrieved list of torrents to the torrents fragment
 		fragmentTorrents.updateIsLoading(false);
-		fragmentTorrents.updateTorrents(new ArrayList<Torrent>(torrents));
+		fragmentTorrents.updateTorrents(new ArrayList<Torrent>(torrents), lastNavigationLabels);
 
 		// Update the details fragment if the currently shown torrent is in the newly retrieved list
 		if (fragmentDetails != null) {
@@ -902,8 +908,6 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		}
 
 		// Update local list of labels in the navigation
-		lastNavigationLabels = Label.convertToNavigationLabels(labels,
-				getResources().getString(R.string.labels_unlabeled));
 		if (navigationListAdapter != null) {
 			// Labels are shown in the dedicated side navigation
 			navigationListAdapter.updateLabels(lastNavigationLabels);
