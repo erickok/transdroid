@@ -18,6 +18,8 @@ import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
+import org.transdroid.core.gui.navigation.SetTrackersDialog;
+import org.transdroid.core.gui.navigation.SetTrackersDialog.OnTrackersUpdatedListener;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
@@ -45,7 +47,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EFragment(resName = "fragment_details")
 @OptionsMenu(resName = "fragment_details")
-public class DetailsFragment extends SherlockFragment {
+public class DetailsFragment extends SherlockFragment implements OnTrackersUpdatedListener {
 
 	// Local data
 	@InstanceState
@@ -78,7 +80,7 @@ public class DetailsFragment extends SherlockFragment {
 				detailsList.setBackgroundResource(R.drawable.details_list_background_light);
 			}
 		}
-		
+
 		// Set up details adapter (itself containing the actual lists to show), which allows multi-select and fast
 		// scrolling
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));
@@ -256,13 +258,19 @@ public class DetailsFragment extends SherlockFragment {
 
 	@OptionsItem(resName = "action_updatetrackers")
 	protected void updateTrackers() {
-		// TODO: Show trackers edit dialog
+		new SetTrackersDialog().setOnTrackersUpdated(this).setCurrentTrackers(torrentDetails.getTrackersText())
+				.show(getActivity().getSupportFragmentManager(), "SetTrackersDialog");
+	}
+
+	@Override
+	public void onTrackersUpdated(List<String> updatedTrackers) {
+		getTasksExecutor().updateTrackers(torrent, updatedTrackers);
 	}
 
 	private MultiChoiceModeListenerCompat onDetailsSelected = new MultiChoiceModeListenerCompat() {
 
 		SelectionManagerMode selectionManagerMode;
-		
+
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Show contextual action bar to start/stop/remove/etc. torrents in batch mode

@@ -87,7 +87,7 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 
 	private OnClickListener onStartDownPickerClicked = new OnClickListener() {
 		public void onClick(View v) {
-			new SetTransferRatesDialog().setOnRatesPicked(ServerStatusView.this).show(
+			new SetTransferRatesDialog().setOnRatesPickedListener(ServerStatusView.this).show(
 					activity.getSupportFragmentManager(), "SetTransferRatesDialog");
 		}
 	};

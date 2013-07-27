@@ -1,8 +1,9 @@
 package org.transdroid.core.gui.navigation;
 
+import java.security.InvalidParameterException;
+
 import org.transdroid.core.R;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -20,7 +21,7 @@ import android.widget.TextView;
  */
 public class SetTransferRatesDialog extends DialogFragment {
 
-	private OnRatesPickedListener onRatesPicked;
+	private OnRatesPickedListener onRatesPickedListener = null;
 	private TextView maxSpeedDown, maxSpeedUp;
 
 	public SetTransferRatesDialog() {
@@ -29,16 +30,19 @@ public class SetTransferRatesDialog extends DialogFragment {
 
 	/**
 	 * Sets the callback for results in this dialog (with newly selected values or a reset).
-	 * @param onRatesPicked The event listener to this dialog
+	 * @param onRatesPickedListener The event listener to this dialog
 	 * @return This dialog, for method chaining
 	 */
-	public SetTransferRatesDialog setOnRatesPicked(OnRatesPickedListener onRatesPicked) {
-		this.onRatesPicked = onRatesPicked;
+	public SetTransferRatesDialog setOnRatesPickedListener(OnRatesPickedListener onRatesPickedListener) {
+		this.onRatesPickedListener = onRatesPickedListener;
 		return this;
 	}
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		if (onRatesPickedListener == null)
+			throw new InvalidParameterException(
+					"Please first set the callback listener using setOnRatesPickedListener before opening the dialog.");
 		final View transferRatesContent = getActivity().getLayoutInflater().inflate(R.layout.dialog_transferrates,
 				null, false);
 		maxSpeedDown = (TextView) transferRatesContent.findViewById(R.id.maxspeeddown_text);
@@ -59,14 +63,14 @@ public class SetTransferRatesDialog extends DialogFragment {
 						} catch (NumberFormatException e) {
 						}
 						if (maxDown <= 0 || maxUp <= 0) {
-							onRatesPicked.onInvalidNumber();
+							onRatesPickedListener.onInvalidNumber();
 						}
-						onRatesPicked.onRatesPicked(maxDown, maxUp);
+						onRatesPickedListener.onRatesPicked(maxDown, maxUp);
 					}
 				}).setNeutralButton(R.string.status_maxspeed_reset, new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						onRatesPicked.resetRates();
+						onRatesPickedListener.resetRates();
 					}
 				}).setNegativeButton(android.R.string.cancel, null).create();
 	}
@@ -96,7 +100,9 @@ public class SetTransferRatesDialog extends DialogFragment {
 	 */
 	public interface OnRatesPickedListener {
 		public void onRatesPicked(int maxDownloadSpeed, int maxUploadSpeed);
+
 		public void resetRates();
+
 		public void onInvalidNumber();
 	}
 

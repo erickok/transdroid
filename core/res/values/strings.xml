@@ -99,6 +99,7 @@
 	<string name="status_maxspeed_up">MAX UPLOAD</string>
 	<string name="status_maxspeed_unit">KB/S</string>
 	<string name="status_maxspeed_reset">Reset</string>
+	<string name="status_update">Update</string>
 	
 	<string name="labels_showall">All labels</string>
 	<string name="labels_unlabeled">Unlabeled</string>
