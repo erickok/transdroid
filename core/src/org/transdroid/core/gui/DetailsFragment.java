@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
@@ -15,9 +14,12 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.DetailsAdapter;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
+import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
+import org.transdroid.core.gui.navigation.SetLabelDialog;
+import org.transdroid.core.gui.navigation.SetLabelDialog.OnLabelPickedListener;
 import org.transdroid.core.gui.navigation.SetTrackersDialog;
 import org.transdroid.core.gui.navigation.SetTrackersDialog.OnTrackersUpdatedListener;
 import org.transdroid.daemon.Daemon;
@@ -47,16 +49,17 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EFragment(resName = "fragment_details")
 @OptionsMenu(resName = "fragment_details")
-public class DetailsFragment extends SherlockFragment implements OnTrackersUpdatedListener {
+public class DetailsFragment extends SherlockFragment implements OnTrackersUpdatedListener, OnLabelPickedListener {
 
 	// Local data
 	@InstanceState
-	@FragmentArg
 	protected Torrent torrent = null;
 	@InstanceState
 	protected TorrentDetails torrentDetails = null;
 	@InstanceState
 	protected ArrayList<TorrentFile> torrentFiles = null;
+	@InstanceState
+	protected ArrayList<Label> currentLabels = null;
 	@InstanceState
 	protected boolean isLoadingTorrent = false;
 
@@ -163,6 +166,15 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	}
 
 	/**
+	 * Updates the locally maintained list of labels that are active on the server. Used in the label picking dialog and
+	 * should be updated every time after the list of torrents was retrieved to keep it updated.
+	 * @param currentLabels The list of known server labels
+	 */
+	public void updateLabels(ArrayList<Label> currentLabels) {
+		this.currentLabels = new ArrayList<Label>(currentLabels);
+	}
+
+	/**
 	 * Clear the screen by fully clearing the internal merge list (with header and other lists)
 	 */
 	public void clear() {
@@ -253,13 +265,19 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 
 	@OptionsItem(resName = "action_setlabel")
 	protected void setLabel() {
-		// TODO: Show label selection dialog
+		new SetLabelDialog().setOnLabelPickedListener(this).setCurrentLabels(currentLabels)
+				.show(getFragmentManager(), "SetLabelDialog");
 	}
 
 	@OptionsItem(resName = "action_updatetrackers")
 	protected void updateTrackers() {
 		new SetTrackersDialog().setOnTrackersUpdated(this).setCurrentTrackers(torrentDetails.getTrackersText())
-				.show(getActivity().getSupportFragmentManager(), "SetTrackersDialog");
+				.show(getFragmentManager(), "SetTrackersDialog");
+	}
+
+	@Override
+	public void onLabelPicked(String newLabel) {
+		getTasksExecutor().updateLabel(torrent, newLabel);
 	}
 
 	@Override

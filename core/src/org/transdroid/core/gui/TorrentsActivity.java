@@ -127,6 +127,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected NavigationFilter currentFilter = null;
 	@InstanceState
 	protected boolean turleModeEnabled = false;
+	@InstanceState
+	protected ArrayList<Label> lastNavigationLabels;
 
 	// Contained torrent and details fragments
 	@FragmentById(resName = "torrent_list")
@@ -575,7 +577,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (fragmentDetails != null) {
 			fragmentDetails.updateTorrent(torrent);
 		} else {
-			DetailsActivity_.intent(this).torrent(torrent).start();
+			DetailsActivity_.intent(this).torrent(torrent).currentLabels(lastNavigationLabels).start();
 		}
 	}
 
@@ -816,7 +818,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Override
 	public void updateLabel(Torrent torrent, String newLabel) {
 		torrent.mimicNewLabel(newLabel);
-		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel).execute();
+		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel)
+				.execute();
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_labelset, newLabel));
 		} else {
@@ -899,15 +902,17 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		}
 
 		// Update local list of labels in the navigation
-		List<Label> navigationLabels = Label.convertToNavigationLabels(labels,
+		lastNavigationLabels = Label.convertToNavigationLabels(labels,
 				getResources().getString(R.string.labels_unlabeled));
 		if (navigationListAdapter != null) {
 			// Labels are shown in the dedicated side navigation
-			navigationListAdapter.updateLabels(navigationLabels);
+			navigationListAdapter.updateLabels(lastNavigationLabels);
 		} else {
 			// Labels are shown in the action bar spinner
-			navigationSpinnerAdapter.updateLabels(navigationLabels);
+			navigationSpinnerAdapter.updateLabels(lastNavigationLabels);
 		}
+		if (fragmentDetails != null)
+			fragmentDetails.updateLabels(lastNavigationLabels);
 
 		// Update the server status (counts and speeds) in the action bar
 		serverStatusView.update(torrents);

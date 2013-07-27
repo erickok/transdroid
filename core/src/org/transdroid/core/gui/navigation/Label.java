@@ -52,12 +52,12 @@ public class Label implements SimpleListItem, NavigationFilter {
 	 * @param unnamedLabel The text to show for the empty label (i.e. the unnamed label)
 	 * @return A label items that can be used in a filter list such as the action bar spinner
 	 */
-	public static List<Label> convertToNavigationLabels(List<org.transdroid.daemon.Label> daemonLabels,
+	public static ArrayList<Label> convertToNavigationLabels(List<org.transdroid.daemon.Label> daemonLabels,
 			String unnamedLabel) {
 		if (daemonLabels == null)
 			return null;
 		unnamedLabelText = unnamedLabel;
-		List<Label> localLabels = new ArrayList<Label>();
+		ArrayList<Label> localLabels = new ArrayList<Label>();
 		for (org.transdroid.daemon.Label label : daemonLabels) {
 			localLabels.add(new Label(label));
 		}

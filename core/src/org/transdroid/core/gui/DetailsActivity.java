@@ -17,6 +17,7 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
@@ -66,6 +67,9 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	@Extra
 	@InstanceState
 	protected Torrent torrent;
+	@Extra
+	@InstanceState
+	protected ArrayList<Label> currentLabels;
 
 	// Settings
 	@Bean
@@ -92,7 +96,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	protected void init() {
 
 		// We require a torrent to be specified; otherwise close the activity
-		if (torrent == null) {
+		if (torrent == null || currentLabels == null) {
 			finish();
 			return;
 		}
@@ -107,9 +111,10 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 		// Show details and load fine stats and torrent files
 		fragmentDetails.updateTorrent(torrent);
+		fragmentDetails.updateLabels(currentLabels);
 
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		Crouton.cancelAllCroutons();
@@ -237,7 +242,8 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	@Override
 	public void updateLabel(Torrent torrent, String newLabel) {
 		torrent.mimicNewLabel(newLabel);
-		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel).execute();
+		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel)
+				.execute();
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_labelset, newLabel));
 		} else {
@@ -309,9 +315,11 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
-		// Update the details fragment
+		// Update the details fragment accordingly
 		fragmentDetails.updateIsLoading(false);
 		fragmentDetails.perhapsUpdateTorrent(torrents);
+		fragmentDetails.updateLabels(Label.convertToNavigationLabels(labels,
+				getResources().getString(R.string.labels_unlabeled)));
 	}
 
 }
