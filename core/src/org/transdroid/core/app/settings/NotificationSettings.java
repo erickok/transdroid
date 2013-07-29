@@ -71,6 +71,15 @@ public class NotificationSettings {
 		return prefs.getBoolean("notifications_vibrate", false);
 	}
 
+	/**
+	 * Returns the default vibrate pattern to use if the user enabled notification vibrations; check
+	 * {@link #shouldVibrate()},
+	 * @return A unique pattern for vibrations in Transdroid
+	 */
+	public long[] getDefaultVibratePattern() {
+		return new long[]{100, 100, 200, 300, 400, 700}; // Unique pattern?
+	}
+	
 	private int getRawLedColour() {
 		return prefs.getInt("notifications_ledcolour", -1);
 	}

@@ -4,6 +4,8 @@
 Transdroid 2.0.0-alpha3\n
 - Added torrent search\n
 - Setting of max. up/down speeds\n
+- Update trackers and set labels (where supported)\n
+- Background RSS and server checker services\n
 \n
 Transdroid 2.0.0-alpha2\n
 - Fixed Transmission adapter folder setting\n

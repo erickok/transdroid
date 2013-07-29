@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.transdroid.full"
-	android:versionCode="2"
-	android:versionName="2.0-alpha2" >
+	android:versionCode="3"
+	android:versionName="2.0-alpha3" >
 
 	<uses-sdk
 		android:minSdkVersion="7"
@@ -16,6 +16,7 @@
 		android:xlargeScreens="true" />
 
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -26,10 +27,10 @@
 
 	<application
 		android:allowBackup="true"
+		android:hardwareAccelerated="true"
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/system_name"
-		android:theme="@style/Theme.Sherlock"
-		android:hardwareAccelerated="true" >
+		android:theme="@style/Theme.Sherlock" >
 
 		<!-- Main activities -->
 		<activity
@@ -57,8 +58,8 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
-					android:mimeType="application/x-bittorrent"
 					android:host="*"
+					android:mimeType="application/x-bittorrent"
 					android:scheme="http" />
 			</intent-filter>
 			<intent-filter>
@@ -68,8 +69,8 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
-					android:pathPattern=".*\\.torrent"
 					android:host="*"
+					android:pathPattern=".*\\.torrent"
 					android:scheme="http" />
 			</intent-filter>
 			<intent-filter>
@@ -79,8 +80,8 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
-					android:mimeType="application/x-bittorrent"
 					android:host="*"
+					android:mimeType="application/x-bittorrent"
 					android:scheme="https" />
 			</intent-filter>
 			<intent-filter>
@@ -90,8 +91,8 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
-					android:pathPattern=".*\\.torrent"
 					android:host="*"
+					android:pathPattern=".*\\.torrent"
 					android:scheme="https" />
 			</intent-filter>
 			<intent-filter>
@@ -101,8 +102,8 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
-					android:mimeType="application/x-bittorrent"
 					android:host="*"
+					android:mimeType="application/x-bittorrent"
 					android:scheme="file" />
 			</intent-filter>
 			<intent-filter>
@@ -112,8 +113,8 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
+					android:host="*"
 					android:pathPattern=".*\\.torrent"
-					android:host="*"
 					android:scheme="file" />
 			</intent-filter>
 			<intent-filter>
@@ -123,8 +124,8 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
-					android:mimeType="application/x-bittorrent"
 					android:host="*"
+					android:mimeType="application/x-bittorrent"
 					android:scheme="content" />
 			</intent-filter>
 			<intent-filter>
@@ -134,8 +135,8 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
-					android:pathPattern=".*\\.torrent"
 					android:host="*"
+					android:pathPattern=".*\\.torrent"
 					android:scheme="content" />
 			</intent-filter>
 			<intent-filter>
@@ -146,6 +147,7 @@
 
 				<data android:scheme="magnet" />
 			</intent-filter>
+
 			<meta-data
 				android:name="android.app.default_searchable"
 				android:value="org.transdroid.core.gui.search.SearchActivity_" />
@@ -170,8 +172,8 @@
 			android:name="org.transdroid.core.gui.search.SearchActivity_"
 			android:icon="@drawable/ic_launcher"
 			android:label="@string/search_torrentsearch"
-			android:theme="@style/TransdroidTheme"
-			android:launchMode="singleTask" >
+			android:launchMode="singleTask"
+			android:theme="@style/TransdroidTheme" >
 			<intent-filter>
 				<action android:name="android.intent.action.SEARCH" />
 
@@ -192,11 +194,12 @@
 				android:name="android.app.default_searchable"
 				android:value="org.transdroid.core.gui.search.SearchActivity_" />
 		</activity>
-	    <provider
-	    	android:name="org.transdroid.core.gui.search.TorrentSearchHistoryProvider" 
-	    	android:authorities="org.transdroid.core.gui.search.TorrentSearchHistoryProvider"
-	    	android:exported="false" />
-		
+
+		<provider
+			android:name="org.transdroid.core.gui.search.TorrentSearchHistoryProvider"
+			android:authorities="org.transdroid.core.gui.search.TorrentSearchHistoryProvider"
+			android:exported="false" />
+
 		<!-- RSS -->
 		<activity
 			android:name="org.transdroid.core.gui.rss.RssfeedsActivity_"
@@ -207,6 +210,19 @@
 			android:label="@string/rss_feeds"
 			android:theme="@style/TransdroidTheme" />
 
+		<!-- Background service -->
+		<service android:name="org.transdroid.core.service.ServerCheckerService_" />
+		<service android:name="org.transdroid.core.service.RssCheckerService_" />
+		<service android:name="org.transdroid.core.service.AppUpdateService_" />
+
+		<receiver android:name="org.transdroid.core.service.AlarmReceiver_" />
+		<receiver android:name="org.transdroid.core.service.BootReceiver_" >
+			<intent-filter>
+				<action
+					android:name="android.intent.action.BOOT_COMPLETED"
+					android:value="android.intent.action.BOOT_COMPLETED" />
+			</intent-filter>
+		</receiver>
 	</application>
 
 </manifest>

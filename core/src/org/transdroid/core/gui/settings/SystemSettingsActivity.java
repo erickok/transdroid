@@ -13,6 +13,7 @@ import org.transdroid.core.app.settings.SettingsPersistence;
 import org.transdroid.core.gui.log.ErrorLogSender;
 import org.transdroid.core.gui.navigation.DialogHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.service.BootReceiver;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -24,6 +25,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
@@ -58,7 +60,8 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		// Just load the system-related preferences from XML
 		addPreferencesFromResource(R.xml.pref_system);
 
-		// Handle outgoing links
+		// Handle outgoing links and preference changes
+		findPreference("system_checkupdates").setOnPreferenceClickListener(onCheckUpdatesClick);
 		findPreference("system_sendlog").setOnPreferenceClickListener(onSendLogClick);
 		findPreference("system_installhelp").setOnPreferenceClickListener(onInstallHelpClick);
 		findPreference("system_changelog").setOnPreferenceClickListener(onChangeLogClick);
@@ -72,6 +75,17 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 	protected void navigateUp() {
 		MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
+
+	private OnPreferenceClickListener onCheckUpdatesClick = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			if (((CheckBoxPreference) preference).isChecked())
+				BootReceiver.startAppUpdatesService(getApplicationContext());
+			else
+				BootReceiver.cancelAppUpdates(getApplicationContext());
+			return true;
+		}
+	};
 
 	private OnPreferenceClickListener onSendLogClick = new OnPreferenceClickListener() {
 		@Override

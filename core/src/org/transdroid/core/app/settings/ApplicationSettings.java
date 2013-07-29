@@ -9,6 +9,8 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EBean.Scope;
 import org.androidannotations.annotations.RootContext;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchSite;
 import org.transdroid.core.gui.search.SearchSetting;
@@ -460,4 +462,30 @@ public class ApplicationSettings {
 		prefs.edit().putString("header_setsearchsite", site.getKey()).commit();
 	}
 
+	/**
+	 * Returns the statistics of this server as it was last seen by the background server checker service.
+	 * @param server The server for which to retrieved the statistics from the stored preferences
+	 * @return A JSON array of JSON objects, each which represent a since torrent
+	 */
+	public JSONArray getServerLastStats(ServerSetting server) {
+		String lastStats = prefs.getString(server.getUniqueIdentifier(), null);
+		if (lastStats == null)
+			return null;
+		try {
+			return new JSONArray(lastStats);
+		} catch (JSONException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Stores the now-last seen statistics of the supplied server by the background server checker service to the
+	 * internal stored preferences.
+	 * @param server The server to which the statistics apply to
+	 * @param lastStats A JSON array of JSON objects that each represent a single seen torrent
+	 */
+	public void setServerLastStats(ServerSetting server, JSONArray lastStats) {
+		prefs.edit().putString(server.getUniqueIdentifier(), lastStats.toString()).commit();
+	}
+	
 }

@@ -37,7 +37,7 @@ public class Log implements ITLogger {
 	}
 	
 	protected void log(String logName, int priority, String message) {
-		if (!navigationHelper.inDebugMode())
+		if (navigationHelper.inDebugMode())
 			android.util.Log.println(priority, LOG_NAME, message);
 		try {
 			// Store this log message to the database

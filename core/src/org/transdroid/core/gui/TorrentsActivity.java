@@ -38,6 +38,7 @@ import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
 import org.transdroid.core.gui.settings.*;
+import org.transdroid.core.service.BootReceiver;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -185,12 +186,17 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Log messages from the server daemons using our singleton logger
 		DLog.setLogger(Log_.getInstance_(this));
 
-		// Connect to the last used server
+		// Connect to the last used server or a server that was supplied in the starting intent
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		if (lastUsed == null) {
 			// No server settings yet;
 			return;
 		}
+		if (getIntent().getExtras() == null && getIntent().hasExtra("org.transdroid.START_SERVER")) {
+			lastUsed = applicationSettings.getServerSetting(getIntent().getExtras().getInt(
+					"org.transdroid.START_SERVER"));
+		}
+
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
 		getSupportActionBar().setSelectedNavigationItem(lastUsed.getOrder() + 1);
 		skipNextOnNavigationItemSelectedCall = true;
@@ -200,6 +206,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			currentConnection = lastUsed.createServerAdapter();
 			handleStartIntent();
 		}
+		
+		// Start the alarms for the background services, if needed
+		BootReceiver.startBackgroundServices(getApplicationContext(), false);
+		BootReceiver.startAppUpdatesService(getApplicationContext());
 
 	}
 

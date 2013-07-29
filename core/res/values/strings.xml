@@ -100,15 +100,28 @@
 	<string name="status_maxspeed_unit">KB/S</string>
 	<string name="status_maxspeed_reset">Reset</string>
 	<string name="status_update">Update</string>
-	<string name="status_label_pick">PICK A LABEL</string>
-	<string name="status_label_new">NEW LABEL</string>
-	<string name="status_label_remove">Remove label</string>
-	<string name="status_label_hint">E.g. movies or linux</string>
+	<plurals name="status_service_added">
+		<item quantity="one">New torrent added</item>
+		<item quantity="many">%1$s new torrents added</item>
+	</plurals>
+	<plurals name="status_service_finished">
+		<item quantity="one">Torrent is finished</item>
+		<item quantity="many">%1$s torrents are finished</item>
+	</plurals>
+	<plurals name="status_service_addedfinished">
+		<item quantity="one">%1$s added, %2$s finished torrent</item>
+		<item quantity="many">%1$s added, %2$s finished torrents</item>
+	</plurals>
+	<string name="status_service_andothers">%1$s and others</string>
 	
 	<string name="labels_showall">All labels</string>
 	<string name="labels_unlabeled">Unlabeled</string>
 	<string name="labels_newlabel">New label</string>
 	<string name="labels_no_support">Setting a label is not supported by your client</string>
+	<string name="status_label_pick">PICK A LABEL</string>
+	<string name="status_label_new">NEW LABEL</string>
+	<string name="status_label_remove">Remove label</string>
+	<string name="status_label_hint">E.g. movies or linux</string>
 	
 	<string name="result_added">%1$s added (refreshing)</string>
 	<string name="result_removed">%1$s removed</string>
@@ -153,6 +166,11 @@
 		<item quantity="one">%1$d item selected</item>
 		<item quantity="other">%1$d items selected</item>
 	</plurals>
+	<plurals name="rss_service_new">
+		<item quantity="one">New RSS feed torrent available</item>
+		<item quantity="many">%1$s new RSS feed torrents</item>
+	</plurals>
+	<string name="rss_service_newfor">New torrents for %1$s</string>
 		
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
@@ -319,6 +337,10 @@
 	<string name="error_cant_write_settings_file">Can\'t write to the settings file</string>
 	<string name="error_notanumber">Please enter a positive number</string>
 	<string name="error_notalabel">Please enter a valid label or pick from the list</string>
+	
+	<string name="update_app_newversion">New Transdroid version available</string>
+	<string name="update_search_newversion">New Transdroid search module available</string>
+	<string name="update_updateto">You can now update to %1$s</string>
 	
 	<string name="system_name" translatable="false">Transdroid</string>
 	<string name="system_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>
