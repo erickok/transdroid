@@ -11,6 +11,7 @@
 # generated files
 bin/
 gen/
+.apt_generated/
 
 # Local configuration file (sdk path, etc)
 local.properties
