@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal"
+	android:paddingBottom="@dimen/margin_half"
+	android:paddingLeft="@dimen/margin_default"
+	android:paddingRight="@dimen/margin_default"
+	android:paddingTop="@dimen/margin_half" >
+
+	<ImageView
+		android:id="@+id/favicon_image"
+		android:layout_width="24dip"
+		android:layout_height="24dip"
+		android:layout_marginRight="@dimen/margin_half"
+		android:scaleType="centerCrop"
+		tools:ignore="contentDescription" />
+
+	<TextView
+		android:id="@+id/name_text"
+		android:layout_width="0dip"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:layout_marginTop="1dip"
+		android:textIsSelectable="false" />
+
+</LinearLayout>

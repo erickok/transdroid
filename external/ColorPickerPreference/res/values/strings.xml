@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- App -->
+    <string name="hello">Hello World, Main!</string>
+    <string name="app_name">ColorPickerPreference</string>
+    
+    <!-- Color Picker -->
+    <string name="dialog_color_picker">Color Picker</string>
+    <string name="press_color_to_apply">Press on Color to apply</string>    
+    
+    <!-- Preferences -->
+    <string name="pref_category">Category</string>
+    <string name="color1_title">Color 1</string>
+    <string name="color1_summary">black color by default, set by reference</string>
+    <string name="color2_title">Color 2</string>
+    <string name="color2_summary">not persistent color\nalpha slider added via code</string>
+    <string name="color3_title">Color 3</string>
+    <string name="color3_summary">picker with alpha slider</string>
+    <string name="color4_title">Color 4</string>
+    <string name="color4_summary">color set with HEX code in xml</string>
+</resources>

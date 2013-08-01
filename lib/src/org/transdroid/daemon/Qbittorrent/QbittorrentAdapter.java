@@ -306,7 +306,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				
 				// Read JSON response
 				java.io.InputStream instream = entity.getContent();
-				String result = HttpHelper.ConvertStreamToString(instream);
+				String result = HttpHelper.convertStreamToString(instream);
 				instream.close();
 				
 				//TLog.d(LOG_NAME, "Success: " + (result.length() > 300? result.substring(0, 300) + "... (" + result.length() + " chars)": result));
@@ -409,7 +409,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					null,
 					null, // Only available in /json/propertiesGeneral on a per-torrent basis, unfortunately
 					null,
-					null));
+					null,
+					settings.getType()));
 		}
 		
 		// Return the list

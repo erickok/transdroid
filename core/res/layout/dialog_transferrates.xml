@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical" >
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="@dimen/margin_half"
+		android:layout_marginRight="@dimen/margin_half"
+		android:orientation="horizontal" >
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginRight="@dimen/margin_half"
+			android:text="@string/status_maxspeed_down"
+			android:textAllCaps="true" />
+
+		<TextView
+			android:id="@+id/maxspeeddown_text"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:gravity="right"
+			android:singleLine="true"
+			android:text="-"
+			tools:ignore="HardcodedText" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginRight="@dimen/margin_half"
+			android:text="@string/status_maxspeed_unit"
+			android:textAllCaps="true" />
+	</LinearLayout>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dip"
+		android:background="#28000000" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal" >
+
+		<Button
+			android:id="@+id/down1Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="1"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/down2Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="2"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/down3Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="3"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/down4Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="4"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/down5Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="5"
+			tools:ignore="HardcodedText" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal" >
+
+		<Button
+			android:id="@+id/down6Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="6"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/down7Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="7"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/down8Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="8"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/down9Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="9"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/down0Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="0"
+			tools:ignore="HardcodedText" />
+	</LinearLayout>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dip"
+		android:background="#28000000" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="@dimen/margin_half"
+		android:layout_marginRight="@dimen/margin_half"
+		android:orientation="horizontal" >
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginRight="@dimen/margin_half"
+			android:text="@string/status_maxspeed_up"
+			android:textAllCaps="true" />
+
+		<TextView
+			android:id="@+id/maxspeedup_text"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:gravity="right"
+			android:singleLine="true"
+			android:text="-"
+			tools:ignore="HardcodedText" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginRight="@dimen/margin_half"
+			android:text="@string/status_maxspeed_unit"
+			android:textAllCaps="true" />
+	</LinearLayout>
+	
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dip"
+		android:background="#28000000" />
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal" >
+
+		<Button
+			android:id="@+id/up1Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="1"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/up2Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="2"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/up3Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="3"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/up4Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="4"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/up5Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="5"
+			tools:ignore="HardcodedText" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal" >
+
+		<Button
+			android:id="@+id/up6Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="6"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/up7Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="7"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/up8Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="8"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/up9Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="9"
+			tools:ignore="HardcodedText" />
+
+		<Button
+			android:id="@+id/up0Button"
+			style="@style/BigNumberButton"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="0"
+			tools:ignore="HardcodedText" />
+	</LinearLayout>
+
+</LinearLayout>

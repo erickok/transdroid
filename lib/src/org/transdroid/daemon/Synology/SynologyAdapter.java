@@ -326,7 +326,8 @@ public class SynologyAdapter implements IDaemonAdapter {
 				jsonTorrent.getString("title"),
 				new Date(detail.getLong("create_time") * 1000),
 				null,
-				""
+				"",
+				settings.getType()
 		);
 	}
 
@@ -426,7 +427,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 				}
 				// Read JSON response
 				java.io.InputStream instream = entity.getContent();
-				String result = HttpHelper.ConvertStreamToString(instream);
+				String result = HttpHelper.convertStreamToString(instream);
 				JSONObject json;
 				json = new JSONObject(result);
 				instream.close();

@@ -195,7 +195,7 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
 
 			// Read response (a successful action always returned '1')
 			InputStream instream = response.getEntity().getContent();
-			String result = HttpHelper.ConvertStreamToString(instream);
+			String result = HttpHelper.convertStreamToString(instream);
 			instream.close();
 			if (result.trim().equals("1")) {
 				return true;
@@ -232,7 +232,7 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
 
 			// Read response (a successful action always returned '1')
 			InputStream instream = response.getEntity().getContent();
-			String result = HttpHelper.ConvertStreamToString(instream);
+			String result = HttpHelper.convertStreamToString(instream);
 			instream.close();
 			if (result.equals("1")) {
 				return true;

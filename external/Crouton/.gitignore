@@ -1,0 +1,41 @@
+# built application files
+*.apk
+*.ap_
+*.jar
+gen-external-apklibs
+
+# keystore
+*.keystore
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+target/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Eclipse project files
+.classpath
+.project
+.metadata
+.settings
+
+# IntelliJ files
+.idea
+*.iml
+
+# OSX files
+.DS_Store
+
+#vi swap files
+*.swp
+
+# maven target
+target

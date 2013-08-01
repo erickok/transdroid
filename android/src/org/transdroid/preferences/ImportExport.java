@@ -33,7 +33,7 @@ public class ImportExport {
 		Editor editor = prefs.edit();
 
 		// Read the settings file
-		String raw = HttpHelper.ConvertStreamToString(new FileInputStream(settingsFile));
+		String raw = HttpHelper.convertStreamToString(new FileInputStream(settingsFile));
 		JSONObject json = new JSONObject(raw);
 		
 		if (json.has("servers")) {

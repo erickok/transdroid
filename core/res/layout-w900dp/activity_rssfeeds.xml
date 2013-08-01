@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="horizontal"
+	android:baselineAligned="false"
+	tools:context=".RssfeedsActivity" >
+
+	<fragment
+		android:id="@+id/rssfeeds_list"
+		android:layout_width="0dip"
+		android:layout_height="match_parent"
+		android:layout_weight="2"
+		class="org.transdroid.core.gui.rss.RssfeedsFragment_"
+		tools:layout="@layout/fragment_rssfeeds" />
+	
+	<fragment
+		android:id="@+id/rssitems_list"
+		android:layout_width="0dip"
+		android:layout_height="match_parent"
+		android:layout_weight="3"
+		class="org.transdroid.core.gui.rss.RssitemsFragment_"
+		tools:layout="@layout/fragment_rssitems" />
+	
+</LinearLayout>

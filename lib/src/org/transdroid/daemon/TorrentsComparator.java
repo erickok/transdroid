@@ -28,28 +28,27 @@ import java.util.Comparator;
  */
 public class TorrentsComparator implements Comparator<Torrent> {
 
-	TorrentsSortBy sortBy;
-	boolean reversed;
+	private TorrentsSortBy sortBy;
+	private boolean reversed;
+	private Comparator<String> alphanumComparator = new AlphanumComparator();
 	
 	/**
-	 * Instantiate a torrents comparator. The daemon object is used to check support for comparing 
-	 * on the set properties. If the daemon does not support the property, ascending Alphanumeric  
-	 * sorting will be used even if sorting is requested on the unsupported property.
-	 * @param daemon The loaded server daemon, which exposes what features and properties it supports
+	 * Instantiate a torrents comparator. The daemon type is used to check support for comparing on the set property. If
+	 * the daemon does not support the property, Alphanumeric sorting will be used even if sorting is requested on the
+	 * unsupported property.
+	 * @param daemonType The currently loaded server daemon's type, which exposes what features and properties it supports
 	 * @param sortBy The requested sorting property (Alphanumeric is used for unsupported properties that are requested)
 	 * @param reversed If the sorting should be in reverse order
 	 */
-	public TorrentsComparator(IDaemonAdapter daemon, TorrentsSortBy sortBy, boolean reversed) {
+	public TorrentsComparator(Daemon daemonType, TorrentsSortBy sortBy, boolean reversed) {
 		this.sortBy = sortBy;
 		this.reversed = reversed;
-		switch (sortBy) {
-		case DateAdded:
-			if (daemon != null && !Daemon.supportsDateAdded(daemon.getType())) {
+		if (sortBy == TorrentsSortBy.DateAdded) {
+			if (daemonType != null && !Daemon.supportsDateAdded(daemonType)) {
 				// Reset the sorting to simple Alphanumeric
 				this.sortBy = TorrentsSortBy.Alphanumeric;
 				this.reversed = false;
 			}
-			break;
 		}
 	}
 	
@@ -68,7 +67,7 @@ public class TorrentsComparator implements Comparator<Torrent> {
 			case Ratio:
 				return new Double(tor1.getRatio()).compareTo(new Double(tor2.getRatio()));
 			default:
-				return tor1.getName().toLowerCase().compareTo(tor2.getName().toLowerCase());
+				return alphanumComparator.compare(tor1.getName().toLowerCase(), tor2.getName().toLowerCase());
 			}
 		} else {
 			switch (sortBy) {
@@ -83,7 +82,7 @@ public class TorrentsComparator implements Comparator<Torrent> {
 			case Ratio:
 				return 0 - new Double(tor1.getRatio()).compareTo(new Double(tor2.getRatio()));
 			default:
-				return 0 - tor1.getName().toLowerCase().compareTo(tor2.getName().toLowerCase());
+				return 0 - alphanumComparator.compare(tor1.getName().toLowerCase(), tor2.getName().toLowerCase());
 			}
 		}
 	}

@@ -28,8 +28,9 @@ import java.util.Comparator;
  */
 public class TorrentFilesComparator implements Comparator<TorrentFile> {
 
-	TorrentFilesSortBy sortBy;
-	boolean reversed;
+	private TorrentFilesSortBy sortBy;
+	private boolean reversed;
+	private Comparator<String> alphanumComparator = new AlphanumComparator();
 	
 	/**
 	 * Instantiate a torrent files comparator.
@@ -50,7 +51,7 @@ public class TorrentFilesComparator implements Comparator<TorrentFile> {
 			case TotalSize:
 				return new Long(file1.getTotalSize()).compareTo(file2.getTotalSize());
 			default:
-				return file1.getName().toLowerCase().compareTo(file2.getName().toLowerCase());
+				return alphanumComparator.compare(file1.getName().toLowerCase(), file2.getName().toLowerCase());
 			}
 		} else {
 			switch (sortBy) {
@@ -59,7 +60,7 @@ public class TorrentFilesComparator implements Comparator<TorrentFile> {
 			case TotalSize:
 				return 0 - new Long(file1.getTotalSize()).compareTo(file2.getTotalSize());
 			default:
-				return 0 - file1.getName().toLowerCase().compareTo(file2.getName().toLowerCase());
+				return 0 - alphanumComparator.compare(file1.getName().toLowerCase(), file2.getName().toLowerCase());
 			}
 		}
 	}

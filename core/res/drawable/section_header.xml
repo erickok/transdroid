@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+	android:shape="rectangle" >
+
+	<size
+		android:height="2dp"
+		android:width="1000dp" />
+
+	<solid android:color="@color/green" />
+
+</shape>

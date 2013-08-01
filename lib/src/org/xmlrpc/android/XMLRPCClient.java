@@ -14,6 +14,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.DaemonMethod;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
@@ -319,6 +321,9 @@ public class XMLRPCClient {
 			// check status code
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode != HttpStatus.SC_OK) {
+				if (statusCode == HttpStatus.SC_UNAUTHORIZED)
+					throw new DaemonException(DaemonException.ExceptionType.AuthenticationFailure, "HTTP status code: "
+							+ statusCode + " != " + HttpStatus.SC_OK);
 				throw new XMLRPCException("HTTP status code: " + statusCode + " != " + HttpStatus.SC_OK);
 			}
 

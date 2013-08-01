@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:paddingRight="@dimen/margin_half" >
+
+	<TextView
+		android:id="@+id/searchsite_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textColor="?attr/text_actionbar"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/abs__action_bar_title_text_size"
+		android:fontFamily="sans-serif-condensed" />
+
+</FrameLayout>

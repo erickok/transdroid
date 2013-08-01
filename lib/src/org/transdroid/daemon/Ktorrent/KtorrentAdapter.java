@@ -293,7 +293,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			HttpGet httpget = new HttpGet(buildWebUIUrl() + RPC_URL_CHALLENGE);
 			HttpResponse response = httpclient.execute(httpget);
 			InputStream instream = response.getEntity().getContent();
-			String challengeString = HttpHelper.ConvertStreamToString(instream).replaceAll("\\<.*?>","").trim();
+			String challengeString = HttpHelper.convertStreamToString(instream).replaceAll("\\<.*?>","").trim();
 			instream.close();
 			// Challenge string should be something like TncpX3TB8uZ0h8eqztZ6
 			if (challengeString == null || challengeString.length() != 20) {
@@ -358,7 +358,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 
 			// Read response (a successful action always returned '1')
 			InputStream instream = response.getEntity().getContent();
-			String result = HttpHelper.ConvertStreamToString(instream);
+			String result = HttpHelper.convertStreamToString(instream);
 			instream.close();
 			if (result.contains(RPC_SUCCESS)) {
 				return true;
@@ -407,7 +407,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 
 			// Read response (a successful action always returned '1')
 			InputStream instream = response.getEntity().getContent();
-			String result = HttpHelper.ConvertStreamToString(instream);
+			String result = HttpHelper.convertStreamToString(instream);
 			instream.close();
 			if (result.equals("")) {
 				return true;

@@ -396,17 +396,20 @@ public class TransmissionAdapter implements IDaemonAdapter {
 			}
 			
 			// Execute
+			DLog.d(LOG_NAME, "Execute " + data.getString("method") + " request to " + httppost.getURI().toString());
 			HttpResponse response = httpclient.execute(httppost);
 			
 			// Authentication error?
 			if (response.getStatusLine().getStatusCode() == 401) { 
-				throw new DaemonException(ExceptionType.AuthenticationFailure, "401 HTTP response (username or password incorrect)");
+				throw new DaemonException(ExceptionType.AuthenticationFailure,
+						"401 HTTP response (username or password incorrect)");
 			}
 			
 			// 409 error because of a session id?
 			if (response.getStatusLine().getStatusCode() == 409) {
 				
 				// Retry post, but this time with the new session token that was encapsulated in the 409 response
+				DLog.d(LOG_NAME, "Receive HTTP 409 with new session code; now try again for the actual request");
 				sessionToken = response.getFirstHeader(sessionHeader).getValue();
 				httppost.addHeader(sessionHeader, sessionToken);
 				response = httpclient.execute(httppost);
@@ -418,11 +421,12 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				
 				// Read JSON response
 				java.io.InputStream instream = entity.getContent();
-				String result = HttpHelper.ConvertStreamToString(instream);
+				String result = HttpHelper.convertStreamToString(instream);
+				DLog.d(LOG_NAME,
+						"Received content response starting with "
+								+ (result.length() > 100 ? result.substring(0, 100) + "..." : result));
 				JSONObject json = new JSONObject(result);
 				instream.close();
-				
-				//TLog.d(LOG_NAME, "Success: " + (result.length() > 200? result.substring(0, 200) + "... (" + result.length() + " chars)": result));
 				
 				// Return the JSON object
 				return json;
@@ -457,7 +461,16 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	 * @return The URL of the RPC API
 	 */
 	private String buildWebUIUrl() {
-		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + (settings.getFolder() == null? "": settings.getFolder()) + "/transmission/rpc";
+		String folder = "/transmission";
+		if (settings.getFolder() != null && !settings.getFolder().trim().equals("")) {
+			// Allow the user's folder setting to override /transmission (as per Transmission's rpc-url option)
+			folder = settings.getFolder().trim();
+			// Strip any trailing slashes
+			if (folder.endsWith("/"))
+				folder = folder.substring(0, folder.length() - 1);
+		}
+		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + folder
+				+ "/rpc";
 	}
 
 	private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONObject response) throws JSONException {
@@ -500,7 +513,8 @@ public class TransmissionAdapter implements IDaemonAdapter {
 					null, // No label/category/group support in the RPC API for now
 					new Date(tor.getLong(RPC_DATEADDED) * 1000L),
 					new Date(tor.getLong(RPC_DATEDONE) * 1000L),
-					errorString));
+					errorString,
+					settings.getType()));
 		}
 		
 		// Return the list

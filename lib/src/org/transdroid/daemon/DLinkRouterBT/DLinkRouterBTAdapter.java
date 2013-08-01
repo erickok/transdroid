@@ -273,7 +273,7 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 
 				// Read JSON response
 				java.io.InputStream instream = entity.getContent();
-				String result = HttpHelper.ConvertStreamToString(instream);
+				String result = HttpHelper.convertStreamToString(instream);
 				JSONObject json = new JSONObject(result);
 				instream.close();
 
@@ -376,7 +376,8 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 				null,
 				null,
 				null,
-				null);
+				null,
+				settings.getType());
 
 			torrents.add(new_t);
 		}

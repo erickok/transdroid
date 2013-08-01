@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.transdroid.core.gui.lists.TorrentStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:background="?attr/selectable_background_transdroid"
+	android:orientation="vertical"
+	android:paddingRight="@dimen/margin_default" >
+
+	<TextView
+		android:id="@+id/name_text"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="@dimen/margin_torrentlistleft"
+		android:fontFamily="sans-serif-condensed"
+		android:paddingTop="@dimen/margin_half"
+		android:textColor="?attr/text_bright"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_enlarged" />
+
+	<TextView
+		android:id="@+id/ratio_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_below="@id/name_text"
+		android:layout_marginLeft="@dimen/margin_half"
+		android:layout_marginTop="4.0dip"
+		android:paddingBottom="@dimen/margin_half"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_small" />
+
+	<ImageView
+		android:id="@+id/priority_image"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBottom="@id/ratio_text"
+		android:layout_marginLeft="@dimen/margin_half"
+		android:layout_toLeftOf="@id/ratio_text"
+		android:contentDescription="@string/status_priority_normal" />
+
+	<TextView
+		android:id="@+id/progress_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@id/ratio_text"
+		android:layout_alignParentLeft="true"
+		android:layout_marginLeft="@dimen/margin_torrentlistleft"
+		android:layout_toLeftOf="@id/priority_image"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_small" />
+
+	<org.transdroid.core.gui.lists.TorrentProgressBar
+		android:id="@+id/torrent_progressbar"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/ratio_text"
+		android:layout_marginLeft="@dimen/margin_torrentlistleft" />
+
+	<TextView
+		android:id="@+id/speed_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_below="@id/torrent_progressbar"
+		android:layout_marginLeft="@dimen/margin_half"
+		android:layout_marginTop="@dimen/margin_half"
+		android:paddingBottom="@dimen/margin_half"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_small" />
+
+	<TextView
+		android:id="@+id/peers_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@id/speed_text"
+		android:layout_alignParentLeft="true"
+		android:layout_marginLeft="@dimen/margin_torrentlistleft"
+		android:layout_toLeftOf="@id/speed_text"
+		android:paddingBottom="@dimen/margin_half"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_small" />
+
+</org.transdroid.core.gui.lists.TorrentStatusLayout>

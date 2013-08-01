@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent" >
+
+	<com.actionbarsherlock.view.SherlockListView
+		android:id="@+id/searchresults_list"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:choiceMode="multipleChoiceModal"
+		android:listSelector="?attr/selectable_background_transdroid"
+		android:visibility="gone" />
+
+	<ProgressBar
+		android:id="@+id/loading_progress"
+		android:layout_width="128dp"
+		android:layout_height="128dp"
+		android:layout_gravity="center"
+		android:indeterminate="true"
+		android:indeterminateDrawable="?attr/loading_progress"
+		android:indeterminateOnly="true" />
+	
+	<TextView
+		android:id="@+id/empty_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:drawablePadding="8dip"
+		android:drawableTop="?attr/loading_progress"
+		android:gravity="center"
+		android:maxWidth="400dip"
+		android:padding="@dimen/margin_default"
+		android:text="@string/search_noresults"
+		android:textIsSelectable="false"
+		android:visibility="gone" />
+
+</FrameLayout>

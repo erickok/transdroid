@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:padding="@dimen/margin_half"
+	android:orientation="vertical" >
+
+	<TextView
+		android:id="@+id/pick_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/status_label_pick"
+		android:textAllCaps="true" />
+	
+	<View
+		android:id="@+id/line1"
+		android:layout_width="match_parent"
+		android:layout_height="1dip"
+		android:background="#28000000" />
+	
+	<ListView
+		android:id="@+id/labels_list"
+		android:layout_width="match_parent"
+		android:layout_height="0dip"
+		android:layout_weight="1"
+		android:listSelector="?attr/selectable_background_transdroid" />
+	
+	<View
+		android:id="@+id/line2"
+		android:layout_width="match_parent"
+		android:layout_height="1dip"
+		android:background="#28000000" />
+	
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/margin_half"
+		android:text="@string/status_label_new"
+		android:textAllCaps="true" />
+	
+	<EditText
+		android:id="@+id/newlabel_edit"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:singleLine="true"
+		android:inputType="textFilter"
+		android:hint="@string/status_label_hint" />
+
+</LinearLayout>

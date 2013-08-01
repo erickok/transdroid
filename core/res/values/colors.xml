@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="green">#8acc12</color>
+    <color name="ledgreen">#7dbb21</color>
+    <color name="crouton_error">#c81113</color>
+    <color name="crouton_info">#aada62</color>
+</resources>
