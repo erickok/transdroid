@@ -103,7 +103,7 @@ public class ServerCheckerService extends IntentService {
 						newTorrents.add(torrent);
 						continue;
 					}
-					if (server.shouldAlarmOnFinishedDownload() && torrent.getPartDone() == 1F && !wasDone)
+					if (server.shouldAlarmOnFinishedDownload() && torrent.getPartDone() == 1F && wasDone != null && !wasDone)
 						// This torrent is now done, but wasn't before
 						doneTorrents.add(torrent);
 				}

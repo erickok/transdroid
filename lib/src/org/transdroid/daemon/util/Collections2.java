@@ -15,7 +15,7 @@ public class Collections2 {
 		String result = "";
 		Iterator<T> it = iterable.iterator();
 		while (it.hasNext()) {
-			result = (first ? "" : separator) + it.next().toString();
+			result += (first ? "" : separator) + it.next().toString();
 			first = false;
 		}
 		return result;

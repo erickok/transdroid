@@ -102,15 +102,15 @@
 	<string name="status_update">Update</string>
 	<plurals name="status_service_added">
 		<item quantity="one">New torrent added</item>
-		<item quantity="many">%1$s new torrents added</item>
+		<item quantity="other">%1$s new torrents added</item>
 	</plurals>
 	<plurals name="status_service_finished">
 		<item quantity="one">Torrent is finished</item>
-		<item quantity="many">%1$s torrents are finished</item>
+		<item quantity="other">%1$s torrents are finished</item>
 	</plurals>
 	<plurals name="status_service_addedfinished">
 		<item quantity="one">%1$s added, %2$s finished torrent</item>
-		<item quantity="many">%1$s added, %2$s finished torrents</item>
+		<item quantity="other">%1$s added, %2$s finished torrents</item>
 	</plurals>
 	<string name="status_service_andothers">%1$s and others</string>
 	
@@ -168,7 +168,7 @@
 	</plurals>
 	<plurals name="rss_service_new">
 		<item quantity="one">New RSS feed torrent available</item>
-		<item quantity="many">%1$s new RSS feed torrents</item>
+		<item quantity="other">%1$s new RSS feed torrents</item>
 	</plurals>
 	<string name="rss_service_newfor">New torrents for %1$s</string>
 		
