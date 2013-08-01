@@ -1,6 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
 	<item
+		android:id="@+id/action_showdetails"
+		android:icon="?attr/ic_action_website"
+		android:showAsAction="always"
+		android:title="@string/action_showdetails" />
+	
+	<item
 		android:id="@+id/action_addall"
 		android:icon="?attr/ic_action_new"
 		android:showAsAction="always"

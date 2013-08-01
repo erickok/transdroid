@@ -144,8 +144,9 @@ public class SearchResultsFragment extends SherlockFragment {
 			} else if (itemId == R.id.action_showdetails) {
 				SearchResult first = checked.get(0);
 				// Open the torrent's web page in the browser
-				Toast.makeText(getActivity(), getString(R.string.search_openingdetails, first), Toast.LENGTH_LONG)
-						.show();
+				if (checked.size() > 1)
+					Toast.makeText(getActivity(), getString(R.string.search_openingdetails, first), Toast.LENGTH_LONG)
+							.show();
 				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(first.getDetailsUrl())));
 				return true;
 			} else {
