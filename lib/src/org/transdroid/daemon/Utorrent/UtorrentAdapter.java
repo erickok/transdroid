@@ -323,7 +323,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		
 	}
 
-	private void ensureToken() throws IOException, ClientProtocolException, DaemonException {
+	private synchronized void ensureToken() throws IOException, ClientProtocolException, DaemonException {
 		
 		// Make sure we have a valid token
 		if (authtoken == null) {

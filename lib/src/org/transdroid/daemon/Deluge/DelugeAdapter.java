@@ -433,7 +433,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 		
 	}
 	
-	private JSONObject makeRequest(JSONObject data) throws DaemonException {
+	private synchronized JSONObject makeRequest(JSONObject data) throws DaemonException {
 
 		try {
 			

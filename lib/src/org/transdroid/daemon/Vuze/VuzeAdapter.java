@@ -219,7 +219,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 		return makeVuzeCall(method, serverMethod, null, new Object[] {}, null);
 	}
 
-	private Map<String, Object> makeVuzeCall(DaemonMethod method, String serverMethod, Long actOnObject, Object[] params, TorrentStatus torrentStatus) throws DaemonException {
+	private synchronized Map<String, Object> makeVuzeCall(DaemonMethod method, String serverMethod, Long actOnObject, Object[] params, TorrentStatus torrentStatus) throws DaemonException {
 
 		// TODO: It would be nicer to now split each of these steps into separate makeVuzeCalls when there are multiple logical steps such as stopping a torrent before removing it
 	

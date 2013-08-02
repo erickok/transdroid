@@ -375,7 +375,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 		return request;
 	}
 	
-	private JSONObject makeRequest(JSONObject data) throws DaemonException {
+	private synchronized JSONObject makeRequest(JSONObject data) throws DaemonException {
 
 		try {
 				
@@ -412,6 +412,8 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				DLog.d(LOG_NAME, "Receive HTTP 409 with new session code; now try again for the actual request");
 				sessionToken = response.getFirstHeader(sessionHeader).getValue();
 				httppost.addHeader(sessionHeader, sessionToken);
+				DLog.d(LOG_NAME, "Retry to execute " + data.getString("method") + " request, now with " + sessionHeader
+						+ ": " + sessionToken);
 				response = httpclient.execute(httppost);
 				
 			}

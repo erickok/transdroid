@@ -187,7 +187,7 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	 * @param currentLabels The list of known server labels
 	 */
 	public void updateLabels(ArrayList<Label> currentLabels) {
-		this.currentLabels = new ArrayList<Label>(currentLabels);
+		this.currentLabels = currentLabels == null? null: new ArrayList<Label>(currentLabels);
 	}
 
 	/**

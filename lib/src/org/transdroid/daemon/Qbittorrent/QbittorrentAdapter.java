@@ -86,7 +86,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		this.settings = settings;
 	}
 	
-	private void ensureVersion() throws DaemonException {
+	private synchronized void ensureVersion() throws DaemonException {
 		if (version > 0)
 			return;
 		// We still need to retrieve the version number from the server

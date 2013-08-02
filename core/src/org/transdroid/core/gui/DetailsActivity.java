@@ -112,7 +112,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	protected void init() {
 
 		// We require a torrent to be specified; otherwise close the activity
-		if (torrent == null || currentLabels == null) {
+		if (torrent == null) {
 			finish();
 			return;
 		}
