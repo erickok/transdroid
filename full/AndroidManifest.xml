@@ -17,8 +17,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.transdroid.full"
-	android:versionCode="3"
-	android:versionName="2.0-alpha3" >
+	android:versionCode="4"
+	android:versionName="2.0-alpha4" >
 
 	<uses-sdk
 		android:minSdkVersion="7"
