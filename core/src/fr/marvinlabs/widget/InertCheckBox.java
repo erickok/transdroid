@@ -1,3 +1,8 @@
+/* 
+ * Public Domain
+ * InertCheckBox.java by marvinlabs
+ * http://www.marvinlabs.com/2010/10/29/custom-listview-ability-check-items/
+ */
 package fr.marvinlabs.widget;
 
 import android.content.Context;

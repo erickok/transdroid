@@ -1,3 +1,8 @@
+/* 
+ * Public Domain
+ * SherlockListView.java by tweakt
+ * https://snipt.net/tweakt/sherlocklistviewjava/
+ */
 package com.actionbarsherlock.view;
 
 import android.annotation.TargetApi;

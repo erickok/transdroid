@@ -1,3 +1,8 @@
+/* 
+ * Public Domain
+ * CheckableRelativeLayout.java by marvinlabs
+ * http://www.marvinlabs.com/2010/10/29/custom-listview-ability-check-items/
+ */
 package fr.marvinlabs.widget;
 
 import java.util.ArrayList;
