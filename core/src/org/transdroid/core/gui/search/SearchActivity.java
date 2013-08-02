@@ -186,7 +186,6 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 
 	private void handleIntent(Intent intent) {
 		lastUsedQuery = parseQuery(intent);
-		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(lastUsedQuery));
 
 		// Is this actually a full HTTP URL? Then redirect this request to add the URL directly
 		if (lastUsedQuery != null
@@ -247,15 +246,23 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 	@OptionsItem(resName = "action_refresh")
 	protected void refreshSearch() {
 		if (lastUsedSite instanceof WebsearchSetting) {
+			
 			// Start a browser page directly to the requested search results
 			WebsearchSetting websearch = (WebsearchSetting) lastUsedSite;
 			startActivity(new Intent(Intent.ACTION_VIEW,
 					Uri.parse(String.format(websearch.getBaseUrl(), lastUsedQuery))));
+			
 		} else if (lastUsedSite instanceof SearchSite) {
+
+			// Update the activity title (only shown on large devices)
+			getSupportActionBar().setTitle(
+					NavigationHelper.buildCondensedFontString(getString(R.string.search_queryonsite, lastUsedQuery,
+							lastUsedSite.getName())));
 			// Save the search site currently used to search for future usage
 			applicationSettings.setLastUsedSearchSite((SearchSite) lastUsedSite);
 			// Ask the results fragment to start a search for the specified query
 			fragmentResults.startSearch(lastUsedQuery, (SearchSite) lastUsedSite);
+			
 		}
 	}
 

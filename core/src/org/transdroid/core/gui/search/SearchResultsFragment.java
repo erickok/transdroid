@@ -32,6 +32,8 @@ import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchHelper.SearchSortOrder;
 import org.transdroid.core.app.search.SearchResult;
 import org.transdroid.core.app.search.SearchSite;
+import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 
 import android.content.Intent;
@@ -72,6 +74,16 @@ public class SearchResultsFragment extends SherlockFragment {
 
 	@AfterViews
 	protected void init() {
+
+		// On large screens where this fragment is shown next to the sites list; we show a continues grey vertical line 
+		// to separate the lists visually
+		if (!NavigationHelper_.getInstance_(getActivity()).isSmallScreen()) {
+			if (SystemSettings_.getInstance_(getActivity()).useDarkTheme()) {
+				resultsList.setBackgroundResource(R.drawable.details_list_background_dark);
+			} else {
+				resultsList.setBackgroundResource(R.drawable.details_list_background_light);
+			}
+		}
 
 		// Set up the list adapter, which allows multi-select
 		resultsList.setAdapter(resultsAdapter);
@@ -161,8 +173,8 @@ public class SearchResultsFragment extends SherlockFragment {
 				SearchResult first = checked.get(0);
 				// Open the torrent's web page in the browser
 				if (checked.size() > 1)
-					Toast.makeText(getActivity(), getString(R.string.search_openingdetails, first), Toast.LENGTH_LONG)
-							.show();
+					Toast.makeText(getActivity(), getString(R.string.search_openingdetails, first.getName()),
+							Toast.LENGTH_LONG).show();
 				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(first.getDetailsUrl())));
 				return true;
 			} else {

@@ -158,6 +158,7 @@
 	<string name="result_maxspeedsset">Maximum transfer speeds set</string>
 	
 	<string name="search_torrentsearch">Torrent search</string>
+	<string name="search_queryonsite">\'%1$s\' on %2$s</string>
 	<string name="search_hint">Search for torrents</string>
 	<string name="search_noresults">No results for your query</string>
 	<string name="search_seeders">S: %1$s</string>
