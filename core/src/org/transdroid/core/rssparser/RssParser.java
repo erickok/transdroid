@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
@@ -73,6 +74,7 @@ public class RssParser extends DefaultHandler {
 
 		SchemeRegistry registry = new SchemeRegistry();
 		registry.register(new Scheme("http", new PlainSocketFactory(), 80));
+		registry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
 
 		HttpParams httpparams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpparams, 5000);
