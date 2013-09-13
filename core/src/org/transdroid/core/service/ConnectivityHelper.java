@@ -22,18 +22,21 @@ import org.androidannotations.annotations.EBean.Scope;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 
 @EBean(scope = Scope.Singleton)
 public class ConnectivityHelper {
 
 	@SystemService
 	protected ConnectivityManager connectivityManager;
+	@SystemService
+	protected WifiManager wifiManager;
 
 	public ConnectivityHelper(Context context) {
 	}
 
 	@SuppressWarnings("deprecation")
-	public boolean shouldPerformActions() {
+	public boolean shouldPerformBackgroundActions() {
 		// First check the old background data setting (this will always be true for ICS+)
 		if (!connectivityManager.getBackgroundDataSetting())
 			return false;
@@ -42,4 +45,10 @@ public class ConnectivityHelper {
 		return connectivityManager.getActiveNetworkInfo().isConnected();
 	}
 
+	public String getConnectedNetworkName() {
+		if (wifiManager.getConnectionInfo() != null) {
+			return wifiManager.getConnectionInfo().getSSID().replace("\"", "");
+		}
+		return null;
+	}
 }

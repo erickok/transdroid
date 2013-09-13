@@ -35,6 +35,7 @@ import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -91,6 +92,8 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	@Bean
 	protected NavigationHelper navigationHelper;
 	@Bean
+	protected ConnectivityHelper connectivityHelper;
+	@Bean
 	protected ApplicationSettings applicationSettings;
 	private IDaemonAdapter currentConnection = null;
 
@@ -123,7 +126,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
-		currentConnection = lastUsed.createServerAdapter();
+		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
 
 		// Show details and load fine stats and torrent files
 		fragmentDetails.updateTorrent(torrent);

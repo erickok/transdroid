@@ -57,7 +57,8 @@
 		<EditTextPreference
 			android:key="server_localnetwork"
 			android:title="@string/pref_localnetwork"
-			android:summary="@string/pref_localnetwork_info" />
+			android:summary="@string/pref_localnetwork_info"
+			android:inputType="textNoSuggestions" />
 		<EditTextPreference
 			android:key="server_folder"
 			android:title="@string/pref_folder"

@@ -145,6 +145,8 @@ public enum Daemon {
 			return "daemon_qbittorrent";
 		case rTorrent:
 			return "daemon_rtorrent";
+		case Synology:
+			return "daemon_synology";
 		case Tfb4rt:
 			return "daemon_tfb4rt";
 		case Transmission:
@@ -197,15 +199,15 @@ public enum Daemon {
 		if (daemonCode.equals("daemon_rtorrent")) {
 			return rTorrent;
 		}
+		if (daemonCode.equals("daemon_synology")) {
+			return Synology;
+		}
 		if (daemonCode.equals("daemon_tfb4rt")) {
 			return Tfb4rt;
 		}
         if (daemonCode.equals("daemon_transmission")) {
             return Transmission;
         }
-		if (daemonCode.equals("daemon_synology")) {
-			return Synology;
-		}
 		if (daemonCode.equals("daemon_utorrent")) {
 			return uTorrent;
 		}

@@ -278,10 +278,10 @@
         <item>Buffalo NAS -1.31</item>
         <item>Deluge 1.2+</item>
         <item>DLink Router BT</item>
-        <item>Dummy</item>
         <item>Ktorrent</item>
         <item>qBittorrent</item>
         <item>rTorrent</item>
+        <item>Synology</item>
         <item>Torrentflux-b4rt</item>
         <item>Transmission</item>
         <item>µTorrent</item>
@@ -294,10 +294,10 @@
         <item>daemon_buffalonas</item>
         <item>daemon_deluge</item>
         <item>daemon_dlinkrouterbt</item>
-        <item>daemon_dummy</item>
         <item>daemon_ktorrent</item>
         <item>daemon_qbittorrent</item>
         <item>daemon_rtorrent</item>
+        <item>daemon_synology</item>
         <item>daemon_tfb4rt</item>
         <item>daemon_transmission</item>
         <item>daemon_utorrent</item>

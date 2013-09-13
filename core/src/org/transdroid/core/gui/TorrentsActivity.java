@@ -55,6 +55,7 @@ import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
 import org.transdroid.core.gui.settings.*;
 import org.transdroid.core.service.BootReceiver;
+import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -125,6 +126,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	// Navigation components
 	@Bean
 	protected NavigationHelper navigationHelper;
+	@Bean
+	protected ConnectivityHelper connectivityHelper;
 	@ViewById
 	protected SherlockListView filtersList;
 	protected FilterListAdapter navigationListAdapter = null;
@@ -219,7 +222,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 		// Handle any start up intents
 		if (firstStart && getIntent() != null) {
-			currentConnection = lastUsed.createServerAdapter();
+			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
 			handleStartIntent();
 		}
 		
@@ -356,7 +359,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			}
 
 			// Update connection to the newly selected server and refresh
-			currentConnection = server.createServerAdapter();
+			currentConnection = server.createServerAdapter(connectivityHelper.getConnectedNetworkName());
 			applicationSettings.setLastUsedServer(server);
 			navigationSpinnerAdapter.updateCurrentServer(currentConnection);
 			if (forceNewConnection)

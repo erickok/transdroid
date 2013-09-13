@@ -69,7 +69,7 @@ public class ServerCheckerService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		if (!connectivityHelper.shouldPerformActions() || !notificationSettings.isEnabled()) {
+		if (!connectivityHelper.shouldPerformBackgroundActions() || !notificationSettings.isEnabled()) {
 			Log.d(this,
 					"Skip the server checker service, as background data is disabled, the service is disabled or we are not connected.");
 			return;
@@ -88,7 +88,7 @@ public class ServerCheckerService extends IntentService {
 			JSONArray lastStats = applicationSettings.getServerLastStats(server);
 
 			// Synchronously retrieve torrents listing
-			IDaemonAdapter adapter = server.createServerAdapter();
+			IDaemonAdapter adapter = server.createServerAdapter(connectivityHelper.getConnectedNetworkName());
 			DaemonTaskResult result = RetrieveTask.create(adapter).execute();
 			if (!(result instanceof RetrieveTaskSuccessResult)) {
 				// Cannot retrieve torrents at this time

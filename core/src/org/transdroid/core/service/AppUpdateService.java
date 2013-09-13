@@ -68,7 +68,7 @@ public class AppUpdateService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		if (!connectivityHelper.shouldPerformActions() || !systemSettings.checkForUpdates()) {
+		if (!connectivityHelper.shouldPerformBackgroundActions() || !systemSettings.checkForUpdates()) {
 			Log.d(this,
 					"Skip the app update service, as background data is disabled, the service is disabled or we are not connected.");
 			return;
