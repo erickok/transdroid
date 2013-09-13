@@ -46,7 +46,7 @@ public class ConnectivityHelper {
 	}
 
 	public String getConnectedNetworkName() {
-		if (wifiManager.getConnectionInfo() != null) {
+		if (wifiManager.getConnectionInfo() != null && wifiManager.getConnectionInfo().getSSID() != null) {
 			return wifiManager.getConnectionInfo().getSSID().replace("\"", "");
 		}
 		return null;

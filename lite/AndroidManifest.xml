@@ -178,7 +178,7 @@
 		<service android:name="org.transdroid.core.service.AppUpdateService_" />
 
 		<receiver android:name="org.transdroid.core.service.AlarmReceiver_" />
-		<receiver android:name="org.transdroid.core.service.BootReceiver_" >
+		<receiver android:name="org.transdroid.core.service.BootReceiver" >
 			<intent-filter>
 				<action
 					android:name="android.intent.action.BOOT_COMPLETED"
