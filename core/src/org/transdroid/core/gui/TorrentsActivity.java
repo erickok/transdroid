@@ -135,6 +135,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected ServerStatusView serverStatusView;
 	@SystemService
 	protected SearchManager searchManager;
+	private MenuItem searchMenu = null;
 
 	// Settings
 	@Bean
@@ -262,10 +263,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// For Android 2.1+, add an expandable SearchView to the action bar
 			MenuItem item = menu.findItem(R.id.action_search);
 			if (android.os.Build.VERSION.SDK_INT >= 8) {
-				final SearchView searchView = new SearchView(this);
+				SearchView searchView = new SearchView(this);
 				searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 				searchView.setQueryRefinementEnabled(true);
 				item.setActionView(searchView);
+				searchMenu = item;
 			}
 		}
 		return true;
@@ -486,6 +488,14 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	}
 
+	@Override
+	public boolean onSearchRequested() {
+		if (searchMenu != null) {
+			searchMenu.expandActionView();
+		}
+		return true;
+	}
+	
 	@OptionsItem(resName = "action_add_fromurl")
 	protected void startUrlEntryDialog() {
 		UrlEntryDialog.startUrlEntry(this);

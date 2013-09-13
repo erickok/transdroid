@@ -77,6 +77,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 	protected SearchHelper searchHelper;
 	@SystemService
 	protected SearchManager searchManager;
+	private MenuItem searchMenu = null;
 	private SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
 			TorrentSearchHistoryProvider.AUTHORITY, TorrentSearchHistoryProvider.MODE);
 
@@ -154,6 +155,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 				searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 				searchView.setQueryRefinementEnabled(true);
 				item.setActionView(searchView);
+				searchMenu = item;
 			}
 		}
 		return true;
@@ -198,6 +200,14 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 
 	}
 
+	@Override
+	public boolean onSearchRequested() {
+		if (searchMenu != null) {
+			searchMenu.expandActionView();
+		}
+		return true;
+	}
+	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@OptionsItem(android.R.id.home)
 	protected void navigateUp() {
