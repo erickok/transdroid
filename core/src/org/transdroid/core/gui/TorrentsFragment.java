@@ -84,6 +84,8 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 	protected boolean isLoading = true;
 	@InstanceState
 	protected String connectionErrorMessage = null;
+	@InstanceState
+	protected Daemon daemonType;
 
 	// Views
 	@ViewById(resName = "torrent_list")
@@ -208,9 +210,9 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 	}
 
 	private MultiChoiceModeListenerCompat onTorrentsSelected = new MultiChoiceModeListenerCompat() {
-		
+
 		SelectionManagerMode selectionManagerMode;
-		
+
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Show contextual action bar to start/stop/remove/etc. torrents in batch mode
@@ -222,7 +224,14 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-			return selectionManagerMode.onPrepareActionMode(mode, menu);
+			selectionManagerMode.onPrepareActionMode(mode, menu);
+			// Hide/show options depending on the type of server we are connected to
+			if (daemonType != null) {
+				menu.findItem(R.id.action_start).setVisible(Daemon.supportsStoppingStarting(daemonType));
+				menu.findItem(R.id.action_stop).setVisible(Daemon.supportsStoppingStarting(daemonType));
+				menu.findItem(R.id.action_setlabel).setVisible(Daemon.supportsSetLabel(daemonType));
+			}
+			return true;
 		}
 
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
@@ -245,6 +254,18 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 			} else if (itemId == R.id.action_pause) {
 				for (Torrent torrent : checked) {
 					getTasksExecutor().pauseTorrent(torrent);
+				}
+				mode.finish();
+				return true;
+			} else if (itemId == R.id.action_start) {
+				for (Torrent torrent : checked) {
+					getTasksExecutor().startTorrent(torrent, false);
+				}
+				mode.finish();
+				return true;
+			} else if (itemId == R.id.action_stop) {
+				for (Torrent torrent : checked) {
+					getTasksExecutor().stopTorrent(torrent);
 				}
 				mode.finish();
 				return true;
@@ -300,8 +321,9 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 	 * need to show a message suggesting help). This should only ever be called on the UI thread.
 	 * @param hasAConnection True if the user has servers configured and therefore has a connection that can be used
 	 */
-	public void updateConnectionStatus(boolean hasAConnection) {
+	public void updateConnectionStatus(boolean hasAConnection, Daemon daemonType) {
 		this.hasAConnection = hasAConnection;
+		this.daemonType = daemonType;
 		if (!hasAConnection) {
 			clear(true, true); // Indirectly also calls updateViewVisibility()
 		} else {

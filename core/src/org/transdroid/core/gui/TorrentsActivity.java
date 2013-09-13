@@ -225,7 +225,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
 			handleStartIntent();
 		}
-		
+
 		// Start the alarms for the background services, if needed
 		BootReceiver.startBackgroundServices(getApplicationContext(), false);
 		BootReceiver.startAppUpdatesService(getApplicationContext());
@@ -288,7 +288,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			menu.findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 			menu.findItem(R.id.action_help).setVisible(true);
 			if (fragmentTorrents != null)
-				fragmentTorrents.updateConnectionStatus(false);
+				fragmentTorrents.updateConnectionStatus(false, null);
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			return true;
 		}
@@ -302,11 +302,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		menu.findItem(R.id.action_disableturtle).setVisible(hasAltMode && turleModeEnabled);
 		menu.findItem(R.id.action_refresh).setVisible(true);
 		menu.findItem(R.id.action_sort).setVisible(true);
+		menu.findItem(R.id.action_sort_added).setVisible(Daemon.supportsDateAdded(currentConnection.getType()));
 		menu.findItem(R.id.action_filter).setVisible(true);
 		menu.findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 		menu.findItem(R.id.action_help).setVisible(false);
 		if (fragmentTorrents != null)
-			fragmentTorrents.updateConnectionStatus(true);
+			fragmentTorrents.updateConnectionStatus(true, currentConnection.getType());
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		return true;
@@ -926,7 +927,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 		lastNavigationLabels = Label.convertToNavigationLabels(labels,
 				getResources().getString(R.string.labels_unlabeled));
-		
+
 		// Report the newly retrieved list of torrents to the torrents fragment
 		fragmentTorrents.updateIsLoading(false);
 		fragmentTorrents.updateTorrents(new ArrayList<Torrent>(torrents), lastNavigationLabels);

@@ -27,6 +27,16 @@
 		android:showAsAction="always"
 		android:title="@string/action_pause" />
 	<item
+		android:id="@+id/action_start"
+		android:icon="?attr/ic_action_start"
+		android:showAsAction="always"
+		android:title="@string/action_start" />
+	<item
+		android:id="@+id/action_stop"
+		android:icon="?attr/ic_action_stop"
+		android:showAsAction="always"
+		android:title="@string/action_stop" />
+	<item
 		android:id="@+id/action_remove"
 		android:icon="?attr/ic_action_remove"
 		android:showAsAction="always"
