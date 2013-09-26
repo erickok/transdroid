@@ -3,6 +3,10 @@
 	<name>Transdroid Lite</name>
 	<comment></comment>
 	<projects>
+		<project>ColorPickerPreference</project>
+		<project>com_actionbarsherlock</project>
+		<project>core</project>
+		<project>Crouton</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

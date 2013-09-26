@@ -75,7 +75,8 @@
 	</item>
 	<item
 		android:id="@+id/action_filter"
-		android:showAsAction="never"
+		android:showAsAction="always"
+		android:icon="?attr/ic_action_filter"
 		android:title="@string/action_filter"
 		android:orderInCategory="905"/>
 	<item
