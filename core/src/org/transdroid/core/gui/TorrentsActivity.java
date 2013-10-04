@@ -463,9 +463,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			if (match != null && match.getCookies() != null) {
 				addTorrentFromWeb(data, match);
 			} else {
-				// Normally send the URL to the torrent client; the title we show is just the 'file name'
-				// TODO: Make a better effort in determining the title (check query string, clean special chars)
-				String title = data.substring(data.lastIndexOf("/") + 1);
+				// Normally send the URL to the torrent client; the title we show is based on the url
+				String title = NavigationHelper.extractNameFromUri(dataUri);
 				if (intent.hasExtra("TORRENT_TITLE")) {
 					title = intent.getStringExtra("TORRENT_TITLE");
 				}

@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.TypefaceSpan;
@@ -166,4 +167,50 @@ public class NavigationHelper {
 		return s;
 	}
 
+	/**
+	 * Analyses a torrent or magnet URI and tries to come up with a reasonable human-readable name.
+	 * @param rawTorrentUri The raw http:// or magnet: link to the torrent
+	 * @return A best-guess, reasonably long name for the linked torrent
+	 */
+	public static String extractNameFromUri(Uri rawTorrentUri) {
+		
+		if (rawTorrentUri.getScheme() == null) {
+			// Probably an incorrect URI; just return the whole thing
+			return rawTorrentUri.toString();
+		}
+		
+		if (rawTorrentUri.getScheme().equals("magnet")) {
+			// Magnet links might have a dn (display name) parameter
+			String dn = getQueryParameter(rawTorrentUri, "dn");
+			if (dn != null && !dn.equals(""))
+				return dn;
+			// If not, try to return the hash that is specified as xt (exact topci)
+			String xt = getQueryParameter(rawTorrentUri, "xt");
+			if (xt != null && !xt.equals(""))
+				return xt;
+		}
+
+		if (rawTorrentUri.isHierarchical()) {
+			String path = rawTorrentUri.getPath();
+			if (path != null) {
+				if (path.contains("/"))
+					path = path.substring(path.lastIndexOf("/"));
+				return path;
+			}
+		}
+		
+		// No idea what to do with this; return as is
+		return rawTorrentUri.toString();
+	}
+
+	private static String getQueryParameter(Uri uri, String parameter) {
+		int start = uri.toString().indexOf(parameter + "=");
+		if (start >= 0) {
+			int begin = start + (parameter + "=").length();
+			int end = uri.toString().indexOf("&", begin);
+			return uri.toString().substring(begin, end >= 0? end: uri.toString().length());
+		}
+		return null;
+	}
+	
 }
