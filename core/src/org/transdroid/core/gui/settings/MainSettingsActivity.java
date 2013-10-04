@@ -29,7 +29,8 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.WebsearchSetting;
-import org.transdroid.core.gui.*;
+import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.settings.RssfeedPreference.OnRssfeedClickedListener;
 import org.transdroid.core.gui.settings.ServerPreference.OnServerClickedListener;
 import org.transdroid.core.gui.settings.WebsearchPreference.OnWebsearchClickedListener;
@@ -53,6 +54,8 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
 public class MainSettingsActivity extends SherlockPreferenceActivity {
 
 	@Bean
+	protected NavigationHelper navigationHelper;
+	@Bean
 	protected ApplicationSettings applicationSettings;
 	@Bean
 	protected SearchHelper searchHelper;
@@ -69,15 +72,20 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		super.onResume();
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		if (getPreferenceScreen() != null)
 			getPreferenceScreen().removeAll();
-		
+
+		boolean enableSearchUi = navigationHelper.enableSearchUi();
+		boolean enableRssUi = navigationHelper.enableRssUi();
+
 		// Load the preference menu and attach actions
 		addPreferencesFromResource(R.xml.pref_main);
 		findPreference("header_addserver").setOnPreferenceClickListener(onAddServer);
-		findPreference("header_addwebsearch").setOnPreferenceClickListener(onAddWebsearch);
-		findPreference("header_addrssfeed").setOnPreferenceClickListener(onAddRssfeed);
+		if (enableSearchUi)
+			findPreference("header_addwebsearch").setOnPreferenceClickListener(onAddWebsearch);
+		if (enableRssUi)
+			findPreference("header_addrssfeed").setOnPreferenceClickListener(onAddRssfeed);
 		findPreference("header_background").setOnPreferenceClickListener(onBackgroundSettings);
 		findPreference("header_system").setOnPreferenceClickListener(onSystemSettings);
 
@@ -89,20 +97,31 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 							onServerClicked));
 		}
 
+		// Add existing RSS feeds
+		if (!enableRssUi) {
+			// RSS should be disabled
+			getPreferenceScreen().removePreference(findPreference("header_rssfeeds"));
+		} else {
+			List<RssfeedSetting> rssfeeds = applicationSettings.getRssfeedSettings();
+			for (RssfeedSetting rssfeedSetting : rssfeeds) {
+				getPreferenceScreen().addPreference(
+						new RssfeedPreference(this).setRssfeedSetting(rssfeedSetting).setOnRssfeedClickedListener(
+								onRssfeedClicked));
+			}
+		}
+
+		if (!enableSearchUi) {
+			// Search should be disabled
+			getPreferenceScreen().removePreference(findPreference("header_searchsites"));
+			return;
+		}
+
 		// Add existing websearch sites
 		List<WebsearchSetting> websearches = applicationSettings.getWebsearchSettings();
 		for (WebsearchSetting websearchSetting : websearches) {
 			getPreferenceScreen().addPreference(
 					new WebsearchPreference(this).setWebsearchSetting(websearchSetting).setOnWebsearchClickedListener(
 							onWebsearchClicked));
-		}
-
-		// Add existing RSS feeds
-		List<RssfeedSetting> rssfeeds = applicationSettings.getRssfeedSettings();
-		for (RssfeedSetting rssfeedSetting : rssfeeds) {
-			getPreferenceScreen().addPreference(
-					new RssfeedPreference(this).setRssfeedSetting(rssfeedSetting).setOnRssfeedClickedListener(
-							onRssfeedClicked));
 		}
 
 		// Construct list of all available search sites, in-app and web
@@ -124,7 +143,7 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		// Supply the Preference list names and values
 		setSite.setEntries(siteNames.toArray(new String[siteNames.size()]));
 		setSite.setEntryValues(siteValues.toArray(new String[siteValues.size()]));
-		
+
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
