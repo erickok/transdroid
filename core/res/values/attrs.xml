@@ -23,6 +23,7 @@
 	
 	<!-- Themeable drawables, such as action bar icons -->
 	<attr name="ic_action_discard" format="reference"/>
+	<attr name="ic_action_filter" format="reference"/>
 	<attr name="ic_action_labels" format="reference"/>
 	<attr name="ic_action_new" format="reference"/>
 	<attr name="ic_action_pause" format="reference"/>

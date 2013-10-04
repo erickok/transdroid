@@ -22,6 +22,7 @@
 		<item name="android:windowBackground">@color/background_light</item>
 		
 		<item name="ic_action_discard">@drawable/ic_action_discard_light</item>
+		<item name="ic_action_filter">@drawable/ic_action_filter_light</item>
 		<item name="ic_action_labels">@drawable/ic_action_labels_light</item>
 		<item name="ic_action_new">@drawable/ic_action_new_light</item>
 		<item name="ic_action_pause">@drawable/ic_action_pause_light</item>
@@ -51,6 +52,7 @@
 		<item name="android:windowBackground">@color/background_dark</item>
 		
 		<item name="ic_action_discard">@drawable/ic_action_discard_dark</item>
+		<item name="ic_action_filter">@drawable/ic_action_filter_dark</item>
 		<item name="ic_action_labels">@drawable/ic_action_labels_dark</item>
 		<item name="ic_action_new">@drawable/ic_action_new_dark</item>
 		<item name="ic_action_pause">@drawable/ic_action_pause_dark</item>

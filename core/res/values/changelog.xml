@@ -17,6 +17,9 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.0.0\n
+- UI improvements for Lite version\n
+\n
 Transdroid 2.0.0-alpha4\n
 - Fixed parallel command execution issues (primarily Transmission)\n
 \n
