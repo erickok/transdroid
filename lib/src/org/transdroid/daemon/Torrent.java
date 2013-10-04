@@ -142,7 +142,12 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 		if (realDateDone != null) {
 			this.dateDone = realDateDone;
 		} else {
-			if (eta == -1 || eta == -2) {
+			if( this.partDone == 1){ //finished but no finished date set so move to bottom of list
+				Calendar cal = Calendar.getInstance();
+				cal.clear();
+				cal.set(1900, 12, 31);
+				this.dateDone = cal.getTime();
+			} else if (eta == -1 || eta == -2) {
 				this.dateDone = new Date(Long.MAX_VALUE);
 			} else {
 				Calendar cal = Calendar.getInstance();
