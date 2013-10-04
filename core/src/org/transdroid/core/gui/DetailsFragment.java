@@ -27,6 +27,7 @@ import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
+import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.DetailsAdapter;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
@@ -46,6 +47,9 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -81,6 +85,7 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	protected ArrayList<Label> currentLabels = null;
 	@InstanceState
 	protected boolean isLoadingTorrent = false;
+	private ServerSetting currentServerSettings = null;
 
 	// Views
 	@ViewById(resName = "details_list")
@@ -115,6 +120,10 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 		if (torrentFiles != null)
 			updateTorrentFiles(torrent, torrentFiles);
 
+	}
+
+	public void setCurrentServerSettings(ServerSetting serverSettings) {
+		currentServerSettings = serverSettings;
 	}
 
 	/**
@@ -340,6 +349,7 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 			return selectionManagerMode.onPrepareActionMode(mode, menu);
 		}
 
+		@SuppressLint("SdCardPath")
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
@@ -354,13 +364,61 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 
 			int itemId = item.getItemId();
 			if (itemId == R.id.action_download) {
-				// TODO: Start FTP download command for the selected torrents
-				Crouton.showText(getActivity(), "TODO: Start FTP download command for the selected torrents",
-						NavigationHelper.CROUTON_INFO_STYLE);
-				// for (TorrentFile file : checked) {
-				// }
+
+				if (checked.size() < 1 || currentServerSettings == null)
+					return true;
+				String urlBase = currentServerSettings.getFtpUrl();
+				if (urlBase == null || urlBase.equals(""))
+					urlBase = "ftp://" + currentServerSettings.getAddress();
+
+				// Try using AndFTP intents
+				Intent andftpStart = new Intent(Intent.ACTION_PICK);
+				andftpStart.setDataAndType(Uri.parse(urlBase), "vnd.android.cursor.dir/lysesoft.andftp.uri");
+				andftpStart.putExtra("command_type", "download");
+				andftpStart.putExtra("ftp_pasv", "true");
+				if (Uri.parse(urlBase).getUserInfo() != null)
+					andftpStart.putExtra("ftp_username", Uri.parse(urlBase).getUserInfo());
+				else
+					andftpStart.putExtra("ftp_username", currentServerSettings.getUsername());
+				if (currentServerSettings.getFtpPassword() != null
+						&& !currentServerSettings.getFtpPassword().equals("")) {
+					andftpStart.putExtra("ftp_password", currentServerSettings.getFtpPassword());
+				} else {
+					andftpStart.putExtra("ftp_password", currentServerSettings.getPassword());
+				}
+				// Note: AndFTP doesn't understand the directory that Environment.getExternalStoragePublicDirectory()
+				// uses :(
+				andftpStart.putExtra("local_folder", "/sdcard/Download");
+				for (int f = 0; f < checked.size(); f++) {
+					String file = checked.get(f).getRelativePath();
+					// If the file is directly in the root, AndFTP fails if we supply the proper path (like /file.pdf)
+					// Work around this bug by removing the leading / if no further directories are used in the path
+					if (file.startsWith("/") && file.indexOf("/", 1) < 0)
+						file = file.substring(1);
+					andftpStart.putExtra("remote_file" + (f + 1), file);
+				}
+				if (andftpStart.resolveActivity(getActivity().getPackageManager()) != null) {
+					startActivity(andftpStart);
+					mode.finish();
+					return true;
+				}
+
+				// Try using a VIEW intent given an ftp:// scheme URI
+				String url = urlBase + checked.get(0).getFullPath();
+				Intent simpleStart = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
+						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				if (simpleStart.resolveActivity(getActivity().getPackageManager()) != null) {
+					startActivity(simpleStart);
+					mode.finish();
+					return true;
+				}
+
+				// No app is available that can handle FTP downloads
+				Crouton.showText(getActivity(), getString(R.string.error_noftpapp, url),
+						NavigationHelper.CROUTON_ERROR_STYLE);
 				mode.finish();
 				return true;
+
 			} else {
 				Priority priority = Priority.Off;
 				if (itemId == R.id.action_priority_low)

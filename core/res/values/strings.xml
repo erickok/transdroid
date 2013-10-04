@@ -356,6 +356,7 @@
 	<string name="error_notanumber">Please enter a positive number</string>
 	<string name="error_notalabel">Please enter a valid label or pick from the list</string>
 	<string name="error_stillloadingdetails">Please wait until the torrent details have been loaded</string>
+	<string name="error_noftpapp">No app found that can download %1$s</string>
 	
 	<string name="update_app_newversion">New Transdroid version available</string>
 	<string name="update_search_newversion">New Transdroid search module available</string>

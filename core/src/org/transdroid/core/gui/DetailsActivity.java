@@ -126,6 +126,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
+		fragmentDetails.setCurrentServerSettings(lastUsed);
 		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
 
 		// Show details and load fine stats and torrent files

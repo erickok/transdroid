@@ -75,6 +75,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
+					android:host="*"
 					android:mimeType="application/x-bittorrent"
 					android:scheme="http" />
 			</intent-filter>
@@ -85,6 +86,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
+					android:host="*"
 					android:pathPattern=".*\\.torrent"
 					android:scheme="http" />
 			</intent-filter>
@@ -95,6 +97,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
+					android:host="*"
 					android:mimeType="application/x-bittorrent"
 					android:scheme="https" />
 			</intent-filter>
@@ -105,6 +108,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
+					android:host="*"
 					android:pathPattern=".*\\.torrent"
 					android:scheme="https" />
 			</intent-filter>
@@ -115,6 +119,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
+					android:host="*"
 					android:mimeType="application/x-bittorrent"
 					android:scheme="file" />
 			</intent-filter>
@@ -125,6 +130,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
+					android:host="*"
 					android:pathPattern=".*\\.torrent"
 					android:scheme="file" />
 			</intent-filter>
@@ -135,6 +141,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
+					android:host="*"
 					android:mimeType="application/x-bittorrent"
 					android:scheme="content" />
 			</intent-filter>
@@ -145,6 +152,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 
 				<data
+					android:host="*"
 					android:pathPattern=".*\\.torrent"
 					android:scheme="content" />
 			</intent-filter>
