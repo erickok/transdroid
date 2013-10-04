@@ -175,6 +175,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 					act = "file_stop=" + task.getTargetTorrent().getUniqueID() + "-";
 					break;
 				case Low:
+				case Normal:
 					act = "file_lp=" + task.getTargetTorrent().getUniqueID() + "-";
 					break;
 				case High:

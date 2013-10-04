@@ -15,7 +15,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonMethod;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;

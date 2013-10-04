@@ -447,8 +447,8 @@ public class DelugeAdapter implements IDaemonAdapter {
 				
 				// Build login object
 				String extraPass = settings.getExtraPassword();
-				if (extraPass == null || extraPass == "") {
-					extraPass = settings.getPassword();
+				if (extraPass == null) {
+					extraPass = "";
 				}
 				JSONObject loginRequest = new JSONObject();
 				loginRequest.put(RPC_METHOD, RPC_METHOD_LOGIN);

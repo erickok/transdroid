@@ -20,7 +20,6 @@ package org.transdroid.daemon.DLinkRouterBT;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
