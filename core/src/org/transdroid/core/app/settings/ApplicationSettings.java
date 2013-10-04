@@ -89,13 +89,17 @@ public class ApplicationSettings {
 		// @formatter:off
 		Daemon type = Daemon.fromCode(prefs.getString("server_type_" + order, null));
 		boolean ssl = prefs.getBoolean("server_sslenabled_" + order, false);
-		String defaultPort = Integer.toString(Daemon.getDefaultPortNumber(type, ssl));
+		
+		String port = prefs.getString("server_port_" + order, "");
+		if(port.equals(""))
+			port = Integer.toString(Daemon.getDefaultPortNumber(type, ssl));
+		
 		return new ServerSetting(order, 
 				prefs.getString("server_name_" + order, null), type, 
 				prefs.getString("server_address_" + order, null), 
 				prefs.getString("server_localaddress_" + order, null),
 				prefs.getString("server_localnetwork_" + order, null), 
-				Integer.parseInt(prefs.getString("server_port_" + order, defaultPort)), 
+				Integer.parseInt(port), 
 				ssl, 
 				prefs.getBoolean("server_ssltrustall_" + order, false),
 				prefs.getString("server_ssltrustkey_" + order, null), 
