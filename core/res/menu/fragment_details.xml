@@ -68,5 +68,11 @@
 		android:showAsAction="ifRoom"
 		android:title="@string/action_updatetrackers"
 		android:orderInCategory="206" />
+	<item
+		android:id="@+id/action_changelocation"
+		android:icon="?attr/ic_action_save"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_changelocation"
+		android:orderInCategory="207" />
 
 </menu>

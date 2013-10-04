@@ -36,6 +36,8 @@ import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 import org.transdroid.core.gui.navigation.SetLabelDialog;
 import org.transdroid.core.gui.navigation.SetLabelDialog.OnLabelPickedListener;
+import org.transdroid.core.gui.navigation.SetStorageLocationDialog;
+import org.transdroid.core.gui.navigation.SetStorageLocationDialog.OnStorageLocationUpdatedListener;
 import org.transdroid.core.gui.navigation.SetTrackersDialog;
 import org.transdroid.core.gui.navigation.SetTrackersDialog.OnTrackersUpdatedListener;
 import org.transdroid.daemon.Daemon;
@@ -65,7 +67,8 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EFragment(resName = "fragment_details")
 @OptionsMenu(resName = "fragment_details")
-public class DetailsFragment extends SherlockFragment implements OnTrackersUpdatedListener, OnLabelPickedListener {
+public class DetailsFragment extends SherlockFragment implements OnTrackersUpdatedListener, OnLabelPickedListener,
+		OnStorageLocationUpdatedListener {
 
 	// Local data
 	@InstanceState
@@ -187,7 +190,7 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	 * @param currentLabels The list of known server labels
 	 */
 	public void updateLabels(ArrayList<Label> currentLabels) {
-		this.currentLabels = currentLabels == null? null: new ArrayList<Label>(currentLabels);
+		this.currentLabels = currentLabels == null ? null : new ArrayList<Label>(currentLabels);
 	}
 
 	/**
@@ -241,6 +244,8 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 		menu.findItem(R.id.action_setlabel).setVisible(setLabel);
 		boolean setTrackers = Daemon.supportsSetTrackers(torrent.getDaemon());
 		menu.findItem(R.id.action_updatetrackers).setVisible(setTrackers);
+		boolean setLocation = Daemon.supportsSetDownloadLocation(torrent.getDaemon());
+		menu.findItem(R.id.action_changelocation).setVisible(setLocation);
 
 	}
 
@@ -287,8 +292,18 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 
 	@OptionsItem(resName = "action_updatetrackers")
 	protected void updateTrackers() {
+		if (torrentDetails == null) {
+			Crouton.showText(getActivity(), R.string.error_stillloadingdetails, NavigationHelper.CROUTON_INFO_STYLE);
+			return;
+		}
 		new SetTrackersDialog().setOnTrackersUpdated(this).setCurrentTrackers(torrentDetails.getTrackersText())
 				.show(getFragmentManager(), "SetTrackersDialog");
+	}
+
+	@OptionsItem(resName = "action_changelocation")
+	protected void changeStorageLocation() {
+		new SetStorageLocationDialog().setOnStorageLocationUpdated(this).setCurrentLocation(torrent.getLocationDir())
+				.show(getFragmentManager(), "SetStorageLocationDialog");
 	}
 
 	@Override
@@ -299,6 +314,11 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	@Override
 	public void onTrackersUpdated(List<String> updatedTrackers) {
 		getTasksExecutor().updateTrackers(torrent, updatedTrackers);
+	}
+
+	@Override
+	public void onStorageLocationUpdated(String newLocation) {
+		getTasksExecutor().updateLocation(torrent, newLocation);
 	}
 
 	private MultiChoiceModeListenerCompat onDetailsSelected = new MultiChoiceModeListenerCompat() {
