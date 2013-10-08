@@ -29,7 +29,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchSite;
+import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.search.SearchSetting;
+import org.transdroid.core.widget.WidgetSettings;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.OS;
 import org.transdroid.daemon.TorrentsSortBy;
@@ -408,7 +410,7 @@ public class ApplicationSettings {
 		all.addAll(getWebsearchSettings());
 		return Collections.unmodifiableList(all);
 	}
-	
+
 	/**
 	 * Returns the settings of the search site that was last used by the user or was selected by the user as default
 	 * site in the main settings. As opposed to getLastUsedSearchSiteKey(int), this method checks whether a site was
@@ -434,7 +436,7 @@ public class ApplicationSettings {
 			}
 			return null;
 		}
-		
+
 		if (lastWebsearch >= 0) {
 			// The last used site should be a user-configured web search site
 			int max = getMaxWebsearch(); // Zero-based index, so with max == 0 there is 1 server
@@ -444,7 +446,7 @@ public class ApplicationSettings {
 			}
 			return getWebsearchSetting(lastWebsearch);
 		}
-		
+
 		// Should be an in-app search key
 		if (allsites != null) {
 			for (SearchSite searchSite : allsites) {
@@ -455,7 +457,7 @@ public class ApplicationSettings {
 			// Not found at all; probably a no longer existing web search; return the first in-app one
 			return allsites.get(0);
 		}
-		
+
 		return null;
 	}
 
@@ -503,5 +505,33 @@ public class ApplicationSettings {
 	public void setServerLastStats(ServerSetting server, JSONArray lastStats) {
 		prefs.edit().putString(server.getUniqueIdentifier(), lastStats.toString()).commit();
 	}
-	
+
+	/**
+	 * Returns the user configuration for some specific app widget, if the widget is known at all.
+	 * @param appWidgetId The unique ID of the app widget to retrieve settings for, as supplied by the AppWidgetManager
+	 * @return A widget configuration object, or null if no settings were stored for the widget ID
+	 */
+	public WidgetSettings getWidgetConfig(int appWidgetId) {
+		if (!prefs.contains("widget_server_" + appWidgetId))
+			return null;
+		// @formatter:off
+		return new WidgetSettings(
+				prefs.getInt("widget_server_" + appWidgetId, -1),
+				StatusType.valueOf(prefs.getString("widget_status_" + appWidgetId, StatusType.ShowAll.name())),
+				TorrentsSortBy.valueOf(prefs.getString("widget_sortby_" + appWidgetId, TorrentsSortBy.Alphanumeric.name())),
+				prefs.getBoolean("widget_reverse_" + appWidgetId, false),
+				prefs.getBoolean("widget_darktheme_" + appWidgetId, false));
+		// @formatter:on
+	}
+
+	public void setWidgetConfig(int appWidgetId, WidgetSettings settings) {
+		Editor edit = prefs.edit();
+		edit.putInt("widget_server_" + appWidgetId, settings.getServerId());
+		edit.putString("widget_status_" + appWidgetId, settings.getStatusType().name());
+		edit.putString("widget_sortby_" + appWidgetId, settings.getSortBy().name());
+		edit.putBoolean("widget_reverse_" + appWidgetId, settings.shouldReserveSort());
+		edit.putBoolean("widget_darktheme_" + appWidgetId, settings.shouldUseDarkTheme());
+		edit.commit();
+	}
+
 }

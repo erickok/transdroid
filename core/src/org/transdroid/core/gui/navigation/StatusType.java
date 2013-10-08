@@ -97,6 +97,10 @@ public enum StatusType {
 			this.name = name;
 		}
 
+		public StatusType getStatusType() {
+			return statusType;
+		}
+		
 		@Override
 		public String getName() {
 			return name;

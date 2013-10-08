@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:padding="@dimen/margin_widget" >
+
+	<ImageButton
+		android:id="@+id/icon_image"
+		android:layout_width="48dp"
+		android:layout_height="48dp"
+		android:background="@drawable/selectable_background_transdroid2"
+		android:contentDescription="@string/widget_opentransdroid"
+		android:padding="8dp"
+		android:src="@drawable/ic_launcher"
+		android:scaleType="fitXY" />
+
+	<include
+		android:id="@+id/status_view"
+		android:layout_width="wrap_content"
+		android:layout_height="48dp"
+		android:layout_alignParentRight="true"
+		layout="@layout/actionbar_serverstatus"
+		android:background="@drawable/selectable_background_transdroid2" />
+
+	<include
+		android:id="@+id/navigation_view"
+		android:layout_width="wrap_content"
+		android:layout_height="48dp"
+		android:layout_toLeftOf="@id/navigation_view"
+		android:layout_toRightOf="@id/icon_image"
+		layout="@layout/actionbar_navigation"
+		android:background="@color/background_light" />
+
+	<View
+		android:id="@+id/topline_view"
+		android:layout_height="2dp"
+		android:layout_width="match_parent"
+		android:layout_below="@id/icon_image"
+		android:background="@color/green" />
+	
+	<View
+		android:id="@+id/bottomline_view"
+		android:layout_height="2dp"
+		android:layout_width="match_parent"
+		android:layout_alignParentBottom="true"
+		android:background="@color/green" />
+	
+	<com.actionbarsherlock.view.SherlockListView
+		android:id="@+id/torrents_list"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_below="@id/topline_view"
+		android:layout_above="@id/bottomline_view"
+		android:visibility="gone" />
+	
+	<TextView
+		android:id="@+id/error_text"
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_below="@id/topline_view"
+		android:layout_above="@id/bottomline_view"
+		android:layout_gravity="center"
+		android:gravity="center"
+		android:maxWidth="400dip"
+		android:padding="@dimen/margin_default"
+		android:textIsSelectable="false"
+		android:visibility="gone" />
+	
+</RelativeLayout>
