@@ -17,8 +17,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.transdroid.lite"
-	android:versionCode="5"
-	android:versionName="2.0-beta1" >
+	android:versionCode="6"
+	android:versionName="2.0" >
 
 	<uses-sdk
 		android:minSdkVersion="7"
@@ -217,6 +217,7 @@
 
 		<receiver
 			android:name="org.transdroid.core.widget.WidgetProvider_"
+			android:theme="@style/TransdroidTheme.WidgetConfig"
 			android:enabled="@bool/widget_available" >
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

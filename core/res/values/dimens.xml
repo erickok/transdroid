@@ -43,8 +43,8 @@
 	
 	<!-- Widget configuration -->
 	<integer name="widget_config_orientation">1</integer>
-	<dimen name="widget_preview_padding">10dp</dimen>
-	<dimen name="widget_preview_height">150dp</dimen>
+	<dimen name="widget_preview_padding">20dp</dimen>
+	<dimen name="widget_preview_height">200dp</dimen>
 	<dimen name="widget_preview_width">-1dp</dimen>
 	
 </resources>

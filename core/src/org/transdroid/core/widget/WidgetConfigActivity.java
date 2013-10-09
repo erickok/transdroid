@@ -30,7 +30,6 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.lists.SortByListItem;
 import org.transdroid.core.gui.lists.TorrentsAdapter;
@@ -58,12 +57,12 @@ import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.SherlockListView;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EActivity(resName = "activity_widgetconfig")
@@ -77,7 +76,7 @@ public class WidgetConfigActivity extends SherlockActivity {
 	@ViewById
 	protected TextView filterText, serverText, errorText;
 	@ViewById
-	protected SherlockListView torrentsList;
+	protected ListView torrentsList;
 	@Bean
 	protected TorrentsAdapter previewTorrentsAdapter;
 	private List<Torrent> previewTorrents = null;
@@ -92,25 +91,20 @@ public class WidgetConfigActivity extends SherlockActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
-		// Set the theme according to the user preference
-		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
-			setTheme(R.style.TransdroidTheme_Dark);
-			getSupportActionBar().setIcon(R.drawable.ic_activity_torrents);
-		}
 		super.onCreate(savedInstanceState);
-
-		if (getIntent() != null && getIntent().getExtras() != null) {
-			// Get the appwidget ID we are configuring
-			appWidgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-					AppWidgetManager.INVALID_APPWIDGET_ID);
-			// Set preliminary canceled result and continue with the initialisation
-			setResult(RESULT_CANCELED, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId));
+		if (getIntent() == null || getIntent().getExtras() == null
+				|| !getIntent().hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID)) {
+			// Invalid configuration; return canceled result
+			setResult(RESULT_CANCELED,
+					new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID));
+			finish();
 		}
 
-		// Invalid configuration; return canceled result
-		setResult(RESULT_CANCELED,
-				new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID));
-		finish();
+		// Get the appwidget ID we are configuring
+		appWidgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+				AppWidgetManager.INVALID_APPWIDGET_ID);
+		// Set preliminary canceled result and continue with the initialisation
+		setResult(RESULT_CANCELED, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId));
 
 	}
 
@@ -122,6 +116,7 @@ public class WidgetConfigActivity extends SherlockActivity {
 		for (TorrentsSortBy order : TorrentsSortBy.values()) {
 			sortOrders.add(new SortByListItem(order));
 		}
+
 		serverSpinner.setAdapter(new FilterListItemAdapter(this, applicationSettings.getServerSettings()));
 		filterSpinner.setAdapter(new FilterListItemAdapter(this, StatusType.getAllStatusTypes(this)));
 		sortSpinner.setAdapter(new FilterListItemAdapter(this, sortOrders));
@@ -254,7 +249,8 @@ public class WidgetConfigActivity extends SherlockActivity {
 
 			// Return the widget configuration result
 			AppWidgetManager manager = AppWidgetManager.getInstance(WidgetConfigActivity.this);
-			manager.updateAppWidget(appWidgetId, WidgetProvider.buildRemoteViews(getApplicationContext(), appWidgetId, config));
+			manager.updateAppWidget(appWidgetId,
+					WidgetProvider.buildRemoteViews(getApplicationContext(), appWidgetId, config));
 			manager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
 			setResult(RESULT_OK, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId));
 			finish();

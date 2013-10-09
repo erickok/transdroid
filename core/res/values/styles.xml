@@ -17,10 +17,10 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<style name="TransdroidTheme" parent="Theme.Transdroid.Light">
+
 		<!-- All customizations that are NOT specific to a particular API-level can go here. -->
 		<item name="android:textViewStyle">@style/DefaultTextView</item>
 		<item name="android:windowBackground">@color/background_light</item>
-		
 		<item name="ic_action_discard">@drawable/ic_action_discard_light</item>
 		<item name="ic_action_done">@drawable/ic_action_done_light</item>
 		<item name="ic_action_filter">@drawable/ic_action_filter_light</item>
@@ -49,10 +49,10 @@
 	</style>
 
 	<style name="TransdroidTheme.Dark" parent="Theme.Transdroid.Dark">
+
 		<!-- All customizations that are NOT specific to a particular API-level can go here. -->
 		<item name="android:textViewStyle">@style/DefaultTextView</item>
 		<item name="android:windowBackground">@color/background_dark</item>
-		
 		<item name="ic_action_discard">@drawable/ic_action_discard_dark</item>
 		<item name="ic_action_done">@drawable/ic_action_done_dark</item>
 		<item name="ic_action_filter">@drawable/ic_action_filter_dark</item>
@@ -79,7 +79,17 @@
 		<item name="text_bright">@color/text_bright_dark</item>
 		<item name="text_actionbar">@color/text_actionbar_dark</item>
 	</style>
-	
+
+	<!-- No theme background to let users wall paper shine through -->
+	<!-- Inspired by NoNonsenseNotes's ThemeWidgetConfig -->
+	<style name="TransdroidTheme.WidgetConfig" parent="@style/TransdroidTheme">
+		<item name="android:background">@null</item>
+		<item name="android:colorBackgroundCacheHint">@null</item>
+		<item name="android:windowContentOverlay">@null</item>
+		<item name="android:windowShowWallpaper">true</item>
+		<item name="android:windowBackground">@android:color/transparent</item>
+	</style>
+
 	<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->
 	<style name="SectionHeader" parent="android:Widget.Holo.Light.TextView">
 		<item name="android:drawableBottom">@drawable/section_header</item>
@@ -103,11 +113,11 @@
 		<item name="android:paddingTop">2dip</item>
 		<item name="android:paddingBottom">2dip</item>
 	</style>
-	
+
 	<style name="BigNumberButton" parent="android:Widget.Holo">
 		<item name="android:background">@drawable/selectable_background_transdroid</item>
 		<item name="android:padding">@dimen/margin_half</item>
 		<item name="android:textSize">60sp</item>
 	</style>
-	
+
 </resources>

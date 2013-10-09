@@ -19,8 +19,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:dividerPadding="@dimen/margin_default"
-	android:orientation="@integer/widget_config_orientation"
-	android:padding="@dimen/margin_default" >
+	android:orientation="@integer/widget_config_orientation" >
 
 	<FrameLayout
 		android:layout_width="@dimen/widget_preview_width"
@@ -35,8 +34,10 @@
 	<ScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:background="@color/background_light"
 		android:fillViewport="true"
-		android:orientation="vertical" >
+		android:paddingLeft="@dimen/margin_default"
+		android:paddingRight="@dimen/margin_default" >
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -54,22 +55,26 @@
 			<Spinner
 				android:id="@+id/server_spinner"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content" />
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_half" />
 
 			<Spinner
 				android:id="@+id/filter_spinner"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content" />
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_default" />
 
 			<Spinner
 				android:id="@+id/sort_spinner"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content" />
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_default" />
 
 			<CheckBox
 				android:id="@+id/reverseorder_check_box"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_half"
 				android:text="@string/widget_reversesortorder" />
 
 			<TextView
@@ -84,6 +89,8 @@
 				android:id="@+id/darktheme_check_box"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:layout_marginBottom="@dimen/margin_half"
+				android:layout_marginTop="@dimen/margin_half"
 				android:text="@string/widget_usedarktheme" />
 		</LinearLayout>
 	</ScrollView>

@@ -2,68 +2,83 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:background="@color/background_light"
 	android:padding="@dimen/margin_widget" >
 
 	<ImageButton
 		android:id="@+id/icon_image"
-		android:layout_width="48dp"
-		android:layout_height="48dp"
+		android:layout_width="40dp"
+		android:layout_height="40dp"
 		android:background="@drawable/selectable_background_transdroid2"
 		android:contentDescription="@string/widget_opentransdroid"
-		android:padding="8dp"
-		android:src="@drawable/ic_launcher"
-		android:scaleType="fitXY" />
+		android:padding="4dp"
+		android:scaleType="fitXY"
+		android:src="@drawable/ic_launcher" />
 
-	<include
-		android:id="@+id/status_view"
-		android:layout_width="wrap_content"
-		android:layout_height="48dp"
-		android:layout_alignParentRight="true"
-		layout="@layout/actionbar_serverstatus"
-		android:background="@drawable/selectable_background_transdroid2" />
-
-	<include
+	<LinearLayout
 		android:id="@+id/navigation_view"
-		android:layout_width="wrap_content"
-		android:layout_height="48dp"
-		android:layout_toLeftOf="@id/navigation_view"
+		android:layout_width="match_parent"
+		android:layout_height="40dp"
 		android:layout_toRightOf="@id/icon_image"
-		layout="@layout/actionbar_navigation"
-		android:background="@color/background_light" />
+		android:background="@drawable/selectable_background_transdroid2"
+		android:clickable="true"
+		android:orientation="vertical"
+		android:paddingTop="2dp"
+		android:paddingRight="@dimen/margin_half" >
+
+		<TextView
+			android:id="@+id/filter_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:fontFamily="sans-serif-condensed"
+			android:textColor="@color/text_actionbar_light"
+			android:textIsSelectable="false"
+			android:textSize="@dimen/ui_navigation_filter" />
+
+		<TextView
+			android:id="@+id/server_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="-4dip"
+			android:fontFamily="sans-serif-light"
+			android:textColor="@color/text_actionbar_light"
+			android:textIsSelectable="false"
+			android:textSize="@dimen/ui_navigation_server" />
+	</LinearLayout>
 
 	<View
 		android:id="@+id/topline_view"
-		android:layout_height="2dp"
 		android:layout_width="match_parent"
+		android:layout_height="2dp"
 		android:layout_below="@id/icon_image"
 		android:background="@color/green" />
-	
+
 	<View
 		android:id="@+id/bottomline_view"
-		android:layout_height="2dp"
 		android:layout_width="match_parent"
+		android:layout_height="2dp"
 		android:layout_alignParentBottom="true"
 		android:background="@color/green" />
-	
+
 	<ListView
 		android:id="@+id/torrents_list"
-		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
-		android:layout_below="@id/topline_view"
+		android:layout_height="wrap_content"
 		android:layout_above="@id/bottomline_view"
+		android:layout_below="@id/topline_view"
 		android:visibility="gone" />
-	
+
 	<TextView
 		android:id="@+id/error_text"
-		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
-		android:layout_below="@id/topline_view"
+		android:layout_height="wrap_content"
 		android:layout_above="@id/bottomline_view"
+		android:layout_below="@id/topline_view"
 		android:layout_gravity="center"
 		android:gravity="center"
 		android:maxWidth="400dip"
 		android:padding="@dimen/margin_default"
 		android:textIsSelectable="false"
 		android:visibility="gone" />
-	
+
 </RelativeLayout>
