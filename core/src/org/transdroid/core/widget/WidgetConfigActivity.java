@@ -25,7 +25,6 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemSelect;
-import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
@@ -49,10 +48,11 @@ import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 
+import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
@@ -65,6 +65,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.SherlockListView;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EActivity(resName = "activity_widgetconfig")
 public class WidgetConfigActivity extends SherlockActivity {
 
@@ -82,10 +83,6 @@ public class WidgetConfigActivity extends SherlockActivity {
 	private List<Torrent> previewTorrents = null;
 
 	// Settings and helpers
-	@SystemService
-	protected AppWidgetManager appWidgetManager;
-	@SystemService
-	protected LayoutInflater layoutInflater;
 	@Bean
 	protected ConnectivityHelper connectivityHelper;
 	@Bean
@@ -136,7 +133,7 @@ public class WidgetConfigActivity extends SherlockActivity {
 		// Inspired by NoNonsenseNotes's ListWidgetConfig.java (Apache License, Version 2.0)
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 				ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-		View doneButtonFrame = layoutInflater.inflate(R.layout.actionbar_donebutton, null);
+		View doneButtonFrame = getLayoutInflater().inflate(R.layout.actionbar_donebutton, null);
 		doneButtonFrame.findViewById(R.id.actionbar_done).setOnClickListener(doneClicked);
 		getSupportActionBar().setCustomView(doneButtonFrame);
 
@@ -252,11 +249,13 @@ public class WidgetConfigActivity extends SherlockActivity {
 			TorrentsSortBy sortBy = ((SortByListItem) sortSpinner.getSelectedItem()).getSortBy();
 			boolean reverseSort = reverseorderCheckBox.isChecked();
 			boolean useDarkTheme = darkthemeCheckBox.isChecked();
-			applicationSettings.setWidgetConfig(appWidgetId, new WidgetSettings(server, statusType, sortBy,
-					reverseSort, useDarkTheme));
+			WidgetConfig config = new WidgetConfig(server, statusType, sortBy, reverseSort, useDarkTheme);
+			applicationSettings.setWidgetConfig(appWidgetId, config);
 
 			// Return the widget configuration result
-			appWidgetManager.updateAppWidget(appWidgetId, null);
+			AppWidgetManager manager = AppWidgetManager.getInstance(WidgetConfigActivity.this);
+			manager.updateAppWidget(appWidgetId, WidgetProvider.buildRemoteViews(getApplicationContext(), appWidgetId, config));
+			manager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
 			setResult(RESULT_OK, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId));
 			finish();
 

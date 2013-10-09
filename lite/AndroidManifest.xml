@@ -70,6 +70,11 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 			<intent-filter>
+				<action android:name="org.transdroid.START_SERVER" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 
 				<category android:name="android.intent.category.DEFAULT" />
@@ -193,6 +198,33 @@
 					android:name="android.intent.action.BOOT_COMPLETED"
 					android:value="android.intent.action.BOOT_COMPLETED" />
 			</intent-filter>
+		</receiver>
+
+		<!-- Home screen widget -->
+		<activity
+			android:name="org.transdroid.core.widget.WidgetConfigActivity_"
+			android:enabled="@bool/widget_available" >
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+			</intent-filter>
+		</activity>
+
+		<service
+			android:name="org.transdroid.core.widget.WidgetService_"
+			android:enabled="@bool/widget_available"
+			android:exported="false"
+			android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+		<receiver
+			android:name="org.transdroid.core.widget.WidgetProvider_"
+			android:enabled="@bool/widget_available" >
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+
+			<meta-data
+				android:name="android.appwidget.provider"
+				android:resource="@xml/appwidget_info" />
 		</receiver>
 	</application>
 

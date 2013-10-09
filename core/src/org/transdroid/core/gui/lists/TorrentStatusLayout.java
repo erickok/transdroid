@@ -16,6 +16,7 @@
  */
 package org.transdroid.core.gui.lists;
 
+import org.transdroid.core.R;
 import org.transdroid.daemon.TorrentStatus;
 
 import android.content.Context;
@@ -37,10 +38,10 @@ public class TorrentStatusLayout extends CheckableRelativeLayout {
 	private final int WIDTH = (int) (6 * scale + 0.5f);
 
 	private TorrentStatus status = null;
-	private final Paint inactiveDonePaint = new Paint();
-	private final Paint inactivePaint = new Paint();
-	private final Paint progressPaint = new Paint();
-	private final Paint donePaint = new Paint();
+	private final Paint pausedPaint = new Paint();
+	private final Paint otherPaint = new Paint();
+	private final Paint downloadingPaint = new Paint();
+	private final Paint seedingPaint = new Paint();
 	private final Paint errorPaint = new Paint();
 	private final RectF fullRect = new RectF();
 
@@ -57,11 +58,11 @@ public class TorrentStatusLayout extends CheckableRelativeLayout {
 	}
 
 	private void initPaints() {
-		inactiveDonePaint.setColor(0xFFA759D4);	// Purple
-		inactivePaint.setColor(0xFF9E9E9E);		// Grey
-		progressPaint.setColor(0xFF42A8FA);		// Blue
-		donePaint.setColor(0xFF8ACC12);			// Green
-		errorPaint.setColor(0xFFDE3939);		// Red
+		pausedPaint.setColor(getResources().getColor(R.color.torrent_paused));
+		otherPaint.setColor(getResources().getColor(R.color.torrent_other));
+		downloadingPaint.setColor(getResources().getColor(R.color.torrent_downloading));
+		seedingPaint.setColor(getResources().getColor(R.color.torrent_seeding));
+		errorPaint.setColor(getResources().getColor(R.color.torrent_error));
 	}
 
 	/**
@@ -85,22 +86,22 @@ public class TorrentStatusLayout extends CheckableRelativeLayout {
 		if (status == null) {
 			return;
 		}
-		
+
 		switch (status) {
 		case Downloading:
-			canvas.drawRect(fullRect, progressPaint);
+			canvas.drawRect(fullRect, downloadingPaint);
 			break;
 		case Paused:
-			canvas.drawRect(fullRect, inactiveDonePaint);
+			canvas.drawRect(fullRect, pausedPaint);
 			break;
 		case Seeding:
-			canvas.drawRect(fullRect, donePaint);
+			canvas.drawRect(fullRect, seedingPaint);
 			break;
 		case Error:
 			canvas.drawRect(fullRect, errorPaint);
 			break;
 		default: // Checking, Waiting, Queued, Unknown
-			canvas.drawRect(fullRect, inactivePaint);
+			canvas.drawRect(fullRect, otherPaint);
 			break;
 		}
 

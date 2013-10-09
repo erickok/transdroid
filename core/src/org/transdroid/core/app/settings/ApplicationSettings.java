@@ -16,6 +16,7 @@
  */
 package org.transdroid.core.app.settings;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -31,7 +32,7 @@ import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchSite;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.search.SearchSetting;
-import org.transdroid.core.widget.WidgetSettings;
+import org.transdroid.core.widget.WidgetConfig;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.OS;
 import org.transdroid.daemon.TorrentsSortBy;
@@ -511,11 +512,11 @@ public class ApplicationSettings {
 	 * @param appWidgetId The unique ID of the app widget to retrieve settings for, as supplied by the AppWidgetManager
 	 * @return A widget configuration object, or null if no settings were stored for the widget ID
 	 */
-	public WidgetSettings getWidgetConfig(int appWidgetId) {
+	public WidgetConfig getWidgetConfig(int appWidgetId) {
 		if (!prefs.contains("widget_server_" + appWidgetId))
 			return null;
 		// @formatter:off
-		return new WidgetSettings(
+		return new WidgetConfig(
 				prefs.getInt("widget_server_" + appWidgetId, -1),
 				StatusType.valueOf(prefs.getString("widget_status_" + appWidgetId, StatusType.ShowAll.name())),
 				TorrentsSortBy.valueOf(prefs.getString("widget_sortby_" + appWidgetId, TorrentsSortBy.Alphanumeric.name())),
@@ -524,13 +525,36 @@ public class ApplicationSettings {
 		// @formatter:on
 	}
 
-	public void setWidgetConfig(int appWidgetId, WidgetSettings settings) {
+	/**
+	 * Stores the user settings for some specific app widget. Existing settings for the supplied app widget ID will be
+	 * overridden.
+	 * @param appWidgetId The unique ID of the app widget to store settings for, as supplied by the AppWidgetManager
+	 * @param settings A widget configuration object, which may not be null
+	 */
+	public void setWidgetConfig(int appWidgetId, WidgetConfig settings) {
+		if (settings == null)
+			throw new InvalidParameterException(
+					"The widget setting may not be null. Use removeWidgetConfig instead to remove existing settings for some app widget.");
 		Editor edit = prefs.edit();
 		edit.putInt("widget_server_" + appWidgetId, settings.getServerId());
 		edit.putString("widget_status_" + appWidgetId, settings.getStatusType().name());
 		edit.putString("widget_sortby_" + appWidgetId, settings.getSortBy().name());
 		edit.putBoolean("widget_reverse_" + appWidgetId, settings.shouldReserveSort());
 		edit.putBoolean("widget_darktheme_" + appWidgetId, settings.shouldUseDarkTheme());
+		edit.commit();
+	}
+
+	/**
+	 * Remove the setting for some specific app widget.
+	 * @param appWidgetId The unique ID of the app widget to store settings for, as supplied by the AppWidgetManager
+	 */
+	public void removeWidgetConfig(int appWidgetId) {
+		Editor edit = prefs.edit();
+		edit.remove("widget_server_" + appWidgetId);
+		edit.remove("widget_status_" + appWidgetId);
+		edit.remove("widget_sortby_" + appWidgetId);
+		edit.remove("widget_reverse_" + appWidgetId);
+		edit.remove("widget_darktheme_" + appWidgetId);
 		edit.commit();
 	}
 

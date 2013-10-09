@@ -15,26 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<FrameLayout 
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content"
-	android:layout_height="?attr/actionBarSize">
-	
-	<!-- This is a wrapper to be able to set the size of the progress item (since the first FrameLayout will be merged) -->
-	<FrameLayout 
-		android:layout_width="26dip"
-		android:layout_height="match_parent"
-		android:paddingLeft="3dip">
-		
-		<ProgressBar
-			android:id="@+id/progress"
-			android:layout_width="20dip"
-			android:layout_height="20dip"
-			android:layout_gravity="center_vertical"
-			style="@android:style/Widget.ProgressBar.Small.Inverse"
-			android:indeterminate="true"
-			android:indeterminateOnly="true" />
-			
-	</FrameLayout>
-	
-</FrameLayout>
+<resources>
+	<!-- Used to enable the scrolling widget on Honeycomb (API 11) and higher only -->
+	<bool name="widget_available">true</bool>
+</resources>

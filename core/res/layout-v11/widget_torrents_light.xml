@@ -45,7 +45,7 @@
 		android:layout_alignParentBottom="true"
 		android:background="@color/green" />
 	
-	<com.actionbarsherlock.view.SherlockListView
+	<ListView
 		android:id="@+id/torrents_list"
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"

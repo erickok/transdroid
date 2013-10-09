@@ -19,6 +19,7 @@ package org.transdroid.core.gui.search;
 import org.transdroid.core.R;
 import org.transdroid.core.app.search.GoogleWebSearchBarcodeResolver;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -41,6 +42,7 @@ public class BarcodeHelper {
 	 * @param activity The calling activity, to which the result is returned or a dialog is bound that asks to install
 	 *            the bar code scanner
 	 */
+	@SuppressLint("ValidFragment")
 	public static void startBarcodeScanner(final SherlockFragmentActivity activity) {
 		try {
 			// Start a bar code scanner that can handle the SCAN intent (specifically ZXing)

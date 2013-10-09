@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2010-2013 Eric Kok et al.
+  
+  Transdroid is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  Transdroid is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/widget_line_layout"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:background="@drawable/selectable_background_transdroid"
+	android:paddingRight="@dimen/margin_default" >
+
+	<View
+		android:id="@+id/status_view"
+		android:layout_height="match_parent"
+		android:layout_width="6dp" />
+	
+	<TextView
+		android:id="@+id/name_text"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="@dimen/margin_torrentlistleft"
+		android:fontFamily="sans-serif-condensed"
+		android:paddingTop="@dimen/margin_half"
+		android:textColor="@color/text_bright_dark"
+		android:textIsSelectable="false"
+		android:maxLines="1"
+		android:ellipsize="end"
+		android:textSize="@dimen/text_enlarged" />
+
+	<TextView
+		android:id="@+id/ratio_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_below="@id/name_text"
+		android:layout_marginLeft="@dimen/margin_half"
+		android:layout_marginTop="4.0dip"
+		android:paddingBottom="@dimen/margin_half"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_small" />
+
+	<TextView
+		android:id="@+id/progress_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@id/ratio_text"
+		android:layout_alignParentLeft="true"
+		android:layout_marginLeft="@dimen/margin_torrentlistleft"
+		android:layout_toLeftOf="@id/priority_image"
+		android:textIsSelectable="false"
+		android:textSize="@dimen/text_small" />
+
+</RelativeLayout>
