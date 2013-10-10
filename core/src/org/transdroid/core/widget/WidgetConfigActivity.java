@@ -30,10 +30,9 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.gui.lists.SimpleListItem;
+import org.transdroid.core.gui.lists.SimpleListItemSpinnerAdapter;
 import org.transdroid.core.gui.lists.SortByListItem;
 import org.transdroid.core.gui.lists.TorrentsAdapter;
-import org.transdroid.core.gui.navigation.FilterListItemAdapter;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.navigation.StatusType.StatusTypeFilter;
 import org.transdroid.core.service.ConnectivityHelper;
@@ -111,18 +110,20 @@ public class WidgetConfigActivity extends SherlockActivity {
 	@AfterViews
 	protected void init() {
 
-		// Populate the selection spinners
-		List<SimpleListItem> sortOrders = new ArrayList<SimpleListItem>();
+		// Populate the selection spinners with custom array adapters
+		List<SortByListItem> sortOrders = new ArrayList<SortByListItem>();
 		for (TorrentsSortBy order : TorrentsSortBy.values()) {
-			sortOrders.add(new SortByListItem(order));
+			sortOrders.add(new SortByListItem(this, order));
 		}
-
-		serverSpinner.setAdapter(new FilterListItemAdapter(this, applicationSettings.getServerSettings()));
-		filterSpinner.setAdapter(new FilterListItemAdapter(this, StatusType.getAllStatusTypes(this)));
-		sortSpinner.setAdapter(new FilterListItemAdapter(this, sortOrders));
+		serverSpinner.setAdapter(new SimpleListItemSpinnerAdapter<ServerSetting>(this, 0, applicationSettings
+				.getServerSettings()));
+		filterSpinner.setAdapter(new SimpleListItemSpinnerAdapter<StatusTypeFilter>(this, 0, StatusType
+				.getAllStatusTypes(this)));
+		sortSpinner.setAdapter(new SimpleListItemSpinnerAdapter<SortByListItem>(this, 0, sortOrders));
 		// TODO: Update to AndroidAnnotations 3.0 and use @CheckedChanged
 		reverseorderCheckBox.setOnCheckedChangeListener(reverseorderCheckedChanged);
 		torrentsList.setAdapter(previewTorrentsAdapter);
+		torrentsList.setEmptyView(errorText);
 
 		// Set up action bar with a done button
 		// Inspired by NoNonsenseNotes's ListWidgetConfig.java (Apache License, Version 2.0)
@@ -257,4 +258,5 @@ public class WidgetConfigActivity extends SherlockActivity {
 
 		}
 	};
+
 }

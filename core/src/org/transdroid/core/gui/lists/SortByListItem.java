@@ -16,7 +16,10 @@
  */
 package org.transdroid.core.gui.lists;
 
+import org.transdroid.core.R;
 import org.transdroid.daemon.TorrentsSortBy;
+
+import android.content.Context;
 
 /**
  * Represents a way in which a torrents list can be sorted.
@@ -24,10 +27,31 @@ import org.transdroid.daemon.TorrentsSortBy;
  */
 public class SortByListItem implements SimpleListItem {
 
-	private TorrentsSortBy sortBy;
+	private final TorrentsSortBy sortBy;
+	private final String name;
 
-	public SortByListItem(TorrentsSortBy sortBy) {
+	public SortByListItem(Context context, TorrentsSortBy sortBy) {
 		this.sortBy = sortBy;
+		switch (sortBy) {
+		case DateAdded:
+			this.name = context.getString(R.string.action_sort_added);
+			break;
+		case DateDone:
+			this.name = context.getString(R.string.action_sort_done);
+			break;
+		case Ratio:
+			this.name = context.getString(R.string.action_sort_ratio);
+			break;
+		case Status:
+			this.name = context.getString(R.string.action_sort_status);
+			break;
+		case UploadSpeed:
+			this.name = context.getString(R.string.action_sort_upspeed);
+			break;
+		default:
+			this.name = context.getString(R.string.action_sort_alpha);
+			break;
+		}
 	}
 	
 	/**
@@ -40,7 +64,7 @@ public class SortByListItem implements SimpleListItem {
 	
 	@Override
 	public String getName() {
-		return sortBy.name();
+		return name;
 	}
 
 }

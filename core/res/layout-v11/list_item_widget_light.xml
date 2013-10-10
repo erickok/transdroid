@@ -18,26 +18,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/widget_line_layout"
 	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
+	android:layout_height="@dimen/widget_list_item_height"
 	android:background="@drawable/selectable_background_transdroid2"
-	android:paddingRight="@dimen/margin_default" >
+	android:paddingRight="@dimen/widget_list_item_padding" >
 
-	<View
+	<TextView
 		android:id="@+id/status_view"
-		android:layout_height="match_parent"
-		android:layout_width="6dp" />
-	
+		android:layout_width="6dp"
+		android:layout_height="@dimen/widget_list_item_height" />
+
 	<TextView
 		android:id="@+id/name_text"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="@dimen/margin_torrentlistleft"
+		android:layout_marginLeft="@dimen/widget_list_item_padding_left"
+		android:ellipsize="end"
 		android:fontFamily="sans-serif-condensed"
-		android:paddingTop="@dimen/margin_half"
+		android:maxLines="1"
+		android:paddingTop="@dimen/widget_list_item_padding"
 		android:textColor="@color/text_bright_light"
 		android:textIsSelectable="false"
-		android:maxLines="1"
-		android:ellipsize="end"
 		android:textSize="@dimen/text_enlarged" />
 
 	<TextView
@@ -46,9 +46,10 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentRight="true"
 		android:layout_below="@id/name_text"
-		android:layout_marginLeft="@dimen/margin_half"
-		android:layout_marginTop="4.0dip"
-		android:paddingBottom="@dimen/margin_half"
+		android:layout_marginLeft="@dimen/widget_list_item_padding"
+		android:layout_marginTop="4dip"
+		android:maxLines="1"
+		android:paddingBottom="@dimen/widget_list_item_padding"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small" />
 
@@ -58,8 +59,9 @@
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@id/ratio_text"
 		android:layout_alignParentLeft="true"
-		android:layout_marginLeft="@dimen/margin_torrentlistleft"
-		android:layout_toLeftOf="@id/priority_image"
+		android:layout_marginLeft="@dimen/widget_list_item_padding_left"
+		android:layout_toLeftOf="@id/ratio_text"
+		android:maxLines="1"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small" />
 

@@ -46,5 +46,10 @@
 	<dimen name="widget_preview_padding">20dp</dimen>
 	<dimen name="widget_preview_height">200dp</dimen>
 	<dimen name="widget_preview_width">-1dp</dimen>
+	<dimen name="widget_header_height">46dp</dimen>
+	<dimen name="widget_header_padding">6dp</dimen>
+	<dimen name="widget_list_item_height">54dp</dimen>
+	<dimen name="widget_list_item_padding">6dp</dimen>
+	<dimen name="widget_list_item_padding_left">12dp</dimen>
 	
 </resources>

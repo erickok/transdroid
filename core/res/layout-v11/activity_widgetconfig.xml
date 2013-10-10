@@ -62,13 +62,21 @@
 				android:id="@+id/filter_spinner"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_default" />
+				android:layout_marginTop="@dimen/margin_half" />
 
+			<TextView
+				android:id="@+id/sortbyheader_text"
+				style="@style/SectionHeader"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/widget_sortby"
+				android:textIsSelectable="false" />
+			
 			<Spinner
 				android:id="@+id/sort_spinner"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/margin_default" />
+				android:layout_marginTop="@dimen/margin_half" />
 
 			<CheckBox
 				android:id="@+id/reverseorder_check_box"

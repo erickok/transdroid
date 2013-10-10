@@ -39,7 +39,6 @@ import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Build;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -131,29 +130,28 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		// Bind the torrent details texts and status colour
 		Torrent torrent = torrents.get(position);
 		LocalTorrent local = LocalTorrent.fromTorrent(torrent);
-		Resources r = context.getResources();
 		rv.setTextViewText(R.id.name_text, torrent.getName());
-		rv.setTextViewText(R.id.progress_text, local.getProgressSizeText(r, false));
-		rv.setTextViewText(R.id.ratio_text, local.getProgressEtaRatioText(r));
+		rv.setTextViewText(R.id.progress_text, local.getProgressSizeText(context.getResources(), false));
+		rv.setTextViewText(R.id.ratio_text, local.getProgressEtaRatioText(context.getResources()));
 		int statusColour;
 		switch (torrent.getStatusCode()) {
 		case Downloading:
-			statusColour = r.getColor(r.getColor(R.color.torrent_downloading));
+			statusColour = R.color.torrent_downloading;
 			break;
 		case Paused:
-			statusColour = r.getColor(r.getColor(R.color.torrent_paused));
+			statusColour = R.color.torrent_paused;
 			break;
 		case Seeding:
-			statusColour = r.getColor(r.getColor(R.color.torrent_seeding));
+			statusColour = R.color.torrent_seeding;
 			break;
 		case Error:
-			statusColour = r.getColor(r.getColor(R.color.torrent_error));
+			statusColour = R.color.torrent_error;
 			break;
 		default: // Checking, Waiting, Queued, Unknown
-			statusColour = r.getColor(r.getColor(R.color.torrent_other));
+			statusColour = R.color.torrent_other;
 			break;
 		}
-		rv.setInt(R.id.status_view, "setBackgroundColor", r.getColor(statusColour));
+		rv.setInt(R.id.status_view, "setBackgroundColor", context.getResources().getColor(statusColour));
 		Intent startIntent = new Intent();
 		startIntent.putExtra(WidgetProvider.EXTRA_SERVER, config.getServerId());
 		startIntent.putExtra(WidgetProvider.EXTRA_TORRENT, torrent);
@@ -170,7 +168,9 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public void onDestroy() {
-		torrents.clear();
+		if (torrents != null)
+			torrents.clear();
+		torrents = null;
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EReceiver;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.*;
-import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.log.Log;
 
 import android.annotation.TargetApi;
@@ -40,44 +40,38 @@ public class WidgetProvider extends AppWidgetProvider {
 	public static final String INTENT_STARTSERVER = "org.transdroid.START_SERVER";
 	public static final String EXTRA_TORRENT = "extra_torrent";
 	public static final String EXTRA_SERVER = "extra_server";
+	public static final String EXTRA_REFRESH = "extra_refresh";
 
 	@Bean
 	protected ApplicationSettings applicationSettings;
+
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		if (intent != null && intent.hasExtra(EXTRA_REFRESH)) {
+			// Manually requested a refresh for the app widget of which the ID was supplied
+			int appWidgetId = intent.getIntExtra(EXTRA_REFRESH, -1);
+			AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId,
+					buildRemoteViews(context, appWidgetId, applicationSettings.getWidgetConfig(appWidgetId)));
+			AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
+			return;
+		}
+		super.onReceive(context, intent);
+	}
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		for (int appWidgetId : appWidgetIds) {
 			appWidgetManager.updateAppWidget(appWidgetId,
 					buildRemoteViews(context, appWidgetId, applicationSettings.getWidgetConfig(appWidgetId)));
+			appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
 		}
 	}
 
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
-		super.onDeleted(context, appWidgetIds);
 		for (int appWidgetId : appWidgetIds) {
 			applicationSettings.removeWidgetConfig(appWidgetId);
 		}
-	}
-
-	@Override
-	public void onReceive(Context context, Intent intent) {
-
-		if (intent == null || intent.getAction() == null || intent.getExtras() == null
-				|| !intent.hasExtra(EXTRA_SERVER))
-			return;
-
-		// Launch an Intent to start Transdroid on some specific server; and possibly a specific torrent too
-		Intent start = new Intent(INTENT_STARTSERVER);
-		start.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		start.putExtra(EXTRA_SERVER, intent.getIntExtra(EXTRA_SERVER, -1));
-		if (intent.getAction().equals(EXTRA_TORRENT)) {
-			start.putExtra(EXTRA_TORRENT, intent.getParcelableExtra(EXTRA_TORRENT));
-		}
-		context.startActivity(start);
-
-		super.onReceive(context, intent);
-
 	}
 
 	/**
@@ -103,26 +97,44 @@ public class WidgetProvider extends AppWidgetProvider {
 
 		// Load the dark or light widget layout xml
 		RemoteViews rv = new RemoteViews(context.getPackageName(),
-				config.shouldUseDarkTheme() ? R.layout.list_item_widget_dark : R.layout.list_item_widget_light);
+				config.shouldUseDarkTheme() ? R.layout.widget_torrents_dark : R.layout.widget_torrents_light);
 
 		// Set up the widget's list view loading service which refers to the WidgetViewsFactory
-		// Use a unique data URI next to the extra to make sure the intents are unique form each widget
-		Intent intent = new Intent(context, WidgetService.class);
-		intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME) + "//widget/" + appWidgetId + "/server/"
-				+ config.getServerId()));
-		intent.putExtra(EXTRA_SERVER, config.getServerId());
-		rv.setRemoteAdapter(appWidgetId, R.id.torrents_list, intent);
+		Intent data = new Intent(context, WidgetService_.class);
+		data.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		data.setData(Uri.parse(data.toUri(Intent.URI_INTENT_SCHEME)));
+		rv.setRemoteAdapter(appWidgetId, R.id.torrents_list, data);
+		Intent open = new Intent(context, TorrentsActivity_.class);
+		open.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		rv.setPendingIntentTemplate(R.id.torrents_list,
-				PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
+				PendingIntent.getActivity(context, appWidgetId, open, PendingIntent.FLAG_UPDATE_CURRENT));
 		rv.setEmptyView(R.id.torrents_list, R.id.error_text);
-		rv.setTextViewText(R.id.error_text, context.getString(R.string.navigation_emptytorrents));
+		rv.setTextViewText(R.id.error_text, context.getString(R.string.widget_loading));
 
-		// Show the server and status type filter from the widget configuration
+		// Show the server and status type filter from the widget configuration in the 'action bar'
 		ServerSetting server = appSettings.getServerSetting(config.getServerId());
 		rv.setTextViewText(R.id.server_text, server.getName());
 		rv.setTextViewText(R.id.filter_text, config.getStatusType().getFilterItem(context).getName());
+
+		// Set up the START_SERVER intent for 'action bar' clicks to start Transdroid normally
+		Intent start = new Intent(context, TorrentsActivity_.class);
+		//start.setData(Uri.parse("intent://widget/" + appWidgetId + "/start/" + config.getServerId()));
+		start.setAction(INTENT_STARTSERVER);
+		start.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		start.putExtra(EXTRA_SERVER, config.getServerId());
 		rv.setOnClickPendingIntent(R.id.icon_image,
-				PendingIntent.getActivity(context, 0, intent.cloneFilter(), PendingIntent.FLAG_UPDATE_CURRENT));
+				PendingIntent.getActivity(context, appWidgetId, start, PendingIntent.FLAG_UPDATE_CURRENT));
+		rv.setOnClickPendingIntent(R.id.navigation_view,
+				PendingIntent.getActivity(context, appWidgetId, start, PendingIntent.FLAG_UPDATE_CURRENT));
+
+		// Set up the widgets refresh button pending intent (calling this WidgetProvider itself)
+		// Make sure that the intent is unique using a custom data path (rather than just the extras)
+		Intent refresh = new Intent(context, WidgetProvider_.class);
+		refresh.setData(Uri.parse("intent://widget/" + appWidgetId + "/refresh"));
+		refresh.putExtra(EXTRA_REFRESH, appWidgetId);
+		refresh.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		rv.setOnClickPendingIntent(R.id.refresh_button,
+				PendingIntent.getBroadcast(context, appWidgetId, refresh, PendingIntent.FLAG_UPDATE_CURRENT));
 
 		return rv;
 
