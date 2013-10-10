@@ -20,7 +20,7 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EReceiver;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.*;
-import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.*;
 import org.transdroid.core.gui.log.Log;
 
 import android.annotation.TargetApi;
