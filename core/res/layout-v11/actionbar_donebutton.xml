@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2010-2013 Eric Kok et al.
+  Based on Roman Nurik 2012 Apache License, Version 2.0
   
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -15,26 +16,22 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<FrameLayout 
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content"
-	android:layout_height="?attr/actionBarSize">
-	
-	<!-- This is a wrapper to be able to set the size of the progress item (since the first FrameLayout will be merged) -->
-	<FrameLayout 
-		android:layout_width="56dip"
-		android:layout_height="match_parent"
-		android:paddingLeft="3dip">
-		
-		<ProgressBar
-			android:id="@+id/progress"
-			android:layout_width="20dip"
-			android:layout_height="20dip"
-			android:layout_gravity="center"
-			style="@android:style/Widget.ProgressBar.Small.Inverse"
-			android:indeterminate="true"
-			android:indeterminateOnly="true" />
-			
-	</FrameLayout>
-	
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/actionbar_done"
+	style="?android:actionButtonStyle"
+	android:layout_width="0dp"
+	android:layout_height="match_parent"
+	android:layout_weight="1" >
+
+	<TextView
+		style="?android:actionBarTabTextStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:drawableLeft="?attr/ic_action_done"
+		android:drawablePadding="8dp"
+		android:gravity="center_vertical"
+		android:paddingRight="20dp"
+		android:text="@string/widget_done" />
+
 </FrameLayout>

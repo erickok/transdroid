@@ -16,8 +16,22 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
+	
+	<!-- General layout colours -->
     <color name="green">#8acc12</color>
     <color name="ledgreen">#7dbb21</color>
     <color name="crouton_error">#c81113</color>
     <color name="crouton_info">#aada62</color>
+    
+    <!-- Torrent and file status colours -->
+    <color name="torrent_downloading">#42a8fa</color>	<!-- Blue -->
+    <color name="torrent_paused">#a759d4</color>		<!-- Purple -->
+    <color name="torrent_seeding">#8acc12</color>		<!-- Green -->
+    <color name="torrent_error">#de3939</color>			<!-- Red -->
+    <color name="torrent_other">#9e9e9e</color>			<!-- Grey -->
+    <color name="file_low">#c8e88e</color>				<!-- Light green -->
+    <color name="file_normal">#8acc12</color>			<!-- Normal green -->
+    <color name="file_high">#4b6617</color>				<!-- Dark green -->
+    <color name="file_off">#9e9e9e</color>				<!-- Grey -->
+    
 </resources>

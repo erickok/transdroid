@@ -19,6 +19,7 @@ package org.transdroid.core.gui.search;
 import org.transdroid.core.gui.TorrentsActivity;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,6 +38,7 @@ public class UrlEntryDialog {
 	 * activity's {@link TorrentsActivity#addTorrentByUrl(String, String) method}.
 	 * @param activity The activity that opens (and owns) this dialog
 	 */
+	@SuppressLint("ValidFragment")
 	public static void startUrlEntry(final TorrentsActivity activity) {
 		new DialogFragment() {
 			public android.app.Dialog onCreateDialog(android.os.Bundle savedInstanceState) {

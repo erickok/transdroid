@@ -18,6 +18,7 @@ package org.transdroid.core.gui.search;
 
 import org.transdroid.core.R;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -38,6 +39,7 @@ public class FilePickerHelper {
 	 * @param activity The calling activity, to which the result is returned or a dialog is bound that asks to install
 	 *            the file picker
 	 */
+	@SuppressLint("ValidFragment")
 	public static void startFilePicker(final SherlockFragmentActivity activity) {
 		try {
 			// Start a file manager that can handle the PICK_FILE intent (specifically IO File Manager)

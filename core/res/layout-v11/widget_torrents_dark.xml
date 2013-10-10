@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2010-2013 Eric Kok et al.
+  
+  Transdroid is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  Transdroid is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/background_dark"
+	android:padding="@dimen/margin_widget" >
+
+	<ImageButton
+		android:id="@+id/icon_image"
+		android:layout_width="@dimen/widget_header_height"
+		android:layout_height="@dimen/widget_header_height"
+		android:background="@drawable/selectable_background_transdroid"
+		android:contentDescription="@string/widget_opentransdroid"
+		android:padding="@dimen/widget_header_padding"
+		android:scaleType="fitXY"
+		android:src="@drawable/ic_launcher" />
+
+	<ImageButton
+		android:id="@+id/refresh_button"
+		android:layout_width="@dimen/widget_header_height"
+		android:layout_height="@dimen/widget_header_height"
+		android:layout_alignParentRight="true"
+		android:background="@drawable/selectable_background_transdroid"
+		android:contentDescription="@string/action_refresh"
+		android:padding="@dimen/widget_header_padding"
+		android:scaleType="fitXY"
+		android:src="@drawable/ic_action_refresh_dark" />
+
+	<LinearLayout
+		android:id="@+id/navigation_view"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/widget_header_height"
+		android:layout_toLeftOf="@id/refresh_button"
+		android:layout_toRightOf="@id/icon_image"
+		android:background="@drawable/selectable_background_transdroid"
+		android:clickable="true"
+		android:orientation="vertical"
+		android:paddingRight="@dimen/margin_half"
+		android:paddingTop="3dp" >
+
+		<TextView
+			android:id="@+id/filter_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:ellipsize="marquee"
+			android:fontFamily="sans-serif-condensed"
+			android:maxLines="1"
+			android:textColor="@color/text_actionbar_dark"
+			android:textIsSelectable="false"
+			android:textSize="@dimen/ui_navigation_filter" />
+
+		<TextView
+			android:id="@+id/server_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="-4dip"
+			android:ellipsize="marquee"
+			android:fontFamily="sans-serif-light"
+			android:maxLines="1"
+			android:textColor="@color/text_actionbar_dark"
+			android:textIsSelectable="false"
+			android:textSize="@dimen/ui_navigation_server" />
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/topline_view"
+		android:layout_width="match_parent"
+		android:layout_height="2dp"
+		android:layout_below="@id/icon_image"
+		android:background="@color/green" />
+
+	<TextView
+		android:id="@+id/bottomline_view"
+		android:layout_width="match_parent"
+		android:layout_height="2dp"
+		android:layout_alignParentBottom="true"
+		android:background="@color/green" />
+
+	<ListView
+		android:id="@+id/torrents_list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_above="@id/bottomline_view"
+		android:layout_below="@id/topline_view"
+		android:visibility="gone" />
+
+	<TextView
+		android:id="@+id/error_text"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_above="@id/bottomline_view"
+		android:layout_below="@id/topline_view"
+		android:layout_gravity="center"
+		android:gravity="center"
+		android:maxWidth="400dip"
+		android:padding="@dimen/margin_default"
+		android:textIsSelectable="false"
+		android:visibility="gone" />
+
+</RelativeLayout>

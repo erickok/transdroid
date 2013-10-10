@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2010-2013 Eric Kok et al.
+  
+  Transdroid is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  Transdroid is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:dividerPadding="@dimen/margin_default"
+	android:orientation="@integer/widget_config_orientation" >
+
+	<FrameLayout
+		android:layout_width="@dimen/widget_preview_width"
+		android:layout_height="@dimen/widget_preview_height"
+		android:layout_gravity="center_horizontal"
+		android:background="@null"
+		android:padding="@dimen/widget_preview_padding" >
+
+		<include layout="@layout/widget_torrents_light" />
+	</FrameLayout>
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@color/background_light"
+		android:fillViewport="true"
+		android:paddingLeft="@dimen/margin_default"
+		android:paddingRight="@dimen/margin_default" >
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" >
+
+			<TextView
+				android:id="@+id/filterheader_text"
+				style="@style/SectionHeader"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/widget_filter"
+				android:textIsSelectable="false" />
+
+			<Spinner
+				android:id="@+id/server_spinner"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_half" />
+
+			<Spinner
+				android:id="@+id/filter_spinner"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_half" />
+
+			<TextView
+				android:id="@+id/sortbyheader_text"
+				style="@style/SectionHeader"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/widget_sortby"
+				android:textIsSelectable="false" />
+			
+			<Spinner
+				android:id="@+id/sort_spinner"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_half" />
+
+			<CheckBox
+				android:id="@+id/reverseorder_check_box"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_half"
+				android:text="@string/widget_reversesortorder" />
+
+			<TextView
+				android:id="@+id/lookfeelheader_text"
+				style="@style/SectionHeader"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/widget_lookfeel"
+				android:textIsSelectable="false" />
+
+			<CheckBox
+				android:id="@+id/darktheme_check_box"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="@dimen/margin_half"
+				android:layout_marginTop="@dimen/margin_half"
+				android:text="@string/widget_usedarktheme" />
+		</LinearLayout>
+	</ScrollView>
+
+</LinearLayout>

@@ -20,6 +20,7 @@
 	<dimen name="margin_default">16dp</dimen>
 	<dimen name="margin_half">8dp</dimen>
 	<dimen name="margin_torrentlistleft">16dp</dimen>
+	<dimen name="margin_widget">8dp</dimen>
 
 	<!-- Text sizes -->
 	<dimen name="text_small">12sp</dimen>
@@ -39,5 +40,16 @@
 	<dimen name="ui_serverstatus_sign">15sp</dimen>
 	<dimen name="ui_serverstatus_smallnumber">13sp</dimen>
 	<dimen name="ui_serverstatus_width">53dp</dimen>
+	
+	<!-- Widget configuration -->
+	<integer name="widget_config_orientation">1</integer>
+	<dimen name="widget_preview_padding">20dp</dimen>
+	<dimen name="widget_preview_height">200dp</dimen>
+	<dimen name="widget_preview_width">-1dp</dimen>
+	<dimen name="widget_header_height">46dp</dimen>
+	<dimen name="widget_header_padding">6dp</dimen>
+	<dimen name="widget_list_item_height">54dp</dimen>
+	<dimen name="widget_list_item_padding">6dp</dimen>
+	<dimen name="widget_list_item_padding_left">12dp</dimen>
 	
 </resources>

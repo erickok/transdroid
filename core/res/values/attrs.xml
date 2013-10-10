@@ -42,6 +42,7 @@
 	<attr name="ic_action_stop" format="reference"/>
 	<attr name="ic_action_trackers" format="reference"/>
 	<attr name="ic_action_website" format="reference"/>
+	<attr name="ic_action_done" format="reference"/>
 	<attr name="loading_progress" format="reference"/>
 	<attr name="selectable_background_transdroid" format="reference"/>
 	<attr name="text_bright" format="reference" />

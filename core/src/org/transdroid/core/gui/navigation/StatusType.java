@@ -35,27 +35,27 @@ import android.os.Parcelable;
 public enum StatusType {
 
 	ShowAll {
-		StatusTypeFilter getFilterItem(Context context) {
+		public StatusTypeFilter getFilterItem(Context context) {
 			return new StatusTypeFilter(StatusType.ShowAll, context.getString(R.string.navigation_status_showall));
 		}
 	},
 	OnlyDownloading {
-		StatusTypeFilter getFilterItem(Context context) {
+		public StatusTypeFilter getFilterItem(Context context) {
 			return new StatusTypeFilter(StatusType.OnlyDownloading, context.getString(R.string.navigation_status_onlydown));
 		}
 	},
 	OnlyUploading {
-		StatusTypeFilter getFilterItem(Context context) {
+		public StatusTypeFilter getFilterItem(Context context) {
 			return new StatusTypeFilter(StatusType.OnlyUploading, context.getString(R.string.navigation_status_onlyup));
 		}
 	},
 	OnlyActive {
-		StatusTypeFilter getFilterItem(Context context) {
+		public StatusTypeFilter getFilterItem(Context context) {
 			return new StatusTypeFilter(StatusType.OnlyActive, context.getString(R.string.navigation_status_onlyactive));
 		}
 	},
 	OnlyInactive {
-		StatusTypeFilter getFilterItem(Context context) {
+		public StatusTypeFilter getFilterItem(Context context) {
 			return new StatusTypeFilter(StatusType.OnlyInactive, context.getString(R.string.navigation_status_onlyinactive));
 		}
 	};
@@ -85,7 +85,7 @@ public enum StatusType {
 	 * @param context The Android UI context, to access translations
 	 * @return A filter item object to show in the GUI
 	 */
-	abstract StatusTypeFilter getFilterItem(Context context);
+	public abstract StatusTypeFilter getFilterItem(Context context);
 
 	public static class StatusTypeFilter implements SimpleListItem, NavigationFilter {
 
@@ -97,6 +97,10 @@ public enum StatusType {
 			this.name = name;
 		}
 
+		public StatusType getStatusType() {
+			return statusType;
+		}
+		
 		@Override
 		public String getName() {
 			return name;

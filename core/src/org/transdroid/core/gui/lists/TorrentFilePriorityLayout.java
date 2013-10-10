@@ -16,6 +16,7 @@
  */
 package org.transdroid.core.gui.lists;
 
+import org.transdroid.core.R;
 import org.transdroid.daemon.Priority;
 
 import android.content.Context;
@@ -56,10 +57,10 @@ public class TorrentFilePriorityLayout extends CheckableRelativeLayout {
 	}
 
 	private void initPaints() {
-		offPaint.setColor(0xFF9E9E9E); // Grey
-		lowPaint.setColor(0xFFC8E88E); // Light green
-		normalPaint.setColor(0xFF8ACC12); // Normal green
-		highPaint.setColor(0xFF4B6617); // Dark green
+		offPaint.setColor(getResources().getColor(R.color.file_off));
+		lowPaint.setColor(getResources().getColor(R.color.file_low));
+		normalPaint.setColor(getResources().getColor(R.color.file_normal));
+		highPaint.setColor(getResources().getColor(R.color.file_high));
 	}
 
 	public void setPriority(Priority priority) {

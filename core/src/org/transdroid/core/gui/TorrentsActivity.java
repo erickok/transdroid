@@ -56,6 +56,7 @@ import org.transdroid.core.gui.search.UrlEntryDialog;
 import org.transdroid.core.gui.settings.*;
 import org.transdroid.core.service.BootReceiver;
 import org.transdroid.core.service.ConnectivityHelper;
+import org.transdroid.core.widget.WidgetProvider;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -212,9 +213,19 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// No server settings yet;
 			return;
 		}
-		if (getIntent().getExtras() == null && getIntent().hasExtra("org.transdroid.START_SERVER")) {
-			lastUsed = applicationSettings.getServerSetting(getIntent().getExtras().getInt(
-					"org.transdroid.START_SERVER"));
+		Torrent startTorrent = null;
+		if (getIntent().getAction() != null && getIntent().getAction().equals(WidgetProvider.INTENT_STARTSERVER)
+				&& getIntent().getExtras() == null && getIntent().hasExtra(WidgetProvider.EXTRA_SERVER)) {
+			// A server settings order ID was provided in this org.transdroid.START_SERVER action intent
+			int serverId = getIntent().getExtras().getInt(WidgetProvider.EXTRA_SERVER);
+			if (serverId < 0 || serverId > applicationSettings.getMaxServer()) {
+				Log.e(this, "Tried to start with " + WidgetProvider.EXTRA_SERVER + " intent but " + serverId
+						+ " is not an existing server order id");
+			} else {
+				lastUsed = applicationSettings.getServerSetting(serverId);
+				if (getIntent().hasExtra(WidgetProvider.EXTRA_TORRENT))
+					startTorrent = getIntent().getParcelableExtra(WidgetProvider.EXTRA_TORRENT);
+			}
 		}
 
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
@@ -222,7 +233,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		skipNextOnNavigationItemSelectedCall = true;
 
 		// Handle any start up intents
-		if (firstStart && getIntent() != null) {
+		if (startTorrent != null) {
+			openDetails(startTorrent);
+			startTorrent = null;
+		} else if (firstStart && getIntent() != null) {
 			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
 			handleStartIntent();
 		}
@@ -495,7 +509,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		}
 		return true;
 	}
-	
+
 	@OptionsItem(resName = "action_add_fromurl")
 	protected void startUrlEntryDialog() {
 		UrlEntryDialog.startUrlEntry(this);

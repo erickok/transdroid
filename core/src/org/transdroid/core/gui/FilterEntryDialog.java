@@ -16,6 +16,7 @@
  */
 package org.transdroid.core.gui;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,6 +33,7 @@ public class FilterEntryDialog {
 	 * torrents.
 	 * @param activity The activity that opens (and owns) this dialog
 	 */
+	@SuppressLint("ValidFragment")
 	public static void startFilterEntry(final TorrentsActivity activity) {
 		new DialogFragment() {
 			public android.app.Dialog onCreateDialog(android.os.Bundle savedInstanceState) {

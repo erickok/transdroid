@@ -15,13 +15,15 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.transdroid.core"
-	android:versionCode="6"
-	android:versionName="2.0" >
-
-	<uses-sdk
-		android:minSdkVersion="7"
-		android:targetSdkVersion="18" />
-
-</manifest>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+	android:configure="org.transdroid.core.widget.WidgetConfigActivity_"
+	android:initialKeyguardLayout="@layout/widget_torrents_light"
+	android:initialLayout="@layout/widget_torrents_light"
+	android:minHeight="110dip"
+	android:minResizeHeight="110dip"
+	android:minResizeWidth="110dp"
+	android:minWidth="180dp"
+	android:previewImage="@drawable/widget_preview"
+	android:resizeMode="horizontal|vertical"
+	android:updatePeriodMillis="3600000"
+	android:widgetCategory="home_screen|keyguard" />

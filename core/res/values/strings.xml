@@ -190,6 +190,15 @@
 	</plurals>
 	<string name="rss_service_newfor">New torrents for %1$s</string>
 		
+	<string name="widget_loading">Loading&#8230;</string>
+	<string name="widget_opentransdroid">Open Transdroid</string>
+	<string name="widget_filter">SERVER VIEW</string>
+	<string name="widget_lookfeel">LOOK &amp; FEEL</string>
+	<string name="widget_sortby">SORT ORDER</string>
+	<string name="widget_reversesortorder">Reversed sort order</string>
+	<string name="widget_usedarktheme">Use dark theme (no preview)</string>
+	<string name="widget_done">DONE</string>
+	
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
 	<string name="pref_searchsites">Search sites</string>
