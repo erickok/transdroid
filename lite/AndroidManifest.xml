@@ -53,6 +53,7 @@
 		<activity
 			android:name="org.transdroid.core.gui.TorrentsActivity_"
 			android:allowTaskReparenting="true"
+			android:launchMode="singleTop"
 			android:label="@string/app_name"
 			android:theme="@style/TransdroidTheme"
 			android:uiOptions="splitActionBarWhenNarrow" >
@@ -203,6 +204,7 @@
 		<!-- Home screen widget -->
 		<activity
 			android:name="org.transdroid.core.widget.WidgetConfigActivity_"
+			android:theme="@style/TransdroidTheme.WidgetConfig"
 			android:enabled="@bool/widget_available" >
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
