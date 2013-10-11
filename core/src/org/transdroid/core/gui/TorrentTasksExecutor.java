@@ -22,6 +22,11 @@ import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentFile;
 
+/**
+ * Interface to be implemented by any activity that wants containing fragments to be able to load data and execute
+ * commands against a torrent server.
+ * @author Eric Kok
+ */
 public interface TorrentTasksExecutor {
 	void resumeTorrent(Torrent torrent);
 	void pauseTorrent(Torrent torrent);

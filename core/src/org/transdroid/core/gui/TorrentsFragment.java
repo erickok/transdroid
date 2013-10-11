@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
@@ -33,6 +34,7 @@ import org.transdroid.core.gui.lists.TorrentsAdapter;
 import org.transdroid.core.gui.lists.TorrentsAdapter_;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 import org.transdroid.core.gui.navigation.SetLabelDialog;
 import org.transdroid.core.gui.navigation.SetLabelDialog.OnLabelPickedListener;
@@ -303,6 +305,22 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 		}
 
 	};
+
+	@Click
+	protected void emptyTextClicked() {
+		// Refresh the activity (that contains this fragment) when the empty view gear is clicked
+		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
+			((RefreshableActivity) getActivity()).refreshScreen();
+		}
+	}
+
+	@Click
+	protected void errorTextClicked() {
+		// Refresh the activity (that contains this fragment) when the error view gear is clicked
+		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
+			((RefreshableActivity) getActivity()).refreshScreen();
+		}
+	}
 
 	@ItemClick(resName = "torrent_list")
 	protected void torrentsListClicked(Torrent torrent) {

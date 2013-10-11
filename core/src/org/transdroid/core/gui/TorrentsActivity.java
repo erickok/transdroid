@@ -122,7 +122,8 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EActivity(resName = "activity_torrents")
 @OptionsMenu(resName = "activity_torrents")
-public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor {
+public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor,
+		RefreshableActivity {
 
 	// Navigation components
 	@Bean
@@ -385,6 +386,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Clear the currently shown list of torrents and perhaps the details
 			fragmentTorrents.clear(true, true);
 			if (fragmentDetails != null && fragmentDetails.getActivity() != null) {
+				fragmentDetails.updateIsLoading(false, null);
 				fragmentDetails.clear();
 				fragmentDetails.setCurrentServerSettings(server);
 			}
@@ -401,6 +403,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
 			// Clear the details view
 			if (fragmentDetails != null) {
+				fragmentDetails.updateIsLoading(false, null);
 				fragmentDetails.clear();
 			}
 		}
@@ -547,7 +550,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	}
 
 	@OptionsItem(resName = "action_refresh")
-	protected void refreshScreen() {
+	public void refreshScreen() {
 		fragmentTorrents.updateIsLoading(true);
 		refreshTorrents();
 		if (Daemon.supportsStats(currentConnection.getType()))
@@ -942,8 +945,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
 		Crouton.showText(this, error, NavigationHelper.CROUTON_ERROR_STYLE);
 		fragmentTorrents.updateIsLoading(false);
-		if (isCritical)
+		if (isCritical) {
 			fragmentTorrents.updateError(error);
+			if (fragmentDetails != null)
+				fragmentDetails.updateIsLoading(false, error);
+		}
 	}
 
 	@UiThread

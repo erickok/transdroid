@@ -35,6 +35,7 @@ import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
@@ -79,7 +80,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EActivity(resName = "activity_details")
 @OptionsMenu(resName = "activity_details")
-public class DetailsActivity extends SherlockFragmentActivity implements TorrentTasksExecutor {
+public class DetailsActivity extends SherlockFragmentActivity implements TorrentTasksExecutor, RefreshableActivity {
 
 	@Extra
 	@InstanceState
@@ -148,8 +149,8 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	}
 
 	@OptionsItem(resName = "action_refresh")
-	protected void refreshScreen() {
-		fragmentDetails.updateIsLoading(true);
+	public void refreshScreen() {
+		fragmentDetails.updateIsLoading(true, null);
 		refreshTorrent();
 		refreshTorrentDetails(torrent);
 		refreshTorrentFiles(torrent);
@@ -162,7 +163,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
 					((RetrieveTaskSuccessResult) result).getLabels());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, true);
 		}
 	}
 
@@ -174,7 +175,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof GetTorrentDetailsTaskSuccessResult) {
 			onTorrentDetailsRetrieved(torrent, ((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -186,7 +187,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof GetFileListTaskSuccessResult) {
 			onTorrentFilesRetrieved(torrent, ((GetFileListTaskSuccessResult) result).getFiles());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -198,7 +199,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_resumed, torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -210,7 +211,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_paused, torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -222,7 +223,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_started, torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -234,7 +235,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_stopped, torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -247,7 +248,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 			closeActivity(getString(withData ? R.string.result_removed_with_data : R.string.result_removed,
 					torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -267,7 +268,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_labelset, newLabel));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -278,7 +279,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_trackersupdated));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -289,7 +290,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_locationset, newLocation));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -301,7 +302,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		if (result instanceof DaemonTaskResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result);
+			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
 	}
 
@@ -326,9 +327,10 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	}
 
 	@UiThread
-	protected void onCommunicationError(DaemonTaskFailureResult result) {
+	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
 		Log.i(this, result.getException().toString());
-		fragmentDetails.updateIsLoading(false);
+		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
+		fragmentDetails.updateIsLoading(false, isCritical? error: null);
 		Crouton.showText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
 				NavigationHelper.CROUTON_ERROR_STYLE);
 	}
@@ -336,7 +338,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
 		// Update the details fragment accordingly
-		fragmentDetails.updateIsLoading(false);
+		fragmentDetails.updateIsLoading(false, null);
 		fragmentDetails.perhapsUpdateTorrent(torrents);
 		fragmentDetails.updateLabels(Label.convertToNavigationLabels(labels,
 				getResources().getString(R.string.labels_unlabeled)));

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.OptionsItem;
@@ -34,6 +35,7 @@ import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper_;
+import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 import org.transdroid.core.gui.navigation.SetLabelDialog;
 import org.transdroid.core.gui.navigation.SetLabelDialog.OnLabelPickedListener;
@@ -85,13 +87,15 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	protected ArrayList<Label> currentLabels = null;
 	@InstanceState
 	protected boolean isLoadingTorrent = false;
+	@InstanceState
+	protected boolean hasCriticalError = false;
 	private ServerSetting currentServerSettings = null;
 
 	// Views
 	@ViewById(resName = "details_list")
 	protected SherlockListView detailsList;
 	@ViewById
-	protected TextView emptyText;
+	protected TextView emptyText, errorText;
 	@ViewById
 	protected ProgressBar loadingProgress;
 
@@ -128,19 +132,22 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 
 	/**
 	 * Updates the details adapter header to show the new torrent data.
-	 * @param newTorrent The new torrent object
+	 * @param newTorrent The new, non-null torrent object
 	 */
 	public void updateTorrent(Torrent newTorrent) {
-		clear();
 		this.torrent = newTorrent;
+		this.hasCriticalError = false;
 		((DetailsAdapter) detailsList.getAdapter()).updateTorrent(newTorrent);
 		// Make the list (with details header) visible
 		detailsList.setVisibility(View.VISIBLE);
 		emptyText.setVisibility(View.GONE);
+		errorText.setVisibility(View.GONE);
 		loadingProgress.setVisibility(View.GONE);
 		// Also update the available actions in the action bar
 		getActivity().supportInvalidateOptionsMenu();
 		// Refresh the detailed statistics (errors) and list of files
+		torrentDetails = null;
+		torrentFiles = null;
 		getTasksExecutor().refreshTorrentDetails(torrent);
 		getTasksExecutor().refreshTorrentFiles(torrent);
 	}
@@ -208,7 +215,8 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	public void clear() {
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));
 		detailsList.setVisibility(View.GONE);
-		emptyText.setVisibility(!isLoadingTorrent ? View.VISIBLE : View.GONE);
+		emptyText.setVisibility(!isLoadingTorrent && !hasCriticalError ? View.VISIBLE : View.GONE);
+		errorText.setVisibility(!isLoadingTorrent && hasCriticalError ? View.VISIBLE : View.GONE);
 		loadingProgress.setVisibility(isLoadingTorrent ? View.VISIBLE : View.GONE);
 		// Note: this.torrent is not cleared as we need to know later what the fragment was originally bound to
 		torrentDetails = null;
@@ -218,10 +226,13 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	/**
 	 * Updates the shown screen depending on whether the torrent is loading
 	 * @param isLoading True if the torrent is (re)loading, false otherwise
+	 * @param connectionErrorMessage The error message text to show to the user, or null if there was no error
 	 */
-	public void updateIsLoading(boolean isLoading) {
+	public void updateIsLoading(boolean isLoading, String connectionErrorMessage) {
 		this.isLoadingTorrent = isLoading;
-		if (isLoadingTorrent)
+		this.hasCriticalError = connectionErrorMessage != null;
+		errorText.setText(connectionErrorMessage);
+		if (isLoading || hasCriticalError)
 			clear();
 	}
 
@@ -328,6 +339,22 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	@Override
 	public void onStorageLocationUpdated(String newLocation) {
 		getTasksExecutor().updateLocation(torrent, newLocation);
+	}
+
+	@Click
+	protected void emptyTextClicked() {
+		// Refresh the activity (that contains this fragment) when the empty view gear is clicked
+		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
+			((RefreshableActivity) getActivity()).refreshScreen();
+		}
+	}
+
+	@Click
+	protected void errorTextClicked() {
+		// Refresh the activity (that contains this fragment) when the error view gear is clicked
+		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
+			((RefreshableActivity) getActivity()).refreshScreen();
+		}
 	}
 
 	private MultiChoiceModeListenerCompat onDetailsSelected = new MultiChoiceModeListenerCompat() {

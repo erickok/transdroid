@@ -52,4 +52,17 @@
 		android:textIsSelectable="false"
 		android:visibility="visible" />
 
+	<TextView
+		android:id="@+id/error_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:drawablePadding="8dip"
+		android:drawableTop="?attr/loading_progress"
+		android:gravity="center"
+		android:maxWidth="400dip"
+		android:padding="@dimen/margin_default"
+		android:textIsSelectable="false"
+		android:visibility="gone" />
+	
 </FrameLayout>
