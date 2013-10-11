@@ -244,6 +244,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Start the alarms for the background services, if needed
 		BootReceiver.startBackgroundServices(getApplicationContext(), false);
 		BootReceiver.startAppUpdatesService(getApplicationContext());
+  
+		filterSelected(lastUsed, true);
 
 	}
 
@@ -260,7 +262,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			return;
 		}
 		// There is a server know (now): forcefully select it to establish a connection
-		filterSelected(lastUsed, true);
+		//filterSelected(lastUsed, true);
 	}
 
 	@Override
