@@ -53,6 +53,7 @@
 		<activity
 			android:name="org.transdroid.core.gui.TorrentsActivity_"
 			android:allowTaskReparenting="true"
+			android:launchMode="singleTop"
 			android:label="@string/app_name"
 			android:theme="@style/TransdroidTheme"
 			android:uiOptions="splitActionBarWhenNarrow" >
@@ -227,6 +228,7 @@
 		<activity
 			android:name="org.transdroid.core.gui.rss.RssfeedsActivity_"
 			android:label="@string/rss_feeds"
+			android:launchMode="singleTop"
 			android:theme="@style/TransdroidTheme" />
 		<activity
 			android:name="org.transdroid.core.gui.rss.RssitemsActivity_"

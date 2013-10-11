@@ -32,7 +32,6 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.SimpleListItemSpinnerAdapter;
 import org.transdroid.core.gui.lists.SortByListItem;
-import org.transdroid.core.gui.lists.TorrentsAdapter;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.navigation.StatusType.StatusTypeFilter;
 import org.transdroid.core.service.ConnectivityHelper;
@@ -76,8 +75,6 @@ public class WidgetConfigActivity extends SherlockActivity {
 	protected TextView filterText, serverText, errorText;
 	@ViewById
 	protected ListView torrentsList;
-	@Bean
-	protected TorrentsAdapter previewTorrentsAdapter;
 	private List<Torrent> previewTorrents = null;
 
 	// Settings and helpers
@@ -122,7 +119,6 @@ public class WidgetConfigActivity extends SherlockActivity {
 		sortSpinner.setAdapter(new SimpleListItemSpinnerAdapter<SortByListItem>(this, 0, sortOrders));
 		// TODO: Update to AndroidAnnotations 3.0 and use @CheckedChanged
 		reverseorderCheckBox.setOnCheckedChangeListener(reverseorderCheckedChanged);
-		torrentsList.setAdapter(previewTorrentsAdapter);
 		torrentsList.setEmptyView(errorText);
 
 		// Set up action bar with a done button
@@ -215,7 +211,7 @@ public class WidgetConfigActivity extends SherlockActivity {
 				.sort(filteredTorrents, new TorrentsComparator(serverType, sortBy, reverseorderCheckBox.isChecked()));
 
 		// Finally update the widget preview with the live, filtered and sorted torrents list
-		previewTorrentsAdapter.update(filteredTorrents);
+		torrentsList.setAdapter(new WidgetPreviewAdapter(this, 0, filteredTorrents));
 		torrentsList.setVisibility(View.VISIBLE);
 		errorText.setVisibility(View.GONE);
 	}

@@ -19,6 +19,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
+	android:background="?attr/activatable_background_transdroid"
 	android:orientation="horizontal"
 	android:paddingBottom="@dimen/margin_half"
 	android:paddingLeft="@dimen/margin_default"
@@ -37,8 +38,8 @@
 		android:id="@+id/name_text"
 		android:layout_width="0dip"
 		android:layout_height="wrap_content"
-		android:layout_weight="1"
 		android:layout_marginTop="1dip"
+		android:layout_weight="1"
 		android:textIsSelectable="false" />
 
 </LinearLayout>

@@ -42,7 +42,8 @@ public class ConnectivityHelper {
 			return false;
 
 		// Still good? Check the current active network instead
-		return connectivityManager.getActiveNetworkInfo().isConnected();
+		return connectivityManager.getActiveNetworkInfo() != null
+				&& connectivityManager.getActiveNetworkInfo().isConnected();
 	}
 
 	public String getConnectedNetworkName() {
@@ -51,4 +52,5 @@ public class ConnectivityHelper {
 		}
 		return null;
 	}
+
 }

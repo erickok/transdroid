@@ -122,7 +122,8 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EActivity(resName = "activity_torrents")
 @OptionsMenu(resName = "activity_torrents")
-public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor {
+public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor,
+		RefreshableActivity {
 
 	// Navigation components
 	@Bean
@@ -143,7 +144,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected ApplicationSettings applicationSettings;
 	@InstanceState
 	boolean firstStart = true;
-	boolean skipNextOnNavigationItemSelectedCall = false;
+	int skipNextOnNavigationItemSelectedCalls = 2;
 	private IDaemonAdapter currentConnection = null;
 	@InstanceState
 	protected NavigationFilter currentFilter = null;
@@ -207,7 +208,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Log messages from the server daemons using our singleton logger
 		DLog.setLogger(Log_.getInstance_(this));
 
-		// Connect to the last used server or a server that was supplied in the starting intent
+		// Connect to the last used server or a server that was explicitly supplied in the starting intent
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		if (lastUsed == null) {
 			// No server settings yet;
@@ -229,15 +230,15 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		}
 
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
+		// Note: skipNextOnNavigationItemSelectedCalls is used to prevent this event from triggering filterSelected
 		getSupportActionBar().setSelectedNavigationItem(lastUsed.getOrder() + 1);
-		skipNextOnNavigationItemSelectedCall = true;
+		filterSelected(lastUsed, true);
 
 		// Handle any start up intents
 		if (startTorrent != null) {
 			openDetails(startTorrent);
 			startTorrent = null;
 		} else if (firstStart && getIntent() != null) {
-			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
 			handleStartIntent();
 		}
 
@@ -257,10 +258,14 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (lastUsed == null) {
 			// Still no settings
 			updateFragmentVisibility(false);
+			// There is a server know (now): forcefully select it to establish a connection
+			filterSelected(lastUsed, true);
 			return;
 		}
-		// There is a server know (now): forcefully select it to establish a connection
-		filterSelected(lastUsed, true);
+		
+		// If we had no connection before, establish it now
+		if (currentConnection == null)
+			filterSelected(lastUsed, true);
 	}
 
 	@Override
@@ -334,8 +339,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	 */
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		if (skipNextOnNavigationItemSelectedCall) {
-			skipNextOnNavigationItemSelectedCall = false;
+		if (skipNextOnNavigationItemSelectedCalls > 0) {
+			skipNextOnNavigationItemSelectedCalls--;
 			return false;
 		}
 		Object item = navigationSpinnerAdapter.getItem(itemPosition);
@@ -353,7 +358,9 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			filtersList.setItemChecked(position, true);
-			filterSelected((SimpleListItem) filtersList.getAdapter().getItem(position), false);
+			Object item = filtersList.getAdapter().getItem(position);
+			if (item instanceof SimpleListItem)
+				filterSelected((SimpleListItem) item, false);
 		}
 	};
 
@@ -385,6 +392,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Clear the currently shown list of torrents and perhaps the details
 			fragmentTorrents.clear(true, true);
 			if (fragmentDetails != null && fragmentDetails.getActivity() != null) {
+				fragmentDetails.updateIsLoading(false, null);
 				fragmentDetails.clear();
 				fragmentDetails.setCurrentServerSettings(server);
 			}
@@ -401,6 +409,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
 			// Clear the details view
 			if (fragmentDetails != null) {
+				fragmentDetails.updateIsLoading(false, null);
 				fragmentDetails.clear();
 			}
 		}
@@ -421,6 +430,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 				getSupportFragmentManager().beginTransaction().hide(fragmentDetails).commit();
 		}
 		supportInvalidateOptionsMenu();
+	}
+	
+	@Override
+	protected void onNewIntent(Intent intent) {
+		setIntent(intent);
+		handleStartIntent();
 	}
 
 	/**
@@ -547,7 +562,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	}
 
 	@OptionsItem(resName = "action_refresh")
-	protected void refreshScreen() {
+	public void refreshScreen() {
 		fragmentTorrents.updateIsLoading(true);
 		refreshTorrents();
 		if (Daemon.supportsStats(currentConnection.getType()))
@@ -942,8 +957,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
 		Crouton.showText(this, error, NavigationHelper.CROUTON_ERROR_STYLE);
 		fragmentTorrents.updateIsLoading(false);
-		if (isCritical)
+		if (isCritical) {
 			fragmentTorrents.updateError(error);
+			if (fragmentDetails != null)
+				fragmentDetails.updateIsLoading(false, error);
+		}
 	}
 
 	@UiThread

@@ -16,6 +16,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/details_container"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
 
@@ -26,7 +27,7 @@
 		android:choiceMode="multipleChoiceModal"
 		android:divider="@null"
 		android:dividerHeight="0dip"
-		android:listSelector="?attr/selectable_background_transdroid"
+		android:listSelector="@null"
 		android:visibility="gone" />
 
 	<ProgressBar
@@ -52,4 +53,17 @@
 		android:textIsSelectable="false"
 		android:visibility="visible" />
 
+	<TextView
+		android:id="@+id/error_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:drawablePadding="8dip"
+		android:drawableTop="?attr/loading_progress"
+		android:gravity="center"
+		android:maxWidth="400dip"
+		android:padding="@dimen/margin_default"
+		android:textIsSelectable="false"
+		android:visibility="gone" />
+	
 </FrameLayout>

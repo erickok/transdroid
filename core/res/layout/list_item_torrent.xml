@@ -18,7 +18,7 @@
 <org.transdroid.core.gui.lists.TorrentStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:background="?attr/selectable_background_transdroid"
+	android:background="?attr/activatable_background_transdroid"
 	android:orientation="vertical"
 	android:paddingRight="@dimen/margin_default" >
 

@@ -33,6 +33,7 @@ import org.transdroid.core.app.search.SearchHelper.SearchSortOrder;
 import org.transdroid.core.app.search.SearchResult;
 import org.transdroid.core.app.search.SearchSite;
 import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 
@@ -121,7 +122,9 @@ public class SearchResultsFragment extends SherlockFragment {
 
 	@ItemClick(resName = "searchresults_list")
 	protected void onItemClicked(SearchResult item) {
-		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getTorrentUrl()));
+		// Don't broadcast this intent; we can safely assume this is intended for Transdroid only
+		Intent i = TorrentsActivity_.intent(getActivity()).get();
+		i.setData(Uri.parse(item.getTorrentUrl()));
 		i.putExtra("TORRENT_TITLE", item.getName());
 		startActivity(i);
 	}

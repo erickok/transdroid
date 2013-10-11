@@ -18,6 +18,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
+	android:background="?attr/activatable_background_transdroid"
 	android:paddingBottom="@dimen/margin_half"
 	android:paddingLeft="@dimen/margin_default"
 	android:paddingRight="@dimen/margin_default"

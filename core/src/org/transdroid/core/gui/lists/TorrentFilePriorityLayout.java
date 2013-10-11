@@ -24,7 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import fr.marvinlabs.widget.CheckableRelativeLayout;
+import android.widget.RelativeLayout;
 
 /**
  * A relative layout that that is checkable (to be used in a contextual action bar) and shows a coloured bar in the far
@@ -32,7 +32,7 @@ import fr.marvinlabs.widget.CheckableRelativeLayout;
  * the file isn't downloaded at all.
  * @author Eric Kok
  */
-public class TorrentFilePriorityLayout extends CheckableRelativeLayout {
+public class TorrentFilePriorityLayout extends RelativeLayout {
 
 	private final float scale = getContext().getResources().getDisplayMetrics().density;
 	private final int WIDTH = (int) (6 * scale + 0.5f);
