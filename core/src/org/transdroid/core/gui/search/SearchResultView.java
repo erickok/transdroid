@@ -23,15 +23,15 @@ import org.transdroid.core.app.search.SearchResult;
 
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import fr.marvinlabs.widget.CheckableRelativeLayout;
 
 /**
  * View that represents a {@link SearchResult} object from an in-app search
  * @author Eric Kok
  */
 @EViewGroup(resName = "list_item_searchresult")
-public class SearchResultView extends CheckableRelativeLayout {
+public class SearchResultView extends RelativeLayout {
 
 	// Views
 	@ViewById

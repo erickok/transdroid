@@ -92,6 +92,8 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	private ServerSetting currentServerSettings = null;
 
 	// Views
+	@ViewById(resName = "details_container")
+	protected View detailsContainer;
 	@ViewById(resName = "details_list")
 	protected SherlockListView detailsList;
 	@ViewById
@@ -106,9 +108,9 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 		// line to separate the lists visually
 		if (!NavigationHelper_.getInstance_(getActivity()).isSmallScreen()) {
 			if (SystemSettings_.getInstance_(getActivity()).useDarkTheme()) {
-				detailsList.setBackgroundResource(R.drawable.details_list_background_dark);
+				detailsContainer.setBackgroundResource(R.drawable.details_list_background_dark);
 			} else {
-				detailsList.setBackgroundResource(R.drawable.details_list_background_light);
+				detailsContainer.setBackgroundResource(R.drawable.details_list_background_light);
 			}
 		}
 

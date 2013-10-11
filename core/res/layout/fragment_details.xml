@@ -16,6 +16,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/details_container"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
 
@@ -26,7 +27,7 @@
 		android:choiceMode="multipleChoiceModal"
 		android:divider="@null"
 		android:dividerHeight="0dip"
-		android:listSelector="?attr/selectable_background_transdroid"
+		android:listSelector="@null"
 		android:visibility="gone" />
 
 	<ProgressBar

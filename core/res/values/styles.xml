@@ -43,6 +43,7 @@
 		<item name="ic_action_trackers">@drawable/ic_action_trackers_light</item>
 		<item name="ic_action_website">@drawable/ic_action_website_light</item>
 		<item name="loading_progress">@drawable/loading_progress_light</item>
+		<item name="activatable_background_transdroid">@drawable/activatable_background_transdroid2</item>
 		<item name="selectable_background_transdroid">@drawable/selectable_background_transdroid2</item>
 		<item name="text_bright">@color/text_bright_light</item>
 		<item name="text_actionbar">@color/text_actionbar_light</item>
@@ -75,6 +76,7 @@
 		<item name="ic_action_trackers">@drawable/ic_action_trackers_dark</item>
 		<item name="ic_action_website">@drawable/ic_action_website_dark</item>
 		<item name="loading_progress">@drawable/loading_progress_dark</item>
+		<item name="activatable_background_transdroid">@drawable/activatable_background_transdroid</item>
 		<item name="selectable_background_transdroid">@drawable/selectable_background_transdroid</item>
 		<item name="text_bright">@color/text_bright_dark</item>
 		<item name="text_actionbar">@color/text_actionbar_dark</item>
