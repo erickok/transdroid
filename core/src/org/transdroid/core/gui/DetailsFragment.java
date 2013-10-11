@@ -249,6 +249,7 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 			menu.findItem(R.id.action_remove_withdata).setVisible(false);
 			menu.findItem(R.id.action_setlabel).setVisible(false);
 			menu.findItem(R.id.action_updatetrackers).setVisible(false);
+			menu.findItem(R.id.action_changelocation).setVisible(false);
 			return;
 		}
 		// Update action availability

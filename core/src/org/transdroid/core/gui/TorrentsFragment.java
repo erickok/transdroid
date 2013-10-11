@@ -343,6 +343,11 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 		this.hasAConnection = hasAConnection;
 		this.daemonType = daemonType;
 		if (!hasAConnection) {
+			torrentsList.setVisibility(View.GONE);
+			emptyText.setVisibility(View.GONE);
+			loadingProgress.setVisibility(View.GONE);
+			errorText.setVisibility(View.GONE);
+			nosettingsText.setVisibility(View.VISIBLE);
 			clear(true, true); // Indirectly also calls updateViewVisibility()
 		} else {
 			updateViewVisibility();
@@ -381,11 +386,6 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 
 	private void updateViewVisibility() {
 		if (!hasAConnection) {
-			torrentsList.setVisibility(View.GONE);
-			emptyText.setVisibility(View.GONE);
-			loadingProgress.setVisibility(View.GONE);
-			errorText.setVisibility(View.GONE);
-			nosettingsText.setVisibility(View.VISIBLE);
 			return;
 		}
 		boolean isEmpty = torrents == null || torrentsList.getAdapter().isEmpty();

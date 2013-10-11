@@ -26,6 +26,7 @@ import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 import org.transdroid.core.rssparser.Channel;
 import org.transdroid.core.rssparser.Item;
@@ -99,7 +100,9 @@ public class RssitemsFragment extends SherlockFragment {
 
 	@ItemClick(resName = "rssitems_list")
 	protected void onItemClicked(Item item) {
-		Intent i = new Intent(Intent.ACTION_VIEW, item.getTheLinkUri());
+		// Don't broadcast this intent; we can safely assume this is intended for Transdroid only
+		Intent i = TorrentsActivity_.intent(getActivity()).get();
+		i.setData(item.getTheLinkUri());
 		i.putExtra("TORRENT_TITLE", item.getTitle());
 		startActivity(i);
 	}
