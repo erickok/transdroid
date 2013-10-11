@@ -208,7 +208,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Log messages from the server daemons using our singleton logger
 		DLog.setLogger(Log_.getInstance_(this));
 
-		// Connect to the last used server or a server that was explicitly supplied in the starting intent
+		// Load the last used server or a server that was explicitly supplied in the starting intent
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		if (lastUsed == null) {
 			// No server settings yet;
@@ -232,15 +232,25 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
 		// Note: skipNextOnNavigationItemSelectedCalls is used to prevent this event from triggering filterSelected
 		getSupportActionBar().setSelectedNavigationItem(lastUsed.getOrder() + 1);
-		filterSelected(lastUsed, true);
 
-		// Handle any start up intents
-		if (startTorrent != null) {
-			openDetails(startTorrent);
-			startTorrent = null;
-		} else if (firstStart && getIntent() != null) {
-			handleStartIntent();
+		// Connect to the last used server or a server that was explicitly supplied in the starting intent
+		if (firstStart) {
+			// Force first torrents refresh
+			filterSelected(lastUsed, true);
+			// Handle any start up intents
+			if (firstStart && startTorrent != null) {
+				openDetails(startTorrent);
+				startTorrent = null;
+			} else if (firstStart && getIntent() != null) {
+				handleStartIntent();
+			}
+		} else {
+			// Resume after instead of fully loading the torrents list; create connection and set action bar title
+			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
+			navigationSpinnerAdapter.updateCurrentServer(currentConnection);
+			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
 		}
+		firstStart = false;
 
 		// Start the alarms for the background services, if needed
 		BootReceiver.startBackgroundServices(getApplicationContext(), false);
