@@ -114,6 +114,7 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 		torrentsList.setFastScrollEnabled(true);
 		if (torrents != null)
 			updateTorrents(torrents, currentLabels);
+		nosettingsText.setText(getString(R.string.navigation_nosettings, getString(R.string.app_name)));
 
 	}
 

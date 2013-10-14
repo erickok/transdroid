@@ -74,7 +74,6 @@
 		android:gravity="center"
 		android:maxWidth="400dip"
 		android:padding="@dimen/margin_default"
-		android:text="@string/navigation_nosettings"
 		android:textIsSelectable="false"
 		android:visibility="gone" />
 

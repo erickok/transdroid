@@ -52,7 +52,6 @@
 		android:title="@string/pref_changelog" />
 	
 	<Preference
-		android:key="system_about"
-		android:title="@string/pref_about" />
+		android:key="system_about" />
 
 </PreferenceScreen>
