@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2010-2013 Eric Kok et al.
+
+Transdroid is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Transdroid is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+<string name="action_add">Toevoegen</string>
+<string name="action_addall">Allen toevoegen</string>
+<string name="action_addfromfile">Met een bestand</string>
+<string name="action_addfromurl">Met een URL</string>
+<string name="action_scanbarcode">Barcode scanner</string>
+<string name="action_search">Zoeken</string>
+<string name="action_refresh">Verversen</string>
+<string name="action_rss">RSS</string>
+<string name="action_enableturtle">Turtle mode aanzetten</string>
+<string name="action_disableturtle">Turtle mode uitzetten</string>
+<string name="action_sort">Lijst sorteren</string>
+<string name="action_sort_alpha">Naam</string>
+<string name="action_sort_status">Status</string>
+<string name="action_sort_done">Datum gereed</string>
+<string name="action_sort_added">Datum toegevoegd</string>
+<string name="action_sort_upspeed">Uploadsnelheid</string>
+<string name="action_sort_ratio">Ratio</string>
+<string name="action_filter">Lijst filteren</string>
+<string name="action_settings">Instellingen</string>
+<string name="action_help">Help</string>
+<string name="action_start">Start</string>
+<string name="action_start_default">Normaal starten</string>
+<string name="action_start_forced">Geforceerd starten</string>
+<string name="action_stop">Stoppen</string>
+<string name="action_resume">Hervatten</string>
+<string name="action_pause">Pauzeren</string>
+<string name="action_remove">Verwijderen</string>
+<string name="action_remove_default">Verwijder torrent</string>
+<string name="action_remove_withdata">Verwijder en wis bestanden</string>
+<string name="action_setlabel">Label toewijzen</string>
+<string name="action_updatetrackers">Trackers updaten</string>
+<string name="action_changelocation">Opslaglocatie wijzigen</string>
+<string name="action_priority_off">Uit</string>
+<string name="action_priority_low">Laag</string>
+<string name="action_priority_normal">Normaal</string>
+<string name="action_priority_high">Hoog</string>
+<string name="action_remoteplay">Afspelen op server met VLC</string>
+<string name="action_download">Downloaden met (S)FTP</string>
+<string name="action_showdetails">Toon details</string>
+<string name="action_removesettings">Verwijder instellingen</string>
+<string name="action_visitwebsite">Bezoek transdroid.org</string>
+
+<string name="navigation_nosettings">Met %1$s kun je je torrents beheren die op je torrent client thuis of op je seedbox draaien. Het opzetten van een verbinding is soms wat lastig, maar er zijn stap voor stap-instructies beschikbaar en we beloven dat het de moeite waard is!</string>
+<string name="navigation_emptytorrents">Verbonden, maar geen torrents actief in het huidige filter</string>
+<string name="navigation_emptydetails">Selecteer een torrent op details te bekijken</string>
+<string name="navigation_servers">SERVERS</string>
+<string name="navigation_status">STATUS</string>
+<string name="navigation_labels">LABELS</string>
+<string name="navigation_status_showall">Alles</string>
+<string name="navigation_status_onlydown">Downloads</string>
+<string name="navigation_status_onlyup">Uploads</string>
+<string name="navigation_status_onlyactive">Actief</string>
+<string name="navigation_status_onlyinactive">Inactief</string>
+<plurals name="navigation_torrentsselected">
+<item quantity="one">%1$d torrent geselecteerd</item>
+<item quantity="other">%1$d torrents geselecteerd</item>
+</plurals>
+<plurals name="navigation_filesselected">
+<item quantity="one">%1$d bestand geselecteerd</item>
+<item quantity="other">%1$d bestanden geselecteerd</item>
+</plurals>
+<string name="navigation_selectall">Alles selecteren</string>
+<string name="navigation_invertselection">Selectie omdraaien</string>
+
+<string name="status_status">STATUS: %1$s</string>
+<string name="status_waiting">Zal worden gecontroleerd&#8230;</string>
+<string name="status_checking">Locale data verifiëren&#8230;</string>
+<string name="status_waitingtodl">Zal worden gedownload&#8230;</string>
+<string name="status_error">Fout&#8230;</string>
+<string name="status_size1">%1$s VAN %2$s (%3$s)</string>
+<string name="status_size2">%1$s, %2$s GEÜPLOAD</string>
+<string name="status_sincedate">SINDS %1$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_etalong">ETA %1$s</string>
+<string name="status_ofsize">VAN %1$s</string>
+<string name="status_unknowneta">ONBEKENDE ETA</string>
+<string name="status_ratio">RATIO %1$s</string>
+<string name="status_peers">%1$s VAN %2$s PEERS</string>
+<string name="status_downloading">Downloaden</string>
+<string name="status_seeding">Seeden</string>
+<string name="status_paused">Gepauzeerd</string>
+<string name="status_queued">In de wachtrij</string>
+<string name="status_stopped">Gestopt</string>
+<string name="status_unknown">Onbekende status</string>
+<string name="status_priority_off">Niet gedownload</string>
+<string name="status_priority_low">Lage prioriteit</string>
+<string name="status_priority_normal">Normale prioriteit</string>
+<string name="status_priority_high">Hoge prioriteit</string>
+<string name="status_trackers">TRACKERS</string>
+<string name="status_errors">FOUTEN</string>
+<string name="status_files">BESTANDEN</string>
+<string name="status_maxspeed">Maximale snelheden</string>
+<string name="status_maxspeed_down">NAX DOWNLOAD</string>
+<string name="status_maxspeed_up">MAX UPLOAD</string>
+<string name="status_maxspeed_unit">KB/S</string>
+<string name="status_maxspeed_reset">Resetten</string>
+<string name="status_update">Updaten</string>
+<plurals name="status_service_added">
+<item quantity="one">Nieuwe torrent toegevoegd</item>
+<item quantity="other">%1$s nieuwe torrents toegevoegd</item>
+</plurals>
+<plurals name="status_service_finished">
+<item quantity="one">Torrent is gereed</item>
+<item quantity="other">%1$s torrents zijn gereed</item>
+</plurals>
+<plurals name="status_service_addedfinished">
+<item quantity="one">%1$s torrent toegevoed, %2$s gereed</item>
+<item quantity="other">%1$s torrents toegevoed, %2$s gereed</item>
+</plurals>
+<string name="status_service_andothers">%1$s and anderen</string>
+
+<string name="labels_showall">Alle labels</string>
+<string name="labels_unlabeled">Ongelabeld</string>
+<string name="labels_newlabel">Nieuw label</string>
+<string name="labels_no_support">Labels worden niet ondersteund door je torrent client</string>
+<string name="status_label_pick">KIES EEN LABEL</string>
+<string name="status_label_new">NIEUW LABEL</string>
+<string name="status_label_remove">Verwijder label</string>
+<string name="status_label_hint">Bijv. films of linux</string>
+
+<string name="result_added">%1$s toegevoegd (nu verversen)</string>
+<string name="result_removed">%1$s verwijderd</string>
+<string name="result_removed_with_data">%1$s verwijderd en bestanden gewist</string>
+<string name="result_resumed">%1$s hervat (nu versersen)</string>
+<string name="result_stopped">%1$s gestopt (nu verversen)</string>
+<string name="result_started">%1$s gestart (nu verversen)</string>
+<string name="result_paused">%1$s gepauzeerd (nu verversen)</string>
+<string name="result_paused_all">Torrents gepauseerd (nu verversen)</string>
+<string name="result_resumed_all">Torrents hervat (nu verversen)</string>
+<string name="result_stopped_all">Torrents gestopt (nu verversen)</string>
+<string name="result_started_all">Torrents gestart (nu verversen)</string>
+<string name="result_trackersupdated">Trackers geüpdatet</string>
+<string name="result_labelset">Label \'%1$s\' toegewezen</string>
+<string name="result_labelremoved">Label verwijderd</string>
+<string name="result_locationset">Torrent verplaatst naar \'%1$s\'</string>
+<string name="result_priotitiesset">Bestandsprioriteiten geüpdatet</string>
+<string name="result_maxspeedsset">Maximale snelheden ingesteld</string>
+
+<string name="search_torrentsearch">Torrents zoeken</string>
+<string name="search_queryonsite">\'%1$s\' op %2$s</string>
+<string name="search_hint">Zoeken naar torrents</string>
+<string name="search_noresults">Geen resultaten voor je zoekopdracht</string>
+<string name="search_seeders">S: %1$s</string>
+<string name="search_leechers">L: %1$s</string>
+<string name="search_installsearch">Deze functie vereist een eenmalige installatie van de Torrent Search-module. Kies download om het installatiepakket (apk) te installeren van transdroid.org en herstart je zoekopdracht.</string>
+<string name="search_download">Module downloaden</string>
+<string name="search_openingdetails">Details voor %1$s worden geopend</string>
+<string name="search_barcodescannernotfound">De Barcode Scanner-app kan niet worden gevonden. Wil je deze installeren via de Play Store?</string>
+<string name="search_filemanagernotfound">Geen ondersteunde bestandsbeheer-app gevonden. WIl je IO File Manager installeren via de Play Store?</string>
+<plurals name="search_resutlsselected">
+<item quantity="one">%1$d resultaat geselecteerd</item>
+<item quantity="other">%1$d resutaten geselecteerd</item>
+</plurals>
+
+<string name="rss_feeds">RSS feeds</string>
+<string name="rss_nosettings">Je monitort nog geen RSS feeds. Torrent-specifieke RSS feeds bieden de laatste nieuwe torrents en je krijgt meldingen als er nieuwe torrents beschikbaar zijn.</string>
+<string name="rss_noselection">Selecteer een RSS feed om de nieuwe items te beijken</string>
+<string name="rss_empty">De RSS feed is niet beschikbaar of bevat geen items</string>
+<string name="rss_notloaded">Sorry, nog even wachten tot de RSS feed is geladen</string>
+<string name="rss_error">Sorry, deze RSS feed kon momenteel niet worden geladen</string>
+<plurals name="rss_itemsselected">
+<item quantity="one">%1$d item geselecteerd</item>
+<item quantity="other">%1$d items geselecteerd</item>
+</plurals>
+<plurals name="rss_service_new">
+<item quantity="one">Nieuwe RSS-feedtorrent beschikbaar</item>
+<item quantity="other">%1$s nieuwe RSS-feedtorrents</item>
+</plurals>
+<string name="rss_service_newfor">Nieuwe torrent voor %1$s</string>
+
+<string name="widget_loading">Laden&#8230;</string>
+<string name="widget_opentransdroid">Transdroid openen</string>
+<string name="widget_filter">SERVERSELECTIE</string>
+<string name="widget_lookfeel">UITERLIJK</string>
+<string name="widget_sortby">SORTEERVOLGORDE</string>
+<string name="widget_reversesortorder">Omgekeerde sorteervolgorde</string>
+<string name="widget_usedarktheme">Gebruik donker kleurenschema (geen preview)</string>
+<string name="widget_done">KLAAR</string>
+
+<string name="pref_servers">Servers</string>
+<string name="pref_addserver">Nieuwe server toevoegen</string>
+<string name="pref_searchsites">Zoeksites</string>
+<string name="pref_setsearchsite">Stel standaardsite in</string>
+<string name="pref_addwebsearch">Nieuwe webgebaseerde site toevoegen</string>
+<string name="pref_rssfeeds">RSS feeds</string>
+<string name="pref_addrssfeed">Nieuwe RSS feed</string>
+<string name="pref_others">Andere instellingen</string>
+
+<string name="pref_name">Naam</string>
+<string name="pref_name_optional">Optionele persoonlijke naam</string>
+<string name="pref_searchurl">URL van zoekpagina</string>
+<string name="pref_searchurl_info">%s zal worden vervangen door de zoekopdracht</string>
+<string name="pref_cookies">Cookies</string>
+<string name="pref_cookies_info">Optioneel; gebruik key1=value1;key2=value2 als formaat</string>
+<string name="pref_feedurl">URL van de feed</string>
+<string name="pref_reqauth">Inloggen vereist</string>
+<string name="pref_reqauth_info">Links zullen in de browser worden geopend op in te loggen</string>
+
+<string name="pref_servertype">Servertype</string>
+<string name="pref_address">IP of domeinnaam</string>
+<string name="pref_port">Poortnummer</string>
+<string name="pref_user">Gebruikersnaam</string>
+<string name="pref_pass">Wachtwoord</string>
+<string name="pref_extrapass">Deluge webwachtwoord</string>
+<string name="pref_advanced">Geavanceerde instellingen</string>
+<string name="pref_localaddress">Loale IP of hostnaam</string>
+<string name="pref_localaddress_info">Mits verbonden met het opgegeven lokale netwerk</string>
+<string name="pref_localnetwork">Lokale netwerk</string>
+<string name="pref_localnetwork_info">De SSID van het lokale netwerk</string>
+<string name="pref_folder">Relatieve directory</string>
+<string name="pref_folder_info">Normaal gesproken leeg</string>
+<string name="pref_scgifolder">SCGI mountpunt</string>
+<string name="pref_optional">Optionele instellingen</string>
+<string name="pref_alarmdone">Voltooidmelding</string>
+<string name="pref_alarmdone_info">Meld als een torrent is voltooid</string>
+<string name="pref_alarmnew">Nieuwetorrentmelding</string>
+<string name="pref_alarmnew_info">Meld al een torrent is toegevoegd</string>
+<string name="pref_os">Besturingssysteem</string>
+<string name="pref_downdir">Downloaddirectory</string>
+<string name="pref_downdir_info">Handmatig de absolute directory instellen voor commando\'s naar de server</string>
+<string name="pref_timeout">Verbindingstimeout</string>
+<string name="pref_timeout_info">Aantal seconden voordat een poging wordt afgebroken</string>
+<string name="pref_ftpurl">Basis-URL voor (S)FTP</string>
+<string name="pref_ftpurl_into">Bijvoorbeeld ftp://me@server/downloads/</string>
+<string name="pref_ftppass">(S)FTP-wachtwoord</string>
+<string name="pref_sslenable">Gebruik SSL</string>
+<string name="pref_sslenable_info">Via https verbinden</string>
+<string name="pref_sslkey">Handmatige SSL-vingerafdruk (SHA-1)</string>
+<string name="pref_sslkey_info">Alleen verbindingen met dit certificaat toestaan</string>
+<string name="pref_sslacceptall">Alle SSL-certificaten toestaan</string>
+<string name="pref_sslacceptall_info">Verbindingen met alle SSL-vingerafdrukken toestaan</string>
+
+<string name="pref_background">Meldingen op achtergrond</string>
+<string name="pref_notifications">Meldingen aanzetten</string>
+<string name="pref_notifications_info">Meldingen op de achtergrond toestaan</string>
+<string name="pref_notifyinterval">Interval</string>
+<string name="pref_notifyinterval_info">Hoe vaak de server gecontroleerd moet worden</string>
+<string name="pref_notifysound">Geluid</string>
+<string name="pref_notifyvibrate">Trillen</string>
+<string name="pref_notifyled">LED-kleur</string>
+<string name="pref_notifyled_info">Mits ondersteund door je apparaat</string>
+<string name="pref_adw">ADW-meldingen ondersteunen</string>
+<string name="pref_adw_info">Toon het aantal torrents in ADW Launcher</string>
+
+<string name="pref_system">Systeem</string>
+<string name="pref_checkupdates">Controleren op updates</string>
+<string name="pref_checkupdates_info">Controleer transdroid.org voor de meest recente versie</string>
+<string name="pref_usedarktheme">Gebruik donker kleurenschema</string>
+<string name="pref_usedarktheme_info">Vereist een herstart om toe te passen</string>
+<string name="pref_import">Importeer instellingen</string>
+<string name="pref_import_dialog">%1$s zal proberen server-, zoeksite-, RSS- en systeeminstellingen te laden uit: %2$s</string>
+<string name="pref_import_success">Instellingen succesvol geïmporteerd</string>
+<string name="pref_export">Exporteer instellingen</string>
+<string name="pref_export_dialog">%1$s zal server- (inclusief wachtwoorden), zoeksite-, RSS- en systeeminstellingen exporten naar het JSON-tekstbestand: %2$s</string>
+<string name="pref_export_success">Instellingen succesvol geëxporteerd</string>
+<string name="pref_sendlog">Foutrapport verzenden</string>
+<string name="pref_sendlog_info">Hulp vragen of een bug melden</string>
+<string name="pref_installhelp">Bekijk installatieinstructies</string>
+<string name="pref_installhelp_info">Beschikbaar op transdroid.org/download</string>
+<string name="pref_changelog">Recente wijzigingen</string>
+<string name="pref_about">Over %1$s</string>
+<string-array name="pref_notifyinterval_types">
+<item>1 minuut</item>
+<item>10 minuten</item>
+<item>30 minuten</item>
+<item>1 uur</item>
+<item>3 uur</item>
+<item>12 uur</item>
+<item>1 dag</item>
+</string-array>
+
+<string name="error_httperror">Verbindingsfout; controleer je internetverbinding</string>
+<string name="error_jsonrequesterror">Interne fout bij het opzetten van de verbinding</string>
+<string name="error_jsonresponseerror">Fout bij het verwerken van de serverreactie (controleer je instellingen)</string>
+<string name="error_daemonnotconnected">De webinterface is niet verbonden met een actieve daemon</string>
+<string name="error_401">Toegang geweiged (controleer je instellingen)</string>
+<string name="error_torrentfile">Kan het .torrent-bestand niet lezen</string>
+<string name="error_parsingrss">Fout bij het verwerken van de RSS-feed</string>
+<string name="error_invalid_url_form">Dit is geen geldige URL</string>
+<string name="error_invalid_search_url">De URL van je zoeksite is ongeldig:</string>
+<string name="error_invalid_ip_or_hostname">Geen geldige IP of domeinnaam ingevoerd</string>
+<string name="error_invalid_port_number">Het poortnummer is altijd numeriek</string>
+<string name="error_invalid_directory">Een directory eindigd altijd op een / of \</string>
+<string name="error_invalid_timeout">De timeout kan niet leeg zijn en is een positief getal</string>
+<string name="error_no_url_enclosure">Het RSS-feeditem bevat geen URL-enclosure of -link naar een .torrent-file</string>
+<string name="error_no_link">Het RSS-feeditem bevat geen link om te bezoeken</string>
+<string name="error_norssfeed">De URL is geen (geldige) RSS-feed</string>
+<string name="error_media_not_available">De SD-kaart is niet beschikbaar</string>
+<string name="error_no_valid_settings_file">Het bestand lijkt geen %1$s-instellingen te bevatten</string>
+<string name="error_file_not_found">Het bestand met instellingen kon niet worden gevonden</string>
+<string name="error_cant_write_settings_file">Kan niet naar het bestand met instellingen schrijven</string>
+<string name="error_notanumber">Kies een positief getal</string>
+<string name="error_notalabel">Geen een geldige labelnaam op of kies uit de lijst</string>
+<string name="error_stillloadingdetails">Even wachten tot de torrentdetails zijn geladen</string>
+<string name="error_noftpapp">Geen app gevonden die %1$s kan downloaden</string>
+
+<string name="update_app_newversion">Nieuwe versie van Transdroid beschikbaar</string>
+<string name="update_search_newversion">Nieuwe versie van de Transdroid zoekmodule beschikbaar</string>
+<string name="update_updateto">Je kunt nu updaten naar %1$s</string>
+
+<string name="system_librarieslabel">Enkele libraries die in het project zijn gebruikt:</string>
+<string name="system_description">Beheer je torrents vanaf je Androidapparaat</string>
+
+</resources>
