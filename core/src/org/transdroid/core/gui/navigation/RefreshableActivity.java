@@ -16,6 +16,8 @@
  */
 package org.transdroid.core.gui.navigation;
 
+import android.view.View;
+
 /**
  * Interface to be implemented by any activity that allows its content to be refreshed; fragments can ask for
  * user-initiated refreshes.
@@ -24,5 +26,7 @@ package org.transdroid.core.gui.navigation;
 public interface RefreshableActivity {
 
 	public void refreshScreen();
+
+	public void addRefreshableView(View view);
 
 }

@@ -119,6 +119,11 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));
 		detailsList.setMultiChoiceModeListener(onDetailsSelected);
 		detailsList.setFastScrollEnabled(true);
+		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
+			((RefreshableActivity) getActivity()).addRefreshableView(detailsList);
+		}
+
+		// Restore the fragment state (on orientation changes et al.)
 		if (torrent != null)
 			updateTorrent(torrent);
 		if (torrentDetails != null)

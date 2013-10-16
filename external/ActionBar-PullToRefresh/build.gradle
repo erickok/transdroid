@@ -1,0 +1,16 @@
+apply plugin: 'android-library'
+
+android {
+    compileSdkVersion 18
+    buildToolsVersion '17.0.0'
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+        }
+    }
+}
+
+apply from: '../maven_push.gradle'

@@ -60,6 +60,9 @@ Some code/libraries/resources are used in the project:
 *  [AndroidAnnotations](http://androidannotations.org/)  
     Pierre-Yves Ricau (eBusinessInformations) et al.  
     Apache License, Version 2.0
+*  [ActionBar-PullToRefresh](https://github.com/chrisbanes/ActionBar-PullToRefresh)  
+    Chris Banes  
+    Apache License, Version 2.0
 *  [Crouton](https://github.com/keyboardsurfer/Crouton)  
     Code: Benjamin Weiss (Neofonie Mobile Gmbh) et al.  
     Idea: Cyril Mottier  
