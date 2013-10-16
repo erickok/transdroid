@@ -69,7 +69,7 @@ public class BootReceiver extends BroadcastReceiver {
 	public static void startAppUpdatesService(Context context) {
 		SystemSettings systemSettings = SystemSettings_.getInstance_(context);
 		AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		if (systemSettings.checkForUpdates() && piAppUpdates == null) {
+		if (SystemSettings.enableUpdateChecker(context) && systemSettings.checkForUpdates() && piAppUpdates == null) {
 
 			Log.d(context, "Boot signal received, starting app update checker service");
 			// Schedule a daily, with the first being (somewhat) in 1 second from now

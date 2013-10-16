@@ -16,9 +16,12 @@
  */
 package org.transdroid.core.app.settings;
 
+import java.util.Date;
+
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.EBean.Scope;
+import org.transdroid.core.service.AppUpdateService;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -34,7 +37,7 @@ public class SystemSettings {
 	@RootContext
 	protected Context context;
 	private SharedPreferences prefs;
-	
+
 	protected SystemSettings(Context context) {
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
@@ -46,5 +49,31 @@ public class SystemSettings {
 	public boolean useDarkTheme() {
 		return prefs.getBoolean("system_usedarktheme", false);
 	}
-	
+
+	/**
+	 * Returns the date when we last checked transdroid.org for the latest app version.
+	 * @return The date/time when the {@link AppUpdateService} checked on the server for updates
+	 */
+	public Date getLastCheckedForAppUpdates() {
+		long lastChecked = prefs.getLong("system_lastappupdatecheck", -1L);
+		return lastChecked == -1 ? null : new Date(lastChecked);
+	}
+
+	/**
+	 * Stores the date at which was last successfully, fully checked for new updates to the app.
+	 * @param lastChecked The date/time at which the {@link AppUpdateService} last checked the server for updates
+	 */
+	public void setLastCheckedForAppUpdates(Date lastChecked) {
+		prefs.edit().putLong("system_lastappupdatecheck", lastChecked == null ? -1L : lastChecked.getTime()).commit();
+	}
+
+	/**
+	 * Whether the custom app update checker should be used to check for new app and search module versions.
+	 * @return True if it should be checked against transdroid.org if there are app updates (as opposed to using the
+	 *         Play Store for updates), false otherwise
+	 */
+	public static boolean enableUpdateChecker(Context context) {
+		return !context.getPackageName().equals("org.transdroid.lite");
+	}
+
 }

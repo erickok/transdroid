@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.SettingsPersistence;
+import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.gui.log.ErrorLogSender;
 import org.transdroid.core.gui.navigation.DialogHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper;
@@ -77,12 +78,17 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		addPreferencesFromResource(R.xml.pref_system);
 
 		// Handle outgoing links and preference changes
-		findPreference("system_checkupdates").setOnPreferenceClickListener(onCheckUpdatesClick);
+		if (SystemSettings.enableUpdateChecker(this)) {
+			findPreference("system_checkupdates").setOnPreferenceClickListener(onCheckUpdatesClick);
+		} else {
+			getPreferenceScreen().removePreference(findPreference("system_checkupdates"));
+		}
 		findPreference("system_sendlog").setOnPreferenceClickListener(onSendLogClick);
 		findPreference("system_installhelp").setOnPreferenceClickListener(onInstallHelpClick);
 		findPreference("system_changelog").setOnPreferenceClickListener(onChangeLogClick);
 		findPreference("system_importsettings").setOnPreferenceClickListener(onImportSettingsClick);
 		findPreference("system_exportsettings").setOnPreferenceClickListener(onExportSettingsClick);
+		findPreference("system_about").setTitle(getString(R.string.pref_about, getString(R.string.app_name)));
 		findPreference("system_about").setOnPreferenceClickListener(onAboutClick);
 	}
 
@@ -165,7 +171,7 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 			// @formatter:off
 			return new AlertDialog.Builder(this)
 					.setMessage(
-							getString(R.string.pref_import_dialog, SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
+							getString(R.string.pref_import_dialog, getString(R.string.app_name), SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
 					.setPositiveButton(android.R.string.ok, importSettings)
 					.setNegativeButton(android.R.string.cancel, null).create();
 			// @formatter:on
@@ -173,7 +179,7 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 			// @formatter:off
 			return new AlertDialog.Builder(this)
 					.setMessage(
-							getString(R.string.pref_export_dialog, SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
+							getString(R.string.pref_export_dialog, getString(R.string.app_name), SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
 					.setPositiveButton(android.R.string.ok, exportSettings)
 					.setNegativeButton(android.R.string.cancel, null).create();
 			// @formatter:on
@@ -193,7 +199,8 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 				Crouton.showText(SystemSettingsActivity.this, R.string.error_file_not_found,
 						NavigationHelper.CROUTON_ERROR_STYLE);
 			} catch (JSONException e) {
-				Crouton.showText(SystemSettingsActivity.this, R.string.error_no_valid_settings_file,
+				Crouton.showText(SystemSettingsActivity.this,
+						getString(R.string.error_no_valid_settings_file, getString(R.string.app_name)),
 						NavigationHelper.CROUTON_ERROR_STYLE);
 			}
 		}

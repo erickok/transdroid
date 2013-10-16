@@ -25,8 +25,8 @@
 	<string name="action_search">Search</string>
 	<string name="action_refresh">Refresh</string>
 	<string name="action_rss">RSS</string>
-	<string name="action_enableturtle">Enable turle mode</string>
-	<string name="action_disableturtle">Disable turle mode</string>
+	<string name="action_enableturtle">Enable turtle mode</string>
+	<string name="action_disableturtle">Disable turtle mode</string>
 	<string name="action_sort">Sort list</string>
 	<string name="action_sort_alpha">Name</string>
 	<string name="action_sort_status">Status</string>
@@ -59,7 +59,7 @@
 	<string name="action_removesettings">Remove settings</string>
 	<string name="action_visitwebsite">Visit transdroid.org</string>
 	
-	<string name="navigation_nosettings">Transdroid allows you to monitor and manage the torrent client you run at home or on your seedbox. Setting things up can be a bit tricky, but we offer step-by-step guides and promise it\'ll be worth it!</string>
+	<string name="navigation_nosettings">%1$s allows you to monitor and manage the torrent client you run at home or on your seedbox. Setting things up can be a bit tricky, but we offer step-by-step guides and promise it\'ll be worth it!</string>
 	<string name="navigation_emptytorrents">Connected, but no torrent are active within the current filter</string>
 	<string name="navigation_emptydetails">Select a torrent to view its details</string>
 	<string name="navigation_servers">SERVERS</string>
@@ -270,17 +270,17 @@
 	<string name="pref_usedarktheme">Use dark UI theme</string>
 	<string name="pref_usedarktheme_info">Requires a restart to take effect</string>
 	<string name="pref_import">Import settings</string>
-	<string name="pref_import_dialog">Transdroid will try to import server, web search, RSS and system settings from: %1$s</string>
+	<string name="pref_import_dialog">%1$s will try to import server, web search, RSS and system settings from: %2$s</string>
 	<string name="pref_import_success">Settings successfully imported</string>
 	<string name="pref_export">Export settings</string>
-	<string name="pref_export_dialog">Transdroid will export server (including passwords), web search, RSS and system settings to the following plain text JSON file: %1$s</string>
+	<string name="pref_export_dialog">%1$s will export server (including passwords), web search, RSS and system settings to the following plain text JSON file: %2$s</string>
 	<string name="pref_export_success">Settings successfully exported</string>
 	<string name="pref_sendlog">Send error log</string>
 	<string name="pref_sendlog_info">Get support or report a bug</string>
 	<string name="pref_installhelp">View install guides</string>
 	<string name="pref_installhelp_info">Available at transdroid.org/download</string>
 	<string name="pref_changelog">Recent changes</string>
-	<string name="pref_about">About Transdroid</string>
+	<string name="pref_about">About %1$s</string>
     <string-array name="pref_daemon_types" translatable="false">
         <item>BitComet</item>
         <item>Bitflu 1.2+</item>
@@ -359,7 +359,7 @@
 	<string name="error_no_link">The RSS feed item does not provide a link to browse to</string>
 	<string name="error_norssfeed">URL is not a (valid) RSS feed</string>
 	<string name="error_media_not_available">SD card not available to read/write</string>
-	<string name="error_no_valid_settings_file">File does not seem to contain Transdroid settings</string>
+	<string name="error_no_valid_settings_file">File does not seem to contain %1$s settings</string>
 	<string name="error_file_not_found">The settings file could not be found</string>
 	<string name="error_cant_write_settings_file">Can\'t write to the settings file</string>
 	<string name="error_notanumber">Please enter a positive number</string>
@@ -371,11 +371,10 @@
 	<string name="update_search_newversion">New Transdroid search module available</string>
 	<string name="update_updateto">You can now update to %1$s</string>
 	
-	<string name="system_name" translatable="false">Transdroid</string>
 	<string name="system_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>
 	<string name="system_license" translatable="false">Published under GNU General Public License v3</string>
 	<string name="system_librarieslabel">Some code/libraries are used in the project:</string>
-	<string name="system_libraries" translatable="false">ActionBarSherlock\n \u00A0 http://actionbarsherlock.com/\n \u00A0 Jake Wharton  \n \u00A0 Apache License, Version 2.0\nAndroidAnnotations\n \u00A0 http://androidannotations.org/\n \u00A0 Pierre-Yves Ricau (eBusinessInformations) et al.  \n \u00A0 Apache License, Version 2.0\nCrouton\n \u00A0 https://github.com/keyboardsurfer/Crouton\n \u00A0 Code: Benjamin Weiss (Neofonie Mobile Gmbh) et al.  \n \u00A0 Idea: Cyril Mottier  \n \u00A0 Apache License, Version 2.0\nBase16Encoder\n \u00A0 http://openjpa.apache.org/\n \u00A0 Marc Prud\'hommeaux  \n \u00A0 Apache OpenJPA\n MultipartEntity  \n \u00A0 Apache Software Foundation  \n \u00A0 Apache License, Version 2.0\nRssParser (learning-android)\n \u00A0 http://github.com/digitalspaghetti/learning-android\n \u00A0 Tane Piper  \n \u00A0 Public Domain\nBase64\n \u00A0 http://iharder.net/base64\n \u00A0 Robert Harder  \n \u00A0 Public Domain\nandroid-xmlrpc\n \u00A0 http://code.google.com/p/android-xmlrpc/\n \u00A0 pskink et al.  \n \u00A0 Apache License, Version 2.0\nandroid-ColorPickerPreference\n \u00A0 https://github.com/attenzione/android-ColorPickerPreference\n \u00A0 Daniel Nilsson and Sergey Margaritov  \n \u00A0 Apache License, Version 2.0\nCheckableRelativeLayout\n \u00A0 http://www.marvinlabs.com/2010/10/custom-listview-ability-check-items/\n \u00A0 Cédric Caron (MarvinLabs)\n \u00A0 Public Domain\nFunnel icon\n \u00A0 http://thenounproject.com/noun/funnel/#icon-No5608\n \u00A0 Naomi Atkinson from The Noun Project\n \u00A0 Creative Commons Attribution 3.0</string>
+	<string name="system_libraries" translatable="false">ActionBarSherlock\n \u00A0 http://actionbarsherlock.com/\n \u00A0 Jake Wharton  \n \u00A0 Apache License, Version 2.0\nAndroidAnnotations\n \u00A0 http://androidannotations.org/\n \u00A0 Pierre-Yves Ricau (eBusinessInformations) et al.  \n \u00A0 Apache License, Version 2.0\nActionBar-PullToRefresh\n \u00A0 https://github.com/chrisbanes/ActionBar-PullToRefresh\n \u00A0 Chris Banes  \n \u00A0 Apache License, Version 2.0\nCrouton\n \u00A0 https://github.com/keyboardsurfer/Crouton\n \u00A0 Code: Benjamin Weiss (Neofonie Mobile Gmbh) et al.  \n \u00A0 Idea: Cyril Mottier  \n \u00A0 Apache License, Version 2.0\nBase16Encoder\n \u00A0 http://openjpa.apache.org/\n \u00A0 Marc Prud\'hommeaux  \n \u00A0 Apache OpenJPA\n MultipartEntity  \n \u00A0 Apache Software Foundation  \n \u00A0 Apache License, Version 2.0\nRssParser (learning-android)\n \u00A0 http://github.com/digitalspaghetti/learning-android\n \u00A0 Tane Piper  \n \u00A0 Public Domain\nBase64\n \u00A0 http://iharder.net/base64\n \u00A0 Robert Harder  \n \u00A0 Public Domain\nandroid-xmlrpc\n \u00A0 http://code.google.com/p/android-xmlrpc/\n \u00A0 pskink et al.  \n \u00A0 Apache License, Version 2.0\nandroid-ColorPickerPreference\n \u00A0 https://github.com/attenzione/android-ColorPickerPreference\n \u00A0 Daniel Nilsson and Sergey Margaritov  \n \u00A0 Apache License, Version 2.0\nCheckableRelativeLayout\n \u00A0 http://www.marvinlabs.com/2010/10/custom-listview-ability-check-items/\n \u00A0 Cédric Caron (MarvinLabs)\n \u00A0 Public Domain\nFunnel icon\n \u00A0 http://thenounproject.com/noun/funnel/#icon-No5608\n \u00A0 Naomi Atkinson from The Noun Project\n \u00A0 Creative Commons Attribution 3.0</string>
 	<string name="system_description">Manage your torrents from your Android device</string>
 
 </resources>

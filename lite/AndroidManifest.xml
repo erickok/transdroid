@@ -17,8 +17,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.transdroid.lite"
-	android:versionCode="6"
-	android:versionName="2.0" >
+	android:versionCode="7"
+	android:versionName="2.0.1" >
 
 	<uses-sdk
 		android:minSdkVersion="7"
@@ -46,7 +46,7 @@
 		android:allowBackup="true"
 		android:hardwareAccelerated="true"
 		android:icon="@drawable/ic_launcher"
-		android:label="@string/system_name"
+		android:label="@string/app_name"
 		android:theme="@style/Theme.Sherlock" >
 
 		<!-- Main activities -->
@@ -61,9 +61,6 @@
 				<action android:name="android.intent.action.MAIN" />
 
 				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-			<intent-filter>
-				<action android:name="android.intent.action.SEARCH" />
 			</intent-filter>
 			<intent-filter>
 				<action android:name="org.transdroid.ADD_MULTIPLE" />
@@ -181,15 +178,12 @@
 		<!-- Settings screens -->
 		<activity android:name="org.transdroid.core.gui.settings.MainSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.settings.ServerSettingsActivity_" />
-		<activity android:name="org.transdroid.core.gui.settings.WebsearchSettingsActivity_" />
-		<activity android:name="org.transdroid.core.gui.settings.RssfeedSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.settings.NotificationSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.settings.SystemSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.navigation.DialogHelper_" />
 
 		<!-- Background service -->
 		<service android:name="org.transdroid.core.service.ServerCheckerService_" />
-		<service android:name="org.transdroid.core.service.RssCheckerService_" />
 		<service android:name="org.transdroid.core.service.AppUpdateService_" />
 
 		<receiver android:name="org.transdroid.core.service.AlarmReceiver_" />

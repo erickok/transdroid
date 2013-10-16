@@ -114,6 +114,11 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 		torrentsList.setFastScrollEnabled(true);
 		if (torrents != null)
 			updateTorrents(torrents, currentLabels);
+		// Allow pulls on the list view to refresh the torrents
+		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
+			((RefreshableActivity) getActivity()).addRefreshableView(torrentsList);
+		}
+		nosettingsText.setText(getString(R.string.navigation_nosettings, getString(R.string.app_name)));
 
 	}
 

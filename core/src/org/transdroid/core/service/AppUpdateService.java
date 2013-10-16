@@ -18,6 +18,8 @@ package org.transdroid.core.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import org.androidannotations.annotations.Bean;
@@ -74,6 +76,15 @@ public class AppUpdateService extends IntentService {
 			return;
 		}
 
+		Date lastChecked = systemSettings.getLastCheckedForAppUpdates();
+		Calendar lastDay = Calendar.getInstance();
+		lastDay.add(Calendar.DAY_OF_MONTH, -1);
+		if (lastChecked != null && lastChecked.after(lastDay.getTime())) {
+			Log.d(this, "Ship the update service, as we already checked the last 24 hours (or to be exact at "
+					+ lastChecked.toString() + ").");
+			return;
+		}
+
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		Random random = new Random();
 
@@ -88,6 +99,8 @@ public class AppUpdateService extends IntentService {
 			// New version of the app?
 			try {
 				PackageInfo appPackage = getPackageManager().getPackageInfo(getPackageName(), 0);
+				Log.d(this, "Local Transdroid is at " + appPackage.versionCode + " and the reported latest version is "
+						+ appVersion);
 				if (appPackage.versionCode < appVersion) {
 					// New version available! Notify the user.
 					newNotification(getString(R.string.update_app_newversion),
@@ -102,6 +115,8 @@ public class AppUpdateService extends IntentService {
 			// New version of the search module?
 			try {
 				PackageInfo searchPackage = getPackageManager().getPackageInfo("org.transdroid.search", 0);
+				Log.d(this, "Local Transdroid Seach is at " + searchPackage.versionCode
+						+ " and the reported latest version is " + searchVersion);
 				if (searchPackage.versionCode < searchVersion) {
 					// New version available! Notify the user.
 					newNotification(getString(R.string.update_search_newversion),
@@ -113,6 +128,10 @@ public class AppUpdateService extends IntentService {
 				// The search module isn't installed yet at all; ignore and wait for the user to manually
 				// install it (when the first search is initiated)
 			}
+
+			// Save that we successfully checked for app updates (and notified the user)
+			// This prevents checking again for 1 day
+			systemSettings.setLastCheckedForAppUpdates(new Date());
 
 		} catch (Exception e) {
 			// Cannot check right now for some reason; log and ignore

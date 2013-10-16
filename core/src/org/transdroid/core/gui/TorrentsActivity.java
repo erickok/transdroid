@@ -46,6 +46,7 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.lists.LocalTorrent;
+import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.*;
 import org.transdroid.core.gui.navigation.*;
@@ -91,6 +92,10 @@ import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
 import org.transdroid.daemon.util.DLog;
 import org.transdroid.daemon.util.HttpHelper;
+
+import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.Options;
 
 import android.annotation.TargetApi;
 import android.app.SearchManager;
@@ -138,6 +143,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@SystemService
 	protected SearchManager searchManager;
 	private MenuItem searchMenu = null;
+	private PullToRefreshAttacher pullToRefreshAttacher = null;
 
 	// Settings
 	@Bean
@@ -571,6 +577,28 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			startSearch(query, false, null, false);
 	}
 
+	/**
+	 * Attaches some view (perhaps contained in a fragment) to this activity's pull to refresh support
+	 * @param view The view to attach
+	 */
+	@Override
+	public void addRefreshableView(View view) {
+		if (pullToRefreshAttacher == null) {
+			// Still need to initialise the PullToRefreshAttacher
+			Options options = new PullToRefreshAttacher.Options();
+			options.headerTransformer = new NoProgressHeaderTransformer();
+			pullToRefreshAttacher = PullToRefreshAttacher.get(this, options);
+		}
+		pullToRefreshAttacher.addRefreshableView(view, new OnRefreshListener() {
+			@Override
+			public void onRefreshStarted(View view) {
+				// Just refresh the full screen, now that the user has pulled to refresh
+				pullToRefreshAttacher.setRefreshComplete();
+				refreshScreen();
+			}
+		});
+	}
+	
 	@OptionsItem(resName = "action_refresh")
 	public void refreshScreen() {
 		fragmentTorrents.updateIsLoading(true);

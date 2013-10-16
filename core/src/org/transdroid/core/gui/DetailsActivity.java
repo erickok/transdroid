@@ -32,6 +32,7 @@ import org.androidannotations.annotations.UiThread;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.lists.LocalTorrent;
+import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper;
@@ -62,10 +63,15 @@ import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
 
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.Options;
+
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -97,6 +103,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	@Bean
 	protected ApplicationSettings applicationSettings;
 	private IDaemonAdapter currentConnection = null;
+	private PullToRefreshAttacher pullToRefreshAttacher = null;
 
 	// Details view components
 	@FragmentById(resName = "torrent_details")
@@ -146,6 +153,28 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	@OptionsItem(android.R.id.home)
 	protected void navigateUp() {
 		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+	}
+
+	/**
+	 * Attaches some view (perhaps contained in a fragment) to this activity's pull to refresh support
+	 * @param view The view to attach
+	 */
+	@Override
+	public void addRefreshableView(View view) {
+		if (pullToRefreshAttacher == null) {
+			// Still need to initialise the PullToRefreshAttacher
+			Options options = new PullToRefreshAttacher.Options();
+			options.headerTransformer = new NoProgressHeaderTransformer();
+			pullToRefreshAttacher = PullToRefreshAttacher.get(this, options);
+		}
+		pullToRefreshAttacher.addRefreshableView(view, new OnRefreshListener() {
+			@Override
+			public void onRefreshStarted(View view) {
+				// Just refresh the full screen, now that the user has pulled to refresh
+				pullToRefreshAttacher.setRefreshComplete();
+				refreshScreen();
+			}
+		});
 	}
 
 	@OptionsItem(resName = "action_refresh")
@@ -330,7 +359,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
 		Log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
-		fragmentDetails.updateIsLoading(false, isCritical? error: null);
+		fragmentDetails.updateIsLoading(false, isCritical ? error : null);
 		Crouton.showText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
 				NavigationHelper.CROUTON_ERROR_STYLE);
 	}

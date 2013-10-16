@@ -17,6 +17,11 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.0.1\n
+- Support for pull to refresh\n
+- First Google Play release of the lite version as Transdrone\n
+- First release as auto-update (now checked only once a day)\n
+\n
 Transdroid 2.0.0\n
 - Scrollable home screen widget (Android 3+)\n
 - Allow changing of storage location (Deluge and Transmission)\n

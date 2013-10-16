@@ -173,12 +173,12 @@ public class NavigationHelper {
 	 * @return A best-guess, reasonably long name for the linked torrent
 	 */
 	public static String extractNameFromUri(Uri rawTorrentUri) {
-		
+
 		if (rawTorrentUri.getScheme() == null) {
 			// Probably an incorrect URI; just return the whole thing
 			return rawTorrentUri.toString();
 		}
-		
+
 		if (rawTorrentUri.getScheme().equals("magnet")) {
 			// Magnet links might have a dn (display name) parameter
 			String dn = getQueryParameter(rawTorrentUri, "dn");
@@ -198,7 +198,7 @@ public class NavigationHelper {
 				return path;
 			}
 		}
-		
+
 		// No idea what to do with this; return as is
 		return rawTorrentUri.toString();
 	}
@@ -208,9 +208,9 @@ public class NavigationHelper {
 		if (start >= 0) {
 			int begin = start + (parameter + "=").length();
 			int end = uri.toString().indexOf("&", begin);
-			return uri.toString().substring(begin, end >= 0? end: uri.toString().length());
+			return uri.toString().substring(begin, end >= 0 ? end : uri.toString().length());
 		}
 		return null;
 	}
-	
+
 }
