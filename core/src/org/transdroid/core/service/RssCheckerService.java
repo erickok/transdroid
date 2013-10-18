@@ -62,7 +62,7 @@ public class RssCheckerService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		if (!connectivityHelper.shouldPerformBackgroundActions() || !notificationSettings.isEnabled()) {
+		if (!connectivityHelper.shouldPerformBackgroundActions() || !notificationSettings.isEnabledForRss()) {
 			Log.d(this,
 					"Skip the RSS checker service, as background data is disabled, the service is disabled or we are not connected.");
 			return;

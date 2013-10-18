@@ -253,10 +253,11 @@
 	<string name="pref_sslacceptall_info">Allow all connections from any thumbprint</string>
 	
 	<string name="pref_background">Background notifications</string>
-	<string name="pref_notifications">Enable notifications</string>
+	<string name="pref_notifications_rss">Enable RSS notifications</string>
+	<string name="pref_notifications_torrent">Enable torrent notifications</string>
 	<string name="pref_notifications_info">Enables the background service</string>
 	<string name="pref_notifyinterval">Interval</string>
-	<string name="pref_notifyinterval_info">How often to check the server</string>
+	<string name="pref_notifyinterval_info">How often to check RSS or torrents</string>
 	<string name="pref_notifysound">Sound</string>
 	<string name="pref_notifyvibrate">Vibrate</string>
 	<string name="pref_notifyled">LED colour</string>

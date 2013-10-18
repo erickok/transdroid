@@ -46,9 +46,11 @@ public class NotificationSettingsActivity extends SherlockPreferenceActivity imp
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		// Just load the notification-related preferences from XML
+		// Load the notification-related preferences from XML and update availability thereof
 		addPreferencesFromResource(R.xml.pref_notifications);
-
+		boolean disabled = !notificationSettings.isEnabledForRss() && !notificationSettings.isEnabledForTorrents();
+		updatePrefsEnabled(disabled);
+		
 	}
 
 	@SuppressWarnings("deprecation")
@@ -75,13 +77,26 @@ public class NotificationSettingsActivity extends SherlockPreferenceActivity imp
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-		if (!notificationSettings.isEnabled()) {
-			// Disabled background notifications; disable the alarms that start the service
+		boolean disabled = !notificationSettings.isEnabledForRss() && !notificationSettings.isEnabledForTorrents();
+		updatePrefsEnabled(disabled);
+		
+		if (disabled ) {
+			// Disabled all background notifications; disable the alarms that start the service
 			BootReceiver.cancelBackgroundServices(getApplicationContext());
 		}
 
 		// (Re-)enable the alarms for the background services
+		// Note that this still respects the user preference
 		BootReceiver.startBackgroundServices(getApplicationContext(), true);
+	}
+
+	@SuppressWarnings("deprecation")
+	private void updatePrefsEnabled(boolean disabled) {
+		findPreference("notifications_interval").setEnabled(!disabled);
+		findPreference("notifications_sound").setEnabled(!disabled);
+		findPreference("notifications_vibrate").setEnabled(!disabled);
+		findPreference("notifications_ledcolour").setEnabled(!disabled);
+		findPreference("notifications_adwnotify").setEnabled(!disabled);
 	}
 
 }

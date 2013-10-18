@@ -50,7 +50,10 @@ public class BootReceiver extends BroadcastReceiver {
 	public static void startBackgroundServices(Context context, boolean forceReload) {
 		NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
 		AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		if (notificationSettings.isEnabled() && (forceReload || (piServerChecker == null && piRssChecker == null))) {
+		// Start the alarms if one of the notifications are enabled and we do not yet have the alarms running 
+		// (or should reload it forcefully)
+		if ((notificationSettings.isEnabledForRss() || notificationSettings.isEnabledForTorrents()) && 
+				(forceReload || (piServerChecker == null && piRssChecker == null))) {
 
 			Log.d(context, "Boot signal received, starting server and rss checker background services");
 			// Schedule repeating alarms, with the first being (somewhat) in 1 second from now

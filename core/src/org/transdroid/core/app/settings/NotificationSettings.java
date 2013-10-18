@@ -43,10 +43,18 @@ public class NotificationSettings {
 	}
 
 	/**
-	 * Whether the background service is enabled, i.e. whether the user want to receive notifications
+	 * Whether the background service is enabled and the user wants to receive RSS-related notifications
+	 * @return True if the server should be checked for RSS feed updates
+	 */
+	public boolean isEnabledForRss() {
+		return prefs.getBoolean("notifications_enabledrss", true);
+	}
+
+	/**
+	 * Whether the background service is enabled and the user wants to receive torrent-related notifications
 	 * @return True if the server should be checked for torrent status updates
 	 */
-	public boolean isEnabled() {
+	public boolean isEnabledForTorrents() {
 		return prefs.getBoolean("notifications_enabled", true);
 	}
 
