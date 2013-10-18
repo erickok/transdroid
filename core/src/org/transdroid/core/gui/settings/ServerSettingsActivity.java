@@ -67,9 +67,11 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		downloadDir = initTextPreference("server_downloaddir");
 		initTextPreference("server_ftpurl");
 		initTextPreference("server_ftppass");
+		initBooleanPreference("server_disableauth");
 		initBooleanPreference("server_sslenabled");
 		initBooleanPreference("server_ssltrustall", false, "server_sslenabled");
 		initTextPreference("server_ssltrustkey", null, "server_sslenabled");
+		onPreferencesChanged();
 
 	}
 

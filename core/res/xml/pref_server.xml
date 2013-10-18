@@ -59,6 +59,11 @@
 			android:title="@string/pref_localnetwork"
 			android:summary="@string/pref_localnetwork_info"
 			android:inputType="textNoSuggestions" />
+		<CheckBoxPreference
+			android:key="server_disableauth"
+			android:title="@string/pref_disableauth"
+			android:summary="@string/pref_disableauth_info"
+			android:defaultValue="false" />
 		<EditTextPreference
 			android:key="server_folder"
 			android:title="@string/pref_folder"

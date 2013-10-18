@@ -245,6 +245,8 @@
 	<string name="pref_ftpurl">Base (S)FTP url</string>
 	<string name="pref_ftpurl_into">For example ftp://me@server/downloads/</string>
 	<string name="pref_ftppass">(S)FTP password</string>
+	<string name="pref_disableauth">Disable authentication</string>
+	<string name="pref_disableauth_info">Don\'t send username and password</string>
 	<string name="pref_sslenable">Use SSL</string>
 	<string name="pref_sslenable_info">Connect using https</string>
 	<string name="pref_sslkey">Custom SSL thumbprint (SHA-1)</string>

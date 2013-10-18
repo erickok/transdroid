@@ -107,7 +107,7 @@ public class ApplicationSettings {
 				prefs.getBoolean("server_ssltrustall_" + order, false),
 				prefs.getString("server_ssltrustkey_" + order, null), 
 				prefs.getString("server_folder_" + order, null),
-				prefs.getBoolean("server_useauth_" + order, true), 
+				!prefs.getBoolean("server_disableauth_" + order, false), 
 				prefs.getString("server_user_" + order, null),
 				prefs.getString("server_pass_" + order, null), 
 				prefs.getString("server_extrapass_" + order, null),
@@ -145,7 +145,7 @@ public class ApplicationSettings {
 			edit.putBoolean("server_ssltrustall_" + i, prefs.getBoolean("server_ssltrustall_" + (i + 1), false));
 			edit.putString("server_ssltrustkey_" + i, prefs.getString("server_ssltrustkey_" + (i + 1), null));
 			edit.putString("server_folder_" + i, prefs.getString("server_folder_" + (i + 1), null));
-			edit.putBoolean("server_useauth_" + i, prefs.getBoolean("server_useauth_" + (i + 1), true));
+			edit.putBoolean("server_disableauth_" + i, prefs.getBoolean("server_disableauth_" + (i + 1), false));
 			edit.putString("server_user_" + i, prefs.getString("server_user_" + (i + 1), null));
 			edit.putString("server_pass_" + i, prefs.getString("server_pass_" + (i + 1), null));
 			edit.putString("server_extrapass_" + i, prefs.getString("server_extrapass_" + (i + 1), null));
@@ -169,7 +169,7 @@ public class ApplicationSettings {
 		edit.remove("server_ssltrustall_" + max);
 		edit.remove("server_ssltrustkey_" + max);
 		edit.remove("server_folder_" + max);
-		edit.remove("server_useauth_" + max);
+		edit.remove("server_disableauth_" + max);
 		edit.remove("server_user_" + max);
 		edit.remove("server_pass_" + max);
 		edit.remove("server_extrapass_" + max);
