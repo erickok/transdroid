@@ -76,7 +76,6 @@ public class BitfluAdapter implements IDaemonAdapter {
 	private static final String RPC_TORRENT_FILES  = "showfiles-ext/";
 	private static final String RPC_START_DOWNLOAD = "startdownload/";
 	
-	private String            webuiroot = "";
 	private DaemonSettings    settings;
 	private DefaultHttpClient httpclient;
 
@@ -272,9 +271,6 @@ public class BitfluAdapter implements IDaemonAdapter {
 	private void initialise() throws DaemonException {
 
 		httpclient = HttpHelper.createStandardHttpClient(settings, true);
-		if(settings != null) {
-			webuiroot = settings.getFolder();
-		}
 	}
 	
 	/**
@@ -282,6 +278,9 @@ public class BitfluAdapter implements IDaemonAdapter {
 	 * @return The URL of the RPC API
 	 */
 	private String buildWebUIUrl() {
+		String webuiroot = "";
+		if (settings.getFolder() != null)
+			webuiroot = settings.getFolder();
 		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + webuiroot + "/";
 	}
 
