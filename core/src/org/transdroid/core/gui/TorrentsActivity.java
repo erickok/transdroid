@@ -274,14 +274,14 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (lastUsed == null) {
 			// Still no settings
 			updateFragmentVisibility(false);
-			// There is a server know (now): forcefully select it to establish a connection
-			filterSelected(lastUsed, true);
 			return;
 		}
 		
-		// If we had no connection before, establish it now
+		// If we had no connection before, establish it now; otherwise jsut reload the settings
 		if (currentConnection == null)
 			filterSelected(lastUsed, true);
+		else
+			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
 	}
 
 	@Override
