@@ -13,7 +13,7 @@ public class FakeTrustManager implements X509TrustManager {
         private static final X509Certificate[] _AcceptedIssuers = new X509Certificate[] {};
 		private static final String LOG_NAME = "TrustManager";
         
-        FakeTrustManager(String certKey){
+        public FakeTrustManager(String certKey){
         	super();
         	this.certKey = certKey;
         }

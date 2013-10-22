@@ -23,7 +23,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +37,7 @@ import java.util.Map.Entry;
 import org.base64.android.Base64;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Label;
@@ -43,7 +46,6 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -62,13 +64,14 @@ import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.DLog;
-import org.transdroid.daemon.util.HttpHelper;
-import org.xmlrpc.android.XMLRPCClient;
-import org.xmlrpc.android.XMLRPCException;
+import org.transdroid.daemon.util.FakeTrustManager;
+
+import de.timroes.axmlrpc.XMLRPCClient;
+import de.timroes.axmlrpc.XMLRPCException;
 
 /**
  * An adapter that allows for easy access to rTorrent torrent data. Communication
- * is handled via the XML-RPC protocol.
+ * is handled via the XML-RPC protocol as implemented by the aXMLRPC library.
  *
  * @author erickok
  *
@@ -234,7 +237,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 		}
 	}
 	
-	private Object makeRtorrentCall(String serverMethod, Object[] arguments) throws DaemonException {
+	private Object makeRtorrentCall(String serverMethod, Object[] arguments) throws DaemonException, MalformedURLException {
 
 		// Initialise the HTTP client
 		if (rpcclient == null) {
@@ -258,10 +261,19 @@ public class RtorrentAdapter implements IDaemonAdapter {
 	/**
 	 * Instantiates a XML-RPC client with proper credentials.
 	 * @throws DaemonException On conflicting settings (i.e. user authentication but no password or username provided)
+	 * @throws MalformedURLException Thrown when the URL could not be properly constructed
 	 */
-	private void initialise() throws DaemonException {
+	private void initialise() throws DaemonException, MalformedURLException {
 
-		this.rpcclient = new XMLRPCClient(HttpHelper.createStandardHttpClient(settings, true), buildWebUIUrl().trim());
+		//this.rpcclient = new XMLRPCClient(HttpHelper.createStandardHttpClient(settings, true), buildWebUIUrl().trim());
+		int flags = XMLRPCClient.FLAGS_8BYTE_INT | XMLRPCClient.FLAGS_ENABLE_COOKIES;
+		if (settings.getSsl() && settings.getSslTrustAll())
+			flags = XMLRPCClient.FLAGS_8BYTE_INT | XMLRPCClient.FLAGS_ENABLE_COOKIES | XMLRPCClient.FLAGS_SSL_IGNORE_INVALID_CERT;
+		this.rpcclient = new XMLRPCClient(new URL(buildWebUIUrl().trim()), flags);
+		if (settings.getSsl() && settings.getSslTrustKey() != null && !settings.getSslTrustKey().isEmpty())
+			this.rpcclient.installCustomTrustManager(new FakeTrustManager(settings.getSslTrustKey()));
+		this.rpcclient.setTimeout(settings.getTimeoutInMilliseconds() / 1000);
+		this.rpcclient.setLoginData(settings.getUsername(), settings.getPassword());
 		
 	}
 	
