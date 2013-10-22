@@ -79,9 +79,9 @@ Some code/libraries/resources are used in the project:
 *  [Base64](http://iharder.net/base64)
     Robert Harder  
     Public Domain
-*  [android-xmlrpc](http://code.google.com/p/android-xmlrpc/)  
-    pskink et al.  
-    Apache License, Version 2.0
+*  [aXMLRPC](https://github.com/timroes/aXMLRPC)
+    Tim Roes  
+    MIT License
 *  [android-ColorPickerPreference](https://github.com/attenzione/android-ColorPickerPreference)  
     Daniel Nilsson and Sergey Margaritov  
     Apache License, Version 2.0
