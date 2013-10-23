@@ -88,7 +88,7 @@ public class ServerCheckerService extends IntentService {
 			JSONArray lastStats = applicationSettings.getServerLastStats(server);
 
 			// Synchronously retrieve torrents listing
-			IDaemonAdapter adapter = server.createServerAdapter(connectivityHelper.getConnectedNetworkName());
+			IDaemonAdapter adapter = server.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 			DaemonTaskResult result = RetrieveTask.create(adapter).execute();
 			if (!(result instanceof RetrieveTaskSuccessResult)) {
 				// Cannot retrieve torrents at this time

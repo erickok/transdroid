@@ -17,11 +17,13 @@
 package org.transdroid.core.app.settings;
 
 import org.transdroid.core.gui.lists.SimpleListItem;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.OS;
 
+import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -252,22 +254,27 @@ public class ServerSetting implements SimpleListItem {
 	 * Returns the appropriate daemon adapter to which tasks can be executed, in accordance with this server's settings
 	 * @param connectedToNetwork The name of the (wifi) network we are currently connected to, or null if this could not
 	 *            be determined
+	 * @param context 
 	 * @return An IDaemonAdapter instance of the specific torrent client daemon type
 	 */
-	public IDaemonAdapter createServerAdapter(String connectedToNetwork) {
-		return type.createAdapter(convertToDaemonSettings(connectedToNetwork));
+	public IDaemonAdapter createServerAdapter(String connectedToNetwork, Context context) {
+		return type.createAdapter(convertToDaemonSettings(connectedToNetwork, context));
 	}
 
 	/**
 	 * Converts local server settings into an old-style {@link DaemonSettings} object.
 	 * @param connectedToNetwork The name of the (wifi) network we are currently connected to, or null if this could not
 	 *            be determined
+	 * @param caller
 	 * @return A {@link DaemonSettings} object to execute server commands against
 	 */
-	private DaemonSettings convertToDaemonSettings(String connectedToNetwork) {
+	private DaemonSettings convertToDaemonSettings(String connectedToNetwork, Context caller) {
 		// The local integer key is converted to the idString string.
 		// The host name address used is dependent on the network that we are currently connected to (to allow a
 		// distinct connection IP or host name when connected to a local network).
+		if (localNetwork != null)
+			Log.d(caller, "Creating adapter for " + name + " of type " + type.name() + ": connected to "
+					+ connectedToNetwork + " and configured local network is " + localNetwork);
 		return new DaemonSettings(name, type,
 				connectedToNetwork != null && connectedToNetwork.equals(localNetwork) ? localAddress : address, port,
 				ssl, sslTrustAll, sslTrustKey, folder, useAuthentication, username, password, extraPass, os,

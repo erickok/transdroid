@@ -44,17 +44,29 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.*;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.log.*;
-import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.rss.*;
+import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.log.Log_;
+import org.transdroid.core.gui.navigation.FilterListAdapter;
+import org.transdroid.core.gui.navigation.FilterListAdapter_;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter_;
+import org.transdroid.core.gui.navigation.Label;
+import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.RefreshableActivity;
+import org.transdroid.core.gui.navigation.StatusType;
+import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
-import org.transdroid.core.gui.settings.*;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.core.service.BootReceiver;
 import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.core.widget.WidgetProvider;
@@ -96,7 +108,6 @@ import org.transdroid.daemon.util.HttpHelper;
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.Options;
-
 import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.ContentResolver;
@@ -130,6 +141,8 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor,
 		RefreshableActivity {
 
+	private static final int RESULT_DETAILS = 0;
+	
 	// Navigation components
 	@Bean
 	protected NavigationHelper navigationHelper;
@@ -252,7 +265,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			}
 		} else {
 			// Resume after instead of fully loading the torrents list; create connection and set action bar title
-			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
+			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 			navigationSpinnerAdapter.updateCurrentServer(currentConnection);
 			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
 		}
@@ -281,9 +294,16 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (currentConnection == null)
 			filterSelected(lastUsed, true);
 		else
-			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
+			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 	}
 
+	@OnActivityResult(RESULT_DETAILS)
+	protected void onDetailsScreenResult(Intent result) {
+		// If the details activity returns whether the torrent was removed, refresh the screen
+		if (result != null && result.getBooleanExtra("torrent_removed", false))
+			refreshScreen();
+	}
+	
 	@Override
 	protected void onDestroy() {
 		Crouton.cancelAllCroutons();
@@ -399,7 +419,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			}
 
 			// Update connection to the newly selected server and refresh
-			currentConnection = server.createServerAdapter(connectivityHelper.getConnectedNetworkName());
+			currentConnection = server.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 			applicationSettings.setLastUsedServer(server);
 			navigationSpinnerAdapter.updateCurrentServer(currentConnection);
 			if (forceNewConnection)
@@ -684,7 +704,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (fragmentDetails != null) {
 			fragmentDetails.updateTorrent(torrent);
 		} else {
-			DetailsActivity_.intent(this).torrent(torrent).currentLabels(lastNavigationLabels).start();
+			DetailsActivity_.intent(this).torrent(torrent).currentLabels(lastNavigationLabels).startForResult(RESULT_DETAILS);
 		}
 	}
 

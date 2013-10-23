@@ -163,7 +163,7 @@ public class WidgetConfigActivity extends SherlockActivity {
 
 		// Create a connection object and retrieve the live torrents
 		IDaemonAdapter connection = ((ServerSetting) serverSpinner.getSelectedItem())
-				.createServerAdapter(connectivityHelper.getConnectedNetworkName());
+				.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 		DaemonTaskResult result = RetrieveTask.create(connection).execute();
 		if (result instanceof RetrieveTaskSuccessResult) {
 			// Success; show the active torrents in the widget preview

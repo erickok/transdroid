@@ -94,7 +94,7 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		// Load the torrents; synchronously
 		IDaemonAdapter connection = server.createServerAdapter(ConnectivityHelper_.getInstance_(context)
-				.getConnectedNetworkName());
+				.getConnectedNetworkName(), context);
 		DaemonTaskResult result = RetrieveTask.create(connection).execute();
 		if (!(result instanceof RetrieveTaskSuccessResult)) {
 			// TODO: Show error text somehow in the remote view, perhaps via the EmptyView's text?

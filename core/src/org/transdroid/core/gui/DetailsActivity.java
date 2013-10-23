@@ -135,7 +135,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		fragmentDetails.setCurrentServerSettings(lastUsed);
-		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName());
+		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 
 		// Show details and load fine stats and torrent files
 		fragmentDetails.updateTorrent(torrent);
@@ -283,6 +283,8 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 
 	@UiThread
 	protected void closeActivity(String closeText) {
+		// The activity result RESULT_CANCELED means that the torrent no longer exists
+		setResult(RESULT_OK, new Intent().putExtra("torrent_removed", true));
 		finish();
 		if (closeText != null)
 			Toast.makeText(this, closeText, Toast.LENGTH_LONG).show();
