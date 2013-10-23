@@ -554,6 +554,13 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	}
 
 	@Override
+	protected void onPause() {
+		if (searchMenu != null)
+			searchMenu.collapseActionView();
+		super.onPause();
+	}
+	
+	@Override
 	public boolean onSearchRequested() {
 		if (searchMenu != null) {
 			searchMenu.expandActionView();

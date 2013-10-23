@@ -255,21 +255,28 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 
 	@OptionsItem(resName = "action_refresh")
 	protected void refreshSearch() {
+
+		if (searchMenu != null) {
+			// Close the search view in the ation bar
+			searchMenu.collapseActionView();
+		}
+		
 		if (lastUsedSite instanceof WebsearchSetting) {
 			
 			// Start a browser page directly to the requested search results
 			WebsearchSetting websearch = (WebsearchSetting) lastUsedSite;
 			startActivity(new Intent(Intent.ACTION_VIEW,
 					Uri.parse(String.format(websearch.getBaseUrl(), lastUsedQuery))));
+			finish();
 			
 		} else if (lastUsedSite instanceof SearchSite) {
 
+			// Save the search site currently used to search for future usage
+			applicationSettings.setLastUsedSearchSite(lastUsedSite);
 			// Update the activity title (only shown on large devices)
 			getSupportActionBar().setTitle(
 					NavigationHelper.buildCondensedFontString(getString(R.string.search_queryonsite, lastUsedQuery,
 							lastUsedSite.getName())));
-			// Save the search site currently used to search for future usage
-			applicationSettings.setLastUsedSearchSite((SearchSite) lastUsedSite);
 			// Ask the results fragment to start a search for the specified query
 			fragmentResults.startSearch(lastUsedQuery, (SearchSite) lastUsedSite);
 			

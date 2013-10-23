@@ -29,7 +29,7 @@ import android.text.TextUtils;
 public class WebsearchSetting implements SimpleListItem, SearchSetting {
 
 	private static final String DEFAULT_NAME = "Default";
-	private static final String KEY_PREFIX = "websearch_";
+	public static final String KEY_PREFIX = "websearch_";
 	
 	private final int order;
 	private final String name;
