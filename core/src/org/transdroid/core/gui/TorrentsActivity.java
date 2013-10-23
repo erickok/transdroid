@@ -910,7 +910,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		torrent.mimicStart();
 		DaemonTaskResult result = StartTask.create(currentConnection, torrent, forced).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_started));
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_started, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
@@ -922,7 +922,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		torrent.mimicStop();
 		DaemonTaskResult result = StopTask.create(currentConnection, torrent).execute();
 		if (result instanceof DaemonTaskResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_stopped));
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_stopped, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
