@@ -17,6 +17,7 @@
 package org.transdroid.core.gui.navigation;
 
 import java.security.InvalidParameterException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.transdroid.core.R;
@@ -64,7 +65,12 @@ public class SetLabelDialog extends DialogFragment {
 	 * @param currentLabels The list of torrent labels
 	 * @return This dialog, for method chaining
 	 */
-	public SetLabelDialog setCurrentLabels(List<? extends SimpleListItem> currentLabels) {
+	public SetLabelDialog setCurrentLabels(List<Label> currentLabels) {
+		// Discard the empty label in this list before storing it locally
+		for (Iterator<Label> iter = currentLabels.iterator(); iter.hasNext();) {
+			if (iter.next().isEmptyLabel())
+				iter.remove();
+		}
 		this.currentLabels = currentLabels;
 		return this;
 	}
