@@ -103,6 +103,7 @@ import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -169,6 +170,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected TorrentsFragment fragmentTorrents;
 	@FragmentById(resName = "torrent_details")
 	protected DetailsFragment fragmentDetails;
+	
+	// Auto refresh task. Could be replaced by @Background(id="task-id")
+	private AsyncTask<Void, Void, Void> autoRefreshTask;
+	// Fragment uses this to pause the refresh across restarts
+	public boolean stopRefresh = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -274,6 +280,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Override
 	protected void onResume() {
 		super.onResume();
+		// Start auto refresh
+		startAutoRefresh();
 
 		// Refresh server settings
 		navigationSpinnerAdapter.updateServers(applicationSettings.getAllServerSettings());
@@ -299,6 +307,54 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			Torrent affected = result.getParcelableExtra("affected_torrent");
 			fragmentTorrents.quickUpdateTorrent(affected, result.getBooleanExtra("torrent_removed", false));
 		}
+	}
+	
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void startAutoRefresh() {
+		// Check if already running
+		if (autoRefreshTask != null || stopRefresh)
+			return;
+		
+		autoRefreshTask = new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				while (!isCancelled()) {
+					// X seconds seems reasonable if someone actually wants real time updates
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// Ignore
+					}
+					// Just in case it was cancelled during sleep
+					if (isCancelled())
+						return null;
+						
+					refreshTorrents();
+					if (Daemon.supportsStats(currentConnection.getType()))
+						getAdditionalStats();
+				}
+				return null;
+			}
+			
+		};
+		// Executes serially by default on Honeycomb, was parallel before
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			autoRefreshTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+		else
+			autoRefreshTask.execute();
+	}
+	
+	public void stopAutoRefresh() {
+		if (autoRefreshTask != null)
+			autoRefreshTask.cancel(true);
+		autoRefreshTask = null;
+	}
+	
+	@Override
+	protected void onPause() {
+		stopAutoRefresh();
+		super.onPause();
 	}
 
 	@Override
