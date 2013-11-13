@@ -250,6 +250,10 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 	public void mimicNewLabel(String newLabel) {
 		label = newLabel;
 	}
+	
+	public void mimicCheckingStatus() {
+		statusCode = TorrentStatus.Checking;
+	}
 
 	public void mimicNewLocation(String newLocation) {
 		locationDir = newLocation;

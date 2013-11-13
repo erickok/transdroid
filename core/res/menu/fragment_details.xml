@@ -63,16 +63,22 @@
 		android:title="@string/action_setlabel"
 		android:orderInCategory="205" />
 	<item
+		android:id="@+id/action_forcerecheck"
+		android:icon="?attr/ic_action_forcerecheck"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_forcerecheck"
+		android:orderInCategory="206" />
+	<item
 		android:id="@+id/action_updatetrackers"
 		android:icon="?attr/ic_action_trackers"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_updatetrackers"
-		android:orderInCategory="206" />
+		android:orderInCategory="207" />
 	<item
 		android:id="@+id/action_changelocation"
 		android:icon="?attr/ic_action_save"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_changelocation"
-		android:orderInCategory="207" />
+		android:orderInCategory="208" />
 
 </menu>

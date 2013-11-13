@@ -318,6 +318,11 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 				.show(getFragmentManager(), "SetLabelDialog");
 	}
 
+	@OptionsItem(resName = "action_forcerecheck")
+	protected void setForceRecheck() {
+		getTasksExecutor().forceRecheckTorrent(torrent);
+	}
+
 	@OptionsItem(resName = "action_updatetrackers")
 	protected void updateTrackers() {
 		if (torrentDetails == null) {

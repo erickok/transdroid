@@ -314,7 +314,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsLabels(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Deluge || type == BitComet || type == rTorrent || type == Dummy; // || type == Vuze
+		return type == uTorrent || type == BitTorrent || type == Deluge || type == BitComet || type == rTorrent || type == Dummy;
 	}
 
 	public static boolean supportsSetLabel(Daemon type) {
@@ -331,6 +331,10 @@ public enum Daemon {
 
 	public static boolean supportsSetTrackers(Daemon type) {
 		return type == uTorrent || type == BitTorrent || type == Deluge || type == Dummy;
+	}
+
+	public static boolean supportsForceRecheck(Daemon type) {
+		return type == uTorrent || type == BitTorrent || type == Deluge || type == rTorrent || type == Dummy;
 	}
 
 	public static boolean supportsExtraPassword(Daemon type) {

@@ -133,6 +133,28 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 	}
 
 	/**
+	 * Just look for a specific torrent in the currently shown list (by its unique id) and update only this
+	 * @param affected The affected torrent to update
+	 * @param wasRemoved Whether the affected torrent was indeed removed; otherwise it was updated somehow
+	 */
+	public void quickUpdateTorrent(Torrent affected, boolean wasRemoved) {
+		// Remove the old torrent object first
+		Iterator<Torrent> iter = this.torrents.iterator();
+		while (iter.hasNext()) {
+			Torrent torrent = iter.next();
+			if (torrent.getUniqueID().equals(affected.getUniqueID())) {
+				iter.remove();
+				break;
+			}
+		}
+		// In case it was an update, add the updated torrent object
+		if (!wasRemoved)
+			this.torrents.add(affected);
+		// Now refresh the screen
+		applyAllFilters();
+	}
+
+	/**
 	 * Clears the currently visible list of torrents.
 	 * @param b
 	 */
@@ -187,9 +209,6 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 			return;
 		}
 
-		// Get the server daemon type directly form the local list of torrents, if it's not empty
-		Daemon serverType = (this.torrents.size() > 0 ? this.torrents.get(0).getDaemon() : Daemon.Transmission);
-
 		// Filter the list of torrents to show according to navigation and text filters
 		ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>(torrents);
 		if (filteredTorrents != null && currentNavigationFilter != null) {
@@ -209,7 +228,7 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 		}
 
 		// Sort the list of filtered torrents
-		Collections.sort(filteredTorrents, new TorrentsComparator(serverType, this.currentSortOrder,
+		Collections.sort(filteredTorrents, new TorrentsComparator(daemonType, this.currentSortOrder,
 				this.currentSortDescending));
 
 		((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);

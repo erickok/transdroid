@@ -49,6 +49,7 @@
 	<string name="action_setlabel">Set label</string>
 	<string name="action_updatetrackers">Update trackers</string>
 	<string name="action_changelocation">Change storage location</string>
+	<string name="action_forcerecheck">Force data recheck</string>
 	<string name="action_priority_off">Off</string>
 	<string name="action_priority_low">Low</string>
 	<string name="action_priority_normal">Normal</string>
@@ -154,6 +155,7 @@
 	<string name="result_trackersupdated">Trackers updated</string>
 	<string name="result_labelset">Label set to \'%1$s\'</string>
 	<string name="result_labelremoved">Label removed</string>
+	<string name="result_recheckedstarted">Checking %1$s data</string>
 	<string name="result_locationset">Torrent moved to \'%1$s\'</string>
 	<string name="result_priotitiesset">File priorities updated</string>
 	<string name="result_maxspeedsset">Maximum transfer speeds set</string>

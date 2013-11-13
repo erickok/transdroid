@@ -41,12 +41,12 @@ import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.Label;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.Label;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -248,7 +248,13 @@ public class UtorrentAdapter implements IDaemonAdapter {
 				makeUtorrentRequest("&action=setprops" + RPC_URL_HASH + trackersTask.getTargetTorrent().getUniqueID() + 
 						"&s=trackers&v=" + URLEncoder.encode(newTrackersText, "UTF-8"));
 				return new DaemonTaskSuccessResult(task);
-			
+
+			case ForceRecheck:
+
+				// Force re-check of data on a torrent
+				makeUtorrentRequest("&action=recheck" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID());
+				return new DaemonTaskSuccessResult(task);
+
 			default:
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
 			}

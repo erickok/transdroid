@@ -36,6 +36,7 @@
 		<item name="ic_action_resume">@drawable/ic_action_resume_light</item>
 		<item name="ic_action_rss">@drawable/ic_action_rss_light</item>
 		<item name="ic_action_save">@drawable/ic_action_save_light</item>
+		<item name="ic_action_forcerecheck">@drawable/ic_action_forcerecheck_light</item>
 		<item name="ic_action_search">@drawable/ic_action_search_light</item>
 		<item name="ic_action_sort_by_size">@drawable/ic_action_sort_by_size_light</item>
 		<item name="ic_action_start">@drawable/ic_action_start_light</item>
@@ -69,6 +70,7 @@
 		<item name="ic_action_resume">@drawable/ic_action_resume_dark</item>
 		<item name="ic_action_rss">@drawable/ic_action_rss_dark</item>
 		<item name="ic_action_save">@drawable/ic_action_save_dark</item>
+		<item name="ic_action_forcerecheck">@drawable/ic_action_forcerecheck_dark</item>
 		<item name="ic_action_search">@drawable/ic_action_search_dark</item>
 		<item name="ic_action_sort_by_size">@drawable/ic_action_sort_by_size_dark</item>
 		<item name="ic_action_start">@drawable/ic_action_start_dark</item>

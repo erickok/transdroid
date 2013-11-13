@@ -33,6 +33,7 @@ import org.transdroid.daemon.task.DaemonTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
+import org.transdroid.daemon.task.ForceRecheckTask;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetStatsTask;
@@ -267,6 +268,17 @@ public class DummyAdapter implements IDaemonAdapter {
 			case SetTrackers:
 
 				trackersList = new ArrayList<String>(((SetTrackersTask)task).getNewTrackers());
+				return new DaemonTaskSuccessResult(task);
+
+			case ForceRecheck:
+
+				ForceRecheckTask recheckTask = (ForceRecheckTask) task;
+				// Pretend we rechecked this task by pausing it (or stopping, if it is paused) so we can see the result
+				if (recheckTask.getTargetTorrent().getStatusCode() == TorrentStatus.Paused) {
+					recheckTask.getTargetTorrent().mimicStop();
+				} else {
+					recheckTask.getTargetTorrent().mimicPause();
+				}
 				return new DaemonTaskSuccessResult(task);
 
 			case SetDownloadLocation:

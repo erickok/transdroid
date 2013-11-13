@@ -36,6 +36,7 @@
 	<attr name="ic_action_resume" format="reference"/>
 	<attr name="ic_action_rss" format="reference"/>
 	<attr name="ic_action_save" format="reference"/>
+	<attr name="ic_action_forcerecheck" format="reference"/>
 	<attr name="ic_action_search" format="reference"/>
 	<attr name="ic_action_sort_by_size" format="reference"/>
 	<attr name="ic_action_start" format="reference"/>

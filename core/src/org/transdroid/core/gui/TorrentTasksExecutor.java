@@ -33,6 +33,7 @@ public interface TorrentTasksExecutor {
 	void startTorrent(Torrent torrent, boolean forced);
 	void stopTorrent(Torrent torrent);
 	void removeTorrent(Torrent torrent, boolean withData);
+	void forceRecheckTorrent(Torrent torrent);
 	void updateLabel(Torrent torrent, String newLabel);
 	void updateTrackers(Torrent torrent, List<String> newTrackers);
 	void updateLocation(Torrent torrent, String newLocation);

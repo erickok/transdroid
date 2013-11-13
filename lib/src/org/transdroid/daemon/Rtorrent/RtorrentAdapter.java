@@ -225,6 +225,12 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				makeRtorrentCall("d.set_custom1", new String[] { task.getTargetTorrent().getUniqueID(), labelTask.getNewLabel() });
 				return new DaemonTaskSuccessResult(task);
 
+			case ForceRecheck:
+
+				// Force re-check of data of a torrent
+				makeRtorrentCall("d.check_hash", new String[] { task.getTargetTorrent().getUniqueID() });
+				return new DaemonTaskSuccessResult(task);
+				
 			default:
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
 			}

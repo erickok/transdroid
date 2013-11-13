@@ -49,6 +49,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_setlabel">Label toewijzen</string>
 <string name="action_updatetrackers">Trackers updaten</string>
 <string name="action_changelocation">Opslaglocatie wijzigen</string>
+<string name="action_forcerecheck">Forceer dataintegriteitscontrole</string>
 <string name="action_priority_off">Uit</string>
 <string name="action_priority_low">Laag</string>
 <string name="action_priority_normal">Normaal</string>
@@ -151,6 +152,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="result_trackersupdated">Trackers geüpdatet</string>
 <string name="result_labelset">Label \'%1$s\' toegewezen</string>
 <string name="result_labelremoved">Label verwijderd</string>
+<string name="result_recheckedstarted">%1$s wordt gecontroleerd</string>
 <string name="result_locationset">Torrent verplaatst naar \'%1$s\'</string>
 <string name="result_priotitiesset">Bestandsprioriteiten geüpdatet</string>
 <string name="result_maxspeedsset">Maximale snelheden ingesteld</string>

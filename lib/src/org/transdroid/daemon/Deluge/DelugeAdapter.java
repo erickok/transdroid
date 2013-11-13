@@ -112,6 +112,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	//private static final String RPC_METHOD_SETOPTIONS = "core.set_torrent_options";
 	private static final String RPC_METHOD_MOVESTORAGE = "core.move_storage";
 	private static final String RPC_METHOD_SETTRACKERS = "core.set_torrent_trackers";
+	private static final String RPC_METHOD_FORCERECHECK = "core.force_recheck";
 
 	private static final String RPC_NAME = "name";
 	private static final String RPC_STATUS = "state";
@@ -396,6 +397,13 @@ public class DelugeAdapter implements IDaemonAdapter {
 				params.put(new JSONArray().put(task.getTargetTorrent().getUniqueID()));
 				params.put(trackers);
 				makeRequest(buildRequest(RPC_METHOD_SETTRACKERS, params));
+				return new DaemonTaskSuccessResult(task);
+
+			case ForceRecheck:
+
+				// Pause a torrent
+				makeRequest(buildRequest(RPC_METHOD_FORCERECHECK,
+						((new JSONArray()).put((new JSONArray()).put(task.getTargetTorrent().getUniqueID())))));
 				return new DaemonTaskSuccessResult(task);
 				
 			default:
