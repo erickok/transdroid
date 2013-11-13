@@ -87,7 +87,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
-	private String authtoken;
+	private static String authtoken;
 
 	/**
 	 * Initialises an adapter that provides operations to the uTorrent web daemon
@@ -286,6 +286,10 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	}
 
 	private JSONObject makeUtorrentRequest(String addToUrl) throws DaemonException {
+		return makeUtorrentRequest(addToUrl, 0);
+	}
+	
+	private JSONObject makeUtorrentRequest(String addToUrl, int retried) throws DaemonException {
 
 		try {
 				
@@ -304,7 +308,11 @@ public class UtorrentAdapter implements IDaemonAdapter {
 			InputStream instream = response.getEntity().getContent();
 			String result = HttpHelper.convertStreamToString(instream);
 			if ((result.equals("") || result.trim().equals("invalid request"))) {
-				authtoken = null;
+				// Auth token was invalidated; retry at max 3 times
+				authtoken = null; // So that ensureToken() will request a new token on the next try
+				if (retried < 2) {
+					return makeUtorrentRequest(addToUrl, retried++);
+				}
 				throw new DaemonException(ExceptionType.AuthenticationFailure, "Response was '" + result.replace("\n", "") + "' instead of a proper JSON object (and we used auth token '" + authtoken + "')");
 			}
 			JSONObject json = new JSONObject(result);
@@ -329,7 +337,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		if (authtoken == null) {
 			
 			// Make a request to /gui/token.html
-			// See http://trac.utorrent.com/trac/wiki/TokenSystem
+			// See https://github.com/bittorrent/webui/wiki/TokenSystem
 			HttpGet httpget = new HttpGet(buildWebUIUrl() + "token.html");
 			
 			// Parse the response HTML

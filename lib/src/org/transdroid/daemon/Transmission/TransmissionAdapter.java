@@ -114,7 +114,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
-	private String sessionToken;
+	private static String sessionToken;
 
 	private long rpcVersion = -1;
 	
