@@ -503,10 +503,10 @@ public class UtorrentAdapter implements IDaemonAdapter {
 			}
 			// Add the parsed torrent to the list
 			TorrentStatus status = convertUtorrentStatus(tor.getInt(RPC_STATUS_IDX), downloaded);
-			long addedOn = tor.optInt(RPC_ADDEDON_IDX, -1) * 1000L;
-			long completedOn = tor.optInt(RPC_COMPLETEDON_IDX, -1) * 100L;
-			Date addedOnDate = addedOn == -1? null: new Date(addedOn);
-			Date completedOnDate = completedOn == -1? null: new Date(completedOn);
+			long addedOn = tor.optInt(RPC_ADDEDON_IDX, -1);
+			long completedOn = tor.optInt(RPC_COMPLETEDON_IDX, -1);
+			Date addedOnDate = addedOn == -1? null: new Date(addedOn * 1000L);
+			Date completedOnDate = completedOn == -1? null: new Date(completedOn * 1000L);
 			torrents.add(new Torrent(
 					i, // No ID but a hash is used
 					tor.getString(RPC_HASH_IDX),
