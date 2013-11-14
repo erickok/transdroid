@@ -84,8 +84,8 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 
 		downcountText.setText(Integer.toString(downcount));
 		upcountText.setText(Integer.toString(upcount));
-		downspeedText.setText(FileSizeConverter.getSize(downspeed));
-		upspeedText.setText(FileSizeConverter.getSize(upspeed));
+		downspeedText.setText(FileSizeConverter.getSize(downspeed) + "/s");
+		upspeedText.setText(FileSizeConverter.getSize(upspeed) + "/s");
 		downcountSign.setVisibility(View.VISIBLE);
 		upcountSign.setVisibility(View.VISIBLE);
 		setClickListener(onStartDownPickerClicked);
