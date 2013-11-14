@@ -22,6 +22,7 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.*;
 import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.service.ControlService;
 
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
@@ -33,9 +34,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.widget.RemoteViews;
 
+/**
+ * The provider of a list-style Transdroid widget, which controls the general loading and (touch) event handling. The
+ * list rows' remote views are loaded in the accompanying {@link ListWidgetViewsService}.
+ * @author Eric Kok
+ */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EReceiver
-public class WidgetProvider extends AppWidgetProvider {
+public class ListWidgetProvider extends AppWidgetProvider {
 
 	public static final String INTENT_STARTSERVER = "org.transdroid.START_SERVER";
 	public static final String EXTRA_TORRENT = "extra_torrent";
@@ -47,15 +53,27 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if (intent != null && intent.hasExtra(EXTRA_REFRESH)) {
+		super.onReceive(context, intent);
+		if (intent == null)
+			return;
+		
+		int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+		
+		// Refresh a specific app widget
+		if (intent.hasExtra(EXTRA_REFRESH)) {
 			// Manually requested a refresh for the app widget of which the ID was supplied
-			int appWidgetId = intent.getIntExtra(EXTRA_REFRESH, -1);
 			AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId,
 					buildRemoteViews(context, appWidgetId, applicationSettings.getWidgetConfig(appWidgetId)));
 			AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
 			return;
 		}
-		super.onReceive(context, intent);
+		
+		// No refresh: this is a control intent: copy the action and EXTRA_APPWIDGET_ID to start the control service
+		if (intent.getAction().startsWith("org.transdroid.control.")) {
+			Intent action = new Intent(intent.getAction());
+			action.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+			context.startService(action);
+		}
 	}
 
 	@Override
@@ -83,7 +101,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	 * @return A fully initialised set of remote views to update the widget with the AppWidgetManager
 	 */
 	@SuppressWarnings("deprecation")
-	public static RemoteViews buildRemoteViews(Context context, int appWidgetId, WidgetConfig config) {
+	public static RemoteViews buildRemoteViews(Context context, int appWidgetId, ListWidgetConfig config) {
 
 		// Does the server to show and its widget settings actually still exist?
 		if (context == null || config == null)
@@ -100,7 +118,7 @@ public class WidgetProvider extends AppWidgetProvider {
 				config.shouldUseDarkTheme() ? R.layout.widget_torrents_dark : R.layout.widget_torrents_light);
 
 		// Set up the widget's list view loading service which refers to the WidgetViewsFactory
-		Intent data = new Intent(context, WidgetService_.class);
+		Intent data = new Intent(context, ListWidgetViewsService_.class);
 		data.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 		data.setData(Uri.parse(data.toUri(Intent.URI_INTENT_SCHEME)));
 		rv.setRemoteAdapter(appWidgetId, R.id.torrents_list, data);
@@ -129,13 +147,27 @@ public class WidgetProvider extends AppWidgetProvider {
 
 		// Set up the widgets refresh button pending intent (calling this WidgetProvider itself)
 		// Make sure that the intent is unique using a custom data path (rather than just the extras)
-		Intent refresh = new Intent(context, WidgetProvider_.class);
+		Intent refresh = new Intent(context, ListWidgetProvider_.class);
 		refresh.setData(Uri.parse("intent://widget/" + appWidgetId + "/refresh"));
 		refresh.putExtra(EXTRA_REFRESH, appWidgetId);
 		refresh.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 		rv.setOnClickPendingIntent(R.id.refresh_button,
 				PendingIntent.getBroadcast(context, appWidgetId, refresh, PendingIntent.FLAG_UPDATE_CURRENT));
 
+		// Set up the control (pause and resume) buttons (calling the WidgetProvider itself)
+		Intent pauseall = new Intent(context, ListWidgetProvider_.class);
+		pauseall.setData(Uri.parse("intent://widget/" + appWidgetId + "/pauseall"));
+		pauseall.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		pauseall.setAction(ControlService.INTENT_PAUSEALL);
+		rv.setOnClickPendingIntent(R.id.pauseall_button,
+				PendingIntent.getBroadcast(context, appWidgetId, pauseall, PendingIntent.FLAG_UPDATE_CURRENT));
+		Intent resumeall = new Intent(context, ListWidgetProvider_.class);
+		resumeall.setData(Uri.parse("intent://widget/" + appWidgetId + "/resumeall"));
+		resumeall.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		resumeall.setAction(ControlService.INTENT_RESUMEALL);
+		rv.setOnClickPendingIntent(R.id.resumeall_button,
+				PendingIntent.getBroadcast(context, appWidgetId, resumeall, PendingIntent.FLAG_UPDATE_CURRENT));
+		
 		return rv;
 
 	}

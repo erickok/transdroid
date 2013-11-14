@@ -43,9 +43,14 @@ import android.os.Build;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+/**
+ * A service for the list widget to update the remote views that a list widget shows, by getting the torrents from the
+ * server (synchronously) and building {@link RemoteViews} objects for each torrent.
+ * @author Eric Kok
+ */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EService
-public class WidgetService extends RemoteViewsService {
+public class ListWidgetViewsService extends RemoteViewsService {
 
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -60,7 +65,7 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private final Context context;
 	private final int appWidgetId;
 	private List<Torrent> torrents = null;
-	private WidgetConfig config = null;
+	private ListWidgetConfig config = null;
 
 	public WidgetViewsFactory(Context applicationContext, Intent intent) {
 		this.context = applicationContext;
@@ -153,8 +158,8 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		}
 		rv.setInt(R.id.status_view, "setBackgroundColor", context.getResources().getColor(statusColour));
 		Intent startIntent = new Intent();
-		startIntent.putExtra(WidgetProvider.EXTRA_SERVER, config.getServerId());
-		startIntent.putExtra(WidgetProvider.EXTRA_TORRENT, torrent);
+		startIntent.putExtra(ListWidgetProvider.EXTRA_SERVER, config.getServerId());
+		startIntent.putExtra(ListWidgetProvider.EXTRA_TORRENT, torrent);
 		rv.setOnClickFillInIntent(R.id.widget_line_layout, startIntent);
 
 		return rv;

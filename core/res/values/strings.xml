@@ -40,9 +40,13 @@
 	<string name="action_start">Start</string>
 	<string name="action_start_default">Normal start</string>
 	<string name="action_start_forced">Force start</string>
+	<string name="action_startall">Start all</string>
 	<string name="action_stop">Stop</string>
+	<string name="action_stopall">Stop all</string>
 	<string name="action_resume">Resume</string>
+	<string name="action_resumeall">Resume all</string>
 	<string name="action_pause">Pause</string>
+	<string name="action_pauseall">Pause all</string>
 	<string name="action_remove">Remove</string>
 	<string name="action_remove_default">Remove torrent</string>
 	<string name="action_remove_withdata">Remove and delete data</string>

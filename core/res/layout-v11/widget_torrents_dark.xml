@@ -42,11 +42,33 @@
 		android:scaleType="fitXY"
 		android:src="@drawable/ic_action_refresh_dark" />
 
+	<ImageButton
+		android:id="@+id/pauseall_button"
+		android:layout_width="@dimen/widget_header_height"
+		android:layout_height="@dimen/widget_header_height"
+		android:layout_toLeftOf="@id/refresh_button"
+		android:background="@drawable/selectable_background_transdroid2"
+		android:contentDescription="@string/action_pauseall"
+		android:padding="@dimen/widget_header_padding"
+		android:scaleType="fitXY"
+		android:src="@drawable/ic_action_pause_dark" />
+	
+	<ImageButton
+		android:id="@+id/resumeall_button"
+		android:layout_width="@dimen/widget_header_height"
+		android:layout_height="@dimen/widget_header_height"
+		android:layout_toLeftOf="@id/pauseall_button"
+		android:background="@drawable/selectable_background_transdroid2"
+		android:contentDescription="@string/action_resumeall"
+		android:padding="@dimen/widget_header_padding"
+		android:scaleType="fitXY"
+		android:src="@drawable/ic_action_resume_dark" />
+	
 	<LinearLayout
 		android:id="@+id/navigation_view"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/widget_header_height"
-		android:layout_toLeftOf="@id/refresh_button"
+		android:layout_toLeftOf="@id/resumeall_button"
 		android:layout_toRightOf="@id/icon_image"
 		android:background="@drawable/selectable_background_transdroid"
 		android:clickable="true"

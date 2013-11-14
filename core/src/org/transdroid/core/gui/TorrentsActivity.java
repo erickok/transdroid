@@ -69,7 +69,7 @@ import org.transdroid.core.gui.search.UrlEntryDialog;
 import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.core.service.BootReceiver;
 import org.transdroid.core.service.ConnectivityHelper;
-import org.transdroid.core.widget.WidgetProvider;
+import org.transdroid.core.widget.ListWidgetProvider;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -235,17 +235,17 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			return;
 		}
 		Torrent startTorrent = null;
-		if (getIntent().getAction() != null && getIntent().getAction().equals(WidgetProvider.INTENT_STARTSERVER)
-				&& getIntent().getExtras() == null && getIntent().hasExtra(WidgetProvider.EXTRA_SERVER)) {
+		if (getIntent().getAction() != null && getIntent().getAction().equals(ListWidgetProvider.INTENT_STARTSERVER)
+				&& getIntent().getExtras() == null && getIntent().hasExtra(ListWidgetProvider.EXTRA_SERVER)) {
 			// A server settings order ID was provided in this org.transdroid.START_SERVER action intent
-			int serverId = getIntent().getExtras().getInt(WidgetProvider.EXTRA_SERVER);
+			int serverId = getIntent().getExtras().getInt(ListWidgetProvider.EXTRA_SERVER);
 			if (serverId < 0 || serverId > applicationSettings.getMaxServer()) {
-				Log.e(this, "Tried to start with " + WidgetProvider.EXTRA_SERVER + " intent but " + serverId
+				Log.e(this, "Tried to start with " + ListWidgetProvider.EXTRA_SERVER + " intent but " + serverId
 						+ " is not an existing server order id");
 			} else {
 				lastUsed = applicationSettings.getServerSetting(serverId);
-				if (getIntent().hasExtra(WidgetProvider.EXTRA_TORRENT))
-					startTorrent = getIntent().getParcelableExtra(WidgetProvider.EXTRA_TORRENT);
+				if (getIntent().hasExtra(ListWidgetProvider.EXTRA_TORRENT))
+					startTorrent = getIntent().getParcelableExtra(ListWidgetProvider.EXTRA_TORRENT);
 			}
 		}
 

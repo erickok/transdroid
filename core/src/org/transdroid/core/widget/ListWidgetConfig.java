@@ -23,7 +23,7 @@ import org.transdroid.daemon.TorrentsSortBy;
  * Represents a set of settings that define how the user configured a specific app widget.
  * @author Eric Kok
  */
-public class WidgetConfig {
+public class ListWidgetConfig {
 
 	private final int serverId;
 	private final StatusType statusType;
@@ -31,7 +31,7 @@ public class WidgetConfig {
 	private final boolean reserveSort;
 	private final boolean useDarkTheme;
 
-	public WidgetConfig(int serverId, StatusType statusType, TorrentsSortBy sortBy, boolean reverseSort,
+	public ListWidgetConfig(int serverId, StatusType statusType, TorrentsSortBy sortBy, boolean reverseSort,
 			boolean useDarkTheme) {
 		this.serverId = serverId;
 		this.statusType = statusType;

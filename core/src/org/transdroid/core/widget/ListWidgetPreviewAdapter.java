@@ -33,7 +33,7 @@ import android.widget.TextView;
  * A list list item adapter that shows torrents as simplified, widget-style list items; the light theme is always used.
  * @author Eric Kok
  */
-public class WidgetPreviewAdapter extends ArrayAdapter<Torrent> {
+public class ListWidgetPreviewAdapter extends ArrayAdapter<Torrent> {
 
 	/**
 	 * Constructs the custom array adapter that shows torrents in a widget list style for preview.
@@ -41,7 +41,7 @@ public class WidgetPreviewAdapter extends ArrayAdapter<Torrent> {
 	 * @param foo Ignored parameter; the light theme widget appearance is always used
 	 * @param torrents The already-retrieved, non-null list of torrents to show
 	 */
-	public WidgetPreviewAdapter(Context context, int foo, List<Torrent> torrents) {
+	public ListWidgetPreviewAdapter(Context context, int foo, List<Torrent> torrents) {
 		super(context, R.layout.list_item_widget_light, torrents);
 	}
 

@@ -59,6 +59,10 @@ public class TorrentsComparator implements Comparator<Torrent> {
 			case Status:
 				return tor1.getStatusCode().compareStatusCodeTo(tor2.getStatusCode());
 			case DateAdded:
+				if (tor1.getDateAdded() == null)
+					return -1;
+				if (tor2.getDateAdded() == null)
+					return 1;
 				return tor1.getDateAdded().compareTo(tor2.getDateAdded());
 			case DateDone:
 				return tor1.getDateDone().compareTo(tor2.getDateDone());
@@ -74,6 +78,10 @@ public class TorrentsComparator implements Comparator<Torrent> {
 			case Status:
 				return 0 - tor1.getStatusCode().compareStatusCodeTo(tor2.getStatusCode());
 			case DateAdded:
+				if (tor1.getDateAdded() == null)
+					return 1;
+				if (tor2.getDateAdded() == null)
+					return -1;
 				return 0 - tor1.getDateAdded().compareTo(tor2.getDateAdded());
 			case DateDone:
 				return 0 - tor1.getDateDone().compareTo(tor2.getDateDone());

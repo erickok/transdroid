@@ -32,7 +32,7 @@ import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchSite;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.search.SearchSetting;
-import org.transdroid.core.widget.WidgetConfig;
+import org.transdroid.core.widget.ListWidgetConfig;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.OS;
 import org.transdroid.daemon.TorrentsSortBy;
@@ -504,11 +504,11 @@ public class ApplicationSettings {
 	 * @param appWidgetId The unique ID of the app widget to retrieve settings for, as supplied by the AppWidgetManager
 	 * @return A widget configuration object, or null if no settings were stored for the widget ID
 	 */
-	public WidgetConfig getWidgetConfig(int appWidgetId) {
+	public ListWidgetConfig getWidgetConfig(int appWidgetId) {
 		if (!prefs.contains("widget_server_" + appWidgetId))
 			return null;
 		// @formatter:off
-		return new WidgetConfig(prefs.getInt("widget_server_" + appWidgetId, -1), StatusType.valueOf(prefs.getString(
+		return new ListWidgetConfig(prefs.getInt("widget_server_" + appWidgetId, -1), StatusType.valueOf(prefs.getString(
 				"widget_status_" + appWidgetId, StatusType.ShowAll.name())), TorrentsSortBy.valueOf(prefs.getString(
 				"widget_sortby_" + appWidgetId, TorrentsSortBy.Alphanumeric.name())), prefs.getBoolean(
 				"widget_reverse_" + appWidgetId, false), prefs.getBoolean("widget_darktheme_" + appWidgetId, false));
@@ -521,7 +521,7 @@ public class ApplicationSettings {
 	 * @param appWidgetId The unique ID of the app widget to store settings for, as supplied by the AppWidgetManager
 	 * @param settings A widget configuration object, which may not be null
 	 */
-	public void setWidgetConfig(int appWidgetId, WidgetConfig settings) {
+	public void setWidgetConfig(int appWidgetId, ListWidgetConfig settings) {
 		if (settings == null)
 			throw new InvalidParameterException(
 					"The widget setting may not be null. Use removeWidgetConfig instead to remove existing settings for some app widget.");

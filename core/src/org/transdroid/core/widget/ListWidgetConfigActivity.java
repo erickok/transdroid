@@ -64,7 +64,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EActivity(resName = "activity_widgetconfig")
-public class WidgetConfigActivity extends SherlockActivity {
+public class ListWidgetConfigActivity extends SherlockActivity {
 
 	// Views and adapters
 	@ViewById
@@ -211,7 +211,7 @@ public class WidgetConfigActivity extends SherlockActivity {
 				.sort(filteredTorrents, new TorrentsComparator(serverType, sortBy, reverseorderCheckBox.isChecked()));
 
 		// Finally update the widget preview with the live, filtered and sorted torrents list
-		torrentsList.setAdapter(new WidgetPreviewAdapter(this, 0, filteredTorrents));
+		torrentsList.setAdapter(new ListWidgetPreviewAdapter(this, 0, filteredTorrents));
 		torrentsList.setVisibility(View.VISIBLE);
 		errorText.setVisibility(View.GONE);
 	}
@@ -241,13 +241,13 @@ public class WidgetConfigActivity extends SherlockActivity {
 			TorrentsSortBy sortBy = ((SortByListItem) sortSpinner.getSelectedItem()).getSortBy();
 			boolean reverseSort = reverseorderCheckBox.isChecked();
 			boolean useDarkTheme = darkthemeCheckBox.isChecked();
-			WidgetConfig config = new WidgetConfig(server, statusType, sortBy, reverseSort, useDarkTheme);
+			ListWidgetConfig config = new ListWidgetConfig(server, statusType, sortBy, reverseSort, useDarkTheme);
 			applicationSettings.setWidgetConfig(appWidgetId, config);
 
 			// Return the widget configuration result
-			AppWidgetManager manager = AppWidgetManager.getInstance(WidgetConfigActivity.this);
+			AppWidgetManager manager = AppWidgetManager.getInstance(ListWidgetConfigActivity.this);
 			manager.updateAppWidget(appWidgetId,
-					WidgetProvider.buildRemoteViews(getApplicationContext(), appWidgetId, config));
+					ListWidgetProvider.buildRemoteViews(getApplicationContext(), appWidgetId, config));
 			manager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
 			setResult(RESULT_OK, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId));
 			finish();
