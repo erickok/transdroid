@@ -269,7 +269,7 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 			// Get checked torrents
 			ArrayList<Torrent> checked = new ArrayList<Torrent>();
 			for (int i = 0; i < torrentsList.getCheckedItemPositions().size(); i++) {
-				if (torrentsList.getCheckedItemPositions().valueAt(i))
+				if (torrentsList.getCheckedItemPositions().valueAt(i) && i < torrentsList.getAdapter().getCount())
 					checked.add((Torrent) torrentsList.getAdapter().getItem(
 							torrentsList.getCheckedItemPositions().keyAt(i)));
 			}

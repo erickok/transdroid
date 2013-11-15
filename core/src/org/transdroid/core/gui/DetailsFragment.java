@@ -24,6 +24,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
+import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
@@ -243,6 +244,11 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 			clear();
 	}
 
+	@ItemClick(resName = "details_list")
+	protected void detailsListClicked(int position) {
+		detailsList.setItemChecked(position, false);
+	}
+	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
@@ -397,6 +403,7 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 			List<TorrentFile> checked = new ArrayList<TorrentFile>();
 			for (int i = 0; i < detailsList.getCheckedItemPositions().size(); i++) {
 				if (detailsList.getCheckedItemPositions().valueAt(i)
+						&& i < detailsList.getAdapter().getCount()
 						&& detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)) instanceof TorrentFile)
 					checked.add((TorrentFile) detailsList.getAdapter().getItem(
 							detailsList.getCheckedItemPositions().keyAt(i)));
