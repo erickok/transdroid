@@ -40,6 +40,10 @@
 		android:summary="@string/pref_installhelp_info" />
 	
 	<Preference
+		android:key="system_clearsearch"
+		android:title="@string/pref_clearsearch" />
+	
+	<Preference
 		android:key="system_importsettings"
 		android:title="@string/pref_import" />
 	

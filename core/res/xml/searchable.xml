@@ -18,6 +18,6 @@
 <searchable xmlns:android="http://schemas.android.com/apk/res/android"
 	android:hint="@string/search_hint"
 	android:label="@string/search_torrentsearch"
-	android:searchSuggestAuthority="org.transdroid.core.gui.search.TorrentSearchHistoryProvider"
+	android:searchSuggestAuthority="org.transdroid.core.gui.search.SearchHistoryProvider"
 	android:searchSuggestThreshold="0"
 	android:searchSuggestSelection=" ?" />

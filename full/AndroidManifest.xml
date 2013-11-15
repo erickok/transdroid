@@ -221,8 +221,8 @@
 		</activity>
 
 		<provider
-			android:name="org.transdroid.core.gui.search.TorrentSearchHistoryProvider"
-			android:authorities="org.transdroid.core.gui.search.TorrentSearchHistoryProvider"
+			android:name="org.transdroid.core.gui.search.SearchHistoryProvider"
+			android:authorities="org.transdroid.core.gui.search.SearchHistoryProvider"
 			android:exported="false" />
 
 		<!-- RSS -->

@@ -30,6 +30,7 @@ import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.gui.log.ErrorLogSender;
 import org.transdroid.core.gui.navigation.DialogHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.search.SearchHistoryProvider;
 import org.transdroid.core.service.BootReceiver;
 
 import android.annotation.TargetApi;
@@ -86,6 +87,7 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		findPreference("system_sendlog").setOnPreferenceClickListener(onSendLogClick);
 		findPreference("system_installhelp").setOnPreferenceClickListener(onInstallHelpClick);
 		findPreference("system_changelog").setOnPreferenceClickListener(onChangeLogClick);
+		findPreference("system_clearsearch").setOnPreferenceClickListener(onClearSearchClick);
 		findPreference("system_importsettings").setOnPreferenceClickListener(onImportSettingsClick);
 		findPreference("system_exportsettings").setOnPreferenceClickListener(onExportSettingsClick);
 		findPreference("system_about").setTitle(getString(R.string.pref_about, getString(R.string.app_name)));
@@ -148,6 +150,16 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
 			showDialog(DIALOG_CHANGELOG);
+			return true;
+		}
+	};
+
+	private OnPreferenceClickListener onClearSearchClick = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			SearchHistoryProvider.clearHistory(getApplicationContext());
+			Crouton.showText(SystemSettingsActivity.this, R.string.pref_clearsearch_success,
+					NavigationHelper.CROUTON_INFO_STYLE);
 			return true;
 		}
 	};

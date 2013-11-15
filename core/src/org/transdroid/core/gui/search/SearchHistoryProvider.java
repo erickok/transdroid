@@ -34,8 +34,7 @@ public class SearchHistoryProvider extends SearchRecentSuggestionsProvider {
 	}
 
 	public static void clearHistory(Context context) {
-		SearchRecentSuggestions suggestions = new SearchRecentSuggestions(context, SearchHistoryProvider.AUTHORITY,
-				SearchHistoryProvider.MODE);
-		suggestions.clearHistory();
+		new SearchRecentSuggestions(context, AUTHORITY, MODE).clearHistory();
 	}
+	
 }

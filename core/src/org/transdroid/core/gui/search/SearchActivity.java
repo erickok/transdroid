@@ -78,8 +78,8 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 	@SystemService
 	protected SearchManager searchManager;
 	private MenuItem searchMenu = null;
-	private SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
-			TorrentSearchHistoryProvider.AUTHORITY, TorrentSearchHistoryProvider.MODE);
+	private SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchHistoryProvider.AUTHORITY,
+			SearchHistoryProvider.MODE);
 
 	private List<SearchSetting> searchSites;
 	private SearchSetting lastUsedSite;
@@ -207,7 +207,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 		}
 		return true;
 	}
-	
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@OptionsItem(android.R.id.home)
 	protected void navigateUp() {
@@ -260,15 +260,15 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 			// Close the search view in the ation bar
 			searchMenu.collapseActionView();
 		}
-		
+
 		if (lastUsedSite instanceof WebsearchSetting) {
-			
+
 			// Start a browser page directly to the requested search results
 			WebsearchSetting websearch = (WebsearchSetting) lastUsedSite;
 			startActivity(new Intent(Intent.ACTION_VIEW,
 					Uri.parse(String.format(websearch.getBaseUrl(), lastUsedQuery))));
 			finish();
-			
+
 		} else if (lastUsedSite instanceof SearchSite) {
 
 			// Save the search site currently used to search for future usage
@@ -279,7 +279,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 							lastUsedSite.getName())));
 			// Ask the results fragment to start a search for the specified query
 			fragmentResults.startSearch(lastUsedQuery, (SearchSite) lastUsedSite);
-			
+
 		}
 	}
 

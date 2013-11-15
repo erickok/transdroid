@@ -59,7 +59,7 @@
 	<string name="action_priority_normal">Normal</string>
 	<string name="action_priority_high">High</string>
 	<string name="action_remoteplay">Remote play in VLC</string>
-	<string name="action_download">Download using (S)FTP</string>
+	<string name="action_download">Download using FTP(S)</string>
 	<string name="action_showdetails">Show details</string>
 	<string name="action_removesettings">Remove settings</string>
 	<string name="action_visitwebsite">Visit transdroid.org</string>
@@ -249,9 +249,9 @@
 	<string name="pref_downdir_info">Manually set absolute path for remote connections</string>
 	<string name="pref_timeout">Connection timeout</string>
 	<string name="pref_timeout_info">Number of seconds before a connection attempt is aborted</string>
-	<string name="pref_ftpurl">Base (S)FTP url</string>
+	<string name="pref_ftpurl">Base FTP(S) url</string>
 	<string name="pref_ftpurl_into">For example ftp://me@server/downloads/</string>
-	<string name="pref_ftppass">(S)FTP password</string>
+	<string name="pref_ftppass">FTP(S) password</string>
 	<string name="pref_disableauth">Disable authentication</string>
 	<string name="pref_disableauth_info">Don\'t send username and password</string>
 	<string name="pref_sslenable">Use SSL</string>
@@ -279,6 +279,8 @@
 	<string name="pref_checkupdates_info">Check transdroid.org for latest app version</string>
 	<string name="pref_usedarktheme">Use dark UI theme</string>
 	<string name="pref_usedarktheme_info">Requires a restart to take effect</string>
+	<string name="pref_clearsearch">Clear search history</string>
+	<string name="pref_clearsearch_success">Search history is cleared</string>
 	<string name="pref_import">Import settings</string>
 	<string name="pref_import_dialog">%1$s will try to import server, web search, RSS and system settings from: %2$s</string>
 	<string name="pref_import_success">Settings successfully imported</string>
