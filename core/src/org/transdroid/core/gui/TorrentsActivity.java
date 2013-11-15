@@ -683,6 +683,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		fragmentTorrents.sortBy(TorrentsSortBy.DateAdded);
 	}
 
+	@OptionsItem(resName = "action_sort_downspeed")
+	protected void sortByDownspeed() {
+		fragmentTorrents.sortBy(TorrentsSortBy.DownloadSpeed);
+	}
+
 	@OptionsItem(resName = "action_sort_upspeed")
 	protected void sortByUpspeed() {
 		fragmentTorrents.sortBy(TorrentsSortBy.UploadSpeed);

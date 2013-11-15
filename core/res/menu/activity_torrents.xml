@@ -69,6 +69,7 @@
 			<item android:id="@+id/action_sort_status" android:title="@string/action_sort_status" />
 			<item android:id="@+id/action_sort_done" android:title="@string/action_sort_done" />
 			<item android:id="@+id/action_sort_added" android:title="@string/action_sort_added" />
+			<item android:id="@+id/action_sort_downspeed" android:title="@string/action_sort_downspeed" />
 			<item android:id="@+id/action_sort_upspeed" android:title="@string/action_sort_upspeed" />
 			<item android:id="@+id/action_sort_ratio" android:title="@string/action_sort_ratio" />
 		</menu>

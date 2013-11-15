@@ -32,6 +32,7 @@
 	<string name="action_sort_status">Status</string>
 	<string name="action_sort_done">Date done</string>
 	<string name="action_sort_added">Date added</string>
+	<string name="action_sort_downspeed">Download speed</string>
 	<string name="action_sort_upspeed">Upload speed</string>
 	<string name="action_sort_ratio">Ratio</string>
 	<string name="action_filter">Filter list</string>
