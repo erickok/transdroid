@@ -18,6 +18,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 	
 	<CheckBoxPreference
+		android:key="system_dormantasinactive"
+		android:title="@string/pref_dormantasinactive"
+		android:summary="@string/pref_dormantasinactive_info"
+		android:defaultValue="false" />
+	
+	<CheckBoxPreference
 		android:key="system_checkupdates"
 		android:title="@string/pref_checkupdates"
 		android:summary="@string/pref_checkupdates_info"

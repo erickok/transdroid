@@ -66,9 +66,11 @@ public class Label implements SimpleListItem, NavigationFilter, Comparable<Label
 
 	/**
 	 * Returns true if the torrent label's name matches this (selected) label's name, false otherwise
+	 * @param torrent The torrent to match against this label
+	 * @param dormantAsInactive This property is ignored for label comparisons
 	 */
 	@Override
-	public boolean matches(Torrent torrent) {
+	public boolean matches(Torrent torrent, boolean dormantAsInactive) {
 		if (isEmptyLabel)
 			return TextUtils.isEmpty(torrent.getLabelName());
 		return torrent.getLabelName() != null && torrent.getLabelName().equals(name);

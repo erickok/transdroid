@@ -30,14 +30,16 @@ public interface NavigationFilter extends Parcelable {
 	 * Implementations should check if the supplied torrent matches the filter; for example a label filter should return
 	 * true if the torrent's label equals this items label name.
 	 * @param torrent The torrent to check for matches
+	 * @param dormantAsInactive If true, dormant (0KB/s, so no data transfer) torrents are never actively downloading or
+	 *            seeding
 	 * @return True if the torrent matches the filter and should be shown in the current screen, false otherwise
 	 */
-	boolean matches(Torrent torrent);
+	boolean matches(Torrent torrent, boolean dormantAsInactive);
 
 	/**
 	 * Implementations should return a name that can be shown to indicate the active filter
 	 * @return The name of the filter item as string
 	 */
 	String getName();
-	
+
 }

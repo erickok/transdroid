@@ -110,9 +110,10 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		}
 
 		// We have data; filter, sort and store it to use later when getViewAt gets called
+		SystemSettings systemSettings = SystemSettings_.getInstance_(context);
 		ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>();
 		for (Torrent torrent : ((RetrieveTaskSuccessResult) result).getTorrents()) {
-			if (config.getStatusType().getFilterItem(context).matches(torrent))
+			if (config.getStatusType().getFilterItem(context).matches(torrent, systemSettings.treatDormantAsInactive()))
 				filteredTorrents.add(torrent);
 		}
 		if (filteredTorrents.size() > 0) {

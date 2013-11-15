@@ -30,6 +30,7 @@ import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.gui.lists.TorrentsAdapter;
 import org.transdroid.core.gui.lists.TorrentsAdapter_;
 import org.transdroid.core.gui.navigation.Label;
@@ -66,6 +67,8 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 	// Local data
 	@Bean
 	protected ApplicationSettings applicationSettings;
+	@Bean
+	protected SystemSettings systemSettings;
 	@InstanceState
 	protected ArrayList<Torrent> torrents = null;
 	@InstanceState
@@ -214,7 +217,7 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 		if (filteredTorrents != null && currentNavigationFilter != null) {
 			// Remove torrents that do not match the selected navigation filter
 			for (Iterator<Torrent> torrentIter = filteredTorrents.iterator(); torrentIter.hasNext();) {
-				if (!currentNavigationFilter.matches(torrentIter.next()))
+				if (!currentNavigationFilter.matches(torrentIter.next(), systemSettings.treatDormantAsInactive()))
 					torrentIter.remove();
 			}
 		}

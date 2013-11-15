@@ -25,15 +25,13 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.SetTransferRatesDialog;
 import org.transdroid.core.gui.navigation.SetTransferRatesDialog.OnRatesPickedListener;
 import org.transdroid.daemon.Torrent;
-import org.transdroid.daemon.TorrentStatus;
 import org.transdroid.daemon.util.FileSizeConverter;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 @EViewGroup(resName = "actionbar_serverstatus")
 public class ServerStatusView extends RelativeLayout implements OnRatesPickedListener {
@@ -54,8 +52,9 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 	/**
 	 * Updates the statistics as shown in the action bar through this server status view.
 	 * @param torrents The most recently received list of torrents
+	 * @param dormantAsInactive 
 	 */
-	public void update(List<Torrent> torrents) {
+	public void update(List<Torrent> torrents, boolean dormantAsInactive) {
 
 		if (torrents == null) {
 			downcountText.setText(null);
@@ -71,10 +70,10 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 		for (Torrent torrent : torrents) {
 
 			// Downloading torrents count towards downloads and uploads, seeding torrents towards uploads
-			if (torrent.getStatusCode() == TorrentStatus.Downloading) {
+			if (torrent.isDownloading(dormantAsInactive)) {
 				downcount++;
 				upcount++;
-			} else if (torrent.getStatusCode() == TorrentStatus.Seeding) {
+			} else if (torrent.isSeeding(dormantAsInactive)) {
 				upcount++;
 			}
 			downspeed += torrent.getRateDownload();

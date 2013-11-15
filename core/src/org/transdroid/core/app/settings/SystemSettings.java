@@ -42,6 +42,10 @@ public class SystemSettings {
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
+	public boolean treatDormantAsInactive() {
+		return prefs.getBoolean("system_dormantasinactive", false);
+	}
+
 	public boolean checkForUpdates() {
 		return prefs.getBoolean("system_checkupdates", true);
 	}

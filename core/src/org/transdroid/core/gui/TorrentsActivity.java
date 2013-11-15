@@ -160,6 +160,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	// Settings
 	@Bean
 	protected ApplicationSettings applicationSettings;
+	@Bean
+	protected SystemSettings systemSettings;
 	@InstanceState
 	boolean firstStart = true;
 	int skipNextOnNavigationItemSelectedCalls = 2;
@@ -1072,7 +1074,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			fragmentDetails.updateLabels(lastNavigationLabels);
 
 		// Update the server status (counts and speeds) in the action bar
-		serverStatusView.update(torrents);
+		serverStatusView.update(torrents, systemSettings.treatDormantAsInactive());
 
 	}
 

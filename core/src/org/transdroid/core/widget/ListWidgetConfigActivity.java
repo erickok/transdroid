@@ -30,6 +30,7 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.gui.lists.SimpleListItemSpinnerAdapter;
 import org.transdroid.core.gui.lists.SortByListItem;
 import org.transdroid.core.gui.navigation.StatusType;
@@ -82,6 +83,8 @@ public class ListWidgetConfigActivity extends SherlockActivity {
 	protected ConnectivityHelper connectivityHelper;
 	@Bean
 	protected ApplicationSettings applicationSettings;
+	@Bean
+	protected SystemSettings systemSettings;
 	private int appWidgetId;
 
 	@Override
@@ -198,7 +201,7 @@ public class ListWidgetConfigActivity extends SherlockActivity {
 		ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>(previewTorrents.size());
 		StatusTypeFilter statusTypeFilter = (StatusTypeFilter) filterSpinner.getSelectedItem();
 		for (Torrent torrent : previewTorrents) {
-			if (statusTypeFilter.matches(torrent))
+			if (statusTypeFilter.matches(torrent, systemSettings.treatDormantAsInactive()))
 				filteredTorrents.add(torrent);
 		}
 		if (filteredTorrents.size() == 0) {

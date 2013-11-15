@@ -22,7 +22,6 @@ import java.util.List;
 import org.transdroid.core.R;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.daemon.Torrent;
-import org.transdroid.daemon.TorrentStatus;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -108,24 +107,22 @@ public enum StatusType {
 
 		/**
 		 * Returns true if the torrent status matches this (selected) status type, false otherwise
+		 * @param torrent The torrent to match against this status type
+		 * @param dormantAsInactive If true, dormant (0KB/s, so no data transfer) torrents are never actively
+		 *            downloading or seeding
 		 */
 		@Override
-		public boolean matches(Torrent torrent) {
+		public boolean matches(Torrent torrent, boolean dormantAsInactive) {
 			switch (statusType) {
 			case OnlyDownloading:
-				return torrent.getStatusCode() == TorrentStatus.Downloading;
+				return torrent.isDownloading(dormantAsInactive);
 			case OnlyUploading:
-				return torrent.getStatusCode() == TorrentStatus.Seeding;
+				return torrent.isSeeding(dormantAsInactive);
 			case OnlyActive:
-				return torrent.getStatusCode() == TorrentStatus.Downloading
-						|| torrent.getStatusCode() == TorrentStatus.Seeding;
+				return torrent.isDownloading(dormantAsInactive)
+						|| torrent.isSeeding(dormantAsInactive);
 			case OnlyInactive:
-				return torrent.getStatusCode() == TorrentStatus.Checking
-						|| torrent.getStatusCode() == TorrentStatus.Error
-						|| torrent.getStatusCode() == TorrentStatus.Paused
-						|| torrent.getStatusCode() == TorrentStatus.Queued
-						|| torrent.getStatusCode() == TorrentStatus.Unknown
-						|| torrent.getStatusCode() == TorrentStatus.Waiting;
+				return !torrent.isDownloading(dormantAsInactive) && !torrent.isSeeding(dormantAsInactive);
 			default:
 				return true;
 			}

@@ -275,6 +275,8 @@
 	<string name="pref_adw_info">Show torrent counter in ADW Launcher</string>
 	
 	<string name="pref_system">System</string>
+	<string name="pref_dormantasinactive">Treat dormant torrents as inactive</string>
+	<string name="pref_dormantasinactive_info">Torrents at 0KB/s (no data transfer) will be filtered as being inactive</string>
 	<string name="pref_checkupdates">Check for updates</string>
 	<string name="pref_checkupdates_info">Check transdroid.org for latest app version</string>
 	<string name="pref_usedarktheme">Use dark UI theme</string>
