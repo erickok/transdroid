@@ -169,6 +169,7 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 			this.currentTextFilter = null;
 			this.currentNavigationFilter = null;
 		}
+		clearCheckedStates();
 		applyAllFilters();
 	}
 
@@ -351,6 +352,8 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 
 	@ItemClick(resName = "torrent_list")
 	protected void torrentsListClicked(Torrent torrent) {
+		clearCheckedStates();
+		// Show the torrent details fragment
 		((TorrentsActivity) getActivity()).openDetails(torrent);
 	}
 
@@ -358,6 +361,13 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 	public void onLabelPicked(String newLabel) {
 		for (Torrent torrent : lastMultiSelectedTorrents) {
 			getTasksExecutor().updateLabel(torrent, newLabel);
+		}
+	}
+
+	private void clearCheckedStates() {
+		// Remove any selection the user has made first
+		for (int i = 0; i < torrentsList.getAdapter().getCount(); i++) {
+			torrentsList.setItemChecked(i, false);
 		}
 	}
 
