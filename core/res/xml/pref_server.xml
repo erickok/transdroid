@@ -50,15 +50,20 @@
 			android:title="@string/pref_port"
 			android:inputType="numberSigned" />
 		<EditTextPreference
+			android:key="server_localnetwork"
+			android:title="@string/pref_localnetwork"
+			android:summary="@string/pref_localnetwork_info"
+			android:inputType="textNoSuggestions" />
+		<EditTextPreference
 			android:key="server_localaddress"
 			android:title="@string/pref_localaddress"
 			android:summary="@string/pref_localaddress_info"
 			android:inputType="textUri" />
 		<EditTextPreference
-			android:key="server_localnetwork"
-			android:title="@string/pref_localnetwork"
-			android:summary="@string/pref_localnetwork_info"
-			android:inputType="textNoSuggestions" />
+			android:key="server_localport"
+			android:title="@string/pref_localport"
+			android:summary="@string/pref_localaddress_info"
+			android:inputType="numberSigned" />
 		<CheckBoxPreference
 			android:key="server_disableauth"
 			android:title="@string/pref_disableauth"

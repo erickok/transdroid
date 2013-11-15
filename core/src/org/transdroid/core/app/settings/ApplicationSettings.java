@@ -96,19 +96,34 @@ public class ApplicationSettings {
 		String port = prefs.getString("server_port_" + order, "");
 		if (port.equals(""))
 			port = Integer.toString(Daemon.getDefaultPortNumber(type, ssl));
+		String localPort = prefs.getString("server_localport_" + order, "");
+		if (localPort.equals(""))
+			localPort = port; // Default to the normal (non-local) port
 
-		return new ServerSetting(order, prefs.getString("server_name_" + order, null), type, prefs.getString(
-				"server_address_" + order, null), prefs.getString("server_localaddress_" + order, null),
-				prefs.getString("server_localnetwork_" + order, null), Integer.parseInt(port), ssl, prefs.getBoolean(
-						"server_ssltrustall_" + order, false), prefs.getString("server_ssltrustkey_" + order, null),
+		return new ServerSetting(order, 
+				prefs.getString("server_name_" + order, null), 
+				type, 
+				prefs.getString("server_address_" + order, null), 
+				prefs.getString("server_localaddress_" + order, null),
+				Integer.parseInt(localPort),
+				prefs.getString("server_localnetwork_" + order, null), 
+				Integer.parseInt(port), 
+				ssl, 
+				prefs.getBoolean("server_ssltrustall_" + order, false), 
+				prefs.getString("server_ssltrustkey_" + order, null),
 				prefs.getString("server_folder_" + order, null),
-				!prefs.getBoolean("server_disableauth_" + order, false), prefs.getString("server_user_" + order, null),
-				prefs.getString("server_pass_" + order, null), prefs.getString("server_extrapass_" + order, null),
-				OS.fromCode(prefs.getString("server_os_" + order, "type_linux")), prefs.getString("server_downloaddir_"
-						+ order, null), prefs.getString("server_ftpurl_" + order, null), prefs.getString(
-						"server_ftppass_" + order, null), Integer.parseInt(prefs.getString("server_timeout_" + order,
-						"8")), prefs.getBoolean("server_alarmfinished_" + order, true), prefs.getBoolean(
-						"server_alarmnew_" + order, false), false);
+				!prefs.getBoolean("server_disableauth_" + order, false), 
+				prefs.getString("server_user_" + order, null),
+				prefs.getString("server_pass_" + order, null), 
+				prefs.getString("server_extrapass_" + order, null),
+				OS.fromCode(prefs.getString("server_os_" + order, "type_linux")), 
+				prefs.getString("server_downloaddir_" + order, null), 
+				prefs.getString("server_ftpurl_" + order, null), 
+				prefs.getString("server_ftppass_" + order, null), 
+				Integer.parseInt(prefs.getString("server_timeout_" + order, "8")), 
+				prefs.getBoolean("server_alarmfinished_" + order, true), 
+				prefs.getBoolean("server_alarmnew_" + order, false), 
+				false);
 		// @formatter:on
 	}
 
@@ -251,8 +266,10 @@ public class ApplicationSettings {
 	 */
 	public WebsearchSetting getWebsearchSetting(int order) {
 		// @formatter:off
-		return new WebsearchSetting(order, prefs.getString("websearch_name_" + order, null), prefs.getString(
-				"websearch_baseurl_" + order, null), prefs.getString("websearch_cookies_" + order, null));
+		return new WebsearchSetting(order, 
+				prefs.getString("websearch_name_" + order, null), 
+				prefs.getString("websearch_baseurl_" + order, null), 
+				prefs.getString("websearch_cookies_" + order, null));
 		// @formatter:on
 	}
 
@@ -313,9 +330,11 @@ public class ApplicationSettings {
 	public RssfeedSetting getRssfeedSetting(int order) {
 		// @formatter:off
 		long lastViewed = prefs.getLong("rssfeed_lastviewed_" + order, -1);
-		return new RssfeedSetting(order, prefs.getString("rssfeed_name_" + order, null), prefs.getString("rssfeed_url_"
-				+ order, null), prefs.getBoolean("rssfeed_reqauth_" + order, false), lastViewed == -1L ? null
-				: new Date(lastViewed));
+		return new RssfeedSetting(order, 
+				prefs.getString("rssfeed_name_" + order, null), 
+				prefs.getString("rssfeed_url_" + order, null), 
+				prefs.getBoolean("rssfeed_reqauth_" + order, false), 
+				lastViewed == -1L ? null : new Date(lastViewed));
 		// @formatter:on
 	}
 

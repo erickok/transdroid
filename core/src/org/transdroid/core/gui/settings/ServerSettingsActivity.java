@@ -57,8 +57,9 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("server_user");
 		initTextPreference("server_pass");
 		extraPass = initTextPreference("server_extrapass");
-		initTextPreference("server_localaddress");
 		initTextPreference("server_localnetwork");
+		initTextPreference("server_localaddress");
+		initTextPreference("server_localport");
 		folder = initTextPreference("server_folder");
 		initTextPreference("server_timeout", "8");
 		initBooleanPreference("server_alarmfinished", true);
