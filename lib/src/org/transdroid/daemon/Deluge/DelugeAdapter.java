@@ -38,14 +38,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.Label;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -113,6 +114,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	private static final String RPC_METHOD_MOVESTORAGE = "core.move_storage";
 	private static final String RPC_METHOD_SETTRACKERS = "core.set_torrent_trackers";
 	private static final String RPC_METHOD_FORCERECHECK = "core.force_recheck";
+	private static final String RPC_METHOD_SETLABEL = "label.set_torrent";
 
 	private static final String RPC_NAME = "name";
 	private static final String RPC_STATUS = "state";
@@ -137,7 +139,6 @@ public class DelugeAdapter implements IDaemonAdapter {
 	private static final String RPC_LABEL = "label";
 	private static final String RPC_TRACKERS = "trackers";
 	private static final String RPC_TRACKER_STATUS = "tracker_status";
-	private static final String NO_LABEL = "No Label";
 
 	private static final String RPC_DETAILS = "files";
 	private static final String RPC_INDEX = "index";
@@ -226,7 +227,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 				// params.put(-1); // cache_id
 				
 				JSONObject result = makeRequest(buildRequest(RPC_METHOD_GET, params));
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONObject(RPC_RESULT)),null);
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONObject(RPC_RESULT)), parseJsonRetrieveLabels(result.getJSONObject(RPC_RESULT)));
 
 			case GetTorrentDetails:
 
@@ -373,13 +374,11 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 			case SetLabel:
 
-				// TODO: This doesn't seem to work; totally undocumented and also broken in the web UI so won't fix for now
 				// Request to set the label
 				SetLabelTask labelTask = (SetLabelTask) task;
-				JSONObject labelMap = new JSONObject();
-				labelMap.put(RPC_LABEL, (labelTask.getNewLabel() == null? NO_LABEL: labelTask.getNewLabel()));
-
-				makeRequest(buildRequest(RPC_METHOD_SETCONFIG, (new JSONArray()).put(labelMap)));
+				params.put(task.getTargetTorrent().getUniqueID());
+				params.put(labelTask.getNewLabel() == null ? "" : labelTask.getNewLabel());
+				makeRequest(buildRequest(RPC_METHOD_SETLABEL, params));
 				return new DaemonTaskSuccessResult(task);
 
 			case SetTrackers:
@@ -610,6 +609,28 @@ public class DelugeAdapter implements IDaemonAdapter {
 		// Return the list
 		return torrents;
 
+	}
+
+	private ArrayList<Label> parseJsonRetrieveLabels(JSONObject response) throws JSONException {
+
+		// Get the labels, of they exist (which is dependent on the plugin)
+		if (!response.has("filters"))
+			return null;
+		JSONObject filters = response.getJSONObject("filters");
+		if (!filters.has("label"))
+			return null;
+		JSONArray labels = filters.getJSONArray("label");
+
+		// Parse response
+		ArrayList<Label> allLabels = new ArrayList<Label>();
+		for (int i = 0; i < labels.length(); i++) {
+			JSONArray labelAndCount = labels.getJSONArray(i);
+			if (labelAndCount.getString(0).equals("All"))
+				continue; // Ignore the 'All' filter, which is not an actual label
+			allLabels.add(new Label(labelAndCount.getString(0), labelAndCount.getInt(1)));
+		}
+		return allLabels;
+		
 	}
 
 	private ArrayList<TorrentFile> parseJsonFileListing(JSONObject response, Torrent torrent) throws JSONException {
