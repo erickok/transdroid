@@ -56,18 +56,20 @@ public class ListWidgetProvider extends AppWidgetProvider {
 		super.onReceive(context, intent);
 		if (intent == null)
 			return;
-		
+
 		int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-		
+
 		// Refresh a specific app widget
 		if (intent.hasExtra(EXTRA_REFRESH)) {
 			// Manually requested a refresh for the app widget of which the ID was supplied
-			AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId,
-					buildRemoteViews(context, appWidgetId, applicationSettings.getWidgetConfig(appWidgetId)));
-			AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
+			RemoteViews views = buildRemoteViews(context, appWidgetId, applicationSettings.getWidgetConfig(appWidgetId));
+			if (views != null) {
+				AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views);
+				AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
+			}
 			return;
 		}
-		
+
 		// No refresh: this is a control intent: copy the action and EXTRA_APPWIDGET_ID to start the control service
 		if (intent.getAction().startsWith("org.transdroid.control.")) {
 			Intent action = new Intent(intent.getAction());
@@ -136,7 +138,7 @@ public class ListWidgetProvider extends AppWidgetProvider {
 
 		// Set up the START_SERVER intent for 'action bar' clicks to start Transdroid normally
 		Intent start = new Intent(context, TorrentsActivity_.class);
-		//start.setData(Uri.parse("intent://widget/" + appWidgetId + "/start/" + config.getServerId()));
+		// start.setData(Uri.parse("intent://widget/" + appWidgetId + "/start/" + config.getServerId()));
 		start.setAction(INTENT_STARTSERVER);
 		start.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		start.putExtra(EXTRA_SERVER, config.getServerId());
@@ -167,7 +169,7 @@ public class ListWidgetProvider extends AppWidgetProvider {
 		resumeall.setAction(ControlService.INTENT_RESUMEALL);
 		rv.setOnClickPendingIntent(R.id.resumeall_button,
 				PendingIntent.getBroadcast(context, appWidgetId, resumeall, PendingIntent.FLAG_UPDATE_CURRENT));
-		
+
 		return rv;
 
 	}
