@@ -34,6 +34,7 @@ import org.transdroid.core.app.search.SearchResult;
 import org.transdroid.core.app.search.SearchSite;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 
@@ -50,6 +51,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SherlockListView;
 import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
  * Fragment that lists the items in a specific RSS feed
@@ -122,6 +125,10 @@ public class SearchResultsFragment extends SherlockFragment {
 
 	@ItemClick(resName = "searchresults_list")
 	protected void onItemClicked(SearchResult item) {
+		if (item.getTorrentUrl() == null) {
+			Crouton.showText(getActivity(), R.string.error_notorrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			return;
+		}
 		// Don't broadcast this intent; we can safely assume this is intended for Transdroid only
 		Intent i = TorrentsActivity_.intent(getActivity()).get();
 		i.setData(Uri.parse(item.getTorrentUrl()));

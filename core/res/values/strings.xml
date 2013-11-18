@@ -372,6 +372,7 @@
 	<string name="error_invalid_port_number">Port number is always numeric</string>
 	<string name="error_invalid_directory">Directory paths end with a / or \</string>
 	<string name="error_invalid_timeout">Timeout can not be empty and is a positive number</string>
+	<string name="error_notorrentfile">The search result does not link to a .torrent file</string>
 	<string name="error_no_url_enclosure">The RSS feed item didn\'t provide an URL enclosure or link tag pointing to the .torrent file</string>
 	<string name="error_no_link">The RSS feed item does not provide a link to browse to</string>
 	<string name="error_norssfeed">URL is not a (valid) RSS feed</string>
