@@ -23,7 +23,6 @@ import java.util.List;
 import org.androidannotations.annotations.EService;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.*;
-import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.service.*;
@@ -34,12 +33,14 @@ import org.transdroid.daemon.TorrentsComparator;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
+import org.transdroid.daemon.util.FileSizeConverter;
 
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -112,7 +113,8 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		// We have data; filter, sort and store it to use later when getViewAt gets called
 		SystemSettings systemSettings = SystemSettings_.getInstance_(context);
 		ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>();
-		for (Torrent torrent : ((RetrieveTaskSuccessResult) result).getTorrents()) {
+		List<Torrent> allTorrents = ((RetrieveTaskSuccessResult) result).getTorrents();
+		for (Torrent torrent : allTorrents) {
 			if (config.getStatusType().getFilterItem(context).matches(torrent, systemSettings.treatDormantAsInactive()))
 				filteredTorrents.add(torrent);
 		}
@@ -123,6 +125,33 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 					new TorrentsComparator(serverType, config.getSortBy(), config.shouldReserveSort()));
 		}
 		torrents = filteredTorrents;
+
+		// If the user asked to show the server status statistics, we need to update the widget remote views again
+		RemoteViews rv = ListWidgetProvider.buildRemoteViews(context, appWidgetId, config);
+		if (config.shouldShowStatusView()) {
+			
+			// Update the server status count and speeds in the 'action bar'
+			int downcount = 0, upcount = 0, downspeed = 0, upspeed = 0;
+			for (Torrent torrent : torrents) {
+				if (torrent.isDownloading(systemSettings.treatDormantAsInactive())) {
+					downcount++;
+					upcount++;
+				} else if (torrent.isSeeding(systemSettings.treatDormantAsInactive())) {
+					upcount++;
+				}
+				downspeed += torrent.getRateDownload();
+				upspeed += torrent.getRateUpload();
+			}
+			rv.setViewVisibility(R.id.navigation_view, View.GONE);
+			rv.setViewVisibility(R.id.serverstatus_view, View.VISIBLE);
+			rv.setTextViewText(R.id.downcount_text, Integer.toString(downcount));
+			rv.setTextViewText(R.id.upcount_text, Integer.toString(upcount));
+			rv.setTextViewText(R.id.downspeed_text, FileSizeConverter.getSize(downspeed) + "/s");
+			rv.setTextViewText(R.id.upspeed_text, FileSizeConverter.getSize(upspeed) + "/s");
+
+			AppWidgetManager.getInstance(context.getApplicationContext()).updateAppWidget(appWidgetId, rv);
+			
+		}
 
 	}
 

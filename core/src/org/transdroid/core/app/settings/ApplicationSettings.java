@@ -527,10 +527,13 @@ public class ApplicationSettings {
 		if (!prefs.contains("widget_server_" + appWidgetId))
 			return null;
 		// @formatter:off
-		return new ListWidgetConfig(prefs.getInt("widget_server_" + appWidgetId, -1), StatusType.valueOf(prefs.getString(
-				"widget_status_" + appWidgetId, StatusType.ShowAll.name())), TorrentsSortBy.valueOf(prefs.getString(
-				"widget_sortby_" + appWidgetId, TorrentsSortBy.Alphanumeric.name())), prefs.getBoolean(
-				"widget_reverse_" + appWidgetId, false), prefs.getBoolean("widget_darktheme_" + appWidgetId, false));
+		return new ListWidgetConfig(
+				prefs.getInt("widget_server_" + appWidgetId, -1), 
+				StatusType.valueOf(prefs.getString("widget_status_" + appWidgetId, StatusType.ShowAll.name())), 
+				TorrentsSortBy.valueOf(prefs.getString("widget_sortby_" + appWidgetId, TorrentsSortBy.Alphanumeric.name())), 
+				prefs.getBoolean("widget_reverse_" + appWidgetId, false), 
+				prefs.getBoolean("widget_showstatus_" + appWidgetId, false), 
+				prefs.getBoolean("widget_darktheme_" + appWidgetId, false));
 		// @formatter:on
 	}
 
@@ -549,6 +552,7 @@ public class ApplicationSettings {
 		edit.putString("widget_status_" + appWidgetId, settings.getStatusType().name());
 		edit.putString("widget_sortby_" + appWidgetId, settings.getSortBy().name());
 		edit.putBoolean("widget_reverse_" + appWidgetId, settings.shouldReserveSort());
+		edit.putBoolean("widget_showstatus_" + appWidgetId, settings.shouldShowStatusView());
 		edit.putBoolean("widget_darktheme_" + appWidgetId, settings.shouldUseDarkTheme());
 		edit.commit();
 	}
@@ -563,6 +567,7 @@ public class ApplicationSettings {
 		edit.remove("widget_status_" + appWidgetId);
 		edit.remove("widget_sortby_" + appWidgetId);
 		edit.remove("widget_reverse_" + appWidgetId);
+		edit.remove("widget_showstatus_" + appWidgetId);
 		edit.remove("widget_darktheme_" + appWidgetId);
 		edit.commit();
 	}

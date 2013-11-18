@@ -19,8 +19,10 @@ package org.transdroid.core.widget;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EReceiver;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.*;
-import org.transdroid.core.gui.*;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ApplicationSettings_;
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.service.ControlService;
 
@@ -132,10 +134,11 @@ public class ListWidgetProvider extends AppWidgetProvider {
 		rv.setTextViewText(R.id.error_text, context.getString(R.string.widget_loading));
 
 		// Show the server and status type filter from the widget configuration in the 'action bar'
+		// NOTE: The ListWidgetViewsService will eventually decide to show these labels or the server status statistics
 		ServerSetting server = appSettings.getServerSetting(config.getServerId());
 		rv.setTextViewText(R.id.server_text, server.getName());
 		rv.setTextViewText(R.id.filter_text, config.getStatusType().getFilterItem(context).getName());
-
+		
 		// Set up the START_SERVER intent for 'action bar' clicks to start Transdroid normally
 		Intent start = new Intent(context, TorrentsActivity_.class);
 		// start.setData(Uri.parse("intent://widget/" + appWidgetId + "/start/" + config.getServerId()));

@@ -45,6 +45,7 @@ import org.transdroid.daemon.TorrentsSortBy;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
+import org.transdroid.daemon.util.FileSizeConverter;
 
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
@@ -71,11 +72,15 @@ public class ListWidgetConfigActivity extends SherlockActivity {
 	@ViewById
 	protected Spinner serverSpinner, filterSpinner, sortSpinner;
 	@ViewById
-	protected CheckBox reverseorderCheckBox, darkthemeCheckBox;
+	protected CheckBox reverseorderCheckBox, showstatusCheckBox, darkthemeCheckBox;
 	@ViewById
 	protected TextView filterText, serverText, errorText;
 	@ViewById
+	protected TextView downcountText, upcountText, downcountSign, upcountSign, downspeedText, upspeedText;
+	@ViewById
 	protected ListView torrentsList;
+	@ViewById
+	protected View navigationView, serverstatusView;
 	private List<Torrent> previewTorrents = null;
 
 	// Settings and helpers
@@ -122,6 +127,7 @@ public class ListWidgetConfigActivity extends SherlockActivity {
 		sortSpinner.setAdapter(new SimpleListItemSpinnerAdapter<SortByListItem>(this, 0, sortOrders));
 		// TODO: Update to AndroidAnnotations 3.0 and use @CheckedChanged
 		reverseorderCheckBox.setOnCheckedChangeListener(reverseorderCheckedChanged);
+		showstatusCheckBox.setOnCheckedChangeListener(showstatusCheckChanged);
 		torrentsList.setEmptyView(errorText);
 
 		// Set up action bar with a done button
@@ -155,6 +161,14 @@ public class ListWidgetConfigActivity extends SherlockActivity {
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 			filterTorrents();
+		}
+	};
+	
+	protected OnCheckedChangeListener showstatusCheckChanged = new OnCheckedChangeListener() {
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			navigationView.setVisibility(showstatusCheckBox.isChecked()? View.GONE: View.VISIBLE);
+			serverstatusView.setVisibility(showstatusCheckBox.isChecked()? View.VISIBLE: View.GONE);
 		}
 	};
 
@@ -200,8 +214,9 @@ public class ListWidgetConfigActivity extends SherlockActivity {
 		// Get the already loaded torrents and filter and sort them
 		ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>(previewTorrents.size());
 		StatusTypeFilter statusTypeFilter = (StatusTypeFilter) filterSpinner.getSelectedItem();
+		boolean dormantAsInactive = systemSettings.treatDormantAsInactive();
 		for (Torrent torrent : previewTorrents) {
-			if (statusTypeFilter.matches(torrent, systemSettings.treatDormantAsInactive()))
+			if (statusTypeFilter.matches(torrent, dormantAsInactive))
 				filteredTorrents.add(torrent);
 		}
 		if (filteredTorrents.size() == 0) {
@@ -212,6 +227,23 @@ public class ListWidgetConfigActivity extends SherlockActivity {
 		Daemon serverType = filteredTorrents.get(0).getDaemon();
 		Collections
 				.sort(filteredTorrents, new TorrentsComparator(serverType, sortBy, reverseorderCheckBox.isChecked()));
+		
+		// Update the server status count and speeds
+		int downcount = 0, upcount = 0, downspeed = 0, upspeed = 0;
+		for (Torrent torrent : previewTorrents) {
+			if (torrent.isDownloading(dormantAsInactive)) {
+				downcount++;
+				upcount++;
+			} else if (torrent.isSeeding(dormantAsInactive)) {
+				upcount++;
+			}
+			downspeed += torrent.getRateDownload();
+			upspeed += torrent.getRateUpload();
+		}
+		downcountText.setText(Integer.toString(downcount));
+		upcountText.setText(Integer.toString(upcount));
+		downspeedText.setText(FileSizeConverter.getSize(downspeed) + "/s");
+		upspeedText.setText(FileSizeConverter.getSize(upspeed) + "/s");
 
 		// Finally update the widget preview with the live, filtered and sorted torrents list
 		torrentsList.setAdapter(new ListWidgetPreviewAdapter(this, 0, filteredTorrents));
@@ -243,8 +275,10 @@ public class ListWidgetConfigActivity extends SherlockActivity {
 			StatusType statusType = ((StatusTypeFilter) filterSpinner.getSelectedItem()).getStatusType();
 			TorrentsSortBy sortBy = ((SortByListItem) sortSpinner.getSelectedItem()).getSortBy();
 			boolean reverseSort = reverseorderCheckBox.isChecked();
+			boolean showstatus = showstatusCheckBox.isChecked();
 			boolean useDarkTheme = darkthemeCheckBox.isChecked();
-			ListWidgetConfig config = new ListWidgetConfig(server, statusType, sortBy, reverseSort, useDarkTheme);
+			ListWidgetConfig config = new ListWidgetConfig(server, statusType, sortBy, reverseSort, showstatus,
+					useDarkTheme);
 			applicationSettings.setWidgetConfig(appWidgetId, config);
 
 			// Return the widget configuration result

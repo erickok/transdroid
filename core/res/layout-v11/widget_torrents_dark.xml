@@ -16,6 +16,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:background="@color/background_dark"
@@ -100,6 +101,88 @@
 			android:textSize="@dimen/ui_navigation_server" />
 	</LinearLayout>
 
+	<RelativeLayout
+		android:id="@+id/serverstatus_view"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/widget_header_height"
+		android:layout_toLeftOf="@id/resumeall_button"
+		android:layout_toRightOf="@id/icon_image"
+		android:background="@drawable/selectable_background_transdroid"
+		android:clickable="true"
+		android:paddingTop="@dimen/ui_serverstatus_margin"
+		android:visibility="gone" >
+
+		<TextView
+			android:id="@+id/upcount_sign"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:fontFamily="sans-serif-light"
+			android:paddingTop="@dimen/ui_serverstatus_signmargin"
+			android:text="↑"
+			android:textColor="@color/text_bright_dark"
+			android:textSize="@dimen/ui_serverstatus_sign"
+			tools:ignore="HardcodedText" />
+
+		<TextView
+			android:id="@+id/upcount_text"
+			android:layout_width="@dimen/ui_serverstatus_width"
+			android:layout_height="wrap_content"
+			android:layout_toLeftOf="@id/upcount_sign"
+			android:fontFamily="sans-serif-light"
+			android:gravity="end"
+			android:textColor="@color/text_bright_dark"
+			android:textSize="@dimen/ui_serverstatus_bignumber" />
+
+		<TextView
+			android:id="@+id/downcount_sign"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toLeftOf="@id/upcount_text"
+			android:fontFamily="sans-serif-light"
+			android:paddingTop="@dimen/ui_serverstatus_signmargin"
+			android:text="↓"
+			android:textColor="@color/text_bright_dark"
+			android:textSize="@dimen/ui_serverstatus_sign"
+			tools:ignore="HardcodedText" />
+
+		<TextView
+			android:id="@+id/downcount_text"
+			android:layout_width="@dimen/ui_serverstatus_width"
+			android:layout_height="wrap_content"
+			android:layout_toLeftOf="@id/downcount_sign"
+			android:fontFamily="sans-serif-light"
+			android:gravity="end"
+			android:textColor="@color/text_bright_dark"
+			android:textSize="@dimen/ui_serverstatus_bignumber" />
+
+		<TextView
+			android:id="@+id/upspeed_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignLeft="@id/upcount_text"
+			android:layout_alignParentRight="true"
+			android:layout_below="@id/upcount_text"
+			android:layout_marginTop="-4dip"
+			android:fontFamily="sans-serif-light"
+			android:gravity="end"
+			android:textColor="@color/text_bright_dark"
+			android:textSize="@dimen/ui_serverstatus_smallnumber" />
+
+		<TextView
+			android:id="@+id/downspeed_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignLeft="@id/downcount_text"
+			android:layout_alignRight="@id/downcount_sign"
+			android:layout_below="@id/downcount_text"
+			android:layout_marginTop="-4dip"
+			android:fontFamily="sans-serif-light"
+			android:gravity="end"
+			android:textColor="@color/text_bright_dark"
+			android:textSize="@dimen/ui_serverstatus_smallnumber" />
+	</RelativeLayout>
+	
 	<TextView
 		android:id="@+id/topline_view"
 		android:layout_width="match_parent"

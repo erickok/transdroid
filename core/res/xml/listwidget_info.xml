@@ -20,7 +20,7 @@
 	android:initialKeyguardLayout="@layout/widget_torrents_light"
 	android:initialLayout="@layout/widget_torrents_light"
 	android:minHeight="110dip"
-	android:minResizeHeight="110dip"
+	android:minResizeHeight="40dip"
 	android:minResizeWidth="110dp"
 	android:minWidth="180dp"
 	android:previewImage="@drawable/widget_preview"

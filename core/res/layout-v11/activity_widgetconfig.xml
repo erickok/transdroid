@@ -94,6 +94,13 @@
 				android:textIsSelectable="false" />
 
 			<CheckBox
+				android:id="@+id/showstatus_check_box"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_half"
+				android:text="@string/widget_showstatusview" />
+			
+			<CheckBox
 				android:id="@+id/darktheme_check_box"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

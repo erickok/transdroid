@@ -31,8 +31,8 @@
 	<dimen name="ui_serverstatus_margin">2dp</dimen>
 	<dimen name="ui_serverstatus_signmargin">5dp</dimen>
 	<dimen name="ui_serverstatus_bignumber">25sp</dimen>
-	<dimen name="ui_serverstatus_sign">17sp</dimen>
-	<dimen name="ui_serverstatus_smallnumber">14sp</dimen>
+	<dimen name="ui_serverstatus_sign">17dp</dimen>
+	<dimen name="ui_serverstatus_smallnumber">14dp</dimen>
 	<dimen name="ui_serverstatus_width">63dp</dimen>
 	
 	<!-- Widget configuration -->

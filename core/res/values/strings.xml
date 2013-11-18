@@ -204,6 +204,7 @@
 	<string name="widget_lookfeel">LOOK &amp; FEEL</string>
 	<string name="widget_sortby">SORT ORDER</string>
 	<string name="widget_reversesortorder">Reversed sort order</string>
+	<string name="widget_showstatusview">Server status instead of title</string>
 	<string name="widget_usedarktheme">Use dark theme (no preview)</string>
 	<string name="widget_done">DONE</string>
 	
