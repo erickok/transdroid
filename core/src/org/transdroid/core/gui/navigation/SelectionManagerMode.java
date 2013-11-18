@@ -17,6 +17,7 @@
 package org.transdroid.core.gui.navigation;
 
 import org.transdroid.core.gui.navigation.SelectionModificationSpinner.OnModificationActionSelectedListener;
+import org.transdroid.daemon.Finishable;
 
 import android.util.SparseBooleanArray;
 import android.view.ViewGroup;
@@ -59,7 +60,7 @@ public class SelectionManagerMode implements MultiChoiceModeListenerCompat, OnMo
 	public void setOnlyCheckClass(Class<?> onlyCheckClass) {
 		this.onlyCheckClass = onlyCheckClass;
 	}
-	
+
 	@Override
 	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 		// Allow modification of selection through a spinner
@@ -117,11 +118,25 @@ public class SelectionManagerMode implements MultiChoiceModeListenerCompat, OnMo
 	 * {@link ListView}.
 	 */
 	@Override
-	public void selectionAll() {
+	public void selectAll() {
 		for (int i = 0; i < managedList.getAdapter().getCount(); i++) {
 			if (managedList.getAdapter().isEnabled(i)
 					&& (onlyCheckClass == null || onlyCheckClass.isInstance(managedList.getItemAtPosition(i))))
 				managedList.setItemChecked(i, true);
+		}
+	}
+
+	/**
+	 * Implements the {@link SelectionModificationSpinner}'s select finished command by checking each (enabled) item
+	 * that represents something that is {@link Finishable} and indeed is finished;
+	 */
+	@Override
+	public void selectFinished() {
+		for (int i = 0; i < managedList.getAdapter().getCount(); i++) {
+			if (managedList.getAdapter().isEnabled(i)
+					&& (onlyCheckClass == null || onlyCheckClass.isInstance(managedList.getItemAtPosition(i)))
+					&& managedList.getItemAtPosition(i) instanceof Finishable)
+				managedList.setItemChecked(i, ((Finishable) managedList.getItemAtPosition(i)).isFinished());
 		}
 	}
 

@@ -31,7 +31,7 @@ import android.os.Parcelable;
  * @author erickok
  *
  */
-public final class TorrentFile implements Parcelable, Comparable<TorrentFile> {
+public final class TorrentFile implements Parcelable, Comparable<TorrentFile>, Finishable {
 
 	private final String key;
 	private final String name;
@@ -140,6 +140,22 @@ public final class TorrentFile implements Parcelable, Comparable<TorrentFile> {
 		}
 		// Unknown/none/unregistered extension: return null
 		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isStarted() {
+		return getPartDone() > 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isFinished() {
+		return getPartDone() >= 1;
 	}
 
 	@Override

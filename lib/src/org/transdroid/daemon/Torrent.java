@@ -29,7 +29,7 @@ import android.os.Parcelable;
  * @author erickok
  *
  */
-public final class Torrent implements Parcelable, Comparable<Torrent> {
+public final class Torrent implements Parcelable, Comparable<Torrent>, Finishable {
 
 	final private long id;
 	final private String hash;
@@ -206,7 +206,23 @@ public final class Torrent implements Parcelable, Comparable<Torrent> {
 	public boolean isSeeding(boolean dormantAsInactive) {
 		return statusCode == TorrentStatus.Seeding && (!dormantAsInactive || rateUpload > 0);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isStarted() {
+		return partDone > 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isFinished() {
+		return partDone >= 1;
+	}
+
 	/**
 	 * Indicates if the torrent can be paused at this moment
 	 * @return If it can be paused

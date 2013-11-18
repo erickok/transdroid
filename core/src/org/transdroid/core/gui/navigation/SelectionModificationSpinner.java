@@ -66,8 +66,10 @@ public class SelectionModificationSpinner extends Spinner {
 	@Override
 	public void setSelection(int position) {
 		if (position == 0) {
-			onModificationActionSelected.selectionAll();
+			onModificationActionSelected.selectAll();
 		} else if (position == 1) {
+			onModificationActionSelected.selectFinished();
+		} else if (position == 2) {
 			onModificationActionSelected.invertSelection();
 		}
 		super.setSelection(position);
@@ -84,6 +86,7 @@ public class SelectionModificationSpinner extends Spinner {
 		public SelectionDropDownAdapter(Context context) {
 			super(context, android.R.layout.simple_list_item_1, new String[] {
 					context.getString(R.string.navigation_selectall),
+					context.getString(R.string.navigation_selectfinished),
 					context.getString(R.string.navigation_invertselection) });
 			titleView = new TextView(getContext());
 		}
@@ -106,9 +109,9 @@ public class SelectionModificationSpinner extends Spinner {
 	 * Interface to implement if an interface want to respond to selection modification actions.
 	 */
 	public interface OnModificationActionSelectedListener {
+		public void selectAll();
+		public void selectFinished();
 		public void invertSelection();
-
-		public void selectionAll();
 	}
 
 }
