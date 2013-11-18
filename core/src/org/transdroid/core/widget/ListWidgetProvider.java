@@ -19,10 +19,9 @@ package org.transdroid.core.widget;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EReceiver;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.ApplicationSettings;
-import org.transdroid.core.app.settings.ApplicationSettings_;
+import org.transdroid.core.app.settings.*;
 import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.*;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.service.ControlService;
 

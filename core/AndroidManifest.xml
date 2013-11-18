@@ -17,11 +17,11 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.transdroid.core"
-	android:versionCode="208"
-	android:versionName="2.0.2" >
+	android:versionCode="209"
+	android:versionName="2.1.0" >
 
 	<uses-sdk
 		android:minSdkVersion="7"
-		android:targetSdkVersion="18" />
+		android:targetSdkVersion="19" />
 
 </manifest>
