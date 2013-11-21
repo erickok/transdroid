@@ -599,7 +599,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 						((float) tor.getDouble(RPC_PARTDONE)) / 100f, // Percentage to [0..1]
 						0f, // Not available
 						tor.has(RPC_LABEL)? tor.getString(RPC_LABEL): null,
-						tor.has(RPC_TIMEADDED)? new Date(tor.getInt(RPC_TIMEADDED) * 1000L): null,
+						tor.has(RPC_TIMEADDED)? new Date((long) (tor.getDouble(RPC_TIMEADDED) * 1000L)): null,
 						null, // Not available
 						tor.getString(RPC_MESSAGE),
 						settings.getType()));
