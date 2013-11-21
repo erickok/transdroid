@@ -497,9 +497,13 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Add a torrent from a local or remote data URI?
 		if (dataUri == null)
 			return;
+		if (dataUri.getScheme() == null) {
+			Crouton.showText(this, R.string.error_invalid_url_form, NavigationHelper.CROUTON_ERROR_STYLE);
+			return;
+		}
 
 		// Adding a torrent from the Android downloads manager
-		if (dataUri.getScheme() != null && dataUri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+		if (dataUri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
 			addTorrentFromDownloads(dataUri);
 			return;
 		}
