@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,10 +63,11 @@ import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.DLog;
-import org.transdroid.daemon.util.FakeTrustManager;
+import org.transdroid.daemon.util.HttpHelper;
 
 import de.timroes.axmlrpc.XMLRPCClient;
 import de.timroes.axmlrpc.XMLRPCException;
+import de.timroes.axmlrpc.XMLRPCClient.UnauthorizdException;
 
 /**
  * An adapter that allows for easy access to rTorrent torrent data. Communication
@@ -257,6 +257,8 @@ public class RtorrentAdapter implements IDaemonAdapter {
 			return rpcclient.call(serverMethod, arguments);
 		} catch (XMLRPCException e) {
 			DLog.d(LOG_NAME, e.toString());
+			if (e.getCause() instanceof UnauthorizdException)
+				throw new DaemonException(ExceptionType.AuthenticationFailure, e.toString());
 			if (e.getCause() instanceof DaemonException)
 				throw (DaemonException) e.getCause();
 			throw new DaemonException(ExceptionType.ConnectionError, "Error making call to " + serverMethod + " with params [" + (params.length() > 100? params.substring(0, 100) + "...": params) + " ]: " + e.toString());
@@ -271,15 +273,8 @@ public class RtorrentAdapter implements IDaemonAdapter {
 	 */
 	private void initialise() throws DaemonException, MalformedURLException {
 
-		//this.rpcclient = new XMLRPCClient(HttpHelper.createStandardHttpClient(settings, true), buildWebUIUrl().trim());
-		int flags = XMLRPCClient.FLAGS_8BYTE_INT | XMLRPCClient.FLAGS_ENABLE_COOKIES;
-		if (settings.getSsl() && settings.getSslTrustAll())
-			flags = XMLRPCClient.FLAGS_8BYTE_INT | XMLRPCClient.FLAGS_ENABLE_COOKIES | XMLRPCClient.FLAGS_SSL_IGNORE_INVALID_CERT;
-		this.rpcclient = new XMLRPCClient(new URL(buildWebUIUrl().trim()), flags);
-		if (settings.getSsl() && settings.getSslTrustKey() != null && !settings.getSslTrustKey().isEmpty())
-			this.rpcclient.installCustomTrustManager(new FakeTrustManager(settings.getSslTrustKey()));
-		this.rpcclient.setTimeout(settings.getTimeoutInMilliseconds() / 1000);
-		this.rpcclient.setLoginData(settings.getUsername(), settings.getPassword());
+		int flags = XMLRPCClient.FLAGS_8BYTE_INT;
+		this.rpcclient = new XMLRPCClient(HttpHelper.createStandardHttpClient(settings, true), buildWebUIUrl(), flags);
 		
 	}
 	

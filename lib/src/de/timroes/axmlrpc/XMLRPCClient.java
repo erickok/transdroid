@@ -1,17 +1,19 @@
 package de.timroes.axmlrpc;
 
-import de.timroes.axmlrpc.serializer.SerializerHandler;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.net.*;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.net.ssl.*;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
+
+import de.timroes.axmlrpc.serializer.SerializerHandler;
 
 /**
  * An XMLRPCClient is a client used to make XML-RPC (Extensible Markup Language
@@ -26,12 +28,9 @@ import javax.net.ssl.*;
  */
 public class XMLRPCClient {
 
-	private static final String DEFAULT_USER_AGENT = "aXMLRPC";
-
 	/**
 	 * Constants from the http protocol.
 	 */
-	static final String USER_AGENT = "User-Agent";
 	static final String CONTENT_TYPE = "Content-Type";
 	static final String TYPE_XML = "text/xml; charset=utf-8";
 	static final String HOST = "Host";
@@ -73,13 +72,6 @@ public class XMLRPCClient {
 	public static final int FLAGS_8BYTE_INT = 0x02;
 
 	/**
-	 * With this flag, the client will be able to handle cookies, meaning saving cookies
-	 * from the server and sending it with every other request again. This is needed
-	 * for some XML-RPC interfaces that support login.
-	 */
-	public static final int FLAGS_ENABLE_COOKIES = 0x04;
-
-	/**
 	 * The client will be able to send null values. A null value will be send
 	 * as <nil/>. This extension is described under: http://ontosys.com/xml-rpc/extensions.php
 	 */
@@ -99,23 +91,6 @@ public class XMLRPCClient {
 	 * been set, the client will throw an exception on these HTTP status codes.
 	 */
 	public static final int FLAGS_FORWARD = 0x20;
-
-	/**
-	 * With this flag enabled, the client will ignore, if the URL doesn't match
-	 * the SSL Certificate. This should be used with caution. Normally the URL
-	 * should always match the URL in the SSL certificate, even with self signed
-	 * certificates.
-	 */
-	public static final int FLAGS_SSL_IGNORE_INVALID_HOST = 0x40;
-
-	/**
-	 * With this flag enabled, the client will ignore all unverified SSL/TLS
-	 * certificates. This must be used, if you use self-signed certificates
-	 * or certificated from unknown (or untrusted) authorities. If this flag is
-	 * used, calls to {@link #installCustomTrustManager(javax.net.ssl.TrustManager)}
-	 * won't have any effect.
-	 */
-	public static final int FLAGS_SSL_IGNORE_INVALID_CERT = 0x80;
 
 	/**
 	 * With this flag enabled, a value with a missing type tag, will be parsed
@@ -152,14 +127,6 @@ public class XMLRPCClient {
 	public static final int FLAGS_NO_STRING_ENCODE = 0x1000;
 
 	/**
-	 * This flag disables all SSL warnings. It is an alternative to use
-	 * FLAGS_SSL_IGNORE_INVALID_CERT | FLAGS_SSL_IGNORE_INVALID_HOST. There
-	 * is no functional difference.
-	 */
-	public static final int FLAGS_SSL_IGNORE_ERRORS =
-			FLAGS_SSL_IGNORE_INVALID_CERT | FLAGS_SSL_IGNORE_INVALID_HOST;
-
-	/**
 	 * This flag should be used if the server is an apache ws xmlrpc server.
 	 * This will set some flags, so that the not standard conform behavior
 	 * of the server will be ignored.
@@ -171,271 +138,44 @@ public class XMLRPCClient {
 
 	private final int flags;
 
-	private URL url;
-	private Map<String,String> httpParameters = new ConcurrentHashMap<String, String>();
+	private DefaultHttpClient httpclient;
+	
+	private String url;
 
 	private Map<Long,Caller> backgroundCalls = new ConcurrentHashMap<Long, Caller>();
 
 	private ResponseParser responseParser;
-	private CookieManager cookieManager;
-	private AuthenticationManager authManager;
-
-	private TrustManager[] trustManagers;
-    private KeyManager[] keyManagers;
-
-	private Proxy proxy;
-
-	private int timeout;
 
 	/**
 	 * Create a new XMLRPC client for the given URL.
-	 *
+	 * 
+	 * @param httpclient The already-initialized Apache HttpClient to use for connection.
 	 * @param url The URL to send the requests to.
-	 * @param userAgent A user agent string to use in the HTTP requests.
 	 * @param flags A combination of flags to be set.
 	 */
-	public XMLRPCClient(URL url, String userAgent, int flags) {
+	public XMLRPCClient(DefaultHttpClient httpclient, String url, int flags) {
 
 		SerializerHandler.initialize(flags);
 
+		this.httpclient = httpclient;
 		this.url = url;
-
 		this.flags = flags;
+		
 		// Create a parser for the http responses.
 		responseParser = new ResponseParser();
 
-		cookieManager = new CookieManager(flags);
-		authManager = new AuthenticationManager();
-
-		httpParameters.put(CONTENT_TYPE, TYPE_XML);
-		httpParameters.put(USER_AGENT, userAgent);
-
-		// If invalid ssl certs are ignored, instantiate an all trusting TrustManager
-		if(isFlagSet(FLAGS_SSL_IGNORE_INVALID_CERT)) {
-			trustManagers = new TrustManager[] {
-				new X509TrustManager() {
-					public void checkClientTrusted(X509Certificate[] xcs, String string)
-							throws CertificateException { }
-
-					public void checkServerTrusted(X509Certificate[] xcs, String string)
-							throws CertificateException { }
-
-					public X509Certificate[] getAcceptedIssuers() {
-						return null;
-					}
-				}
-			};
-		}
-
-		if(isFlagSet(FLAGS_USE_SYSTEM_PROXY)) {
-			// Read system proxy settings and generate a proxy from that
-			Properties prop = System.getProperties();
-			String proxyHost = prop.getProperty("http.proxyHost");
-			int proxyPort = Integer.parseInt(prop.getProperty("http.proxyPort", "0"));
-			if(proxyPort > 0 && proxyHost.length() > 0 && !proxyHost.equals("null")) {
-				proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
-			}
-		}
-
-	}
-
-	/**
-	 * Create a new XMLRPC client for the given URL.
-	 * The default user agent string will be used.
-	 *
-	 * @param url The URL to send the requests to.
-	 * @param flags A combination of flags to be set.
-	 */
-	public XMLRPCClient(URL url, int flags) {
-		this(url, DEFAULT_USER_AGENT, flags);
-	}
-
-	/**
-	 * Create a new XMLRPC client for the given url.
-	 * No flags will be set.
-	 *
-	 * @param url The url to send the requests to.
-	 * @param userAgent A user agent string to use in the http request.
-	 */
-	public XMLRPCClient(URL url, String userAgent) {
-		this(url, userAgent, FLAGS_NONE);
 	}
 
 	/**
 	 * Create a new XMLRPC client for the given url.
 	 * No flags will be used.
-	 * The default user agent string will be used.
 	 *
+	 * @param httpclient The already-initialized Apache HttpClient to use for connection.
 	 * @param url The url to send the requests to.
 	 */
-	public XMLRPCClient(URL url) {
-		this(url, DEFAULT_USER_AGENT, FLAGS_NONE);
+	public XMLRPCClient(DefaultHttpClient httpclient, String url) {
+		this(httpclient, url, FLAGS_NONE);
 	}
-
-	/**
-	 * Returns the URL this XMLRPCClient is connected to. If that URL permanently forwards
-	 * to another URL, this method will return the forwarded URL, as soon as
-	 * the first call has been made.
-	 *
-	 * @return Returns the URL for this XMLRPCClient.
-	 */
-	public URL getURL() {
-		return url;
-	}
-
-	/**
-	 * Sets the time in seconds after which a call should timeout.
-	 * If {@code timeout} will be zero or less the connection will never timeout.
-	 * In case the connection times out and {@link XMLRPCTimeoutException} will
-	 * be thrown for calls made by {@link #call(java.lang.String, java.lang.Object[])}.
-	 * For calls made by {@link #callAsync(de.timroes.axmlrpc.XMLRPCCallback, java.lang.String, java.lang.Object[])}
-	 * the {@link XMLRPCCallback#onError(long, de.timroes.axmlrpc.XMLRPCException)} method
-	 * of the callback will be called. By default connections won't timeout.
-	 *
-	 * @param timeout The timeout for connections in seconds.
-	 */
-	public void setTimeout(int timeout) {
-		this.timeout = timeout;
-	}
-
-	/**
-	 * Sets the user agent string.
-	 * If this method is never called the default
-	 * user agent 'aXMLRPC' will be used.
-	 *
-	 * @param userAgent The new user agent string.
-	 */
-	public void setUserAgentString(String userAgent) {
-		httpParameters.put(USER_AGENT, userAgent);
-	}
-
-	/**
-	 * Sets a proxy to use for this client. If you want to use the system proxy,
-	 * use {@link #FLAGS_adbUSE_SYSTEM_PROXY} instead. If combined with
-	 * {@code FLAGS_USE_SYSTEM_PROXY}, this proxy will be used instead of the
-	 * system proxy.
-	 *
-	 * @param proxy A proxy to use for the connection.
-	 */
-	public void setProxy(Proxy proxy) {
-		this.proxy = proxy;
-	}
-
-	/**
-	 * Set a HTTP header field to a custom value.
-	 * You cannot modify the Host or Content-Type field that way.
-	 * If the field already exists, the old value is overwritten.
-	 *
-	 * @param headerName The name of the header field.
-	 * @param headerValue The new value of the header field.
-	 */
-	public void setCustomHttpHeader(String headerName, String headerValue) {
-		if(CONTENT_TYPE.equals(headerName) || HOST.equals(headerName)
-				|| CONTENT_LENGTH.equals(headerName)) {
-			throw new XMLRPCRuntimeException("You cannot modify the Host, Content-Type or Content-Length header.");
-		}
-		httpParameters.put(headerName, headerValue);
-	}
-
-	/**
-	 * Set the username and password that should be used to perform basic
-	 * http authentication.
-	 *
-	 * @param user Username
-	 * @param pass Password
-	 */
-	public void setLoginData(String user, String pass) {
-		authManager.setAuthData(user, pass);
-	}
-
-	/**
-	 * Clear the username and password. No basic HTTP authentication will be used
-	 * in the next calls.
-	 */
-	public void clearLoginData() {
-		authManager.clearAuthData();
-	}
-
-	/**
-	 * Returns a {@link Map} of all cookies. It contains each cookie key as a map
-	 * key and its value as a map value. Cookies will only be used if {@link #FLAGS_ENABLE_COOKIES}
-	 * has been set for the client. This map will also be available (and empty)
-	 * when this flag hasn't been said, but has no effect on the HTTP connection.
-	 *
-	 * @return A {@code Map} of all cookies.
-	 */
-	public Map<String,String> getCookies() {
-		return cookieManager.getCookies();
-	}
-
-	/**
-	 * Delete all cookies currently used by the client.
-	 * This method has only an effect, as long as the FLAGS_ENABLE_COOKIES has
-	 * been set on this client.
-	 */
-	public void clearCookies() {
-		cookieManager.clearCookies();
-	}
-
-	/**
-	 * Installs a custom {@link TrustManager} to handle SSL/TLS certificate verification.
-	 * This will replace any previously installed {@code TrustManager}s.
-	 * If {@link #FLAGS_SSL_IGNORE_INVALID_CERT} is set, this won't do anything.
-	 *
-	 * @param trustManager {@link TrustManager} to install.
-	 *
-	 * @see #installCustomTrustManagers(javax.net.ssl.TrustManager[])
-	 */
-	public void installCustomTrustManager(TrustManager trustManager) {
-		if(!isFlagSet(FLAGS_SSL_IGNORE_INVALID_CERT)) {
-			trustManagers = new TrustManager[] { trustManager };
-		}
-	}
-
-	/**
-	 * Installs custom {@link TrustManager TrustManagers} to handle SSL/TLS certificate
-	 * verification. This will replace any previously installed {@code TrustManagers}s.
-	 * If {@link #FLAGS_SSL_IGNORE_INVALID_CERT} is set, this won't do anything.
-	 *
-	 * @param trustManagers {@link TrustManager TrustManagers} to install.
-	 *
-	 * @see #installCustomTrustManager(javax.net.ssl.TrustManager)
-	 */
-	public void installCustomTrustManagers(TrustManager[] trustManagers) {
-		if(!isFlagSet(FLAGS_SSL_IGNORE_INVALID_CERT)) {
-			this.trustManagers = trustManagers.clone();
-		}
-	}
-
-    /**
-     * Installs a custom {@link KeyManager} to handle SSL/TLS certificate verification.
-     * This will replace any previously installed {@code KeyManager}s.
-     * If {@link #FLAGS_SSL_IGNORE_INVALID_CERT} is set, this won't do anything.
-     *
-     * @param keyManager {@link KeyManager} to install.
-     *
-     * @see #installCustomKeyManagers(javax.net.ssl.KeyManager[])
-     */
-    public void installCustomKeyManager(KeyManager keyManager) {
-        if(!isFlagSet(FLAGS_SSL_IGNORE_INVALID_CERT)) {
-            keyManagers = new KeyManager[] { keyManager };
-        }
-    }
-
-    /**
-     * Installs custom {@link KeyManager KeyManagers} to handle SSL/TLS certificate
-     * verification. This will replace any previously installed {@code KeyManagers}s.
-     * If {@link #FLAGS_SSL_IGNORE_INVALID_CERT} is set, this won't do anything.
-     *
-     * @param keyManagers {@link KeyManager KeyManagers} to install.
-     *
-     * @see #installCustomKeyManager(javax.net.ssl.KeyManager)
-     */
-    public void installCustomKeyManagers(KeyManager[] keyManagers) {
-      if(!isFlagSet(FLAGS_SSL_IGNORE_INVALID_CERT)) {
-        this.keyManagers = keyManagers.clone();
-      }
-    }
 
 	/**
 	 * Call a remote procedure on the server. The method must be described by
@@ -452,7 +192,12 @@ public class XMLRPCClient {
 	 * @throws XMLRPCException Will be thrown if an error occurred during the call.
 	 */
 	public Object call(String method, Object... params) throws XMLRPCException {
-		return new Caller().call(method, params);
+		try {
+			return new Caller().call(method, params);
+		} catch (CancelException e) {
+			// Should not happen as this is not an async call
+			throw new XMLRPCException("Background thread was explicitly cancelled, but not started asynchronously.");
+		}
 	}
 
 	/**
@@ -539,8 +284,8 @@ public class XMLRPCClient {
 		private String methodName;
 		private Object[] params;
 
+		HttpPost post = null;
 		private volatile boolean canceled;
-		private HttpURLConnection http;
 
 		/**
 		 * Create a new Caller for asynchronous use.
@@ -580,12 +325,11 @@ public class XMLRPCClient {
 				backgroundCalls.put(threadId, this);
 				Object o = this.call(methodName, params);
 				listener.onResponse(threadId, o);
-			} catch(CancelException ex) {
-				// Don't notify the listener, if the call has been canceled.
 			} catch(XMLRPCServerException ex) {
 				listener.onServerError(threadId, ex);
 			} catch (XMLRPCException ex) {
 				listener.onError(threadId, ex);
+			} catch (CancelException e) {
 			} finally {
 				backgroundCalls.remove(threadId);
 			}
@@ -599,7 +343,8 @@ public class XMLRPCClient {
 			// Set the flag, that this thread has been canceled
 			canceled = true;
 			// Disconnect the connection to the server
-			http.disconnect();
+			if (post != null)
+				post.abort();
 		}
 
 		/**
@@ -615,58 +360,25 @@ public class XMLRPCClient {
 		 * @param params An array of parameters for the method.
 		 * @return The result of the server.
 		 * @throws XMLRPCException Will be thrown if an error occurred during the call.
+		 * @throws CancelException WIll be thrown if the async execution is explicitly cancelled.
 		 */
-		public Object call(String methodName, Object[] params) throws XMLRPCException {
+		public Object call(String methodName, Object[] params) throws XMLRPCException, CancelException {
 
 			try {
 
 				Call c = createCall(methodName, params);
-
-				// If proxy is available, use it
-				URLConnection conn;
-				if(proxy != null)
-					conn = url.openConnection(proxy);
-				else
-					conn = url.openConnection();
-
-				http = verifyConnection(conn);
-				http.setInstanceFollowRedirects(false);
-				http.setRequestMethod(HTTP_POST);
-				http.setDoOutput(true);
-				http.setDoInput(true);
-
-				// Set timeout
-				if(timeout > 0) {
-					http.setConnectTimeout(timeout * 1000);
-					http.setReadTimeout(timeout * 1000);
-				}
-
-				// Set the request parameters
-				for(Map.Entry<String,String> param : httpParameters.entrySet()) {
-					http.setRequestProperty(param.getKey(), param.getValue());
-				}
-
-				authManager.setAuthentication(http);
-				cookieManager.setCookies(http);
-
-				OutputStreamWriter stream = new OutputStreamWriter(http.getOutputStream());
-				stream.write(c.getXML());
-				stream.flush();
-				stream.close();
-
-				// Try to get the status code from the connection
-				int statusCode;
-				try {
-					statusCode = http.getResponseCode();
-				} catch(IOException ex) {
-					// Due to a bug on android, the getResponseCode()-method will
-					// fail the first time, with a IOException, when 401 or 403 has been returned.
-					// The second time it should success. If it fail the second time again
-					// the normal exceptipon handling can take care of this, since
-					// it is a real error.
-					statusCode = http.getResponseCode();
-				}
-
+				
+				// Prepare POST request
+				HttpPost post = new HttpPost(url);
+				post.getParams().setParameter("http.protocol.handle-redirects",	false);
+				post.setHeader(CONTENT_TYPE, TYPE_XML);
+				StringEntity entity = new StringEntity(c.getXML(), HTTP.UTF_8);
+				entity.setContentType(TYPE_XML);
+				post.setEntity(entity);
+				
+				HttpResponse response = httpclient.execute(post);
+				int statusCode = response.getStatusLine().getStatusCode();
+				
 				InputStream istream;
 
 				// If status code was 401 or 403 throw exception or if appropriate
@@ -677,14 +389,14 @@ public class XMLRPCClient {
 					if(isFlagSet(FLAGS_IGNORE_STATUSCODE)) {
 						// getInputStream will fail if server returned above
 						// error code, use getErrorStream instead
-						istream = http.getErrorStream();
+						istream = response.getEntity().getContent();
 					} else {
 						throw new XMLRPCException("Invalid status code '"
-								+ statusCode + "' returned from server.");
+								+ statusCode + "' returned from server.", new UnauthorizdException(statusCode));
 					}
 
 				} else {
-					istream = http.getInputStream();
+					istream = response.getEntity().getContent();
 				}
 
 				// If status code is 301 Moved Permanently or 302 Found ...
@@ -695,15 +407,14 @@ public class XMLRPCClient {
 						boolean temporaryForward = (statusCode == HttpURLConnection.HTTP_MOVED_TEMP);
 
 						// Get new location from header field.
-						String newLocation = http.getHeaderField("Location");
+						String newLocation = response.getFirstHeader("Location").getValue();
 						// Try getting header in lower case, if no header has been found
 						if(newLocation == null || newLocation.length() <= 0)
-							newLocation = http.getHeaderField("location");
+							newLocation = response.getFirstHeader("location").getValue();
 
 						// Set new location, disconnect current connection and request to new location.
-						URL oldURL = url;
-						url = new URL(newLocation);
-						http.disconnect();
+						String oldURL = url;
+						url = newLocation;
 						Object forwardedResult = call(methodName, params);
 
 						// In case of temporary forward, restore original URL again for next call.
@@ -728,12 +439,10 @@ public class XMLRPCClient {
 
 				// Check for strict parameters
 				if(isFlagSet(FLAGS_STRICT)) {
-					if(!http.getContentType().startsWith(TYPE_XML)) {
+					if(!response.getFirstHeader("Content-Type").getValue().startsWith(TYPE_XML)) {
 						throw new XMLRPCException("The Content-Type of the response must be text/xml.");
 					}
 				}
-
-				cookieManager.readCookies(http);
 
 				return responseParser.parse(istream);
 
@@ -751,62 +460,18 @@ public class XMLRPCClient {
 			}
 
 		}
-
-		/**
-		 * Verifies the given URLConnection to be a valid HTTP or HTTPS connection.
-		 * If the SSL ignoring flags are set, the method will ignore SSL warnings.
-		 *
-		 * @param conn The URLConnection to validate.
-		 * @return The verified HttpURLConnection.
-		 * @throws XMLRPCException Will be thrown if an error occurred.
-		 */
-		private HttpURLConnection verifyConnection(URLConnection conn) throws XMLRPCException {
-
-				if(!(conn instanceof HttpURLConnection)) {
-					throw new IllegalArgumentException("The URL is not valid for a http connection.");
-				}
-
-				// Validate the connection if its an SSL connection
-				if(conn instanceof HttpsURLConnection) {
-
-					HttpsURLConnection h = (HttpsURLConnection)conn;
-
-					// Don't check, that URL matches the certificate.
-					if(isFlagSet(FLAGS_SSL_IGNORE_INVALID_HOST)) {
-						h.setHostnameVerifier(new HostnameVerifier() {
-							public boolean verify(String host, SSLSession ssl) {
-								return true;
-							}
-						});
-					}
-
-					// Associate the TrustManager with TLS and SSL connections, if present.
-					if(trustManagers != null) {
-						try {
-							String[] sslContexts = new String[]{ "TLS", "SSL" };
-
-							for(String ctx : sslContexts) {
-								SSLContext sc = SSLContext.getInstance(ctx);
-								sc.init(keyManagers, trustManagers, new SecureRandom());
-								h.setSSLSocketFactory(sc.getSocketFactory());
-							}
-
-						} catch(Exception ex) {
-							throw new XMLRPCException(ex);
-						}
-
-					}
-
-					return h;
-
-				}
-
-				return (HttpURLConnection)conn;
-
-		}
-
+		
+	}
+	
+	public static class CancelException extends Exception {
+		private static final long serialVersionUID = 9125122307255855136L;
 	}
 
-	private class CancelException extends RuntimeException { }
-
+	public static class UnauthorizdException extends Exception {
+		private static final long serialVersionUID = -3331056540713825039L;
+		private int statusCode;
+		public UnauthorizdException(int statusCode) { this.statusCode = statusCode; }
+		public int getStatusCode() { return statusCode; }
+	}
+	
 }

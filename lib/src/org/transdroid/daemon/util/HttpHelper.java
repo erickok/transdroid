@@ -71,7 +71,7 @@ public class HttpHelper {
 	/**
 	 * The 'User-Agent' name to send to the server
 	 */
-	public static String userAgent = null;
+	public static String userAgent = "Transdroid Torrent Connect";
 
 	/**
 	 * Creates a standard Apache HttpClient that is thread safe, supports different SSL auth methods and basic
