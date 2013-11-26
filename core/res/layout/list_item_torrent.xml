@@ -20,7 +20,8 @@
 	android:layout_height="wrap_content"
 	android:background="?attr/activatable_background_transdroid"
 	android:orientation="vertical"
-	android:paddingRight="@dimen/margin_default" >
+	android:paddingRight="@dimen/margin_default"
+	android:paddingBottom="@dimen/margin_half" >
 
 	<TextView
 		android:id="@+id/name_text"
@@ -41,7 +42,6 @@
 		android:layout_below="@id/name_text"
 		android:layout_marginLeft="@dimen/margin_half"
 		android:layout_marginTop="4.0dip"
-		android:paddingBottom="@dimen/margin_half"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small" />
 
@@ -70,6 +70,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_below="@id/ratio_text"
+		android:layout_marginTop="@dimen/margin_half"
 		android:layout_marginLeft="@dimen/margin_torrentlistleft" />
 
 	<TextView
@@ -79,8 +80,7 @@
 		android:layout_alignParentRight="true"
 		android:layout_below="@id/torrent_progressbar"
 		android:layout_marginLeft="@dimen/margin_half"
-		android:layout_marginTop="@dimen/margin_half"
-		android:paddingBottom="@dimen/margin_half"
+		android:paddingTop="@dimen/margin_half"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small" />
 
@@ -92,7 +92,7 @@
 		android:layout_alignParentLeft="true"
 		android:layout_marginLeft="@dimen/margin_torrentlistleft"
 		android:layout_toLeftOf="@id/speed_text"
-		android:paddingBottom="@dimen/margin_half"
+		android:paddingTop="@dimen/margin_half"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small" />
 

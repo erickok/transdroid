@@ -64,6 +64,14 @@ public class TorrentView extends TorrentStatusLayout {
 			peersText.setText(local.getProgressConnectionText(getResources()));
 			speedText.setVisibility(View.VISIBLE);
 			speedText.setText(local.getProgressSpeedText(getResources()));
+		} else if (torrent.getPartDone() < 1) {
+			// Not active, but also not complete, so show the status bar
+			torrentProgressbar.setVisibility(View.VISIBLE);
+			torrentProgressbar.setProgress((int) (torrent.getDownloadedPercentage() * 100));
+			torrentProgressbar.setActive(torrent.canPause());
+			torrentProgressbar.setError(torrent.getStatusCode() == TorrentStatus.Error);
+			peersText.setVisibility(View.GONE);
+			speedText.setVisibility(View.GONE);
 		} else {
 			torrentProgressbar.setVisibility(View.GONE);
 			peersText.setVisibility(View.GONE);
