@@ -194,7 +194,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		getSupportActionBar().setCustomView(serverStatusView);
 		navigationSpinnerAdapter = FilterListDropDownAdapter_.getInstance_(this);
 		// Servers are always added to the action bar spinner
-		navigationSpinnerAdapter.updateServers(applicationSettings.getServerSettings());
+		navigationSpinnerAdapter.updateServers(applicationSettings.getAllServerSettings());
 
 		// Check if there was room for a dedicated filter list (i.e. on tablets)
 		if (filtersList != null) {
@@ -231,7 +231,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 				&& getIntent().getExtras() == null && getIntent().hasExtra(ListWidgetProvider.EXTRA_SERVER)) {
 			// A server settings order ID was provided in this org.transdroid.START_SERVER action intent
 			int serverId = getIntent().getExtras().getInt(ListWidgetProvider.EXTRA_SERVER);
-			if (serverId < 0 || serverId > applicationSettings.getMaxServer()) {
+			if (serverId < 0 || serverId > applicationSettings.getMaxOfAllServers()) {
 				Log.e(this, "Tried to start with " + ListWidgetProvider.EXTRA_SERVER + " intent but " + serverId
 						+ " is not an existing server order id");
 			} else {
@@ -275,7 +275,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		super.onResume();
 
 		// Refresh server settings
-		navigationSpinnerAdapter.updateServers(applicationSettings.getServerSettings());
+		navigationSpinnerAdapter.updateServers(applicationSettings.getAllServerSettings());
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		if (lastUsed == null) {
 			// Still no settings

@@ -141,7 +141,7 @@ public class NavigationHelper {
 	 * @return True if search is enabled, false otherwise
 	 */
 	public boolean enableSearchUi() {
-		return !context.getPackageName().equals("org.transdroid.lite");
+		return context.getResources().getBoolean(R.bool.search_available);
 	}
 
 	/**
@@ -150,7 +150,16 @@ public class NavigationHelper {
 	 * @return True if search is enabled, false otherwise
 	 */
 	public boolean enableRssUi() {
-		return !context.getPackageName().equals("org.transdroid.lite");
+		return context.getResources().getBoolean(R.bool.rss_available);
+	}
+
+	/**
+	 * Returns whether any seedbox-related components should be shown in the interface; specifically the option to add 
+	 * server settings via easy seedbox-specific screens.
+	 * @return True if seedbox settings should be shown, false otherwise
+	 */
+	public boolean enableSeedboxes() {
+		return context.getResources().getBoolean(R.bool.seedboxes_available);
 	}
 
 	/**

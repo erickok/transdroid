@@ -75,7 +75,7 @@ public class ServerCheckerService extends IntentService {
 		}
 
 		int notifyBase = 10000;
-		for (ServerSetting server : applicationSettings.getServerSettings()) {
+		for (ServerSetting server : applicationSettings.getAllServerSettings()) {
 
 			// No need to check if the server is not properly configured or none of the two types of notifications are
 			// enabled by the user for this specific server

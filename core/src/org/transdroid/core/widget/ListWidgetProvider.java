@@ -110,7 +110,7 @@ public class ListWidgetProvider extends AppWidgetProvider {
 		if (context == null || config == null)
 			return null;
 		ApplicationSettings appSettings = ApplicationSettings_.getInstance_(context);
-		if (config.getServerId() < 0 || config.getServerId() > appSettings.getMaxServer()) {
+		if (config.getServerId() < 0 || config.getServerId() > appSettings.getMaxOfAllServers()) {
 			Log.e(context, "Tried to set up widget " + appWidgetId + " but the bound server ID " + config.getServerId()
 					+ " no longer exists.");
 			return null;

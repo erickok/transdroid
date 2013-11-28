@@ -21,7 +21,7 @@
 		android:key="header_servers"
 		android:title="@string/pref_servers"
 		android:order="0">
-		<Preference
+		<org.transdroid.core.gui.settings.OverflowPreference
 			android:key="header_addserver"
 			android:title="@string/pref_addserver"
 			android:order="99" />

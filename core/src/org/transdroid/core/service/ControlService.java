@@ -57,7 +57,7 @@ public class ControlService extends IntentService {
 
 			// See if the supplied server id is pointing to a valid server
 			int serverId = intent.getIntExtra(EXTRA_DAEMON, -1);
-			if (serverId < 0 || serverId > applicationSettings.getMaxServer()) {
+			if (serverId < 0 || serverId > applicationSettings.getMaxOfAllServers()) {
 				// This server does not exist (any more) or no valid EXTRA_DAEMON value was supplied
 				Log.e(this, "The control service can be started with a DAEMON extra zero-based server id, but the"
 						+ "supplied id was invalid or no longer points to an existing server.");
@@ -77,7 +77,7 @@ public class ControlService extends IntentService {
 				return;
 			}
 			int serverId = config.getServerId();
-			if (serverId < 0 || serverId > applicationSettings.getMaxServer()) {
+			if (serverId < 0 || serverId > applicationSettings.getMaxOfAllServers()) {
 				Log.e(this, "The home screen widget points to a server that no longer exists.");
 				return;
 			}

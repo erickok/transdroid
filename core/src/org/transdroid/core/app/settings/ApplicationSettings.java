@@ -32,6 +32,7 @@ import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchSite;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.search.SearchSetting;
+import org.transdroid.core.seedbox.SeedboxProvider;
 import org.transdroid.core.widget.ListWidgetConfig;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.OS;
@@ -60,22 +61,69 @@ public class ApplicationSettings {
 	}
 
 	/**
-	 * Returns all available user-configured servers
+	 * Returns all available user-configured normal and seed servers
 	 * @return A list of all stored server settings objects
 	 */
-	public List<ServerSetting> getServerSettings() {
+	public List<ServerSetting> getAllServerSettings() {
+		List<ServerSetting> all = new ArrayList<ServerSetting>();
+		all.addAll(getNormalServerSettings());
+		for (SeedboxProvider provider : SeedboxProvider.values()) {
+			all.addAll(provider.getSettings().getAllServerSettings(prefs, all.size()));
+		}
+		return all;
+	}
+
+	/**
+	 * Returns the order number/identifying key of the last server, normal or seedbox configured
+	 * @return The zero-based order number (index) of the last stored server settings
+	 */
+	public int getMaxOfAllServers() {
+		int max = getMaxNormalServer();
+		for (SeedboxProvider provider : SeedboxProvider.values()) {
+			max += provider.getSettings().getMaxSeedboxOrder(prefs) + 1;
+		}
+		return max;
+	}
+	
+	/**
+	 * Returns the server settings for either a normal or a seedbox server as the user configured. WARNING: This method 
+	 * does not check if the settings actually exist and may reply on empty default if called for a non-existing server.
+	 * @param order The order number/identifying key of the server's settings to retrieve, where the normal servers are
+	 *            first and the seedboxes are numbers thereafter onwards
+	 * @return The server settings object, loaded from shared preferences
+	 */
+	public ServerSetting getServerSetting(int order) {
+		int max = getMaxNormalServer();
+		if (order <= max) {
+			return getNormalServerSetting(order);
+		}
+		for (SeedboxProvider provider : SeedboxProvider.values()) {
+			int offset = max;
+			max += provider.getSettings().getMaxSeedboxOrder(prefs) + 1;
+			if (order <= max) {
+				return provider.getSettings().getServerSetting(prefs, offset, order - offset - 1);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns all available normal, user-configured servers (so no seedbox settings)
+	 * @return A list of all stored server settings objects
+	 */
+	public List<ServerSetting> getNormalServerSettings() {
 		List<ServerSetting> servers = new ArrayList<ServerSetting>();
-		for (int i = 0; i <= getMaxServer(); i++) {
-			servers.add(getServerSetting(i));
+		for (int i = 0; i <= getMaxNormalServer(); i++) {
+			servers.add(getNormalServerSetting(i));
 		}
 		return Collections.unmodifiableList(servers);
 	}
 
 	/**
-	 * Returns the order number/identifying key of the last server
-	 * @return The zero-based order number (index) of the last stored server settings
+	 * Returns the order number/identifying key of the last normal server
+	 * @return The zero-based order number (index) of the last stored normal server settings
 	 */
-	public int getMaxServer() {
+	public int getMaxNormalServer() {
 		for (int i = 0; true; i++) {
 			if (prefs.getString("server_type_" + i, null) == null)
 				return i - 1;
@@ -83,12 +131,12 @@ public class ApplicationSettings {
 	}
 
 	/**
-	 * Returns the user-specified server settings for a specific server. WARNING: This method does not check if the
-	 * settings actually exist and may rely on empty defaults if called not a non-existing server.
-	 * @param order The order number/identifying key of the settings to retrieve
+	 * Returns the user-specified server settings for a normal (non-seedbox) server. WARNING: This method does not check 
+	 * if the settings actually exist and may rely on empty defaults if called for a non-existing server.
+	 * @param order The order number/identifying key of the normal server's settings to retrieve
 	 * @return The server settings object, loaded from shared preferences
 	 */
-	public ServerSetting getServerSetting(int order) {
+	public ServerSetting getNormalServerSetting(int order) {
 		// @formatter:off
 		Daemon type = Daemon.fromCode(prefs.getString("server_type_" + order, null));
 		boolean ssl = prefs.getBoolean("server_sslenabled_" + order, false);
@@ -132,13 +180,13 @@ public class ApplicationSettings {
 	 * servers will be updated accordingly.
 	 * @param order The identifying order number/key of the settings to remove
 	 */
-	public void removeServerSettings(int order) {
+	public void removeNormalServerSettings(int order) {
 		if (prefs.getString("server_type_" + order, null) == null)
 			return; // The settings that were requested to be removed do not exist
 
 		// Copy all settings higher than the supplied order number to the previous spot
 		Editor edit = prefs.edit();
-		int max = getMaxServer();
+		int max = getMaxNormalServer();
 		for (int i = order; i < max; i++) {
 			edit.putString("server_name_" + i, prefs.getString("server_name_" + (i + 1), null));
 			edit.putString("server_type_" + i, prefs.getString("server_type_" + (i + 1), null));
@@ -197,7 +245,7 @@ public class ApplicationSettings {
 	 *         servers exist
 	 */
 	public ServerSetting getLastUsedServer() {
-		int max = getMaxServer(); // Zero-based index, so with max == 0 there is 1 server
+		int max = getMaxOfAllServers(); // Zero-based index, so with max == 0 there is 1 server
 		if (max < 0) {
 			// No servers configured
 			return null;

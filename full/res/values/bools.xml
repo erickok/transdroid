@@ -17,7 +17,11 @@
 -->
 <resources>
 
-	<!-- Used to determine if a device is 'small', i.e. a phone; for reference: a Nexus 7's smallest width is 533dip -->
-	<bool name="show_dialog_fullscreen">false</bool>
+	<!-- Used to enable the search UI -->
+	<bool name="search_available">true</bool>
+	<!-- Used to enable the RSS UI and background service -->
+	<bool name="rss_available">true</bool>
+	<!-- Used to allow adding of seedboxes via easy server setup -->
+	<bool name="seedboxes_available">true</bool>
 
 </resources>

@@ -29,7 +29,7 @@ public class ServerPreference extends Preference {
 
 	private static final int ORDER_START = 1;
 
-	private ServerSetting serverSetting;
+	protected ServerSetting serverSetting;
 	private OnServerClickedListener onServerClickedListener = null;
 	
 	public ServerPreference(Context context) {

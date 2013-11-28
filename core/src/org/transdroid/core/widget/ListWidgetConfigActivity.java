@@ -121,7 +121,7 @@ public class ListWidgetConfigActivity extends SherlockActivity {
 			sortOrders.add(new SortByListItem(this, order));
 		}
 		serverSpinner.setAdapter(new SimpleListItemSpinnerAdapter<ServerSetting>(this, 0, applicationSettings
-				.getServerSettings()));
+				.getAllServerSettings()));
 		filterSpinner.setAdapter(new SimpleListItemSpinnerAdapter<StatusTypeFilter>(this, 0, StatusType
 				.getAllStatusTypes(this)));
 		sortSpinner.setAdapter(new SimpleListItemSpinnerAdapter<SortByListItem>(this, 0, sortOrders));

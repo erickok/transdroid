@@ -210,6 +210,7 @@
 	
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
+	<string name="pref_addseedbox">Add seedbox</string>
 	<string name="pref_searchsites">Search sites</string>
 	<string name="pref_setsearchsite">Set default site</string>
 	<string name="pref_addwebsearch">Add web search site</string>
@@ -298,6 +299,26 @@
 	<string name="pref_installhelp_info">Available at transdroid.org/download</string>
 	<string name="pref_changelog">Recent changes</string>
 	<string name="pref_about">About %1$s</string>
+	
+	<string name="pref_seedbox_addseedbox">Add %1$s seedbox</string>
+	<string name="pref_seedbox_client">Torrent client</string>
+	<string name="pref_seedbox_client_info">Client to connect to</string>
+	<string name="pref_seedbox_server">Server address</string>
+	<string name="pref_seedbox_xirvikhint">Like dedi001.xirvik.com</string>
+	<string name="pref_seedbox_xirvikhint2">Like semixl001a.xirvik.com</string>
+	<string name="pref_seedbox_xirvikhint3">Like desharedgbit001.xirvik.com</string>
+	<string name="pref_seedbox_seedstuffhint">Like 001.seedstuff.ca</string>
+	<string-array name="pref_seedbox_xirvikclients" translatable="false">
+		<item>rTorrent</item>
+		<item>uTorrent</item>
+		<item>Deluge</item>
+	</string-array>
+	<string-array name="pref_seedbox_xirviktypes" translatable="false">
+		<item>daemon_rtorrent</item>
+		<item>daemon_utorrent</item>
+		<item>daemon_deluge</item>
+	</string-array>
+	
     <string-array name="pref_daemon_types" translatable="false">
         <item>BitComet</item>
         <item>Bitflu 1.2+</item>

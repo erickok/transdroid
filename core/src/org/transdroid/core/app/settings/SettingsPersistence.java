@@ -73,7 +73,7 @@ public class SettingsPersistence {
 			JSONArray servers = json.getJSONArray("servers");
 			for (int i = 0; i < servers.length(); i++) {
 				JSONObject server = servers.getJSONObject(i);
-				String postfix = Integer.toString(applicationSettings.getMaxServer() + 1 + i);
+				String postfix = Integer.toString(applicationSettings.getMaxOfAllServers() + 1 + i);
 
 				if (server.has("name"))
 					editor.putString("server_name_" + postfix, server.getString("name"));

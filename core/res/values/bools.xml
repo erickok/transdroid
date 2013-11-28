@@ -16,8 +16,16 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
+
 	<!-- Used to determine if a device is 'small', i.e. a phone; for reference: a Nexus 7's smallest width is 533dip -->
 	<bool name="show_dialog_fullscreen">true</bool>
 	<!-- Used to enable the scrolling widget on Honeycomb (API 11) and higher only -->
 	<bool name="widget_available">false</bool>
+	<!-- Used to enable the search UI -->
+	<bool name="search_available">true</bool>
+	<!-- Used to enable the RSS UI and background service -->
+	<bool name="rss_available">true</bool>
+	<!-- Used to allow adding of seedboxes via easy server setup -->
+	<bool name="seedboxes_available">true</bool>
+
 </resources>

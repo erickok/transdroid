@@ -16,6 +16,8 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
+
 	<!-- Used to enable the scrolling widget on Honeycomb (API 11) and higher only -->
 	<bool name="widget_available">true</bool>
+
 </resources>

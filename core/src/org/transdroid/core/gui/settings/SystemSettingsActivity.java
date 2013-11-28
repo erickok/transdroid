@@ -183,7 +183,10 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 			// @formatter:off
 			return new AlertDialog.Builder(this)
 					.setMessage(
-							getString(R.string.pref_import_dialog, getString(R.string.app_name), SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
+							getString(
+									R.string.pref_import_dialog, 
+									getString(R.string.app_name), 
+									SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
 					.setPositiveButton(android.R.string.ok, importSettings)
 					.setNegativeButton(android.R.string.cancel, null).create();
 			// @formatter:on
@@ -191,7 +194,10 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 			// @formatter:off
 			return new AlertDialog.Builder(this)
 					.setMessage(
-							getString(R.string.pref_export_dialog, getString(R.string.app_name), SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
+							getString(
+									R.string.pref_export_dialog, 
+									getString(R.string.app_name), 
+									SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
 					.setPositiveButton(android.R.string.ok, exportSettings)
 					.setNegativeButton(android.R.string.cancel, null).create();
 			// @formatter:on

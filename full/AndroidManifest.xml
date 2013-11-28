@@ -192,6 +192,12 @@
 		<activity android:name="org.transdroid.core.gui.settings.SystemSettingsActivity_" />
 		<activity android:name="org.transdroid.core.gui.navigation.DialogHelper_" />
 
+		<!-- Seedbox settings -->
+		<activity android:name="org.transdroid.core.seedbox.SeedstuffSettingsActivity_" />
+		<activity android:name="org.transdroid.core.seedbox.XirvikSharedSettingsActivity_" />
+		<activity android:name="org.transdroid.core.seedbox.XirvikSemiDediSettingsActivity_" />
+		<activity android:name="org.transdroid.core.seedbox.XirvikDediSettingsActivity_" />
+		
 		<!-- Search -->
 		<activity
 			android:name="org.transdroid.core.gui.search.SearchActivity_"

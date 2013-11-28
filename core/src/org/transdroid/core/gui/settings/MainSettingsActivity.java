@@ -31,17 +31,27 @@ import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.*;
 import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.settings.OverflowPreference.OnOverflowClicked;
 import org.transdroid.core.gui.settings.RssfeedPreference.OnRssfeedClickedListener;
 import org.transdroid.core.gui.settings.ServerPreference.OnServerClickedListener;
 import org.transdroid.core.gui.settings.WebsearchPreference.OnWebsearchClickedListener;
+import org.transdroid.core.seedbox.SeedboxPreference;
+import org.transdroid.core.seedbox.SeedboxPreference.OnSeedboxClickedListener;
+import org.transdroid.core.seedbox.SeedboxProvider;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.view.View;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
@@ -53,12 +63,15 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
 @EActivity
 public class MainSettingsActivity extends SherlockPreferenceActivity {
 
+	protected static final int DIALOG_ADDSEEDBOX = 0;
+
 	@Bean
 	protected NavigationHelper navigationHelper;
 	@Bean
 	protected ApplicationSettings applicationSettings;
 	@Bean
 	protected SearchHelper searchHelper;
+	protected SharedPreferences prefs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +86,7 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+		prefs = getPreferenceManager().getSharedPreferences();
 		if (getPreferenceScreen() != null)
 			getPreferenceScreen().removeAll();
 
@@ -81,7 +95,12 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 
 		// Load the preference menu and attach actions
 		addPreferencesFromResource(R.xml.pref_main);
-		findPreference("header_addserver").setOnPreferenceClickListener(onAddServer);
+		OverflowPreference addServerPrefernce = (OverflowPreference) findPreference("header_addserver");
+		addServerPrefernce.setOnPreferenceClickListener(onAddServer);
+		if (navigationHelper.enableSeedboxes())
+			addServerPrefernce.setOnOverflowClickedListener(onOverflowClicked);
+		else
+			addServerPrefernce.hideOverflowButton();
 		if (enableSearchUi)
 			findPreference("header_addwebsearch").setOnPreferenceClickListener(onAddWebsearch);
 		if (enableRssUi)
@@ -90,11 +109,24 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		findPreference("header_system").setOnPreferenceClickListener(onSystemSettings);
 
 		// Add existing servers
-		List<ServerSetting> servers = applicationSettings.getServerSettings();
+		List<ServerSetting> servers = applicationSettings.getNormalServerSettings();
 		for (ServerSetting serverSetting : servers) {
 			getPreferenceScreen().addPreference(
 					new ServerPreference(this).setServerSetting(serverSetting).setOnServerClickedListener(
 							onServerClicked));
+		}
+		// Add seedboxes; serversOffset keeps an int to have all ServerSettings with unique ids, seedboxOffset is unique
+		// only per seedbox type
+		int orderOffset = servers.size();
+		for (SeedboxProvider provider : SeedboxProvider.values()) {
+			int seedboxOffset = 0;
+			for (ServerSetting seedbox : provider.getSettings().getAllServerSettings(prefs, orderOffset)) {
+				getPreferenceScreen().addPreference(
+						new SeedboxPreference(this).setProvider(provider).setServerSetting(seedbox)
+								.setOnSeedboxClickedListener(onSeedboxClicked, seedboxOffset));
+				orderOffset++;
+				seedboxOffset++;
+			}
 		}
 
 		// Add existing RSS feeds
@@ -166,6 +198,14 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		}
 	};
 
+	private OnOverflowClicked onOverflowClicked = new OnOverflowClicked() {
+		@SuppressWarnings("deprecation")
+		@Override
+		public void onOverflowClicked(View overflowButton) {
+			showDialog(DIALOG_ADDSEEDBOX);
+		}
+	};
+
 	private OnPreferenceClickListener onAddWebsearch = new OnPreferenceClickListener() {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
@@ -205,6 +245,16 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		}
 	};
 
+	private OnSeedboxClickedListener onSeedboxClicked = new OnSeedboxClickedListener() {
+		@Override
+		public void onSeedboxClicked(ServerSetting serverSetting, SeedboxProvider provider, int seedboxOffset) {
+			// NOTE: The seedboxOffset is the seedbox type-unique order that we need to supply uin the Extras bundle to
+			// edit this specific seedbox
+			startActivity(provider.getSettings().getSettingsActivityIntent(MainSettingsActivity.this)
+					.putExtra("key", seedboxOffset));
+		}
+	};
+
 	private OnWebsearchClickedListener onWebsearchClicked = new OnWebsearchClickedListener() {
 		@Override
 		public void onWebsearchClicked(WebsearchSetting websearchSetting) {
@@ -216,6 +266,29 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		@Override
 		public void onRssfeedClicked(RssfeedSetting rssfeedSetting) {
 			RssfeedSettingsActivity_.intent(MainSettingsActivity.this).key(rssfeedSetting.getOrder()).start();
+		}
+	};
+
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_ADDSEEDBOX:
+			// Open dialog to pick one of the supported seedbox providers
+			String[] seedboxes = new String[SeedboxProvider.values().length];
+			for (int i = 0; i < seedboxes.length; i++) {
+				seedboxes[i] = getString(R.string.pref_seedbox_addseedbox, SeedboxProvider.values()[i].getSettings()
+						.getName());
+			}
+			return new AlertDialog.Builder(this).setItems(seedboxes, onAddSeedbox).create();
+		}
+		return null;
+	}
+
+	private OnClickListener onAddSeedbox = new OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			// Start the configuration activity for this specific chosen seedbox
+			startActivity(SeedboxProvider.values()[which].getSettings().getSettingsActivityIntent(
+					MainSettingsActivity.this));
 		}
 	};
 
