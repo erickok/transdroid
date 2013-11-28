@@ -304,7 +304,7 @@
 	<string name="pref_seedbox_client">Torrent client</string>
 	<string name="pref_seedbox_client_info">Client to connect to</string>
 	<string name="pref_seedbox_server">Server address</string>
-	<string name="pref_seedbox_xirvikhint">Like dedi001.xirvik.com</string>
+	<string name="pref_seedbox_xirvikhint">Like eplus001.xirvik.com</string>
 	<string name="pref_seedbox_xirvikhint2">Like semixl001a.xirvik.com</string>
 	<string name="pref_seedbox_xirvikhint3">Like desharedgbit001.xirvik.com</string>
 	<string name="pref_seedbox_seedstuffhint">Like 001.seedstuff.ca</string>
