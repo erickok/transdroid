@@ -163,6 +163,15 @@ public class NavigationHelper {
 	}
 
 	/**
+	 * Whether the custom app update checker should be used to check for new app and search module versions.
+	 * @return True if it should be checked against transdroid.org if there are app updates (as opposed to using the
+	 *         Play Store for updates, for example), false otherwise
+	 */
+	public boolean enableUpdateChecker() {
+		return context.getResources().getBoolean(R.bool.updatecheck_available);
+	}
+
+	/**
 	 * Converts a string into a {@link Spannable} that displays the string in the Roboto Condensed font
 	 * @param string A plain text {@link String}
 	 * @return A {@link Spannable} that can be applied to supporting views (such as the action bar title) so that the

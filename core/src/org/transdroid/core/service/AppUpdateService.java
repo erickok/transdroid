@@ -34,6 +34,7 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.settings.NotificationSettings;
 import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.daemon.util.HttpHelper;
 
 import android.app.IntentService;
@@ -55,6 +56,8 @@ public class AppUpdateService extends IntentService {
 	private static final String DOWNLOAD_URL_SEARCH = "http://www.transdroid.org/latest-search";
 
 	@Bean
+	protected NavigationHelper navigationHelper;
+	@Bean
 	protected ConnectivityHelper connectivityHelper;
 	@Bean
 	protected SystemSettings systemSettings;
@@ -70,9 +73,13 @@ public class AppUpdateService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
+		// Only run this service if app updates are handled via transdroid.org at all
+		if (!navigationHelper.enableUpdateChecker())
+			return;
+		
 		if (!connectivityHelper.shouldPerformBackgroundActions() || !systemSettings.checkForUpdates()) {
-			Log.d(this,
-					"Skip the app update service, as background data is disabled, the service is disabled or we are not connected.");
+			Log.d(this, "Skip the app update service, as background data is disabled, the service is explicitly " +
+					"disabled or we are not connected.");
 			return;
 		}
 

@@ -70,14 +70,5 @@ public class SystemSettings {
 	public void setLastCheckedForAppUpdates(Date lastChecked) {
 		prefs.edit().putLong("system_lastappupdatecheck", lastChecked == null ? -1L : lastChecked.getTime()).commit();
 	}
-
-	/**
-	 * Whether the custom app update checker should be used to check for new app and search module versions.
-	 * @return True if it should be checked against transdroid.org if there are app updates (as opposed to using the
-	 *         Play Store for updates), false otherwise
-	 */
-	public static boolean enableUpdateChecker(Context context) {
-		return !context.getPackageName().equals("org.transdroid.lite");
-	}
-
+	
 }

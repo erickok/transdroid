@@ -26,7 +26,6 @@ import org.json.JSONException;
 import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.SettingsPersistence;
-import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.gui.log.ErrorLogSender;
 import org.transdroid.core.gui.navigation.DialogHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper;
@@ -62,6 +61,8 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 	protected static final String INSTALLHELP_URI = "http://www.transdroid.org/download/";
 
 	@Bean
+	protected NavigationHelper navigationHelper;
+	@Bean
 	protected ApplicationSettings applicationSettings;
 	@Bean
 	protected ErrorLogSender errorLogSender;
@@ -79,7 +80,7 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		addPreferencesFromResource(R.xml.pref_system);
 
 		// Handle outgoing links and preference changes
-		if (SystemSettings.enableUpdateChecker(this)) {
+		if (navigationHelper.enableUpdateChecker()) {
 			findPreference("system_checkupdates").setOnPreferenceClickListener(onCheckUpdatesClick);
 		} else {
 			getPreferenceScreen().removePreference(findPreference("system_checkupdates"));

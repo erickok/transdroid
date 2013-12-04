@@ -17,6 +17,8 @@
 -->
 <resources>
 
+	<!-- Used to enable checking for app updates in the background -->
+	<bool name="updatecheck_available">true</bool>
 	<!-- Used to enable the search UI -->
 	<bool name="search_available">true</bool>
 	<!-- Used to enable the RSS UI and background service -->

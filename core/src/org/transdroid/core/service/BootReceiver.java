@@ -21,6 +21,7 @@ import org.transdroid.core.app.settings.NotificationSettings_;
 import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.navigation.NavigationHelper_;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -50,10 +51,10 @@ public class BootReceiver extends BroadcastReceiver {
 	public static void startBackgroundServices(Context context, boolean forceReload) {
 		NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
 		AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		// Start the alarms if one of the notifications are enabled and we do not yet have the alarms running 
+		// Start the alarms if one of the notifications are enabled and we do not yet have the alarms running
 		// (or should reload it forcefully)
-		if ((notificationSettings.isEnabledForRss() || notificationSettings.isEnabledForTorrents()) && 
-				(forceReload || (piServerChecker == null && piRssChecker == null))) {
+		if ((notificationSettings.isEnabledForRss() || notificationSettings.isEnabledForTorrents())
+				&& (forceReload || (piServerChecker == null && piRssChecker == null))) {
 
 			Log.d(context, "Boot signal received, starting server and rss checker background services");
 			// Schedule repeating alarms, with the first being (somewhat) in 1 second from now
@@ -72,7 +73,8 @@ public class BootReceiver extends BroadcastReceiver {
 	public static void startAppUpdatesService(Context context) {
 		SystemSettings systemSettings = SystemSettings_.getInstance_(context);
 		AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		if (SystemSettings.enableUpdateChecker(context) && systemSettings.checkForUpdates() && piAppUpdates == null) {
+		if (NavigationHelper_.getInstance_(context).enableUpdateChecker() && systemSettings.checkForUpdates()
+				&& piAppUpdates == null) {
 
 			Log.d(context, "Boot signal received, starting app update checker service");
 			// Schedule a daily, with the first being (somewhat) in 1 second from now
