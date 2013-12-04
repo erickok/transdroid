@@ -36,13 +36,16 @@ public class RssfeedSetting implements SimpleListItem {
 	private final String url;
 	private final boolean requiresAuth;
 	private Date lastViewed;
+	private final String lastViewedItemUrl;
 
-	public RssfeedSetting(int order, String name, String baseUrl, boolean needsAuth, Date lastViewed) {
+	public RssfeedSetting(int order, String name, String baseUrl, boolean needsAuth, Date lastViewed,
+			String lastViewedItemUrl) {
 		this.order = order;
 		this.name = name;
 		this.url = baseUrl;
 		this.requiresAuth = needsAuth;
 		this.lastViewed = lastViewed;
+		this.lastViewedItemUrl = lastViewedItemUrl;
 	}
 
 	public int getOrder() {
@@ -69,13 +72,23 @@ public class RssfeedSetting implements SimpleListItem {
 	}
 
 	/**
+	 * Returns the date on which we last checked this feed. Note that this is NOT updated automatically after the
+	 * settings were loaded from {@link ApplicationSettings}; instead the settings have to be manually loaded again
+	 * using {@link ApplicationSettings#getRssfeedSetting(int)}.
+	 * @return The last new item's URL as URL-encoded string
+	 */
+	public Date getLastViewed() {
+		return this.lastViewed;
+	}
+
+	/**
 	 * Returns the URL of the item that was the newest last time we checked this feed. Note that this is NOT updated
 	 * automatically after the settings were loaded from {@link ApplicationSettings}; instead the settings have to be
 	 * manually loaded again using {@link ApplicationSettings#getRssfeedSetting(int)}.
 	 * @return The last new item's URL as URL-encoded string
 	 */
-	public Date getLastViewed() {
-		return this.lastViewed;
+	public String getLastViewedItemUrl() {
+		return this.lastViewedItemUrl;
 	}
 
 	/**

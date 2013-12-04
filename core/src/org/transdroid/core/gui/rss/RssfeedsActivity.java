@@ -149,11 +149,13 @@ public class RssfeedsActivity extends SherlockFragmentActivity {
 		// The RSS feed content was loaded and can now be shown in the dedicated fragment or a new activity
 		if (fragmentItems != null) {
 
-			// If desired, update the lastViewedDate of this feed in the user setting; this won't be loaded until the
-			// RSS
-			// feeds screen in opened again.
+			// If desired, update the lastViewedDate and lastViewedItemUrl of this feed in the user setting; this won't
+			// be loaded until the RSS feeds screen in opened again.
 			if (!loader.hasError() && loader.getChannel() != null && markAsViewedNow) {
-				applicationSettings.setRssfeedLastViewer(loader.getSetting().getOrder(), new Date());
+				String lastViewedItemUrl = null;
+				if (loader.getChannel().getItems() != null && loader.getChannel().getItems().size() > 0)
+					lastViewedItemUrl = loader.getChannel().getItems().get(0).getTheLink();
+				applicationSettings.setRssfeedLastViewer(loader.getSetting().getOrder(), new Date(), lastViewedItemUrl);
 			}
 			fragmentItems.update(loader.getChannel(), loader.hasError());
 
@@ -169,11 +171,13 @@ public class RssfeedsActivity extends SherlockFragmentActivity {
 				return;
 			}
 
-			// If desired, update the lastViewedDate of this feed in the user setting; this won't be loaded until the
-			// RSS
-			// feeds screen in opened again
+			// If desired, update the lastViewedDate and lastViewedItemUrl of this feed in the user setting; this won't
+			// be loaded until the RSS feeds screen in opened again
 			if (markAsViewedNow) {
-				applicationSettings.setRssfeedLastViewer(loader.getSetting().getOrder(), new Date());
+				String lastViewedItemUrl = null;
+				if (loader.getChannel().getItems() != null && loader.getChannel().getItems().size() > 0)
+					lastViewedItemUrl = loader.getChannel().getItems().get(0).getTheLink();
+				applicationSettings.setRssfeedLastViewer(loader.getSetting().getOrder(), new Date(), lastViewedItemUrl);
 			}
 
 			String name = loader.getChannel().getTitle();

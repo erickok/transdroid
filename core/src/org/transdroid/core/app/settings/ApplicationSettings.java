@@ -382,7 +382,8 @@ public class ApplicationSettings {
 				prefs.getString("rssfeed_name_" + order, null), 
 				prefs.getString("rssfeed_url_" + order, null), 
 				prefs.getBoolean("rssfeed_reqauth_" + order, false), 
-				lastViewed == -1L ? null : new Date(lastViewed));
+				lastViewed == -1L ? null : new Date(lastViewed),
+				prefs.getString("rssfeed_lastvieweditemurl_" + order, null));
 		// @formatter:on
 	}
 
@@ -421,11 +422,15 @@ public class ApplicationSettings {
 	 * Use {@link #getRssfeedSetting(int)} to get fresh data.
 	 * @param order The identifying order number/key of the settings of te RSS feed that was viewed
 	 * @param lastViewed The date and time that the feed was last viewed; typically now
+	 * @param lastViewedItemUrl The url of the last item the last time that the feed was viewed
 	 */
-	public void setRssfeedLastViewer(int order, Date lastViewed) {
+	public void setRssfeedLastViewer(int order, Date lastViewed, String lastViewedItemUrl) {
 		if (prefs.getString("rssfeed_url_" + order, null) == null)
 			return; // The settings that were requested to be removed do not exist
-		prefs.edit().putLong("rssfeed_lastviewed_" + order, lastViewed.getTime()).commit();
+		Editor edit = prefs.edit();
+		edit.putLong("rssfeed_lastviewed_" + order, lastViewed.getTime());
+		edit.putString("rssfeed_lastvieweditemurl_" + order, lastViewedItemUrl);
+		edit.commit();
 	}
 
 	/**
