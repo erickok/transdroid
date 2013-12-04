@@ -21,7 +21,7 @@ Please respect the coding standards for easier merging. master contains the curr
 Code structure
 ==============
 
-Transdroid is currently developed in Eclipse, against Android 4.3 (API level 18). To support lite and full version of the app, the core UI is contained in a separate Android library project. The torrent client adapters are also in a seperate project, called Transdroid Connect, but this is a classic Java project. If the Connect project is updated, a fresh .jar needs to be exported (currently manually) to core/libs/transdroid.jar.
+Transdroid is currently developed in Eclipse, against Android 4.3 (API level 18). To support lite and full version of the app, the core UI is contained in a separate Android library project. The torrent client adapters are also in a seperate project, called Transdroid Connect, but this is a classic Java project. If the Connect project is updated, a fresh .jar needs to be exported to core/libs/transdroid.jar. In order to do so, run ant within the lib/ directory.
 
 * core - Contains the core Android library project with UI, services, resources, etc.
 * full - Full app version (website release) through AndroidManifest.xml configuration
