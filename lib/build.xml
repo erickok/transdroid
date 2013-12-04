@@ -1,0 +1,29 @@
+<project default="transdroid.jar">
+
+  <!-- Should match targetSdkVersion in manifest -->
+  <property name="android.version" value="android-19" />
+
+  <!-- Try to get the sdk location from ANDROID_HOME env var -->
+  <property environment="env" />
+  <condition property="sdk-location" value="${env.ANDROID_HOME}">
+    <isset property="env.ANDROID_HOME" />
+  </condition>
+
+  <target name="check-android-exists" >
+    <available property="android.exists" file="${sdk-location}/platforms/${android.version}/android.jar" />
+    <fail unless="${android.exists}" message="Android version ${android.version} does not is not available : ${sdk-location}/platforms/${android.version}/android.jar is not found" />
+  </target>
+
+  <target name="transdroid.jar" depends="check-android-exists" >
+    <javac
+	srcdir="src/"
+	destdir="build/"
+	bootclasspath="${sdk-location}/platforms/${android.version}/android.jar"
+	/>
+    <jar
+	destfile="../core/libs/transdroid.jar"
+	basedir="build/"
+	/>
+  </target>
+
+</project>
