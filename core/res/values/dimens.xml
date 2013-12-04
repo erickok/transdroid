@@ -39,7 +39,7 @@
 	<dimen name="ui_serverstatus_bignumber">21sp</dimen>
 	<dimen name="ui_serverstatus_sign">15dp</dimen>
 	<dimen name="ui_serverstatus_smallnumber">13dp</dimen>
-	<dimen name="ui_serverstatus_width">53dp</dimen>
+	<dimen name="ui_serverstatus_width">56dp</dimen>
 	
 	<!-- Widget configuration -->
 	<integer name="widget_config_orientation">1</integer>

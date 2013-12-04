@@ -49,7 +49,7 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		// Load the raw preferences to show in this screen
-		init(R.xml.pref_server, ApplicationSettings_.getInstance_(this).getMaxOfAllServers());
+		init(R.xml.pref_server, ApplicationSettings_.getInstance_(this).getMaxNormalServer());
 		initTextPreference("server_name");
 		initListPreference("server_type");
 		initTextPreference("server_address");

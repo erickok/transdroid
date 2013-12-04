@@ -24,6 +24,6 @@
 	<dimen name="ui_serverstatus_bignumber">19sp</dimen>
 	<dimen name="ui_serverstatus_sign">12dp</dimen>
 	<dimen name="ui_serverstatus_smallnumber">12dp</dimen>
-	<dimen name="ui_serverstatus_width">53dp</dimen>
+	<dimen name="ui_serverstatus_width">56dp</dimen>
 	
 </resources>
