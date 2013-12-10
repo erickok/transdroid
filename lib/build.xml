@@ -19,6 +19,7 @@
 	srcdir="src/"
 	destdir="build/"
 	bootclasspath="${sdk-location}/platforms/${android.version}/android.jar"
+	target="6"
 	/>
     <jar
 	destfile="../core/libs/transdroid.jar"
