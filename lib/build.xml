@@ -15,10 +15,12 @@
   </target>
 
   <target name="transdroid.jar" depends="check-android-exists" >
+    <mkdir dir="build/" />
     <javac
 	srcdir="src/"
 	destdir="build/"
 	bootclasspath="${sdk-location}/platforms/${android.version}/android.jar"
+	target="6"
 	/>
     <jar
 	destfile="../core/libs/transdroid.jar"
