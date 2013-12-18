@@ -214,7 +214,9 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			navigationSpinnerAdapter.updateLabels(new ArrayList<Label>());
 		}
 		// Now that all items (or at least their adapters) have been added
-		currentFilter = StatusType.getShowAllType(this);
+		if (currentFilter == null) {
+			currentFilter = StatusType.getShowAllType(this);
+		}
 		getSupportActionBar().setListNavigationCallbacks(navigationSpinnerAdapter, this);
 
 		// Log messages from the server daemons using our singleton logger
