@@ -16,10 +16,16 @@
 
   <target name="transdroid.jar" depends="check-android-exists" >
     <mkdir dir="build/" />
+    <!-- We create java6 bytecode here, because Android build tools <
+         19.0.0 seem to be unable to handle java7 bytecode and the
+         f-droid buildserver does use a version < 19.0.0. In the
+         future the 'source' and 'target' attributes may be removed
+         from the the javac element. -->
     <javac
 	srcdir="src/"
 	destdir="build/"
 	bootclasspath="${sdk-location}/platforms/${android.version}/android.jar"
+	source="6"
 	target="6"
 	/>
     <jar
