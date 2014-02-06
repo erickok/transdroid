@@ -29,12 +29,14 @@ public class SearchSite implements SimpleListItem, SearchSetting {
 	private final String key;
 	private final String name;
 	private final String rssFeedUrl;
+	private final boolean isPrivate;
 	
-	public SearchSite(int id, String key, String name, String rssFeedUrl) {
+	public SearchSite(int id, String key, String name, String rssFeedUrl, boolean isPrivate) {
 		this.id = id;
 		this.key = key;
 		this.name = name;
 		this.rssFeedUrl = rssFeedUrl;
+		this.isPrivate = isPrivate;
 	}
 
 	public int getId() {
@@ -57,6 +59,10 @@ public class SearchSite implements SimpleListItem, SearchSetting {
 	@Override
 	public String getBaseUrl() {
 		return rssFeedUrl;
+	}
+
+	public boolean isPrivate() {
+		return isPrivate;
 	}
 	
 }

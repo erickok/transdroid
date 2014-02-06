@@ -63,6 +63,8 @@ public class SearchResultsFragment extends SherlockFragment {
 
 	@InstanceState
 	protected ArrayList<SearchResult> results = null;
+	@InstanceState
+	protected String resultsSource;
 	@Bean
 	protected SearchHelper searchHelper;
 
@@ -107,6 +109,7 @@ public class SearchResultsFragment extends SherlockFragment {
 	@Background
 	protected void performSearch(String query, SearchSite site) {
 		results = searchHelper.search(query, site, SearchSortOrder.BySeeders);
+		resultsSource = site.isPrivate()? site.getKey(): null;
 		showResults();
 	}
 
@@ -133,6 +136,8 @@ public class SearchResultsFragment extends SherlockFragment {
 		Intent i = TorrentsActivity_.intent(getActivity()).get();
 		i.setData(Uri.parse(item.getTorrentUrl()));
 		i.putExtra("TORRENT_TITLE", item.getName());
+		if (resultsSource != null)
+			i.putExtra("PRIVATE_SOURCE", resultsSource);
 		startActivity(i);
 	}
 
@@ -176,6 +181,8 @@ public class SearchResultsFragment extends SherlockFragment {
 				}
 				intent.putExtra("TORRENT_URLS", urls);
 				intent.putExtra("TORRENT_TITLES", titles);
+				if (resultsSource != null)
+					intent.putExtra("PRIVATE_SOURCE", resultsSource);
 				startActivity(intent);
 				mode.finish();
 				return true;

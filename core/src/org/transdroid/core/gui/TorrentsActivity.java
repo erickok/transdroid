@@ -44,7 +44,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.search.*;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
@@ -228,7 +228,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// No server settings yet;
 			return;
 		}
-		Torrent startTorrent = null;
+		Torrent openTorrent = null;
 		if (getIntent().getAction() != null && getIntent().getAction().equals(ListWidgetProvider.INTENT_STARTSERVER)
 				&& getIntent().getExtras() == null && getIntent().hasExtra(ListWidgetProvider.EXTRA_SERVER)) {
 			// A server settings order ID was provided in this org.transdroid.START_SERVER action intent
@@ -239,7 +239,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			} else {
 				lastUsed = applicationSettings.getServerSetting(serverId);
 				if (getIntent().hasExtra(ListWidgetProvider.EXTRA_TORRENT))
-					startTorrent = getIntent().getParcelableExtra(ListWidgetProvider.EXTRA_TORRENT);
+					openTorrent = getIntent().getParcelableExtra(ListWidgetProvider.EXTRA_TORRENT);
 			}
 		}
 
@@ -252,10 +252,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Force first torrents refresh
 			filterSelected(lastUsed, true);
 			// Handle any start up intents
-			if (firstStart && startTorrent != null) {
-				openDetails(startTorrent);
-				startTorrent = null;
-			} else if (firstStart && getIntent() != null) {
+			if (openTorrent != null) {
+				openDetails(openTorrent);
+				openTorrent = null;
+			} else if (getIntent() != null) {
 				handleStartIntent();
 			}
 		} else {
@@ -483,14 +483,19 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		String action = intent.getAction();
 
 		// Adding multiple torrents at the same time (as found in the Intent extras Bundle)
-
 		if (action != null && action.equals("org.transdroid.ADD_MULTIPLE")) {
 			// Intent should have some extras pointing to possibly multiple torrents
 			String[] urls = intent.getStringArrayExtra("TORRENT_URLS");
 			String[] titles = intent.getStringArrayExtra("TORRENT_TITLES");
 			if (urls != null) {
 				for (int i = 0; i < urls.length; i++) {
-					addTorrentByUrl(urls[i], (titles != null && titles.length >= i ? titles[i] : "Torrent"));
+					String title = (titles != null && titles.length >= i ? titles[i] : "Torrent");
+					if (intent.hasExtra("PRIVATE_SOURCE")) {
+						// This is marked by the Search Module as being a private source site; get the url locally first
+						addTorrentFromPrivateSource(urls[i], title, intent.getStringExtra("PRIVATE_SOURCE"));
+					} else {
+						addTorrentByUrl(urls[i], title);
+					}
 				}
 			}
 			return;
@@ -513,29 +518,40 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Adding a torrent from http or https URL
 		if (dataUri.getScheme().equals("http") || dataUri.getScheme().equals("https")) {
 
-			// Check if the target URL is also defined as a web search in the user's settings
-			List<WebsearchSetting> websearches = applicationSettings.getWebsearchSettings();
+			String privateSource = getIntent().getStringExtra("PRIVATE_SOURCE");
+
 			WebsearchSetting match = null;
-			for (WebsearchSetting setting : websearches) {
-				Uri uri = Uri.parse(setting.getBaseUrl());
-				if (uri.getHost() != null && uri.getHost().equals(dataUri.getHost())) {
-					match = setting;
-					break;
+			if (privateSource == null) {
+				// Check if the target URL is also defined as a web search in the user's settings
+				List<WebsearchSetting> websearches = applicationSettings.getWebsearchSettings();
+				for (WebsearchSetting setting : websearches) {
+					Uri uri = Uri.parse(setting.getBaseUrl());
+					if (uri.getHost() != null && uri.getHost().equals(dataUri.getHost())) {
+						match = setting;
+						break;
+					}
 				}
 			}
 
 			// If the URL is also a web search and it defines cookies, use the cookies by downloading the targeted
 			// torrent file (while supplies the cookies to the HTTP request) instead of sending the URL directly to the
-			// torrent client
+			// torrent client. If instead it is marked (by the Torrent Search module) as being form a private site, use
+			// the Search Module instead to download the url locally first.
 			if (match != null && match.getCookies() != null) {
 				addTorrentFromWeb(data, match);
 			} else {
-				// Normally send the URL to the torrent client; the title we show is based on the url
+				// Get torrent title
 				String title = NavigationHelper.extractNameFromUri(dataUri);
 				if (intent.hasExtra("TORRENT_TITLE")) {
 					title = intent.getStringExtra("TORRENT_TITLE");
 				}
-				addTorrentByUrl(data, title);
+				if (privateSource != null) {
+					// Download locally first before adding the torrent
+					addTorrentFromPrivateSource(data.toString(), title, privateSource);
+				} else {
+					// Normally send the URL to the torrent client
+					addTorrentByUrl(data, title);
+				}
 			}
 			return;
 		}
@@ -825,6 +841,19 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			Log.e(this, contentUri.toString() + " does not exist: " + e.toString());
 			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 		}
+	}
+
+	@Background
+	protected void addTorrentFromPrivateSource(String url, String title, String source) {
+
+		try {
+			InputStream input = SearchHelper_.getInstance_(this).getFile(source, url);
+			addTorrentFromStream(input);
+		} catch (Exception e) {
+			Log.e(this, "Can't download private site torrent " + url + " from " + source + ": " + e.toString());
+			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+		}
+
 	}
 
 	@Background

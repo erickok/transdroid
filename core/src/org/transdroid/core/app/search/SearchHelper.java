@@ -16,6 +16,10 @@
  */
 package org.transdroid.core.app.search;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +48,7 @@ public class SearchHelper {
 	static final int CURSOR_SITE_CODE = 1;
 	static final int CURSOR_SITE_NAME = 2;
 	static final int CURSOR_SITE_RSSURL = 3;
+	static final int CURSOR_SITE_ISPRIVATE = 4;
 
 	@RootContext
 	protected Context context;
@@ -76,12 +81,18 @@ public class SearchHelper {
 
 		// Query the available in-app torrent search sites
 		Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+		if (cursor == null) {
+			// The installed Torrent Search version is corrupt or incompatible
+			return null;
+		}
 		if (cursor.moveToFirst()) {
 			List<SearchSite> sites = new ArrayList<SearchSite>();
 			do {
 				// Read the cursor fields into the SearchSite object
 				sites.add(new SearchSite(cursor.getInt(CURSOR_SITE_ID), cursor.getString(CURSOR_SITE_CODE), cursor
-						.getString(CURSOR_SITE_NAME), cursor.getString(CURSOR_SITE_RSSURL)));
+						.getString(CURSOR_SITE_NAME), cursor.getString(CURSOR_SITE_RSSURL),
+						cursor.getColumnNames().length > 4 ? (cursor.getInt(CURSOR_SITE_ISPRIVATE) == 1 ? true : false)
+								: false));
 			} while (cursor.moveToNext());
 			cursor.close();
 			return sites;
@@ -132,6 +143,27 @@ public class SearchHelper {
 		// Torrent Search package is not yet installed
 		return null;
 
+	}
+
+	/**
+	 * Asks the Torrent Search module to download a torrent file given the provided url, while using the specifics of
+	 * the supplied torrent search site to do so. This way the Search Module can take care of user credentials, for
+	 * example.
+	 * @param site The unique key of the search site that this url belongs to, which is used to create a connection
+	 *            specific to this (private) site
+	 * @param url The full url of the torrent to download
+	 * @return A file input stream handler that points to the locally downloaded file
+	 * @throws FileNotFoundException Thrown when the requested url could not be downloaded or is not locally available
+	 */
+	public InputStream getFile(String site, String url) throws FileNotFoundException {
+		try {
+			Uri uri = Uri.parse("content://org.transdroid.search.torrentsearchprovider/get/" + site + "/"
+					+ URLEncoder.encode(url, "UTF-8"));
+			return context.getContentResolver().openInputStream(uri);
+		} catch (UnsupportedEncodingException e) {
+			// Ignore
+			return null;
+		}
 	}
 
 }
