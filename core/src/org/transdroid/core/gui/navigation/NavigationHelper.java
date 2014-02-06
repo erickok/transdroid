@@ -186,7 +186,7 @@ public class NavigationHelper {
 	}
 
 	/**
-	 * Analyses a torrent or magnet URI and tries to come up with a reasonable human-readable name.
+	 * Analyses a torrent http or magnet URI and tries to come up with a reasonable human-readable name.
 	 * @param rawTorrentUri The raw http:// or magnet: link to the torrent
 	 * @return A best-guess, reasonably long name for the linked torrent
 	 */

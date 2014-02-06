@@ -46,7 +46,6 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.transdroid.core.R;
 import org.transdroid.core.app.search.*;
 import org.transdroid.core.app.settings.*;
-import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.lists.SimpleListItem;
@@ -489,7 +488,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			String[] titles = intent.getStringArrayExtra("TORRENT_TITLES");
 			if (urls != null) {
 				for (int i = 0; i < urls.length; i++) {
-					String title = (titles != null && titles.length >= i ? titles[i] : "Torrent");
+					String title = (titles != null && titles.length >= i ? titles[i] : NavigationHelper
+							.extractNameFromUri(Uri.parse(urls[i])));
 					if (intent.hasExtra("PRIVATE_SOURCE")) {
 						// This is marked by the Search Module as being a private source site; get the url locally first
 						addTorrentFromPrivateSource(urls[i], title, intent.getStringExtra("PRIVATE_SOURCE"));
@@ -509,9 +509,15 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			return;
 		}
 
+		// Get torrent title
+		String title = NavigationHelper.extractNameFromUri(dataUri);
+		if (intent.hasExtra("TORRENT_TITLE")) {
+			title = intent.getStringExtra("TORRENT_TITLE");
+		}
+
 		// Adding a torrent from the Android downloads manager
 		if (dataUri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
-			addTorrentFromDownloads(dataUri);
+			addTorrentFromDownloads(dataUri, title);
 			return;
 		}
 
@@ -538,33 +544,24 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// torrent client. If instead it is marked (by the Torrent Search module) as being form a private site, use
 			// the Search Module instead to download the url locally first.
 			if (match != null && match.getCookies() != null) {
-				addTorrentFromWeb(data, match);
+				addTorrentFromWeb(data, match, title);
+			} else if (privateSource != null) {
+				addTorrentFromPrivateSource(data.toString(), title, privateSource);
 			} else {
-				// Get torrent title
-				String title = NavigationHelper.extractNameFromUri(dataUri);
-				if (intent.hasExtra("TORRENT_TITLE")) {
-					title = intent.getStringExtra("TORRENT_TITLE");
-				}
-				if (privateSource != null) {
-					// Download locally first before adding the torrent
-					addTorrentFromPrivateSource(data.toString(), title, privateSource);
-				} else {
-					// Normally send the URL to the torrent client
-					addTorrentByUrl(data, title);
-				}
+				// Normally send the URL to the torrent client
+				addTorrentByUrl(data, title);
 			}
 			return;
 		}
 
 		// Adding a torrent from magnet URL
 		if (dataUri.getScheme().equals("magnet")) {
-			addTorrentByMagnetUrl(data);
+			addTorrentByMagnetUrl(data, title);
 			return;
 		}
 
 		// Adding a local .torrent file; the title we show is just the file name
 		if (dataUri.getScheme().equals("file")) {
-			String title = data.substring(data.lastIndexOf("/") + 1);
 			addTorrentByFile(data, title);
 			return;
 		}
@@ -807,10 +804,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	}
 
 	@Background
-	protected void addTorrentByMagnetUrl(String url) {
+	public void addTorrentByMagnetUrl(String url, String title) {
 		DaemonTaskResult result = AddByMagnetUrlTask.create(currentConnection, url).execute();
 		if (result instanceof DaemonTaskSuccessResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, "Torrent"));
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
 			refreshTorrents();
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
@@ -828,11 +825,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		}
 	}
 
-	private void addTorrentFromDownloads(Uri contentUri) {
+	private void addTorrentFromDownloads(Uri contentUri, String title) {
 
 		try {
 			// Open the content uri as input stream and this via a local temporary file
-			addTorrentFromStream(getContentResolver().openInputStream(contentUri));
+			addTorrentFromStream(getContentResolver().openInputStream(contentUri), title);
 		} catch (SecurityException e) {
 			// No longer access to this file
 			Log.e(this, "No access given to " + contentUri.toString() + ": " + e.toString());
@@ -848,7 +845,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 		try {
 			InputStream input = SearchHelper_.getInstance_(this).getFile(source, url);
-			addTorrentFromStream(input);
+			addTorrentFromStream(input, title);
 		} catch (Exception e) {
 			Log.e(this, "Can't download private site torrent " + url + " from " + source + ": " + e.toString());
 			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
@@ -857,7 +854,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	}
 
 	@Background
-	protected void addTorrentFromWeb(String url, WebsearchSetting websearchSetting) {
+	protected void addTorrentFromWeb(String url, WebsearchSetting websearchSetting, String title) {
 
 		try {
 			// Cookies are taken from the websearchSetting that we already matched against this target URL
@@ -884,7 +881,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 				return;
 			}
 			InputStream input = response.getEntity().getContent();
-			addTorrentFromStream(input);
+			addTorrentFromStream(input, title);
 		} catch (Exception e) {
 			Log.e(this, "Can't retrieve web torrent " + url + ": " + e.toString());
 			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
@@ -892,7 +889,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	}
 
 	@Background
-	protected void addTorrentFromStream(InputStream input) {
+	protected void addTorrentFromStream(InputStream input, String title) {
 
 		File tempFile = new File("/not/yet/set");
 		try {
@@ -906,7 +903,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 					output.write(buffer, 0, read);
 				output.flush();
 				String fileName = Uri.fromFile(tempFile).toString();
-				addTorrentByFile(fileName, fileName.substring(fileName.lastIndexOf("/")));
+				addTorrentByFile(fileName, title);
 			} finally {
 				output.close();
 			}

@@ -52,9 +52,14 @@ public class UrlEntryDialog {
 							public void onClick(DialogInterface dialog, int which) {
 								// Assume text entry box input as URL and treat the filename (after the last /) as title
 								String url = urlInput.getText().toString();
+								Uri uri = Uri.parse(url);
 								if (activity != null && !TextUtils.isEmpty(url)) {
-									String title = NavigationHelper.extractNameFromUri(Uri.parse(url));
-									activity.addTorrentByUrl(url, title);
+									String title = NavigationHelper.extractNameFromUri(uri);
+									if (uri.getScheme() != null && uri.getScheme().equals("magnet")) {
+										activity.addTorrentByMagnetUrl(url, title);
+									} else {
+										activity.addTorrentByUrl(url, title);
+									}
 								}
 							}
 						}).setNegativeButton(android.R.string.cancel, null).create();
