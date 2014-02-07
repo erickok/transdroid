@@ -46,6 +46,14 @@ public class SystemSettings {
 		return prefs.getBoolean("system_dormantasinactive", false);
 	}
 
+	/**
+	 * Returns the interval in which automatic screen refreshes should be scheduled.
+	 * @return The selected refresh interval in milliseconds or 0 if automatic refreshes should be disabled
+	 */
+	public int getRefreshIntervalMilliseconds() {
+		return Integer.parseInt(prefs.getString("system_autorefresh", "0"));
+	}
+
 	public boolean checkForUpdates() {
 		return prefs.getBoolean("system_checkupdates", true);
 	}
@@ -70,5 +78,5 @@ public class SystemSettings {
 	public void setLastCheckedForAppUpdates(Date lastChecked) {
 		prefs.edit().putLong("system_lastappupdatecheck", lastChecked == null ? -1L : lastChecked.getTime()).commit();
 	}
-	
+
 }

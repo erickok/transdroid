@@ -107,6 +107,7 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 			findPreference("header_addrssfeed").setOnPreferenceClickListener(onAddRssfeed);
 		findPreference("header_background").setOnPreferenceClickListener(onBackgroundSettings);
 		findPreference("header_system").setOnPreferenceClickListener(onSystemSettings);
+		findPreference("header_help").setOnPreferenceClickListener(onHelpSettings);
 
 		// Add existing servers
 		List<ServerSetting> servers = applicationSettings.getNormalServerSettings();
@@ -234,6 +235,14 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
 			SystemSettingsActivity_.intent(MainSettingsActivity.this).start();
+			return true;
+		}
+	};
+
+	private OnPreferenceClickListener onHelpSettings = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			HelpSettingsActivity_.intent(MainSettingsActivity.this).start();
 			return true;
 		}
 	};

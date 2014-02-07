@@ -23,11 +23,13 @@
 		android:summary="@string/pref_dormantasinactive_info"
 		android:defaultValue="false" />
 	
-	<CheckBoxPreference
-		android:key="system_checkupdates"
-		android:title="@string/pref_checkupdates"
-		android:summary="@string/pref_checkupdates_info"
-		android:defaultValue="true" />
+	<ListPreference
+		android:key="system_autorefresh"
+		android:title="@string/pref_autorefresh"
+		android:summary="@string/pref_autorefresh_info"
+		android:entries="@array/pref_autorefresh_intervals"
+		android:entryValues="@array/pref_autorefresh_intervalvalues"
+		android:defaultValue="0" />
 	
 	<CheckBoxPreference
 		android:key="system_usedarktheme"
@@ -35,15 +37,11 @@
 		android:summary="@string/pref_usedarktheme_info"
 		android:defaultValue="false" />
 	
-	<Preference
-		android:key="system_sendlog"
-		android:title="@string/pref_sendlog"
-		android:summary="@string/pref_sendlog_info" />
-
-	<Preference
-		android:key="system_installhelp"
-		android:title="@string/pref_installhelp"
-		android:summary="@string/pref_installhelp_info" />
+	<CheckBoxPreference
+		android:key="system_checkupdates"
+		android:title="@string/pref_checkupdates"
+		android:summary="@string/pref_checkupdates_info"
+		android:defaultValue="true" />
 	
 	<Preference
 		android:key="system_clearsearch"
@@ -57,11 +55,4 @@
 		android:key="system_exportsettings"
 		android:title="@string/pref_export" />
 	
-	<Preference
-		android:key="system_changelog"
-		android:title="@string/pref_changelog" />
-	
-	<Preference
-		android:key="system_about" />
-
 </PreferenceScreen>

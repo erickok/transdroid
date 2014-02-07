@@ -27,7 +27,6 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.SettingsPersistence;
 import org.transdroid.core.gui.log.ErrorLogSender;
-import org.transdroid.core.gui.navigation.DialogHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.search.SearchHistoryProvider;
 import org.transdroid.core.service.BootReceiver;
@@ -39,7 +38,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -54,11 +52,8 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 @EActivity
 public class SystemSettingsActivity extends SherlockPreferenceActivity {
 
-	protected static final int DIALOG_CHANGELOG = 0;
-	protected static final int DIALOG_ABOUT = 1;
-	protected static final int DIALOG_IMPORTSETTINGS = 2;
-	protected static final int DIALOG_EXPORTSETTINGS = 3;
-	protected static final String INSTALLHELP_URI = "http://www.transdroid.org/download/";
+	protected static final int DIALOG_IMPORTSETTINGS = 0;
+	protected static final int DIALOG_EXPORTSETTINGS = 1;
 
 	@Bean
 	protected NavigationHelper navigationHelper;
@@ -85,14 +80,9 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		} else {
 			getPreferenceScreen().removePreference(findPreference("system_checkupdates"));
 		}
-		findPreference("system_sendlog").setOnPreferenceClickListener(onSendLogClick);
-		findPreference("system_installhelp").setOnPreferenceClickListener(onInstallHelpClick);
-		findPreference("system_changelog").setOnPreferenceClickListener(onChangeLogClick);
 		findPreference("system_clearsearch").setOnPreferenceClickListener(onClearSearchClick);
 		findPreference("system_importsettings").setOnPreferenceClickListener(onImportSettingsClick);
 		findPreference("system_exportsettings").setOnPreferenceClickListener(onExportSettingsClick);
-		findPreference("system_about").setTitle(getString(R.string.pref_about, getString(R.string.app_name)));
-		findPreference("system_about").setOnPreferenceClickListener(onAboutClick);
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -108,22 +98,6 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 				BootReceiver.startAppUpdatesService(getApplicationContext());
 			else
 				BootReceiver.cancelAppUpdates(getApplicationContext());
-			return true;
-		}
-	};
-
-	private OnPreferenceClickListener onSendLogClick = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			errorLogSender.collectAndSendLog(SystemSettingsActivity.this, applicationSettings.getLastUsedServer());
-			return true;
-		}
-	};
-
-	private OnPreferenceClickListener onInstallHelpClick = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(INSTALLHELP_URI)));
 			return true;
 		}
 	};
@@ -146,15 +120,6 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		}
 	};
 
-	private OnPreferenceClickListener onChangeLogClick = new OnPreferenceClickListener() {
-		@SuppressWarnings("deprecation")
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			showDialog(DIALOG_CHANGELOG);
-			return true;
-		}
-	};
-
 	private OnPreferenceClickListener onClearSearchClick = new OnPreferenceClickListener() {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
@@ -165,21 +130,8 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 		}
 	};
 
-	private OnPreferenceClickListener onAboutClick = new OnPreferenceClickListener() {
-		@SuppressWarnings("deprecation")
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			showDialog(DIALOG_ABOUT);
-			return true;
-		}
-	};
-
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
-		case DIALOG_CHANGELOG:
-			return DialogHelper.showDialog(this, new ChangelogDialog());
-		case DIALOG_ABOUT:
-			return DialogHelper.showDialog(this, new AboutDialog());
 		case DIALOG_IMPORTSETTINGS:
 			// @formatter:off
 			return new AlertDialog.Builder(this)

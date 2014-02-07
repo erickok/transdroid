@@ -63,6 +63,10 @@
 			android:key="header_system"
 			android:title="@string/pref_system"
 			android:order="302" />
+		<Preference
+			android:key="header_help"
+			android:title="@string/pref_help"
+			android:order="303" />
 	</PreferenceCategory>
 	
 </PreferenceScreen>
