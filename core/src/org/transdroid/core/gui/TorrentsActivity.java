@@ -171,7 +171,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@FragmentById(resName = "torrent_details")
 	protected DetailsFragment fragmentDetails;
 	
-	// Auto refresh task. Could be replaced by @Background(id="task-id")
+	// Auto refresh task
 	private AsyncTask<Void, Void, Void> autoRefreshTask;
 	// Fragment uses this to pause the refresh across restarts
 	public boolean stopRefresh = false;
@@ -280,8 +280,6 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// Start auto refresh
-		startAutoRefresh();
 
 		// Refresh server settings
 		navigationSpinnerAdapter.updateServers(applicationSettings.getAllServerSettings());
@@ -297,6 +295,10 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			filterSelected(lastUsed, true);
 		else
 			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+		
+		// Start auto refresh
+		startAutoRefresh();
+
 	}
 
 	@OnActivityResult(RESULT_DETAILS)
@@ -313,16 +315,15 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void startAutoRefresh() {
 		// Check if already running
-		if (autoRefreshTask != null || stopRefresh)
+		if (autoRefreshTask != null || stopRefresh || systemSettings.getRefreshIntervalMilliseconds() == 0)
 			return;
 		
 		autoRefreshTask = new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... params) {
 				while (!isCancelled()) {
-					// X seconds seems reasonable if someone actually wants real time updates
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(systemSettings.getRefreshIntervalMilliseconds());
 					} catch (InterruptedException e) {
 						// Ignore
 					}
@@ -340,7 +341,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		};
 		// Executes serially by default on Honeycomb, was parallel before
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-			autoRefreshTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+			autoRefreshTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		else
 			autoRefreshTask.execute();
 	}
@@ -351,12 +352,6 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		autoRefreshTask = null;
 	}
 	
-	@Override
-	protected void onPause() {
-		stopAutoRefresh();
-		super.onPause();
-	}
-
 	@Override
 	protected void onDestroy() {
 		Crouton.cancelAllCroutons();
@@ -628,6 +623,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected void onPause() {
 		if (searchMenu != null)
 			searchMenu.collapseActionView();
+		stopAutoRefresh();
 		super.onPause();
 	}
 

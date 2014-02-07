@@ -50,8 +50,8 @@ public class SystemSettings {
 	 * Returns the interval in which automatic screen refreshes should be scheduled.
 	 * @return The selected refresh interval in milliseconds or 0 if automatic refreshes should be disabled
 	 */
-	public int getRefreshIntervalMilliseconds() {
-		return Integer.parseInt(prefs.getString("system_autorefresh", "0"));
+	public long getRefreshIntervalMilliseconds() {
+		return Integer.parseInt(prefs.getString("system_autorefresh", "0")) * 1000;
 	}
 
 	public boolean checkForUpdates() {
