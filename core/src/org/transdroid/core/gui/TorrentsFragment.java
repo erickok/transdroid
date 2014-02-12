@@ -262,8 +262,10 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 				menu.findItem(R.id.action_setlabel).setVisible(Daemon.supportsSetLabel(daemonType));
 			}
 			// Pause autorefresh
-			((TorrentsActivity) getActivity()).stopRefresh = true;
-			((TorrentsActivity) getActivity()).stopAutoRefresh();
+			if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
+				((TorrentsActivity) getActivity()).stopRefresh = true;
+				((TorrentsActivity) getActivity()).stopAutoRefresh();
+			}
 			return true;
 		}
 
@@ -333,8 +335,10 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
 			// Resume autorefresh
-			((TorrentsActivity) getActivity()).stopRefresh = false;
-			((TorrentsActivity) getActivity()).startAutoRefresh();
+			if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
+				((TorrentsActivity) getActivity()).stopRefresh = false;
+				((TorrentsActivity) getActivity()).startAutoRefresh();
+			}
 			selectionManagerMode.onDestroyActionMode(mode);
 		}
 

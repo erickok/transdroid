@@ -248,7 +248,7 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	protected void detailsListClicked(int position) {
 		detailsList.setItemChecked(position, false);
 	}
-	
+
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
@@ -392,6 +392,11 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			// Pause autorefresh
+			if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
+				((TorrentsActivity) getActivity()).stopRefresh = true;
+				((TorrentsActivity) getActivity()).stopAutoRefresh();
+			}
 			return selectionManagerMode.onPrepareActionMode(mode, menu);
 		}
 
@@ -487,6 +492,11 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
+			// Resume autorefresh
+			if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
+				((TorrentsActivity) getActivity()).stopRefresh = false;
+				((TorrentsActivity) getActivity()).startAutoRefresh();
+			}
 			selectionManagerMode.onDestroyActionMode(mode);
 		}
 

@@ -44,18 +44,31 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.transdroid.core.R;
-import org.transdroid.core.app.search.*;
-import org.transdroid.core.app.settings.*;
+import org.transdroid.core.app.search.SearchHelper_;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.SystemSettings;
+import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.log.*;
-import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.rss.*;
+import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.log.Log_;
+import org.transdroid.core.gui.navigation.FilterListAdapter;
+import org.transdroid.core.gui.navigation.FilterListAdapter_;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter_;
+import org.transdroid.core.gui.navigation.Label;
+import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.RefreshableActivity;
+import org.transdroid.core.gui.navigation.StatusType;
+import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
-import org.transdroid.core.gui.settings.*;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.core.service.BootReceiver;
 import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.core.widget.ListWidgetProvider;
@@ -107,6 +120,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -115,6 +129,7 @@ import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
 import com.actionbarsherlock.view.SherlockListView;
 import com.actionbarsherlock.widget.SearchView;
 
@@ -369,6 +384,28 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 				SearchView searchView = new SearchView(this);
 				searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 				searchView.setQueryRefinementEnabled(true);
+				searchView.setOnSearchClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						// Pause autorefresh
+						stopRefresh = true;
+						stopAutoRefresh();
+					}
+				});
+				// NOTE ABS's OnCloseListener is not working, hence using an OnActionExpandListener 
+				item.setOnActionExpandListener(new OnActionExpandListener() {
+					@Override
+					public boolean onMenuItemActionExpand(MenuItem item) {
+						return true;
+					}
+					
+					@Override
+					public boolean onMenuItemActionCollapse(MenuItem item) {
+						stopRefresh = false;
+						startAutoRefresh();
+						return true;
+					}
+				});
 				item.setActionView(searchView);
 				searchMenu = item;
 			}
