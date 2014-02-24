@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.base64.android.Base64;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
@@ -66,8 +65,8 @@ import org.transdroid.daemon.util.DLog;
 import org.transdroid.daemon.util.HttpHelper;
 
 import de.timroes.axmlrpc.XMLRPCClient;
-import de.timroes.axmlrpc.XMLRPCException;
 import de.timroes.axmlrpc.XMLRPCClient.UnauthorizdException;
+import de.timroes.axmlrpc.XMLRPCException;
 
 /**
  * An adapter that allows for easy access to rTorrent torrent data. Communication
@@ -122,7 +121,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				   baos.write(buffer, 0, read);
 				}
 				byte[] bytes = baos.toByteArray();
-				int size = Base64.encodeBytes(bytes).length();
+				int size = (int) file.length() * 2;
 				final int XMLRPC_EXTRA_PADDING = 1280;
 				makeRtorrentCall("set_xmlrpc_size_limit", new Object[] { size + XMLRPC_EXTRA_PADDING });
 				makeRtorrentCall("load_raw_start", new Object[] { bytes });
