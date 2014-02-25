@@ -318,7 +318,8 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 				return true;
 			} else if (itemId == R.id.action_setlabel) {
 				lastMultiSelectedTorrents = checked;
-				new SetLabelDialog().setOnLabelPickedListener(TorrentsFragment.this).setCurrentLabels(currentLabels)
+				if (currentLabels != null)
+					new SetLabelDialog().setOnLabelPickedListener(TorrentsFragment.this).setCurrentLabels(currentLabels)
 						.show(getFragmentManager(), "SetLabelDialog");
 				mode.finish();
 				return true;

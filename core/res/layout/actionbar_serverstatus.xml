@@ -81,7 +81,7 @@
 
 		<TextView
 			android:id="@+id/upspeed_text"
-			android:layout_width="wrap_content"
+			android:layout_width="@dimen/ui_serverstatus_width"
 			android:layout_height="wrap_content"
 			android:layout_alignLeft="@id/upcount_text"
 			android:layout_alignParentRight="true"
@@ -94,7 +94,7 @@
 
 		<TextView
 			android:id="@+id/downspeed_text"
-			android:layout_width="wrap_content"
+			android:layout_width="@dimen/ui_serverstatus_width"
 			android:layout_height="wrap_content"
 			android:layout_alignLeft="@id/downcount_text"
 			android:layout_alignRight="@id/downcount_sign"

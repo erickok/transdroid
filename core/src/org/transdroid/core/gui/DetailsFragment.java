@@ -320,8 +320,9 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 
 	@OptionsItem(resName = "action_setlabel")
 	protected void setLabel() {
-		new SetLabelDialog().setOnLabelPickedListener(this).setCurrentLabels(currentLabels)
-				.show(getFragmentManager(), "SetLabelDialog");
+		if (currentLabels == null)
+			new SetLabelDialog().setOnLabelPickedListener(this).setCurrentLabels(currentLabels)
+					.show(getFragmentManager(), "SetLabelDialog");
 	}
 
 	@OptionsItem(resName = "action_forcerecheck")
