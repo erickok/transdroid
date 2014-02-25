@@ -419,7 +419,7 @@
 	<string name="error_no_valid_settings_file">File does not seem to contain %1$s settings</string>
 	<string name="error_file_not_found">The settings file could not be found</string>
 	<string name="error_cant_write_settings_file">Can\'t write to the settings file</string>
-	<string name="error_notanumber">Please enter a positive number</string>
+	<string name="error_notanumber">Please enter a positive number for both speeds</string>
 	<string name="error_notalabel">Please enter a valid label or pick from the list</string>
 	<string name="error_stillloadingdetails">Please wait until the torrent details have been loaded</string>
 	<string name="error_noftpapp">No app found that can download %1$s</string>

@@ -310,7 +310,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="error_no_valid_settings_file">Het bestand lijkt geen %1$s-instellingen te bevatten</string>
 <string name="error_file_not_found">Het bestand met instellingen kon niet worden gevonden</string>
 <string name="error_cant_write_settings_file">Kan niet naar het bestand met instellingen schrijven</string>
-<string name="error_notanumber">Kies een positief getal</string>
+<string name="error_notanumber">Kies een positief getal voor beide snelheden</string>
 <string name="error_notalabel">Geen een geldige labelnaam op of kies uit de lijst</string>
 <string name="error_stillloadingdetails">Even wachten tot de torrentdetails zijn geladen</string>
 <string name="error_noftpapp">Geen app gevonden die %1$s kan downloaden</string>

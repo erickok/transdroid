@@ -20,13 +20,12 @@ import java.security.InvalidParameterException;
 
 import org.transdroid.core.R;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -68,27 +67,39 @@ public class SetTransferRatesDialog extends DialogFragment {
 				R.id.down9Button, R.id.down0Button);
 		bindButtons(transferRatesContent, maxSpeedUp, R.id.up1Button, R.id.up2Button, R.id.up3Button, R.id.up4Button,
 				R.id.up5Button, R.id.up6Button, R.id.up7Button, R.id.up8Button, R.id.up9Button, R.id.up0Button);
-		return new AlertDialog.Builder(getActivity()).setTitle(R.string.status_maxspeed).setView(transferRatesContent)
-				.setPositiveButton(android.R.string.ok, new OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						int maxDown = -1, maxUp = -1;
-						try {
-							maxDown = Integer.parseInt(maxSpeedDown.getText().toString());
-							maxUp = Integer.parseInt(maxSpeedUp.getText().toString());
-						} catch (NumberFormatException e) {
-						}
-						if (maxDown <= 0 || maxUp <= 0) {
-							onRatesPickedListener.onInvalidNumber();
-						}
-						onRatesPickedListener.onRatesPicked(maxDown, maxUp);
-					}
-				}).setNeutralButton(R.string.status_maxspeed_reset, new OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						onRatesPickedListener.resetRates();
-					}
-				}).setNegativeButton(android.R.string.cancel, null).create();
+		((Button) transferRatesContent.findViewById(R.id.ok_button)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int maxDown = -1, maxUp = -1;
+				try {
+					maxDown = Integer.parseInt(maxSpeedDown.getText().toString());
+					maxUp = Integer.parseInt(maxSpeedUp.getText().toString());
+				} catch (NumberFormatException e) {
+				}
+				if (maxDown <= 0 || maxUp <= 0) {
+					onRatesPickedListener.onInvalidNumber();
+				}
+				onRatesPickedListener.onRatesPicked(maxDown, maxUp);
+				dismiss();
+			}
+		});
+		((Button) transferRatesContent.findViewById(R.id.reset_button)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onRatesPickedListener.resetRates();
+				dismiss();
+			}
+		});
+		((Button) transferRatesContent.findViewById(R.id.cancel_button)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dismiss();
+			}
+		});
+		Dialog dialog = new Dialog(getActivity());
+		dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(transferRatesContent);
+		return dialog;
 	}
 
 	private void bindButtons(View transferRatesContent, View numberView, int... buttonResource) {

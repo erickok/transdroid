@@ -38,6 +38,8 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 
 	@ViewById
 	protected TextView downcountText, upcountText, downcountSign, upcountSign, downspeedText, upspeedText;
+	@ViewById
+	protected View speedswrapperLayout;
 	private TorrentsActivity activity;
 
 	public ServerStatusView(Context context) {
@@ -63,7 +65,7 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 			upspeedText.setText(null);
 			downcountSign.setVisibility(View.INVISIBLE);
 			upcountSign.setVisibility(View.INVISIBLE);
-			setClickListener(null);
+			speedswrapperLayout.setOnClickListener(null);
 		}
 
 		int downcount = 0, upcount = 0, downspeed = 0, upspeed = 0;
@@ -87,17 +89,8 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 		upspeedText.setText(FileSizeConverter.getSize(upspeed) + "/s");
 		downcountSign.setVisibility(View.VISIBLE);
 		upcountSign.setVisibility(View.VISIBLE);
-		setClickListener(onStartDownPickerClicked);
+		speedswrapperLayout.setOnClickListener(onStartDownPickerClicked);
 
-	}
-
-	private void setClickListener(OnClickListener onClick) {
-		downcountText.setOnClickListener(onClick);
-		upcountText.setOnClickListener(onClick);
-		downspeedText.setOnClickListener(onClick);
-		upspeedText.setOnClickListener(onClick);
-		downcountSign.setOnClickListener(onClick);
-		upcountSign.setOnClickListener(onClick);
 	}
 
 	private OnClickListener onStartDownPickerClicked = new OnClickListener() {
