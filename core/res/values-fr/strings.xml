@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2010-2013 Eric Kok et al.
+
+Transdroid is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Transdroid is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+<string name="action_add">Ajouter</string>
+<string name="action_addall">Tout ajouter</string>
+<string name="action_addfromfile">Depuis fichier</string>
+<string name="action_addfromurl">Depuis URL</string>
+<string name="action_scanbarcode">Scanner le code-barre</string>
+<string name="action_search">Chercher</string>
+<string name="action_refresh">Rafraîchir</string>
+<string name="action_rss">RSS</string>
+<string name="action_enableturtle">Activer le mode tortue</string>
+<string name="action_disableturtle">Désactiver le mode tortue</string>
+<string name="action_sort">Trier la liste</string>
+<string name="action_sort_alpha">Nom</string>
+<string name="action_sort_status">Statut</string>
+<string name="action_sort_done">Date finie</string>
+<string name="action_sort_added">Date d\'ajout</string>
+<string name="action_sort_upspeed">Vitesse d\'envoi</string>
+<string name="action_sort_ratio">Ratio</string>
+<string name="action_filter">Liste de filtres</string>
+<string name="action_settings">Réglages</string>
+<string name="action_help">Aide</string>
+<string name="action_start">Démarrer</string>
+<string name="action_start_default">Démarrage normal</string>
+<string name="action_start_forced">Démarrage forcé</string>
+<string name="action_stop">Arrêter</string>
+<string name="action_resume">Reprendre</string>
+<string name="action_pause">Pause</string>
+<string name="action_remove">Supprimer</string>
+<string name="action_remove_default">Retirer torrent</string>
+<string name="action_remove_withdata">Retirer et supprimer les données</string>
+<string name="action_setlabel">Définir étiquette</string>
+<string name="action_updatetrackers">Mise à jour des trackers</string>
+<string name="action_changelocation">Changer le lieu de stockage</string>
+<string name="action_priority_off">Off</string>
+<string name="action_priority_low">Faible</string>
+<string name="action_priority_normal">Normal</string>
+<string name="action_priority_high">Elevé</string>
+<string name="action_remoteplay">Lecture à distance dans VLC</string>
+<string name="action_download">Télécharger en utilisant (S)FTP</string>
+<string name="action_showdetails">Voir les détails</string>
+<string name="action_removesettings">Suppression des paramètres</string>
+<string name="action_visitwebsite">Visiter transdroid.org</string>
+
+<string name="navigation_nosettings">%1$s Vous permet de surveiller et de gérer le client torrent que vous exécutez à la maison ou sur votre seedbox. Les réglages peuvent être un peu difficile, mais nous offrons des guides étape par étape et promettons que ça en vaut la peine !</string>
+<string name="navigation_emptytorrents">Connecté, mais pas de torrent actif dans le filtre actuel</string>
+<string name="navigation_emptydetails">Sélectionner un torrent pour afficher ses détails</string>
+<string name="navigation_servers">SERVEURS</string>
+<string name="navigation_status">STATUT</string>
+<string name="navigation_labels">ÉTIQUETTES</string>
+<string name="navigation_status_showall">TOUT</string>
+<string name="navigation_status_onlydown">Réception</string>
+<string name="navigation_status_onlyup">Envoi</string>
+<string name="navigation_status_onlyactive">Actif</string>
+<string name="navigation_status_onlyinactive">Inactif</string>
+<plurals name="navigation_torrentsselected">
+<item quantity="one">%1$d torrent selected</item>
+<item quantity="other">%1$d torrents selected</item>
+</plurals>
+<plurals name="navigation_filesselected">
+<item quantity="one">%1$d files selected</item>
+<item quantity="other">%1$d files selected</item>
+</plurals>
+<string name="navigation_selectall">Sélectionner tout</string>
+<string name="navigation_invertselection">Inverser la sélection</string>
+
+<string name="status_status">STATUT: %1$s</string>
+<string name="status_waiting">Attente de vérification&#8230;</string>
+<string name="status_checking">Vérification des données locales&#8230;</string>
+<string name="status_waitingtodl">En attente de réception %s</string>
+<string name="status_error">Erreur&#8230;</string>
+<string name="status_size1">%1$s DE %2$s (%3$s)</string>
+<string name="status_size2">%1$s, ENVOYÉ %2$s</string>
+<string name="status_sincedate">DEPUIS %1$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_etalong">ETA %1$s</string>
+<string name="status_ofsize">DE %1$s</string>
+<string name="status_unknowneta">ETA INCONNUE</string>
+<string name="status_ratio">RATIO %1$s</string>
+<string name="status_peers">%1$s DE %2$s PAIRS</string>
+<string name="status_downloading">Réception</string>
+<string name="status_seeding">Envoi</string>
+<string name="status_paused">En Pause</string>
+<string name="status_queued">A la queue</string>
+<string name="status_stopped">Stoppé</string>
+<string name="status_unknown">Statut inconnu</string>
+<string name="status_priority_off">Non reçu</string>
+<string name="status_priority_low">Priorité basse</string>
+<string name="status_priority_normal">Priorité normale</string>
+<string name="status_priority_high">Priorité haute</string>
+<string name="status_trackers">TRACKERS</string>
+<string name="status_errors">ERREURS</string>
+<string name="status_files">FICHIERS</string>
+<string name="status_maxspeed">Vitesses de transfert maximales</string>
+<string name="status_maxspeed_down">RÉCEPTION MAX</string>
+<string name="status_maxspeed_up">ENVOI MAX</string>
+<string name="status_maxspeed_unit">KB/S</string>
+<string name="status_maxspeed_reset">Réinitialiser</string>
+<string name="status_update">Mise à jour</string>
+<plurals name="status_service_added">
+<item quantity="one">New torrent added</item>
+<item quantity="other">%1$s new torrents added</item>
+</plurals>
+<plurals name="status_service_finished">
+<item quantity="one">Torrent is finished</item>
+<item quantity="other">%1$s torrents are finished</item>
+</plurals>
+<plurals name="status_service_addedfinished">
+<item quantity="one">%1$s added, %2$s finished torrent</item>
+<item quantity="other">%1$s added, %2$s finished torrents</item>
+</plurals>
+<string name="status_service_andothers">%1$s et autres</string>
+
+<string name="labels_showall">Toutes les étiquettes</string>
+<string name="labels_unlabeled">Sans étiquette</string>
+<string name="labels_newlabel">Nouvelle étiquette</string>
+<string name="labels_no_support">Définir une étiquette n\'est pas supporté par votre client</string>
+<string name="status_label_pick">CHOISISSEZ UNE ÉTIQUETTE</string>
+<string name="status_label_new">NOUVELLE ÉTIQUETTE</string>
+<string name="status_label_remove">Supprimer étiquette</string>
+<string name="status_label_hint">Ex. film ou linux</string>
+
+<string name="result_added">%1$s ajouté (Actualisation)</string>
+<string name="result_removed">%1$s supprimé</string>
+<string name="result_removed_with_data">%1$s enlevé et données supprimées</string>
+<string name="result_resumed">%1$s résumé (Actualisation)</string>
+<string name="result_stopped">%1$s stoppé (Actualisation)</string>
+<string name="result_started">%1$s démarré (Actualisation)</string>
+<string name="result_paused">%1$s mis en pause (Actualisation)</string>
+<string name="result_paused_all">Torrents mis en pause (Actualisation)</string>
+<string name="result_resumed_all">Torrents résumés (Actualisation)</string>
+<string name="result_stopped_all">Torrent stoppé (Actualisation)</string>
+<string name="result_started_all">Torrents démarré (Actualisation)</string>
+<string name="result_trackersupdated">Trackers mis à jour</string>
+<string name="result_labelset">Étiquette fixée à \'%1$s\'</string>
+<string name="result_labelremoved">Étiquette supprimée</string>
+<string name="result_locationset">Torrent déplacé vers \'%1$s\'</string>
+<string name="result_priotitiesset">Priorités de fichier mis à jour</string>
+<string name="result_maxspeedsset">Définir vitesses de transfert maximales</string>
+
+<string name="search_torrentsearch">Recherche de torrents</string>
+<string name="search_queryonsite">\'%1$s\' sur %2$s</string>
+<string name="search_hint">Recherche de torrents</string>
+<string name="search_noresults">Aucun résultat pour votre recherche</string>
+<string name="search_seeders">S: %1$s</string>
+<string name="search_leechers">C: %1$s</string>
+<string name="search_installsearch">Cette fonction nécessite une installation unique du module de recherche de Torrent. Cliquez sur télécharger pour obtenir le package d\'installation (APK) de transdroid.org et redémarrez votre recherche.</string>
+<string name="search_download">Télécharger le module</string>
+<string name="search_openingdetails">Ouverture des détails pour %1$s</string>
+<string name="search_barcodescannernotfound">Le scanner de code-barres n\'a pas pu être trouvé. Voulez-vous l\'installer depuis le Play Store ?</string>
+<string name="search_filemanagernotfound">Aucun gestionnaire de fichiers compatible trouvé. Voulez-vous installer IO Gestionnaire de fichiers depuis le Play Store ?</string>
+<plurals name="search_resutlsselected">
+<item quantity="one">%1$d result selected</item>
+<item quantity="other">%1$d results selected</item>
+</plurals>
+
+<string name="rss_feeds">Flux RSS</string>
+<string name="rss_nosettings">Vous n\'avez pas encore défini de flux RSS à suivre. Les Torrent spécifiques aux flux RSS vous tiennent à jour des nouvelles versions et êtes averti de nouveaux éléments.</string>
+<string name="rss_noselection">Sélectionnez un flux RSS pour afficher les nouveaux éléments</string>
+<string name="rss_empty">Le flux RSS n\'est pas disponible ou il ne contient aucun élément</string>
+<string name="rss_notloaded">Désolé, veuillez attendre que le flux RSS soit chargé</string>
+<string name="rss_error">Désolé, ce flux RSS ne peut être chargé pour le moment</string>
+<plurals name="rss_itemsselected">
+<item quantity="one">%1$d item selected</item>
+<item quantity="other">%1$d items selected</item>
+</plurals>
+<plurals name="rss_service_new">
+<item quantity="one">New RSS feed torrent available</item>
+<item quantity="other">%1$s new RSS feed torrents</item>
+</plurals>
+<string name="rss_service_newfor">Nouveaux torrents de %1$s</string>
+
+<string name="widget_loading">Chargement&#8230;</string>
+<string name="widget_opentransdroid">Ouvrir Transdroid</string>
+<string name="widget_filter">VUE SERVEUR</string>
+<string name="widget_lookfeel">APPARENCE</string>
+<string name="widget_sortby">ORDRE DE TRI</string>
+<string name="widget_reversesortorder">Ordre de tri inversé</string>
+<string name="widget_usedarktheme">Utilisez thème sombre (pas d\'aperçu)</string>
+<string name="widget_done">FINI</string>
+
+<string name="pref_servers">Serveurs</string>
+<string name="pref_addserver">Ajouter un nouveau serveur</string>
+<string name="pref_searchsites">Sites de recherche</string>
+<string name="pref_setsearchsite">Régler site par défaut</string>
+<string name="pref_addwebsearch">Ajouter site de recherche web</string>
+<string name="pref_rssfeeds">Flux RSS</string>
+<string name="pref_addrssfeed">Ajouter flux RSS</string>
+<string name="pref_others">Autres paramètres</string>
+
+<string name="pref_name">Nom</string>
+<string name="pref_name_optional">Nom personnel facultatif</string>
+<string name="pref_searchurl">URL de recherche directe</string>
+<string name="pref_searchurl_info">%s sera remplacé par la requête de recherche</string>
+<string name="pref_cookies">Cookies</string>
+<string name="pref_cookies_info">En option, utiliser le format clé1=valeur1; clé2=valeur2</string>
+<string name="pref_feedurl">Flux RSS</string>
+<string name="pref_reqauth">Requiert une authentification</string>
+<string name="pref_reqauth_info">Ouvre les liens dans le navigateur Web pour la connexion de l\'utilisateur</string>
+
+<string name="pref_servertype">Type de serveur</string>
+<string name="pref_address">IP ou nom d\'hôte</string>
+<string name="pref_port">Numéro de port</string>
+<string name="pref_user">Nom d\'utilisateur</string>
+<string name="pref_pass">Mot de passe</string>
+<string name="pref_extrapass">Mot de passe web Deluge</string>
+<string name="pref_advanced">Paramètres avancés</string>
+<string name="pref_localaddress">IP locale ou hôte</string>
+<string name="pref_localaddress_info">Quand connecté au réseau local spécifié</string>
+<string name="pref_localnetwork">Réseau local</string>
+<string name="pref_localnetwork_info">SSID du serveur sur le réseau local</string>
+<string name="pref_folder">Dossier</string>
+<string name="pref_folder_info">Habituellement vide</string>
+<string name="pref_scgifolder">Point de montage SCGI</string>
+<string name="pref_optional">Paramètres facultatifs</string>
+<string name="pref_alarmdone">Notification de fin</string>
+<string name="pref_alarmdone_info">Notifier quand un torrent est terminé</string>
+<string name="pref_alarmnew">Notification d\'un nouveau torrent</string>
+<string name="pref_alarmnew_info">Notifier quand un torrent a été ajouté</string>
+<string name="pref_os">OS du Serveur</string>
+<string name="pref_downdir">Répertoire de téléchargement</string>
+<string name="pref_downdir_info">Régler manuellement le chemin absolu pour les connexions distantes</string>
+<string name="pref_timeout">Délai de connexion expiré</string>
+<string name="pref_timeout_info">Nombre de secondes avant qu\'une tentative de connexion soit interrompue</string>
+<string name="pref_ftpurl">Url de base (S)FTP</string>
+<string name="pref_ftpurl_into">Par exemple ftp://moi@serveur/téléchargements/</string>
+<string name="pref_ftppass">Mot de passe (S)FTP</string>
+<string name="pref_sslenable">Utiliser SSL</string>
+<string name="pref_sslenable_info">Connection avec le protocole https</string>
+<string name="pref_sslkey">Empreinte SSL personnalisée (SHA-1)</string>
+<string name="pref_sslkey_info">N\'autoriser que les connexions à ce certificat spécifique</string>
+<string name="pref_sslacceptall">Accepter tous les certificats SSL</string>
+<string name="pref_sslacceptall_info">Autoriser toutes les connexions à partir de n\'importe quel empreinte</string>
+
+<string name="pref_background">Notifications d\'arrière-plan</string>
+<string name="pref_notifications">Activer les notifications</string>
+<string name="pref_notifications_info">Active le service en arrière-plan</string>
+<string name="pref_notifyinterval">Intervalle</string>
+<string name="pref_notifyinterval_info">Intervalle de vérification du serveur</string>
+<string name="pref_notifysound">Son</string>
+<string name="pref_notifyvibrate">Vibrer</string>
+<string name="pref_notifyled">Couleur des LED</string>
+<string name="pref_notifyled_info">Si supporté par votre appareil</string>
+<string name="pref_adw">Prendre en charge les notifications AWD</string>
+<string name="pref_adw_info">Afficher compteur de torrent dans ADW Launcher</string>
+
+<string name="pref_system">Système</string>
+<string name="pref_checkupdates">Vérifier les mises à jour</string>
+<string name="pref_checkupdates_info">Vérifiez transdroid.org pour dernière version</string>
+<string name="pref_usedarktheme">Utiliser le thème dark UI</string>
+<string name="pref_usedarktheme_info">Nécessite un redémarrage pour prendre effet</string>
+<string name="pref_import">Importer les paramètres</string>
+<string name="pref_import_dialog">%1$s va essayer d\'importer les serveurs, recherches Web, RSS et les paramètres du système à partir de: %2$s</string>
+<string name="pref_import_success">Paramètres importés avec succès</string>
+<string name="pref_export">Exporter les paramètres</string>
+<string name="pref_export_dialog">h%1$s va exporter les paramètres du serveur (y compris les mots de passe), recherches Web, RSS et paramètres système vers le fichier texte JSON suivant: %2$s</string>
+<string name="pref_export_success">Réglages exportés avec succès</string>
+<string name="pref_sendlog">Envoyer journal d\'erreurs</string>
+<string name="pref_sendlog_info">Obtenir de l\'aide ou signaler un bug</string>
+<string name="pref_installhelp">Voir le guide d\'installation</string>
+<string name="pref_installhelp_info">Disponible à transdroid.org/download</string>
+<string name="pref_changelog">Modifications récentes</string>
+<string name="pref_about">Au sujet de %1$s</string>
+<string-array name="pref_notifyinterval_types">
+<item>1 minute</item>
+<item>10 minutes</item>
+<item>30 minutes</item>
+<item>1 heure</item>
+<item>3 heures</item>
+<item>12 heures</item>
+<item>1 jour</item>
+</string-array>
+
+<string name="error_httperror">Erreur de communication; vérifiez votre connexion</string>
+<string name="error_jsonrequesterror">Erreur de requête Interne</string>
+<string name="error_jsonresponseerror">Erreur d\'analyse du serveur (Veuillez vérifier vos paramètres)</string>
+<string name="error_daemonnotconnected">L\'interface web non connecté à un serveur actif</string>
+<string name="error_401">Accès refusé (Veuillez vérifier vos paramètres)</string>
+<string name="error_torrentfile">Impossible de lire le fichier .torrent</string>
+<string name="error_parsingrss">Erreur lors de l\'analyse du flux RSS</string>
+<string name="error_invalid_url_form">Cette URL est malformée</string>
+<string name="error_invalid_search_url">Votre URL de recherche web est invalide:</string>
+<string name="error_invalid_ip_or_hostname">L\'entrée n\'est pas une adresse IP valide ou un nom d\'hôte</string>
+<string name="error_invalid_port_number">Le numéro de port est toujours numérique</string>
+<string name="error_invalid_directory">Les chemins d\’accès doivent se terminer par / ou \</string>
+<string name="error_invalid_timeout">Le temps expiré ne peut etre vide et est un nombre positif</string>
+<string name="error_no_url_enclosure">L\'élément du flux RSS n\'a pas fourni une URL annexe ou une balise de lien pointant vers le fichier .torrent</string>
+<string name="error_no_link">L\'élément du flux RSS ne fournit pas de lien pour accéder à</string>
+<string name="error_norssfeed">l\'URL n\'est pas un flux RSS (valide)</string>
+<string name="error_media_not_available">Carte SD non disponible en lecture/écriture</string>
+<string name="error_no_valid_settings_file">Le fichier ne semble pas contenir %1$s réglages</string>
+<string name="error_file_not_found">Le fichier de configuration est introuvable</string>
+<string name="error_cant_write_settings_file">Impossible d\'écrire dans le fichier de configuration</string>
+<string name="error_notanumber">Veuillez enter un nombre positif</string>
+<string name="error_notalabel">Veuillez entrer une étiquette valide ou choisir dans la liste</string>
+<string name="error_stillloadingdetails">Veuillez patienter jusqu\'à ce que les détails du torrent soit chargés</string>
+<string name="error_noftpapp">Aucune application pouvant télécharger disponible %1$s</string>
+
+<string name="update_app_newversion">Nouvelle version de Transdroid disponible</string>
+<string name="update_search_newversion">Nouveau module de recherche de Transdroid disponible</string>
+<string name="update_updateto">Vous pouvez maintenant mettre à jour vers %1$s</string>
+
+<string name="system_librarieslabel">Certains codes/bibliothèques sont utilisés dans le projet:</string>
+<string name="system_description">Gérez vos torrents depuis votre appareil Android</string>
+
+</resources>

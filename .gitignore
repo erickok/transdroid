@@ -21,3 +21,6 @@ local.properties
 .project
 .settings/
 .local.properties
+
+# OS temp files
+.DS_Store

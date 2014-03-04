@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2010-2013 Eric Kok et al.
+
+Transdroid is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Transdroid is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+<string name="action_add">添加</string>
+<string name="action_addall">全部添加</string>
+<string name="action_addfromfile">从文件添加</string>
+<string name="action_addfromurl">从URL添加</string>
+<string name="action_scanbarcode">扫描条码</string>
+<string name="action_search">搜索</string>
+<string name="action_refresh">刷新</string>
+<string name="action_rss">RSS聚合</string>
+<string name="action_enableturtle">允许龟速模式</string>
+<string name="action_disableturtle">禁止龟速模式</string>
+<string name="action_sort">排序</string>
+<string name="action_sort_alpha">按名称排序</string>
+<string name="action_sort_status">按状态排序</string>
+<string name="action_sort_done">按完成状态排序</string>
+<string name="action_sort_added">按追加排序</string>
+<string name="action_sort_upspeed">按上传速度排序</string>
+<string name="action_sort_ratio">按上传比率排序</string>
+<string name="action_filter">过滤清单</string>
+<string name="action_settings">设定</string>
+<string name="action_help">帮助</string>
+<string name="action_start">开始</string>
+<string name="action_start_default">默认开始</string>
+<string name="action_start_forced">强制开始</string>
+<string name="action_stop">停止</string>
+<string name="action_resume">恢复</string>
+<string name="action_pause">暂停</string>
+<string name="action_remove">删除</string>
+<string name="action_remove_default">删除种子</string>
+<string name="action_remove_withdata">删除种子和数据</string>
+<string name="action_setlabel">标签设定</string>
+<string name="action_updatetrackers">更新trackers</string>
+<string name="action_changelocation">变更存储位置</string>
+<string name="action_priority_off">优先级-关</string>
+<string name="action_priority_low">优先级-低</string>
+<string name="action_priority_normal">优先级-中</string>
+<string name="action_priority_high">优先级-高</string>
+<string name="action_remoteplay">在VLC中远程播放</string>
+<string name="action_download">使用(S)FTP下载</string>
+<string name="action_showdetails">显示详细</string>
+<string name="action_removesettings">删除设定</string>
+<string name="action_visitwebsite">访问 transdroid.org</string>
+
+<string name="navigation_nosettings">无设定导航</string>
+<string name="navigation_emptytorrents">无种链接</string>
+<string name="navigation_emptydetails">查看种子详情</string>
+<string name="navigation_servers">服务器</string>
+<string name="navigation_status">状态</string>
+<string name="navigation_labels">标签</string>
+<string name="navigation_status_showall">全部</string>
+<string name="navigation_status_onlydown">下载</string>
+<string name="navigation_status_onlyup">上传</string>
+<string name="navigation_status_onlyactive">活动</string>
+<string name="navigation_status_onlyinactive">非活动</string>
+<plurals name="navigation_torrentsselected">
+<item quantity="one">%1$d torrent selected</item>
+<item quantity="other">%1$d torrents selected</item>
+</plurals>
+<plurals name="navigation_filesselected">
+<item quantity="one">%1$d files selected</item>
+<item quantity="other">%1$d files selected</item>
+</plurals>
+<string name="navigation_selectall">全选</string>
+<string name="navigation_invertselection">反选</string>
+
+<string name="status_status">状态</string>
+<string name="status_waiting">等待校验</string>
+<string name="status_checking">本地数据校验</string>
+<string name="status_waitingtodl">等待下载</string>
+<string name="status_error">错误</string>
+<string name="status_size1">%1$s OF %2$s (%3$s)</string>
+<string name="status_size2">%1$s, UPLOADED %2$s</string>
+<string name="status_sincedate">从 %1$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_etalong">ETA %1$s</string>
+<string name="status_ofsize">OF %1$s</string>
+<string name="status_unknowneta">无法预计</string>
+<string name="status_ratio">比率 %1$s</string>
+<string name="status_peers">%1$s OF %2$s PEERS</string>
+<string name="status_downloading">下载中</string>
+<string name="status_seeding">上传中</string>
+<string name="status_paused">已暂停</string>
+<string name="status_queued">等待中</string>
+<string name="status_stopped">已停止</string>
+<string name="status_unknown">未知状态</string>
+<string name="status_priority_off">没有下载</string>
+<string name="status_priority_low">低优先级</string>
+<string name="status_priority_normal">默认优先级</string>
+<string name="status_priority_high">高优先级</string>
+<string name="status_trackers">TRACKERS</string>
+<string name="status_errors">ERRORS</string>
+<string name="status_files">FILES</string>
+<string name="status_maxspeed">最大传输速度</string>
+<string name="status_maxspeed_down">最大下载速度</string>
+<string name="status_maxspeed_up">最大上传速度</string>
+<string name="status_maxspeed_unit">KB/S</string>
+<string name="status_maxspeed_reset">重置</string>
+<string name="status_update">更新</string>
+<plurals name="status_service_added">
+<item quantity="one">New torrent added</item>
+<item quantity="other">%1$s new torrents added</item>
+</plurals>
+<plurals name="status_service_finished">
+<item quantity="one">Torrent is finished</item>
+<item quantity="other">%1$s torrents are finished</item>
+</plurals>
+<plurals name="status_service_addedfinished">
+<item quantity="one">%1$s added, %2$s finished torrent</item>
+<item quantity="other">%1$s added, %2$s finished torrents</item>
+</plurals>
+
+<string name="labels_showall">全部标签</string>
+<string name="labels_unlabeled">无标签</string>
+<string name="labels_newlabel">新标签</string>
+
+
+<plurals name="search_resutlsselected">
+<item quantity="one">%1$d result selected</item>
+<item quantity="other">%1$d results selected</item>
+</plurals>
+
+<plurals name="rss_itemsselected">
+<item quantity="one">%1$d item selected</item>
+<item quantity="other">%1$d items selected</item>
+</plurals>
+<plurals name="rss_service_new">
+<item quantity="one">New RSS feed torrent available</item>
+<item quantity="other">%1$s new RSS feed torrents</item>
+</plurals>
+
+
+
+
+
+
+
+
+
+
+</resources>
