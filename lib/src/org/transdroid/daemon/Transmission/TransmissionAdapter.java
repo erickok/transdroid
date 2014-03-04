@@ -493,12 +493,15 @@ public class TransmissionAdapter implements IDaemonAdapter {
 			if (!commentString.equals("")) {
 				errorString = errorString.equals("")? commentString : errorString + "\n" + commentString;
 			}
+			String locationDir = tor.getString(RPC_DOWNLOADDIR);
+			if (!locationDir.endsWith(settings.getOS().getPathSeperator()))
+				locationDir += settings.getOS().getPathSeperator();
 			torrents.add(new Torrent(
 					tor.getInt(RPC_ID),
 					null,
 					tor.getString(RPC_NAME),
 					hasError? TorrentStatus.Error: getStatus(tor.getInt(RPC_STATUS)),
-					tor.getString(RPC_DOWNLOADDIR) + settings.getOS().getPathSeperator(),
+					locationDir,
 					tor.getInt(RPC_RATEDOWNLOAD),
 					tor.getInt(RPC_RATEUPLOAD),
 					tor.getInt(RPC_PEERSGETTING),
