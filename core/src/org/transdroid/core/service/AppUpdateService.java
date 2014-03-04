@@ -87,7 +87,7 @@ public class AppUpdateService extends IntentService {
 		Calendar lastDay = Calendar.getInstance();
 		lastDay.add(Calendar.DAY_OF_MONTH, -1);
 		if (lastChecked != null && lastChecked.after(lastDay.getTime())) {
-			Log.d(this, "Ship the update service, as we already checked the last 24 hours (or to be exact at "
+			Log.d(this, "Skip the update service, as we already checked the last 24 hours (or to be exact at "
 					+ lastChecked.toString() + ").");
 			return;
 		}

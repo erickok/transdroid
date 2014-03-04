@@ -27,13 +27,23 @@ import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
+import org.transdroid.core.gui.search.SearchActivity_;
 import org.transdroid.core.rssparser.Channel;
 import org.transdroid.core.rssparser.Item;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.ActionMode;
@@ -41,6 +51,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SherlockListView;
 import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
  * Fragment that lists the items in a specific RSS feed
@@ -151,6 +163,35 @@ public class RssitemsFragment extends SherlockFragment {
 				mode.finish();
 				return true;
 			} else {
+				// The other items only operate on one (the first) selected item
+				if (checked.size() < 1)
+					return false;
+				final Item first = checked.get(0);
+				if (itemId == R.id.action_showdetails) {
+					// Show a dialog box with the RSS item description text
+					new DialogFragment() {
+						public Dialog onCreateDialog(Bundle savedInstanceState) {
+							return new AlertDialog.Builder(getActivity()).setMessage(first.getDescription())
+									.setPositiveButton(R.string.action_close, null).create();
+						};
+					}.show(getFragmentManager(), "RssItemDescription");
+				} else if (itemId == R.id.action_openwebsite) {
+					// Open the browser to show the website contained in the item's link tag
+					Toast.makeText(getActivity(), getString(R.string.search_openingdetails, first.getTitle()),
+							Toast.LENGTH_LONG).show();
+					if (!TextUtils.isEmpty(first.getLink())) {
+						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(first.getLink())));
+					} else {
+						// No URL was specified in the RSS feed item link tag (or no link tag was present)
+						Crouton.showText(getActivity(), R.string.error_no_link, NavigationHelper.CROUTON_ERROR_STYLE);
+					}
+				} else if (itemId == R.id.action_useassearch) {
+					// Use the RSS item title to start a new search (mimicking the search manager style)
+					Intent search = SearchActivity_.intent(getActivity()).get();
+					search.setAction(Intent.ACTION_SEARCH);
+					search.putExtra(SearchManager.QUERY, first.getTitle());
+					startActivity(search);
+				}
 				return false;
 			}
 		}

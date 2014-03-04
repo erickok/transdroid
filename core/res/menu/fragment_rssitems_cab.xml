@@ -22,4 +22,22 @@
 		android:showAsAction="always"
 		android:title="@string/action_addall" />
 	
+	<item
+		android:id="@+id/action_showdetails"
+		android:icon="?attr/ic_action_info"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_showdetails" />
+	
+	<item
+		android:id="@+id/action_openwebsite"
+		android:icon="?attr/ic_action_website"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_openwebsite" />
+	
+	<item
+		android:id="@+id/action_useassearch"
+		android:icon="?attr/ic_action_search"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_useassearch" />
+	
 </menu>
