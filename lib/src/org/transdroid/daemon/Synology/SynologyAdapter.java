@@ -319,7 +319,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 				totalPeers,
 				eta.intValue(),
 				downloaded,
-				Integer.parseInt(transfer.getString("size_uploaded")),
+				transfer.getLong("size_uploaded"),
 				size,
 				(size == 0) ? 0 : (new Float(downloaded) / size),
 				0,

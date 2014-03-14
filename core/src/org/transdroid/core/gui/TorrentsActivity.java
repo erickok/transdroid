@@ -814,7 +814,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	@Background
 	protected void refreshTorrents() {
+		String startConnectionId = currentConnection.getSettings().getIdString();
 		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute();
+		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
+			// During the command execution the user changed the server, so we are no longer interested in the result
+			return;
+		}
 		if (result instanceof RetrieveTaskSuccessResult) {
 			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
 					((RetrieveTaskSuccessResult) result).getLabels());
@@ -827,7 +832,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	public void refreshTorrentDetails(Torrent torrent) {
 		if (!Daemon.supportsFineDetails(currentConnection.getType()))
 			return;
+		String startConnectionId = currentConnection.getSettings().getIdString();
 		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute();
+		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
+			// During the command execution the user changed the server, so we are no longer interested in the result
+			return;
+		}
 		if (result instanceof GetTorrentDetailsTaskSuccessResult) {
 			onTorrentDetailsRetrieved(torrent, ((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
 		} else {
@@ -839,7 +849,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	public void refreshTorrentFiles(Torrent torrent) {
 		if (!Daemon.supportsFileListing(currentConnection.getType()))
 			return;
+		String startConnectionId = currentConnection.getSettings().getIdString();
 		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute();
+		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
+			// During the command execution the user changed the server, so we are no longer interested in the result
+			return;
+		}
 		if (result instanceof GetFileListTaskSuccessResult) {
 			onTorrentFilesRetrieved(torrent, ((GetFileListTaskSuccessResult) result).getFiles());
 		} else {
@@ -849,7 +864,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	@Background
 	protected void getAdditionalStats() {
+		String startConnectionId = currentConnection.getSettings().getIdString();
 		DaemonTaskResult result = GetStatsTask.create(currentConnection).execute();
+		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
+			// During the command execution the user changed the server, so we are no longer interested in the result
+			return;
+		}
 		if (result instanceof GetStatsTaskSuccessResult) {
 			onTurtleModeRetrieved(((GetStatsTaskSuccessResult) result).isAlternativeModeEnabled());
 		} else {
@@ -859,7 +879,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 	@Background
 	protected void updateTurtleMode(boolean enable) {
+		String startConnectionId = currentConnection.getSettings().getIdString();
 		DaemonTaskResult result = SetAlternativeModeTask.create(currentConnection, enable).execute();
+		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
+			// During the command execution the user changed the server, so we are no longer interested in the result
+			return;
+		}
 		if (result instanceof DaemonTaskSuccessResult) {
 			// Success; no need to retrieve it again - just update the visual indicator
 			onTurtleModeRetrieved(enable);
