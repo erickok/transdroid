@@ -65,7 +65,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="navigation_servers">SERVEURS</string>
 <string name="navigation_status">STATUT</string>
 <string name="navigation_labels">ÉTIQUETTES</string>
-<string name="navigation_status_showall">TOUT</string>
+<string name="navigation_status_showall">Tout</string>
 <string name="navigation_status_onlydown">Réception</string>
 <string name="navigation_status_onlyup">Envoi</string>
 <string name="navigation_status_onlyactive">Actif</string>

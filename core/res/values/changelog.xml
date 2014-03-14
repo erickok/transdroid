@@ -20,6 +20,8 @@
 Transdroid 2.1.2\n
 - Support for new Torrent Search\'s private sites\n
 - Added optional auto refresh\n
+- Allow larger .torrent file uploads with rTorrent\n
+- Fix setting download location with Transmission\n
 \n
 Transdroid 2.1.1\n
 - Improved handling of RSS feed read state\n
