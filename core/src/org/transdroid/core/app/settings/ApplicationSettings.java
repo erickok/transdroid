@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchSite;
+import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.search.SearchSetting;
 import org.transdroid.core.seedbox.SeedboxProvider;
@@ -282,6 +283,24 @@ public class ApplicationSettings {
 	 */
 	public void setLastUsedServerKey(int order) {
 		prefs.edit().putInt("system_lastusedserver", order).commit();
+	}
+
+	/**
+	 * Returns the unique code that (should) uniquely identify a navigation filter, such as a label, in the list of all
+	 * available filters
+	 * @return A code that the last used navigation filter reported as uniquely identifying itself, or null if no last
+	 *         used filter is known
+	 */
+	public String getLastUsedNavigationFilter() {
+		return prefs.getString("system_lastusedfilter", null);
+	}
+
+	/**
+	 * Registers some navigation filter as being the last used by the user
+	 * @param server The navigation filter that the user last used in the interface
+	 */
+	public void setLastUsedNavigationFilter(NavigationFilter filter) {
+		prefs.edit().putString("system_lastusedfilter", filter.getCode()).commit();
 	}
 
 	/**

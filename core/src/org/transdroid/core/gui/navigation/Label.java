@@ -55,6 +55,12 @@ public class Label implements SimpleListItem, NavigationFilter, Comparable<Label
 			return unnamedLabelText;
 		return this.name;
 	}
+	
+	@Override
+	public String getCode() {
+		// Use the class name and label name to provide a unique navigation filter code
+		return Label.class.getSimpleName() + "_" + name;
+	}
 
 	public int getCount() {
 		return count;

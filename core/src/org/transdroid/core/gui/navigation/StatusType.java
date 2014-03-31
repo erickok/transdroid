@@ -105,6 +105,12 @@ public enum StatusType {
 			return name;
 		}
 
+		@Override
+		public String getCode() {
+			// Uses the class name and status type enum to provide a unique navigation filter code
+			return StatusTypeFilter.class.getSimpleName() + "_" + statusType.name();
+		}
+
 		/**
 		 * Returns true if the torrent status matches this (selected) status type, false otherwise
 		 * @param torrent The torrent to match against this status type

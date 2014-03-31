@@ -42,4 +42,11 @@ public interface NavigationFilter extends Parcelable {
 	 */
 	String getName();
 
+	/**
+	 * Implementations should return a code that (within reasonable expectations) uniquely identifies it in the list of
+	 * navigation filters
+	 * @return The code to uniquely identify this specific navigation filter, such as the name with a class name prefix
+	 */
+	String getCode();
+
 }

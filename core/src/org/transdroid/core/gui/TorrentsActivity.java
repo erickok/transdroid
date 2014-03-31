@@ -44,18 +44,31 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.transdroid.core.R;
-import org.transdroid.core.app.search.*;
-import org.transdroid.core.app.settings.*;
+import org.transdroid.core.app.search.SearchHelper_;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.SystemSettings;
+import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.log.*;
-import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.rss.*;
+import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.log.Log_;
+import org.transdroid.core.gui.navigation.FilterListAdapter;
+import org.transdroid.core.gui.navigation.FilterListAdapter_;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter;
+import org.transdroid.core.gui.navigation.FilterListDropDownAdapter_;
+import org.transdroid.core.gui.navigation.Label;
+import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.RefreshableActivity;
+import org.transdroid.core.gui.navigation.StatusType;
+import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
-import org.transdroid.core.gui.settings.*;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.core.service.BootReceiver;
 import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.core.widget.ListWidgetProvider;
@@ -163,6 +176,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@InstanceState
 	protected NavigationFilter currentFilter = null;
 	@InstanceState
+	protected String preselectNavigationFilter = null;
+	@InstanceState
 	protected boolean turleModeEnabled = false;
 	@InstanceState
 	protected ArrayList<Label> lastNavigationLabels;
@@ -172,7 +187,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	protected TorrentsFragment fragmentTorrents;
 	@FragmentById(resName = "torrent_details")
 	protected DetailsFragment fragmentDetails;
-	
+
 	// Auto refresh task
 	private AsyncTask<Void, Void, Void> autoRefreshTask;
 	// Fragment uses this to pause the refresh across restarts
@@ -220,7 +235,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			// Add an empty labels list (which will be updated later, but the adapter needs to be created now)
 			navigationSpinnerAdapter.updateLabels(new ArrayList<Label>());
 		}
-		// Now that all items (or at least their adapters) have been added
+		// Now that all items (or at least their adapters) have been added, ensure a filter is selected
+		// NOTE When this is a fresh start, it might override the filter later (based on the last user selection)
 		if (currentFilter == null) {
 			currentFilter = StatusType.getShowAllType(this);
 		}
@@ -258,6 +274,8 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (firstStart) {
 			// Force first torrents refresh
 			filterSelected(lastUsed, true);
+			// Perhaps we can select the last used navigation filter, but only after a first refresh was completed
+			preselectNavigationFilter = applicationSettings.getLastUsedNavigationFilter();
 			// Handle any start up intents
 			if (openTorrent != null) {
 				openDetails(openTorrent);
@@ -297,7 +315,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			filterSelected(lastUsed, true);
 		else
 			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
-		
+
 		// Start auto refresh
 		startAutoRefresh();
 
@@ -312,14 +330,13 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			fragmentTorrents.quickUpdateTorrent(affected, result.getBooleanExtra("torrent_removed", false));
 		}
 	}
-	
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void startAutoRefresh() {
 		// Check if already running
 		if (autoRefreshTask != null || stopRefresh || systemSettings.getRefreshIntervalMilliseconds() == 0)
 			return;
-		
+
 		autoRefreshTask = new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... params) {
@@ -332,14 +349,14 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 					// Just in case it was cancelled during sleep
 					if (isCancelled())
 						return null;
-						
+
 					refreshTorrents();
 					if (Daemon.supportsStats(currentConnection.getType()))
 						getAdditionalStats();
 				}
 				return null;
 			}
-			
+
 		};
 		// Executes serially by default on Honeycomb, was parallel before
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -347,13 +364,13 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		else
 			autoRefreshTask.execute();
 	}
-	
+
 	public void stopAutoRefresh() {
 		if (autoRefreshTask != null)
 			autoRefreshTask.cancel(true);
 		autoRefreshTask = null;
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		Crouton.cancelAllCroutons();
@@ -379,13 +396,13 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 						stopAutoRefresh();
 					}
 				});
-				// NOTE ABS's OnCloseListener is not working, hence using an OnActionExpandListener 
+				// NOTE ABS's OnCloseListener is not working, hence using an OnActionExpandListener
 				item.setOnActionExpandListener(new OnActionExpandListener() {
 					@Override
 					public boolean onMenuItemActionExpand(MenuItem item) {
 						return true;
 					}
-					
+
 					@Override
 					public boolean onMenuItemActionCollapse(MenuItem item) {
 						stopRefresh = false;
@@ -479,6 +496,9 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	 */
 	protected void filterSelected(SimpleListItem item, boolean forceNewConnection) {
 
+		// No longer apply the last used filter (on a fresh application start), if we still needed to
+		preselectNavigationFilter = null;
+
 		// Server selection
 		if (item instanceof ServerSetting) {
 			ServerSetting server = (ServerSetting) item;
@@ -512,9 +532,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 		// Status type or label selection - both of which are navigation filters
 		if (item instanceof NavigationFilter) {
+			// Set new filter
 			currentFilter = (NavigationFilter) item;
 			fragmentTorrents.applyNavigationFilter(currentFilter);
 			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
+			// Remember that the user last selected this
+			applicationSettings.setLastUsedNavigationFilter(currentFilter);
 			// Clear the details view
 			if (fragmentDetails != null) {
 				fragmentDetails.updateIsLoading(false, null);
@@ -1202,6 +1225,25 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		}
 		if (fragmentDetails != null)
 			fragmentDetails.updateLabels(lastNavigationLabels);
+
+		// Perhaps we were still waiting to preselect the last used filter (on a fresh application start)
+		if (preselectNavigationFilter != null) {
+			FilterListAdapter adapter = navigationListAdapter != null ? navigationListAdapter
+					: navigationSpinnerAdapter;
+			for (int i = 0; i < adapter.getCount(); i++) {
+				// Regardless of the navigation style (side list or action bar spinner), we can look up the navigation
+				// filter item, which is represented as simple list item (and might not exist any more, such as with a
+				// label that is deleted on the server)
+				Object item = adapter.getItem(i);
+				if (item instanceof SimpleListItem && item instanceof NavigationFilter
+						&& ((NavigationFilter) item).getCode().equals(preselectNavigationFilter)) {
+					filterSelected((SimpleListItem) item, false);
+					break;
+				}
+			}
+			// Only preselect after the first update we receive (even if the filter wasn't found any more)
+			preselectNavigationFilter = null;
+		}
 
 		// Update the server status (counts and speeds) in the action bar
 		serverStatusView.update(torrents, systemSettings.treatDormantAsInactive());
