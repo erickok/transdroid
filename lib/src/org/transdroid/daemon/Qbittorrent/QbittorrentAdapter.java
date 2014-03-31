@@ -70,9 +70,7 @@ import com.android.internalcopy.http.multipart.Part;
 
 /**
  * The daemon adapter for the qBittorrent torrent client.
- * 
  * @author erickok
- *
  */
 public class QbittorrentAdapter implements IDaemonAdapter {
 
@@ -81,11 +79,11 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 	private int version = -1;
-	
+
 	public QbittorrentAdapter(DaemonSettings settings) {
 		this.settings = settings;
 	}
-	
+
 	private synchronized void ensureVersion() throws DaemonException {
 		if (version > 0)
 			return;
@@ -129,51 +127,52 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		// Unable to establish version number; assume an old version by setting it to version 1
 		version = 10000;
 	}
-	
+
 	@Override
 	public DaemonTaskResult executeTask(DaemonTask task) {
-		
+
 		try {
 			ensureVersion();
 			switch (task.getMethod()) {
 			case Retrieve:
 
 				// Request all torrents from server
-				JSONArray result = new JSONArray(makeRequest(version >= 30000? "/json/torrents": "/json/events"));
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result),null);
+				JSONArray result = new JSONArray(makeRequest(version >= 30000 ? "/json/torrents" : "/json/events"));
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result), null);
 
 			case GetTorrentDetails:
 
-				// Request tracker and error details for a specific teacher 
-				String mhash = ((GetTorrentDetailsTask)task).getTargetTorrent().getUniqueID();
+				// Request tracker and error details for a specific teacher
+				String mhash = ((GetTorrentDetailsTask) task).getTargetTorrent().getUniqueID();
 				JSONArray messages = new JSONArray(makeRequest("/json/propertiesTrackers/" + mhash));
-				return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, parseJsonTorrentDetails(messages));
+				return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
+						parseJsonTorrentDetails(messages));
 
 			case GetFileList:
 
 				// Request files listing for a specific torrent
-				String fhash = ((GetFileListTask)task).getTargetTorrent().getUniqueID();
+				String fhash = ((GetFileListTask) task).getTargetTorrent().getUniqueID();
 				JSONArray files = new JSONArray(makeRequest("/json/propertiesFiles/" + fhash));
 				return new GetFileListTaskSuccessResult((GetFileListTask) task, parseJsonFiles(files));
-				
+
 			case AddByFile:
 
 				// Upload a local .torrent file
-				String ufile = ((AddByFileTask)task).getFile();
+				String ufile = ((AddByFileTask) task).getFile();
 				makeUploadRequest("/command/upload", ufile);
 				return new DaemonTaskSuccessResult(task);
 
 			case AddByUrl:
 
 				// Request to add a torrent by URL
-				String url = ((AddByUrlTask)task).getUrl();
+				String url = ((AddByUrlTask) task).getUrl();
 				makeRequest("/command/download", new BasicNameValuePair("urls", url));
 				return new DaemonTaskSuccessResult(task);
 
 			case AddByMagnetUrl:
 
 				// Request to add a magnet link by URL
-				String magnet = ((AddByMagnetUrlTask)task).getUrl();
+				String magnet = ((AddByMagnetUrlTask) task).getUrl();
 				makeRequest("/command/download", new BasicNameValuePair("urls", magnet));
 				return new DaemonTaskSuccessResult(task);
 
@@ -181,15 +180,16 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 				// Remove a torrent
 				RemoveTask removeTask = (RemoveTask) task;
-				makeRequest((removeTask.includingData()? "/command/deletePerm": "/command/delete"), new BasicNameValuePair("hashes", removeTask.getTargetTorrent().getUniqueID()));
+				makeRequest((removeTask.includingData() ? "/command/deletePerm" : "/command/delete"),
+						new BasicNameValuePair("hashes", removeTask.getTargetTorrent().getUniqueID()));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case Pause:
 
 				// Pause a torrent
 				makeRequest("/command/pause", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case PauseAll:
 
 				// Resume all torrents
@@ -201,7 +201,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				// Resume a torrent
 				makeRequest("/command/resume", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case ResumeAll:
 
 				// Resume all torrents
@@ -222,27 +222,31 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				}
 				// We have to make a separate request per file, it seems
 				for (TorrentFile file : setPrio.getForFiles()) {
-					makeRequest("/command/setFilePrio", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()), new BasicNameValuePair("id", file.getKey()), new BasicNameValuePair("priority", newPrio));
+					makeRequest("/command/setFilePrio", new BasicNameValuePair("hash", task.getTargetTorrent()
+							.getUniqueID()), new BasicNameValuePair("id", file.getKey()), new BasicNameValuePair(
+							"priority", newPrio));
 				}
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case SetTransferRates:
 
 				// TODO: This doesn't seem to work yet
 				// Request to set the maximum transfer rates
 				SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
-				int dl = (ratesTask.getDownloadRate() == null? -1: ratesTask.getDownloadRate().intValue());
-				int ul = (ratesTask.getUploadRate() == null? -1: ratesTask.getUploadRate().intValue());
-				
+				int dl = (ratesTask.getDownloadRate() == null ? -1 : ratesTask.getDownloadRate().intValue());
+				int ul = (ratesTask.getUploadRate() == null ? -1 : ratesTask.getUploadRate().intValue());
+
 				// First get the preferences
 				JSONObject prefs = new JSONObject(makeRequest("/json/preferences"));
 				prefs.put("dl_limit", dl);
 				prefs.put("up_limit", ul);
-				makeRequest("/command/setPreferences", new BasicNameValuePair("json", URLEncoder.encode(prefs.toString(), HTTP.UTF_8)));
+				makeRequest("/command/setPreferences",
+						new BasicNameValuePair("json", URLEncoder.encode(prefs.toString(), HTTP.UTF_8)));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			default:
-				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
+				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+						task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (JSONException e) {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
@@ -265,11 +269,11 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			}
 			httppost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 			return makeWebRequest(path, httppost);
-	
+
 		} catch (UnsupportedEncodingException e) {
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	private String makeUploadRequest(String path, String file) throws DaemonException {
@@ -282,17 +286,17 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			Part[] parts = { new FilePart("torrentfile", upload) };
 			httppost.setEntity(new MultipartEntity(parts, httppost.getParams()));
 			return makeWebRequest(path, httppost);
-	
+
 		} catch (FileNotFoundException e) {
 			throw new DaemonException(ExceptionType.FileAccessError, e.toString());
 		}
-		
+
 	}
-	
+
 	private String makeWebRequest(String path, HttpPost httppost) throws DaemonException {
 
 		try {
-				
+
 			// Initialise the HTTP client
 			if (httpclient == null) {
 				initialise();
@@ -300,17 +304,18 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 			// Execute
 			HttpResponse response = httpclient.execute(httppost);
-			
+
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
-				
+
 				// Read JSON response
 				java.io.InputStream instream = entity.getContent();
 				String result = HttpHelper.convertStreamToString(instream);
 				instream.close();
-				
-				//TLog.d(LOG_NAME, "Success: " + (result.length() > 300? result.substring(0, 300) + "... (" + result.length() + " chars)": result));
-				
+
+				// TLog.d(LOG_NAME, "Success: " + (result.length() > 300? result.substring(0, 300) + "... (" +
+				// result.length() + " chars)": result));
+
 				// Return raw result
 				return result;
 			}
@@ -322,7 +327,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			DLog.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	/**
@@ -331,20 +336,9 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	 * @throws DaemonException On conflicting or missing settings
 	 */
 	private void initialise() throws DaemonException {
-
 		httpclient = HttpHelper.createStandardHttpClient(settings, true);
-		
-		/*httpclient.addRequestInterceptor(new HttpRequestInterceptor() {			
-			@Override
-			public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-				for (Header header : request.getAllHeaders()) {
-					TLog.d(LOG_NAME, "Request: " + header.getName() + ": " + header.getValue());
-				}
-			}
-		});*/
-		
 	}
-	
+
 	/**
 	 * Build the URL of the web UI request from the user settings
 	 * @return The URL to request
@@ -352,9 +346,9 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	private String buildWebUIUrl(String path) {
 		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + path;
 	}
-	
+
 	private TorrentDetails parseJsonTorrentDetails(JSONArray messages) throws JSONException {
-		
+
 		ArrayList<String> trackers = new ArrayList<String>();
 		ArrayList<String> errors = new ArrayList<String>();
 
@@ -368,14 +362,14 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					errors.add(msg);
 			}
 		}
-		
+
 		// Return the list
 		return new TorrentDetails(trackers, errors);
-		
+
 	}
 
 	private ArrayList<Torrent> parseJsonTorrents(JSONArray response) throws JSONException {
-	
+
 		// Parse response
 		ArrayList<Torrent> torrents = new ArrayList<Torrent>();
 		for (int i = 0; i < response.length(); i++) {
@@ -387,40 +381,27 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			double ratio = parseRatio(tor.getString("ratio"));
 			double progress = tor.getDouble("progress");
 			int dlspeed = parseSpeed(tor.getString("dlspeed"));
+			long eta = -1L;
+			if (dlspeed > 0)
+				eta = (long) (size - (size * progress)) / dlspeed;
+			// Date added is only available in /json/propertiesGeneral on a per-torrent basis, unfortunately
 			// Add the parsed torrent to the list
-			torrents.add(new Torrent(
-					(long)i,
-					tor.getString("hash"),
-					tor.getString("name"),
-					parseStatus(tor.getString("state")),
-					null,
-					dlspeed,
-					parseSpeed(tor.getString("upspeed")),
-					leechers,
-					leechers + seeders,
-					known,
-					known,
-					(int) ((size - (size * progress)) / dlspeed),
-					(long)(size * progress),
-					(long)(size * ratio),
-					size,
-					(float)progress,
-					0f,
-					null,
-					null, // Only available in /json/propertiesGeneral on a per-torrent basis, unfortunately
-					null,
-					null,
-					settings.getType()));
+			torrents.add(new Torrent((long) i, tor.getString("hash"), tor.getString("name"), parseStatus(tor
+					.getString("state")), null, dlspeed, parseSpeed(tor.getString("upspeed")), leechers, leechers
+					+ seeders, known, known, (int) eta, (long) (size * progress), (long) (size * ratio), size,
+					(float) progress, 0f, null, null, null, null, settings.getType()));
 		}
-		
+
 		// Return the list
 		return torrents;
-		
+
 	}
 
 	private double parseRatio(String string) {
 		// Ratio is given in "1.5" string format
 		try {
+			// FIXME Hack for issue #115: Strip the possible . and , separators in a hopefully reliable fashion, for now
+			string = string.replace(",", ".");
 			return Double.parseDouble(string);
 		} catch (Exception e) {
 			return 0D;
@@ -431,19 +412,31 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		// See https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-Documentation
 		if (string.equals("Unknown"))
 			return -1;
-		// Sizes are given in "703.3 MiB"-like string format
-		// Returns size in B-based long
+		// Sizes are given in "1,023.3 MiB"-like string format
+		// FIXME Hack for issue #115: Strip the possible . and , separators in a hopefully reliable fashion, for now
 		String[] parts = string.split(" ");
-		if (parts[1].equals("TiB")) {
-			return (long) (Double.parseDouble(parts[0]) * 1024L * 1024L * 1024L * 1024L);
-		} else if (parts[1].equals("GiB")) {
-			return (long) (Double.parseDouble(parts[0]) * 1024L * 1024L * 1024L);
-		} else if (parts[1].equals("MiB")) {
-			return (long) (Double.parseDouble(parts[0]) * 1024L * 1024L);
-		} else if (parts[1].equals("KiB")) {
-			return (long) (Double.parseDouble(parts[0]) * 1024L);
+		String part1 = "";
+		if (parts[0].length() >= 3)
+			part1 = parts[0].substring(0, parts[0].length() - 3);
+		String part2 = parts[0].substring(parts[0].length() - 3);
+		parts[0] = part1.replace("Ê", "").replace(" ", "").replace(",", "").replace(".", "") + part2.replace(",", ".");
+		// Returns size in B-based long
+		double number;
+		try {
+			number = Double.parseDouble(parts[0]);
+		} catch (Exception e) {
+			return -1L;
 		}
-		return (long) (Double.parseDouble(parts[0]));
+		if (parts[1].equals("TiB")) {
+			return (long) (number * 1024L * 1024L * 1024L * 1024L);
+		} else if (parts[1].equals("GiB")) {
+			return (long) (number * 1024L * 1024L * 1024L);
+		} else if (parts[1].equals("MiB")) {
+			return (long) (number * 1024L * 1024L);
+		} else if (parts[1].equals("KiB")) {
+			return (long) (number * 1024L);
+		}
+		return (long) number;
 	}
 
 	private int parseKnown(String leechs, String seeds) {
@@ -527,25 +520,19 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	}
 
 	private ArrayList<TorrentFile> parseJsonFiles(JSONArray response) throws JSONException {
-	
+
 		// Parse response
 		ArrayList<TorrentFile> torrentfiles = new ArrayList<TorrentFile>();
 		for (int i = 0; i < response.length(); i++) {
 			JSONObject file = response.getJSONObject(i);
 			long size = parseSize(file.getString("size"));
-			torrentfiles.add(new TorrentFile(
-					"" + i,
-					file.getString("name"),
-					null,
-					null,
-					size,
-					(long) (size * file.getDouble("progress")),
-					parsePriority(file.getInt("priority"))));
+			torrentfiles.add(new TorrentFile("" + i, file.getString("name"), null, null, size, (long) (size * file
+					.getDouble("progress")), parsePriority(file.getInt("priority"))));
 		}
-		
+
 		// Return the list
 		return torrentfiles;
-		
+
 	}
 
 	private Priority parsePriority(int priority) {
@@ -570,5 +557,5 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	public DaemonSettings getSettings() {
 		return this.settings;
 	}
-	
+
 }
