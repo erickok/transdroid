@@ -18,6 +18,11 @@
 <resources>
 <string name="system_changelog">
 Transdroid 2.1.2\n
+- Fixed labeling from details screen\n
+- Fixed qBittorrent support\n
+- Fixed Xirvik shared seedbox support\n
+\n
+Transdroid 2.1.2\n
 - Support for new Torrent Search\'s private sites\n
 - Added optional auto refresh\n
 - Allow larger .torrent file uploads with rTorrent\n

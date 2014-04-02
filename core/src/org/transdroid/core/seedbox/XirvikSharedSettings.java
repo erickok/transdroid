@@ -44,6 +44,7 @@ public class XirvikSharedSettings extends SeedboxSettingsImpl implements Seedbox
 		}
 		String user = prefs.getString("seedbox_xirvikshared_user_" + order, null);
 		String pass = prefs.getString("seedbox_xirvikshared_pass_" + order, null);
+		String rpc = prefs.getString("seedbox_xirvikshared_rpc_" + order, null);
 		return new ServerSetting(
 				orderOffset + order,
 				prefs.getString("seedbox_xirvikshared_name_" + order, null), 
@@ -56,7 +57,7 @@ public class XirvikSharedSettings extends SeedboxSettingsImpl implements Seedbox
 				true, 
 				true, 
 				null,
-				"/RPC2",
+				rpc,
 				true, 
 				user,
 				pass, 
@@ -85,7 +86,8 @@ public class XirvikSharedSettings extends SeedboxSettingsImpl implements Seedbox
 	@Override
 	public void removeServerSetting(SharedPreferences prefs, int order) {
 		removeServerSetting(prefs, "seedbox_xirvikshared_server_", new String[] { "seedbox_xirvikshared_name_",
-				"seedbox_xirvikshared_server_", "seedbox_xirvikshared_user_", "seedbox_xirvikshared_pass_" }, order);
+				"seedbox_xirvikshared_server_", "seedbox_xirvikshared_user_", "seedbox_xirvikshared_pass_",
+				"seedbox_xirvikshared_rpc_" }, order);
 	}
 
 }

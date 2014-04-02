@@ -35,5 +35,9 @@
 		android:key="seedbox_xirvikshared_pass"
 		android:title="@string/pref_pass"
 		android:inputType="textPassword" />
+	<EditTextPreference
+		android:key="seedbox_xirvikshared_rpc"
+		android:title="@string/pref_folder"
+		android:enabled="false" />
 
 </PreferenceScreen>
