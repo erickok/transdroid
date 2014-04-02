@@ -78,8 +78,7 @@
 			android:key="server_timeout"
 			android:title="@string/pref_timeout"
 			android:summary="@string/pref_timeout_info"
-			android:inputType="numberSigned"
-			android:defaultValue="8" />
+			android:inputType="numberSigned" />
 		<CheckBoxPreference
 			android:key="server_sslenabled"
 			android:title="@string/pref_sslenable"

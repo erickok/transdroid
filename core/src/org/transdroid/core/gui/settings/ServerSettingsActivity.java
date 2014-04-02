@@ -61,7 +61,7 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("server_localaddress");
 		initTextPreference("server_localport");
 		folder = initTextPreference("server_folder");
-		initTextPreference("server_timeout", "8");
+		initTextPreference("server_timeout");
 		initBooleanPreference("server_alarmfinished", true);
 		initBooleanPreference("server_alarmnew");
 		initListPreference("server_os", "type_linux");

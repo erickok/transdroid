@@ -16,6 +16,9 @@
  */
 package org.transdroid.core.gui.settings;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 
@@ -24,8 +27,10 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.text.method.PasswordTransformationMethod;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
@@ -45,6 +50,7 @@ public abstract class KeyBoundPreferencesActivity extends SherlockPreferenceActi
 	protected int key = -1;
 
 	private SharedPreferences sharedPrefs;
+	private Map<String, String> originalSummaries = new HashMap<String, String>();
 
 	/**
 	 * Should be called during the activity {@link #onCreate(android.os.Bundle)} (but after super.onCreate(Bundle)) to
@@ -85,6 +91,7 @@ public abstract class KeyBoundPreferencesActivity extends SherlockPreferenceActi
 	private OnSharedPreferenceChangeListener onPreferenceChangeListener = new OnSharedPreferenceChangeListener() {
 		@Override
 		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+			showValueOnSummary(key);
 			onPreferencesChanged();
 		}
 	};
@@ -131,9 +138,12 @@ public abstract class KeyBoundPreferencesActivity extends SherlockPreferenceActi
 		// Update the loaded Preference with the actual preference key to load/store with
 		EditTextPreference pref = (EditTextPreference) findPreference(baseName);
 		pref.setKey(baseName + "_" + key);
-		pref.setDependency(dependency == null? null: dependency + "_" + key);
+		pref.setDependency(dependency == null ? null : dependency + "_" + key);
 		// Update the Preference by loading the current stored value into the EditText, if it exists
 		pref.setText(sharedPrefs.getString(baseName + "_" + key, defValue));
+		// Remember the original descriptive summary and if we have a value, show that instead
+		originalSummaries.put(baseName + "_" + key, pref.getSummary() == null ? null : pref.getSummary().toString());
+		showValueOnSummary(baseName + "_" + key);
 		return pref;
 	}
 
@@ -171,7 +181,7 @@ public abstract class KeyBoundPreferencesActivity extends SherlockPreferenceActi
 		// Update the loaded Preference with the actual preference key to load/store with
 		CheckBoxPreference pref = (CheckBoxPreference) findPreference(baseName);
 		pref.setKey(baseName + "_" + key);
-		pref.setDependency(dependency == null? null: dependency + "_" + key);
+		pref.setDependency(dependency == null ? null : dependency + "_" + key);
 		// Update the Preference by loading the current stored value into the Checkbox, if it exists
 		pref.setChecked(sharedPrefs.getBoolean(baseName + "_" + key, defValue));
 		return pref;
@@ -201,7 +211,30 @@ public abstract class KeyBoundPreferencesActivity extends SherlockPreferenceActi
 		pref.setKey(baseName + "_" + key);
 		// Update the Preference by selecting the current stored value in the list, if it exists
 		pref.setValue(sharedPrefs.getString(baseName + "_" + key, defValue));
+		// Remember the original descriptive summary and if we have a value, show that instead
+		originalSummaries.put(baseName + "_" + key, pref.getSummary() == null ? null : pref.getSummary().toString());
+		showValueOnSummary(baseName + "_" + key);
 		return pref;
+	}
+
+	@SuppressWarnings("deprecation")
+	protected void showValueOnSummary(String prefKey) {
+		Preference pref = findPreference(prefKey);
+		if (sharedPrefs.contains(prefKey)
+				&& pref instanceof EditTextPreference
+				&& !(((EditTextPreference) pref).getEditText().getTransformationMethod() instanceof PasswordTransformationMethod)) {
+			// Non-password edit preferences show the user-entered value
+			pref.setSummary(sharedPrefs.getString(prefKey, ""));
+			return;
+		} else if (sharedPrefs.contains(prefKey) && pref instanceof ListPreference
+				&& ((ListPreference) pref).getValue() != null) {
+			// List preferences show the selected list value
+			ListPreference listPreference = (ListPreference) pref;
+			pref.setSummary(listPreference.getEntries()[listPreference.findIndexOfValue(listPreference.getValue())]);
+			return;
+		}
+		if (originalSummaries.containsKey(prefKey))
+			pref.setSummary(originalSummaries.get(prefKey));
 	}
 
 }
