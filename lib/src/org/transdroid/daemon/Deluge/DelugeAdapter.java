@@ -125,10 +125,10 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 	private static final String RPC_RATEDOWNLOAD = "download_payload_rate";
 	private static final String RPC_RATEUPLOAD = "upload_payload_rate";
-	private static final String RPC_PEERSGETTING = "num_seeds";
-	private static final String RPC_PEERSSENDING = "num_seeds";
-	private static final String RPC_PEERSCONNECTED = "num_peers";
-	private static final String RPC_PEERSKNOWN = "total_peers";
+	private static final String RPC_NUMSEEDS = "num_seeds";
+	private static final String RPC_TOTALSEEDS = "total_seeds";
+	private static final String RPC_NUMPEERS = "num_peers";
+	private static final String RPC_TOTALPEERS = "total_peers";
 	private static final String RPC_ETA = "eta";
 	private static final String RPC_TIMEADDED = "time_added";
 
@@ -149,8 +149,8 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 	private static final String[] RPC_FIELDS_ARRAY = new String[] { 
 			RPC_NAME, RPC_STATUS, RPC_SAVEPATH, RPC_RATEDOWNLOAD, RPC_RATEUPLOAD,
-			RPC_PEERSGETTING, RPC_PEERSSENDING, RPC_PEERSCONNECTED,
-			RPC_PEERSKNOWN, RPC_ETA, RPC_DOWNLOADEDEVER, RPC_UPLOADEDEVER,
+			RPC_NUMPEERS, RPC_NUMSEEDS, RPC_TOTALPEERS,
+			RPC_TOTALSEEDS, RPC_ETA, RPC_DOWNLOADEDEVER, RPC_UPLOADEDEVER,
 			RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL, RPC_MESSAGE, RPC_TIMEADDED, RPC_TRACKER_STATUS };
 
 
@@ -588,10 +588,10 @@ public class DelugeAdapter implements IDaemonAdapter {
 						tor.getString(RPC_SAVEPATH) + settings.getOS().getPathSeperator(),
 						tor.getInt(RPC_RATEDOWNLOAD), 
 						tor.getInt(RPC_RATEUPLOAD), 
-						tor.getInt(RPC_PEERSGETTING), 
-						tor.getInt(RPC_PEERSSENDING), 
-						tor.getInt(RPC_PEERSCONNECTED), 
-						tor.getInt(RPC_PEERSKNOWN), 
+						tor.getInt(RPC_NUMSEEDS), 
+						tor.getInt(RPC_TOTALSEEDS), 
+						tor.getInt(RPC_NUMPEERS), 
+						tor.getInt(RPC_TOTALPEERS), 
 						tor.getInt(RPC_ETA),
 						tor.getLong(RPC_DOWNLOADEDEVER), 
 						tor.getLong(RPC_UPLOADEDEVER), 

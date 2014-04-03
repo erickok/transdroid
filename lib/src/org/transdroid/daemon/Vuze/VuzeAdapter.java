@@ -402,10 +402,10 @@ public class VuzeAdapter implements IDaemonAdapter {
 				(String) statsinfo.get("target_file_or_dir") + "/", // locationDir
 				rateDownload, // rateDownload
 				((Long)statsinfo.get("upload_average")).intValue(), // rateUpload
-				announceSeedCount, // peersGettingFromUs
-				announceNonSeedCount, // peersSendingToUs
-				scrapeSeedCount + scrapeNonSeedCount, // peersConnected
-				scrapeSeedCount + scrapeNonSeedCount, // peersKnown
+				announceSeedCount, // seedersConnected
+				scrapeSeedCount, // seedersKnown
+				announceNonSeedCount, // leechersConnected
+				scrapeNonSeedCount, // leechersKnown
 				(rateDownload > 0? (int)((Long)statsinfo.get("remaining") / rateDownload): -1), // eta (bytes left / rate download, if rate > 0)
 				(Long)statsinfo.get("downloaded"), // downloadedEver
 				(Long)statsinfo.get("uploaded"), // uploadedEver

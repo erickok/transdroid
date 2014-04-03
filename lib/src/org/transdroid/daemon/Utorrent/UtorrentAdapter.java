@@ -516,9 +516,9 @@ public class UtorrentAdapter implements IDaemonAdapter {
 					tor.getInt(RPC_DOWNLOADSPEED_IDX),
 					tor.getInt(RPC_UPLOADSPEED_IDX),
 					tor.getInt(RPC_SEEDSCONNECTED_IDX),
+					tor.getInt(RPC_SEEDSINSWARM_IDX),
 					tor.getInt(RPC_PEERSCONNECTED_IDX),
-					(downloaded? tor.getInt(RPC_SEEDSINSWARM_IDX): tor.getInt(RPC_PEERSINSWARM_IDX)),
-					0, // Not available
+					tor.getInt(RPC_PEERSINSWARM_IDX),
 					tor.getInt(RPC_ETA_IDX),
 					tor.getLong(RPC_DOWNLOADED_IDX),
 					tor.getLong(RPC_UPLOADED_IDX),

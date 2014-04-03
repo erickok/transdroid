@@ -95,7 +95,6 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	private static final String RPC_PEERSGETTING = "peersGettingFromUs";
 	private static final String RPC_PEERSSENDING = "peersSendingToUs";
 	private static final String RPC_PEERSCONNECTED = "peersConnected";
-	//private static final String RPC_PEERSKNOWN = "peersKnown";
 	private static final String RPC_ETA = "eta";
 	private static final String RPC_DOWNLOADSIZE1 = "haveUnchecked";
 	private static final String RPC_DOWNLOADSIZE2 = "haveValid";
@@ -504,9 +503,9 @@ public class TransmissionAdapter implements IDaemonAdapter {
 					locationDir,
 					tor.getInt(RPC_RATEDOWNLOAD),
 					tor.getInt(RPC_RATEUPLOAD),
-					tor.getInt(RPC_PEERSGETTING),
 					tor.getInt(RPC_PEERSSENDING),
 					tor.getInt(RPC_PEERSCONNECTED),
+					tor.getInt(RPC_PEERSGETTING),
 					tor.getInt(RPC_PEERSCONNECTED),
 					tor.getInt(RPC_ETA),
 					tor.getLong(RPC_DOWNLOADSIZE1) + tor.getLong(RPC_DOWNLOADSIZE2),

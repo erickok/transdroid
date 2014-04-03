@@ -15,7 +15,7 @@
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  *	
  */
- package org.transdroid.daemon;
+package org.transdroid.daemon;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -25,9 +25,7 @@ import android.os.Parcelable;
 
 /**
  * Represents a torrent on a server daemon.
- * 
  * @author erickok
- *
  */
 public final class Torrent implements Parcelable, Comparable<Torrent>, Finishable {
 
@@ -36,15 +34,15 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 	final private String name;
 	private TorrentStatus statusCode;
 	private String locationDir;
-	
+
 	final private int rateDownload;
 	final private int rateUpload;
-	final private int peersGettingFromUs;
-	final private int peersSendingToUs;
-	final private int peersConnected;
-	final private int peersKnown;
+	final private int seedersConnected;
+	final private int seedersKnown;
+	final private int leechersConnected;
+	final private int leechersKnown;
 	final private int eta;
-	
+
 	final private long downloadedEver;
 	final private long uploadedEver;
 	final private long totalSize;
@@ -56,48 +54,22 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 	final private Date dateDone;
 	final private String error;
 	final private Daemon daemon;
-	
-	//public long getID() { return id; }
-	//public String getHash() { return hash; }
-	public String getName() { return name; }
-	public TorrentStatus getStatusCode() { return statusCode; }
-	public String getLocationDir() { return locationDir; }
-	
-	public int getRateDownload() { return rateDownload; }
-	public int getRateUpload() { return rateUpload; }
-	public int getPeersGettingFromUs() { return peersGettingFromUs; }
-	public int getPeersSendingToUs() { return peersSendingToUs; }
-	public int getPeersConnected() { return peersConnected; }
-	public int getPeersKnown() { return peersKnown; }
-	public int getEta() { return eta; }
-	
-	public long getDownloadedEver() { return downloadedEver; }
-	public long getUploadedEver() { return uploadedEver; }
-	public long getTotalSize() { return totalSize; }
-	public float getPartDone() { return partDone; }
-	public float getAvailability() { return available; }
-	public String getLabelName() { return label; }
 
-	public Date getDateAdded() { return dateAdded; }
-	public Date getDateDone() { return dateDone; }
-	public String getError() { return error; }
-	public Daemon getDaemon() { return daemon; }
-	
 	private Torrent(Parcel in) {
 		this.id = in.readLong();
 		this.hash = in.readString();
 		this.name = in.readString();
 		this.statusCode = TorrentStatus.getStatus(in.readInt());
 		this.locationDir = in.readString();
-		
+
 		this.rateDownload = in.readInt();
 		this.rateUpload = in.readInt();
-		this.peersGettingFromUs = in.readInt();
-		this.peersSendingToUs = in.readInt();
-		this.peersConnected = in.readInt();
-		this.peersKnown = in.readInt();
+		this.seedersConnected = in.readInt();
+		this.seedersKnown = in.readInt();
+		this.leechersConnected = in.readInt();
+		this.leechersKnown = in.readInt();
 		this.eta = in.readInt();
-		
+
 		this.downloadedEver = in.readLong();
 		this.uploadedEver = in.readLong();
 		this.totalSize = in.readLong();
@@ -106,38 +78,38 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 		this.label = in.readString();
 
 		long lDateAdded = in.readLong();
-		this.dateAdded = (lDateAdded == -1)? null: new Date(lDateAdded);
+		this.dateAdded = (lDateAdded == -1) ? null : new Date(lDateAdded);
 		long lDateDone = in.readLong();
-		this.dateDone = (lDateDone == -1)? null: new Date(lDateDone);
+		this.dateDone = (lDateDone == -1) ? null : new Date(lDateDone);
 		this.error = in.readString();
 		this.daemon = Daemon.valueOf(in.readString());
 	}
-	
-	public Torrent(long id, String hash, String name, TorrentStatus statusCode, String locationDir, int rateDownload, int rateUpload, 
-			int peersGettingFromUs, int peersSendingToUs, int peersConnected, int peersKnown, int eta, 
-			long downloadedEver, long uploadedEver, long totalSize, float partDone, float available, String label, 
+
+	public Torrent(long id, String hash, String name, TorrentStatus statusCode, String locationDir, int rateDownload,
+			int rateUpload, int seedersConnected, int seedersKnown, int leechersConnected, int leechersKnown, int eta,
+			long downloadedEver, long uploadedEver, long totalSize, float partDone, float available, String label,
 			Date dateAdded, Date realDateDone, String error, Daemon daemon) {
 		this.id = id;
 		this.hash = hash;
 		this.name = name;
 		this.statusCode = statusCode;
 		this.locationDir = locationDir;
-		
+
 		this.rateDownload = rateDownload;
 		this.rateUpload = rateUpload;
-		this.peersGettingFromUs = peersGettingFromUs;
-		this.peersSendingToUs = peersSendingToUs;
-		this.peersConnected = peersConnected;
-		this.peersKnown = peersKnown;
+		this.seedersConnected = seedersConnected;
+		this.seedersKnown = seedersKnown;
+		this.leechersConnected = leechersConnected;
+		this.leechersKnown = leechersKnown;
 		this.eta = eta;
-		
+
 		this.downloadedEver = downloadedEver;
 		this.uploadedEver = uploadedEver;
 		this.totalSize = totalSize;
 		this.partDone = partDone;
 		this.available = available;
 		this.label = label;
-		
+
 		this.dateAdded = dateAdded;
 		if (realDateDone != null) {
 			this.dateDone = realDateDone;
@@ -160,7 +132,87 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 		this.error = error;
 		this.daemon = daemon;
 	}
-	
+
+	public String getName() {
+		return name;
+	}
+
+	public TorrentStatus getStatusCode() {
+		return statusCode;
+	}
+
+	public String getLocationDir() {
+		return locationDir;
+	}
+
+	public int getRateDownload() {
+		return rateDownload;
+	}
+
+	public int getRateUpload() {
+		return rateUpload;
+	}
+
+	public int getSeedersConnected() {
+		return seedersConnected;
+	}
+
+	public int getSeedersKnown() {
+		return seedersKnown;
+	}
+
+	public int getLeechersConnected() {
+		return leechersConnected;
+	}
+
+	public int getLeechersKnown() {
+		return leechersKnown;
+	}
+
+	public int getEta() {
+		return eta;
+	}
+
+	public long getDownloadedEver() {
+		return downloadedEver;
+	}
+
+	public long getUploadedEver() {
+		return uploadedEver;
+	}
+
+	public long getTotalSize() {
+		return totalSize;
+	}
+
+	public float getPartDone() {
+		return partDone;
+	}
+
+	public float getAvailability() {
+		return available;
+	}
+
+	public String getLabelName() {
+		return label;
+	}
+
+	public Date getDateAdded() {
+		return dateAdded;
+	}
+
+	public Date getDateDone() {
+		return dateDone;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public Daemon getDaemon() {
+		return daemon;
+	}
+
 	/**
 	 * Returns the torrent-specific ID, which is the torrent's hash or (if not available) the long number
 	 * @return The torrent's (session-transient) unique ID
@@ -174,11 +226,11 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 	}
 
 	/**
-	 * Gives the upload/download seed ratio. 
+	 * Gives the upload/download seed ratio.
 	 * @return The ratio in range [0,r]
 	 */
 	public double getRatio() {
-		return ((double)uploadedEver) / ((double)downloadedEver);
+		return ((double) uploadedEver) / ((double) downloadedEver);
 	}
 
 	/**
@@ -258,7 +310,8 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 	 */
 	public boolean canStop() {
 		// Can stop when it is downloading or seeding or paused
-		return statusCode == TorrentStatus.Downloading || statusCode == TorrentStatus.Seeding || statusCode == TorrentStatus.Paused;
+		return statusCode == TorrentStatus.Downloading || statusCode == TorrentStatus.Seeding
+				|| statusCode == TorrentStatus.Paused;
 	}
 
 	public void mimicResume() {
@@ -288,7 +341,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 	public void mimicNewLabel(String newLabel) {
 		label = newLabel;
 	}
-	
+
 	public void mimicCheckingStatus() {
 		statusCode = TorrentStatus.Checking;
 	}
@@ -296,34 +349,34 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 	public void mimicNewLocation(String newLocation) {
 		locationDir = newLocation;
 	}
-	
+
 	@Override
 	public String toString() {
 		// (HASH_OR_ID) NAME
-		return "(" + ((hash != null)? hash: String.valueOf(id)) + ") " + name;
+		return "(" + ((hash != null) ? hash : String.valueOf(id)) + ") " + name;
 	}
-	
+
 	@Override
 	public int compareTo(Torrent another) {
 		// Compare torrent objects on their name (used for sorting only!)
 		return name.compareTo(another.getName());
 	}
-	
-    public static final Parcelable.Creator<Torrent> CREATOR = new Parcelable.Creator<Torrent>() {
-    	public Torrent createFromParcel(Parcel in) {
-    		return new Torrent(in);
-    	}
+
+	public static final Parcelable.Creator<Torrent> CREATOR = new Parcelable.Creator<Torrent>() {
+		public Torrent createFromParcel(Parcel in) {
+			return new Torrent(in);
+		}
 
 		public Torrent[] newArray(int size) {
-		    return new Torrent[size];
+			return new Torrent[size];
 		}
-    };
+	};
 
 	@Override
 	public int describeContents() {
 		return 0;
 	}
-	
+
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeLong(id);
@@ -334,12 +387,12 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 
 		dest.writeInt(rateDownload);
 		dest.writeInt(rateUpload);
-		dest.writeInt(peersGettingFromUs);
-		dest.writeInt(peersSendingToUs);
-		dest.writeInt(peersConnected);
-		dest.writeInt(peersKnown);
+		dest.writeInt(seedersConnected);
+		dest.writeInt(seedersKnown);
+		dest.writeInt(leechersConnected);
+		dest.writeInt(leechersKnown);
 		dest.writeInt(eta);
-		
+
 		dest.writeLong(downloadedEver);
 		dest.writeLong(uploadedEver);
 		dest.writeLong(totalSize);
@@ -347,10 +400,10 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 		dest.writeFloat(available);
 		dest.writeString(label);
 
-		dest.writeLong((dateAdded == null)? -1: dateAdded.getTime());
-		dest.writeLong((dateDone == null)? -1: dateDone.getTime());
+		dest.writeLong((dateAdded == null) ? -1 : dateAdded.getTime());
+		dest.writeLong((dateDone == null) ? -1 : dateDone.getTime());
 		dest.writeString(error);
 		dest.writeString(daemon.name());
 	}
-	
+
 }

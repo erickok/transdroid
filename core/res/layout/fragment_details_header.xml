@@ -99,7 +99,7 @@
 		android:textSize="@dimen/text_enlargednumbers" />
 
 	<TextView
-		android:id="@+id/seeders_text"
+		android:id="@+id/leechers_text"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_below="@id/upspeed_text"
@@ -154,10 +154,10 @@
 		android:textSize="@dimen/text_enlargednumbers" />
 
 	<TextView
-		android:id="@+id/leechers_text"
+		android:id="@+id/seeders_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_alignBaseline="@id/seeders_text"
+		android:layout_alignBaseline="@id/leechers_text"
 		android:layout_marginRight="@dimen/margin_half"
 		android:layout_toLeftOf="@id/separator"
 		android:textIsSelectable="false"

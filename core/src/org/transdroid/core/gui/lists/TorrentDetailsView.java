@@ -85,11 +85,10 @@ public class TorrentDetailsView extends RelativeLayout {
 		statusLayout.setStatus(torrent.getStatusCode());
 		statusText.setText(getResources().getString(R.string.status_status, local.getProgressStatusEta(getResources())));
 		ratioText.setText(getResources().getString(R.string.status_ratio, local.getRatioString()));
-		// TODO: Implement separate numbers of seeders and leechers
-		seedersText.setText(getResources().getString(R.string.status_peers, torrent.getPeersSendingToUs(),
-				torrent.getPeersConnected()));
-		leechersText.setText(getResources().getString(R.string.status_peers, torrent.getPeersSendingToUs(),
-				torrent.getPeersConnected()));
+		seedersText.setText(getResources().getString(R.string.status_seeders, torrent.getSeedersConnected(),
+				torrent.getSeedersKnown()));
+		leechersText.setText(getResources().getString(R.string.status_leechers, torrent.getLeechersConnected(),
+				torrent.getLeechersKnown()));
 		// TODO: Add field that displays torrent errors (as opposed to tracker errors)
 		// TODO: Add field that displays availability
 

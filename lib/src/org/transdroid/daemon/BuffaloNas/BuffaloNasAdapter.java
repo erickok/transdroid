@@ -64,9 +64,7 @@ import com.android.internalcopy.http.multipart.Part;
 
 /**
  * The daemon adapter for the Buffalo NAS' integrated torrent client.
- * 
  * @author erickok
- *
  */
 public class BuffaloNasAdapter implements IDaemonAdapter {
 
@@ -74,74 +72,92 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
-	
+
 	public BuffaloNasAdapter(DaemonSettings settings) {
 		this.settings = settings;
 	}
-	
+
 	@Override
 	public DaemonTaskResult executeTask(DaemonTask task) {
-		
+
 		try {
 			switch (task.getMethod()) {
 			case Retrieve:
 
 				// Request all torrents from server
 				JSONObject result = new JSONObject(makeRequest("/api/torrents-get"));
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result),null);
-				
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result), null);
+
 			case GetFileList:
 
 				// Request files listing for a specific torrent
-				String fhash = ((GetFileListTask)task).getTargetTorrent().getUniqueID();
-				JSONObject files = new JSONObject(makeRequest("/api/torrent-get-files", new BasicNameValuePair("hash", fhash)));
+				String fhash = ((GetFileListTask) task).getTargetTorrent().getUniqueID();
+				JSONObject files = new JSONObject(makeRequest("/api/torrent-get-files", new BasicNameValuePair("hash",
+						fhash)));
 				return new GetFileListTaskSuccessResult((GetFileListTask) task, parseJsonFiles(files, fhash));
-				
+
 			case AddByFile:
 
 				// Upload a local .torrent file
-				String ufile = ((AddByFileTask)task).getFile();
+				String ufile = ((AddByFileTask) task).getFile();
 				makeUploadRequest("/api/torrent-add?start=yes", ufile);
 				return new DaemonTaskSuccessResult(task);
 
 			case AddByUrl:
 
 				// Request to add a torrent by URL
-				String url = ((AddByUrlTask)task).getUrl();
-				makeRequest("/api/torrent-add", new BasicNameValuePair("url", url), new BasicNameValuePair("start", "yes"));
+				String url = ((AddByUrlTask) task).getUrl();
+				// @formatter:off
+				makeRequest("/api/torrent-add", 
+						new BasicNameValuePair("url", url), 
+						new BasicNameValuePair("start", "yes"));
+				// @formatter:on
 				return new DaemonTaskSuccessResult(task);
 
 			case Remove:
 
 				// Remove a torrent
 				RemoveTask removeTask = (RemoveTask) task;
-				makeRequest("/api/torrent-remove", new BasicNameValuePair("hash", removeTask.getTargetTorrent().getUniqueID()), 
-						new BasicNameValuePair("delete-torrent", "yes"), new BasicNameValuePair("delete-data", (removeTask.includingData()? "yes": "no")));
+				// @formatter:off
+				makeRequest("/api/torrent-remove", 
+						new BasicNameValuePair("hash", removeTask.getTargetTorrent().getUniqueID()), 
+						new BasicNameValuePair("delete-torrent", "yes"), 
+						new BasicNameValuePair("delete-data", (removeTask.includingData() ? "yes" : "no")));
+				// @formatter:on
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case Pause:
 
 				// Pause a torrent
 				makeRequest("/api/torrent-stop", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case Resume:
 
 				// Resume a torrent
 				makeRequest("/api/torrent-start", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case SetTransferRates:
 
 				// Request to set the maximum transfer rates
 				SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
-				String dl = Integer.toString((ratesTask.getDownloadRate() == null? -1: ratesTask.getDownloadRate().intValue() * 1024));
-				String ul = Integer.toString((ratesTask.getUploadRate() == null? -1: ratesTask.getUploadRate().intValue() * 1024));
-				makeRequest("/api/app-settings-set", new BasicNameValuePair("auto_bandwidth_management", "0"), new BasicNameValuePair("max_dl_rate", dl), new BasicNameValuePair("max_ul_rate", ul), new BasicNameValuePair("max_ul_rate_seed", ul));
+				String dl = Integer.toString((ratesTask.getDownloadRate() == null ? -1 : ratesTask.getDownloadRate()
+						.intValue() * 1024));
+				String ul = Integer.toString((ratesTask.getUploadRate() == null ? -1 : ratesTask.getUploadRate()
+						.intValue() * 1024));
+				// @formatter:off
+				makeRequest("/api/app-settings-set", 
+						new BasicNameValuePair("auto_bandwidth_management", "0"),
+						new BasicNameValuePair("max_dl_rate", dl), 
+						new BasicNameValuePair("max_ul_rate", ul),
+						new BasicNameValuePair("max_ul_rate_seed", ul));
+				// @formatter:on
 				return new DaemonTaskSuccessResult(task);
-				
+
 			default:
-				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
+				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+						task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (JSONException e) {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
@@ -153,7 +169,7 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 	private String makeRequest(String url, NameValuePair... params) throws DaemonException {
 
 		try {
-			
+
 			// Initialise the HTTP client
 			if (httpclient == null) {
 				initialise(HttpHelper.DEFAULT_CONNECTION_TIMEOUT);
@@ -175,12 +191,12 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 			HttpResponse response = httpclient.execute(new HttpGet(buildWebUIUrl(url)));
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
-				
+
 				// Read JSON response
 				java.io.InputStream instream = entity.getContent();
 				String result = HttpHelper.convertStreamToString(instream);
 				instream.close();
-				
+
 				// Return raw result
 				return result;
 			}
@@ -194,7 +210,7 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 			DLog.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	private boolean makeUploadRequest(String path, String file) throws DaemonException {
@@ -211,20 +227,20 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 			File upload = new File(URI.create(file));
 			Part[] parts = { new FilePart("fileEl", upload) };
 			httppost.setEntity(new MultipartEntity(parts, httppost.getParams()));
-			
+
 			// Make the request
 			HttpResponse response = httpclient.execute(httppost);
 			return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
-	
+
 		} catch (FileNotFoundException e) {
 			throw new DaemonException(ExceptionType.FileAccessError, e.toString());
 		} catch (Exception e) {
 			DLog.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * Instantiates an HTTP client with proper credentials that can be used for all Buffalo NAS requests.
 	 * @param connectionTimeout The connection timeout in milliseconds
@@ -233,9 +249,9 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 	private void initialise(int connectionTimeout) throws DaemonException {
 
 		httpclient = HttpHelper.createStandardHttpClient(settings, true);
-		
+
 	}
-	
+
 	/**
 	 * Build the URL of the http request from the user settings
 	 * @return The URL to request
@@ -245,21 +261,23 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 	}
 
 	private ArrayList<Torrent> parseJsonTorrents(JSONObject response) throws JSONException {
-	
+
 		// Parse response
 		ArrayList<Torrent> torrents = new ArrayList<Torrent>();
 		JSONArray all = response.getJSONArray("torrents");
 		for (int i = 0; i < all.length(); i++) {
 			JSONObject tor = all.getJSONObject(i);
-			int leechers = tor.getInt("peers_connected");
-			int seeders = tor.getInt("seeds_connected");
-			int known = tor.getInt("peers_total") + tor.getInt("seeds_total");
+			int peersConnected = tor.getInt("peers_connected");
+			int seedsConnected = tor.getInt("seeds_connected");
+			int peersTotal = tor.getInt("peers_total");
+			int seedsTotal = tor.getInt("seeds_total");
 			long size = tor.getLong("size");
 			long sizeDone = tor.getLong("done");
 			long sizeUp = tor.getLong("payload_upload");
 			int rateUp = tor.getInt("dl_rate");
 			int rateDown = tor.getInt("ul_rate");
 			// Add the parsed torrent to the list
+			// @formatter:off
 			torrents.add(new Torrent(
 					(long)i,
 					tor.getString("hash"),
@@ -268,10 +286,10 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 					null,
 					rateDown,
 					rateUp,
-					leechers,
-					leechers + seeders,
-					known,
-					known,
+					seedsConnected,
+					seedsTotal,
+					peersConnected,
+					peersTotal,
 					(rateDown == 0? -1: (int) ((size - sizeDone) / rateDown)),
 					sizeDone,
 					sizeUp,
@@ -283,11 +301,12 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 					null,
 					null,
 					settings.getType()));
+			// @formatter:on
 		}
-		
+
 		// Return the list
 		return torrents;
-		
+
 	}
 
 	private TorrentStatus parseStatus(String state, int stopped) {
@@ -309,7 +328,7 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 	}
 
 	private ArrayList<TorrentFile> parseJsonFiles(JSONObject response, String hash) throws JSONException {
-	
+
 		// Parse response
 		ArrayList<TorrentFile> torrentfiles = new ArrayList<TorrentFile>();
 		JSONArray all = response.getJSONObject("torrents").getJSONArray(hash);
@@ -317,6 +336,7 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 			JSONObject file = all.getJSONObject(i);
 			long size = file.getLong("size");
 			long sizeDone = file.getLong("done");
+			// @formatter:off
 			torrentfiles.add(new TorrentFile(
 					"" + file.getInt("id"),
 					file.getString("name"),
@@ -325,11 +345,12 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 					size,
 					sizeDone,
 					Priority.Normal));
+			// @formatter:on
 		}
-		
+
 		// Return the list
 		return torrentfiles;
-		
+
 	}
 
 	@Override
@@ -341,5 +362,5 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 	public DaemonSettings getSettings() {
 		return this.settings;
 	}
-	
+
 }

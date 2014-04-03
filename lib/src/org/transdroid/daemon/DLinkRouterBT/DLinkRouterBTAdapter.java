@@ -93,8 +93,8 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 	private static final String BT_PEERS_CONNECTED = "peers_connected";
 	private static final String BT_PEERS_TOTAL = "peers_total";
 	// private static final String BT_PRIVATE = "private";
-	// private static final String BT_SEEDS_CONNECTED = "seeds_connected";
-	// private static final String BT_SEEDS_TOTAL = "seeds_total";
+	private static final String BT_SEEDS_CONNECTED = "seeds_connected";
+	private static final String BT_SEEDS_TOTAL = "seeds_total";
 	private static final String BT_SIZE = "size";
 	private static final String BT_STATE = "state";
 	private static final String BT_STOPPED = "stopped";
@@ -363,9 +363,9 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 				tor.getInt(BT_DOWNLOAD_RATE), 
 				tor.getInt(BT_UPLOAD_RATE), 
 				tor.getInt(BT_PEERS_CONNECTED), 
-				tor.getInt(BT_PEERS_CONNECTED), 
-				tor.getInt(BT_PEERS_CONNECTED), 
-				tor.getInt(BT_PEERS_TOTAL),
+				tor.getInt(BT_PEERS_TOTAL), 
+				tor.getInt(BT_SEEDS_CONNECTED), 
+				tor.getInt(BT_SEEDS_TOTAL),
 				(int) ((tor.getLong(BT_SIZE) - tor.getLong(BT_DONE)) / (tor.getInt(BT_DOWNLOAD_RATE) + 1)), 
 				tor.getLong(BT_DONE), 
 				tor.getLong(BT_PAYLOAD_UPLOAD), 

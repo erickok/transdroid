@@ -73,10 +73,10 @@ public class StatsParser {
 							(baseDir == null? null: (numFiles > 0? baseDir + tname + pathSeperator: baseDir)), 
 							downRate, 
 							upRate, 
-							leechers, 
 							seeders, 
-							seeders + leechers, 
-							seedersTotal + leechersTotal, 
+							seedersTotal,
+							leechers, 
+							leechersTotal, 
 							(int) (status == TorrentStatus.Downloading? (total - down) / downRate: -1), // eta (in seconds) = (total_size_in_btes - bytes_already_downloaded) / bytes_per_second
 							down, 
 							up, 

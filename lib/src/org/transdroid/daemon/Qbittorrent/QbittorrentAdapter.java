@@ -374,9 +374,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		ArrayList<Torrent> torrents = new ArrayList<Torrent>();
 		for (int i = 0; i < response.length(); i++) {
 			JSONObject tor = response.getJSONObject(i);
-			int leechers = parseLeech(tor.getString("num_leechs"));
-			int seeders = parseSeeds(tor.getString("num_seeds"));
-			int known = parseKnown(tor.getString("num_leechs"), tor.getString("num_seeds"));
+			int leechers[] = parsePeers(tor.getString("num_leechs"));
+			int seeders[] = parsePeers(tor.getString("num_seeds"));
 			long size = parseSize(tor.getString("size"));
 			double ratio = parseRatio(tor.getString("ratio"));
 			double progress = tor.getDouble("progress");
@@ -387,8 +386,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			// Date added is only available in /json/propertiesGeneral on a per-torrent basis, unfortunately
 			// Add the parsed torrent to the list
 			torrents.add(new Torrent((long) i, tor.getString("hash"), tor.getString("name"), parseStatus(tor
-					.getString("state")), null, dlspeed, parseSpeed(tor.getString("upspeed")), leechers, leechers
-					+ seeders, known, known, (int) eta, (long) (size * progress), (long) (size * ratio), size,
+					.getString("state")), null, dlspeed, parseSpeed(tor.getString("upspeed")), seeders[0], seeders[1],
+					leechers[0], leechers[1], (int) eta, (long) (size * progress), (long) (size * ratio), size,
 					(float) progress, 0f, null, null, null, null, settings.getType()));
 		}
 
@@ -439,41 +438,15 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		return (long) number;
 	}
 
-	private int parseKnown(String leechs, String seeds) {
-		// Peers are given in the "num_leechs":"91 (449)","num_seeds":"6 (27)" strings
-		// Or sometimes just "num_leechs":"91","num_seeds":"6" strings
-		// Peers known are in the last () bit of the leechers and seeders
-		int leechers = 0;
-		if (leechs.indexOf("(") < 0) {
-			leechers = Integer.parseInt(leechs);
-		} else {
-			leechers = Integer.parseInt(leechs.substring(leechs.indexOf("(") + 1, leechs.indexOf(")")));
-		}
-		int seeders = 0;
-		if (seeds.indexOf("(") < 0) {
-			seeders = Integer.parseInt(seeds);
-		} else {
-			seeders = Integer.parseInt(seeds.substring(seeds.indexOf("(") + 1, seeds.indexOf(")")));
-		}
-		return leechers + seeders;
-	}
-
-	private int parseSeeds(String seeds) {
-		// Seeds are in the first part of the "num_seeds":"6 (27)" string
+	private int[] parsePeers(String seeds) {
+		// Peers (seeders or leechers) are defined in a string like "num_seeds":"6 (27)"
 		// In some situations it it just a "6" string
-		if (seeds.indexOf(" ") < 0) {
-			return Integer.parseInt(seeds);
+		String[] parts = seeds.split(" ");
+		if (parts.length > 1) {
+			return new int[] { Integer.parseInt(parts[0]),
+					Integer.parseInt(parts[1].substring(1, parts[1].length() - 1)) };
 		}
-		return Integer.parseInt(seeds.substring(0, seeds.indexOf(" ")));
-	}
-
-	private int parseLeech(String leechs) {
-		// Leechers are in the first part of the "num_leechs":"91 (449)" string
-		// In some situations it it just a "0" string
-		if (leechs.indexOf(" ") < 0) {
-			return Integer.parseInt(leechs);
-		}
-		return Integer.parseInt(leechs.substring(0, leechs.indexOf(" ")));
+		return new int[] { Integer.parseInt(parts[0]), Integer.parseInt(parts[0]) };
 	}
 
 	private int parseSpeed(String speed) {

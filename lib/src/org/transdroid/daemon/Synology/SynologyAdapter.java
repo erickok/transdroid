@@ -294,14 +294,15 @@ public class SynologyAdapter implements IDaemonAdapter {
 		int speed = transfer.getInt("speed_download");
 		long size = jsonTorrent.getLong("size");
 		Float eta = new Float(size - downloaded) / speed;
-		int totalPeers = 0;
+		int totalSeeders = 0;
+		int totalLeechers = 0;
 		if (additional.has("tracker")) {
 			JSONArray tracker = additional.getJSONArray("tracker");
 			for (int i = 0; i < tracker.length(); i++) {
 				JSONObject t = tracker.getJSONObject(i);
 				if ("Success".equals(t.getString("status"))) {
-					totalPeers += t.getInt("peers");
-					totalPeers += t.getInt("seeds");
+					totalLeechers += t.getInt("peers");
+					totalSeeders += t.getInt("seeds");
 				}
 			}
 		}
@@ -313,10 +314,10 @@ public class SynologyAdapter implements IDaemonAdapter {
 				detail.getString("destination"),
 				speed,
 				transfer.getInt("speed_upload"),
-				detail.getInt("connected_leechers"),
 				detail.getInt("connected_seeders"),
-				totalPeers,
-				totalPeers,
+				totalSeeders,
+				detail.getInt("connected_leechers"),
+				totalLeechers,
 				eta.intValue(),
 				downloaded,
 				transfer.getLong("size_uploaded"),
