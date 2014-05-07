@@ -265,8 +265,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 
 			// Start a browser page directly to the requested search results
 			WebsearchSetting websearch = (WebsearchSetting) lastUsedSite;
-			startActivity(new Intent(Intent.ACTION_VIEW,
-					Uri.parse(String.format(websearch.getBaseUrl(), lastUsedQuery))));
+			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(websearch.getBaseUrl().replace("%s", lastUsedQuery))));
 			finish();
 
 		} else if (lastUsedSite instanceof SearchSite) {
