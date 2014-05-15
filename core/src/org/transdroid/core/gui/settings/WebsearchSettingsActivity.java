@@ -20,9 +20,13 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.*;
+import org.transdroid.core.app.settings.ApplicationSettings_;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,7 +40,9 @@ import android.os.Bundle;
 @OptionsMenu(resName="activity_deleteableprefs")
 public class WebsearchSettingsActivity extends KeyBoundPreferencesActivity {
 
-    @Override
+    private static final int DIALOG_CONFIRMREMOVE = 0;
+
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -56,10 +62,25 @@ public class WebsearchSettingsActivity extends KeyBoundPreferencesActivity {
 		MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 
+	@SuppressWarnings("deprecation")
 	@OptionsItem(resName = "action_removesettings")
 	protected void removeSettings() {
-		ApplicationSettings_.getInstance_(this).removeWebsearchSettings(key);
-		finish();
+		showDialog(DIALOG_CONFIRMREMOVE);
+	}
+	
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_CONFIRMREMOVE:
+			return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
+					.setPositiveButton(android.R.string.ok, new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							ApplicationSettings_.getInstance_(WebsearchSettingsActivity.this).removeWebsearchSettings(key);
+							finish();
+						}
+					}).setNegativeButton(android.R.string.cancel, null).create();
+		}
+		return null;
 	}
 	
 }

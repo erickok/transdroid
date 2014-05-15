@@ -221,6 +221,7 @@
 	<string name="pref_rssfeeds">RSS feeds</string>
 	<string name="pref_addrssfeed">Add RSS feed</string>
 	<string name="pref_others">Other settings</string>
+	<string name="pref_confirmremove">Are you sure you want to remove these settings?</string>
 	
 	<string name="pref_name">Name</string>
 	<string name="pref_name_optional">Optional personal name</string>

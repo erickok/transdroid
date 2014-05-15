@@ -20,10 +20,14 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.transdroid.core.R;
-import org.transdroid.core.app.settings.*;
+import org.transdroid.core.app.settings.ApplicationSettings_;
 import org.transdroid.daemon.Daemon;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -40,6 +44,8 @@ import android.preference.PreferenceManager;
 @OptionsMenu(resName = "activity_deleteableprefs")
 public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 
+	private static final int DIALOG_CONFIRMREMOVE = 0;
+
 	private EditTextPreference extraPass, folder, downloadDir;
 
 	@Override
@@ -47,7 +53,7 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		super.onCreate(savedInstanceState);
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		// Load the raw preferences to show in this screen
 		init(R.xml.pref_server, ApplicationSettings_.getInstance_(this).getMaxNormalServer());
 		initTextPreference("server_name");
@@ -82,12 +88,28 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 
+	@SuppressWarnings("deprecation")
 	@OptionsItem(resName = "action_removesettings")
 	protected void removeSettings() {
-		ApplicationSettings_.getInstance_(this).removeNormalServerSettings(key);
-		finish();
+		showDialog(DIALOG_CONFIRMREMOVE);
 	}
-	
+
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_CONFIRMREMOVE:
+			return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
+					.setPositiveButton(android.R.string.ok, new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							ApplicationSettings_.getInstance_(ServerSettingsActivity.this).removeNormalServerSettings(
+									key);
+							finish();
+						}
+					}).setNegativeButton(android.R.string.cancel, null).create();
+		}
+		return null;
+	}
+
 	@Override
 	protected void onPreferencesChanged() {
 
