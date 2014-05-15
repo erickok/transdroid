@@ -20,11 +20,14 @@ import org.transdroid.core.gui.TorrentsActivity;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -41,9 +44,18 @@ public class UrlEntryDialog {
 	@SuppressLint("ValidFragment")
 	public static void startUrlEntry(final TorrentsActivity activity) {
 		new DialogFragment() {
+			@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 			public android.app.Dialog onCreateDialog(android.os.Bundle savedInstanceState) {
 				final EditText urlInput = new EditText(activity);
 				urlInput.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+				if (android.os.Build.VERSION.SDK_INT >= 11) {
+					ClipboardManager clipboard = (ClipboardManager) activity
+							.getSystemService(Context.CLIPBOARD_SERVICE);
+					if (clipboard.hasPrimaryClip() && clipboard.getPrimaryClip().getItemCount() > 0) {
+						CharSequence content = clipboard.getPrimaryClip().getItemAt(0).coerceToText(activity);
+						urlInput.setText(content);
+					}
+				}
 				((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(
 						InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 				return new AlertDialog.Builder(activity).setView(urlInput)
