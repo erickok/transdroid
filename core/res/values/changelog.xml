@@ -17,6 +17,19 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.1.4\n
+- Show separate seeders and leechers counts\n
+- qBittorrent 2.1.8+ fixes\n
+- Xirvik shared seedbox support\n
+- Remember the last-used filter (label or status type) between sessions\n
+- Fixes label support and other small issues\n
+\n
+Transdroid 2.1.3\n
+- Support for new Torrent Search\'s private sites\n
+- Added optional auto refresh\n
+- Allow larger .torrent file uploads with rTorrent\n
+- Fix setting download location with Transmission\n
+\n
 Transdroid 2.1.2\n
 - Fixed labeling from details screen\n
 - Fixed qBittorrent support\n

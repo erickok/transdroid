@@ -241,7 +241,11 @@ public enum Daemon {
         case Deluge:
         	return 8112;
         case Synology:
-            return 5000;
+        	if (ssl) {
+        		return 5001;
+        	} else {
+        		return 5000;
+        	}
         case Transmission:
         	return 9091;
         case Bitflu:
