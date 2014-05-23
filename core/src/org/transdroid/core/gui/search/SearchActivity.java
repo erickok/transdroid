@@ -242,6 +242,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 		} else if (intent.getAction().equals(Intent.ACTION_SEND)) {
 			query = SendIntentHelper.cleanUpText(intent);
 		}
+		query = query.trim();
 		if (query != null && query.length() > 0) {
 
 			// Remember this search query to later show as a suggestion
