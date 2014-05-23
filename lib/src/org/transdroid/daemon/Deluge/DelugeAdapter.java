@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
@@ -153,10 +154,10 @@ public class DelugeAdapter implements IDaemonAdapter {
 			RPC_TOTALSEEDS, RPC_ETA, RPC_DOWNLOADEDEVER, RPC_UPLOADEDEVER,
 			RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL, RPC_MESSAGE, RPC_TIMEADDED, RPC_TRACKER_STATUS };
 
-
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 	private Cookie sessionCookie;
+    private int version = -1;
 	
 	public DelugeAdapter(DaemonSettings settings) {
 		this.settings = settings;
@@ -206,6 +207,8 @@ public class DelugeAdapter implements IDaemonAdapter {
 	public DaemonTaskResult executeTask(DaemonTask task) {
 		
 		try {
+			ensureVersion();
+			
 			JSONArray params = new JSONArray();
 
 			// Array of the fields needed for files listing calls
@@ -428,7 +431,60 @@ public class DelugeAdapter implements IDaemonAdapter {
 		params.put(sdlmap); // options
 		return params;
 	}*/
-		
+
+	private void ensureVersion() throws DaemonException {
+		if (version > 0)
+			return;
+		// We still need to retrieve the version number from the server
+		// Do this by getting the web interface main html page and trying to parse the version number
+		// Format is something like '<title>Deluge: Web UI 1.3.6</title>'
+		if (httpclient == null) {
+			initialise();
+		}
+		try {
+			HttpResponse response = httpclient.execute(new HttpGet(buildWebUIUrl() + "/"));
+			String main = HttpHelper.convertStreamToString(response.getEntity().getContent());
+			String titleStartText = "<title>Deluge: Web UI ";
+			String titleEndText = "</title>";
+			int titleStart = main.indexOf(titleStartText);
+			int titleEnd = main.indexOf(titleEndText, titleStart);
+			if (titleStart >= 0 && titleEnd > titleStart) {
+				// String found: now parse a version like 2.9.7 as a number like 20907 (allowing 10 places for each .)
+				String[] parts = main.substring(titleStart + titleStartText.length(), titleEnd).split("\\.");
+				if (parts.length > 0) {
+					version = Integer.parseInt(parts[0]) * 100 * 100;
+					if (parts.length > 1) {
+						version += Integer.parseInt(parts[1]) * 100;
+						if (parts.length > 2) {
+							// For the last part only read until a non-numeric character is read
+							// For example version 3.0.0-alpha5 is read as version code 30000
+							String numbers = "";
+							for (char c : parts[2].toCharArray()) {
+								if (Character.isDigit(c))
+									// Still a number; add it to the numbers string
+									numbers += Character.toString(c);
+								else {
+									// No longer reading numbers; stop reading
+									break;
+								}
+							}
+							version += Integer.parseInt(numbers);
+							return;
+						}
+					}
+				}
+			}
+		} catch (NumberFormatException e) {
+			DLog.d(LOG_NAME, "Error parsing the Deluge version code as number: " + e.toString());
+			// Continue though, ignoring the version number
+		} catch (Exception e) {
+			DLog.d(LOG_NAME, "Error: " + e.toString());
+			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+		}
+		// Unable to establish version number; assume an old version by setting it to version 1
+		version = 10000;
+	}
+
 	private JSONObject buildRequest(String sendMethod, JSONArray params) throws JSONException {
 
 		// Build request for method
@@ -662,28 +718,56 @@ public class DelugeAdapter implements IDaemonAdapter {
 	}
 
 	private Priority convertDelugePriority(int priority) {
-		switch (priority) {
-		case 0:
-			return Priority.Off;
-		case 2:
-			return Priority.Normal;
-		case 5:
-			return Priority.High;
-		default:
-			return Priority.Low;
+		if (version >= 10303) {
+			// Priority codes changes from Deluge 1.3.3 onwards
+			switch (priority) {
+			case 0:
+				return Priority.Off;
+			case 1:
+				return Priority.Low;
+			case 7:
+				return Priority.High;
+			default:
+				return Priority.Normal;
+			}
+		} else {
+			switch (priority) {
+			case 0:
+				return Priority.Off;
+			case 2:
+				return Priority.Normal;
+			case 5:
+				return Priority.High;
+			default:
+				return Priority.Low;
+			}
 		}
 	}
 
 	private int convertPriority(Priority priority) {
-		switch (priority) {
-		case Off:
-			return 0;
-		case Normal:
-			return 2;
-		case High:
-			return 5;
-		default:
-			return 1;
+		if (version >= 10303) {
+			// Priority codes changes from Deluge 1.3.3 onwards
+			switch (priority) {
+			case Off:
+				return 0;
+			case Low:
+				return 1;
+			case High:
+				return 7;
+			default:
+				return 5;
+			}
+		} else {
+			switch (priority) {
+			case Off:
+				return 0;
+			case Normal:
+				return 2;
+			case High:
+				return 5;
+			default:
+				return 1;
+			}
 		}
 	}
 
