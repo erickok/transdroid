@@ -116,7 +116,7 @@ public class SetTransferRatesDialog extends DialogFragment {
 			// Append the text contents of the button itself as text to the current number (as reference in the view's
 			// tag)
 			TextView numberView = (TextView) v.getTag();
-			if (numberView.getText().equals("-"))
+			if (numberView.getText().toString().equals(getString(R.string.status_maxspeed_novalue)))
 				numberView.setText("");
 			numberView.setText(numberView.getText().toString() + ((Button) v).getText().toString());
 		}

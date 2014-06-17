@@ -43,8 +43,7 @@
 			android:layout_weight="1"
 			android:gravity="right"
 			android:singleLine="true"
-			android:text="-"
-			tools:ignore="HardcodedText" />
+			android:text="@string/status_maxspeed_novalue" />
 
 		<TextView
 			android:layout_width="wrap_content"
@@ -188,8 +187,7 @@
 			android:layout_weight="1"
 			android:gravity="right"
 			android:singleLine="true"
-			android:text="-"
-			tools:ignore="HardcodedText" />
+			android:text="@string/status_maxspeed_novalue" />
 
 		<TextView
 			android:layout_width="wrap_content"

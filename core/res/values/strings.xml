@@ -127,6 +127,7 @@
 	<string name="status_maxspeed_up">MAX UPLOAD</string>
 	<string name="status_maxspeed_unit">KB/S</string>
 	<string name="status_maxspeed_reset">Reset</string>
+	<string name="status_maxspeed_novalue" translatable="false">-</string>
 	<string name="status_update">Update</string>
 	<plurals name="status_service_added">
 		<item quantity="one">New torrent added</item>
