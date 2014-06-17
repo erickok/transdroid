@@ -399,9 +399,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	private double parseRatio(String string) {
 		// Ratio is given in "1.5" string format
 		try {
-			// FIXME Hack for issue #115: Strip the possible . and , separators in a hopefully reliable fashion, for now
-			string = string.replace(",", ".");
-			return Double.parseDouble(string);
+			return Double.parseDouble(normalizeNumber(string));
 		} catch (Exception e) {
 			return 0D;
 		}
@@ -412,20 +410,14 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		if (string.equals("Unknown"))
 			return -1;
 		// Sizes are given in "1,023.3 MiB"-like string format
-		// FIXME Hack for issue #115: Strip the possible . and , separators in a hopefully reliable fashion, for now
 		String[] parts = string.split(" ");
-		String part1 = "";
-		if (parts[0].length() >= 3)
-			part1 = parts[0].substring(0, parts[0].length() - 3);
-		String part2 = parts[0].substring(parts[0].length() - 3);
-		parts[0] = part1.replace("Ê", "").replace(" ", "").replace(",", "").replace(".", "") + part2.replace(",", ".");
-		// Returns size in B-based long
 		double number;
 		try {
-			number = Double.parseDouble(parts[0]);
+			number = Double.parseDouble(normalizeNumber(parts[0]));
 		} catch (Exception e) {
 			return -1L;
 		}
+		// Returns size in B-based long
 		if (parts[1].equals("TiB")) {
 			return (long) (number * 1024L * 1024L * 1024L * 1024L);
 		} else if (parts[1].equals("GiB")) {
@@ -453,17 +445,33 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		// See https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-Documentation
 		if (speed.equals("Unknown"))
 			return -1;
-		// Speeds are in "21.9 KiB/s"-like string format
-		// Returns speed in B/s-based integer
+		// Sizes are given in "1,023.3 KiB/s"-like string format
 		String[] parts = speed.split(" ");
+		double number;
+		try {
+			number = Double.parseDouble(normalizeNumber(parts[0]));
+		} catch (Exception e) {
+			return -1;
+		}
+		// Returns size in B-based int
 		if (parts[1].equals("GiB/s")) {
-			return (int) (Double.parseDouble(parts[0]) * 1024 * 1024 * 1024);
+			return (int) (number * 1024 * 1024 * 1024);
 		} else if (parts[1].equals("MiB/s")) {
-			return (int) (Double.parseDouble(parts[0]) * 1024 * 1024);
+			return (int) (number * 1024 * 1024);
 		} else if (parts[1].equals("KiB/s")) {
-			return (int) (Double.parseDouble(parts[0]) * 1024);
+			return (int) (number * 1024);
 		}
 		return (int) (Double.parseDouble(parts[0]));
+	}
+
+	private String normalizeNumber(String in) {
+		// FIXME Hack for issue #115: Strip the possible . and , separators in a hopefully reliable fashion, for now
+		if (in.length() >= 3) {
+			String part1 = in.substring(0, in.length() - 3);
+			String part2 = in.substring(in.length() - 3);
+			return part1.replace("Ê", "").replace(" ", "").replace(",", "").replace(".", "") + part2.replace(",", ".");
+		}
+		return in.replace(",", ".");
 	}
 
 	private TorrentStatus parseStatus(String state) {
