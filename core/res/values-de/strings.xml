@@ -32,6 +32,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_sort_status">Status</string>
 <string name="action_sort_done">Datum beendet</string>
 <string name="action_sort_added">Datum hinzugefügt</string>
+<string name="action_sort_downspeed">Download geschwindigkeit</string>
 <string name="action_sort_upspeed">Upload geschwindigkeit</string>
 <string name="action_sort_ratio">Ratio</string>
 <string name="action_filter">Filter Liste</string>
@@ -40,6 +41,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_start">Start</string>
 <string name="action_start_default">normaler Start</string>
 <string name="action_start_forced">erzwungener Start</string>
+<string name="action_startall">Starte alle</string>
 <string name="action_stop">Stop</string>
 <string name="action_resume">weiter</string>
 <string name="action_pause">Pause</string>
@@ -50,7 +52,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_updatetrackers">Tracker erneuern</string>
 <string name="action_changelocation">Zielverzeichnis ändern</string>
 <string name="action_priority_off">Aus</string>
-<string name="action_priority_low">wenig</string>
+<string name="action_priority_low">niedrig</string>
 <string name="action_priority_normal">normal</string>
 <string name="action_priority_high">hoch</string>
 <string name="action_remoteplay">Remote abspielen in VLC</string>
@@ -67,7 +69,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="navigation_labels">LABELS</string>
 <string name="navigation_status_showall">alle</string>
 <string name="navigation_status_onlydown">downloading</string>
-<string name="navigation_status_onlyup">oploading</string>
+<string name="navigation_status_onlyup">uploading</string>
 <string name="navigation_status_onlyactive">aktiv</string>
 <string name="navigation_status_onlyinactive">inaktiv</string>
 <plurals name="navigation_torrentsselected">
@@ -88,7 +90,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="status_error">Fehler&#8230;</string>
 <string name="status_size1">%1$s OF %2$s (%3$s)</string>
 <string name="status_size2">%1$s, UPLOADED %2$s</string>
-<string name="status_sincedate">seid %1$s</string>
+<string name="status_sincedate">seit %1$s</string>
 <string name="status_eta">~ %1$s</string>
 <string name="status_etalong">ETA %1$s</string>
 <string name="status_ofsize">OF %1$s</string>
@@ -100,9 +102,9 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="status_paused">Pausiert</string>
 <string name="status_queued">in Warteschlange</string>
 <string name="status_stopped">Gestoppt</string>
-<string name="status_unknown">unbekannt Status</string>
+<string name="status_unknown">unbekannter Status</string>
 <string name="status_priority_off">nicht geladen</string>
-<string name="status_priority_low">geringe Priorität</string>
+<string name="status_priority_low">niedrige Priorität</string>
 <string name="status_priority_normal">normale Priorität</string>
 <string name="status_priority_high">hohe Priorität</string>
 <string name="status_trackers">Tracker</string>
@@ -153,6 +155,9 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <item quantity="one">New RSS feed torrent available</item>
 <item quantity="other">%1$s new RSS feed torrents</item>
 </plurals>
+
+
+
 
 
 

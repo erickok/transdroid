@@ -32,6 +32,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_sort_status">Status</string>
 <string name="action_sort_done">Dato ferdig</string>
 <string name="action_sort_added">Dato tilføyd</string>
+<string name="action_sort_downspeed">Nedlastningshastighet</string>
 <string name="action_sort_upspeed">Opplastningshastighet</string>
 <string name="action_sort_ratio">Forhold</string>
 <string name="action_filter">Filter liste</string>
@@ -40,15 +41,20 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_start">Start</string>
 <string name="action_start_default">Normal start</string>
 <string name="action_start_forced">Tving start</string>
+<string name="action_startall">Start alle</string>
 <string name="action_stop">Stopp</string>
+<string name="action_stopall">Stopp alle</string>
 <string name="action_resume">Fortsett</string>
+<string name="action_resumeall">Fortsett alle</string>
 <string name="action_pause">Pause</string>
+<string name="action_pauseall">Pause alle</string>
 <string name="action_remove">Fjern</string>
 <string name="action_remove_default">Fjern torrent</string>
 <string name="action_remove_withdata">Fjern og slett data</string>
 <string name="action_setlabel">sett etikett</string>
 <string name="action_updatetrackers">Oppdater trackers</string>
 <string name="action_changelocation">Endre lagringsplass</string>
+<string name="action_forcerecheck">Tving omsjekk</string>
 <string name="action_priority_off">Av</string>
 <string name="action_priority_low">Lav</string>
 <string name="action_priority_normal">Normal</string>
@@ -56,8 +62,11 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_remoteplay">Fjernavspilling i VLC</string>
 <string name="action_download">Last ned med (S)FTP</string>
 <string name="action_showdetails">Vis detaljer</string>
+<string name="action_openwebsite">Åpne nettside</string>
+<string name="action_useassearch">Bruk som nytt søk</string>
 <string name="action_removesettings">Fjern innstillinger</string>
 <string name="action_visitwebsite">Besøk transdroid.org</string>
+<string name="action_close">Lukk</string>
 
 <string name="navigation_nosettings">%1$s lar deg overvåke og håndtere torrent klienten du har hjemme eller på seedboxen din. Sette ting opp kan bli utfordrende, men vi tilbyr steg-for-steg veiledninger og lover at det er verdt det!</string>
 <string name="navigation_emptytorrents">Tilkoblet, men ingen torrenter er aktive med det nåværende filteret</string>
@@ -79,6 +88,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <item quantity="other">%1$d files selected</item>
 </plurals>
 <string name="navigation_selectall">Velg alle</string>
+<string name="navigation_selectfinished">Velg ferdigstilte</string>
 <string name="navigation_invertselection">Inverter Valg</string>
 
 <string name="status_status">STATUS: %1$s</string>
@@ -151,6 +161,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="result_trackersupdated">Trackere oppdatert</string>
 <string name="result_labelset">Etikket satt til \'%1$s\'</string>
 <string name="result_labelremoved">Etikett fjernet</string>
+<string name="result_recheckedstarted">Sjekker %1$s data</string>
 <string name="result_locationset">Torrent flyttet til \'%1$s\'</string>
 <string name="result_priotitiesset">Fil prioriteter oppdatert</string>
 <string name="result_maxspeedsset">Maksimal overføringshastighet satt</string>
@@ -198,6 +209,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 
 <string name="pref_servers">Servere</string>
 <string name="pref_addserver">Legg til ny server</string>
+<string name="pref_addseedbox">legg til seedbox</string>
 <string name="pref_searchsites">Søk på sider</string>
 <string name="pref_setsearchsite">Velg standard side</string>
 <string name="pref_addwebsearch">Legg til søke netside</string>
@@ -224,6 +236,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_advanced">Avanserte innstillinger</string>
 <string name="pref_localaddress">Lokal IP eller vert</string>
 <string name="pref_localaddress_info">Når du er koblet til ett spesifikt lokalt nettverk</string>
+<string name="pref_localport">Lokal portnummer</string>
 <string name="pref_localnetwork">Lokalt nettverk</string>
 <string name="pref_localnetwork_info">Serverens locale nettverks SSID</string>
 <string name="pref_folder">Mappe</string>
@@ -242,6 +255,8 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_ftpurl">Base (S)FTP url</string>
 <string name="pref_ftpurl_into">For eksempel ftp://meg@server/nedlastninger/</string>
 <string name="pref_ftppass">(S)FTP passord</string>
+<string name="pref_disableauth">Deaktiver autentisering</string>
+<string name="pref_disableauth_info">Ikker send brukernavn eller passord</string>
 <string name="pref_sslenable">Bruk SSL</string>
 <string name="pref_sslenable_info">Koble til med https</string>
 <string name="pref_sslkey">Egendefinert SSL-avtrykk (SHA-1)</string>
@@ -250,7 +265,8 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_sslacceptall_info">Tillat alle tilkoblinger fra alle avtrykk</string>
 
 <string name="pref_background">Bakgrunns varslinger</string>
-<string name="pref_notifications">Aktiver varslinger</string>
+<string name="pref_notifications_rss">Aktiver RSS varsling</string>
+<string name="pref_notifications_torrent">Aktiver torrent varsling</string>
 <string name="pref_notifications_info">Aktiverer bakgrunnstjeneste</string>
 <string name="pref_notifyinterval">Intervall</string>
 <string name="pref_notifyinterval_info">Hvor ofte det skal serveren sjekkes</string>
@@ -262,22 +278,39 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_adw_info">Vis torrent teller i ADW Launcher</string>
 
 <string name="pref_system">System</string>
+<string name="pref_autorefresh">Oppdater automatisk</string>
+<string name="pref_autorefresh_info">Interval basert oppdatering av hovedskjermen</string>
+<string-array name="pref_autorefresh_intervals">
+<item>Deaktivert</item>
+<item>2 sekunder</item>
+<item>5 sekunder</item>
+<item>10 sekunder</item>
+<item>30 sekunder</item>
+</string-array>
+<string name="pref_dormantasinactive">Behandle sovende torrenter som inaktive</string>
+<string name="pref_dormantasinactive_info">Torrenter ved 0KB/S (ingen overføringer) vil bli filtret som inaktive</string>
 <string name="pref_checkupdates">Se etter oppdateringer</string>
 <string name="pref_checkupdates_info">Sjekk transdroid.org for siste app versjon</string>
 <string name="pref_usedarktheme">Bruk mørk UI tema</string>
 <string name="pref_usedarktheme_info">Krever omstart for å ta effekt</string>
+<string name="pref_clearsearch">Fjern søkehistorikk</string>
+<string name="pref_clearsearch_success">Søkehistorikk er fjernet</string>
 <string name="pref_import">Importer innstillinger</string>
 <string name="pref_import_dialog">%1$s vil prøve å importere server, web-søk, RSS og systeminnstillinger fra: %2$s</string>
 <string name="pref_import_success">Innstillinger importert</string>
 <string name="pref_export">Eksporter innstillinger</string>
 <string name="pref_export_dialog">%1$s vil eksportere server (inkludert passord), nettsøk, RSS-og systeminnstillinger til følgende klartekst JSON fil: %2$s</string>
 <string name="pref_export_success">Innstillinger eksportert</string>
+
+<string name="pref_help">Transdroid hjelp</string>
 <string name="pref_sendlog">Send error logg</string>
 <string name="pref_sendlog_info">Få støtte eller rapportere en bug</string>
 <string name="pref_installhelp"> Vis installasjonsguider</string>
 <string name="pref_installhelp_info"> tilgjengelig på transdroid.org/download</string>
 <string name="pref_changelog">Nylige endringer</string>
 <string name="pref_about">Om %1$s</string>
+
+
 <string-array name="pref_notifyinterval_types">
 <item>1 Minutt</item>
 <item>10 Minutter</item>

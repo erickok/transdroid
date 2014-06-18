@@ -32,6 +32,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_sort_status">按状态排序</string>
 <string name="action_sort_done">按完成状态排序</string>
 <string name="action_sort_added">按追加排序</string>
+<string name="action_sort_downspeed">下载速度</string>
 <string name="action_sort_upspeed">按上传速度排序</string>
 <string name="action_sort_ratio">按上传比率排序</string>
 <string name="action_filter">过滤清单</string>
@@ -40,15 +41,20 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_start">开始</string>
 <string name="action_start_default">默认开始</string>
 <string name="action_start_forced">强制开始</string>
+<string name="action_startall">全部开始</string>
 <string name="action_stop">停止</string>
+<string name="action_stopall">全部停止</string>
 <string name="action_resume">恢复</string>
+<string name="action_resumeall">全部恢复</string>
 <string name="action_pause">暂停</string>
+<string name="action_pauseall">全部暂停</string>
 <string name="action_remove">删除</string>
 <string name="action_remove_default">删除种子</string>
 <string name="action_remove_withdata">删除种子和数据</string>
 <string name="action_setlabel">标签设定</string>
 <string name="action_updatetrackers">更新trackers</string>
 <string name="action_changelocation">变更存储位置</string>
+<string name="action_forcerecheck">重校验</string>
 <string name="action_priority_off">优先级-关</string>
 <string name="action_priority_low">优先级-低</string>
 <string name="action_priority_normal">优先级-中</string>
@@ -56,8 +62,11 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_remoteplay">在VLC中远程播放</string>
 <string name="action_download">使用(S)FTP下载</string>
 <string name="action_showdetails">显示详细</string>
+<string name="action_openwebsite">打开网站</string>
+<string name="action_useassearch">作为新的搜索使用</string>
 <string name="action_removesettings">删除设定</string>
 <string name="action_visitwebsite">访问 transdroid.org</string>
+<string name="action_close">关闭</string>
 
 <string name="navigation_nosettings">无设定导航</string>
 <string name="navigation_emptytorrents">无种链接</string>
@@ -79,6 +88,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <item quantity="other">%1$d files selected</item>
 </plurals>
 <string name="navigation_selectall">全选</string>
+<string name="navigation_selectfinished">结束选择</string>
 <string name="navigation_invertselection">反选</string>
 
 <string name="status_status">状态</string>
@@ -130,8 +140,27 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="labels_showall">全部标签</string>
 <string name="labels_unlabeled">无标签</string>
 <string name="labels_newlabel">新标签</string>
+<string name="status_label_pick">选择标签</string>
+<string name="status_label_new">新建标签</string>
+<string name="status_label_remove">删除标签</string>
 
+<string name="result_resumed">已恢复</string>
+<string name="result_stopped">已停止</string>
+<string name="result_started">已开始</string>
+<string name="result_paused">已暂停</string>
+<string name="result_paused_all">暂停</string>
+<string name="result_resumed_all">恢复</string>
+<string name="result_stopped_all">停止</string>
+<string name="result_started_all">开始</string>
+<string name="result_trackersupdated">Trackers已更新</string>
+<string name="result_labelremoved">标签已删除</string>
+<string name="result_locationset">Torrent已移动到</string>
+<string name="result_priotitiesset">文件优先级已更新</string>
+<string name="result_maxspeedsset">最大传输速度设定</string>
 
+<string name="search_torrentsearch">查找Torrent</string>
+<string name="search_hint">查找Torrent</string>
+<string name="search_noresults">无查询结果</string>
 <plurals name="search_resutlsselected">
 <item quantity="one">%1$d result selected</item>
 <item quantity="other">%1$d results selected</item>
@@ -146,6 +175,58 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <item quantity="other">%1$s new RSS feed torrents</item>
 </plurals>
 
+
+<string name="pref_servers">服务器</string>
+<string name="pref_addserver">新增服务器</string>
+<string name="pref_addseedbox">新增seedbox</string>
+<string name="pref_searchsites">查找页面</string>
+<string name="pref_setsearchsite">设定默认查找页面</string>
+<string name="pref_addwebsearch">新增web查找页面</string>
+<string name="pref_rssfeeds">RSS订阅</string>
+<string name="pref_addrssfeed">新增RSS订阅</string>
+<string name="pref_others">其他设定</string>
+
+<string name="pref_name">名称</string>
+<string name="pref_name_optional">可选的个性化名称</string>
+<string name="pref_searchurl">直接查找网址</string>
+<string name="pref_searchurl_info">将被查询结果替代</string>
+<string name="pref_cookies">Cookies</string>
+<string name="pref_feedurl">订阅网址</string>
+<string name="pref_reqauth">需要身份验证</string>
+<string name="pref_reqauth_info">在web浏览器中以用户登陆方式打开链接</string>
+
+<string name="pref_servertype">服务器类型</string>
+<string name="pref_address">IP或域名</string>
+<string name="pref_port">端口</string>
+<string name="pref_user">用户名</string>
+<string name="pref_pass">密码</string>
+<string name="pref_extrapass">Deluge页面密码</string>
+<string name="pref_advanced">高级设定</string>
+<string name="pref_localaddress">本地IP或域名</string>
+<string name="pref_localaddress_info">链接到特定本地网络</string>
+<string name="pref_localport">本地端口</string>
+<string name="pref_localnetwork">本地网络</string>
+<string name="pref_localnetwork_info">本地服务器/网络的SSID</string>
+<string name="pref_folder">目录</string>
+<string name="pref_folder_info">默认空目录</string>
+<string name="pref_scgifolder">SCGI挂载点</string>
+<string name="pref_optional">可选设定</string>
+<string name="pref_alarmdone">结束通知</string>
+<string name="pref_alarmdone_info">种子完成时通知</string>
+<string name="pref_alarmnew">新种子通知</string>
+<string name="pref_alarmnew_info">新增加种子通知</string>
+<string name="pref_os">服务器OS</string>
+<string name="pref_downdir">下载目录</string>
+<string name="pref_downdir_info">手动设定远程连接的绝对目录</string>
+<string name="pref_timeout">连接超时</string>
+<string name="pref_timeout_info">超时终止连接设定</string>
+<string name="pref_ftpurl">基础FTP(S)网址</string>
+<string name="pref_ftpurl_into">举例“ ftp://me@server/downloads/”</string>
+<string name="pref_ftppass">FTP(S) 密码</string>
+<string name="pref_disableauth">禁止认证</string>
+<string name="pref_disableauth_info">不发送用户名和密码</string>
+<string name="pref_sslenable">SSL连接</string>
+<string name="pref_sslenable_info">使用https连接</string>
 
 
 

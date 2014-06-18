@@ -57,7 +57,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_download">Lataa käyttäen (S)FTP</string>
 <string name="action_showdetails">Näytä yksityiskohdat</string>
 <string name="action_removesettings">Poista asetukset</string>
-<string name="action_visitwebsite">Vieraile transdriod.org</string>
+<string name="action_visitwebsite">Vieraile transdroid.org</string>
 
 <plurals name="navigation_torrentsselected">
 <item quantity="one">%1$d torrent selected</item>
@@ -151,7 +151,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_sslenable">Käytä SSL</string>
 <string name="pref_sslenable_info">Yhdistä käyttäen https</string>
 
-<string name="pref_notifications">Aktivoi ilmoitukset</string>
 <string name="pref_notifications_info">Aktivoi taustapalvelut</string>
 <string name="pref_notifyinterval">Aikaväli</string>
 <string name="pref_notifyinterval_info">Kuinka usein tarkistetaan palvelin</string>
@@ -166,11 +165,13 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_usedarktheme">Käytä tummaa UI teemaa</string>
 <string name="pref_usedarktheme_info">Vaatii uudelleen käynnistyksen toimiakseen</string>
 <string name="pref_import">Tuo asetukset</string>
+
 <string name="pref_sendlog">Lähetä virheloki</string>
 <string name="pref_sendlog_info">Hanki tukea tai raportoit viasta</string>
 <string name="pref_installhelp">Katso asennusohjeita</string>
 
-<string name="error_httperror">j</string>
+
+
 
 
 

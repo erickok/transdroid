@@ -32,6 +32,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_sort_status">По статусу</string>
 <string name="action_sort_done">По дате завершения</string>
 <string name="action_sort_added">По дате добавления</string>
+<string name="action_sort_downspeed">Скорость загрузки</string>
 <string name="action_sort_upspeed">По скорости загрузки</string>
 <string name="action_sort_ratio">По соотношению</string>
 <string name="action_filter">Фильтры</string>
@@ -40,9 +41,13 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_start">Запуск</string>
 <string name="action_start_default">Норм запуск</string>
 <string name="action_start_forced">Принуд запуск</string>
+<string name="action_startall">Старт всех</string>
 <string name="action_stop">Стоп</string>
+<string name="action_stopall">Стоп все</string>
 <string name="action_resume">Возобновить</string>
+<string name="action_resumeall">Возобновить все</string>
 <string name="action_pause">Пауза</string>
+<string name="action_pauseall">Пауза всех</string>
 <string name="action_remove">Удалить</string>
 <string name="action_remove_default">Удалить торрент</string>
 <string name="action_remove_withdata">Удалить вместе с данными</string>
@@ -56,8 +61,10 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_remoteplay">Запустить в VLC</string>
 <string name="action_download">Скачать через (S)FTP</string>
 <string name="action_showdetails">Подробно</string>
+<string name="action_openwebsite">Открыть сайт</string>
 <string name="action_removesettings">Сброс настроек</string>
 <string name="action_visitwebsite">Посетить transdroid.org</string>
+<string name="action_close">Закрыть</string>
 
 <string name="navigation_nosettings">%1$s позволяет управлять торрент-клиентами для скачивания файлов</string>
 <string name="navigation_emptytorrents">Нет активных торрентов в этом фильтре</string>
@@ -79,6 +86,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <item quantity="other">%1$d files selected</item>
 </plurals>
 <string name="navigation_selectall">Выбрать все</string>
+<string name="navigation_selectfinished">Выбрать завершенные</string>
 <string name="navigation_invertselection">Инвертировать отмеч.</string>
 
 <string name="status_status">Состояние: %1$s</string>
@@ -250,7 +258,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_sslacceptall_info">Разрешить все подключения</string>
 
 <string name="pref_background">Уведомления в фоне</string>
-<string name="pref_notifications">Вкл уведомления</string>
 <string name="pref_notifications_info">Включает фоновую службу</string>
 <string name="pref_notifyinterval">Интервал</string>
 <string name="pref_notifyinterval_info">Частота опроса сервера</string>
@@ -262,6 +269,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_adw_info">Показать торрент счетчик в ADW Launcher</string>
 
 <string name="pref_system">Системные</string>
+<string name="pref_autorefresh">Автообновление</string>
 <string name="pref_checkupdates">Проверить наличие обновлений</string>
 <string name="pref_checkupdates_info">Посетить transdroid.org для закачки последней версии приложения</string>
 <string name="pref_usedarktheme">Использовать темную тему UI</string>
@@ -272,12 +280,16 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_export">Настройки экспорта</string>
 <string name="pref_export_dialog">%1$s экспорт настроек  сервера (включая пароли), веб-поиска, RSS и системы в текст файл JSON :%2$s</string>
 <string name="pref_export_success">Настройки успешно экспортированы</string>
+
+<string name="pref_help">Помощь</string>
 <string name="pref_sendlog">Отправить журнал ошибок</string>
 <string name="pref_sendlog_info">Обратиться в поддержку или сообщить об ошибке</string>
 <string name="pref_installhelp">Показать гид по установке</string>
 <string name="pref_installhelp_info">Проверка доступности  transdroid.org/download</string>
 <string name="pref_changelog">Недавние изменения</string>
 <string name="pref_about">О программе %1$s</string>
+
+
 <string-array name="pref_notifyinterval_types">
 <item>1 мин </item>
 <item> 10 мин </item>

@@ -32,6 +32,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_sort_status">Stato</string>
 <string name="action_sort_done">Data fine</string>
 <string name="action_sort_added">Data inserimento</string>
+<string name="action_sort_downspeed">Velocità di download</string>
 <string name="action_sort_upspeed">Velocità invio</string>
 <string name="action_sort_ratio">Ratio</string>
 <string name="action_filter">Filtra lista</string>
@@ -40,15 +41,20 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_start">Avvia</string>
 <string name="action_start_default">Avvio normale</string>
 <string name="action_start_forced">Forza avvio</string>
+<string name="action_startall">Avvia tutto</string>
 <string name="action_stop">Ferma</string>
+<string name="action_stopall">Ferma tutto</string>
 <string name="action_resume">Riprendi</string>
+<string name="action_resumeall">Riprendi tutto</string>
 <string name="action_pause">Pausa</string>
+<string name="action_pauseall">Metti tutto in pausa</string>
 <string name="action_remove">Rimuovi</string>
 <string name="action_remove_default">Rimuovi torrent</string>
 <string name="action_remove_withdata">Rimuovi dati e torrent</string>
 <string name="action_setlabel">Imposta etichetta</string>
 <string name="action_updatetrackers">Aggiorna trackers</string>
 <string name="action_changelocation">Cambia cartella di salvataggio</string>
+<string name="action_forcerecheck">Forza controllo dati</string>
 <string name="action_priority_off">Niente</string>
 <string name="action_priority_low">Bassa</string>
 <string name="action_priority_normal">Normale</string>
@@ -56,8 +62,11 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_remoteplay">Avvio remoto su VLC</string>
 <string name="action_download">Download attraverso (S)FTP</string>
 <string name="action_showdetails">Visualizza dettagli</string>
+<string name="action_openwebsite">Apri pagina WEB</string>
+<string name="action_useassearch">Usa come nuova ricerca</string>
 <string name="action_removesettings">Rimuovi Impostazioni</string>
 <string name="action_visitwebsite">Visita transdroid.org</string>
+<string name="action_close">Chiudi</string>
 
 <string name="navigation_nosettings">%1$s consente di monitorare e controllare il tuo client torrent. Impostare alcune cose potrebbe essere un pò difficile, ma noi offriamo una guida step-by-spep e la promessa che ne è valsa la pena!</string>
 <string name="navigation_emptytorrents">Collegato, ma nessun torrent attivo con questo filtro impostato</string>
@@ -79,6 +88,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <item quantity="other">%1$d files selected</item>
 </plurals>
 <string name="navigation_selectall">Seleziona tutti</string>
+<string name="navigation_selectfinished">Selezione finita</string>
 <string name="navigation_invertselection">Inverti selezione</string>
 
 <string name="status_status">STATO: %1$s</string>
@@ -151,6 +161,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="result_trackersupdated">Tracker aggiornato</string>
 <string name="result_labelset">Imposta etichetta in \'%1$s\'</string>
 <string name="result_labelremoved">Etichetta rimossa</string>
+<string name="result_recheckedstarted">Controllo dati %1$s</string>
 <string name="result_locationset">Torrent spostato in \'%1$s\'</string>
 <string name="result_priotitiesset">Priorità del file aggiornata</string>
 <string name="result_maxspeedsset">Velocità massima di trasferimento impostata a</string>
@@ -187,17 +198,19 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 </plurals>
 <string name="rss_service_newfor">Nuovi torrent per %1$s</string>
 
-<string name="widget_loading">Caricamonto&#8230;</string>
+<string name="widget_loading">Caricamento&#8230;</string>
 <string name="widget_opentransdroid">Apri Transdroid</string>
 <string name="widget_filter">VISTA SERVER</string>
 <string name="widget_lookfeel">GUARDA &amp; ASCOLTA</string>
 <string name="widget_sortby">TIPO ORDINAMENTO</string>
 <string name="widget_reversesortorder">Inverti ordinamento</string>
+<string name="widget_showstatusview">Stato del server anzichè il titolo</string>
 <string name="widget_usedarktheme">Utilizza tema scuro (nessuna anteprima)</string>
 <string name="widget_done">FINE</string>
 
 <string name="pref_servers">Servers</string>
 <string name="pref_addserver">Aggiungi nuovo server</string>
+<string name="pref_addseedbox">Aggiungi SeedBox</string>
 <string name="pref_searchsites">Siti di ricerca</string>
 <string name="pref_setsearchsite">Imposta nuovo sito</string>
 <string name="pref_addwebsearch">Aggiungi sito di ricerca</string>
@@ -224,6 +237,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_advanced">Impostazioni avanzate</string>
 <string name="pref_localaddress">IP locale o host</string>
 <string name="pref_localaddress_info">Quando sei collegato a questa specifica rete</string>
+<string name="pref_localport">Numeo porta locale</string>
 <string name="pref_localnetwork">Rete locale</string>
 <string name="pref_localnetwork_info">SSID rete locale</string>
 <string name="pref_folder">Cartella</string>
@@ -242,6 +256,8 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_ftpurl">Indirizzo base (S)FTP</string>
 <string name="pref_ftpurl_into">per esempio ftp://me@server/download/</string>
 <string name="pref_ftppass">(S)FTP password</string>
+<string name="pref_disableauth">Disabilita autenticazione</string>
+<string name="pref_disableauth_info">Non inviare username e password</string>
 <string name="pref_sslenable">Usa SSL</string>
 <string name="pref_sslenable_info">Connetti utilizzando https</string>
 <string name="pref_sslkey">Identificazione personalizzata per SSL (SHA-1)</string>
@@ -250,7 +266,8 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_sslacceptall_info">Consenti tutte le connessioni da qualsiasi identificazione personale</string>
 
 <string name="pref_background">Notifiche di backgroud</string>
-<string name="pref_notifications">Abilita notifiche</string>
+<string name="pref_notifications_rss">Abilita notifiche RSS</string>
+<string name="pref_notifications_torrent">Abilita notifiche Torrent</string>
 <string name="pref_notifications_info">Abilita il servizio di background</string>
 <string name="pref_notifyinterval">Intervallo</string>
 <string name="pref_notifyinterval_info">Quante volte per controllare il server</string>
@@ -262,22 +279,47 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_adw_info">Visualizza il contatore dei torrent nel AWD Launcher </string>
 
 <string name="pref_system">Sistema</string>
+<string name="pref_autorefresh">Aggiornamento automatico</string>
+<string name="pref_autorefresh_info">Intervallo aggiornamento schermo principale</string>
+<string-array name="pref_autorefresh_intervals">
+<item>Disabilitato</item>
+<item>2 secondi</item>
+<item>5 secondi</item>
+<item>10 secondi</item>
+<item>30 secondi</item>
+</string-array>
+<string name="pref_dormantasinactive">Tratta i torrent "dormienti" come inattivi</string>
+<string name="pref_dormantasinactive_info">I Torrents a 0KB/s (nessun trasferimento dati) saranno visti come inattivi</string>
 <string name="pref_checkupdates">Ricerca aggiornamenti</string>
 <string name="pref_checkupdates_info">Controlla su transdroid.org l\'ultimo aggiornamento disponibile</string>
 <string name="pref_usedarktheme">Utilizza l\'interfaccia scura</string>
 <string name="pref_usedarktheme_info">Richiede il riavvio per rendere effettive le modifiche</string>
+<string name="pref_clearsearch">Cancella la cronologia delle ricerche</string>
+<string name="pref_clearsearch_success">La cronologia ricerche è stata cancellata</string>
 <string name="pref_import">Importa impostazioni</string>
 <string name="pref_import_dialog">%1$s cercherà di importare il server, la ricerca web, RSS e le impostazioni di sistema da: %2$s</string>
 <string name="pref_import_success">Impostazioni imporate con successo</string>
 <string name="pref_export">Esporta impostazioni</string>
 <string name="pref_export_dialog">%1$s esporterà le impostazioni (comprese le password), i moduli di ricerca web, RSS e le impostazioni di sistema nel seguente file su modello JSON: %2$s</string>
 <string name="pref_export_success">Impostazioni esportate con successo</string>
+
+<string name="pref_help">Aiuto Transdroid</string>
 <string name="pref_sendlog">Invia log di errori</string>
 <string name="pref_sendlog_info">Chiedi supporto o riporta un bug</string>
 <string name="pref_installhelp">Vedi le guide installate</string>
 <string name="pref_installhelp_info">Disponibile di transdroid.org/download</string>
 <string name="pref_changelog">Ultimi cambiamenti</string>
 <string name="pref_about">About %1$s</string>
+
+<string name="pref_seedbox_addseedbox">Aggiunta SeedBox %1$s</string>
+<string name="pref_seedbox_client">Client Torrent</string>
+<string name="pref_seedbox_client_info">Client per connettersi a</string>
+<string name="pref_seedbox_server">Indirizzo Server</string>
+<string name="pref_seedbox_xirvikhint">Esempio: eplus001.xirvik.com</string>
+<string name="pref_seedbox_xirvikhint2">Esempio: semixl001a.xirvik.com</string>
+<string name="pref_seedbox_xirvikhint3">Esempio: desharedgbit001.xirvik.com</string>
+<string name="pref_seedbox_seedstuffhint">Esempio: 001.seedstuff.ca</string>
+
 <string-array name="pref_notifyinterval_types">
 <item>1 minuto</item>
 <item>10 minuto</item>
@@ -301,6 +343,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="error_invalid_port_number">La porta è sempre un numero</string>
 <string name="error_invalid_directory">La cartella finisce sempre con / o con \</string>
 <string name="error_invalid_timeout">Timeout è sempre un numero intero positivo e non può essere vuoto</string>
+<string name="error_notorrentfile">I risultati della ricerca non portano ad alcun file torrent</string>
 <string name="error_no_url_enclosure">Questo URL per il feed RSS non po punta a un link specifico o ad un torrent</string>
 <string name="error_no_link">Questo feed RSS non fornisce un link per accedere a </string>
 <string name="error_norssfeed">Questo URL non è un feed RSS (valido)</string>

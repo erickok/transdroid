@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2010-2013 Eric Kok et al.
+
+Transdroid is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Transdroid is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+<string name="action_add">Thêm</string>
+<string name="action_addall">Thêm tất cả</string>
+<string name="action_addfromfile">Từ file</string>
+<string name="action_addfromurl">Từ URL</string>
+<string name="action_scanbarcode">Quét mã vạch</string>
+<string name="action_search">Tìm kiếm</string>
+<string name="action_refresh">Nạp lại</string>
+<string name="action_rss">RSS</string>
+<string name="action_enableturtle">Bật tốc độ rùa</string>
+<string name="action_disableturtle">Tắt tốc độ rùa</string>
+<string name="action_sort">Sắp xếp danh mục</string>
+<string name="action_sort_alpha">Tên</string>
+<string name="action_sort_status">Trạng thái</string>
+<string name="action_sort_done">Ngày hoàn thành</string>
+<string name="action_sort_added">Ngày thêm</string>
+<string name="action_sort_downspeed">Tốc độ tải về</string>
+<string name="action_sort_upspeed">Tốc độ tải lên</string>
+<string name="action_sort_ratio">Tỷ lệ </string>
+<string name="action_filter">Lọc danh mục</string>
+<string name="action_settings">Thiết lập</string>
+<string name="action_help">Trợ giúp</string>
+<string name="action_start">Chạy</string>
+<string name="action_start_default">Chạy bình thường</string>
+<string name="action_start_forced">Chạy cưỡng bức</string>
+<string name="action_startall">Chạy tất cả</string>
+<string name="action_stop">Dừng hẳn</string>
+<string name="action_stopall">Dừng hẳn tất cả</string>
+<string name="action_resume">Tiếp tục</string>
+<string name="action_resumeall">Tiếp tục tất cả</string>
+<string name="action_pause">Tạm dừng</string>
+<string name="action_pauseall">Tạm dừng tất cả</string>
+<string name="action_remove">Xóa bỏ</string>
+<string name="action_remove_default">Xóa bỏ torrent</string>
+<string name="action_remove_withdata">Xóa bỏ cùng với dữ liệu</string>
+<string name="action_setlabel">Đặt nhãn</string>
+<string name="action_updatetrackers">Cập nhật tracker</string>
+<string name="action_changelocation">Đổi vị trí lưu trữ</string>
+<string name="action_forcerecheck">Buộc kiểm tra tính toàn vẹn</string>
+<string name="action_priority_off">Tắt</string>
+<string name="action_priority_low">Thấp</string>
+<string name="action_priority_normal">Bình thường</string>
+<string name="action_priority_high">Cao</string>
+<string name="action_remoteplay">Xem trực tiếp bằng VLC</string>
+<string name="action_download">Tải về bằng FTP(S)</string>
+<string name="action_showdetails">Xem chi tiết</string>
+<string name="action_openwebsite">Mở website</string>
+<string name="action_useassearch">Dùng làm tìm kiếm mới</string>
+<string name="action_removesettings">Xóa bỏ thiết lập</string>
+<string name="action_visitwebsite">Thăm trang transdroid.org</string>
+<string name="action_close">Đóng lại</string>
+
+<string name="navigation_emptytorrents">Đã kết nối, nhưng trong bộ lọc này không thấy có torrent nào hoạt động</string>
+<string name="navigation_emptydetails">Chọn torrent để xem thông tin chi tiết</string>
+<string name="navigation_servers">MÁY CHỦ</string>
+<string name="navigation_status">TRẠNG THÁI</string>
+<string name="navigation_labels">NHÃN</string>
+<string name="navigation_status_showall">Tất cả</string>
+<string name="navigation_status_onlydown">Đang kéo về</string>
+<string name="navigation_status_onlyup">Đang đẩy lên</string>
+<string name="navigation_status_onlyactive">Đang hoạt động</string>
+<string name="navigation_status_onlyinactive">Không hoạt động</string>
+<plurals name="navigation_torrentsselected">
+<item quantity="one">%1$d torrent selected</item>
+<item quantity="other">%1$d torrents selected</item>
+</plurals>
+<plurals name="navigation_filesselected">
+<item quantity="one">%1$d files selected</item>
+<item quantity="other">%1$d files selected</item>
+</plurals>
+<string name="navigation_selectall">Chọn tất cả</string>
+<string name="navigation_selectfinished">Chọn cái đã xong</string>
+<string name="navigation_invertselection">Chọn ngược lại</string>
+
+<string name="status_status">TRẠNG THÁI: %1$s</string>
+<string name="status_waiting">Đang chờ để kiểm tra&#8230;</string>
+<string name="status_checking">Đang xác nhận dữ liệu&#8230;</string>
+<string name="status_waitingtodl">Đang chờ tải về %s</string>
+<string name="status_error">Lỗi&#8230;</string>
+<string name="status_size1">%1$s / %2$s (%3$s)</string>
+<string name="status_size2">%1$s, ĐÃ ĐẨY LÊN %2$s</string>
+<string name="status_sincedate">TỪ  %1$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_etalong">DỰ KIẾN %1$s</string>
+<string name="status_ofsize">TRÊN %1$s</string>
+<string name="status_unknowneta">CHƯA RÕ KHI NÀO XONG</string>
+<string name="status_ratio">TỶ LỆ GÓP %1$s</string>
+<string name="status_peers">%1$s TRÊN %2$s NHÁNH</string>
+<string name="status_downloading">Đang kéo</string>
+<string name="status_seeding">Đang đẩy</string>
+<string name="status_paused">Đang nghỉ</string>
+<string name="status_queued">Đã xếp hàng</string>
+<string name="status_stopped">Đã dừng</string>
+<string name="status_unknown">Không rõ</string>
+<string name="status_priority_off">Chưa tải về</string>
+<string name="status_priority_low">Ưu tiên thấp</string>
+<string name="status_priority_normal">Ưu tiên bình thường</string>
+<string name="status_priority_high">Ưu tiên cao</string>
+<string name="status_trackers">TRACKER</string>
+<string name="status_errors">LỖI</string>
+<string name="status_files">FILE</string>
+<string name="status_maxspeed">Tốc độ lưu chuyển tối đa</string>
+<string name="status_maxspeed_down">TẢI VỀ TỐI ĐA</string>
+<string name="status_maxspeed_up">TẢI LÊN TỐI ĐA</string>
+<string name="status_maxspeed_unit">KB/S</string>
+<string name="status_maxspeed_reset">Thiết lập lại</string>
+<string name="status_update">Cập nhật</string>
+<plurals name="status_service_added">
+<item quantity="one">New torrent added</item>
+<item quantity="other">%1$s new torrents added</item>
+</plurals>
+<plurals name="status_service_finished">
+<item quantity="one">Torrent is finished</item>
+<item quantity="other">%1$s torrents are finished</item>
+</plurals>
+<plurals name="status_service_addedfinished">
+<item quantity="one">%1$s added, %2$s finished torrent</item>
+<item quantity="other">%1$s added, %2$s finished torrents</item>
+</plurals>
+<string name="status_service_andothers">%1$s và các mục khác</string>
+
+<string name="labels_showall">Toàn bộ nhãn</string>
+<string name="labels_unlabeled">Chưa đặt nhãn</string>
+<string name="labels_newlabel">Nhãn mới</string>
+<string name="labels_no_support">Chương trình của bạn không hỗ trợ đặt nhãn tên</string>
+<string name="status_label_pick">CHỌN MỘT NHÃN</string>
+<string name="status_label_new">NHÃN MỚI</string>
+<string name="status_label_remove">Xóa bỏ nhãn</string>
+<string name="status_label_hint">V.d Phim hay Nhạc</string>
+
+<string name="result_added">Đã thêm %1$s (đang nạp lại)</string>
+<string name="result_removed">Đã xóa bỏ %1$s</string>
+<string name="result_removed_with_data">Đã xóa torrent và dữ liệu của %1$s</string>
+<string name="result_resumed">Đã cho tiếp tục: %1$s (đang nạp lại)</string>
+<string name="result_stopped">Đã cho dừng: %1$s (đang nạp lại)</string>
+<string name="result_started">Đã cho chạy: %1$s (đang nạp lại)</string>
+<string name="result_paused">Đã cho nghỉ: %1$s (đang nạp lại)</string>
+<string name="result_paused_all">Torrent đã nghỉ (đang nạp lại)</string>
+<string name="result_resumed_all">Torrent đã tiếp tục (đang nạp lại)</string>
+<string name="result_stopped_all">Torrent đã dừng (đang nạp lại)</string>
+<string name="result_started_all">Torrent đã chạy (đang nạp lại)</string>
+<string name="result_trackersupdated">Đã cập nhật tracker</string>
+<string name="result_labelset">Đã đặt nhãn thành \'%1$s\'</string>
+<string name="result_labelremoved">Đã xóa nhãn</string>
+<string name="result_recheckedstarted">Đang kiểm tra dữ liệu %1$s</string>
+<string name="result_locationset">Torrent đã chuyển tới \'%1$s\'</string>
+
+<string name="search_hint">Tìm kiếm torrent</string>
+<string name="search_noresults">Không tìm thấy gì</string>
+<string name="search_seeders">Đ: %1$s</string>
+<string name="search_leechers">K: %1$s</string>
+<string name="search_installsearch">Tính năng này yêu cầu cài đặt mô-đun Tìm kiếm Torrent. Bấm tải về để tải bộ cài (apk) từ transdroid.org rồi thử tìm kiếm lại.</string>
+<string name="search_download">Tải về mô-đun</string>
+<string name="search_openingdetails">Đang mở thông tin chi tiết cho %1$s</string>
+<string name="search_barcodescannernotfound">Không thấy trương trình quét mã vạch, bạn có muốn cài trên CH Play không?</string>
+<string name="search_filemanagernotfound">Không thấy có trình quản lý file nào tương thích. Bạn có muốn cài OI File Manager trên CH Play không?</string>
+<plurals name="search_resutlsselected">
+<item quantity="one">%1$d result selected</item>
+<item quantity="other">%1$d results selected</item>
+</plurals>
+
+<string name="rss_feeds">Nguồn RSS</string>
+<string name="rss_notloaded">Vui lòng chờ cho đến khi nạp xong nguồn RSS</string>
+<string name="rss_error">Rất tiếc hiện tại không nạp được nguồn RSS này</string>
+<plurals name="rss_itemsselected">
+<item quantity="one">%1$d item selected</item>
+<item quantity="other">%1$d items selected</item>
+</plurals>
+<plurals name="rss_service_new">
+<item quantity="one">New RSS feed torrent available</item>
+<item quantity="other">%1$s new RSS feed torrents</item>
+</plurals>
+<string name="rss_service_newfor">Có torrent mới cho %1$s</string>
+
+<string name="widget_loading">Đang nạp&#8230;</string>
+<string name="widget_opentransdroid">Mở Transdroid</string>
+
+<string name="pref_servers">Máy chủ</string>
+<string name="pref_addserver">Thêm máy chủ mới</string>
+<string name="pref_addseedbox">Theem seedbox</string>
+<string name="pref_searchsites">Các trang tìm kiếm</string>
+<string name="pref_setsearchsite">Đặt trang tìm kiếm mặc định</string>
+<string name="pref_addwebsearch">Thêm trang tìm kiếm</string>
+<string name="pref_rssfeeds">Nguồn RSS</string>
+<string name="pref_addrssfeed">Thêm nguồn RSS</string>
+<string name="pref_others">Thiết lập khác</string>
+
+<string name="pref_name">Tên</string>
+<string name="pref_name_optional">Tùy ý đặt tên</string>
+<string name="pref_searchurl">URT tìm kiếm trực tiép</string>
+<string name="pref_searchurl_info">%s sẽ bị thay bằng lệnh tìm kiếm</string>
+<string name="pref_cookies">Cookies</string>
+<string name="pref_cookies_info">Tùy ý: sử dụng mẫu key1=giá trị1;key2=giá trị2</string>
+<string name="pref_feedurl">URL của nguồn</string>
+<string name="pref_reqauth">Có yêu cầu đăng nhập</string>
+<string name="pref_reqauth_info">Dùng trình duyệt mở đường dẫn để tự đăng nhập</string>
+
+<string name="pref_servertype">Loại máy chủ</string>
+<string name="pref_address">IP hoặc tên miền</string>
+<string name="pref_port">Cổng số</string>
+<string name="pref_user">Tên người dùng</string>
+<string name="pref_pass">Mật khẩu</string>
+<string name="pref_extrapass">Mật khẩu tại Deluge</string>
+<string name="pref_advanced">Thiết lập nâng cao</string>
+<string name="pref_localaddress">IP nội bộ hoặc tên miền</string>
+<string name="pref_localaddress_info">Khi nối v ào mạng nội bộ cụ thể</string>
+<string name="pref_localport">Số cổng nội bộ</string>
+<string name="pref_localnetwork">Mạng nội bộ</string>
+<string name="pref_localnetwork_info">SSID của mạng có máy chủ</string>
+<string name="pref_folder">Thư mục</string>
+<string name="pref_folder_info">Thường để trống</string>
+<string name="pref_optional">Thiết lập tùy ý</string>
+<string name="pref_alarmdone">Báo đã xong</string>
+<string name="pref_alarmdone_info">Bật một thông báo khi torrent đã xong</string>
+<string name="pref_alarmnew">Báo torrent mới</string>
+<string name="pref_alarmnew_info">Bật thông báo khi có torrent mới</string>
+<string name="pref_os">Hệ điều hành của máy chủ</string>
+<string name="pref_downdir">Thư mục tải về</string>
+<string name="pref_downdir_info">Tự điền đường dẫn tuyệt đối để kết nối từ xa</string>
+<string name="pref_timeout">Thời hạn kết nối</string>
+<string name="pref_timeout_info">Số giây trước khi ngừng tìm cách kết nối</string>
+<string name="pref_ftpurl">URL của FTP(S)</string>
+<string name="pref_ftpurl_into">Ví dụ ftp://me@server/downloads/</string>
+<string name="pref_ftppass">Mật mã FPT(S)</string>
+<string name="pref_disableauth">Không dùng đăng nhập</string>
+<string name="pref_disableauth_info">Không gửi đi tên và mật khẩu</string>
+<string name="pref_sslenable">Sử dụng SSL</string>
+<string name="pref_sslenable_info">Kết nối bằng https</string>
+<string name="pref_sslacceptall">Chấp nhận các chứng chỉ SSL</string>
+
+<string name="pref_background">Thông báo chạy nền</string>
+<string name="pref_notifications_rss">Bật thông báo RSS</string>
+<string name="pref_notifications_torrent">Bật thông báo torrent</string>
+<string name="pref_notifications_info">Bật dịch vụ chạy nền</string>
+<string name="pref_notifyinterval">Thời gian nghỉ</string>
+<string name="pref_notifyinterval_info">Thời gian giữa hai lần kiểm tra RSS hay torrent</string>
+<string name="pref_notifysound">Âm thanh</string>
+<string name="pref_notifyvibrate">Rung</string>
+<string name="pref_notifyled">Màu đèn LED</string>
+<string name="pref_notifyled_info">Nếu máy có hỗ trợ</string>
+<string name="pref_adw">Thông báo trên AWD</string>
+<string name="pref_adw_info">Thể hiện số đếm torrent trên ADW Launcher</string>
+
+<string name="pref_system">Hệ thống</string>
+<string name="pref_autorefresh">Tự động nạp lại</string>
+<string name="pref_autorefresh_info">Tự động nạp lại nội dung màn hình sau một khoảng thời gian</string>
+<string-array name="pref_autorefresh_intervals">
+<item>Không dùng</item>
+<item>2 giây</item>
+<item>5 giây</item>
+<item>10 giây</item>
+<item>30 giây</item>
+</string-array>
+<string name="pref_dormantasinactive">Coi torrent ngủ là không hoạt động</string>
+<string name="pref_dormantasinactive_info">Torrent có tốc độ 0KB/s bị coi là không hoạt động</string>
+<string name="pref_checkupdates">Tìm bản cập nhật</string>
+<string name="pref_checkupdates_info">Xem trên trang transdroid.org có bản mới không</string>
+<string name="pref_usedarktheme">Dùng giao diện màu tối</string>
+<string name="pref_usedarktheme_info">Cần khởi động lại để có tác dụng</string>
+<string name="pref_clearsearch">Xóa sạch lịch sử tìm kiếm</string>
+<string name="pref_clearsearch_success">Đã xóa hết lịch sử tìm kiếm</string>
+<string name="pref_import">Nhập thiết lập bên ngoài</string>
+<string name="pref_import_dialog">%1$s sẽ cố gắng nhập thiết lập về máy chủ, trang tìm kiếm, RSS và hệ thống từ: %2$s</string>
+<string name="pref_import_success">Đã nhập xong thông tin thiết lập</string>
+<string name="pref_export">Xuất thông tin thiết lập</string>
+<string name="pref_export_dialog">%1$s sẽ xuất thông tin thiết lập về máy chủ (kể cả mật khẩu), trang tìm kiếm, RSS và hệ thống ra file sau đây: %2$s</string>
+<string name="pref_export_success">Đã xuất thành công</string>
+
+<string name="pref_help">Trợ giúp Transdroid</string>
+<string name="pref_sendlog">Gửi file báo lỗi</string>
+<string name="pref_installhelp">Xem hướng dẫn cài đặt</string>
+<string name="pref_changelog">Thay đổi gần đây</string>
+<string name="pref_about">Giới thiệu %1$s</string>
+
+<string name="pref_seedbox_addseedbox">Thêm seedbox %1$s</string>
+<string name="pref_seedbox_client">Trình điều khiển torrent</string>
+<string name="pref_seedbox_server">Địa chỉ máy chủ</string>
+
+<string-array name="pref_notifyinterval_types">
+<item>1 phút</item>
+<item>10 phút</item>
+<item>30 phút</item>
+<item>1 giờ</item>
+<item>3 giờ</item>
+<item>12 giờ</item>
+<item>1 ngày</item>
+</string-array>
+
+<string name="error_httperror">Gặp lỗi khi giao tiếp; kiểm tra lại kết nối</string>
+<string name="error_jsonresponseerror">Gặp lỗi khi xử lý thông tin máy chủ; kiểm tra lại thiết lập</string>
+<string name="error_invalid_url_form">Địa chỉ URL này không có định dạng tốt</string>
+<string name="error_invalid_ip_or_hostname">Thông tin nhập IP hay tên miền không đúng</string>
+<string name="error_invalid_port_number">Số cổng phải là số thập phân</string>
+<string name="error_invalid_directory">Đường dẫn kết thúc bằng / hoặc \</string>
+<string name="error_invalid_timeout">Thời hạn không được để trống và phải là số dương</string>
+<string name="error_notorrentfile">Kết quả tìm kiếm khống chỉ tới file .torrent</string>
+<string name="error_norssfeed">URL này không phải là nguồn RSS (phù hợp)</string>
+<string name="error_media_not_available">Không tìm thấy thẻ SD để đọc/ghi</string>
+<string name="error_file_not_found">Không tìm thấy file thiết lập</string>
+<string name="error_cant_write_settings_file">Không ghi được vào file thiết lập</string>
+<string name="error_notanumber">Hãy điền số dương vào cả hai giá trị tốc độ</string>
+<string name="error_notalabel">Vui lòng nhập tên nhãn đúng hoặc chọn trong danh mục</string>
+<string name="error_stillloadingdetails">Vui lòng chờ tới khi chiết về torrent nạp xong</string>
+<string name="error_noftpapp">Không thấy ứng d ụng nào có thể tải về %1$s</string>
+
+<string name="update_app_newversion">Transdroid có bản cập nhật</string>
+<string name="update_search_newversion">Transdroid có mô-đun tìm kiếm mới</string>
+<string name="update_updateto">Bạn có thể nâng lên bản %1$s</string>
+
+<string name="system_description">Quản lý file torrent từ thiết bị Android</string>
+
+</resources>

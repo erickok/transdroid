@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2010-2013 Eric Kok et al.
+
+Transdroid is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Transdroid is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+<string name="action_add">Tilføj</string>
+<string name="action_addall">Tilføj alt</string>
+<string name="action_addfromfile">Fra fil</string>
+<string name="action_addfromurl">Fra URL</string>
+<string name="action_scanbarcode">Skan stregkode</string>
+<string name="action_search">Søg</string>
+<string name="action_refresh">Genindlæs</string>
+<string name="action_rss">RSS</string>
+<string name="action_enableturtle">Aktiver skildpadetilstand</string>
+<string name="action_disableturtle">Deaktiver skildpadetilstand</string>
+<string name="action_sort">Sorter liste</string>
+<string name="action_sort_alpha">Navn</string>
+<string name="action_sort_status">Status</string>
+<string name="action_sort_done">Dato færdig</string>
+<string name="action_sort_added">Dato tilføjet</string>
+<string name="action_sort_downspeed">Downloadhastighed</string>
+<string name="action_sort_upspeed">Uploadhastighed</string>
+<string name="action_sort_ratio">Fordelingsforhold</string>
+<string name="action_filter">Filtrer liste</string>
+<string name="action_settings">Indstillinger</string>
+<string name="action_help">Hjælp</string>
+<string name="action_start">Start</string>
+<string name="action_start_default">Normal start</string>
+<string name="action_start_forced">Tving start</string>
+<string name="action_startall">Start alle</string>
+<string name="action_stop">Stop</string>
+<string name="action_stopall">Stop alle</string>
+<string name="action_resume">Fortsæt</string>
+<string name="action_resumeall">Fortsæt alle</string>
+<string name="action_pause">Pause</string>
+<string name="action_pauseall">Pause alle</string>
+<string name="action_remove">Fjern</string>
+<string name="action_remove_default">Fjern torrent</string>
+<string name="action_remove_withdata">Fjern og slet data</string>
+<string name="action_setlabel">Set etiket</string>
+<string name="action_updatetrackers">Opdater trackers</string>
+<string name="action_changelocation">Ændr gem lokation</string>
+<string name="action_forcerecheck">Tving data gentjek</string>
+<string name="action_priority_off">Fra</string>
+<string name="action_priority_low">Lav</string>
+<string name="action_priority_normal">Normal</string>
+<string name="action_priority_high">Høj</string>
+<string name="action_remoteplay">Fjernafspil i VLC</string>
+<string name="action_download">Download via FTP(S)</string>
+<string name="action_showdetails">Vis detaljer</string>
+<string name="action_openwebsite">Åben wedside</string>
+<string name="action_useassearch">Brug som ny søgning</string>
+<string name="action_removesettings">Fjern indstillinger</string>
+<string name="action_visitwebsite">Besøg transdroid.org</string>
+<string name="action_close">Luk</string>
+
+<string name="navigation_nosettings">%1$s giver dig mulighed for at overvåge og styre torrent klienten du kører derhjemme eller på din seedbox. Indstillingerne kan være en smule komplicerede men vi tilbyder trin-for-trin vejledninger og lover det vil være det værd!</string>
+<string name="navigation_emptytorrents">Forbundet, men ingen torrents er aktive inden for det aktuelle filter</string>
+<string name="navigation_emptydetails">Vælg en torrent for at de dens detaljer</string>
+<string name="navigation_servers">SERVERE</string>
+<string name="navigation_status">STATUS</string>
+<string name="navigation_labels">ETIKETTER</string>
+<string name="navigation_status_showall">Alle</string>
+<string name="navigation_status_onlydown">Downloader</string>
+<string name="navigation_status_onlyup">Uploader</string>
+<string name="navigation_status_onlyactive">Aktive</string>
+<string name="navigation_status_onlyinactive">Inaktive</string>
+<plurals name="navigation_torrentsselected">
+<item quantity="one">%1$d torrent selected</item>
+<item quantity="other">%1$d torrents selected</item>
+</plurals>
+<plurals name="navigation_filesselected">
+<item quantity="one">%1$d files selected</item>
+<item quantity="other">%1$d files selected</item>
+</plurals>
+<string name="navigation_selectall">Vælg alle</string>
+<string name="navigation_selectfinished">Vælg færdige</string>
+<string name="navigation_invertselection">Ombyt valgte</string>
+
+<string name="status_status">STATUS: %1$s</string>
+<string name="status_waiting">Venter på at tjekke&#8230;</string>
+<string name="status_checking">Verificerer lokalt data&#8230;</string>
+<string name="status_waitingtodl">Venter på at downloade %s</string>
+<string name="status_error">Fejl&#8230;</string>
+<string name="status_size1">%1$s AF %2$s (%3$s)</string>
+<string name="status_size2">%1$s, UPLOADET %2$s</string>
+<string name="status_sincedate">SIDEN %1$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_etalong">ETA %1$s</string>
+<string name="status_ofsize">AF %1$s</string>
+<string name="status_unknowneta">UKENDT ETA</string>
+<string name="status_ratio">FORDELINGSFORHOLD %1$s</string>
+<string name="status_peers">%1$s AF %2$s PEERS</string>
+<string name="status_downloading">Downloader</string>
+<string name="status_seeding">Seeding</string>
+<string name="status_paused">Paused</string>
+<string name="status_queued">I kø</string>
+<string name="status_stopped">Stoppet</string>
+<string name="status_unknown">Ukendt status</string>
+<string name="status_priority_off">Ikke downloadet</string>
+<string name="status_priority_low">Lav prioritet</string>
+<string name="status_priority_normal">Normal prioritet</string>
+<string name="status_priority_high">Høj prioritet</string>
+<string name="status_trackers">TRACKERS</string>
+<string name="status_errors">FEJL</string>
+<string name="status_files">FILER</string>
+<string name="status_maxspeed">Maksimum overførelseshastigheder</string>
+<string name="status_maxspeed_down">MAKS DOWNLOAD</string>
+<string name="status_maxspeed_up">MAKS UPLOAD</string>
+<string name="status_maxspeed_unit">KB/S</string>
+<string name="status_maxspeed_reset">Nulstil</string>
+<string name="status_update">Opdater</string>
+<plurals name="status_service_added">
+<item quantity="one">New torrent added</item>
+<item quantity="other">%1$s new torrents added</item>
+</plurals>
+<plurals name="status_service_finished">
+<item quantity="one">Torrent is finished</item>
+<item quantity="other">%1$s torrents are finished</item>
+</plurals>
+<plurals name="status_service_addedfinished">
+<item quantity="one">%1$s added, %2$s finished torrent</item>
+<item quantity="other">%1$s added, %2$s finished torrents</item>
+</plurals>
+<string name="status_service_andothers">%1$s og andre</string>
+
+<string name="labels_showall">Alle etiketter</string>
+<string name="labels_unlabeled">Ingen etiket</string>
+<string name="labels_newlabel">Nu etiket</string>
+<string name="labels_no_support">Tilføj af etiket er ikke understøttet af din klient</string>
+<string name="status_label_pick">VÆLG EN ETIKET</string>
+<string name="status_label_new">NY ETIKET</string>
+<string name="status_label_remove">Fjern etiket</string>
+<string name="status_label_hint">F.eks. film eller linux</string>
+
+<string name="result_added">%1$s tilføjet (opdaterer)</string>
+<string name="result_removed">%1$s fjernet</string>
+<string name="result_removed_with_data">%1$s fjernet og data slettet</string>
+<string name="result_resumed">%1$s genoptaget (opdaterer)</string>
+<string name="result_stopped">%1$s stoppet (opdaterer)</string>
+<string name="result_started">%1$s startet (opdaterer)</string>
+<string name="result_paused">%1$s pauset (opdaterer)</string>
+<string name="result_paused_all">Torrents pauset (opdaterer)</string>
+<string name="result_resumed_all">Torrents genoptaget (opdaterer)</string>
+<string name="result_stopped_all">Torrents stoppet (opdaterer)</string>
+<string name="result_started_all">Torrents startet (opdaterer)</string>
+<string name="result_trackersupdated">Trackers opdateret</string>
+<string name="result_labelset">Etiket sat til \'%1$s\'</string>
+<string name="result_labelremoved">Etiket fjernet</string>
+<string name="result_recheckedstarted">Tjekker %1$s data</string>
+<string name="result_locationset">Torrent flyttet til \'%1$s\'</string>
+<string name="result_priotitiesset">Fil prioriteter opdateret</string>
+<string name="result_maxspeedsset">Maksimum overførelseshastigheder sat</string>
+
+<string name="search_torrentsearch">Torrent søgning</string>
+<string name="search_queryonsite">\'%1$s\' på %2$s</string>
+<string name="search_hint">Søg efter torrents</string>
+<string name="search_noresults">Ingen resultater for din forespørgsel</string>
+<string name="search_seeders">S: %1$s</string>
+<string name="search_leechers">L: %1$s</string>
+<string name="search_installsearch"> Denne funktion kræver en engangs-installation af Torrent Search modulet. Klik på download for at hente installleringspakken (apk) fra transdroid.org og genstart din søgning.</string>
+<string name="search_download">Downloadmodul</string>
+<string name="search_openingdetails">Åbner detaljer for %1$s</string>
+<string name="search_barcodescannernotfound">Stregkodeskanneren blev ikke fundet. Ønsker du at installere den fra Play Store?</string>
+<string name="search_filemanagernotfound">Der blev ikke fundet en kompatibel file manager. Ønsker du at installere IO File Manager fra Play Store?</string>
+<plurals name="search_resutlsselected">
+<item quantity="one">%1$d result selected</item>
+<item quantity="other">%1$d results selected</item>
+</plurals>
+
+<string name="rss_feeds">RSS feeds</string>
+<string name="rss_nosettings">Du har ikke defineret nogen RSS-feeds at overvåge endnu. Torrent-specifikke RSS-feeds holde dig ajour med nye udgivelser, og du får besked om nye emner.</string>
+<string name="rss_noselection">Vælg et RSS feed for at se nye emner</string>
+<string name="rss_empty">RSS feed er ikke tilgænglig, eller den indeholder ingen emner</string>
+<string name="rss_notloaded">Beklager, vent venligst til RSS feed er indlæst</string>
+<string name="rss_error">Beklager, dette RSS feed kan ikke indlæses i øjeblikket</string>
+<plurals name="rss_itemsselected">
+<item quantity="one">%1$d item selected</item>
+<item quantity="other">%1$d items selected</item>
+</plurals>
+<plurals name="rss_service_new">
+<item quantity="one">New RSS feed torrent available</item>
+<item quantity="other">%1$s new RSS feed torrents</item>
+</plurals>
+<string name="rss_service_newfor">Nye torrents for %1$s</string>
+
+<string name="widget_loading">Indlæser&#8230;</string>
+<string name="widget_opentransdroid">Åbn Transdroid</string>
+<string name="widget_filter">SERVER VISNING</string>
+<string name="widget_lookfeel">LOOK &amp; FEEL</string>
+<string name="widget_sortby">SORTERINGS RÆKKEFØLGE</string>
+<string name="widget_reversesortorder">Omvendt sorterings rækkefølge</string>
+<string name="widget_showstatusview">Server status i stedet for titel</string>
+<string name="widget_usedarktheme">Brug mørkt tema (ingen preview)</string>
+<string name="widget_done">FÆRDIG</string>
+
+<string name="pref_servers">Servere</string>
+<string name="pref_addserver">Tilføj ny server</string>
+<string name="pref_addseedbox">Tilføj seedbox</string>
+<string name="pref_searchsites">Søgesider</string>
+<string name="pref_setsearchsite">Set standardside</string>
+<string name="pref_addwebsearch">Tilføj web søgeside</string>
+<string name="pref_rssfeeds">RSS feeds</string>
+<string name="pref_addrssfeed">Tilføj RSS feed</string>
+<string name="pref_others">Andre indstillinger</string>
+
+<string name="pref_name">Navn</string>
+<string name="pref_name_optional">Valgfrit personligt navn</string>
+<string name="pref_searchurl">Direkte søge URL</string>
+<string name="pref_searchurl_info">%s vil blive erstattet af søgningen</string>
+<string name="pref_cookies">Cookies</string>
+<string name="pref_cookies_info">Valgfri; brug tasten1=værdi1;tast2=værdi2 format 	</string>
+<string name="pref_feedurl">Feed URL</string>
+<string name="pref_reqauth">Kræver autentificering</string>
+<string name="pref_reqauth_info">Åbner links i webbrowser for brugerlogin</string>
+
+<string name="pref_servertype">Server type</string>
+<string name="pref_address">IP eller værtsnavn</string>
+<string name="pref_port">Port nummer</string>
+<string name="pref_user">Brugernavn</string>
+<string name="pref_pass">Adgandskode</string>
+<string name="pref_extrapass">Deluge web adgangskode</string>
+<string name="pref_advanced">avancerede indstillinger</string>
+<string name="pref_localaddress">Lokal IP eller vært</string>
+<string name="pref_localaddress_info">Når der er tilsluttet til det specificerede lokale netværk</string>
+<string name="pref_localport">Lokalt port nummer</string>
+<string name="pref_localnetwork">Lokalt netværk</string>
+<string name="pref_localnetwork_info">Serverens lokale netværks SSID</string>
+<string name="pref_folder">Mappe</string>
+<string name="pref_folder_info">Normalt tom</string>
+<string name="pref_scgifolder">SCGI mount point</string>
+<string name="pref_optional">Valgfrie indstillinger</string>
+<string name="pref_alarmdone">Færdig meddelelse</string>
+<string name="pref_alarmdone_info">Meddel når en torrent er færdig</string>
+<string name="pref_alarmnew">Ny torrent meddelelse</string>
+<string name="pref_alarmnew_info">Meddel når en torrent er blevet tilføjet</string>
+<string name="pref_os">Derver OS</string>
+<string name="pref_downdir">Download mappe</string>
+<string name="pref_downdir_info">Indstil manuelt absolut sti for fjernforbindelser</string>
+<string name="pref_timeout">Forbindelse timeout</string>
+<string name="pref_timeout_info">Antal sekunder før et forbindelsesforsøg afbydes</string>
+<string name="pref_ftpurl">Base FTP(S) url</string>
+<string name="pref_ftpurl_into">For eksempel ftp://mig@server/downloads/</string>
+<string name="pref_ftppass">FTP(S) adgangskode</string>
+<string name="pref_disableauth">Deaktiver godkendelse</string>
+<string name="pref_disableauth_info">Send ikke brugernavn og adgangskode</string>
+<string name="pref_sslenable">Brug SSL</string>
+<string name="pref_sslenable_info">Forbind via https</string>
+<string name="pref_sslkey">Custom SSL thumbprint (SHA-1)</string>
+<string name="pref_sslkey_info">Tillad kun forbindelser til dette specifikke certifikat</string>
+<string name="pref_sslacceptall">Accepter alle SSL certifikater</string>
+<string name="pref_sslacceptall_info">Tillad alle forbindelser fra ethvert thumbprint</string>
+
+<string name="pref_background">Baggrundsmeddelelser</string>
+<string name="pref_notifications_rss"> Aktiver RSS meddelelser</string>
+<string name="pref_notifications_torrent"> Aktiver torrent meddelelser</string>
+<string name="pref_notifications_info"> Aktiver baggrunds tjenesten</string>
+<string name="pref_notifyinterval">Interval</string>
+<string name="pref_notifyinterval_info">Hvor ofter der kontrolleres RSS og torrents</string>
+<string name="pref_notifysound">Lyd</string>
+<string name="pref_notifyvibrate">Vibration</string>
+<string name="pref_notifyled">LED farve</string>
+<string name="pref_notifyled_info">Hvis det understøttes af din enhed</string>
+<string name="pref_adw">Understøt AWD meddelelser</string>
+<string name="pref_adw_info">Vis torrent tæller i ADW Launcher</string>
+
+<string name="pref_system">System</string>
+<string name="pref_autorefresh">Automatisk opdatering</string>
+<string name="pref_autorefresh_info">Interval-baseret opdatering af hovedskærmen</string>
+<string-array name="pref_autorefresh_intervals">
+<item>Slået fra</item>
+<item>2 sekunder</item>
+<item>5 sekunder</item>
+<item>10 sekunder</item>
+<item>30 sekunder</item>
+</string-array>
+<string name="pref_dormantasinactive">Behandl hvilende torrents som inaktive</string>
+<string name="pref_dormantasinactive_info">Torrents på 0KB / s (ingen data overførsel) vil blive filtreret som værende inaktive</string>
+<string name="pref_checkupdates">Tjek for opdateringer</string>
+<string name="pref_checkupdates_info">Tjek transdroid.org for eneste app version</string>
+<string name="pref_usedarktheme">Brug mørkt UI tema</string>
+<string name="pref_usedarktheme_info">Kræver en genstart for at virke</string>
+<string name="pref_clearsearch">Slet søgehistorik</string>
+<string name="pref_clearsearch_success">Søgehistorikken er slettet</string>
+<string name="pref_import">Importer indstillinger</string>
+<string name="pref_import_dialog">%1$s will forsøge at importeret server, web søgning, RSS and system indstillinger fra: %2$s</string>
+<string name="pref_import_success">Indstillinger er succesfuldt importeret</string>
+<string name="pref_export">Eksporter indstillinger</string>
+<string name="pref_export_dialog">%1$s vil eksportere server (inklusiv adgangskode), web søgning, RSS og system indstillinger til følgende ukrypterede JSON fil: %2$s</string>
+<string name="pref_export_success">Indstillinger er succesfuldt eksporteret</string>
+
+<string name="pref_help">Transdroid hjælp</string>
+<string name="pref_sendlog">Senf fejllog</string>
+<string name="pref_sendlog_info">Få hjælp eller rapporter en fejl</string>
+<string name="pref_installhelp">Se installeringsvejledninger</string>
+<string name="pref_installhelp_info">Tilgænglig på transdroid.org/download</string>
+<string name="pref_changelog">Seneste ændringer</string>
+<string name="pref_about">Om %1$s</string>
+
+<string name="pref_seedbox_addseedbox">Tilføj %1$s seedbox</string>
+<string name="pref_seedbox_client">Torrent klient</string>
+<string name="pref_seedbox_client_info">Klient der skal forbindes til</string>
+<string name="pref_seedbox_server">Server adresse</string>
+<string name="pref_seedbox_xirvikhint">Eks. eplus001.xirvik.com</string>
+<string name="pref_seedbox_xirvikhint2">Eks. semixl001a.xirvik.com</string>
+<string name="pref_seedbox_xirvikhint3">Eks. desharedgbit001.xirvik.com</string>
+<string name="pref_seedbox_seedstuffhint">Eks. 001.seedstuff.ca</string>
+
+<string-array name="pref_notifyinterval_types">
+<item>1 minut</item>
+<item>10 minutter</item>
+<item>30 minutter</item>
+<item>1 time</item>
+<item>3 timer</item>
+<item>12 timer</item>
+<item>1 dag</item>
+</string-array>
+
+<string name="error_httperror">Fejl ved kommunikation; tjek din forbindelse</string>
+<string name="error_jsonrequesterror">Intern fejl building request</string>
+<string name="error_jsonresponseerror">Fejl ved fortolkning af server svar (tjek venligst dine indstillinger)</string>
+<string name="error_daemonnotconnected">Web-interface ikke tilsluttet til en kørrende deamon</string>
+<string name="error_401">Adgang nægtet (tjek venligst dine indstillinger)</string>
+<string name="error_torrentfile">Kan ikke læse .torrent fil</string>
+<string name="error_parsingrss">Fejl ved fortolkning af RSS feed</string>
+<string name="error_invalid_url_form">URL er ikke korrekt format</string>
+<string name="error_invalid_search_url">Din websøgnings URL er ugyldig</string>
+<string name="error_invalid_ip_or_hostname">Input er ikke en gyldig IP-adresse eller værtsnavn</string>
+<string name="error_invalid_port_number">Port nummer er altid numerisk</string>
+<string name="error_invalid_directory">Mappe sti ender med et / eller \</string>
+<string name="error_invalid_timeout">Timeout kan ikke være tom, og er et positivt tal</string>
+<string name="error_notorrentfile">Søgeresultater linker ikke til en .torrent fil</string>
+<string name="error_no_url_enclosure">RSS feed elementet gav ikke en URL-indkapsling eller et link-tag der pegede på .torrent filen</string>
+<string name="error_no_link">RSS-feed element giver ikke et link til at søge efter</string>
+<string name="error_norssfeed">URL er ikke et (gyldigt) RSS feed</string>
+<string name="error_media_not_available"> SD-kort er ikke tilgængeligt for læs/skriv</string>
+<string name="error_no_valid_settings_file">Det ser ikke ud til at filen indeholder %1$s indstillinger</string>
+<string name="error_file_not_found">Indstillingsfilen blev ikke fundet</string>
+<string name="error_cant_write_settings_file">Kan ikke skrive til indstillingsfilen</string>
+<string name="error_notanumber">Indtast venligst et positivt tal for begge hastigheder</string>
+<string name="error_notalabel">Vælg venligst en gyldig etiket fra listen</string>
+<string name="error_stillloadingdetails">Vent venligst til torrent detaljerne er blevet indlæst</string>
+<string name="error_noftpapp">Der blev ikke fundet en app der kan downloade %1$s</string>
+
+<string name="update_app_newversion">Ny Transdroid version er tilgænglig</string>
+<string name="update_search_newversion">Nyt Transdroid søgemodul er tilgængligt</string>
+<string name="update_updateto">Du kan nu opgradere til %1$s</string>
+
+<string name="system_librarieslabel">Nogle koder / biblioteker anvendes i projektet:</string>
+<string name="system_description">Administrer dine torrents fra din Android-enhed</string>
+
+</resources>

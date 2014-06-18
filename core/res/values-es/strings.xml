@@ -32,32 +32,41 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_sort_status">Estado</string>
 <string name="action_sort_done">Finalizado</string>
 <string name="action_sort_added">Añadido</string>
+<string name="action_sort_downspeed">Velocidad de descarga</string>
 <string name="action_sort_upspeed">Velocidad de subida</string>
 <string name="action_sort_ratio">Ratio</string>
 <string name="action_filter">Filtrar lista</string>
-<string name="action_settings">Preferencias</string>
+<string name="action_settings">Configuración</string>
 <string name="action_help">Ayuda</string>
 <string name="action_start">Iniciar</string>
 <string name="action_start_default">Inicio normal</string>
 <string name="action_start_forced">Forzar inicio</string>
+<string name="action_startall">Iniciar todas</string>
 <string name="action_stop">Parar</string>
-<string name="action_resume">Continuar</string>
+<string name="action_stopall">Parar todas</string>
+<string name="action_resume">Reiniciar</string>
+<string name="action_resumeall">Reiniciar todas</string>
 <string name="action_pause">Pausar</string>
+<string name="action_pauseall">Pausar todas</string>
 <string name="action_remove">Eliminar</string>
 <string name="action_remove_default">Eliminar torrent</string>
 <string name="action_remove_withdata">Eliminar torrent y datos</string>
 <string name="action_setlabel">Poner etiqueta</string>
 <string name="action_updatetrackers">Actualizar trackers</string>
 <string name="action_changelocation">Cambiar ubicación de almacenamiento</string>
+<string name="action_forcerecheck">Forzar comprobación de datos</string>
 <string name="action_priority_off">Desactivar</string>
 <string name="action_priority_low">Baja</string>
 <string name="action_priority_normal">Normal</string>
 <string name="action_priority_high">Alta</string>
 <string name="action_remoteplay">Reproducción remota en VLC</string>
-<string name="action_download">Descargar usando (S)FTP</string>
+<string name="action_download">Descargar usando FTPs</string>
 <string name="action_showdetails">Mostar detalles</string>
-<string name="action_removesettings">Eliminar preferencias</string>
+<string name="action_openwebsite">Abrir página Web</string>
+<string name="action_useassearch">Usar como búsqueda nueva</string>
+<string name="action_removesettings">Eliminar configuración</string>
 <string name="action_visitwebsite">Visitar transdroid.org</string>
+<string name="action_close">Cerrar</string>
 
 <string name="navigation_nosettings">%1$s te permite monitorizar y gestionar la ejecución del cliente torrent que ejecutas en casa o en tu seedbox. Configurar las cosas puede ser un poco complicado, pero ofrecemos guías paso-a-paso y prometemos que ¡vale la pena!</string>
 <string name="navigation_emptytorrents">Conectado, pero no hay ningún torrent activo con el filtro actual</string>
@@ -79,6 +88,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <item quantity="other">%1$d files selected</item>
 </plurals>
 <string name="navigation_selectall">Seleccionar todo</string>
+<string name="navigation_selectfinished">Seleccionar finalizados</string>
 <string name="navigation_invertselection">Invertir selección</string>
 
 <string name="status_status">ESTADO: %1$s</string>
@@ -151,6 +161,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="result_trackersupdated">Trackers actualizados</string>
 <string name="result_labelset">Etiqueta establecida a \'%1$s\'</string>
 <string name="result_labelremoved">Etiqueta eliminada</string>
+<string name="result_recheckedstarted">Comprobando %1$s datos</string>
 <string name="result_locationset">Torrent movido a \'%1$s\'</string>
 <string name="result_priotitiesset">Prioridades de archivo actualizadas</string>
 <string name="result_maxspeedsset">Velocidad máxima de transferencia establecida</string>
@@ -193,11 +204,13 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="widget_lookfeel">ASPECTO &amp; COMPORTAMIENTO</string>
 <string name="widget_sortby">CRITERIO DE ORDENACIÓN</string>
 <string name="widget_reversesortorder">Invertir criterio de ordenación</string>
+<string name="widget_showstatusview">Estado del servidor en lugar del título</string>
 <string name="widget_usedarktheme">Usar tema oscuro (sin vista previa)</string>
 <string name="widget_done">HECHO</string>
 
 <string name="pref_servers">Servidores</string>
 <string name="pref_addserver">Añadir nuevo servidor</string>
+<string name="pref_addseedbox">Agregar seedbox</string>
 <string name="pref_searchsites">Sitios de búsqueda</string>
 <string name="pref_setsearchsite">Establecer sitio predeterminado</string>
 <string name="pref_addwebsearch">Añadir nuevo sitio de búsqueda</string>
@@ -224,6 +237,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_advanced">Preferencias avanzadas</string>
 <string name="pref_localaddress">IP local o equipo</string>
 <string name="pref_localaddress_info">Cuando esté conectado a la red local especificada</string>
+<string name="pref_localport">Número de puerto local</string>
 <string name="pref_localnetwork">Red local</string>
 <string name="pref_localnetwork_info">SSID de la red local del servidor</string>
 <string name="pref_folder">Carpeta</string>
@@ -242,6 +256,8 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_ftpurl">URL base en (S)FTP</string>
 <string name="pref_ftpurl_into">Por ejemplo ftp://mi@servidor/descargas/</string>
 <string name="pref_ftppass">Contraseña (S)FTP</string>
+<string name="pref_disableauth">Deshabilitar autenticación</string>
+<string name="pref_disableauth_info">No enviar nombre de usuario y contraseña</string>
 <string name="pref_sslenable">Usar SSL</string>
 <string name="pref_sslenable_info">Conectar usando https</string>
 <string name="pref_sslkey">Firma digital SSL personalizada (SHA-1)</string>
@@ -250,7 +266,8 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_sslacceptall_info">Permitir todas las conexiones de cualquier firma digital</string>
 
 <string name="pref_background">Notificaciones en segundo plano</string>
-<string name="pref_notifications">Activar notificaciones</string>
+<string name="pref_notifications_rss">Habilitar notificaciones RSS</string>
+<string name="pref_notifications_torrent">Habilitar notificaciones de torrents</string>
 <string name="pref_notifications_info">Activar servicio en segundo plano</string>
 <string name="pref_notifyinterval">Intervalo</string>
 <string name="pref_notifyinterval_info">Frecuencia de comprobación del servidor</string>
@@ -262,22 +279,43 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_adw_info">Mostrar contador de torrent en ADW Launcher</string>
 
 <string name="pref_system">Sistema</string>
+<string name="pref_autorefresh">Actualización automática</string>
+<string name="pref_autorefresh_info">Actualización temporizada de la pantalla principal</string>
+<string-array name="pref_autorefresh_intervals">
+<item>Deshabilitado</item>
+<item>2 segundos</item>
+<item>5 segundos</item>
+<item>10 segundos</item>
+<item>30 segundos</item>
+</string-array>
+<string name="pref_dormantasinactive">Tratar torrents durmientes como inactivos</string>
+<string name="pref_dormantasinactive_info">Los torrents en 0KB/s (sin transferencia de datos) serán filtrados</string>
 <string name="pref_checkupdates">Comprobar actualizaciones</string>
 <string name="pref_checkupdates_info">Comprobar la última versión de la app en transdroid.org</string>
 <string name="pref_usedarktheme">Usar tema UI oscuro</string>
 <string name="pref_usedarktheme_info">Requiere reiniciar</string>
+<string name="pref_clearsearch">Borrar historial de busqueda</string>
+<string name="pref_clearsearch_success">El historial de busqueda ha sido borrado</string>
 <string name="pref_import">Importar preferencias</string>
 <string name="pref_import_dialog">%1$s importará el servidor, buscador web, RSS y preferencias de sistema de: %2$s</string>
 <string name="pref_import_success">Preferencias importadas satisfactoriamente</string>
 <string name="pref_export">Exportar preferencias</string>
 <string name="pref_export_dialog">%1$s exportará el servidor (incluidas contraseñas), buscador web, RSS y preferencias de sistema al archivo de texto plano JSON: %2$s</string>
 <string name="pref_export_success">Preferencias exportadas satisfactoriamente</string>
+
+<string name="pref_help">Ayuda de Transdroid</string>
 <string name="pref_sendlog">Enviar registro de errores</string>
 <string name="pref_sendlog_info">Obtener soporte o informar de un error</string>
 <string name="pref_installhelp">Ver guías de instalación</string>
 <string name="pref_installhelp_info">Disponible en transdroid.org/download</string>
 <string name="pref_changelog">Cambios recientes</string>
 <string name="pref_about">Acerca de %1$s</string>
+
+<string name="pref_seedbox_addseedbox">Agregar %1$s seedbox</string>
+<string name="pref_seedbox_client">Cliente Torrent</string>
+<string name="pref_seedbox_client_info">Cliente a conectarse</string>
+<string name="pref_seedbox_server">Dirección del servidor</string>
+
 <string-array name="pref_notifyinterval_types">
 <item>1 minuto</item>
 <item>10 minutos</item>
@@ -301,6 +339,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="error_invalid_port_number">El puerto debe ser un número</string>
 <string name="error_invalid_directory">La ruta de directorio termina con un / o un \</string>
 <string name="error_invalid_timeout">El tiempo de respuesta debe ser un número positivo</string>
+<string name="error_notorrentfile">El resultado de la búsqueda no enlaza a un archivo .torrent</string>
 <string name="error_no_url_enclosure">El elemento fuente RSS no enlazaba a un archivo .torrent</string>
 <string name="error_no_link">El elemento de fuente RSS no contiene un enlace al que acceder</string>
 <string name="error_norssfeed">La URL no es un feed RSS válido</string>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2010-2013 Eric Kok et al.
+
+Transdroid is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Transdroid is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+<string name="action_add">اضافه کردن</string>
+<string name="action_addall">اضافه کردن همه</string>
+<string name="action_addfromfile">از فایل</string>
+<string name="action_addfromurl">از یو ار ال</string>
+<string name="action_scanbarcode">اسکن بارکد</string>
+<string name="action_search">جستجو</string>
+<string name="action_refresh">بارگذاری مجدد</string>
+<string name="action_rss">ار اس اس</string>
+<string name="action_enableturtle">فعال کردن حالت لاک پشت	</string>
+<string name="action_disableturtle">غیر فعال کردن حالت لاک پشت	</string>
+<string name="action_sort">مرتب نمودن لیست</string>
+<string name="action_sort_alpha">نام</string>
+<string name="action_sort_status">وضعیت</string>
+<string name="action_sort_done">تاریخ اتمام</string>
+<string name="action_sort_added">تاریخ اضافه شدن</string>
+<string name="action_sort_upspeed">سرعت آپلود</string>
+<string name="action_sort_ratio">لسبت</string>
+<string name="action_filter">فیلتر لیست</string>
+<string name="action_settings">تنظیمات</string>
+<string name="action_help">کمک</string>
+<string name="action_start">شروع</string>
+<string name="action_start_default">شروع معمولی</string>
+<string name="action_start_forced">شروع یه زور</string>
+<string name="action_stop">ایست</string>
+<string name="action_resume">ادامه</string>
+<string name="action_pause">ایست موقت</string>
+<string name="action_remove">حذف</string>
+<string name="action_remove_default">حذف ترنت</string>
+<string name="action_remove_withdata">حذف و پاک کردن اطلاعات</string>
+<string name="action_setlabel">تنظیم برچسب	</string>
+<string name="action_updatetrackers">بروز رسانی  انتقالها	</string>
+<string name="action_changelocation">تغییر محل ذخیره سازی	</string>
+<string name="action_priority_off">خاموش</string>
+<string name="action_priority_low">کم</string>
+<string name="action_priority_normal">معمولی</string>
+<string name="action_priority_high">زیاد</string>
+<string name="action_remoteplay">اجدای از راه دور در VLC	</string>
+<string name="action_download">دانلود با استفاده از  s)ftp)</string>
+<string name="action_showdetails">نشان دادن جزییات</string>
+<string name="action_removesettings">حذف تنضیمات</string>
+<string name="action_visitwebsite">مشاهده transdroid.org	</string>
+
+<string name="navigation_nosettings">٪ 1 $ ثانیه اجازه می دهد تا شما برای نظارت و مدیریت مشتری تورنت شما در خانه یا در seedbox شما اجرا شود. تنظیم تا چیز می تواند یک کمی از روی حیله و تزویر است، اما ما ارائه می دهیم راهنماهای گام به گام و وعده آن تخم ریزی \'ارزش آن می شود!	</string>
+<string name="navigation_emptytorrents">متصل شده، اما هیچ تورنتی درون فیلترفعلی فعال نیست </string>
+<string name="navigation_emptydetails">انتخاب تورنت برای مشاهده جزئیات آن	</string>
+<string name="navigation_servers">سرورها</string>
+<string name="navigation_status">وضعیت</string>
+<string name="navigation_labels">برچسب ها	</string>
+<string name="navigation_status_showall">همه</string>
+<string name="navigation_status_onlydown">دانلود</string>
+<string name="navigation_status_onlyup">آپلود</string>
+<string name="navigation_status_onlyactive">فعال</string>
+<string name="navigation_status_onlyinactive">غیر فعال</string>
+<string name="navigation_selectall">انتخاب همه	</string>
+<string name="navigation_invertselection">انتخاب برعکس شود	</string>
+
+<string name="status_status">وضعیت:٪ 1 $ ثانیه	</string>
+<string name="status_waiting">انتظار برای بررسی #8230</string>
+<string name="status_checking">صحت داده های محلی#8230</string>
+<string name="status_waitingtodl">در انتظار دانلود از٪ s	</string>
+<string name="status_error">خطا در # 8230</string>
+<string name="status_sincedate">از٪ 1 $ ثانیه	</string>
+<string name="status_eta">٪ 1 $ ثانیه	</string>
+<string name="status_etalong">زمان رسیدن به مقصد٪ 1 $ ثانیه	</string>
+<string name="status_ofsize">٪ 1 $ ثانیه	</string>
+<string name="status_unknowneta"> زمان رسیدن به مقصد نامشخص</string>
+<string name="status_ratio">نسبت٪ 1 $ ثانیه	</string>
+<string name="status_peers">٪ 1 $ s از 2 دلار همسالان٪	</string>
+<string name="status_downloading">دانلود</string>
+<string name="status_seeding">بذر</string>
+<string name="status_paused">موقتا متوقف شد	</string>
+<string name="status_queued">صف</string>
+<string name="status_stopped">متوقف شده	</string>
+<string name="status_unknown">وضعیت نامشخص	</string>
+<string name="status_priority_off">دریافت نشده	</string>
+<string name="status_priority_low">اولویت پایین	</string>
+<string name="status_priority_normal">اولویت عادی	</string>
+<string name="status_priority_high">اولویت بالا	</string>
+<string name="status_trackers">انتقالها	</string>
+<string name="status_errors">خطاها</string>
+<string name="status_files">فایلها</string>
+<string name="status_maxspeed">سرعت انتقال حداکثر	</string>
+<string name="status_maxspeed_down"> حداکثر دانلود</string>
+<string name="status_maxspeed_up">حداکثر آپلود</string>
+<string name="status_maxspeed_unit">KB / S	</string>
+<string name="status_maxspeed_reset">تنظیم مجدد	</string>
+<string name="status_update">بروز رسانی</string>
+<string name="status_service_andothers">٪ 1 $ s و دیگران	</string>
+
+<string name="labels_showall">تمام برچسب ها	</string>
+<string name="labels_unlabeled">بدون برچسب	</string>
+<string name="labels_newlabel">برچسب جدید	</string>
+<string name="labels_no_support">تنظیم یک برچسب توسط مشتری شما پشتیبانی نمی شود	</string>
+<string name="status_label_pick">برچسب انتخاب کنید</string>
+<string name="status_label_new">برچسب جدید</string>
+<string name="status_label_remove">حذف برچسب	</string>
+<string name="status_label_hint">به عنوان مثال فیلم و یا لینوکس	</string>
+
+<string name="result_added">٪ 1 $ S افزوده (تازه)	</string>
+<string name="result_removed">٪ 1 $ حذف	</string>
+<string name="result_removed_with_data">٪ 1 $ برداشته شده و اطلاعات حذف شده	</string>
+<string name="result_resumed">٪ 1 $ از سر گرفت (تازه شدن)	</string>
+<string name="result_stopped">٪ 1 $ ثانیه متوقف (تازه شدن)	</string>
+<string name="result_started">٪ 1 $ آغاز شده (تازه شدن)	</string>
+<string name="result_paused">٪ 1 $ ثانیه مکث (تازه شدن)	</string>
+<string name="result_trackersupdated">به روز رسانی انتقالها های </string>
+<string name="result_labelset">برچسب مجموعه را به \'٪ 1 $ S \	</string>
+<string name="result_labelremoved"> برچسب حذف شد</string>
+<string name="result_locationset">تورنت نقل مکان کرد به \'٪ 1 $ ثانیه \'	</string>
+<string name="result_priotitiesset">اولویت های فایل های به روز شده	</string>
+<string name="result_maxspeedsset">سرعت انتقال حداکثر	</string>
+
+<string name="search_torrentsearch">جستجوی تورنت	</string>
+<string name="search_hint">جستجو برای مشابه	</string>
+<string name="search_noresults">هیچ نتیجه ای برای درخواست شما نیست</string>
+<string name="search_installsearch">این قابلیت نیاز به نصب و راه اندازی یک زمان جستجو تورنت ماژول. بر روی دانلود کلیک کنید برای دریافت بسته های نصب (APK) از transdroid.org و در جستجوی خود را راه اندازی مجدد کنید.	</string>
+<string name="search_download">دانلود ماژول	</string>
+<string name="search_openingdetails">جزئیات برای باز کردن٪ 1 $ ثانیه	</string>
+<string name="search_barcodescannernotfound">بارکد اسکنر نمی تواند یافت می شود. آیا می خواهید آن را نصب کنید از فروشگاه بازی؟	</string>
+<string name="search_filemanagernotfound">بدون مدیر فایل سازگار می تواند یافت می شود. آیا می خواهید به نصب IO مدیریت فایل از فروشگاه بازی؟	</string>
+
+<string name="rss_feeds">آر اس اس خوان	</string>
+<string name="rss_nosettings">شما هر آر اس اس خوردها هنوز تعریف نشده است برای نظارت بر. خاص تورنت RSS feeds ها که نگه دارید تا تاریخ با نسخه های جدید و شما از آیتم های جدید مطلع.	</string>
+<string name="rss_noselection">فید RSS را انتخاب کنید برای دیدن آیتم های جدید	</string>
+<string name="rss_empty">خوراک آر اس اس در دسترس نیست یا  شامل هیچ مواردی نیست </string>
+<string name="rss_notloaded">با عرض پوزش، لطفا صبر کنید تا خوراک آر اس اس لود شود	</string>
+<string name="rss_error">با عرض پوزش، این خوراک آر اس اس  نمی تواند در این زمان لود شود	</string>
+<string name="rss_service_newfor">مشابه جدید برای٪ 1 $ ثانیه	</string>
+
+<string name="widget_loading">در حال بارگیری #8230</string>
+<string name="widget_opentransdroid">باز کردن ترنسدروید</string>
+<string name="widget_filter">دیدن سرور</string>
+<string name="widget_lookfeel">نگاه و احساس	</string>
+<string name="widget_sortby">مرتب کردن بر اساس سفارش	</string>
+<string name="widget_reversesortorder">معکوس مرتب کردن بر اساس سفارش	</string>
+<string name="widget_usedarktheme">استفاده از تم تیره (بدون پیش نمایش)	</string>
+<string name="widget_done">تمام</string>
+
+<string name="pref_servers">سرورها</string>
+<string name="pref_addserver">اضافه کردن سرور جدید	</string>
+<string name="pref_searchsites"> جستجوی سایت ها</string>
+<string name="pref_setsearchsite">تنظیم سایت	پیش فرض </string>
+<string name="pref_addwebsearch">افزودن سایت جستجو در وب	</string>
+<string name="pref_rssfeeds">آر اس اس خوان	</string>
+<string name="pref_addrssfeed">اضافه کردن آر اس اس	</string>
+<string name="pref_others">سایر تنظیمات	</string>
+
+<string name="pref_name">نام</string>
+<string name="pref_name_optional"> نام شخصی اختیاری	</string>
+<string name="pref_searchurl">URL جستجوی مستقیم	</string>
+<string name="pref_searchurl_info"> جایگزین میشود توسط جستجو %</string>
+<string name="pref_cookies">کوکی ها</string>
+<string name="pref_feedurl">خوراک URL	</string>
+<string name="pref_reqauth">نیازمند احراز هویت</string>
+<string name="pref_reqauth_info"> باز کردن لینک ها در مرورگر برای ورود به سیستم کاربر	</string>
+
+<string name="pref_servertype">نوع سرور	</string>
+<string name="pref_address"> آی پی یا نام میزبان</string>
+<string name="pref_port">شماره پورت	</string>
+<string name="pref_user">نام کاربر	</string>
+<string name="pref_pass">رمز عبور	</string>
+<string name="pref_advanced">تنظیمات پیشرفته	</string>
+<string name="pref_localaddress"> آی پی محلی و یا میزبان</string>
+<string name="pref_localaddress_info">هنگامی که به شبکه محلی مشخص متصل	 شده </string>
+<string name="pref_localnetwork">شبکه محلی	</string>
+<string name="pref_localnetwork_info">توسط سرور \'SSID شبکه محلی	</string>
+<string name="pref_folder">پوشه</string>
+<string name="pref_folder_info">معمولا خالی است	</string>
+<string name="pref_optional">تنظیمات اختیاری	</string>
+<string name="pref_alarmdone">اطلاع رسانی به پایان رسید	</string>
+<string name="pref_alarmdone_info"> اطلاع زمانی که یک تورنت تمام شد</string>
+<string name="pref_alarmnew">اطلاع رسانی تورنت	 تازه </string>
+<string name="pref_alarmnew_info">اطلاع رسانی هنگامی که یک تورنت اضافه شد	</string>
+<string name="pref_os">سیستم عامل سرور	</string>
+<string name="pref_downdir">دانلود دایرکتوری	</string>
+<string name="pref_downdir_info"> تنظیم  دستی مسیر مطلق برای اتصال به شبکه از راه دور	</string>
+<string name="pref_timeout">ایست اتصال	</string>
+<string name="pref_timeout_info">تعداد ثانیه قبل از اقدام به جدا کردن اتصال </string>
+<string name="pref_ftpurl">پایگاه (S) آدرس FTP	</string>
+<string name="pref_ftpurl_into">برای مثال ftp://me @ SERVER / دانلود /	</string>
+<string name="pref_ftppass">(S) رمز عبور FTP	</string>
+<string name="pref_sslenable">استفاده از اس اس ال	</string>
+<string name="pref_sslenable_info">اتصال با استفاده از HTTPS	</string>
+<string name="pref_sslkey">انگشت زدن پای سفارشی SSL (SHA-1)	</string>
+<string name="pref_sslkey_info">فقط اجازه اتصال به این گواهی خاص	</string>
+<string name="pref_sslacceptall">قبول همه گواهینامه های اس اس ال	</string>
+<string name="pref_sslacceptall_info">اجازه به تمام اتصالات از هر اثر انگشت</string>
+
+<string name="pref_background">اطلاعیه های پس زمینه	</string>
+<string name="pref_notifications_info">فعال کردن خدمات پس زمینه	</string>
+<string name="pref_notifyinterval">فاصله</string>
+<string name="pref_notifyinterval_info">هر چند وقت یکبار سرور	بررسی شود</string>
+<string name="pref_notifysound">صدا</string>
+<string name="pref_notifyvibrate">لرزش</string>
+<string name="pref_notifyled">رنگ چراغ	</string>
+<string name="pref_notifyled_info">اگر دستگاه شما پشتیبانی	کند</string>
+<string name="pref_adw">پشتیبانی از اطلاعیه AWD	</string>
+<string name="pref_adw_info">نمایش شمارش تورنت در ADW	</string>
+
+<string name="pref_system">سیستم</string>
+<string name="pref_checkupdates"> چک کردن به روز رسانی</string>
+<string name="pref_checkupdates_info">بررسی transdroid.org برای آخرین نسخه برنامه	</string>
+<string name="pref_usedarktheme">استفاده از UI تم تیره	</string>
+<string name="pref_usedarktheme_info">نیاز به یک راه اندازی مجدد جهت اثر	گذاری</string>
+<string name="pref_import">واردات تنظیمات </string>
+<string name="pref_import_dialog">٪ 1 $ ثانیه سعی خواهد کرد به واردات سرور، جستجو در وب، RSS و تنظیمات سیستم از:٪ 2 $ ها	</string>
+<string name="pref_import_success">تنظیمات با موفقیت وارد	شد</string>
+<string name="pref_export">صادرات تنظیمات	</string>
+<string name="pref_export_success">تنظیمات با موفقیت صادر شد	</string>
+
+<string name="pref_sendlog">ارسال خطا	</string>
+<string name="pref_sendlog_info">دریافت حمایت یا گزارش یک اشکال	</string>
+<string name="pref_installhelp">راهنمای نصب	</string>
+<string name="pref_installhelp_info">موجود در transdroid.org / دانلود	</string>
+<string name="pref_changelog">تغییرات اخیر	</string>
+<string name="pref_about">درباره٪ 1 $ ثانیه	</string>
+
+
+<string-array name="pref_notifyinterval_types">
+<item>1 دقیقه </item>
+<item> 10 دقیقه </item>
+<item> 30 دقیقه </item>
+<item> 1 ساعت </item>
+<item> 3 ساعت </item>
+<item> 12 ساعت </item>
+<item> 1 روز	</item>
+</string-array>
+
+<string name="error_httperror">خطا در هنگام برقراری ارتباط، اتصال خود را بررسی کنید	</string>
+<string name="error_jsonrequesterror">خطا در ساختمان داخلی	درخواست</string>
+<string name="error_jsonresponseerror">خطا در تجزیه پاسخ سرور (لطفا تنظیمات خود را بررسی کنید)	</string>
+<string name="error_daemonnotconnected">رابط وب به یک شبح در حال اجرا متصل نیست	</string>
+<string name="error_401">دسترسی ممنوع است (لطفا تنظیمات خود را بررسی کنید)	</string>
+<string name="error_torrentfile">نمی توان تورنت فایل	را خواند</string>
+<string name="error_parsingrss">خطا در  تجزیه خوراک آر اس اس	</string>
+<string name="error_invalid_url_form">این آدرس به خوبی شکل نگرفته	</string>
+<string name="error_invalid_search_url">آدرس وب جستجوی شما نامعتبر است:	</string>
+<string name="error_invalid_ip_or_hostname">ورودی یک آدرس IP معتبر یا نام میزبان نیست	</string>
+<string name="error_invalid_port_number">شماره پورت همیشه عددی	 است </string>
+<string name="error_invalid_directory">دایرکتوری مسیرهای پایان با یک علامت \ یا /	</string>
+<string name="error_invalid_timeout">زمان نمی تواند خالی باشد و یک عدد مثبت است	</string>
+<string name="error_norssfeed">آدرس آر اس اس نا (معتبر)	میباشد</string>
+<string name="error_media_not_available">کارت SD در دسترس نیست جهت خواندن / نوشتن	</string>
+<string name="error_no_valid_settings_file">فایل به نظر نمی رسد برای وجود ٪ 1 $ تنظیمات	</string>
+<string name="error_file_not_found">فایل تنظیمات می تواند یافت نمی شود	</string>
+<string name="error_cant_write_settings_file">نوشتن در فایل تنظیمات	امکان پذیر نیست</string>
+<string name="error_notanumber">لطفا یک عدد مثبت را وارد کنید	</string>
+<string name="error_notalabel">لطفا یک برچسب معتبر را وارد کنید یا انتخاب از فهرست	</string>
+<string name="error_stillloadingdetails">لطفا صبر کنید تا توضیحات تورنت تکمیل شوند</string>
+<string name="error_noftpapp">هیچ برنامه ای که  بتواند دانلود کند یافت نشد ٪ 1$ ثانیه	</string>
+
+<string name="update_app_newversion">نسخه جدید ترنسدروید در دسترس	میباشد</string>
+<string name="update_search_newversion">ماژول جدید جستجو ترنسدروید  در دسترس	میباشد</string>
+<string name="update_updateto">شما هم اکنون می توانید به٪ 1 $ ثانیه به روز رسانی	کنید</string>
+
+<string name="system_librarieslabel">برخی از کد / کتابخانه ها در این پروژه مورد استفاده قرار می گیرند:	</string>
+<string name="system_description">تورنت خود را از دستگاه آندروید خود	مدیریت کنید</string>
+
+</resources>

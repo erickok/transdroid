@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2010-2013 Eric Kok et al.
+
+Transdroid is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Transdroid is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+<string name="action_add">Adicionar</string>
+<string name="action_addall">Adicionar todos</string>
+<string name="action_addfromfile">Adicionar Novo Torrent</string>
+<string name="action_addfromurl">Adicionar Torrent da URL</string>
+<string name="action_scanbarcode">Escanear usando codigo de barras</string>
+<string name="action_search">Procurar</string>
+<string name="action_refresh">Atualizar</string>
+<string name="action_rss">RSS</string>
+<string name="action_enableturtle">Ativar o modo de tartaruga</string>
+<string name="action_disableturtle">Desativar o modo de tartaruga</string>
+<string name="action_sort_alpha">Nome</string>
+<string name="action_sort_status">Status</string>
+<string name="action_sort_done">Concluído em</string>
+<string name="action_sort_added">Adicionado em</string>
+<string name="action_sort_downspeed">Vel. de Download</string>
+<string name="action_sort_upspeed">Vel. de Upload</string>
+<string name="action_sort_ratio">Ratio</string>
+<string name="action_settings">Configurações</string>
+<string name="action_help">Ajuda</string>
+<string name="action_start">Iniciar</string>
+<string name="action_stop">Parar</string>
+<string name="action_stopall">Parar todos</string>
+<string name="action_resume">Continuar</string>
+<string name="action_resumeall">Continuar Todos</string>
+<string name="action_pause">Pausar</string>
+<string name="action_pauseall">Pausar todos</string>
+<string name="action_remove">Remover</string>
+<string name="action_remove_default">Remover torrent</string>
+<string name="action_remove_withdata">Remover e deletar Dados</string>
+<string name="action_updatetrackers">Atualizar Rastreadores</string>
+<string name="action_priority_off">Desligar</string>
+<string name="action_priority_low">Baixa</string>
+<string name="action_priority_normal">Normal</string>
+<string name="action_priority_high">Alta</string>
+<string name="action_showdetails">Exibir Detalhes</string>
+<string name="action_openwebsite">Abrir o site</string>
+<string name="action_removesettings">Remover Configurações</string>
+<string name="action_visitwebsite">Visitar transdroid.org</string>
+<string name="action_close">Fechar</string>
+
+<string name="navigation_servers">SERVIDORES</string>
+<string name="navigation_status">STATUS</string>
+<string name="navigation_labels">Categorias</string>
+<string name="navigation_status_showall">Todos</string>
+<string name="navigation_status_onlydown">Baixando</string>
+<string name="navigation_status_onlyup">Enviando</string>
+<string name="navigation_status_onlyactive">Ativo</string>
+<string name="navigation_status_onlyinactive">Inativo</string>
+<plurals name="navigation_torrentsselected">
+<item quantity="one">%1$d torrent selected</item>
+<item quantity="other">%1$d torrents selected</item>
+</plurals>
+<plurals name="navigation_filesselected">
+<item quantity="one">%1$d files selected</item>
+<item quantity="other">%1$d files selected</item>
+</plurals>
+<string name="navigation_selectall">Selecionar tudo</string>
+<string name="navigation_selectfinished">Selecionar os Concluídos</string>
+<string name="navigation_invertselection">Deselecionar</string>
+
+<string name="status_status">STATUS: %1$s</string>
+<string name="status_error">Erro&#8230;</string>
+<string name="status_size1">%1$s de %2$s (%3$s)</string>
+<string name="status_size2">%1$s, ENVIANDO %2$s</string>
+<string name="status_sincedate">DESDE %1$s</string>
+<string name="status_eta">~ %1$s</string>
+<string name="status_ofsize">DE %1$s</string>
+<string name="status_ratio">RATIO %1$s</string>
+<string name="status_peers">%1$s DE %2$s PEERS</string>
+<string name="status_downloading">Baixando</string>
+<string name="status_seeding">Enviando</string>
+<string name="status_paused">Pausado</string>
+<string name="status_queued">Na Fila</string>
+<string name="status_stopped">Parado</string>
+<string name="status_unknown">Status Desconhecido</string>
+<string name="status_trackers">RASTREADORES</string>
+<string name="status_errors">ERRO</string>
+<string name="status_files">Arquivos</string>
+<string name="status_maxspeed_down">Down Máx.</string>
+<string name="status_maxspeed_up">Up Máx.</string>
+<string name="status_maxspeed_unit">KB/S</string>
+<string name="status_maxspeed_reset">Resetar</string>
+<string name="status_update">Update</string>
+<plurals name="status_service_added">
+<item quantity="one">New torrent added</item>
+<item quantity="other">%1$s new torrents added</item>
+</plurals>
+<plurals name="status_service_finished">
+<item quantity="one">Torrent is finished</item>
+<item quantity="other">%1$s torrents are finished</item>
+</plurals>
+<plurals name="status_service_addedfinished">
+<item quantity="one">%1$s added, %2$s finished torrent</item>
+<item quantity="other">%1$s added, %2$s finished torrents</item>
+</plurals>
+<string name="status_service_andothers">%1$s e outros</string>
+
+<string name="labels_showall">Todas Categorias</string>
+<string name="labels_newlabel">Nova Categoria</string>
+<string name="status_label_new">Nova Categoria</string>
+<string name="status_label_remove">Remover Categoria</string>
+<string name="status_label_hint">Ex. Filmes ou Linux</string>
+
+<string name="result_removed">%1$s removido</string>
+<string name="result_labelremoved">Categoria removida</string>
+<string name="result_locationset">Torrrent movido para \'%1$s\'</string>
+
+<plurals name="search_resutlsselected">
+<item quantity="one">%1$d result selected</item>
+<item quantity="other">%1$d results selected</item>
+</plurals>
+
+<plurals name="rss_itemsselected">
+<item quantity="one">%1$d item selected</item>
+<item quantity="other">%1$d items selected</item>
+</plurals>
+<plurals name="rss_service_new">
+<item quantity="one">New RSS feed torrent available</item>
+<item quantity="other">%1$s new RSS feed torrents</item>
+</plurals>
+
+
+<string name="pref_servers">Servidores</string>
+<string name="pref_addserver">Adicionar novo servidor</string>
+<string name="pref_addseedbox">Adicionar novo seedbox</string>
+<string name="pref_searchsites">Procurar sites</string>
+<string name="pref_setsearchsite">Definir site padrão</string>
+<string name="pref_addwebsearch">Adicionar site de pesquisa</string>
+<string name="pref_others">Outras configurações</string>
+
+<string name="pref_name">Nome</string>
+<string name="pref_cookies">Cookies</string>
+
+<string name="pref_address">IP ou Host nome</string>
+<string name="pref_port">Numero da Porta</string>
+<string name="pref_user">Login</string>
+<string name="pref_pass">Senha</string>
+<string name="pref_extrapass">Senha do Deluge WEB</string>
+<string name="pref_advanced">Configurações avançadas</string>
+<string name="pref_localaddress">IP local ou host</string>
+<string name="pref_localport">Numero da Porta Local</string>
+<string name="pref_folder">Pasta</string>
+<string name="pref_optional">Configurações opcionais</string>
+
+<string name="pref_notifysound">Som</string>
+<string name="pref_notifyvibrate">Vibrar</string>
+<string name="pref_notifyled">Cor do LED</string>
+
+<string name="pref_system">Sistema</string>
+<string name="pref_autorefresh">Automaticamente atualizar</string>
+<string name="pref_checkupdates">Checar por atualizações</string>
+
+<string name="pref_help">Transdroid ajuda</string>
+<string name="pref_sendlog">Aviso Erro Log</string>
+<string name="pref_about">Sobre %1$s</string>
+
+<string name="pref_seedbox_addseedbox">Adicionar %1$s seedbox</string>
+<string name="pref_seedbox_client">Torrent cliente</string>
+
+
+<string name="error_torrentfile">Não foi possível abrir arquivo .torrent</string>
+
+
+
+</resources>
