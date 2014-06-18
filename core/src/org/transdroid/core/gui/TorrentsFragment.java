@@ -44,16 +44,15 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentsComparator;
 import org.transdroid.daemon.TorrentsSortBy;
 
+import android.app.Fragment;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SherlockListView;
-import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
 
 /**
  * Fragment that shows a list of torrents that are active on the server. It supports sorting and filtering and can show
@@ -62,7 +61,7 @@ import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat
  * @author Eric Kok
  */
 @EFragment(resName = "fragment_torrents")
-public class TorrentsFragment extends SherlockFragment implements OnLabelPickedListener {
+public class TorrentsFragment extends Fragment implements OnLabelPickedListener {
 
 	// Local data
 	@Bean
@@ -93,8 +92,8 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 	protected Daemon daemonType;
 
 	// Views
-	@ViewById(resName = "torrent_list")
-	protected SherlockListView torrentsList;
+	@ViewById(resName = "torrents_list")
+	protected ListView torrentsList;
 	@ViewById
 	protected TextView emptyText;
 	@ViewById
@@ -169,7 +168,6 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 			this.currentTextFilter = null;
 			this.currentNavigationFilter = null;
 		}
-		clearCheckedStates();
 		applyAllFilters();
 	}
 
@@ -239,7 +237,7 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 		updateViewVisibility();
 	}
 
-	private MultiChoiceModeListenerCompat onTorrentsSelected = new MultiChoiceModeListenerCompat() {
+	private MultiChoiceModeListener onTorrentsSelected = new MultiChoiceModeListener() {
 
 		SelectionManagerMode selectionManagerMode;
 
@@ -361,9 +359,8 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 		}
 	}
 
-	@ItemClick(resName = "torrent_list")
+	@ItemClick(resName = "torrents_list")
 	protected void torrentsListClicked(Torrent torrent) {
-		clearCheckedStates();
 		// Show the torrent details fragment
 		((TorrentsActivity) getActivity()).openDetails(torrent);
 	}
@@ -372,13 +369,6 @@ public class TorrentsFragment extends SherlockFragment implements OnLabelPickedL
 	public void onLabelPicked(String newLabel) {
 		for (Torrent torrent : lastMultiSelectedTorrents) {
 			getTasksExecutor().updateLabel(torrent, newLabel);
-		}
-	}
-
-	private void clearCheckedStates() {
-		// Remove any selection the user has made first
-		for (int i = 0; i < torrentsList.getAdapter().getCount(); i++) {
-			torrentsList.setItemChecked(i, false);
 		}
 	}
 

@@ -27,12 +27,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.Window;
-
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Helper class that show a dialog either as pop-up or as full screen activity. Should be used by calling
@@ -41,7 +39,7 @@ import com.actionbarsherlock.view.MenuItem;
  * @author Eric Kok
  */
 @EActivity
-public class DialogHelper extends SherlockActivity {
+public class DialogHelper extends Activity {
 
 	@Extra
 	protected DialogSpecification dialog;
@@ -50,12 +48,12 @@ public class DialogHelper extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(dialog.getDialogLayoutId());
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getSupportMenuInflater();
+        MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(dialog.getDialogMenuId(), menu);
         return super.onCreateOptionsMenu(menu);
 	}

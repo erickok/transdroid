@@ -51,9 +51,8 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 import android.view.View;
-
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 /**
  * The main activity that provides access to all application settings. It shows the configured serves, web search sites
@@ -61,7 +60,7 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
  * @author Eric Kok
  */
 @EActivity
-public class MainSettingsActivity extends SherlockPreferenceActivity {
+public class MainSettingsActivity extends PreferenceActivity {
 
 	protected static final int DIALOG_ADDSEEDBOX = 0;
 
@@ -84,7 +83,7 @@ public class MainSettingsActivity extends SherlockPreferenceActivity {
 	protected void onResume() {
 		super.onResume();
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		prefs = getPreferenceManager().getSharedPreferences();
 		if (getPreferenceScreen() != null)

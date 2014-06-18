@@ -27,7 +27,7 @@
 		android:layout_height="wrap_content"
 		android:textColor="?attr/text_actionbar"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/abs__action_bar_title_text_size"
+		android:textSize="18sp"
 		android:fontFamily="sans-serif-condensed" />
 
 </FrameLayout>

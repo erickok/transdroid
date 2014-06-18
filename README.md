@@ -21,7 +21,7 @@ Please respect the coding standards for easier merging. master contains the curr
 Code structure
 ==============
 
-Transdroid is currently developed in Eclipse, against Android 4.3 (API level 18). To support lite and full version of the app, the core UI is contained in a separate Android library project. The torrent client adapters are also in a seperate project, called Transdroid Connect, but this is a classic Java project. If the Connect project is updated, a fresh .jar needs to be exported to core/libs/transdroid.jar. In order to do so, run ant within the lib/ directory.
+Transdroid is currently developed in Eclipse, against Android 4.4 (API level 19) and since version 2.2.0 supporting ICS (API level 15) and up. To support lite and full version of the app, the core UI is contained in a separate Android library project. The torrent client adapters are also in a seperate project, called Transdroid Connect, but this is a classic Java project. If the Connect project is updated, a fresh .jar needs to be exported to core/libs/transdroid.jar. In order to do so, run ant (without parameters) within the lib/ directory.
 
 * core - Contains the core Android library project with UI, services, resources, etc.
 * full - Full app version (website release) through AndroidManifest.xml configuration
@@ -54,9 +54,6 @@ License
     
 Some code/libraries/resources are used in the project:
 
-*  [ActionBarSherlock](http://actionbarsherlock.com/)  
-    Jake Wharton  
-    Apache License, Version 2.0
 *  [AndroidAnnotations](http://androidannotations.org/)  
     Pierre-Yves Ricau (eBusinessInformations) et al.  
     Apache License, Version 2.0
@@ -85,9 +82,6 @@ Some code/libraries/resources are used in the project:
 *  [android-ColorPickerPreference](https://github.com/attenzione/android-ColorPickerPreference)  
     Daniel Nilsson and Sergey Margaritov  
     Apache License, Version 2.0
-*  [CheckableRelativeLayout](http://www.marvinlabs.com/2010/10/custom-listview-ability-check-items/)  
-    Cédric Caron (MarvinLabs)  
-    Public Domain
 *  [Funnel icon](http://thenounproject.com/noun/funnel/#icon-No5608)  
     Naomi Atkinson from The Noun Project  
     Creative Commons Attribution 3.0

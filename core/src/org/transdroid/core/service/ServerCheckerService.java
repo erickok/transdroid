@@ -29,7 +29,7 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.NotificationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.*;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
@@ -37,13 +37,15 @@ import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 
+import android.annotation.TargetApi;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.Notification.Builder;
+import android.app.Notification.InboxStyle;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Builder;
-import android.support.v4.app.NotificationCompat.InboxStyle;
+import android.os.Build;
 
 /**
  * A background service that checks all user-configured servers (if so desired) for new and finished torrents.
@@ -65,6 +67,8 @@ public class ServerCheckerService extends IntentService {
 		super("ServerCheckerService");
 	}
 
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
@@ -163,7 +167,7 @@ public class ServerCheckerService extends IntentService {
 			forString = forString.substring(0, forString.length() - 2);
 			
 			// Build the basic notification
-			Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
+			Builder builder = new Notification.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
 					.setTicker(title).setContentTitle(title).setContentText(forString)
 					.setNumber(affectedTorrents.size())
 					.setLights(notificationSettings.getDesiredLedColour(), 600, 1000)
@@ -172,18 +176,24 @@ public class ServerCheckerService extends IntentService {
 				builder.setVibrate(notificationSettings.getDefaultVibratePattern());
 
 			// Add at most 5 lines with the affected torrents
-			InboxStyle inbox = new NotificationCompat.InboxStyle(builder);
-			if (affectedTorrents.size() < 6) {
-				for (Torrent affectedTorrent : affectedTorrents) {
-					inbox.addLine(affectedTorrent.getName());
+			Notification notification;
+			if (android.os.Build.VERSION.SDK_INT >= 16) {
+				InboxStyle inbox = new Notification.InboxStyle(builder);
+				if (affectedTorrents.size() < 6) {
+					for (Torrent affectedTorrent : affectedTorrents) {
+						inbox.addLine(affectedTorrent.getName());
+					}
+				} else {
+					for (int j = 0; j < 4; j++) {
+						inbox.addLine(affectedTorrents.get(j).getName());
+					}
+					inbox.addLine(getString(R.string.status_service_andothers, affectedTorrents.get(5).getName()));
 				}
+				notification = inbox.build();
 			} else {
-				for (int j = 0; j < 4; j++) {
-					inbox.addLine(affectedTorrents.get(j).getName());
-				}
-				inbox.addLine(getString(R.string.status_service_andothers, affectedTorrents.get(5).getName()));
+				notification = builder.getNotification();
 			}
-			notificationManager.notify(notifyBase + server.getOrder(), inbox.build());
+			notificationManager.notify(notifyBase + server.getOrder(), notification);
 
 		}
 

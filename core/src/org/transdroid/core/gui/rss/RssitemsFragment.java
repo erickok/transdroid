@@ -35,23 +35,21 @@ import org.transdroid.core.rssparser.Item;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SherlockListView;
-import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
-
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
@@ -59,7 +57,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  * @author Eric Kok
  */
 @EFragment(resName = "fragment_rssitems")
-public class RssitemsFragment extends SherlockFragment {
+public class RssitemsFragment extends Fragment {
 
 	@InstanceState
 	protected Channel rssfeed = null;
@@ -68,7 +66,7 @@ public class RssitemsFragment extends SherlockFragment {
 
 	// Views
 	@ViewById(resName = "rssitems_list")
-	protected SherlockListView rssitemsList;
+	protected ListView rssitemsList;
 	@Bean
 	protected RssitemsAdapter rssitemsAdapter;
 	@ViewById
@@ -119,7 +117,7 @@ public class RssitemsFragment extends SherlockFragment {
 		startActivity(i);
 	}
 
-	private MultiChoiceModeListenerCompat onItemsSelected = new MultiChoiceModeListenerCompat() {
+	private MultiChoiceModeListener onItemsSelected = new MultiChoiceModeListener() {
 
 		SelectionManagerMode selectionManagerMode;
 

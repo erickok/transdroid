@@ -19,14 +19,13 @@ package org.transdroid.core.gui.search;
 import org.transdroid.core.R;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.app.DialogFragment;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 public class FilePickerHelper {
 
@@ -40,7 +39,7 @@ public class FilePickerHelper {
 	 *            the file picker
 	 */
 	@SuppressLint("ValidFragment")
-	public static void startFilePicker(final SherlockFragmentActivity activity) {
+	public static void startFilePicker(final Activity activity) {
 		try {
 			// Start a file manager that can handle the file/* file/* intents
 			activity.startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("file/*"),
@@ -65,7 +64,7 @@ public class FilePickerHelper {
 									}
 								}).setNegativeButton(android.R.string.no, null).create();
 					};
-				}.show(activity.getSupportFragmentManager(), "installfilemanager");
+				}.show(activity.getFragmentManager(), "installfilemanager");
 			}
 		}
 	}

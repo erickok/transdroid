@@ -36,18 +36,16 @@ import org.transdroid.core.rssparser.Channel;
 import org.transdroid.core.rssparser.RssParser;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 @EActivity(resName = "activity_rssfeeds")
-public class RssfeedsActivity extends SherlockFragmentActivity {
+public class RssfeedsActivity extends Activity {
 
 	// Settings and local data
 	@Bean
@@ -65,7 +63,7 @@ public class RssfeedsActivity extends SherlockFragmentActivity {
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getSupportActionBar().setIcon(R.drawable.ic_activity_torrents);
+			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -73,8 +71,8 @@ public class RssfeedsActivity extends SherlockFragmentActivity {
 	@AfterViews
 	protected void init() {
 		// Simple action bar with up button and correct title font
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(getString(R.string.rss_feeds)));
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setTitle(NavigationHelper.buildCondensedFontString(getString(R.string.rss_feeds)));
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

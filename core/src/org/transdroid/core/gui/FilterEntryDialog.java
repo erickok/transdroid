@@ -18,10 +18,10 @@ package org.transdroid.core.gui;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.support.v4.app.DialogFragment;
 import android.text.InputType;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -51,7 +51,7 @@ public class FilterEntryDialog {
 							}
 						}).setNegativeButton(android.R.string.cancel, null).create();
 			};
-		}.show(activity.getSupportFragmentManager(), "filterentry");
+		}.show(activity.getFragmentManager(), "filterentry");
 	}
 
 }

@@ -46,7 +46,7 @@ public class WebsearchSettingsActivity extends KeyBoundPreferencesActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		// Load the raw preferences to show in this screen
 		init(R.xml.pref_websearch, ApplicationSettings_.getInstance_(this).getMaxWebsearch());

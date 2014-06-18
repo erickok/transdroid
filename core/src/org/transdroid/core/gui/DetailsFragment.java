@@ -51,19 +51,17 @@ import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 
 import android.annotation.SuppressLint;
+import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SherlockListView;
-import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
-
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
@@ -74,7 +72,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EFragment(resName = "fragment_details")
 @OptionsMenu(resName = "fragment_details")
-public class DetailsFragment extends SherlockFragment implements OnTrackersUpdatedListener, OnLabelPickedListener,
+public class DetailsFragment extends Fragment implements OnTrackersUpdatedListener, OnLabelPickedListener,
 		OnStorageLocationUpdatedListener {
 
 	// Local data
@@ -96,7 +94,7 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 	@ViewById(resName = "details_container")
 	protected View detailsContainer;
 	@ViewById(resName = "details_list")
-	protected SherlockListView detailsList;
+	protected ListView detailsList;
 	@ViewById
 	protected TextView emptyText, errorText;
 	@ViewById
@@ -152,7 +150,7 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 		errorText.setVisibility(View.GONE);
 		loadingProgress.setVisibility(View.GONE);
 		// Also update the available actions in the action bar
-		getActivity().supportInvalidateOptionsMenu();
+		getActivity().invalidateOptionsMenu();
 		// Refresh the detailed statistics (errors) and list of files
 		torrentDetails = null;
 		torrentFiles = null;
@@ -377,7 +375,7 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 		}
 	}
 
-	private MultiChoiceModeListenerCompat onDetailsSelected = new MultiChoiceModeListenerCompat() {
+	private MultiChoiceModeListener onDetailsSelected = new MultiChoiceModeListener() {
 
 		SelectionManagerMode selectionManagerMode;
 
@@ -398,6 +396,8 @@ public class DetailsFragment extends SherlockFragment implements OnTrackersUpdat
 				((TorrentsActivity) getActivity()).stopRefresh = true;
 				((TorrentsActivity) getActivity()).stopAutoRefresh();
 			}
+			menu.findItem(R.id.action_download).setVisible(
+					currentServerSettings != null && Daemon.supportsFilePaths(currentServerSettings.getType()));
 			return selectionManagerMode.onPrepareActionMode(mode, menu);
 		}
 

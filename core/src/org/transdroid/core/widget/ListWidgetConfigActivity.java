@@ -48,6 +48,8 @@ import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.util.FileSizeConverter;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Build;
@@ -61,12 +63,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EActivity(resName = "activity_widgetconfig")
-public class ListWidgetConfigActivity extends SherlockActivity {
+public class ListWidgetConfigActivity extends Activity {
 
 	// Views and adapters
 	@ViewById
@@ -132,11 +131,11 @@ public class ListWidgetConfigActivity extends SherlockActivity {
 
 		// Set up action bar with a done button
 		// Inspired by NoNonsenseNotes's ListWidgetConfig.java (Apache License, Version 2.0)
-		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 				ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
 		View doneButtonFrame = getLayoutInflater().inflate(R.layout.actionbar_donebutton, null);
 		doneButtonFrame.findViewById(R.id.actionbar_done).setOnClickListener(doneClicked);
-		getSupportActionBar().setCustomView(doneButtonFrame);
+		getActionBar().setCustomView(doneButtonFrame);
 
 	}
 

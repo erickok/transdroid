@@ -28,13 +28,12 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.gui.settings.MainSettingsActivity_;
 
+import android.app.Fragment;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
-
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SherlockListView;
 
 /**
  * Fragment lists the RSS feeds the user wants to monitor and, if room, the list of items in a feed in a right pane.
@@ -42,11 +41,11 @@ import com.actionbarsherlock.view.SherlockListView;
  */
 @EFragment(resName = "fragment_rssfeeds")
 @OptionsMenu(resName = "fragment_rssfeeds")
-public class RssfeedsFragment extends SherlockFragment {
+public class RssfeedsFragment extends Fragment {
 
 	// Views
 	@ViewById(resName = "rssfeeds_list")
-	protected SherlockListView feedsList;
+	protected ListView feedsList;
 	@Bean
 	protected RssfeedsAdapter rssfeedsAdapter;
 	@ViewById
@@ -62,7 +61,7 @@ public class RssfeedsFragment extends SherlockFragment {
 		boolean hasSettings = !(loaders == null || loaders.size() == 0);
 		feedsList.setVisibility(hasSettings ? View.VISIBLE: View.GONE);
 		nosettingsText.setVisibility(hasSettings ? View.GONE: View.VISIBLE);
-		getActivity().supportInvalidateOptionsMenu();
+		getActivity().invalidateOptionsMenu();
 	}
 
 	@Override

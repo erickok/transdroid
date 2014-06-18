@@ -19,47 +19,47 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.Transdroid.Light" parent="@style/Theme.Sherlock.Light">
-        <item name="actionBarItemBackground">@drawable/selectable_background_transdroid2</item>
-        <item name="popupMenuStyle">@style/PopupMenu.Transdroid.Light</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.Transdroid.Light</item>
-        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Transdroid.Light</item>
-        <item name="actionDropDownStyle">@style/DropDownNav.Transdroid.Light</item>
-        <item name="actionBarStyle">@style/ActionBar.Solid.Transdroid.Light</item>
-        <item name="actionModeBackground">@drawable/cab_background_top_transdroid2</item>
-        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_transdroid2</item>
-        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Transdroid.Light</item>
+    <style name="Theme.Transdroid.Light" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_transdroid2</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Transdroid.Light</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Transdroid.Light</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Transdroid.Light</item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.Transdroid.Light</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Transdroid.Light</item>
+        <item name="android:actionModeBackground">@drawable/cab_background_top_transdroid2</item>
+        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_transdroid2</item>
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Transdroid.Light</item>
     </style>
 
-    <style name="ActionBar.Solid.Transdroid.Light" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
-        <item name="background">@drawable/ab_solid_transdroid2</item>
-        <item name="backgroundStacked">@drawable/ab_stacked_solid_transdroid2</item>
-        <item name="backgroundSplit">@drawable/ab_bottom_solid_transdroid2</item>
+    <style name="ActionBar.Solid.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:background">@drawable/ab_solid_transdroid2</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_transdroid2</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_transdroid2</item>
     </style>
 
-    <style name="ActionBar.Transparent.Transdroid.Light" parent="@style/Widget.Sherlock.Light.ActionBar">
-        <item name="background">@drawable/ab_transparent_transdroid2</item>
+    <style name="ActionBar.Transparent.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_transdroid2</item>
     </style>
 	
-    <style name="PopupMenu.Transdroid.Light" parent="@style/Widget.Sherlock.Light.ListPopupWindow">	
+    <style name="PopupMenu.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ListPopupWindow">	
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid2</item>	
     </style>
 	
-    <style name="DropDownListView.Transdroid.Light" parent="@style/Widget.Sherlock.Light.ListView.DropDown">
+    <style name="DropDownListView.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
         <item name="android:listSelector">@drawable/selectable_background_transdroid2</item>
     </style>
 
-    <style name="ActionBarTabStyle.Transdroid.Light" parent="@style/Widget.Sherlock.Light.ActionBar.TabView">
+    <style name="ActionBarTabStyle.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
         <item name="android:background">@drawable/tab_indicator_ab_transdroid2</item>
     </style>
 	
-    <style name="DropDownNav.Transdroid.Light" parent="@style/Widget.Sherlock.Light.Spinner.DropDown.ActionBar">
+    <style name="DropDownNav.Transdroid.Light" parent="@android:style/Widget.Holo.Light.Spinner">
         <item name="android:background">@drawable/spinner_background_ab_transdroid2</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid2</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_transdroid2</item>
     </style>
     
-    <style name="ActionButton.CloseMode.Transdroid.Light" parent="@style/Widget.Sherlock.Light.ActionButton.CloseMode">
+    <style name="ActionButton.CloseMode.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
         <item name="android:background">@drawable/btn_cab_done_transdroid2</item>
     </style>
     

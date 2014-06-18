@@ -20,15 +20,14 @@ import org.transdroid.core.R;
 import org.transdroid.core.app.search.GoogleWebSearchBarcodeResolver;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 public class BarcodeHelper {
 
@@ -43,7 +42,7 @@ public class BarcodeHelper {
 	 *            the bar code scanner
 	 */
 	@SuppressLint("ValidFragment")
-	public static void startBarcodeScanner(final SherlockFragmentActivity activity) {
+	public static void startBarcodeScanner(final Activity activity) {
 		try {
 			// Start a bar code scanner that can handle the SCAN intent (specifically ZXing)
 			activity.startActivityForResult(new Intent("com.google.zxing.client.android.SCAN"), ACTIVITY_BARCODE);
@@ -61,12 +60,12 @@ public class BarcodeHelper {
 								}
 							}).setNegativeButton(android.R.string.no, null).create();
 				};
-			}.show(activity.getSupportFragmentManager(), "installscanner");
+			}.show(activity.getFragmentManager(), "installscanner");
 		}
 	}
 
 	/**
-	 * The activity that called {@link #startBarcodeScanner(SherlockFragmentActivity)} should call this after the scan
+	 * The activity that called {@link #startBarcodeScanner(Activity)} should call this after the scan
 	 * result was returned. This will parse the scan data and return a query search query appropriate to the bar code.
 	 * @param resultCode The raw result code as returned by the bar code scanner
 	 * @param data The raw data as returned from the bar code scanner

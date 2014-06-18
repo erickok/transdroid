@@ -28,11 +28,10 @@ import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.text.method.PasswordTransformationMethod;
-
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 /**
  * Abstract activity that helps implement a preference screen for key-bound settings, i.e. settings of which there can
@@ -44,7 +43,7 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
  * @author Eric Kok
  */
 @EActivity
-public abstract class KeyBoundPreferencesActivity extends SherlockPreferenceActivity {
+public abstract class KeyBoundPreferencesActivity extends PreferenceActivity {
 
 	@Extra
 	protected int key = -1;

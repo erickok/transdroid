@@ -38,14 +38,14 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.daemon.util.HttpHelper;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Builder;
 
 @EService
 public class AppUpdateService extends IntentService {
@@ -165,14 +165,15 @@ public class AppUpdateService extends IntentService {
 		return appVersion;
 	}
 
+	@SuppressWarnings("deprecation")
 	private void newNotification(String ticker, String title, String text, String downloadUrl, int notifyID) {
 		PendingIntent pi = PendingIntent.getActivity(this, notifyID,
 				new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)), Intent.FLAG_ACTIVITY_NEW_TASK);
-		Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
+		Builder builder = new Notification.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
 				.setTicker(ticker).setContentTitle(title).setContentText(text)
 				.setLights(notificationSettings.getDesiredLedColour(), 600, 1000)
 				.setSound(notificationSettings.getSound()).setAutoCancel(true).setContentIntent(pi);
-		notificationManager.notify(notifyID, builder.build());
+		notificationManager.notify(notifyID, builder.getNotification());
 	}
 
 }

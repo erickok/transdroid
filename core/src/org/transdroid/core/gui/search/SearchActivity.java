@@ -34,24 +34,23 @@ import org.transdroid.core.gui.*;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SherlockListView;
-import com.actionbarsherlock.widget.SearchView;
 
 /**
  * An activity that shows search results to the user (after a query was supplied by the standard Android search manager)
@@ -61,12 +60,12 @@ import com.actionbarsherlock.widget.SearchView;
  */
 @EActivity(resName = "activity_search")
 @OptionsMenu(resName = "activity_search")
-public class SearchActivity extends SherlockFragmentActivity implements OnNavigationListener {
+public class SearchActivity extends Activity implements OnNavigationListener {
 
 	@FragmentById(resName = "searchresults_list")
 	protected SearchResultsFragment fragmentResults;
 	@ViewById
-	protected SherlockListView searchsitesList;
+	protected ListView searchsitesList;
 	@ViewById
 	protected TextView installmoduleText;
 	@Bean
@@ -90,7 +89,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getSupportActionBar().setIcon(R.drawable.ic_activity_torrents);
+			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -120,7 +119,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 		}
 
 		// Allow site selection via list (on large screens) or action bar spinner
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		if (searchsitesList != null) {
 			// The current layout has a dedicated list view to select the search site
 			SearchSitesAdapter searchSitesAdapter = SearchSitesAdapter_.getInstance_(this);
@@ -132,13 +131,12 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 				searchsitesList.setItemChecked(lastUsedPosition, true);
 		} else {
 			// Use the action bar spinner to select sites
-			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			getSupportActionBar().setDisplayShowTitleEnabled(false);
-			getSupportActionBar()
-					.setListNavigationCallbacks(new SearchSettingsDropDownAdapter(this, searchSites), this);
+			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			getActionBar().setDisplayShowTitleEnabled(false);
+			getActionBar().setListNavigationCallbacks(new SearchSettingsDropDownAdapter(this, searchSites), this);
 			// Select the last used site; this also starts the search!
 			if (lastUsedPosition >= 0)
-				getSupportActionBar().setSelectedNavigationItem(lastUsedPosition);
+				getActionBar().setSelectedNavigationItem(lastUsedPosition);
 		}
 
 	}
@@ -172,9 +170,9 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 		if (searchsitesList != null)
 			searchsitesList.setVisibility(searchInstalled ? View.VISIBLE : View.GONE);
 		if (searchInstalled)
-			getSupportFragmentManager().beginTransaction().show(fragmentResults).commit();
+			getFragmentManager().beginTransaction().show(fragmentResults).commit();
 		else
-			getSupportFragmentManager().beginTransaction().hide(fragmentResults).commit();
+			getFragmentManager().beginTransaction().hide(fragmentResults).commit();
 		installmoduleText.setVisibility(searchInstalled ? View.GONE : View.VISIBLE);
 
 		return true;
@@ -274,7 +272,7 @@ public class SearchActivity extends SherlockFragmentActivity implements OnNaviga
 			// Save the search site currently used to search for future usage
 			applicationSettings.setLastUsedSearchSite(lastUsedSite);
 			// Update the activity title (only shown on large devices)
-			getSupportActionBar().setTitle(
+			getActionBar().setTitle(
 					NavigationHelper.buildCondensedFontString(getString(R.string.search_queryonsite, lastUsedQuery,
 							lastUsedSite.getName())));
 			// Ask the results fragment to start a search for the specified query

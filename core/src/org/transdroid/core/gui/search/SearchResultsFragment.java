@@ -38,20 +38,18 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SherlockListView;
-import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
-
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
@@ -59,7 +57,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  * @author Eric Kok
  */
 @EFragment(resName = "fragment_searchresults")
-public class SearchResultsFragment extends SherlockFragment {
+public class SearchResultsFragment extends Fragment {
 
 	@InstanceState
 	protected ArrayList<SearchResult> results = null;
@@ -70,7 +68,7 @@ public class SearchResultsFragment extends SherlockFragment {
 
 	// Views
 	@ViewById(resName = "searchresults_list")
-	protected SherlockListView resultsList;
+	protected ListView resultsList;
 	@Bean
 	protected SearchResultsAdapter resultsAdapter;
 	@ViewById
@@ -141,7 +139,7 @@ public class SearchResultsFragment extends SherlockFragment {
 		startActivity(i);
 	}
 
-	private MultiChoiceModeListenerCompat onItemsSelected = new MultiChoiceModeListenerCompat() {
+	private MultiChoiceModeListener onItemsSelected = new MultiChoiceModeListener() {
 
 		SelectionManagerMode selectionManagerMode;
 

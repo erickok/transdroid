@@ -43,14 +43,12 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 @EActivity
-public class SystemSettingsActivity extends SherlockPreferenceActivity {
+public class SystemSettingsActivity extends PreferenceActivity {
 
 	protected static final int DIALOG_IMPORTSETTINGS = 0;
 	protected static final int DIALOG_EXPORTSETTINGS = 1;
@@ -69,7 +67,7 @@ public class SystemSettingsActivity extends SherlockPreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Just load the system-related preferences from XML
 		addPreferencesFromResource(R.xml.pref_system);

@@ -19,7 +19,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
 
-	<com.actionbarsherlock.view.ListView
+	<ListView
 		android:id="@+id/filters_list"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

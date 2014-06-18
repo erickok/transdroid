@@ -19,8 +19,6 @@
 
 	<!-- Used to determine if a device is 'small', i.e. a phone; for reference: a Nexus 7's smallest width is 533dip -->
 	<bool name="show_dialog_fullscreen">true</bool>
-	<!-- Used to enable the scrolling widget on Honeycomb (API 11) and higher only -->
-	<bool name="widget_available">false</bool>
 	<!-- Used to enable checking for app updates in the background -->
 	<bool name="updatecheck_available">true</bool>
 	<!-- Used to enable the search UI -->

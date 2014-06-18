@@ -8,7 +8,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="right|center_vertical"
-		android:background="@drawable/abs__item_background_holo_light"
+		android:background="@drawable/selectable_background_holo_light"
 		android:contentDescription="@string/pref_addseedbox"
 		android:padding="5dp"
 		android:src="@drawable/ic_action_overflow" />

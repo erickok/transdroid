@@ -23,7 +23,7 @@
 	android:baselineAligned="false"
 	tools:context=".SearchActivity" >
 
-	<com.actionbarsherlock.view.SherlockListView
+	<ListView
 		android:id="@+id/searchsites_list"
 		android:layout_width="0dip"
 		android:layout_height="match_parent"

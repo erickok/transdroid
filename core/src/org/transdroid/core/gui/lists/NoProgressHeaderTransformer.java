@@ -2,11 +2,11 @@ package org.transdroid.core.gui.lists;
 
 import org.transdroid.core.R;
 
+import uk.co.senab.actionbarpulltorefresh.library.DefaultHeaderTransformer;
 import android.app.Activity;
 import android.view.View;
-import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.AbsDefaultHeaderTransformer;
 
-public class NoProgressHeaderTransformer extends AbsDefaultHeaderTransformer {
+public class NoProgressHeaderTransformer extends DefaultHeaderTransformer {
 
 	@Override
 	public void onViewCreated(Activity activity, View headerView) {

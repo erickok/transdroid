@@ -48,7 +48,7 @@ public class OverflowPreference extends Preference {
 	    int top = layout.getPaddingTop();
 	    int right = layout.getPaddingRight();
 	    int left = layout.getPaddingLeft();
-	    layout.setBackgroundResource(R.drawable.abs__item_background_holo_light);
+	    layout.setBackgroundResource(R.drawable.selectable_background_holo_light);
 	    layout.setPadding(left, top, right, bottom);
 		layout.setOnClickListener(new OnClickListener() {
 			@Override

@@ -29,11 +29,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import android.preference.PreferenceActivity;
 
 @EActivity
-public class NotificationSettingsActivity extends SherlockPreferenceActivity implements
+public class NotificationSettingsActivity extends PreferenceActivity implements
 		OnSharedPreferenceChangeListener {
 
 	@Bean
@@ -44,7 +43,7 @@ public class NotificationSettingsActivity extends SherlockPreferenceActivity imp
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Load the notification-related preferences from XML and update availability thereof
 		addPreferencesFromResource(R.xml.pref_notifications);

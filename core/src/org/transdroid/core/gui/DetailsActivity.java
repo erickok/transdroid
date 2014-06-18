@@ -67,16 +67,13 @@ import org.transdroid.daemon.task.StopTask;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.Options;
-
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
@@ -87,7 +84,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EActivity(resName = "activity_details")
 @OptionsMenu(resName = "activity_details")
-public class DetailsActivity extends SherlockFragmentActivity implements TorrentTasksExecutor, RefreshableActivity {
+public class DetailsActivity extends Activity implements TorrentTasksExecutor, RefreshableActivity {
 
 	@Extra
 	@InstanceState
@@ -115,7 +112,7 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getSupportActionBar().setIcon(R.drawable.ic_activity_torrents);
+			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -130,8 +127,8 @@ public class DetailsActivity extends SherlockFragmentActivity implements Torrent
 		}
 
 		// Simple action bar with up, torrent name as title and refresh button
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
 
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();

@@ -22,13 +22,13 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.DialogFragment;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -76,7 +76,7 @@ public class UrlEntryDialog {
 							}
 						}).setNegativeButton(android.R.string.cancel, null).create();
 			};
-		}.show(activity.getSupportFragmentManager(), "urlentry");
+		}.show(activity.getFragmentManager(), "urlentry");
 	}
 
 }

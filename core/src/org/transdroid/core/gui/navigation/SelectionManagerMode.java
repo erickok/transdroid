@@ -20,13 +20,12 @@ import org.transdroid.core.gui.navigation.SelectionModificationSpinner.OnModific
 import org.transdroid.daemon.Finishable;
 
 import android.util.SparseBooleanArray;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
-
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat;
 
 /**
  * A helper to implement {@link ListView} selection modification behaviour with the {@link SelectionModificationSpinner}
@@ -34,7 +33,7 @@ import com.actionbarsherlock.view.SherlockListView.MultiChoiceModeListenerCompat
  * important that the provided list was instantiated already.
  * @author Eric Kok
  */
-public class SelectionManagerMode implements MultiChoiceModeListenerCompat, OnModificationActionSelectedListener {
+public class SelectionManagerMode implements MultiChoiceModeListener, OnModificationActionSelectedListener {
 
 	private ListView managedList;
 	private int titleTemplateResource;

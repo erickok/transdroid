@@ -33,11 +33,11 @@ import org.transdroid.core.rssparser.RssParser;
 import org.transdroid.daemon.util.Collections2;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Builder;
 
 /**
  * A background service that checks all user-configured RSS feeds for new items.
@@ -59,6 +59,7 @@ public class RssCheckerService extends IntentService {
 		super("RssCheckerService");
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
@@ -109,14 +110,14 @@ public class RssCheckerService extends IntentService {
 				Intent.FLAG_ACTIVITY_NEW_TASK);
 		String title = getResources().getQuantityString(R.plurals.rss_service_new, unread, Integer.toString(unread));
 		String forString = Collections2.joinString(hasUnread, ", ");
-		Builder builder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
+		Builder builder = new Notification.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
 				.setTicker(title).setContentTitle(title)
 				.setContentText(getString(R.string.rss_service_newfor, forString)).setNumber(unread)
 				.setLights(notificationSettings.getDesiredLedColour(), 600, 1000)
 				.setSound(notificationSettings.getSound()).setAutoCancel(true).setContentIntent(pi);
 		if (notificationSettings.shouldVibrate())
 			builder.setVibrate(notificationSettings.getDefaultVibratePattern());
-		notificationManager.notify(80001, builder.build());
+		notificationManager.notify(80001, builder.getNotification());
 
 	}
 

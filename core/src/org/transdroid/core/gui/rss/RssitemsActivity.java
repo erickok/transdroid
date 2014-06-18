@@ -28,14 +28,13 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.rssparser.Channel;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-
 @EActivity(resName = "activity_rssitems")
-public class RssitemsActivity extends SherlockFragmentActivity {
+public class RssitemsActivity extends Activity {
 
 	@Extra
 	protected Channel rssfeed = null;
@@ -50,7 +49,7 @@ public class RssitemsActivity extends SherlockFragmentActivity {
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getSupportActionBar().setIcon(R.drawable.ic_activity_torrents);
+			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -65,8 +64,8 @@ public class RssitemsActivity extends SherlockFragmentActivity {
 		}
 
 		// Simple action bar with up button and torrent name as title
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeedName));
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeedName));
 
 		// Get the intent extras and show them to the already loaded fragment
 		fragmentItems.update(rssfeed, false);

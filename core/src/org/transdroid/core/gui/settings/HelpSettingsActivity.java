@@ -34,11 +34,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
-
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import android.preference.PreferenceActivity;
 
 @EActivity
-public class HelpSettingsActivity extends SherlockPreferenceActivity {
+public class HelpSettingsActivity extends PreferenceActivity {
 
 	protected static final int DIALOG_CHANGELOG = 0;
 	protected static final int DIALOG_ABOUT = 1;
@@ -58,7 +57,7 @@ public class HelpSettingsActivity extends SherlockPreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Just load the system-related preferences from XML
 		addPreferencesFromResource(R.xml.pref_help);

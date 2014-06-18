@@ -18,11 +18,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	package="org.transdroid.lite"
-	android:versionCode="213"
-	android:versionName="2.1.4" >
+	android:versionCode="214"
+	android:versionName="2.2.0" >
 
 	<uses-sdk
-		android:minSdkVersion="7"
+		android:minSdkVersion="15"
 		android:targetSdkVersion="19" />
 
 	<supports-screens
@@ -48,7 +48,7 @@
 		android:hardwareAccelerated="true"
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name"
-		android:theme="@style/Theme.Sherlock" >
+		android:theme="@android:style/Theme.Holo" >
 
 		<!-- Main activities -->
 		<activity
@@ -219,7 +219,6 @@
 		<!-- Home screen widget -->
 		<activity
 			android:name="org.transdroid.core.widget.ListWidgetConfigActivity_"
-			android:enabled="@bool/widget_available"
 			android:theme="@style/TransdroidTheme.WidgetConfig" >
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -228,13 +227,11 @@
 
 		<service
 			android:name="org.transdroid.core.widget.ListWidgetViewsService_"
-			android:enabled="@bool/widget_available"
 			android:exported="false"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />
 
 		<receiver
-			android:name="org.transdroid.core.widget.ListWidgetProvider_"
-			android:enabled="@bool/widget_available" >
+			android:name="org.transdroid.core.widget.ListWidgetProvider_" >
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>

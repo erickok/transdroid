@@ -59,13 +59,13 @@ public class NavigationHelper {
 	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display error messages.
 	 */
 	public static Style CROUTON_ERROR_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_error)
-			.setTextSize(13).setDuration(2500).build();
+			.setTextSize(13).build();
 
 	/**
 	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display info messages.
 	 */
 	public static Style CROUTON_INFO_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_info)
-			.setTextSize(13).setDuration(1500).build();
+			.setTextSize(13).build();
 
 	/**
 	 * Returns (and initialises, if needed) an image cache that uses memory and (1MB) local storage.

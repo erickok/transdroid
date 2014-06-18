@@ -51,6 +51,11 @@ import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.*;
 import org.transdroid.core.gui.navigation.*;
+import org.transdroid.core.gui.navigation.Label;
+import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.RefreshableActivity;
+import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.rss.*;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
@@ -95,10 +100,13 @@ import org.transdroid.daemon.task.StopTask;
 import org.transdroid.daemon.util.DLog;
 import org.transdroid.daemon.util.HttpHelper;
 
-import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.Options;
 import android.annotation.TargetApi;
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -106,20 +114,15 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
-import com.actionbarsherlock.view.SherlockListView;
-import com.actionbarsherlock.widget.SearchView;
-
+import android.widget.ListView;
+import android.widget.SearchView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
@@ -131,7 +134,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EActivity(resName = "activity_torrents")
 @OptionsMenu(resName = "activity_torrents")
-public class TorrentsActivity extends SherlockFragmentActivity implements OnNavigationListener, TorrentTasksExecutor,
+public class TorrentsActivity extends Activity implements OnNavigationListener, TorrentTasksExecutor,
 		RefreshableActivity {
 
 	private static final int RESULT_DETAILS = 0;
@@ -142,7 +145,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@Bean
 	protected ConnectivityHelper connectivityHelper;
 	@ViewById
-	protected SherlockListView filtersList;
+	protected ListView filtersList;
 	protected FilterListAdapter navigationListAdapter = null;
 	protected FilterListDropDownAdapter navigationSpinnerAdapter = null;
 	protected ServerStatusView serverStatusView;
@@ -185,7 +188,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getSupportActionBar().setIcon(R.drawable.ic_activity_torrents);
+			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -196,11 +199,12 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		// Set up navigation, with an action bar spinner, server status indicator and possibly (if room) with a filter
 		// list
 		serverStatusView = ServerStatusView_.build(this);
-		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		getSupportActionBar().setHomeButtonEnabled(false);
-		getSupportActionBar().setDisplayShowTitleEnabled(false);
-		getSupportActionBar().setDisplayShowCustomEnabled(true);
-		getSupportActionBar().setCustomView(serverStatusView);
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		actionBar.setHomeButtonEnabled(false);
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setCustomView(serverStatusView);
 		navigationSpinnerAdapter = FilterListDropDownAdapter_.getInstance_(this);
 		// Servers are always added to the action bar spinner
 		navigationSpinnerAdapter.updateServers(applicationSettings.getAllServerSettings());
@@ -227,7 +231,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		if (currentFilter == null) {
 			currentFilter = StatusType.getShowAllType(this);
 		}
-		getSupportActionBar().setListNavigationCallbacks(navigationSpinnerAdapter, this);
+		actionBar.setListNavigationCallbacks(navigationSpinnerAdapter, this);
 
 		// Log messages from the server daemons using our singleton logger
 		DLog.setLogger(Log_.getInstance_(this));
@@ -255,7 +259,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
 		// Note: skipNextOnNavigationItemSelectedCalls is used to prevent this event from triggering filterSelected
-		getSupportActionBar().setSelectedNavigationItem(lastUsed.getOrder() + 1);
+		actionBar.setSelectedNavigationItem(lastUsed.getOrder() + 1);
 
 		// Connect to the last used server or a server that was explicitly supplied in the starting intent
 		if (firstStart) {
@@ -422,7 +426,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			menu.findItem(R.id.action_help).setVisible(true);
 			if (fragmentTorrents != null)
 				fragmentTorrents.updateConnectionStatus(false, null);
-			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			return true;
 		}
 
@@ -441,7 +445,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 		menu.findItem(R.id.action_help).setVisible(false);
 		if (fragmentTorrents != null)
 			fragmentTorrents.updateConnectionStatus(true, currentConnection.getType());
-		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		return true;
 	}
@@ -543,11 +547,11 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 			filtersList.setVisibility(hasServerSettings ? View.VISIBLE : View.GONE);
 		if (fragmentDetails != null) {
 			if (hasServerSettings)
-				getSupportFragmentManager().beginTransaction().show(fragmentDetails).commit();
+				getFragmentManager().beginTransaction().show(fragmentDetails).commit();
 			else
-				getSupportFragmentManager().beginTransaction().hide(fragmentDetails).commit();
+				getFragmentManager().beginTransaction().hide(fragmentDetails).commit();
 		}
-		supportInvalidateOptionsMenu();
+		invalidateOptionsMenu();
 	}
 
 	@Override
@@ -1254,7 +1258,7 @@ public class TorrentsActivity extends SherlockFragmentActivity implements OnNavi
 	@UiThread
 	protected void onTurtleModeRetrieved(boolean turtleModeEnabled) {
 		turleModeEnabled = turtleModeEnabled;
-		supportInvalidateOptionsMenu();
+		invalidateOptionsMenu();
 	}
 
 }
