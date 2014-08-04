@@ -331,5 +331,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 
 <string name="system_librarieslabel">Часть кода / библиотеки используются в проекте:</string>
 <string name="system_description">Управление торрентами с вашего устройства Android</string>
+    <string name="app_name">Transdroid</string>
 
 </resources>

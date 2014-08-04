@@ -274,5 +274,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 
 <string name="system_librarieslabel">برخی از کد / کتابخانه ها در این پروژه مورد استفاده قرار می گیرند:	</string>
 <string name="system_description">تورنت خود را از دستگاه آندروید خود	مدیریت کنید</string>
+    <string name="app_name">Transdroid</string>
 
 </resources>

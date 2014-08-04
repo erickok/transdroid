@@ -190,5 +190,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="update_search_newversion">Disponível novo módulo de pesquisa do Transdroid</string>
 
 <string name="system_description">Faça a gestão dos seus torrents a partir do Android</string>
+    <string name="app_name">Transdroid</string>
 
 </resources>

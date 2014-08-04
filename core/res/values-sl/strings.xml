@@ -67,8 +67,9 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_removesettings">Odstrani nastavitve</string>
 <string name="action_visitwebsite">Pojdi na transdroid.org</string>
 <string name="action_close">Zapri</string>
+    <string name="app_name">Transdroid</string>
 
-<plurals name="navigation_torrentsselected">
+    <plurals name="navigation_torrentsselected">
 <item quantity="one">%1$d torrent selected</item>
 <item quantity="other">%1$d torrents selected</item>
 </plurals>

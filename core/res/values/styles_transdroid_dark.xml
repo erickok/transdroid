@@ -32,8 +32,6 @@
         <item name="android:background">@drawable/ab_solid_transdroid</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_transdroid</item>
         <item name="android:backgroundSplit">@drawable/ab_bottom_solid_transdroid</item>
-
-        <item name="android:background">@drawable/ab_solid_transdroid</item>
     </style>
 
     <style name="PopupMenu.Transdroid.Dark" parent="@android:style/Widget.Holo.ListPopupWindow">	

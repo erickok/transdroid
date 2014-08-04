@@ -97,7 +97,8 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="status_priority_low">Låg prioritet</string>
 <string name="status_priority_normal">Normal prioritet</string>
 <string name="status_priority_high">Hög prioritet</string>
-<plurals name="status_service_added">
+    <string name="app_name">Transdroid</string>
+    <plurals name="status_service_added">
 <item quantity="one">New torrent added</item>
 <item quantity="other">%1$s new torrents added</item>
 </plurals>

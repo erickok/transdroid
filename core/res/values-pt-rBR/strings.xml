@@ -178,7 +178,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 
 
 <string name="error_torrentfile">Não foi possível abrir arquivo .torrent</string>
-
+    <string name="app_name">Transdroid</string>
 
 
 </resources>

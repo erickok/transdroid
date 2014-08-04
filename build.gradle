@@ -1,0 +1,67 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.2'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.2+'
+    }
+}
+
+// inject idea and eclipse plugins to all projects
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+    repositories {
+        mavenCentral()
+    }
+
+}
+
+configure([
+    project(':full'),
+    project(':lite')
+]) {
+    apply plugin: 'android'
+
+    android {
+        compileSdkVersion 18
+        buildToolsVersion '19.1.0'
+
+        sourceSets {
+            main {
+                manifest.srcFile 'AndroidManifest.xml'
+                java.srcDirs = ['src']
+                res.srcDirs = ['res']
+            }
+        }
+    }
+}
+
+configure([
+    project(':lib'),
+    project(':core'),
+    project(':external:ActionBar-PullToRefresh'),
+    project(':external:ColorPickerPreference'),
+    project(':external:Crouton')
+]) {
+    apply plugin: 'android-library'
+
+    android {
+        compileSdkVersion 18
+        buildToolsVersion '19.1.0'
+
+        sourceSets {
+            main {
+                manifest.srcFile 'AndroidManifest.xml'
+                java.srcDirs = ['src']
+                res.srcDirs = ['res']
+            }
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.10'
+}

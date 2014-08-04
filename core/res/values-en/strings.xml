@@ -57,15 +57,5 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 </plurals>
 
 
-
-
-
-
-
-
-
-
-
-
-
+    <string name="app_name">Transdroid</string>
 </resources>

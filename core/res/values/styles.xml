@@ -100,9 +100,6 @@
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid2</item>
     </style>
 	
-    <style name="PopupMenu.Transdroid.Dark" parent="@android:style/Widget.Holo.ListPopupWindow">	
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid</item>
-    </style>
 	
 	<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->
 	<style name="SectionHeader" parent="@android:style/Widget.Holo.Light.TextView">

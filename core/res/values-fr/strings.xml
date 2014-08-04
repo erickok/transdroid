@@ -362,5 +362,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 
 <string name="system_librarieslabel">Certains codes/bibliothèques sont utilisés dans le projet:</string>
 <string name="system_description">Gérez vos torrents depuis votre appareil Android</string>
+    <string name="app_name">Transdroid</string>
 
 </resources>

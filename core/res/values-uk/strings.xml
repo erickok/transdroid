@@ -177,5 +177,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 
 <string name="system_librarieslabel">Деякий код/бібліотеки використовуються в проекті:</string>
 <string name="system_description">Керувати торрентами з вашого Андроїд пристрою</string>
+    <string name="app_name">Transdroid</string>
 
 </resources>
