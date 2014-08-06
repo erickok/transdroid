@@ -22,16 +22,12 @@ local.properties
 .settings/
 .local.properties
 
-# Android Studio project files
-*.iml
-*.ipr
-*.iws
-.idea/
-
 # OS temp files
 .DS_Store
 
+*.iml
+*.ipr
+*.iws
 build
-
-*.log
 .gradle
+*.log
