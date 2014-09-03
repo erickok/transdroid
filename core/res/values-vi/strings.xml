@@ -326,5 +326,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="update_updateto">Bạn có thể nâng lên bản %1$s</string>
 
 <string name="system_description">Quản lý file torrent từ thiết bị Android</string>
+    <string name="app_name">Transdroid</string>
 
 </resources>

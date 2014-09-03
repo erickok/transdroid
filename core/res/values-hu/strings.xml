@@ -94,7 +94,8 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="status_ofsize"> %1$s BÓL</string>
 <string name="status_unknowneta">ISMERETLEN ETA</string>
 <string name="status_ratio">ARÁNY %1$s</string>
-<plurals name="status_service_added">
+    <string name="app_name">Transdroid</string>
+    <plurals name="status_service_added">
 <item quantity="one">New torrent added</item>
 <item quantity="other">%1$s new torrents added</item>
 </plurals>

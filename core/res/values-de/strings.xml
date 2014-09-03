@@ -141,8 +141,9 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 
 <string name="result_added">%1$s hinzugefügt (aktualisiere)</string>
 <string name="result_removed">%1$s entfernt</string>
+    <string name="app_name">Transdroid</string>
 
-<plurals name="search_resutlsselected">
+    <plurals name="search_resutlsselected">
 <item quantity="one">%1$d result selected</item>
 <item quantity="other">%1$d results selected</item>
 </plurals>

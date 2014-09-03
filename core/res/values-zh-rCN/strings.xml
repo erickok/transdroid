@@ -227,13 +227,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_disableauth_info">不发送用户名和密码</string>
 <string name="pref_sslenable">SSL连接</string>
 <string name="pref_sslenable_info">使用https连接</string>
-
-
-
-
-
-
-
+    <string name="app_name">Transdroid</string>
 
 
 </resources>

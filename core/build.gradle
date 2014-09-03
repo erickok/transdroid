@@ -1,0 +1,34 @@
+apply plugin: 'android-apt'
+
+dependencies {
+    apt 'org.androidannotations:androidannotations:3.0.1'
+    compile 'org.androidannotations:androidannotations-api:3.0.1'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.8.3'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile project(':lib')
+    compile project(':external:ActionBar-PullToRefresh')
+    compile project(':external:ColorPickerPreference')
+    compile project(':external:Crouton')
+}
+
+// android {
+//     compileSdkVersion 18
+//     buildToolsVersion '19.1.0'
+// 
+//     sourceSets {
+//         main {
+//             manifest.srcFile 'AndroidManifest.xml'
+//             java.srcDirs = ['src']
+//             res.srcDirs = ['res']
+//         }
+//     }
+// }
+
+apt {
+    arguments {
+        androidManifestFile variant.processResources.manifestFile
+        resourcePackageName "org.transdroid.core"
+        logLevel 'INFO'
+        logFile 'apt.log'
+    }
+}

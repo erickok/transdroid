@@ -365,5 +365,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 
 <string name="system_librarieslabel">Enkele libraries die in het project zijn gebruikt:</string>
 <string name="system_description">Beheer je torrents vanaf je Androidapparaat</string>
+    <string name="app_name">Transdroid</string>
 
 </resources>

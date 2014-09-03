@@ -24,3 +24,10 @@ local.properties
 
 # OS temp files
 .DS_Store
+
+*.iml
+*.ipr
+*.iws
+build
+.gradle
+*.log

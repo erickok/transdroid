@@ -1,0 +1,7 @@
+include ':lib'
+include ':core'
+include ':full'
+include ':lite'
+include ':external:ActionBar-PullToRefresh'
+include ':external:ColorPickerPreference'
+include ':external:Crouton'

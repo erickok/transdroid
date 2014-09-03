@@ -469,7 +469,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		if (in.length() >= 3) {
 			String part1 = in.substring(0, in.length() - 3);
 			String part2 = in.substring(in.length() - 3);
-			return part1.replace("Ê", "").replace(" ", "").replace(",", "").replace(".", "") + part2.replace(",", ".");
+			return part1.replace(" ", "").replace(",", "").replace(".", "") + part2.replace(",", ".");
 		}
 		return in.replace(",", ".");
 	}

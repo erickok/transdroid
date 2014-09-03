@@ -16,7 +16,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.transdroid.core"
+  package="org.transdroid.lib"
   android:versionCode="214"
   android:versionName="2.2.0" >
 
