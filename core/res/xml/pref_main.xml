@@ -24,7 +24,12 @@
 		<org.transdroid.core.gui.settings.OverflowPreference
 			android:key="header_addserver"
 			android:title="@string/pref_addserver"
-			android:order="99" />
+			android:order="98" />
+		<ListPreference
+			android:key="header_defaultserver"
+			android:title="@string/pref_defaultserver"
+			android:order="99"
+			android:defaultValue="-2" />
 	</PreferenceCategory>
 	
 	<PreferenceCategory

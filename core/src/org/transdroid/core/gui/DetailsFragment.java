@@ -52,6 +52,9 @@ import org.transdroid.daemon.TorrentFile;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.ActionMode;
@@ -472,6 +475,20 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				// No app is available that can handle FTP downloads
 				Crouton.showText(getActivity(), getString(R.string.error_noftpapp, url),
 						NavigationHelper.CROUTON_ERROR_STYLE);
+				mode.finish();
+				return true;
+
+			} else if (itemId == R.id.action_copytoclipboard) {
+
+				StringBuilder names = new StringBuilder();
+				for (int f = 0; f < checked.size(); f++) {
+					if (f != 0)
+						names.append("\n");
+					names.append(checked.get(f).getName());
+				}
+				ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(
+						Context.CLIPBOARD_SERVICE);
+				clipboardManager.setPrimaryClip(ClipData.newPlainText("Transdroid", names.toString()));
 				mode.finish();
 				return true;
 

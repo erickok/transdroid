@@ -51,11 +51,6 @@ import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.*;
 import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.navigation.Label;
-import org.transdroid.core.gui.navigation.NavigationFilter;
-import org.transdroid.core.gui.navigation.NavigationHelper;
-import org.transdroid.core.gui.navigation.RefreshableActivity;
-import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.rss.*;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
@@ -173,9 +168,9 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	protected ArrayList<Label> lastNavigationLabels;
 
 	// Contained torrent and details fragments
-	@FragmentById(resName = "torrent_list")
+	@FragmentById(resName = "torrents_fragment")
 	protected TorrentsFragment fragmentTorrents;
-	@FragmentById(resName = "torrent_details")
+	@FragmentById(resName = "torrentdetails_fragment")
 	protected DetailsFragment fragmentDetails;
 
 	// Auto refresh task
@@ -236,10 +231,10 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		// Log messages from the server daemons using our singleton logger
 		DLog.setLogger(Log_.getInstance_(this));
 
-		// Load the last used server or a server that was explicitly supplied in the starting intent
-		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
-		if (lastUsed == null) {
-			// No server settings yet;
+		// Load the default server or a server that was explicitly supplied in the starting intent
+		ServerSetting defaultServer = applicationSettings.getDefaultServer();
+		if (defaultServer == null) {
+			// No server settings yet
 			return;
 		}
 		Torrent openTorrent = null;
@@ -251,7 +246,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 				Log.e(this, "Tried to start with " + ListWidgetProvider.EXTRA_SERVER + " intent but " + serverId
 						+ " is not an existing server order id");
 			} else {
-				lastUsed = applicationSettings.getServerSetting(serverId);
+				defaultServer = applicationSettings.getServerSetting(serverId);
 				if (getIntent().hasExtra(ListWidgetProvider.EXTRA_TORRENT))
 					openTorrent = getIntent().getParcelableExtra(ListWidgetProvider.EXTRA_TORRENT);
 			}
@@ -259,12 +254,12 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
 		// Note: skipNextOnNavigationItemSelectedCalls is used to prevent this event from triggering filterSelected
-		actionBar.setSelectedNavigationItem(lastUsed.getOrder() + 1);
+		actionBar.setSelectedNavigationItem(defaultServer.getOrder() + 1);
 
 		// Connect to the last used server or a server that was explicitly supplied in the starting intent
 		if (firstStart) {
 			// Force first torrents refresh
-			filterSelected(lastUsed, true);
+			filterSelected(defaultServer, true);
 			// Perhaps we can select the last used navigation filter, but only after a first refresh was completed
 			preselectNavigationFilter = applicationSettings.getLastUsedNavigationFilter();
 			// Handle any start up intents
@@ -276,6 +271,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			}
 		} else {
 			// Resume after instead of fully loading the torrents list; create connection and set action bar title
+			ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 			navigationSpinnerAdapter.updateCurrentServer(currentConnection);
 			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
@@ -368,42 +364,38 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		super.onDestroy();
 	}
 
-	@TargetApi(Build.VERSION_CODES.FROYO)
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		if (navigationHelper.enableSearchUi()) {
-			// For Android 2.1+, add an expandable SearchView to the action bar
+			// Add an expandable SearchView to the action bar
 			MenuItem item = menu.findItem(R.id.action_search);
-			if (android.os.Build.VERSION.SDK_INT >= 8) {
-				SearchView searchView = new SearchView(this);
-				searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-				searchView.setQueryRefinementEnabled(true);
-				searchView.setOnSearchClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						// Pause autorefresh
-						stopRefresh = true;
-						stopAutoRefresh();
-					}
-				});
-				// NOTE ABS's OnCloseListener is not working, hence using an OnActionExpandListener
-				item.setOnActionExpandListener(new OnActionExpandListener() {
-					@Override
-					public boolean onMenuItemActionExpand(MenuItem item) {
-						return true;
-					}
+			SearchView searchView = new SearchView(this);
+			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+			searchView.setQueryRefinementEnabled(true);
+			searchView.setOnSearchClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// Pause autorefresh
+					stopRefresh = true;
+					stopAutoRefresh();
+				}
+			});
+			item.setOnActionExpandListener(new OnActionExpandListener() {
+				@Override
+				public boolean onMenuItemActionExpand(MenuItem item) {
+					return true;
+				}
 
-					@Override
-					public boolean onMenuItemActionCollapse(MenuItem item) {
-						stopRefresh = false;
-						startAutoRefresh();
-						return true;
-					}
-				});
-				item.setActionView(searchView);
-				searchMenu = item;
-			}
+				@Override
+				public boolean onMenuItemActionCollapse(MenuItem item) {
+					stopRefresh = false;
+					startAutoRefresh();
+					return true;
+				}
+			});
+			item.setActionView(searchView);
+			searchMenu = item;
 		}
 		return true;
 	}
@@ -510,7 +502,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 			// Clear the currently shown list of torrents and perhaps the details
 			fragmentTorrents.clear(true, true);
-			if (fragmentDetails != null && fragmentDetails.getActivity() != null) {
+			if (fragmentDetails != null && fragmentDetails.isAdded() && fragmentDetails.getActivity() != null) {
 				fragmentDetails.updateIsLoading(false, null);
 				fragmentDetails.clear();
 				fragmentDetails.setCurrentServerSettings(server);
@@ -530,7 +522,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			// Remember that the user last selected this
 			applicationSettings.setLastUsedNavigationFilter(currentFilter);
 			// Clear the details view
-			if (fragmentDetails != null) {
+			if (fragmentDetails != null && fragmentDetails.isAdded()) {
 				fragmentDetails.updateIsLoading(false, null);
 				fragmentDetails.clear();
 			}
@@ -545,7 +537,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	private void updateFragmentVisibility(boolean hasServerSettings) {
 		if (filtersList != null)
 			filtersList.setVisibility(hasServerSettings ? View.VISIBLE : View.GONE);
-		if (fragmentDetails != null) {
+		if (fragmentDetails != null && fragmentDetails.isAdded()) {
 			if (hasServerSettings)
 				getFragmentManager().beginTransaction().show(fragmentDetails).commit();
 			else
@@ -560,11 +552,31 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		handleStartIntent();
 	}
 
-	/**
-	 * If required, add torrents, switch to a specific server, etc.
-	 */
 	protected void handleStartIntent() {
+		// For intents that come from out of the application, perhaps we can not directly add them
+		if (applicationSettings.getDefaultServerKey() == ApplicationSettings.DEFAULTSERVER_ASKONADD
+				&& getIntent().getData() != null) {
+			// First ask which server to use before adding any intent from the extras
+			ServerPickerDialog.startServerPicker(this, applicationSettings.getAllServerSettings());
+			return;
+		}
+		addFromIntent();
+	}
 
+	public void switchServerAndAddFromIntent(int position) {
+		// Callback from the ServerPickerDialog; force a connection before selecting it (in the navigation)
+		// Note: we can just use the list position as we have stable server setting ids
+		ServerSetting selectedServer = applicationSettings.getAllServerSettings().get(position);
+		filterSelected(selectedServer, false);
+		addFromIntent();
+		skipNextOnNavigationItemSelectedCalls++; // Prevent this selection from launching filterSelected() again
+		getActionBar().setSelectedNavigationItem(position + 1);
+	}
+
+	/**
+	 * If required, add torrents from the supplied intent extras.
+	 */
+	protected void addFromIntent() {
 		Intent intent = getIntent();
 		Uri dataUri = intent.getData();
 		String data = intent.getDataString();
@@ -818,7 +830,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	 * @param torrent The torrent to show detailed statistics for
 	 */
 	public void openDetails(Torrent torrent) {
-		if (fragmentDetails != null) {
+		if (fragmentDetails != null && fragmentDetails.isAdded()) {
 			fragmentDetails.updateTorrent(torrent);
 		} else {
 			DetailsActivity_.intent(this).torrent(torrent).currentLabels(lastNavigationLabels)
@@ -1186,7 +1198,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		fragmentTorrents.updateIsLoading(false);
 		if (isCritical) {
 			fragmentTorrents.updateError(error);
-			if (fragmentDetails != null)
+			if (fragmentDetails != null && fragmentDetails.isAdded())
 				fragmentDetails.updateIsLoading(false, error);
 		}
 	}
@@ -1202,7 +1214,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		fragmentTorrents.updateTorrents(new ArrayList<Torrent>(torrents), lastNavigationLabels);
 
 		// Update the details fragment if the currently shown torrent is in the newly retrieved list
-		if (fragmentDetails != null) {
+		if (fragmentDetails != null && fragmentDetails.isAdded()) {
 			fragmentDetails.perhapsUpdateTorrent(torrents);
 		}
 
@@ -1214,7 +1226,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			// Labels are shown in the action bar spinner
 			navigationSpinnerAdapter.updateLabels(lastNavigationLabels);
 		}
-		if (fragmentDetails != null)
+		if (fragmentDetails != null && fragmentDetails.isAdded())
 			fragmentDetails.updateLabels(lastNavigationLabels);
 
 		// Perhaps we were still waiting to preselect the last used filter (on a fresh application start)
@@ -1244,14 +1256,14 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@UiThread
 	protected void onTorrentDetailsRetrieved(Torrent torrent, TorrentDetails torrentDetails) {
 		// Update the details fragment with the new fine details for the shown torrent
-		if (fragmentDetails != null)
+		if (fragmentDetails != null && fragmentDetails.isAdded())
 			fragmentDetails.updateTorrentDetails(torrent, torrentDetails);
 	}
 
 	@UiThread
 	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
 		// Update the details fragment with the newly retrieved list of files
-		if (fragmentDetails != null)
+		if (fragmentDetails != null && fragmentDetails.isAdded())
 			fragmentDetails.updateTorrentFiles(torrent, new ArrayList<TorrentFile>(torrentFiles));
 	}
 

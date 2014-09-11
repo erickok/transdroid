@@ -7,7 +7,7 @@
 	tools:context=".TorrentsActivity" >
 
 	<fragment
-		android:id="@+id/torrent_list"
+		android:id="@+id/torrents_fragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		class="org.transdroid.core.gui.TorrentsFragment_"

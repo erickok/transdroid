@@ -22,7 +22,7 @@
 	tools:context=".SearchActivity" >
 
 	<fragment
-		android:id="@+id/searchresults_list"
+		android:id="@+id/searchresults_fragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		class="org.transdroid.core.gui.search.SearchResultsFragment_"

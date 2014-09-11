@@ -22,7 +22,7 @@
 	tools:context=".RssfeedsActivity" >
 
 	<fragment
-		android:id="@+id/rssfeeds_list"
+		android:id="@+id/rssfeeds_fragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		class="org.transdroid.core.gui.rss.RssfeedsFragment_"

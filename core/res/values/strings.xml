@@ -61,6 +61,7 @@
 	<string name="action_priority_high">High</string>
 	<string name="action_remoteplay">Remote play in VLC</string>
 	<string name="action_download">Download using FTP(S)</string>
+	<string name="action_copytoclipboard">Copy to clipboard</string>
 	<string name="action_showdetails">Show details</string>
 	<string name="action_openwebsite">Open website</string>
 	<string name="action_useassearch">Use as new search</string>
@@ -90,6 +91,7 @@
 	<string name="navigation_selectall">Select all</string>
 	<string name="navigation_selectfinished">Select finished</string>
 	<string name="navigation_invertselection">Invert selection</string>
+	<string name="navigation_pickserver">Add torrent to&#8230;</string>
 	
 	<string name="status_status">STATUS: %1$s</string>
 	<string name="status_waiting">Waiting to check&#8230;</string>
@@ -216,6 +218,9 @@
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
 	<string name="pref_addseedbox">Add seedbox</string>
+	<string name="pref_defaultserver">Default server</string>
+	<string name="pref_defaultserver_lastused">Last used</string>
+	<string name="pref_defaultserver_askonadd">Ask when adding torrent</string>
 	<string name="pref_searchsites">Search sites</string>
 	<string name="pref_setsearchsite">Set default site</string>
 	<string name="pref_addwebsearch">Add web search site</string>
