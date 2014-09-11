@@ -29,8 +29,10 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.R;
 import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchSite;
-import org.transdroid.core.app.settings.*;
-import org.transdroid.core.gui.*;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.WebsearchSetting;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 
 import android.annotation.TargetApi;
@@ -62,7 +64,7 @@ import android.widget.TextView;
 @OptionsMenu(resName = "activity_search")
 public class SearchActivity extends Activity implements OnNavigationListener {
 
-	@FragmentById(resName = "searchresults_list")
+	@FragmentById(resName = "searchresults_fragment")
 	protected SearchResultsFragment fragmentResults;
 	@ViewById
 	protected ListView searchsitesList;
@@ -141,20 +143,17 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 
 	}
 
-	@TargetApi(Build.VERSION_CODES.FROYO)
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		if (navigationHelper.enableSearchUi()) {
-			// For Android 2.1+, add an expandable SearchView to the action bar
+			// Add an expandable SearchView to the action bar
 			MenuItem item = menu.findItem(R.id.action_search);
-			if (android.os.Build.VERSION.SDK_INT >= 8) {
-				final SearchView searchView = new SearchView(this);
-				searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-				searchView.setQueryRefinementEnabled(true);
-				item.setActionView(searchView);
-				searchMenu = item;
-			}
+			final SearchView searchView = new SearchView(this);
+			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+			searchView.setQueryRefinementEnabled(true);
+			item.setActionView(searchView);
+			searchMenu = item;
 		}
 		return true;
 	}

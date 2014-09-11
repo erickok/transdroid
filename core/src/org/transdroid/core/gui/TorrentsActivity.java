@@ -173,9 +173,9 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	protected ArrayList<Label> lastNavigationLabels;
 
 	// Contained torrent and details fragments
-	@FragmentById(resName = "torrent_list")
+	@FragmentById(resName = "torrents_fragment")
 	protected TorrentsFragment fragmentTorrents;
-	@FragmentById(resName = "torrent_details")
+	@FragmentById(resName = "torrentdetails_fragment")
 	protected DetailsFragment fragmentDetails;
 
 	// Auto refresh task
@@ -368,42 +368,38 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		super.onDestroy();
 	}
 
-	@TargetApi(Build.VERSION_CODES.FROYO)
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		if (navigationHelper.enableSearchUi()) {
-			// For Android 2.1+, add an expandable SearchView to the action bar
+			// Add an expandable SearchView to the action bar
 			MenuItem item = menu.findItem(R.id.action_search);
-			if (android.os.Build.VERSION.SDK_INT >= 8) {
-				SearchView searchView = new SearchView(this);
-				searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-				searchView.setQueryRefinementEnabled(true);
-				searchView.setOnSearchClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						// Pause autorefresh
-						stopRefresh = true;
-						stopAutoRefresh();
-					}
-				});
-				// NOTE ABS's OnCloseListener is not working, hence using an OnActionExpandListener
-				item.setOnActionExpandListener(new OnActionExpandListener() {
-					@Override
-					public boolean onMenuItemActionExpand(MenuItem item) {
-						return true;
-					}
+			SearchView searchView = new SearchView(this);
+			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+			searchView.setQueryRefinementEnabled(true);
+			searchView.setOnSearchClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// Pause autorefresh
+					stopRefresh = true;
+					stopAutoRefresh();
+				}
+			});
+			item.setOnActionExpandListener(new OnActionExpandListener() {
+				@Override
+				public boolean onMenuItemActionExpand(MenuItem item) {
+					return true;
+				}
 
-					@Override
-					public boolean onMenuItemActionCollapse(MenuItem item) {
-						stopRefresh = false;
-						startAutoRefresh();
-						return true;
-					}
-				});
-				item.setActionView(searchView);
-				searchMenu = item;
-			}
+				@Override
+				public boolean onMenuItemActionCollapse(MenuItem item) {
+					stopRefresh = false;
+					startAutoRefresh();
+					return true;
+				}
+			});
+			item.setActionView(searchView);
+			searchMenu = item;
 		}
 		return true;
 	}
@@ -510,7 +506,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 			// Clear the currently shown list of torrents and perhaps the details
 			fragmentTorrents.clear(true, true);
-			if (fragmentDetails != null && fragmentDetails.getActivity() != null) {
+			if (fragmentDetails != null && fragmentDetails.isAdded() && fragmentDetails.getActivity() != null) {
 				fragmentDetails.updateIsLoading(false, null);
 				fragmentDetails.clear();
 				fragmentDetails.setCurrentServerSettings(server);
@@ -530,7 +526,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			// Remember that the user last selected this
 			applicationSettings.setLastUsedNavigationFilter(currentFilter);
 			// Clear the details view
-			if (fragmentDetails != null) {
+			if (fragmentDetails != null && fragmentDetails.isAdded()) {
 				fragmentDetails.updateIsLoading(false, null);
 				fragmentDetails.clear();
 			}
@@ -545,7 +541,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	private void updateFragmentVisibility(boolean hasServerSettings) {
 		if (filtersList != null)
 			filtersList.setVisibility(hasServerSettings ? View.VISIBLE : View.GONE);
-		if (fragmentDetails != null) {
+		if (fragmentDetails != null && fragmentDetails.isAdded()) {
 			if (hasServerSettings)
 				getFragmentManager().beginTransaction().show(fragmentDetails).commit();
 			else
@@ -818,7 +814,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	 * @param torrent The torrent to show detailed statistics for
 	 */
 	public void openDetails(Torrent torrent) {
-		if (fragmentDetails != null) {
+		if (fragmentDetails != null && fragmentDetails.isAdded()) {
 			fragmentDetails.updateTorrent(torrent);
 		} else {
 			DetailsActivity_.intent(this).torrent(torrent).currentLabels(lastNavigationLabels)
@@ -1186,7 +1182,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		fragmentTorrents.updateIsLoading(false);
 		if (isCritical) {
 			fragmentTorrents.updateError(error);
-			if (fragmentDetails != null)
+			if (fragmentDetails != null && fragmentDetails.isAdded())
 				fragmentDetails.updateIsLoading(false, error);
 		}
 	}
@@ -1202,7 +1198,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		fragmentTorrents.updateTorrents(new ArrayList<Torrent>(torrents), lastNavigationLabels);
 
 		// Update the details fragment if the currently shown torrent is in the newly retrieved list
-		if (fragmentDetails != null) {
+		if (fragmentDetails != null && fragmentDetails.isAdded()) {
 			fragmentDetails.perhapsUpdateTorrent(torrents);
 		}
 
@@ -1214,7 +1210,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			// Labels are shown in the action bar spinner
 			navigationSpinnerAdapter.updateLabels(lastNavigationLabels);
 		}
-		if (fragmentDetails != null)
+		if (fragmentDetails != null && fragmentDetails.isAdded())
 			fragmentDetails.updateLabels(lastNavigationLabels);
 
 		// Perhaps we were still waiting to preselect the last used filter (on a fresh application start)
@@ -1244,14 +1240,14 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@UiThread
 	protected void onTorrentDetailsRetrieved(Torrent torrent, TorrentDetails torrentDetails) {
 		// Update the details fragment with the new fine details for the shown torrent
-		if (fragmentDetails != null)
+		if (fragmentDetails != null && fragmentDetails.isAdded())
 			fragmentDetails.updateTorrentDetails(torrent, torrentDetails);
 	}
 
 	@UiThread
 	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
 		// Update the details fragment with the newly retrieved list of files
-		if (fragmentDetails != null)
+		if (fragmentDetails != null && fragmentDetails.isAdded())
 			fragmentDetails.updateTorrentFiles(torrent, new ArrayList<TorrentFile>(torrentFiles));
 	}
 

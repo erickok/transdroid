@@ -53,9 +53,9 @@ public class RssfeedsActivity extends Activity {
 	protected List<RssfeedLoader> loaders;
 
 	// Contained feeds and items fragments
-	@FragmentById(resName = "rssfeeds_list")
+	@FragmentById(resName = "rssfeeds_fragment")
 	protected RssfeedsFragment fragmentFeeds;
-	@FragmentById(resName = "rssitems_list")
+	@FragmentById(resName = "rssitems_fragment")
 	protected RssitemsFragment fragmentItems;
 
 	@Override
@@ -145,7 +145,7 @@ public class RssfeedsActivity extends Activity {
 	public void openRssfeed(RssfeedLoader loader, boolean markAsViewedNow) {
 
 		// The RSS feed content was loaded and can now be shown in the dedicated fragment or a new activity
-		if (fragmentItems != null) {
+		if (fragmentItems != null && fragmentItems.isAdded()) {
 
 			// If desired, update the lastViewedDate and lastViewedItemUrl of this feed in the user setting; this won't
 			// be loaded until the RSS feeds screen in opened again.

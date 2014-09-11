@@ -41,7 +41,7 @@ public class RssitemsActivity extends Activity {
 	@Extra
 	protected String rssfeedName;
 
-	@FragmentById(resName = "rssitems_list")
+	@FragmentById(resName = "rssitems_fragment")
 	protected RssitemsFragment fragmentItems;
 
 	@Override

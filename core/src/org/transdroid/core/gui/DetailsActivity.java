@@ -104,7 +104,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	private PullToRefreshAttacher pullToRefreshAttacher = null;
 
 	// Details view components
-	@FragmentById(resName = "torrent_details")
+	@FragmentById(resName = "torrentdetails_fragment")
 	protected DetailsFragment fragmentDetails;
 
 	@Override

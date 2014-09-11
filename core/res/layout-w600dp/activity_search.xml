@@ -32,7 +32,7 @@
 		android:listSelector="?attr/selectable_background_transdroid" />
 	
 	<fragment
-		android:id="@+id/searchresults_list"
+		android:id="@+id/searchresults_fragment"
 		android:layout_width="0dip"
 		android:layout_height="match_parent"
 		android:layout_weight="2"
