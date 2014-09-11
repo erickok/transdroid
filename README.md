@@ -37,7 +37,7 @@ Designed and developed by [Eric Kok](eric@2312.nl) of [2312 development](http://
 License
 =======
     
-    Copyright 2010-2013 Eric Kok et al.
+    Copyright 2010-2014 Eric Kok et al.
     
     Transdroid is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
