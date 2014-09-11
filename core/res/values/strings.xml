@@ -61,6 +61,7 @@
 	<string name="action_priority_high">High</string>
 	<string name="action_remoteplay">Remote play in VLC</string>
 	<string name="action_download">Download using FTP(S)</string>
+	<string name="action_copytoclipboard">Copy to clipboard</string>
 	<string name="action_showdetails">Show details</string>
 	<string name="action_openwebsite">Open website</string>
 	<string name="action_useassearch">Use as new search</string>

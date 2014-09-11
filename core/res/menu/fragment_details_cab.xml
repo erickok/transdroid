@@ -40,5 +40,9 @@
 		android:id="@+id/action_download"
 		android:showAsAction="ifRoom"
 		android:title="@string/action_download" />
+	<item
+		android:id="@+id/action_copytoclipboard"
+		android:showAsAction="never"
+		android:title="@string/action_copytoclipboard" />
 
 </menu>

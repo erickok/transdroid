@@ -38,6 +38,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.SearchManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -146,6 +149,7 @@ public class RssitemsFragment extends Fragment {
 
 			int itemId = item.getItemId();
 			if (itemId == R.id.action_addall) {
+				
 				// Start an Intent that adds multiple items at once, by supplying the urls and titles as string array
 				// extras and setting the Intent action to ADD_MULTIPLE
 				Intent intent = new Intent("org.transdroid.ADD_MULTIPLE");
@@ -160,7 +164,23 @@ public class RssitemsFragment extends Fragment {
 				startActivity(intent);
 				mode.finish();
 				return true;
+
+			} else if (itemId == R.id.action_copytoclipboard) {
+
+				StringBuilder names = new StringBuilder();
+				for (int f = 0; f < checked.size(); f++) {
+					if (f != 0)
+						names.append("\n");
+					names.append(checked.get(f).getTitle());
+				}
+				ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(
+						Context.CLIPBOARD_SERVICE);
+				clipboardManager.setPrimaryClip(ClipData.newPlainText("Transdroid", names.toString()));
+				mode.finish();
+				return true;
+
 			} else {
+				
 				// The other items only operate on one (the first) selected item
 				if (checked.size() < 1)
 					return false;
@@ -190,7 +210,9 @@ public class RssitemsFragment extends Fragment {
 					search.putExtra(SearchManager.QUERY, first.getTitle());
 					startActivity(search);
 				}
-				return false;
+				mode.finish();
+				return true;
+				
 			}
 		}
 
