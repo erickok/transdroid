@@ -51,11 +51,6 @@ import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.*;
 import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.navigation.Label;
-import org.transdroid.core.gui.navigation.NavigationFilter;
-import org.transdroid.core.gui.navigation.NavigationHelper;
-import org.transdroid.core.gui.navigation.RefreshableActivity;
-import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.rss.*;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
@@ -236,10 +231,10 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		// Log messages from the server daemons using our singleton logger
 		DLog.setLogger(Log_.getInstance_(this));
 
-		// Load the last used server or a server that was explicitly supplied in the starting intent
-		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
-		if (lastUsed == null) {
-			// No server settings yet;
+		// Load the default server or a server that was explicitly supplied in the starting intent
+		ServerSetting defaultServer = applicationSettings.getDefaultServer();
+		if (defaultServer == null) {
+			// No server settings yet
 			return;
 		}
 		Torrent openTorrent = null;
@@ -251,7 +246,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 				Log.e(this, "Tried to start with " + ListWidgetProvider.EXTRA_SERVER + " intent but " + serverId
 						+ " is not an existing server order id");
 			} else {
-				lastUsed = applicationSettings.getServerSetting(serverId);
+				defaultServer = applicationSettings.getServerSetting(serverId);
 				if (getIntent().hasExtra(ListWidgetProvider.EXTRA_TORRENT))
 					openTorrent = getIntent().getParcelableExtra(ListWidgetProvider.EXTRA_TORRENT);
 			}
@@ -259,12 +254,12 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
 		// Note: skipNextOnNavigationItemSelectedCalls is used to prevent this event from triggering filterSelected
-		actionBar.setSelectedNavigationItem(lastUsed.getOrder() + 1);
+		actionBar.setSelectedNavigationItem(defaultServer.getOrder() + 1);
 
 		// Connect to the last used server or a server that was explicitly supplied in the starting intent
 		if (firstStart) {
 			// Force first torrents refresh
-			filterSelected(lastUsed, true);
+			filterSelected(defaultServer, true);
 			// Perhaps we can select the last used navigation filter, but only after a first refresh was completed
 			preselectNavigationFilter = applicationSettings.getLastUsedNavigationFilter();
 			// Handle any start up intents
@@ -276,6 +271,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			}
 		} else {
 			// Resume after instead of fully loading the torrents list; create connection and set action bar title
+			ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 			navigationSpinnerAdapter.updateCurrentServer(currentConnection);
 			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
@@ -556,11 +552,31 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		handleStartIntent();
 	}
 
-	/**
-	 * If required, add torrents, switch to a specific server, etc.
-	 */
 	protected void handleStartIntent() {
+		// For intents that come from out of the application, perhaps we can not directly add them
+		if (applicationSettings.getDefaultServerKey() == ApplicationSettings.DEFAULTSERVER_ASKONADD
+				&& getIntent().getData() != null) {
+			// First ask which server to use before adding any intent from the extras
+			ServerPickerDialog.startServerPicker(this, applicationSettings.getAllServerSettings());
+			return;
+		}
+		addFromIntent();
+	}
 
+	public void switchServerAndAddFromIntent(int position) {
+		// Callback from the ServerPickerDialog; force a connection before selecting it (in the navigation)
+		// Note: we can just use the list position as we have stable server setting ids
+		ServerSetting selectedServer = applicationSettings.getAllServerSettings().get(position);
+		filterSelected(selectedServer, false);
+		addFromIntent();
+		skipNextOnNavigationItemSelectedCalls++; // Prevent this selection from launching filterSelected() again
+		getActionBar().setSelectedNavigationItem(position + 1);
+	}
+
+	/**
+	 * If required, add torrents from the supplied intent extras.
+	 */
+	protected void addFromIntent() {
 		Intent intent = getIntent();
 		Uri dataUri = intent.getData();
 		String data = intent.getDataString();

@@ -51,6 +51,9 @@ import android.preference.PreferenceManager;
 @EBean(scope = Scope.Singleton)
 public class ApplicationSettings {
 
+	public static final int DEFAULTSERVER_LASTUSED = -2;
+	public static final int DEFAULTSERVER_ASKONADD = -1;
+
 	@RootContext
 	protected Context context;
 	private SharedPreferences prefs;
@@ -85,9 +88,9 @@ public class ApplicationSettings {
 		}
 		return max;
 	}
-	
+
 	/**
-	 * Returns the server settings for either a normal or a seedbox server as the user configured. WARNING: This method 
+	 * Returns the server settings for either a normal or a seedbox server as the user configured. WARNING: This method
 	 * does not check if the settings actually exist and may reply on empty default if called for a non-existing server.
 	 * @param order The order number/identifying key of the server's settings to retrieve, where the normal servers are
 	 *            first and the seedboxes are numbers thereafter onwards
@@ -132,7 +135,7 @@ public class ApplicationSettings {
 	}
 
 	/**
-	 * Returns the user-specified server settings for a normal (non-seedbox) server. WARNING: This method does not check 
+	 * Returns the user-specified server settings for a normal (non-seedbox) server. WARNING: This method does not check
 	 * if the settings actually exist and may rely on empty defaults if called for a non-existing server.
 	 * @param order The order number/identifying key of the normal server's settings to retrieve
 	 * @return The server settings object, loaded from shared preferences
@@ -234,8 +237,65 @@ public class ApplicationSettings {
 		edit.remove("server_timeout_" + max);
 		edit.remove("server_alarmfinished_" + max);
 		edit.remove("server_alarmfinished_" + max);
+
+		// Perhaps we should also update the default server to match the server's new id or remove the default selection
+		// in case it was this server that was removed
+		int defaultServer = getDefaultServerKey();
+		if (defaultServer == order) {
+			edit.remove("header_defaultserver");
+		} else if (defaultServer > order) {
+			// Move 'up' one place to account for the removed server setting
+			edit.putInt("header_defaultserver", --order);
+		}
+
 		edit.commit();
 
+	}
+
+	/**
+	 * Returns the settings of the server that was explicitly selected by the user to select as default or, when no
+	 * specific default server was selected, the last used server settings. As opposed to getDefaultServerKey(int), this
+	 * method checks whether the particular server still exists (and returns the first server if not). If no servers are
+	 * configured, null is returned.
+	 * @return A server settings object of the server to use by default, or null if no server is yet configured
+	 */
+	public ServerSetting getDefaultServer() {
+
+		int defaultServer = getDefaultServerKey();
+		if (defaultServer == DEFAULTSERVER_LASTUSED || defaultServer == DEFAULTSERVER_ASKONADD) {
+			return getLastUsedServer();
+		}
+
+		// Use the explicitly selected default server
+		int max = getMaxOfAllServers(); // Zero-based index, so with max == 0 there is 1 server
+		if (max < 0) {
+			// No servers configured
+			return null;
+		}
+		if (defaultServer < 0 || defaultServer > max) {
+			// Last server was never set or no longer exists
+			return getServerSetting(0);
+		}
+		return getServerSetting(defaultServer);
+
+	}
+
+	/**
+	 * Returns the unique key of the server setting that the user selected as their default server, or code indicating
+	 * that the last used server should be selected by default; use with getDefaultServer directly. WARNING: the
+	 * returned string may no longer refer to a known server setting key.
+	 * @return An integer; if it is 0 or higher it represents the unique key of a configured server setting, -2 means
+	 *         the last used server should be selected as default instead and -1 means the last used server should be
+	 *         selected by default for viewing yet it should always ask when adding a new torrent
+	 */
+	public int getDefaultServerKey() {
+		String defaultServer = prefs.getString("header_defaultserver", Integer.toString(DEFAULTSERVER_LASTUSED));
+		try {
+			return Integer.parseInt(defaultServer);
+		} catch (NumberFormatException e) {
+			// This should NEVER happen but if the setting somehow is not a number, return the default
+			return DEFAULTSERVER_LASTUSED;
+		}
 	}
 
 	/**

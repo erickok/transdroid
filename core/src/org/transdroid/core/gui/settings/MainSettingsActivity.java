@@ -110,10 +110,22 @@ public class MainSettingsActivity extends PreferenceActivity {
 
 		// Add existing servers
 		List<ServerSetting> servers = applicationSettings.getNormalServerSettings();
+		String[] serverCodes = new String[servers.size() + 2];
+		String[] serverNames = new String[servers.size() + 2];
+		serverCodes[0] = Integer.toString(ApplicationSettings.DEFAULTSERVER_LASTUSED); // Last used
+		serverNames[0] = getString(R.string.pref_defaultserver_lastused);
+		serverCodes[1] = Integer.toString(ApplicationSettings.DEFAULTSERVER_ASKONADD); // Ask when adding
+		serverNames[1] = getString(R.string.pref_defaultserver_askonadd);
+		int s = 2;
 		for (ServerSetting serverSetting : servers) {
 			getPreferenceScreen().addPreference(
 					new ServerPreference(this).setServerSetting(serverSetting).setOnServerClickedListener(
 							onServerClicked));
+			if (serverSetting.getUniqueIdentifier() != null) {
+				serverCodes[s] = Integer.toString(serverSetting.getOrder());
+				serverNames[s] = serverSetting.getName();
+				s++;
+			}
 		}
 		// Add seedboxes; serversOffset keeps an int to have all ServerSettings with unique ids, seedboxOffset is unique
 		// only per seedbox type
@@ -126,8 +138,17 @@ public class MainSettingsActivity extends PreferenceActivity {
 								.setOnSeedboxClickedListener(onSeedboxClicked, seedboxOffset));
 				orderOffset++;
 				seedboxOffset++;
+				if (seedbox.getUniqueIdentifier() != null) {
+					serverCodes[s] = Integer.toString(seedbox.getOrder());
+					serverNames[s] = seedbox.getName();
+					s++;
+				}
 			}
 		}
+		// Allow selection of the default server
+		ListPreference defaultServerPreference = (ListPreference) findPreference("header_defaultserver");
+		defaultServerPreference.setEntries(serverNames);
+		defaultServerPreference.setEntryValues(serverCodes);
 
 		// Add existing RSS feeds
 		if (!enableRssUi) {
