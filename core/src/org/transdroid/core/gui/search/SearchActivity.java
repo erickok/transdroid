@@ -184,13 +184,17 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 	}
 
 	private void handleIntent(Intent intent) {
-		lastUsedQuery = parseQuery(intent);
 
+		lastUsedQuery = parseQuery(intent);
+		
 		// Is this actually a full HTTP URL? Then redirect this request to add the URL directly
 		if (lastUsedQuery != null
 				&& (lastUsedQuery.startsWith("http") || lastUsedQuery.startsWith("https")
 						|| lastUsedQuery.startsWith("magnet") || lastUsedQuery.startsWith("file"))) {
-			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(lastUsedQuery)));
+			// Don't broadcast this intent; we can safely assume this is intended for Transdroid only
+			Intent i = TorrentsActivity_.intent(this).get();
+			i.setData(Uri.parse(lastUsedQuery));
+			startActivity(i);
 			finish();
 			return;
 		}
