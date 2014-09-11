@@ -29,7 +29,7 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.WebsearchSetting;
-import org.transdroid.core.gui.*;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.settings.OverflowPreference.OnOverflowClicked;
 import org.transdroid.core.gui.settings.RssfeedPreference.OnRssfeedClickedListener;
@@ -108,23 +108,23 @@ public class MainSettingsActivity extends PreferenceActivity {
 		findPreference("header_system").setOnPreferenceClickListener(onSystemSettings);
 		findPreference("header_help").setOnPreferenceClickListener(onHelpSettings);
 
+		// Keep a list of the server codes and names (for default server selection)
+		List<String> serverCodes = new ArrayList<String>();
+		List<String> serverNames = new ArrayList<String>();
+		serverCodes.add(Integer.toString(ApplicationSettings.DEFAULTSERVER_LASTUSED));
+		serverCodes.add(Integer.toString(ApplicationSettings.DEFAULTSERVER_ASKONADD));
+		serverNames.add(getString(R.string.pref_defaultserver_lastused));
+		serverNames.add(getString(R.string.pref_defaultserver_askonadd));
+		
 		// Add existing servers
 		List<ServerSetting> servers = applicationSettings.getNormalServerSettings();
-		String[] serverCodes = new String[servers.size() + 2];
-		String[] serverNames = new String[servers.size() + 2];
-		serverCodes[0] = Integer.toString(ApplicationSettings.DEFAULTSERVER_LASTUSED); // Last used
-		serverNames[0] = getString(R.string.pref_defaultserver_lastused);
-		serverCodes[1] = Integer.toString(ApplicationSettings.DEFAULTSERVER_ASKONADD); // Ask when adding
-		serverNames[1] = getString(R.string.pref_defaultserver_askonadd);
-		int s = 2;
 		for (ServerSetting serverSetting : servers) {
 			getPreferenceScreen().addPreference(
 					new ServerPreference(this).setServerSetting(serverSetting).setOnServerClickedListener(
 							onServerClicked));
 			if (serverSetting.getUniqueIdentifier() != null) {
-				serverCodes[s] = Integer.toString(serverSetting.getOrder());
-				serverNames[s] = serverSetting.getName();
-				s++;
+				serverCodes.add(Integer.toString(serverSetting.getOrder()));
+				serverNames.add(serverSetting.getName());
 			}
 		}
 		// Add seedboxes; serversOffset keeps an int to have all ServerSettings with unique ids, seedboxOffset is unique
@@ -139,16 +139,15 @@ public class MainSettingsActivity extends PreferenceActivity {
 				orderOffset++;
 				seedboxOffset++;
 				if (seedbox.getUniqueIdentifier() != null) {
-					serverCodes[s] = Integer.toString(seedbox.getOrder());
-					serverNames[s] = seedbox.getName();
-					s++;
+					serverCodes.add(Integer.toString(seedbox.getOrder()));
+					serverNames.add(seedbox.getName());
 				}
 			}
 		}
 		// Allow selection of the default server
 		ListPreference defaultServerPreference = (ListPreference) findPreference("header_defaultserver");
-		defaultServerPreference.setEntries(serverNames);
-		defaultServerPreference.setEntryValues(serverCodes);
+		defaultServerPreference.setEntries(serverNames.toArray(new String[serverNames.size()]));
+		defaultServerPreference.setEntryValues(serverCodes.toArray(new String[serverCodes.size()]));
 
 		// Add existing RSS feeds
 		if (!enableRssUi) {
