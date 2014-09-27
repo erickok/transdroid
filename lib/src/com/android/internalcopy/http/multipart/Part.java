@@ -49,13 +49,13 @@ import org.apache.http.util.EncodingUtils;
  */
 public abstract class Part {
 
-    /** 
-     * The boundary 
+    /**
+     * The boundary
      * @deprecated use {@link org.apache.http.client.methods.multipart#MULTIPART_BOUNDARY}
      */
     protected static final String BOUNDARY = "----------------314159265358979323846";
-    
-    /** 
+
+    /**
      * The boundary as a byte array.
      * @deprecated
      */
@@ -65,54 +65,54 @@ public abstract class Part {
      * The default boundary to be used if {@link #setPartBoundary(byte[])} has not
      * been called.
      */
-    private static final byte[] DEFAULT_BOUNDARY_BYTES = BOUNDARY_BYTES;    
-    
+    private static final byte[] DEFAULT_BOUNDARY_BYTES = BOUNDARY_BYTES;
+
     /** Carriage return/linefeed */
     protected static final String CRLF = "\r\n";
-    
+
     /** Carriage return/linefeed as a byte array */
     protected static final byte[] CRLF_BYTES = EncodingUtils.getAsciiBytes(CRLF);
-    
+
     /** Content dispostion characters */
     protected static final String QUOTE = "\"";
-    
+
     /** Content dispostion as a byte array */
-    protected static final byte[] QUOTE_BYTES = 
+    protected static final byte[] QUOTE_BYTES =
       EncodingUtils.getAsciiBytes(QUOTE);
 
     /** Extra characters */
     protected static final String EXTRA = "--";
-    
+
     /** Extra characters as a byte array */
-    protected static final byte[] EXTRA_BYTES = 
+    protected static final byte[] EXTRA_BYTES =
       EncodingUtils.getAsciiBytes(EXTRA);
-    
+
     /** Content dispostion characters */
     protected static final String CONTENT_DISPOSITION = "Content-Disposition: form-data; name=";
-    
+
     /** Content dispostion as a byte array */
-    protected static final byte[] CONTENT_DISPOSITION_BYTES = 
+    protected static final byte[] CONTENT_DISPOSITION_BYTES =
       EncodingUtils.getAsciiBytes(CONTENT_DISPOSITION);
 
     /** Content type header */
     protected static final String CONTENT_TYPE = "Content-Type: ";
 
     /** Content type header as a byte array */
-    protected static final byte[] CONTENT_TYPE_BYTES = 
+    protected static final byte[] CONTENT_TYPE_BYTES =
       EncodingUtils.getAsciiBytes(CONTENT_TYPE);
 
     /** Content charset */
     protected static final String CHARSET = "; charset=";
 
     /** Content charset as a byte array */
-    protected static final byte[] CHARSET_BYTES = 
+    protected static final byte[] CHARSET_BYTES =
       EncodingUtils.getAsciiBytes(CHARSET);
 
     /** Content type header */
     protected static final String CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding: ";
 
     /** Content type header as a byte array */
-    protected static final byte[] CONTENT_TRANSFER_ENCODING_BYTES = 
+    protected static final byte[] CONTENT_TRANSFER_ENCODING_BYTES =
       EncodingUtils.getAsciiBytes(CONTENT_TRANSFER_ENCODING);
 
     /**
@@ -128,13 +128,13 @@ public abstract class Part {
      * The ASCII bytes to use as the multipart boundary.
      */
     private byte[] boundaryBytes;
-    
+
     /**
      * Return the name of this part.
      * @return The name.
      */
     public abstract String getName();
-    
+
     /**
      * Returns the content type of this part.
      * @return the content type, or <code>null</code> to exclude the content type header
@@ -143,7 +143,7 @@ public abstract class Part {
 
     /**
      * Return the character encoding of this part.
-     * @return the character encoding, or <code>null</code> to exclude the character 
+     * @return the character encoding, or <code>null</code> to exclude the character
      * encoding header
      */
     public abstract String getCharSet();
@@ -157,7 +157,7 @@ public abstract class Part {
     /**
      * Gets the part boundary to be used.
      * @return the part boundary as an array of bytes.
-     * 
+     *
      * @since 3.0
      */
     protected byte[] getPartBoundary() {
@@ -165,12 +165,12 @@ public abstract class Part {
             // custom boundary bytes have not been set, use the default.
             return DEFAULT_BOUNDARY_BYTES;
         } else {
-            return boundaryBytes;            
+            return boundaryBytes;
         }
     }
-    
+
     /**
-     * Sets the part boundary.  Only meant to be used by 
+     * Sets the part boundary.  Only meant to be used by
      * {@link Part#sendParts(OutputStream, Part[], byte[])}
      * and {@link Part#getLengthOfParts(Part[], byte[])}
      * @param boundaryBytes An array of ASCII bytes.
@@ -179,17 +179,17 @@ public abstract class Part {
     void setPartBoundary(byte[] boundaryBytes) {
         this.boundaryBytes = boundaryBytes;
     }
-    
+
     /**
      * Tests if this part can be sent more than once.
-     * @return <code>true</code> if {@link #sendData(OutputStream)} can be successfully called 
+     * @return <code>true</code> if {@link #sendData(OutputStream)} can be successfully called
      * more than once.
      * @since 3.0
      */
     public boolean isRepeatable() {
         return true;
     }
-    
+
     /**
      * Write the start to the specified output stream
      * @param out The output stream
@@ -200,10 +200,10 @@ public abstract class Part {
         out.write(getPartBoundary());
         out.write(CRLF_BYTES);
     }
-    
+
     /**
      * Write the content disposition header to the specified output stream
-     * 
+     *
      * @param out The output stream
      * @throws IOException If an IO problem occurs.
      */
@@ -213,7 +213,7 @@ public abstract class Part {
         out.write(EncodingUtils.getAsciiBytes(getName()));
         out.write(QUOTE_BYTES);
     }
-    
+
     /**
      * Write the content type header to the specified output stream
      * @param out The output stream
@@ -234,9 +234,9 @@ public abstract class Part {
     }
 
     /**
-     * Write the content transfer encoding header to the specified 
+     * Write the content transfer encoding header to the specified
      * output stream
-     * 
+     *
      * @param out The output stream
      * @throws IOException If an IO problem occurs.
      */
@@ -258,22 +258,22 @@ public abstract class Part {
         out.write(CRLF_BYTES);
         out.write(CRLF_BYTES);
     }
-    
+
     /**
      * Write the data to the specified output stream
      * @param out The output stream
      * @throws IOException If an IO problem occurs.
      */
     protected abstract void sendData(OutputStream out) throws IOException;
-    
+
     /**
      * Return the length of the main content
-     * 
+     *
      * @return long The length.
      * @throws IOException If an IO problem occurs
      */
     protected abstract long lengthOfData() throws IOException;
-    
+
     /**
      * Write the end data to the output stream.
      * @param out The output stream
@@ -282,12 +282,12 @@ public abstract class Part {
     protected void sendEnd(OutputStream out) throws IOException {
         out.write(CRLF_BYTES);
     }
-    
+
     /**
      * Write all the data to the output stream.
-     * If you override this method make sure to override 
+     * If you override this method make sure to override
      * #length() as well
-     * 
+     *
      * @param out The output stream
      * @throws IOException If an IO problem occurs.
      */
@@ -304,9 +304,9 @@ public abstract class Part {
 
     /**
      * Return the full length of all the data.
-     * If you override this method make sure to override 
+     * If you override this method make sure to override
      * #send(OutputStream) as well
-     * 
+     *
      * @return long The length.
      * @throws IOException If an IO problem occurs
      */
@@ -328,7 +328,7 @@ public abstract class Part {
      * Return a string representation of this object.
      * @return A string representation of this object.
      * @see java.lang.Object#toString()
-     */    
+     */
     @Override
     public String toString() {
         return this.getName();
@@ -336,10 +336,10 @@ public abstract class Part {
 
     /**
      * Write all parts and the last boundary to the specified output stream.
-     * 
+     *
      * @param out The stream to write to.
      * @param parts The parts to write.
-     * 
+     *
      * @throws IOException If an I/O error occurs while writing the parts.
      */
     public static void sendParts(OutputStream out, final Part[] parts)
@@ -349,20 +349,20 @@ public abstract class Part {
 
     /**
      * Write all parts and the last boundary to the specified output stream.
-     * 
+     *
      * @param out The stream to write to.
      * @param parts The parts to write.
      * @param partBoundary The ASCII bytes to use as the part boundary.
-     * 
+     *
      * @throws IOException If an I/O error occurs while writing the parts.
-     * 
+     *
      * @since 3.0
      */
     public static void sendParts(OutputStream out, Part[] parts, byte[] partBoundary)
         throws IOException {
-        
+
         if (parts == null) {
-            throw new IllegalArgumentException("Parts may not be null"); 
+            throw new IllegalArgumentException("Parts may not be null");
         }
         if (partBoundary == null || partBoundary.length == 0) {
             throw new IllegalArgumentException("partBoundary may not be empty");
@@ -377,34 +377,34 @@ public abstract class Part {
         out.write(EXTRA_BYTES);
         out.write(CRLF_BYTES);
     }
-    
+
     /**
      * Return the total sum of all parts and that of the last boundary
-     * 
+     *
      * @param parts The parts.
      * @return The total length
-     * 
+     *
      * @throws IOException If an I/O error occurs while writing the parts.
      */
     public static long getLengthOfParts(Part[] parts)
     throws IOException {
         return getLengthOfParts(parts, DEFAULT_BOUNDARY_BYTES);
     }
-    
+
     /**
      * Gets the length of the multipart message including the given parts.
-     * 
+     *
      * @param parts The parts.
      * @param partBoundary The ASCII bytes to use as the part boundary.
      * @return The total length
-     * 
+     *
      * @throws IOException If an I/O error occurs while writing the parts.
-     * 
+     *
      * @since 3.0
      */
     public static long getLengthOfParts(Part[] parts, byte[] partBoundary) throws IOException {
         if (parts == null) {
-            throw new IllegalArgumentException("Parts may not be null"); 
+            throw new IllegalArgumentException("Parts may not be null");
         }
         long total = 0;
         for (int i = 0; i < parts.length; i++) {
@@ -421,5 +421,5 @@ public abstract class Part {
         total += EXTRA_BYTES.length;
         total += CRLF_BYTES.length;
         return total;
-    }        
+    }
 }

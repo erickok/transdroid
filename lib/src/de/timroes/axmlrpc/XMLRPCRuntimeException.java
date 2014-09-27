@@ -13,5 +13,5 @@ public class XMLRPCRuntimeException extends RuntimeException {
 	public XMLRPCRuntimeException(Exception ex) {
 		super(ex);
 	}
-	
+
 }

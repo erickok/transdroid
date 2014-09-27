@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2013 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -40,7 +40,7 @@ public class Log implements ITLogger {
 
 	public static final String LOG_NAME = "Transdroid";
 	private static final long MAX_LOG_AGE = 15 * 60 * 1000; // 15 minutes
-	
+
 	// Access to resources and database in local singleton instance
 	private Context context;
 	@OrmLiteDao(helper = DatabaseHelper.class, model = ErrorLogEntry.class)
@@ -51,7 +51,7 @@ public class Log implements ITLogger {
 	protected Log(Context context) {
 		this.context = context;
 	}
-	
+
 	protected void log(String logName, int priority, String message) {
 		if (navigationHelper.inDebugMode())
 			android.util.Log.println(priority, LOG_NAME, message);
@@ -66,15 +66,15 @@ public class Log implements ITLogger {
 			android.util.Log.e(LOG_NAME, "Cannot write log message to database: " + e.toString());
 		}
 	}
-	
+
 	public static void e(Context caller, String message) {
 		Log_.getInstance_(caller).log(caller.getClass().toString(), android.util.Log.ERROR, message);
 	}
-	
+
 	public static void i(Context caller, String message) {
 		Log_.getInstance_(caller).log(caller.getClass().toString(), android.util.Log.INFO, message);
 	}
-	
+
 	public static void d(Context caller, String message) {
 		Log_.getInstance_(caller).log(caller.getClass().toString(), android.util.Log.DEBUG, message);
 	}

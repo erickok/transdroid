@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon;
 
@@ -32,12 +32,12 @@ import org.transdroid.daemon.util.DLog;
 public class TaskQueue implements Runnable {
 
 	private static final String LOG_NAME = "Queue";
-	
-	private List<DaemonTask> queue;	
+
+	private List<DaemonTask> queue;
 	private Thread worker;
 	private IDaemonCallback callback;
 	private boolean paused;;
-	
+
 	public TaskQueue(IDaemonCallback callback) {
 		queue = Collections.synchronizedList(new LinkedList<DaemonTask>());
 		paused = true;
@@ -45,7 +45,7 @@ public class TaskQueue implements Runnable {
 		worker = new Thread(this);
 		worker.start();
 	}
-	
+
 	/**
 	 * Enqueue a single new task to later perform.
 	 * @param task The task to add to the queue
@@ -54,10 +54,10 @@ public class TaskQueue implements Runnable {
 		queue.add(task);
 		notifyAll();
 	}
-	
+
 	/**
-	 * Queues an old set of tasks again in the queue. This for example can be 
-	 * used to restore on old queue after an Activity was destroyed and 
+	 * Queues an old set of tasks again in the queue. This for example can be
+	 * used to restore on old queue after an Activity was destroyed and
 	 * is restored again.
 	 * @param tasks A list of daemon tasks to queue
 	 */
@@ -74,12 +74,12 @@ public class TaskQueue implements Runnable {
 		queue.clear();
 		notifyAll();
 	}
-	
+
 	/**
 	 * Removes all remaining tasks from the queue that are of some specific type.
-	 * Other remaining tasks will still be executed and running operations are 
+	 * Other remaining tasks will still be executed and running operations are
 	 * still continued and their results posted back.
-	 * @param class1 
+	 * @param class1
 	 */
 	public synchronized void clear(DaemonMethod ofType) {
 		Iterator<DaemonTask> task = queue.iterator();
@@ -90,7 +90,7 @@ public class TaskQueue implements Runnable {
 		}
 		notifyAll();
 	}
-	
+
 	/**
 	 * Returns a copy of the queue with all remaining tasks. This can be used
 	 * to save them on an Activity destroy and restore them later using
@@ -100,14 +100,14 @@ public class TaskQueue implements Runnable {
 	public Queue<DaemonTask> getRemainingTasks() {
 		return new LinkedList<DaemonTask>(queue);
 	}
-	
+
 	/**
 	 * Request the task perfoming thread to stop all activity
 	 */
 	public synchronized void requestStop() {
 		paused = true;
 	}
-	
+
 	/**
 	 * Request
 	 */
@@ -118,9 +118,9 @@ public class TaskQueue implements Runnable {
 
 	@Override
 	public void run() {
-		
+
 		while (true) {
-			
+
 			if (this.paused) {
 				// We are going to pause
 				DLog.d(LOG_NAME, "Task queue pausing");
@@ -137,19 +137,19 @@ public class TaskQueue implements Runnable {
 			}
 
 			processTask();
-			
+
 			if (queue.isEmpty()) {
 				callback.onQueueEmpty();
 				// We are going to pause
 				DLog.d(LOG_NAME, "Task queue pausing (queue empty)");
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	private void processTask() {
-		
+
 		// Get the task to execute
 		DaemonTask task = queue.remove(0);
 		if (task == null) {
@@ -158,14 +158,14 @@ public class TaskQueue implements Runnable {
 
 		if (callback.isAttached())
 			callback.onQueuedTaskStarted(task);
-		
+
 		// Ask the daemon adapter to perform the task (which does it synchronously)
 		DLog.d(LOG_NAME, "Starting task: " + task.toString());
 		DaemonTaskResult result = task.execute();
 
 		if (callback.isAttached())
 			callback.onQueuedTaskFinished(task);
-		
+
 		// Return the result (to the UI thread)
 		DLog.d(LOG_NAME, "Task result: " + (result == null? "null": result.toString()));
 		if (result != null && !this.paused && callback.isAttached()) {
@@ -177,5 +177,5 @@ public class TaskQueue implements Runnable {
 		}
 
 	}
-	
+
 }

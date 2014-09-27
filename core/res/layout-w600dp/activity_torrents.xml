@@ -15,7 +15,7 @@
 		android:layout_weight="1"
 		android:choiceMode="singleChoice"
 		android:listSelector="?attr/selectable_background_transdroid" />
-	
+
 	<fragment
 		android:id="@+id/torrents_fragment"
 		android:layout_width="0dip"

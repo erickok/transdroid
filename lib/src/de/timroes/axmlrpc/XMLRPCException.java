@@ -10,7 +10,7 @@ public class XMLRPCException extends Exception {
 	public XMLRPCException() {
 		super();
 	}
-	
+
 	public XMLRPCException(Exception ex) {
 		super(ex);
 	}

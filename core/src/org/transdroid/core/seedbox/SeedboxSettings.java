@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2013 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,7 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 /**
- * Interface to implement by any seedbox type (as appears in the {@link SeedboxProvider} enum) to access and modify 
+ * Interface to implement by any seedbox type (as appears in the {@link SeedboxProvider} enum) to access and modify
  * seedbox settings for a certain seedbox provider.
  * @author Eric Kok
  */
@@ -63,7 +63,7 @@ public interface SeedboxSettings {
 	 * @return A list of all server settings objects that are stored for this seedbox type
 	 */
 	public List<ServerSetting> getAllServerSettings(SharedPreferences prefs, int orderOffset);
-	
+
 	/**
 	 * Should remove the settings of a specific seedbox specification as identified by its seedbox provider-unique order
 	 * number.

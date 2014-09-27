@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon;
 
@@ -27,7 +27,7 @@ import android.os.Parcelable;
 
 /**
  * Represents a single file contained in a torrent.
- * 
+ *
  * @author erickok
  *
  */
@@ -60,7 +60,7 @@ public final class TorrentFile implements Parcelable, Comparable<TorrentFile>, F
 		this.downloaded = in.readLong();
 		this.priority = Priority.getPriority(in.readInt());
 	}
-	
+
 	public String getKey() {
 		return this.key;
 	}
@@ -130,7 +130,7 @@ public final class TorrentFile implements Parcelable, Comparable<TorrentFile>, F
      */
 	public String getMimeType() {
 		// TODO: Test if this still works
-		
+
 		if (getFullPath() != null && getFullPath().contains(".")) {
 			final String ext = getFullPath().substring(getFullPath().lastIndexOf('.') + 1);
 			if (mimeTypes.containsKey(ext)) {
@@ -198,7 +198,7 @@ public final class TorrentFile implements Parcelable, Comparable<TorrentFile>, F
     	types.put("wmv", "video/x-ms-wmv");
     	return types;
     }
-    
+
     public static final Parcelable.Creator<TorrentFile> CREATOR = new Parcelable.Creator<TorrentFile>() {
     	public TorrentFile createFromParcel(Parcel in) {
     		return new TorrentFile(in);
@@ -213,7 +213,7 @@ public final class TorrentFile implements Parcelable, Comparable<TorrentFile>, F
 	public int describeContents() {
 		return 0;
 	}
-	
+
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(key);

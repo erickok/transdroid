@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon.Vuze;
 
@@ -75,23 +75,23 @@ public class VuzeAdapter implements IDaemonAdapter {
 	private Long savedDownloadManagerID;
 	private Long savedTorrentManagerID;
 	private Long savedPluginConfigID;
-	
+
 	public VuzeAdapter(DaemonSettings settings) {
 		this.settings = settings;
 	}
 
 	@Override
 	public DaemonTaskResult executeTask(DaemonTask task) {
-		
+
 		try {
 			switch (task.getMethod()) {
 			case Retrieve:
 
 				Object result = makeVuzeCall(DaemonMethod.Retrieve, "getDownloads");
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result),null);
-				
+
 			case GetFileList:
-				
+
 				// Retrieve a listing of the files in some torrent
 				Object fresult = makeVuzeCall(DaemonMethod.GetFileList, "getDiskManagerFileInfo", task.getTargetTorrent(), new Object[] {} );
 				return new GetFileListTaskSuccessResult((GetFileListTask) task, onTorrentFilesRetrieved(fresult, task.getTargetTorrent()));
@@ -123,14 +123,14 @@ public class VuzeAdapter implements IDaemonAdapter {
 				}
 				makeVuzeCall(DaemonMethod.AddByFile, "createFromBEncodedData[byte[]]", new String[] { Base16Encoder.encode(bytes) });
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case AddByUrl:
 
 				// Request to add a torrent by URL
 				String url = ((AddByUrlTask)task).getUrl();
 				makeVuzeCall(DaemonMethod.AddByUrl, "addDownload[URL]", new URL[] { new URL(url) });
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case Remove:
 
 				// Remove a torrent
@@ -141,13 +141,13 @@ public class VuzeAdapter implements IDaemonAdapter {
 					makeVuzeCall(DaemonMethod.Remove, "remove", task.getTargetTorrent(), new Object[] {} );
 				}
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case Pause:
 
 				// Pause a torrent
 				makeVuzeCall(DaemonMethod.Pause, "stop", task.getTargetTorrent(), new Object[] {} );
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case PauseAll:
 
 				// Resume all torrents
@@ -159,7 +159,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 				// Resume a torrent
 				makeVuzeCall(DaemonMethod.Start, "restart", task.getTargetTorrent(), new Object[] {} );
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case ResumeAll:
 
 				// Resume all torrents
@@ -183,7 +183,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 					}
 				}
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case SetTransferRates:
 
 				// Request to set the maximum transfer rates
@@ -192,7 +192,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 				makeVuzeCall(DaemonMethod.SetTransferRates, "setCoreIntParameter[String,int]", new Object[] { "Max Upload Speed KBs", (ratesTask.getUploadRate() == null? 0: ratesTask.getUploadRate().intValue())} );
 				makeVuzeCall(DaemonMethod.SetTransferRates, "setCoreIntParameter[String,int]", new Object[] { "Max Download Speed KBs", (ratesTask.getDownloadRate() == null? 0: ratesTask.getDownloadRate().intValue())} );
 				return new DaemonTaskSuccessResult(task);
-				
+
 			default:
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
 			}
@@ -206,7 +206,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 	private Map<String, Object> makeVuzeCall(DaemonMethod method, String serverMethod, Torrent actOnTorrent, Object[] params) throws DaemonException {
 		return makeVuzeCall(method, serverMethod, Long.parseLong(actOnTorrent.getUniqueID()), params, actOnTorrent.getStatusCode());
 	}
-	
+
 	private Map<String, Object> makeVuzeCall(DaemonMethod method, String serverMethod, Long actOnObject, Object[] params) throws DaemonException {
 		return makeVuzeCall(method, serverMethod, actOnObject, params, null);
 	}
@@ -222,7 +222,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 	private synchronized Map<String, Object> makeVuzeCall(DaemonMethod method, String serverMethod, Long actOnObject, Object[] params, TorrentStatus torrentStatus) throws DaemonException {
 
 		// TODO: It would be nicer to now split each of these steps into separate makeVuzeCalls when there are multiple logical steps such as stopping a torrent before removing it
-	
+
 		// Initialise the HTTP client
 		if (rpcclient == null) {
 			initialise();
@@ -236,7 +236,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 			Map<String, Object> plugin = rpcclient.callXMLRPC(null, "getSingleton", null, null, false);
 			if (!plugin.containsKey("_connection_id")) {
 				throw new DaemonException(ExceptionType.UnexpectedResponse, "No connection ID returned on getSingleton request.");
-			}				
+			}
 			savedConnectionID = (Long) plugin.get("_connection_id");
 			savedPluginID = (Long) plugin.get("_object_id");
 		}
@@ -245,30 +245,30 @@ public class VuzeAdapter implements IDaemonAdapter {
 		long vuzeObjectID;
 		if (actOnObject == null) {
 			if (method == DaemonMethod.SetTransferRates) {
-				
+
 				// Execute this method against the plugin config (setParameter)
 				if (savedPluginConfigID == null) {
 					// Plugin config needed, but we don't know it's ID yet
 					Map<String, Object> config = rpcclient.callXMLRPC(savedPluginID, "getPluginconfig", null, savedConnectionID, false);
 					if (!config.containsKey("_object_id")) {
 						throw new DaemonException(ExceptionType.UnexpectedResponse, "No plugin config ID returned on getPluginconfig");
-					}				
+					}
 					savedPluginConfigID = (Long) config.get("_object_id");
 					vuzeObjectID = savedPluginConfigID;
 				} else {
 					// We stored the plugin config ID, so no need to ask for it again
 					vuzeObjectID = savedPluginConfigID;
 				}
-				
+
 			} else if (serverMethod.equals("createFromBEncodedData[byte[]]")) {
-					
+
 					// Execute this method against the torrent manager (createFromBEncodedData)
 					if (savedTorrentManagerID == null) {
 						// Download manager needed, but we don't know it's ID yet
 						Map<String, Object> manager = rpcclient.callXMLRPC(savedPluginID, "getTorrentManager", null, savedConnectionID, false);
 						if (!manager.containsKey("_object_id")) {
 							throw new DaemonException(ExceptionType.UnexpectedResponse, "No torrent manager ID returned on getTorrentManager");
-						}				
+						}
 						savedTorrentManagerID = (Long) manager.get("_object_id");
 						vuzeObjectID = savedTorrentManagerID;
 					} else {
@@ -284,9 +284,9 @@ public class VuzeAdapter implements IDaemonAdapter {
 						}
 						savedDownloadManagerID = (Long) manager.get("_object_id");
 					}
-					
+
 			} else {
-				
+
 				// Execute this method against download manager (addDownload, startAllDownloads, etc.)
 				if (savedDownloadManagerID == null) {
 					// Download manager needed, but we don't know it's ID yet
@@ -300,17 +300,17 @@ public class VuzeAdapter implements IDaemonAdapter {
 					// We stored the download manager ID, so no need to ask for it again
 					vuzeObjectID = savedDownloadManagerID;
 				}
-				
+
 			}
 		} else {
 			vuzeObjectID = actOnObject;
 		}
-		
+
 		if (method == DaemonMethod.Remove && torrentStatus != null && torrentStatus != TorrentStatus.Paused) {
 			// Vuze, for some strange reason, wants us to stop the torrent first before removing it
 			rpcclient.callXMLRPC(vuzeObjectID, "stop", new Object[] {}, savedConnectionID, false);
 		}
-		
+
 		boolean paramsAreVuzeObjects = false;
 		if (serverMethod.equals("createFromBEncodedData[byte[]]")) {
 			// Vuze does not directly add the torrent that we are uploading the file contents of
@@ -321,10 +321,10 @@ public class VuzeAdapter implements IDaemonAdapter {
 			params = new String[] { ((Long) torrentData.get("_object_id")).toString() };
 			paramsAreVuzeObjects = true;
 		}
-		
+
 		// Call the actual method we wanted
 		return rpcclient.callXMLRPC(vuzeObjectID, serverMethod, params, savedConnectionID, paramsAreVuzeObjects);
-		
+
 	}
 
 	/**
@@ -334,9 +334,9 @@ public class VuzeAdapter implements IDaemonAdapter {
 	private void initialise() throws DaemonException {
 
 		this.rpcclient = new VuzeXmlOverHttpClient(settings, buildWebUIUrl());
-		
+
 	}
-	
+
 	/**
 	 * Build the URL of the Vuze XML over HTTP plugin listener from the user settings.
 	 * @return The URL of the RPC API
@@ -347,30 +347,30 @@ public class VuzeAdapter implements IDaemonAdapter {
 
 	@SuppressWarnings("unchecked")
 	private List<Torrent> onTorrentsRetrieved(Object result) throws DaemonException {
-		
+
 		Map<String, Object> response = (Map<String, Object>) result;
-		
+
 		// We might have an empty list if no torrents are on the server
 		if (response == null) {
 			return new ArrayList<Torrent>();
 		}
-		
+
 		DLog.d(LOG_NAME, response.toString().length() > 300? response.toString().substring(0, 300) + "... (" + response.toString().length() + " chars)": response.toString());
-		
+
 		List<Torrent> torrents = new ArrayList<Torrent>();
-		
+
 		// Parse torrent list from Vuze response, which is a map list of ENTRYs
 		for (String key : response.keySet()) {
-		
+
 			/**
 			 *  Every Vuze ENTRY is a map of key-value pairs with information, or a key-map pair with that map being a mapping of key-value pairs with information
 			 *  VuzeXmlTorrentListResponse.txt in the Transdroid wiki shows a full example response, but it looks something like:
 			 *  ENTRY0={
-					position=1, 
-					torrent_file=/home/erickok/.azureus/torrents/ubuntu.torrent, 
-					name=ubuntu-9.04-desktop-i386.iso, 
+					position=1,
+					torrent_file=/home/erickok/.azureus/torrents/ubuntu.torrent,
+					name=ubuntu-9.04-desktop-i386.iso,
 					torrent={
-						size=732909568,  
+						size=732909568,
 						creation_date=1240473087
 					}
 				}
@@ -393,7 +393,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 			int rateDownload = ((Long) statsinfo.get("download_average")).intValue();
 			Double availability = (Double)statsinfo.get("availability");
 			Long size = torrentinfo != null? (Long)torrentinfo.get("size"): 0;
-			
+
 			torrents.add(new Torrent(
 				(Long) info.get("_object_id"), // id
 				((Long) info.get("_object_id")).toString(), // hash	//(String) torrentinfo.get("hash"), // hash
@@ -417,49 +417,49 @@ public class VuzeAdapter implements IDaemonAdapter {
 				null, // Unsupported?
 				error,
 				settings.getType()));
-			
+
 		}
-		
+
 		return torrents;
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
 	private List<TorrentFile> onTorrentFilesRetrieved(Object result, Torrent torrent) {
-		
+
 		Map<String, Object> response = (Map<String, Object>) result;
-		
+
 		// We might have an empty list
 		if (response == null) {
 			return new ArrayList<TorrentFile>();
 		}
-		
+
 		//DLog.d(LOG_NAME, response.toString().length() > 300? response.toString().substring(0, 300) + "... (" + response.toString().length() + " chars)": response.toString());
 
 		List<TorrentFile> files = new ArrayList<TorrentFile>();
-		
+
 		// Parse torrent file list from Vuze response, which is a map list of ENTRYs
 		for (String key : response.keySet()) {
-		
+
 			/**
 			 *  Every Vuze ENTRY is a map of key-value pairs with information
 			 *  For file lists, it looks something like:
 			 *  ENTRY2={
-				 	is_deleted=false, 
-				 	length=298, 
-				 	downloaded=298, 
-				 	is_priority=false, 
-				 	first_piece_number=726, 
-				 	is_skipped=false, 
-				 	file=/var/data/Downloads/Some.Torrent/OneFile.txt, 
-				 	_object_id=443243294889782236, 
-				 	num_pieces=1, 
+				 	is_deleted=false,
+				 	length=298,
+				 	downloaded=298,
+				 	is_priority=false,
+				 	first_piece_number=726,
+				 	is_skipped=false,
+				 	file=/var/data/Downloads/Some.Torrent/OneFile.txt,
+				 	_object_id=443243294889782236,
+				 	num_pieces=1,
 				 	access_mode=1
 				}
 			 */
 			Map<String, Object> info = (Map<String, Object>) response.get(key);
 			String file = (String)info.get("file");
-			
+
 			files.add(new TorrentFile(
 				"" + (Long)info.get("_object_id"),
 				new File(file).getName(), // name
@@ -468,19 +468,19 @@ public class VuzeAdapter implements IDaemonAdapter {
 				(Long)info.get("length"), // size
 				(Long)info.get("downloaded"), // downloaded
 				convertVuzePriority((String)info.get("is_skipped"), (String)info.get("is_priority")))); // priority
-			
+
 		}
-		
+
 		return files;
-		
+
 	}
-	
+
 	private Priority convertVuzePriority(String isSkipped, String isPriority) {
 		return isSkipped.equals("true")? Priority.Off: (isPriority.equals("true")? Priority.High: Priority.Normal);
 	}
 
 	private TorrentStatus convertTorrentStatus(Long state) {
-		
+
 		switch (state.intValue()) {
 		case 2:
 			return TorrentStatus.Checking;
@@ -505,5 +505,5 @@ public class VuzeAdapter implements IDaemonAdapter {
 	public DaemonSettings getSettings() {
 		return this.settings;
 	}
-	
+
 }

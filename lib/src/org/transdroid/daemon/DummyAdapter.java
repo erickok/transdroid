@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon;
 
@@ -76,8 +76,8 @@ public class DummyAdapter implements IDaemonAdapter {
 		this.dummyLabels = new ArrayList<Label>();
 		String[] names = new String[] { "Documentary ", "Book ", "CD Image ", "Mix tape ", "App " };
 		String[] labels = new String[] { "docs", "books", "isos", "music", "software" };
-		TorrentStatus[] statuses = new TorrentStatus[] { TorrentStatus.Seeding, TorrentStatus.Downloading, 
-				TorrentStatus.Paused, TorrentStatus.Queued, TorrentStatus.Downloading, TorrentStatus.Seeding, 
+		TorrentStatus[] statuses = new TorrentStatus[] { TorrentStatus.Seeding, TorrentStatus.Downloading,
+				TorrentStatus.Paused, TorrentStatus.Queued, TorrentStatus.Downloading, TorrentStatus.Seeding,
 				TorrentStatus.Error };
 		Random random = new Random();
 		for (int i = 1; i < 26; i++) {
@@ -89,31 +89,31 @@ public class DummyAdapter implements IDaemonAdapter {
 			long left = status == TorrentStatus.Downloading ? (long) (size * random.nextDouble()) : 0;
 			int rateDownload = status == TorrentStatus.Downloading ? (int) (1024D * 100D * i * random.nextDouble())
 					: 0;
-			int rateUpload = status == TorrentStatus.Downloading || status == TorrentStatus.Seeding ? 
+			int rateUpload = status == TorrentStatus.Downloading || status == TorrentStatus.Seeding ?
 					(int) (1024D * 100D * i * random.nextDouble()) : 0;
 			this.dummyTorrents.add(
 					new Torrent(
-							i, 
-							"torrent_" + i, 
-							name, 
-							status, 
-							"/downloads/" + name.replace(" ", "_"), 
-							rateDownload, 
-							rateUpload, 
-							peersGetting, 
-							peersSending, 
+							i,
+							"torrent_" + i,
+							name,
+							status,
+							"/downloads/" + name.replace(" ", "_"),
+							rateDownload,
+							rateUpload,
+							peersGetting,
+							peersSending,
 							peersGetting + peersSending, // Total connections
 							(peersGetting + peersSending) * 2, // Twice the total connections
 							(int) (status == TorrentStatus.Downloading?
 									left / rateDownload: 0), // Eta
-							size - left, 
+							size - left,
 							(long)((double)(size - left) * 3D * random.nextDouble()), // Up to 3 times the amount downloaded
-							size, 
+							size,
 							(float)(size - left) / size, // Part done
 							1F, // Always 100% available
 							labels[i % labels.length],
-							new Date(System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000)), // Last week 
-							null, 
+							new Date(System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000)), // Last week
+							null,
 							status == TorrentStatus.Error?
 									"Dummy error": null,
 							settings.getType()));
@@ -136,14 +136,14 @@ public class DummyAdapter implements IDaemonAdapter {
 
 				return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, new TorrentDetails(
 						trackersList,
-						task.getTargetTorrent().getStatusCode() == TorrentStatus.Error ? 
+						task.getTargetTorrent().getStatusCode() == TorrentStatus.Error ?
 								Arrays.asList("Trackers not working.", "Files not available.") : null));
 
 			case GetFileList:
 
 				Torrent t = task.getTargetTorrent();
 				List<TorrentFile> dummyFiles = new ArrayList<TorrentFile>();
-				Priority priorities[] = new Priority[] { Priority.Normal, Priority.Normal, Priority.High, Priority.Low, 
+				Priority priorities[] = new Priority[] { Priority.Normal, Priority.Normal, Priority.High, Priority.Low,
 						Priority.Normal };
 				for (int i = 1; i < 16; i++) {
 					String fileName = "file_" + i + ".ext";
@@ -157,10 +157,10 @@ public class DummyAdapter implements IDaemonAdapter {
 				return new GetFileListTaskSuccessResult((GetFileListTask) task, dummyFiles);
 
 			case GetStats:
-				
-				return new GetStatsTaskSuccessResult((GetStatsTask) task, alternativeModeEnabled, 1024L * 1024L * 
+
+				return new GetStatsTaskSuccessResult((GetStatsTask) task, alternativeModeEnabled, 1024L * 1024L *
 						1024L * 100);
-				
+
 			case AddByFile:
 
 				String file = ((AddByFileTask) task).getFile();
@@ -211,7 +211,7 @@ public class DummyAdapter implements IDaemonAdapter {
 				return new DaemonTaskSuccessResult(task);
 
 			case Resume:
-				
+
 				task.getTargetTorrent().mimicPause();
 				return new DaemonTaskSuccessResult(task);
 
@@ -223,7 +223,7 @@ public class DummyAdapter implements IDaemonAdapter {
 				return new DaemonTaskSuccessResult(task);
 
 			case Stop:
-				
+
 				task.getTargetTorrent().mimicStop();
 				return new DaemonTaskSuccessResult(task);
 
@@ -282,15 +282,15 @@ public class DummyAdapter implements IDaemonAdapter {
 				return new DaemonTaskSuccessResult(task);
 
 			case SetDownloadLocation:
-				
+
 				task.getTargetTorrent().mimicNewLocation(((SetDownloadLocationTask) task).getNewLocation());
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case SetAlternativeMode:
-				
+
 				alternativeModeEnabled = ((SetAlternativeModeTask) task).isAlternativeModeEnabled();
 				return new DaemonTaskSuccessResult(task);
-				
+
 			default:
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
 						task.getMethod() + " is not supported by " + getType()));

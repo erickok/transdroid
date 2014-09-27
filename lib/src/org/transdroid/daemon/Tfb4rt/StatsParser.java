@@ -16,7 +16,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * A Torrentflux-b4rt-specific parser for it's stats.xml output.
- * 
+ *
  * @author erickok
  *
  */
@@ -25,7 +25,7 @@ public class StatsParser {
 	public static List<Torrent> parse(Reader in) throws DaemonException {
 
 		try {
-			
+
 			// Use a PullParser to handle XML tags one by one
 			XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
 			//in = new FileReader("/sdcard/tfdebug.xml");
@@ -41,7 +41,7 @@ public class StatsParser {
 			TorrentStatus status = TorrentStatus.Unknown;
 			long size = 0;		// Total size
 			long upSize = -1;	// Total uploaded
-			
+
 			// Start pulling
 			List<Torrent> torrents = new ArrayList<Torrent>();
 			int next = xpp.nextTag();
@@ -54,28 +54,28 @@ public class StatsParser {
 				// We are given an html page instead of xml data; probably an authentication error
 				throw new DaemonException(DaemonException.ExceptionType.UnexpectedResponse, "RSS feed found instead of XML data; configuration error?");
 			}
-			
+
 			while (next != XmlPullParser.END_DOCUMENT) {
-				
+
 				if (next == XmlPullParser.END_TAG && name.equals("transfer")) {
-					
+
 					// End of a 'transfer' item, add gathered torrent data
 					torrents.add(new Torrent(
-							id++, 
-							tname, 
-							tname, 
-							status, 
-							null, 
-							down, 
-							up, 
-							0, 
-							0, 
-							0, 
-							0, 
-							time, 
+							id++,
+							tname,
+							tname,
+							status,
+							null,
+							down,
+							up,
+							0,
+							0,
+							0,
+							0,
+							time,
 							(progress > 1L? size: (long)(progress * size)), // Cap the download size to the torrent size
 							(upSize == -1? (progress > 1L? (long)(progress * size): 0L): upSize), // If T. Up doesn't exist, we can use the progress size instead
-							size, 
+							size,
 							(status == TorrentStatus.Seeding? 1F: progress),
 							0f,
 							null, // Not supported in the XML stats
@@ -83,13 +83,13 @@ public class StatsParser {
 							null,
 							null,
 							Daemon.Tfb4rt));
-					
+
 				} else if (next == XmlPullParser.START_TAG && name.equals("transfer")){
-					
+
 					// Start of a new 'transfer' item, for which the name is in the first attribute
 					// i.e. '<transfer name="_isoHunt_ubuntu-9.10-desktop-amd64.iso.torrent">'
 					tname = xpp.getAttributeValue(0);
-					
+
 					// Reset gathered torrent data
 					size = 0;
 					status = TorrentStatus.Unknown;
@@ -99,7 +99,7 @@ public class StatsParser {
 					time = 0;
 
 				} else if (next == XmlPullParser.START_TAG && name.equals("transferStat")){
-					
+
 					// Encountered an actual stat, which will always have an attribute name indicating it's type
 					// i.e. '<transferStat name="Size">691 MB</transferStat>'
 					String type = xpp.getAttributeValue(0);
@@ -131,17 +131,17 @@ public class StatsParser {
 				if (next == XmlPullParser.START_TAG || next == XmlPullParser.END_TAG) {
 					name = xpp.getName();
 				}
-				
+
 			}
-			
+
 			return torrents;
-			
+
 		} catch (XmlPullParserException e) {
 			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
 		} catch (IOException e) {
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	/**
@@ -180,12 +180,12 @@ public class StatsParser {
 	 * @return The eta in number of seconds
 	 */
 	private static int convertEta(String time) {
-		
+
 		if (!time.contains(":")) {
-			// Not running (something like 'Torrent Stopped' is shown) 
+			// Not running (something like 'Torrent Stopped' is shown)
 			return -1;
 		}
-		
+
 		int seconds = 0;
 		// Days
 		if (time.contains("d ")) {
@@ -242,5 +242,5 @@ public class StatsParser {
 		}
 		return TorrentStatus.Unknown;
 	}
-	
+
 }

@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2013 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,7 +37,7 @@ public class NotificationSettings {
 	@RootContext
 	protected Context context;
 	private SharedPreferences prefs;
-	
+
 	protected NotificationSettings(Context context) {
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
@@ -75,7 +75,7 @@ public class NotificationSettings {
 	}
 
 	/**
-	 * Returns the sound (ring tone) to play on a new notification, or null if it should not play any 
+	 * Returns the sound (ring tone) to play on a new notification, or null if it should not play any
 	 * @return Either the user-specified sound, null if the user specified 'Silent' or the system default notification sound
 	 */
 	public Uri getSound() {
@@ -103,7 +103,7 @@ public class NotificationSettings {
 	public long[] getDefaultVibratePattern() {
 		return new long[]{100, 100, 200, 300, 400, 700}; // Unique pattern?
 	}
-	
+
 	private int getRawLedColour() {
 		return prefs.getInt("notifications_ledcolour", -1);
 	}

@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2013 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -162,29 +162,29 @@ public class ApplicationSettings {
 			localPort = port;
 		}
 
-		return new ServerSetting(order, 
-				prefs.getString("server_name_" + order, null), 
-				type, 
-				prefs.getString("server_address_" + order, null), 
+		return new ServerSetting(order,
+				prefs.getString("server_name_" + order, null),
+				type,
+				prefs.getString("server_address_" + order, null),
 				prefs.getString("server_localaddress_" + order, null),
 				Integer.parseInt(localPort),
-				prefs.getString("server_localnetwork_" + order, null), 
-				Integer.parseInt(port), 
-				ssl, 
-				prefs.getBoolean("server_ssltrustall_" + order, false), 
+				prefs.getString("server_localnetwork_" + order, null),
+				Integer.parseInt(port),
+				ssl,
+				prefs.getBoolean("server_ssltrustall_" + order, false),
 				prefs.getString("server_ssltrustkey_" + order, null),
 				prefs.getString("server_folder_" + order, null),
-				!prefs.getBoolean("server_disableauth_" + order, false), 
+				!prefs.getBoolean("server_disableauth_" + order, false),
 				prefs.getString("server_user_" + order, null),
-				prefs.getString("server_pass_" + order, null), 
+				prefs.getString("server_pass_" + order, null),
 				prefs.getString("server_extrapass_" + order, null),
-				OS.fromCode(prefs.getString("server_os_" + order, "type_linux")), 
-				prefs.getString("server_downloaddir_" + order, null), 
-				prefs.getString("server_ftpurl_" + order, null), 
-				prefs.getString("server_ftppass_" + order, null), 
-				Integer.parseInt(prefs.getString("server_timeout_" + order, "8")), 
-				prefs.getBoolean("server_alarmfinished_" + order, true), 
-				prefs.getBoolean("server_alarmnew_" + order, false), 
+				OS.fromCode(prefs.getString("server_os_" + order, "type_linux")),
+				prefs.getString("server_downloaddir_" + order, null),
+				prefs.getString("server_ftpurl_" + order, null),
+				prefs.getString("server_ftppass_" + order, null),
+				Integer.parseInt(prefs.getString("server_timeout_" + order, "8")),
+				prefs.getBoolean("server_alarmfinished_" + order, true),
+				prefs.getBoolean("server_alarmnew_" + order, false),
 				false);
 		// @formatter:on
 	}
@@ -403,9 +403,9 @@ public class ApplicationSettings {
 	 */
 	public WebsearchSetting getWebsearchSetting(int order) {
 		// @formatter:off
-		return new WebsearchSetting(order, 
-				prefs.getString("websearch_name_" + order, null), 
-				prefs.getString("websearch_baseurl_" + order, null), 
+		return new WebsearchSetting(order,
+				prefs.getString("websearch_name_" + order, null),
+				prefs.getString("websearch_baseurl_" + order, null),
 				prefs.getString("websearch_cookies_" + order, null));
 		// @formatter:on
 	}
@@ -467,10 +467,10 @@ public class ApplicationSettings {
 	public RssfeedSetting getRssfeedSetting(int order) {
 		// @formatter:off
 		long lastViewed = prefs.getLong("rssfeed_lastviewed_" + order, -1);
-		return new RssfeedSetting(order, 
-				prefs.getString("rssfeed_name_" + order, null), 
-				prefs.getString("rssfeed_url_" + order, null), 
-				prefs.getBoolean("rssfeed_reqauth_" + order, false), 
+		return new RssfeedSetting(order,
+				prefs.getString("rssfeed_name_" + order, null),
+				prefs.getString("rssfeed_url_" + order, null),
+				prefs.getBoolean("rssfeed_reqauth_" + order, false),
 				lastViewed == -1L ? null : new Date(lastViewed),
 				prefs.getString("rssfeed_lastvieweditemurl_" + order, null));
 		// @formatter:on
@@ -670,11 +670,11 @@ public class ApplicationSettings {
 			return null;
 		// @formatter:off
 		return new ListWidgetConfig(
-				prefs.getInt("widget_server_" + appWidgetId, -1), 
-				StatusType.valueOf(prefs.getString("widget_status_" + appWidgetId, StatusType.ShowAll.name())), 
-				TorrentsSortBy.valueOf(prefs.getString("widget_sortby_" + appWidgetId, TorrentsSortBy.Alphanumeric.name())), 
-				prefs.getBoolean("widget_reverse_" + appWidgetId, false), 
-				prefs.getBoolean("widget_showstatus_" + appWidgetId, false), 
+				prefs.getInt("widget_server_" + appWidgetId, -1),
+				StatusType.valueOf(prefs.getString("widget_status_" + appWidgetId, StatusType.ShowAll.name())),
+				TorrentsSortBy.valueOf(prefs.getString("widget_sortby_" + appWidgetId, TorrentsSortBy.Alphanumeric.name())),
+				prefs.getBoolean("widget_reverse_" + appWidgetId, false),
+				prefs.getBoolean("widget_showstatus_" + appWidgetId, false),
 				prefs.getBoolean("widget_darktheme_" + appWidgetId, false));
 		// @formatter:on
 	}

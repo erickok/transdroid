@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2013 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -149,7 +149,7 @@ public class RssitemsFragment extends Fragment {
 
 			int itemId = item.getItemId();
 			if (itemId == R.id.action_addall) {
-				
+
 				// Start an Intent that adds multiple items at once, by supplying the urls and titles as string array
 				// extras and setting the Intent action to ADD_MULTIPLE
 				Intent intent = new Intent("org.transdroid.ADD_MULTIPLE");
@@ -180,7 +180,7 @@ public class RssitemsFragment extends Fragment {
 				return true;
 
 			} else {
-				
+
 				// The other items only operate on one (the first) selected item
 				if (checked.size() < 1)
 					return false;
@@ -212,7 +212,7 @@ public class RssitemsFragment extends Fragment {
 				}
 				mode.finish();
 				return true;
-				
+
 			}
 		}
 

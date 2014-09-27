@@ -36,10 +36,10 @@ import java.io.InputStream;
 /**
  * A PartSource that reads from a byte array.  This class should be used when
  * the data to post is already loaded into memory.
- * 
+ *
  * @author <a href="mailto:becke@u.washington.edu">Michael Becke</a>
- *   
- * @since 2.0 
+ *
+ * @since 2.0
  */
 public class ByteArrayPartSource implements PartSource {
 
@@ -51,7 +51,7 @@ public class ByteArrayPartSource implements PartSource {
 
     /**
      * Constructor for ByteArrayPartSource.
-     * 
+     *
      * @param fileName the name of the file these bytes represent
      * @param bytes the content of this part
      */

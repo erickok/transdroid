@@ -6,8 +6,8 @@ package org.transdroid.daemon;
  * a standard sort, this algorithm sorts numbers in numeric order.
  *
  * The Alphanum Algorithm is discussed at http://www.DaveKoelle.com
- * 
- * This is an updated version with enhancements made by Daniel Migowski, 
+ *
+ * This is an updated version with enhancements made by Daniel Migowski,
  * Andre Bogus, and David Koelle
  *
  * This library is free software; you can redistribute it and/or

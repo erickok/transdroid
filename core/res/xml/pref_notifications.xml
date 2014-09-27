@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2010-2013 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-	
+
 	<CheckBoxPreference
 		android:key="notifications_enabledrss"
 		android:title="@string/pref_notifications_rss"
 		android:summary="@string/pref_notifications_info"
 		android:defaultValue="true" />
-	
+
 	<CheckBoxPreference
 		android:key="notifications_enabled"
 		android:title="@string/pref_notifications_torrent"
 		android:summary="@string/pref_notifications_info"
 		android:defaultValue="true" />
-	
+
 	<ListPreference
 		android:key="notifications_interval"
 		android:title="@string/pref_notifyinterval"
@@ -43,23 +43,23 @@
 		android:ringtoneType="notification"
 		android:showDefault="true"
 		android:showSilent="true" />
-	
+
 	<CheckBoxPreference
 		android:key="notifications_vibrate"
 		android:title="@string/pref_notifyvibrate"
 		android:defaultValue="false" />
-	
+
 	<net.margaritov.preference.colorpicker.ColorPickerPreference
 		android:key="notifications_ledcolour"
 		android:title="@string/pref_notifyled"
 		android:summary="@string/pref_notifyled_info"
 		android:defaultValue="@color/ledgreen"
 		alphaSlider="false" />
-	
+
 	<CheckBoxPreference
 		android:key="notifications_adwnotify"
 		android:title="@string/pref_adw"
 		android:summary="@string/pref_adw_info"
 		android:defaultValue="false" />
-	
+
 </PreferenceScreen>

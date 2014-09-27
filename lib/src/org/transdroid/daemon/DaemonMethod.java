@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
  package org.transdroid.daemon;
 
@@ -35,13 +35,13 @@ public enum DaemonMethod {
 	StopAll (10),
 	Start (11),
 	StartAll (12),
-	GetFileList (13), 
+	GetFileList (13),
 	SetFilePriorities (14),
 	SetTransferRates (15),
-	SetLabel(16), 
+	SetLabel(16),
 	SetDownloadLocation (17),
-	GetTorrentDetails (18), 
-	SetTrackers (19), 
+	GetTorrentDetails (18),
+	SetTrackers (19),
 	SetAlternativeMode (20),
 	GetStats (21),
 	ForceRecheck (22);
@@ -57,11 +57,11 @@ public enum DaemonMethod {
 	DaemonMethod(int code) {
 		this.code = code;
 	}
-	
+
 	public int getCode() {
 		return code;
 	}
-	
+
 	public static DaemonMethod getStatus(int code) {
 		return lookup.get(code);
 	}

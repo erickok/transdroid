@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
  package org.transdroid.daemon.Vuze;
 
@@ -56,16 +56,16 @@ import org.xmlpull.v1.XmlSerializer;
 import android.util.Xml;
 
 /**
- * Implements an XML-RPC-like client that build and parses XML following 
+ * Implements an XML-RPC-like client that build and parses XML following
  * Vuze's XML over HTTP plug-in (which unfortunately is incompatible with
  * the default XML-RPC protocol).
- * 
+ *
  * The documentation can be found at http://azureus.sourceforge.net/plugin_details.php?plugin=xml_http_if&docu=1#1
  * and some stuff is at http://wiki.vuze.com/index.php/XML_over_HTTP
- * 
+ *
  * A lot of it is copied from the org.xmlrpc.android library's XMLRPCClient
  * as can be found at http://code.google.com/p/android-xmlrpc
- * 
+ *
  * @author erickok
  *
  */
@@ -87,7 +87,7 @@ public class VuzeXmlOverHttpClient {
 	private final static String TAG_ANNOUNCE = "announce_result";
 	private final static String TAG_SCRAPE = "scrape_result";
 	private final static String TAG_CACHED_PROPERTY_NAMES = "cached_property_names";
-	
+
 	private DefaultHttpClient client;
 	private HttpPost postMethod;
 	private Random random;
@@ -105,22 +105,22 @@ public class VuzeXmlOverHttpClient {
 		postMethod.addHeader("Content-Type", "text/xml");
 
         // WARNING
-        // I had to disable "Expect: 100-Continue" header since I had 
-        // two second delay between sending http POST request and POST body 
+        // I had to disable "Expect: 100-Continue" header since I had
+        // two second delay between sending http POST request and POST body
         HttpParams httpParams = postMethod.getParams();
         HttpProtocolParams.setUseExpectContinue(httpParams, false);
 
         HttpConnectionParams.setConnectionTimeout(httpParams, settings.getTimeoutInMilliseconds());
-        HttpConnectionParams.setSoTimeout(httpParams, settings.getTimeoutInMilliseconds()); 
-        
+        HttpConnectionParams.setSoTimeout(httpParams, settings.getTimeoutInMilliseconds());
+
         SchemeRegistry registry = new SchemeRegistry();
 		registry.register(new Scheme("http", new PlainSocketFactory(), 80));
 		SocketFactory https_socket =
 			  settings.getSslTrustAll() 				? new FakeSocketFactory()
 			: settings.getSslTrustKey() != null			? new FakeSocketFactory(settings.getSslTrustKey())
 			: SSLSocketFactory.getSocketFactory();
-		registry.register(new Scheme("https", https_socket, 443)); 
-		
+		registry.register(new Scheme("https", https_socket, 443));
+
         client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, registry), httpParams);
         if (settings.shouldUseAuthentication()) {
             if (settings.getUsername() == null || settings.getPassword() == null) {
@@ -133,11 +133,11 @@ public class VuzeXmlOverHttpClient {
                         new UsernamePasswordCredentials(username, password));
             }
         }
-        
+
 		random = new Random();
 		random.nextInt();
 	}
-	
+
 	/**
 	 * Convenience constructor. Creates new instance based on server String address
 	 * @param settings The server connection settings
@@ -147,23 +147,23 @@ public class VuzeXmlOverHttpClient {
 	public VuzeXmlOverHttpClient(DaemonSettings settings, String url) throws DaemonException {
 		this(settings, URI.create(url));
 	}
-	
+
 	protected Map<String, Object> callXMLRPC(Long object, String method, Object[] params, Long connectionID, boolean paramsAreVuzeObjects) throws DaemonException {
 		try {
-			
+
 			// prepare POST body
 			XmlSerializer serializer = Xml.newSerializer();
 			StringWriter bodyWriter = new StringWriter();
 			serializer.setOutput(bodyWriter);
 			serializer.startDocument(null, null);
 			serializer.startTag(null, TAG_REQUEST);
-			
+
 			// set object
 			if (object != null) {
 				serializer.startTag(null, TAG_OBJECT).startTag(null, TAG_OBJECT_ID)
 					.text(object.toString()).endTag(null, TAG_OBJECT_ID).endTag(null, TAG_OBJECT);
 			}
-			
+
 			// set method
 			serializer.startTag(null, TAG_METHOD).text(method).endTag(null, TAG_METHOD);
 			if (params != null && params.length != 0) {
@@ -184,7 +184,7 @@ public class VuzeXmlOverHttpClient {
 				}
 				serializer.endTag(null, TAG_PARAMS);
 			}
-			
+
 			// set connection id
 			if (connectionID != null) {
 				serializer.startTag(null, TAG_CONNECTION_ID).text(connectionID.toString()).endTag(null, TAG_CONNECTION_ID);
@@ -195,16 +195,16 @@ public class VuzeXmlOverHttpClient {
 
 			serializer.endTag(null, TAG_REQUEST);
 			serializer.endDocument();
-			
+
 			// set POST body
 			HttpEntity entity = new StringEntity(bodyWriter.toString());
 			postMethod.setEntity(entity);
-			
+
 			// Force preemptive authentication
-			// This makes sure there is an 'Authentication: ' header being send before trying and failing and retrying 
+			// This makes sure there is an 'Authentication: ' header being send before trying and failing and retrying
 			// by the basic authentication mechanism of DefaultHttpClient
 			postMethod.addHeader("Authorization", "Basic " + Base64.encodeBytes((username + ":" + password).getBytes()));
-			
+
 			// execute HTTP POST request
 			HttpResponse response = client.execute(postMethod);
 
@@ -221,33 +221,33 @@ public class VuzeXmlOverHttpClient {
 			// setup pull parser
 			XmlPullParser pullParser = XmlPullParserFactory.newInstance().newPullParser();
 			entity = response.getEntity();
-			//String temp = HttpHelper.ConvertStreamToString(entity.getContent());			
+			//String temp = HttpHelper.ConvertStreamToString(entity.getContent());
 			//Reader reader = new StringReader(temp);
 			Reader reader = new InputStreamReader(entity.getContent());
 			pullParser.setInput(reader);
-			
+
 			// lets start pulling...
 			pullParser.nextTag();
 			pullParser.require(XmlPullParser.START_TAG, null, TAG_RESPONSE);
-			
+
 			// build list of returned values
 			int next = pullParser.nextTag(); // skip to first start tag in list
 			String name = pullParser.getName(); // get name of the first start tag
-			
+
 			// Empty response?
 			if (next == XmlPullParser.END_TAG && name.equals(TAG_RESPONSE)) {
-				
+
 				return null;
-				
+
 			} else if (name.equals(TAG_ERROR)) {
-				
+
 				// Error
 				String errorText = pullParser.nextText(); // the value of the ERROR
 				entity.consumeContent();
 				throw new DaemonException(ExceptionType.ConnectionError, errorText);
-				
+
 			} else {
-				
+
 				// Consume a list of ENTRYs?
 				if (name.equals(TAG_ENTRY)) {
 
@@ -258,15 +258,15 @@ public class VuzeXmlOverHttpClient {
 					}
 					entity.consumeContent();
 					return entries;
-					
+
 				} else {
-					
+
 					// Only a single object was returned, not an entry listing
 					return consumeObject(pullParser);
 				}
-			
+
 			}
-			
+
 		} catch (IOException e) {
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		} catch (XmlPullParserException e) {
@@ -278,11 +278,11 @@ public class VuzeXmlOverHttpClient {
 
 		int next = pullParser.nextTag();
 		String name = pullParser.getName();
-		
+
 		// Consume the ENTRY objects
 		Map<String, Object> returnValues = new HashMap<String, Object>();
 		while (next == XmlPullParser.START_TAG) {
-			
+
 			if (name.equals(TAG_TORRENT) || name.equals(TAG_ANNOUNCE) || name.equals(TAG_SCRAPE) || name.equals(TAG_STATS)) {
 				// One of the objects contained inside an entry
 				pullParser.nextTag();
@@ -293,21 +293,21 @@ public class VuzeXmlOverHttpClient {
 			}
 			next = pullParser.nextTag(); // skip to next start tag
 			name = pullParser.getName(); // get name of the new start tag
-			
+
 		}
-		
+
 		// Consume ENTRY ending
 		pullParser.nextTag();
-		
+
 		return returnValues;
-		
+
 	}
 
 	private Map<String, Object> consumeObject(XmlPullParser pullParser) throws XmlPullParserException, IOException {
 
 		int next = XmlPullParser.START_TAG;
 		String name = pullParser.getName();
-		
+
 		// Consume bottom-level (contains no objects of its own) object
 		Map<String, Object> returnValues = new HashMap<String, Object>();
 		while (next == XmlPullParser.START_TAG && !(name.equals(TAG_CACHED_PROPERTY_NAMES))) {
@@ -322,11 +322,11 @@ public class VuzeXmlOverHttpClient {
 			}
 			next = pullParser.nextTag(); // skip to next start tag
 			name = pullParser.getName(); // get name of the new start tag
-			
+
 		}
-		
+
 		return returnValues;
-		
+
 	}
 
 	private String serialize(Object value) {
@@ -340,7 +340,7 @@ public class VuzeXmlOverHttpClient {
 			return null;
 		}
 
-		/* For now cast all integers as Long; this prevents casting problems later on when 
+		/* For now cast all integers as Long; this prevents casting problems later on when
 		 * we know it's a long but the value was small so it is casted to an Integer here
 		// Integer?
 		try {
@@ -349,7 +349,7 @@ public class VuzeXmlOverHttpClient {
 		} catch (NumberFormatException e) {
 			// Just continue trying the next type
 		}*/
-		
+
 		// Long?
 		try {
 			Long longnum = Long.parseLong(rawText);
@@ -357,7 +357,7 @@ public class VuzeXmlOverHttpClient {
 		} catch (NumberFormatException e) {
 			// Just continue trying the next type
 		}
-		
+
 		// Double?
 		try {
 			Double doublenum = Double.parseDouble(rawText);
@@ -365,9 +365,9 @@ public class VuzeXmlOverHttpClient {
 		} catch (NumberFormatException e) {
 			// Just continue trying the next type
 		}
-		
+
 		// String otherwise
 		return rawText;
 	}
-	
+
 }

@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2013 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -42,7 +42,7 @@ public class RssfeedView extends LinearLayout {
 
 	@Bean
 	protected NavigationHelper navigationHelper;
-	
+
 	// Views
 	@ViewById
 	protected ImageView faviconImage;
@@ -67,13 +67,13 @@ public class RssfeedView extends LinearLayout {
 			loadingProgress.setVisibility(View.VISIBLE);
 			newcountText.setVisibility(View.GONE);
 		}
-		
+
 		// Clear and then asynchronously load the RSS feed site' favicon
 		// Uses the g.etfv.co service to resolve the favicon of any feed URL
 		faviconImage.setImageDrawable(null);
 		navigationHelper.getImageCache().displayImage(String.format(GETFVO_URL, rssfeedLoader.getSetting().getUrl()),
 				faviconImage);
-		
+
 	}
 
 	public Channel getChannel() {

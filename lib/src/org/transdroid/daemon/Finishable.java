@@ -19,5 +19,5 @@ public interface Finishable {
 	 *         progress.
 	 */
 	public boolean isFinished();
-	
+
 }

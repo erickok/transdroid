@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2010-2013 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-	
+
 	<PreferenceCategory
 		android:key="header_servers"
 		android:title="@string/pref_servers"
@@ -31,7 +31,7 @@
 			android:order="99"
 			android:defaultValue="-2" />
 	</PreferenceCategory>
-	
+
 	<PreferenceCategory
 		android:key="header_searchsites"
 		android:title="@string/pref_searchsites"
@@ -42,20 +42,20 @@
 			android:order="101" />
 		<Preference
 			android:key="header_addwebsearch"
-			android:title="@string/pref_addwebsearch" 
+			android:title="@string/pref_addwebsearch"
 			android:order="199"/>
 	</PreferenceCategory>
-	
+
 	<PreferenceCategory
 		android:key="header_rssfeeds"
 		android:title="@string/pref_rssfeeds"
 		android:order="200">
 		<Preference
 			android:key="header_addrssfeed"
-			android:title="@string/pref_addrssfeed" 
+			android:title="@string/pref_addrssfeed"
 			android:order="199"/>
 	</PreferenceCategory>
-	
+
 	<PreferenceCategory
 		android:key="header_other"
 		android:title="@string/pref_others"
@@ -73,5 +73,5 @@
 			android:title="@string/pref_help"
 			android:order="303" />
 	</PreferenceCategory>
-	
+
 </PreferenceScreen>

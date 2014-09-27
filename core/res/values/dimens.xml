@@ -1,16 +1,16 @@
 <!--
   Copyright 2010-2013 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -29,7 +29,7 @@
 	<dimen name="text_enlargednumbers">24sp</dimen>
 	<dimen name="text_hugenumbers">35sp</dimen>
 	<dimen name="text_label">14sp</dimen>
-	
+
 	<!-- UI elements -->
 	<dimen name="ui_navigation_filter">17sp</dimen>
 	<dimen name="ui_navigation_server">14sp</dimen>
@@ -42,7 +42,7 @@
 	<dimen name="ui_serverstatus_width">56dp</dimen>
 	<dimen name="ui_bignumber_size">20sp</dimen>
 	<dimen name="ui_bignumber_padding">2dp</dimen>
-	
+
 	<!-- Widget configuration -->
 	<integer name="widget_config_orientation">1</integer>
 	<dimen name="widget_preview_padding">20dp</dimen>
@@ -53,5 +53,5 @@
 	<dimen name="widget_list_item_height">54dp</dimen>
 	<dimen name="widget_list_item_padding">6dp</dimen>
 	<dimen name="widget_list_item_padding_left">12dp</dimen>
-	
+
 </resources>

@@ -13,5 +13,5 @@ public class NoProgressHeaderTransformer extends DefaultHeaderTransformer {
 		super.onViewCreated(activity, headerView);
 		setProgressBarColor(activity.getResources().getColor(R.color.green));
 	}
-	
+
 }

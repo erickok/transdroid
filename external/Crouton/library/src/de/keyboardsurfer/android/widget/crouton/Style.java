@@ -24,7 +24,7 @@ import android.widget.ImageView;
 
 /** The style for a {@link Crouton}. */
 public class Style {
-  
+
   public static final int NOT_SET = -1;
 
   public static final int holoRedLight = 0xffff4444;

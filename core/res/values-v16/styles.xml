@@ -1,31 +1,31 @@
 <!--
   Copyright 2010-2013 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="PopupMenu.Transdroid2" parent="@android:style/Widget.Holo.Light.ListPopupWindow">	
+    <style name="PopupMenu.Transdroid2" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid2</item>
 		<item name="android:fontFamily">sans-serif</item>
     </style>
-	
-    <style name="PopupMenu.Transdroid.Dark" parent="@android:style/Widget.Holo.ListPopupWindow">	
+
+    <style name="PopupMenu.Transdroid.Dark" parent="@android:style/Widget.Holo.ListPopupWindow">
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid</item>
 		<item name="android:fontFamily">sans-serif</item>
     </style>
-	
+
 	<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->
 	<style name="SectionHeader" parent="@android:style/Widget.Holo.Light.TextView">
 		<item name="android:drawableBottom">@drawable/section_header</item>
@@ -36,7 +36,7 @@
 		<item name="android:textSize">14sp</item>
 		<item name="android:fontFamily">sans-serif</item>
 	</style>
-	
+
 	<style name="DefaultTextView" parent="@android:style/Widget.Holo.Light.TextView">
 		<item name="android:textSize">@dimen/text_default</item>
 		<item name="android:fontFamily">sans-serif-light</item>
@@ -52,12 +52,12 @@
 		<item name="android:paddingBottom">2dip</item>
 		<item name="android:fontFamily">sans-serif-condensed</item>
 	</style>
-	
+
 	<style name="BigNumberButton" parent="android:Widget.Holo">
 		<item name="android:background">@drawable/selectable_background_transdroid</item>
 		<item name="android:padding">@dimen/ui_bignumber_padding</item>
 		<item name="android:textSize">@dimen/ui_bignumber_size</item>
 		<item name="android:fontFamily">sans-serif-light</item>
 	</style>
-	
+
 </resources>

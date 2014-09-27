@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon.Ktorrent;
 
@@ -67,7 +67,7 @@ import com.android.internalcopy.http.multipart.Part;
 /**
  * An adapter that allows for easy access to Ktorrent's web interface. Communication
  * is handled via HTTP GET requests and XML responses.
- * 
+ *
  * @author erickok
  *
  */
@@ -100,21 +100,21 @@ public class KtorrentAdapter implements IDaemonAdapter {
 
 	@Override
 	public DaemonTaskResult executeTask(DaemonTask task) {
-		
+
 		try {
 			switch (task.getMethod()) {
 			case Retrieve:
 
 				// Request all torrents from server
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, makeStatsRequest(),null);
-				
+
 			case GetFileList:
-				
+
 				// Request file listing for a torrent
 				return new GetFileListTaskSuccessResult((GetFileListTask) task, makeFileListRequest(task.getTargetTorrent()));
-				
+
 			case AddByFile:
-				
+
 				// Add a torrent to the server by sending the contents of a local .torrent file
 				String file = ((AddByFileTask)task).getFile();
 				makeFileUploadRequest(file);
@@ -140,13 +140,13 @@ public class KtorrentAdapter implements IDaemonAdapter {
 				// Note that removing with data is not supported
 				makeActionRequest("remove=" + task.getTargetTorrent().getUniqueID());
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case Pause:
 
 				// Pause a torrent
 				makeActionRequest("stop=" + task.getTargetTorrent().getUniqueID());
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case PauseAll:
 
 				// Pause all torrents
@@ -158,7 +158,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 				// Resume a torrent
 				makeActionRequest("start=" + task.getTargetTorrent().getUniqueID());
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case ResumeAll:
 
 				// Resume all torrents
@@ -184,21 +184,21 @@ public class KtorrentAdapter implements IDaemonAdapter {
 				}
 				// It seems KTorrent's web UI does not allow for setting all priorities in one request :(
 				for (TorrentFile forFile : prioTask.getForFiles()) {
-					makeActionRequest(act + forFile.getKey());	
+					makeActionRequest(act + forFile.getKey());
 				}
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case SetTransferRates:
 
 				// Request to set the maximum transfer rates
 				// TODO: Implement this?
 				return null;
-				
+
 			default:
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (LoggedOutException e) {
-			
+
 			// Invalidate our session
 			httpclient = null;
 			if (retries < 2) {
@@ -210,25 +210,25 @@ public class KtorrentAdapter implements IDaemonAdapter {
 				// Never retry more than twice; in this case just return a task failure
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ConnectionError, "Retried " + retries + " already, so we stopped now"));
 			}
-			
+
 		} catch (DaemonException e) {
 
 			// Invalidate our session
 			httpclient = null;
 			// Return the task failure
 			return new DaemonTaskFailureResult(task, e);
-			
+
 		}
 	}
 
 	private List<Torrent> makeStatsRequest() throws DaemonException, LoggedOutException {
 
 		try {
-				
+
 			// Initialise the HTTP client
 			initialise();
 			makeLoginRequest();
-			
+
 			// Make request
 			HttpGet httpget = new HttpGet(buildWebUIUrl() + RPC_URL_STATS);
 			HttpResponse response = httpclient.execute(httpget);
@@ -237,8 +237,8 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			InputStream instream = response.getEntity().getContent();
 			List<Torrent> torrents = StatsParser.parse(new InputStreamReader(instream), settings.getDownloadDir(), settings.getOS().getPathSeperator());
 			instream.close();
-			return torrents;			
-			
+			return torrents;
+
 		} catch (LoggedOutException e) {
 			throw e;
 		} catch (DaemonException e) {
@@ -248,17 +248,17 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			DLog.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	private List<TorrentFile> makeFileListRequest(Torrent torrent) throws DaemonException, LoggedOutException {
 
 		try {
-				
+
 			// Initialise the HTTP client
 			initialise();
 			makeLoginRequest();
-			
+
 			// Make request
 			HttpGet httpget = new HttpGet(buildWebUIUrl() + RPC_URL_FILES + torrent.getUniqueID());
 			HttpResponse response = httpclient.execute(httpget);
@@ -267,13 +267,13 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			InputStream instream = response.getEntity().getContent();
 			List<TorrentFile> files = FileListParser.parse(new InputStreamReader(instream), torrent.getLocationDir());
 			instream.close();
-			
+
 			// If the files list is empty, it means that this is a single-file torrent
 			// We can mimic this single file form the torrent statistics itself
 			files.add(new TorrentFile("" + 0, torrent.getName(), torrent.getName(), torrent.getLocationDir() + torrent.getName(), torrent.getTotalSize(), torrent.getDownloadedEver(), Priority.Normal));
-			
-			return files;			
-			
+
+			return files;
+
 		} catch (LoggedOutException e) {
 			throw e;
 		} catch (DaemonException e) {
@@ -283,7 +283,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			DLog.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	private void makeLoginRequest() throws DaemonException {
@@ -313,7 +313,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			/*InputStream instream2 = response2.getEntity().getContent();
 			String result2 = HttpHelper.ConvertStreamToString(instream2);
 			instream2.close();*/
-			
+
 			// Successfully logged in; we may retry later if needed
 			retries = 0;
 
@@ -324,7 +324,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			DLog.d(LOG_NAME, "Error during login: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	/**
@@ -335,7 +335,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 	public static String sha1Pass(String passkey) {
 		try {
 			MessageDigest m = MessageDigest.getInstance("SHA1");
-			byte[] data = passkey.getBytes(); 
+			byte[] data = passkey.getBytes();
 			m.update(data,0,data.length);
 			BigInteger i = new BigInteger(1,m.digest());
 			return String.format("%1$040X", i).toLowerCase();
@@ -348,11 +348,11 @@ public class KtorrentAdapter implements IDaemonAdapter {
 	private boolean makeActionRequest(String action) throws DaemonException, LoggedOutException {
 
 		try {
-				
+
 			// Initialise the HTTP client
 			initialise();
 			makeLoginRequest();
-			
+
 			// Make request
 			HttpGet httpget = new HttpGet(buildWebUIUrl() + RPC_URL_ACTION + action);
 			HttpResponse response = httpclient.execute(httpget);
@@ -380,19 +380,19 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			DLog.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	private boolean makeFileUploadRequest(String target) throws DaemonException, LoggedOutException {
 
 		try {
-				
+
 			// Initialise the HTTP client
 			initialise();
 			makeLoginRequest();
-			
+
 			// Make request
-			HttpPost httppost = new HttpPost(buildWebUIUrl() + RPC_URL_UPLOAD);			
+			HttpPost httppost = new HttpPost(buildWebUIUrl() + RPC_URL_UPLOAD);
 			File upload = new File(URI.create(target));
 			Part[] parts = { new FilePart("load_torrent", upload) };
 			httppost.setEntity(new MultipartEntity(parts, httppost.getParams()));
@@ -429,9 +429,9 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			DLog.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * Indicates if we were already successfully authenticated
 	 * @return True if the proper authentication cookie was already loaded
@@ -458,7 +458,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 		}
 		httpclient = HttpHelper.createStandardHttpClient(settings, false);
 	}
-	
+
 	/**
 	 * Build the base URL for a Ktorrent web site request from the user settings.
 	 * @return The base URL of for a request, i.e. http://localhost:8080
@@ -476,5 +476,5 @@ public class KtorrentAdapter implements IDaemonAdapter {
 	public DaemonSettings getSettings() {
 		return this.settings;
 	}
-		
+
 }

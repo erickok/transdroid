@@ -79,7 +79,7 @@ class ResponseParser {
 	/**
 	 * This method takes an element (must be a param or fault element) and
 	 * returns the deserialized object of this param tag.
-	 * 
+	 *
 	 * @param element An param element.
 	 * @return The deserialized object within the given param element.
 	 * @throws XMLRPCException Will be thrown when the structure of the document

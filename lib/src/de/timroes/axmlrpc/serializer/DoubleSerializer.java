@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
 
 /**
  * This serializer is responsible for floating point numbers.
- * 
+ *
  * @author Tim Roes
  */
 public class DoubleSerializer implements Serializer {

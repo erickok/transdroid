@@ -97,7 +97,7 @@ public class OverflowPreference extends Preference {
 		// Preference item, as we stole the focus behaviour when we added a Button to the Preference layout
 		this.onPreferenceClickListener = onPreferenceClickListener;
 	}
-	
+
 	/**
 	 * Registers the listener for clicks on the overflow button contained in this preference.
 	 * @param onOverflowClickedListener The overflow button click listener
