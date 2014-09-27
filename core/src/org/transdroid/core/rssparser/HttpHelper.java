@@ -1,19 +1,19 @@
 /*
- *	This file is part of Transdroid Torrent Search 
+ *	This file is part of Transdroid Torrent Search
  *	<http://code.google.com/p/transdroid-search/>
- *	
- *	Transdroid Torrent Search is free software: you can redistribute 
- *	it and/or modify it under the terms of the GNU Lesser General 
- *	Public License as published by the Free Software Foundation, 
- *	either version 3 of the License, or (at your option) any later 
+ *
+ *	Transdroid Torrent Search is free software: you can redistribute
+ *	it and/or modify it under the terms of the GNU Lesser General
+ *	Public License as published by the Free Software Foundation,
+ *	either version 3 of the License, or (at your option) any later
  *	version.
- *	
- *	Transdroid Torrent Search is distributed in the hope that it will 
- *	be useful, but WITHOUT ANY WARRANTY; without even the implied 
- *	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ *	Transdroid Torrent Search is distributed in the hope that it will
+ *	be useful, but WITHOUT ANY WARRANTY; without even the implied
+ *	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *	See the GNU Lesser General Public License for more details.
- *	
- *	You should have received a copy of the GNU Lesser General Public 
+ *
+ *	You should have received a copy of the GNU Lesser General Public
  *	License along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.transdroid.core.rssparser;
@@ -38,14 +38,14 @@ import org.apache.http.protocol.HttpContext;
 
 /**
  * Provides a set of general helper methods that can be used in web-based communication.
- * 
+ *
  * @author erickok
  *
  */
 public class HttpHelper {
 
 	/**
-	 * HTTP request interceptor to allow for GZip-encoded data transfer 
+	 * HTTP request interceptor to allow for GZip-encoded data transfer
 	 */
 	public static HttpRequestInterceptor gzipRequestInterceptor = new HttpRequestInterceptor() {
         public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
@@ -54,7 +54,7 @@ public class HttpHelper {
             }
         }
     };
-    
+
     /**
      * HTTP response interceptor that decodes GZipped data
      */
@@ -65,41 +65,41 @@ public class HttpHelper {
             if (ceheader != null) {
                 HeaderElement[] codecs = ceheader.getElements();
                 for (int i = 0; i < codecs.length; i++) {
-                	
+
                     if (codecs[i].getName().equalsIgnoreCase("gzip")) {
-                        response.setEntity(new HttpHelper.GzipDecompressingEntity(response.getEntity())); 
+                        response.setEntity(new HttpHelper.GzipDecompressingEntity(response.getEntity()));
                         return;
                     }
                 }
             }
         }
-        
+
     };
 
     /**
      * HTTP entity wrapper to decompress GZipped HTTP responses
      */
 	private static class GzipDecompressingEntity extends HttpEntityWrapper {
-	
+
 	    public GzipDecompressingEntity(final HttpEntity entity) {
 	        super(entity);
 	    }
-	
+
 	    @Override
 	    public InputStream getContent() throws IOException, IllegalStateException {
-	
+
 	        // the wrapped entity's getContent() decides about repeatability
 	        InputStream wrappedin = wrappedEntity.getContent();
-	
+
 	        return new GZIPInputStream(wrappedin);
 	    }
-	
+
 	    @Override
 	    public long getContentLength() {
 	        // length of ungzipped content is not known
 	        return -1;
 	    }
-	
+
 	}
 
     /*
@@ -107,7 +107,7 @@ public class HttpHelper {
      * method. We iterate until the BufferedReader return null which means
      * there's no more data to read. Each line will appended to a StringBuilder
      * and returned as String.
-     * 
+     *
      * Taken from http://senior.ceng.metu.edu.tr/2009/praeda/2009/01/11/a-simple-restful-client-at-android/
      */
     public static String convertStreamToString(InputStream is, String encoding) throws UnsupportedEncodingException {
@@ -119,7 +119,7 @@ public class HttpHelper {
     	}
     	BufferedReader reader = new BufferedReader(isr);
         StringBuilder sb = new StringBuilder();
- 
+
         String line = null;
         try {
             while ((line = reader.readLine()) != null) {
@@ -136,7 +136,7 @@ public class HttpHelper {
         }
         return sb.toString();
     }
-    
+
     public static String convertStreamToString(InputStream is) {
     	try {
 			return convertStreamToString(is, null);
@@ -146,5 +146,5 @@ public class HttpHelper {
 			return null;
 		}
     }
-    
+
 }

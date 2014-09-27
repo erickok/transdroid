@@ -7,7 +7,7 @@ import org.w3c.dom.Element;
 /**
  * A Serializer is responsible to serialize a specific type of data to
  * an xml tag and deserialize the content of this xml tag back to an object.
- * 
+ *
  * @author Tim Roes
  */
 public interface Serializer {

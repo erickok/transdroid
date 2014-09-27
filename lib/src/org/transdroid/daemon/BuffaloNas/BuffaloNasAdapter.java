@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon.BuffaloNas;
 
@@ -108,8 +108,8 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 				// Request to add a torrent by URL
 				String url = ((AddByUrlTask) task).getUrl();
 				// @formatter:off
-				makeRequest("/api/torrent-add", 
-						new BasicNameValuePair("url", url), 
+				makeRequest("/api/torrent-add",
+						new BasicNameValuePair("url", url),
 						new BasicNameValuePair("start", "yes"));
 				// @formatter:on
 				return new DaemonTaskSuccessResult(task);
@@ -119,9 +119,9 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 				// Remove a torrent
 				RemoveTask removeTask = (RemoveTask) task;
 				// @formatter:off
-				makeRequest("/api/torrent-remove", 
-						new BasicNameValuePair("hash", removeTask.getTargetTorrent().getUniqueID()), 
-						new BasicNameValuePair("delete-torrent", "yes"), 
+				makeRequest("/api/torrent-remove",
+						new BasicNameValuePair("hash", removeTask.getTargetTorrent().getUniqueID()),
+						new BasicNameValuePair("delete-torrent", "yes"),
 						new BasicNameValuePair("delete-data", (removeTask.includingData() ? "yes" : "no")));
 				// @formatter:on
 				return new DaemonTaskSuccessResult(task);
@@ -147,9 +147,9 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 				String ul = Integer.toString((ratesTask.getUploadRate() == null ? -1 : ratesTask.getUploadRate()
 						.intValue() * 1024));
 				// @formatter:off
-				makeRequest("/api/app-settings-set", 
+				makeRequest("/api/app-settings-set",
 						new BasicNameValuePair("auto_bandwidth_management", "0"),
-						new BasicNameValuePair("max_dl_rate", dl), 
+						new BasicNameValuePair("max_dl_rate", dl),
 						new BasicNameValuePair("max_ul_rate", ul),
 						new BasicNameValuePair("max_ul_rate_seed", ul));
 				// @formatter:on

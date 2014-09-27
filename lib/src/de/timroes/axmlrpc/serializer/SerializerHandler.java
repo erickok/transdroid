@@ -70,7 +70,7 @@ public class SerializerHandler {
 	private ArraySerializer array = new ArraySerializer();
 	private Base64Serializer base64 = new Base64Serializer();
 	private NullSerializer nil = new NullSerializer();
-	
+
 	private int flags;
 
 	/**
@@ -101,7 +101,7 @@ public class SerializerHandler {
 		if(!XMLRPCClient.VALUE.equals(element.getNodeName())) {
 			throw new XMLRPCException("Value tag is missing around value.");
 		}
-		
+
 		if(!XMLUtil.hasChildElement(element.getChildNodes())) {
 			// Value element doesn't contain a child element
 			if((flags & XMLRPCClient.FLAGS_DEFAULT_TYPE_STRING) != 0) {
@@ -110,7 +110,7 @@ public class SerializerHandler {
 				throw new XMLRPCException("Missing type element inside of value element.");
 			}
 		}
-			
+
 		// Grep type element from inside value element
 		element = XMLUtil.getOnlyChildElement(element.getChildNodes());
 

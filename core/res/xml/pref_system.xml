@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2010-2013 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-	
+
 	<CheckBoxPreference
 		android:key="system_dormantasinactive"
 		android:title="@string/pref_dormantasinactive"
 		android:summary="@string/pref_dormantasinactive_info"
 		android:defaultValue="false" />
-	
+
 	<ListPreference
 		android:key="system_autorefresh"
 		android:title="@string/pref_autorefresh"
@@ -30,29 +30,29 @@
 		android:entries="@array/pref_autorefresh_intervals"
 		android:entryValues="@array/pref_autorefresh_intervalvalues"
 		android:defaultValue="0" />
-	
+
 	<CheckBoxPreference
 		android:key="system_usedarktheme"
 		android:title="@string/pref_usedarktheme"
 		android:summary="@string/pref_usedarktheme_info"
 		android:defaultValue="false" />
-	
+
 	<CheckBoxPreference
 		android:key="system_checkupdates"
 		android:title="@string/pref_checkupdates"
 		android:summary="@string/pref_checkupdates_info"
 		android:defaultValue="true" />
-	
+
 	<Preference
 		android:key="system_clearsearch"
 		android:title="@string/pref_clearsearch" />
-	
+
 	<Preference
 		android:key="system_importsettings"
 		android:title="@string/pref_import" />
-	
+
 	<Preference
 		android:key="system_exportsettings"
 		android:title="@string/pref_export" />
-	
+
 </PreferenceScreen>

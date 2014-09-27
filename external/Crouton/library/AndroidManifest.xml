@@ -19,5 +19,5 @@
     package="de.keyboardsurfer.mobile.app.android.widget.crouton">
 
 	<uses-sdk android:minSdkVersion="15" />
-	
+
 </manifest>

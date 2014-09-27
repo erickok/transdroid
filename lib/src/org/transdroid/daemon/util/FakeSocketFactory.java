@@ -19,7 +19,7 @@ import org.apache.http.params.HttpParams;
 public class FakeSocketFactory implements SocketFactory, LayeredSocketFactory {
 	private String certKey = null;
     private SSLContext sslcontext = null;
-    
+
     public FakeSocketFactory(String certKey){
     	this.certKey = certKey;
     }

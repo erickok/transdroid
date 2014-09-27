@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2013 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -67,7 +67,7 @@ public class DialogHelper extends Activity {
 		}
 		return dialog.onMenuItemSelected(this, item.getItemId());
 	}
-	
+
 	/**
 	 * Call this from {@link Activity#onCreateDialog(int)}, supplying an instance of the {@link DialogSpecification}
 	 * that should be shown to the user.
@@ -77,17 +77,17 @@ public class DialogHelper extends Activity {
 	 *         will instead be opened as a full screen activity
 	 */
 	public static Dialog showDialog(Context context, DialogSpecification dialog) {
-		
+
 		// If the device is large (i.e. a tablet) then return a dialog to show
 		if (!NavigationHelper_.getInstance_(context).isSmallScreen())
 			return new PopupDialog(context, dialog);
-		
+
 		// This is a small device; create a full screen dialog (which is just an activity)
 		DialogHelper_.intent(context).dialog(dialog).start();
 		return null;
-		
+
 	}
-	
+
 	/**
 	 * A specific dialog that shows some layout (resource) as contents. It has no buttons or other chrome.
 	 */
@@ -98,10 +98,10 @@ public class DialogHelper extends Activity {
 			setContentView(dialog.getDialogLayoutId());
 		}
 	}
-	
+
 	/**
-	 * Specification for some dialog that can be show to the user, consisting of a custom layout and possibly an action 
-	 * bar menu. Warning: the action bar, and thus the menu options, is only shown when the dialog is presented as full 
+	 * Specification for some dialog that can be show to the user, consisting of a custom layout and possibly an action
+	 * bar menu. Warning: the action bar, and thus the menu options, is only shown when the dialog is presented as full
 	 * screen activity. Use only for unimportant actions.
 	 */
 	public interface DialogSpecification extends Serializable {
@@ -109,5 +109,5 @@ public class DialogHelper extends Activity {
 		int getDialogMenuId();
 		boolean onMenuItemSelected(Activity ownerActivity, int selectedItemId);
 	}
-	
+
 }

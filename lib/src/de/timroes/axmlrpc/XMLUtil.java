@@ -93,7 +93,7 @@ public class XMLUtil {
 	 * @return Whether the {@link NodeList} contains children.
 	 */
 	public static boolean hasChildElement(NodeList list) {
-		
+
 		Node n;
 
 		for(int i = 0; i < list.getLength(); i++) {
@@ -105,7 +105,7 @@ public class XMLUtil {
 		}
 
 		return false;
-		
+
 	}
 
 	/**

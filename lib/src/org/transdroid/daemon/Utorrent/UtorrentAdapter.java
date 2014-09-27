@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon.Utorrent;
 
@@ -76,7 +76,7 @@ import com.android.internalcopy.http.multipart.Part;
 /**
  * An adapter that allows for easy access to uTorrent torrent data. Communication
  * is handled via authenticated JSON-RPC HTTP GET requests and responses.
- * 
+ *
  * @author erickok
  *
  */
@@ -84,7 +84,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 
 	private static final String LOG_NAME = "uTorrent daemon";
 	private static final String RPC_URL_HASH = "&hash=";
-	
+
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 	private static String authtoken;
@@ -98,7 +98,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 
 	@Override
 	public DaemonTaskResult executeTask(DaemonTask task) {
-		
+
 		try {
 			switch (task.getMethod()) {
 			case Retrieve:
@@ -108,19 +108,19 @@ public class UtorrentAdapter implements IDaemonAdapter {
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONArray("torrents")),parseJsonRetrieveGetLabels(result.getJSONArray("label")));
 
 			case GetTorrentDetails:
-				
+
 				// Request fine details of a specific torrent
 				JSONObject dresult = makeUtorrentRequest("&action=getprops" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID());
 				return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, parseJsonTorrentDetails(dresult.getJSONArray("props")));
-				
+
 			case GetFileList:
-				
+
 				// Get the file listing of a torrent
 				JSONObject files = makeUtorrentRequest("&action=getfiles" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID());
 				return new GetFileListTaskSuccessResult((GetFileListTask) task, parseJsonFileListing(files.getJSONArray("files").getJSONArray(1), task.getTargetTorrent()));
-				
+
 			case AddByFile:
-				
+
 				// Add a torrent to the server by sending the contents of a local .torrent file
 				String file = ((AddByFileTask)task).getFile();
 				uploadTorrentFile(file);
@@ -152,13 +152,13 @@ public class UtorrentAdapter implements IDaemonAdapter {
 					makeUtorrentRequest("&action=remove" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID());
 				}
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case Pause:
 
 				// Pause a torrent
 				makeUtorrentRequest("&action=pause" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID());
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case PauseAll:
 
 				// Pause all torrents
@@ -170,25 +170,25 @@ public class UtorrentAdapter implements IDaemonAdapter {
 				// Resume a torrent
 				makeUtorrentRequest("&action=unpause" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID());
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case ResumeAll:
 
 				// Resume all torrents
 				makeUtorrentRequest("&action=unpause" + getAllHashes());
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case Stop:
-				
+
 				// Stop a torrent
 				makeUtorrentRequest("&action=stop" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID());
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case StopAll:
-				
+
 				// Stop all torrents
 				makeUtorrentRequest("&action=stop" + getAllHashes());
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case Start:
 
 				// Start a torrent (maybe forced)
@@ -199,15 +199,15 @@ public class UtorrentAdapter implements IDaemonAdapter {
 					makeUtorrentRequest("&action=start" + RPC_URL_HASH + startTask.getTargetTorrent().getUniqueID());
 				}
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case StartAll:
-				
+
 				// Start all torrents
 				makeUtorrentRequest("&action=start" + getAllHashes());
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case SetFilePriorities:
-				
+
 				// Set priorities of the files of some torrent
 				SetFilePriorityTask prioTask = (SetFilePriorityTask) task;
 				String prioUrl = "&p=" + convertPriority(prioTask.getNewPriority());
@@ -216,23 +216,23 @@ public class UtorrentAdapter implements IDaemonAdapter {
 				}
 				makeUtorrentRequest("&action=setprio" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID() + prioUrl);
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case SetTransferRates:
 
 				// Request to set the maximum transfer rates
 				SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
-				makeUtorrentRequest( 
-						"&action=setsetting&s=ul_auto_throttle&v=0&s=max_ul_rate&v=" + 
-						(ratesTask.getUploadRate() == null? 0: ratesTask.getUploadRate().intValue()) + 
-						"&s=max_dl_rate&v=" + 
+				makeUtorrentRequest(
+						"&action=setsetting&s=ul_auto_throttle&v=0&s=max_ul_rate&v=" +
+						(ratesTask.getUploadRate() == null? 0: ratesTask.getUploadRate().intValue()) +
+						"&s=max_dl_rate&v=" +
 						(ratesTask.getDownloadRate() == null? 0: ratesTask.getDownloadRate().intValue()));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case SetLabel:
-				
+
 				// Set the label of some torrent
 				SetLabelTask labelTask = (SetLabelTask) task;
-				makeUtorrentRequest("&action=setprops" + RPC_URL_HASH + labelTask.getTargetTorrent().getUniqueID() + 
+				makeUtorrentRequest("&action=setprops" + RPC_URL_HASH + labelTask.getTargetTorrent().getUniqueID() +
 						"&s=label&v=" + URLEncoder.encode(labelTask.getNewLabel(), "UTF-8"));
 				return new DaemonTaskSuccessResult(task);
 
@@ -245,7 +245,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 				for (String tracker : trackersTask.getNewTrackers()) {
 					newTrackersText += (newTrackersText.length() == 0? "": "\r\n") + tracker;
 				}
-				makeUtorrentRequest("&action=setprops" + RPC_URL_HASH + trackersTask.getTargetTorrent().getUniqueID() + 
+				makeUtorrentRequest("&action=setprops" + RPC_URL_HASH + trackersTask.getTargetTorrent().getUniqueID() +
 						"&s=trackers&v=" + URLEncoder.encode(newTrackersText, "UTF-8"));
 				return new DaemonTaskSuccessResult(task);
 
@@ -270,7 +270,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ConnectionError, e.toString()));
 		}
 	}
-	
+
 	private static final int NAME_IDX = 0;
 	private static final int COUNT_IDX = 1;
 
@@ -288,22 +288,22 @@ public class UtorrentAdapter implements IDaemonAdapter {
 					));
 		}
 		return labels;
-		
+
 	}
 
 	private JSONObject makeUtorrentRequest(String addToUrl) throws DaemonException {
 		return makeUtorrentRequest(addToUrl, 0);
 	}
-	
+
 	private JSONObject makeUtorrentRequest(String addToUrl, int retried) throws DaemonException {
 
 		try {
-				
+
 			// Initialise the HTTP client
 			if (httpclient == null) {
 				initialise();
 			}
-			
+
 			ensureToken();
 
 			// Make request
@@ -323,8 +323,8 @@ public class UtorrentAdapter implements IDaemonAdapter {
 			}
 			JSONObject json = new JSONObject(result);
 			instream.close();
-			return json;			
-			
+			return json;
+
 		} catch (DaemonException e) {
 			throw e;
 		} catch (JSONException e) {
@@ -334,18 +334,18 @@ public class UtorrentAdapter implements IDaemonAdapter {
 			DLog.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	private synchronized void ensureToken() throws IOException, ClientProtocolException, DaemonException {
-		
+
 		// Make sure we have a valid token
 		if (authtoken == null) {
-			
+
 			// Make a request to /gui/token.html
 			// See https://github.com/bittorrent/webui/wiki/TokenSystem
 			HttpGet httpget = new HttpGet(buildWebUIUrl() + "token.html");
-			
+
 			// Parse the response HTML
 			HttpResponse response = httpclient.execute(httpget);
 			if (response.getStatusLine().getStatusCode() == 401) {
@@ -359,7 +359,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 			authtoken = result.replaceAll("\\<.*?>","").trim();
 
 		}
-		
+
 	}
 
 	public JSONObject uploadTorrentFile(String file) throws DaemonException, ClientProtocolException, IOException, JSONException {
@@ -368,7 +368,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		if (httpclient == null) {
 			initialise();
 		}
-		
+
 		ensureToken();
 
 		// Build and make request
@@ -384,7 +384,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		JSONObject json = new JSONObject(result);
 		instream.close();
 		return json;
-		
+
 	}
 
 	/**
@@ -395,7 +395,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	private void initialise() throws DaemonException {
 		this.httpclient = HttpHelper.createStandardHttpClient(settings, true);
 	}
-	
+
 	/**
 	 * Build the URL of the Transmission web UI from the user settings.
 	 * @return The URL of the RPC API
@@ -430,7 +430,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 			return TorrentStatus.Waiting;
 		}
 	}
-	
+
 	private Priority convertUtorrentPriority(int code) {
 		switch (code) {
 		case 0:
@@ -440,13 +440,13 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		case 3:
 			return Priority.High;
 		default:
-			return Priority.Normal;	
+			return Priority.Normal;
 		}
 	}
 
 	private int convertPriority(Priority newPriority) {
 		if (newPriority == null) {
-			return 2; 
+			return 2;
 		}
 		switch (newPriority) {
 		case Off:
@@ -533,7 +533,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 					settings.getType()));
 		}
 		return torrents;
-		
+
 	}
 
 	private TorrentDetails parseJsonTorrentDetails(JSONArray results) throws JSONException {
@@ -541,7 +541,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		// Parse response
 		// NOTE: Assumes only details for one torrent are requested at a time
 		if (results.length() > 0) {
-			
+
 			JSONObject tor = results.getJSONObject(0);
 			List<String> trackers = new ArrayList<String>();
 			for (String tracker : tor.getString("trackers").split("\\r\\n")) {
@@ -554,9 +554,9 @@ public class UtorrentAdapter implements IDaemonAdapter {
 			// See http://forum.utorrent.com/viewtopic.php?pid=553340#p553340
 			return new TorrentDetails(trackers, null);
 		}
-		
+
 		return null;
-		
+
 	}
 
 	// These are the positions inside the JSON response array of a torrent
@@ -585,22 +585,22 @@ public class UtorrentAdapter implements IDaemonAdapter {
 					convertUtorrentPriority(file.getInt(RPC_FILEPRIORITY_IDX))));	// Priority
 		}
 		return files;
-		
+
 	}
-	
+
 	private String getAllHashes() throws DaemonException, JSONException {
-		
+
 		// Make a retrieve torrents call first to gather all hashes
 		JSONObject result = makeUtorrentRequest("&list=1");
 		ArrayList<Torrent> torrents = parseJsonRetrieveTorrents(result.getJSONArray("torrents"));
-		
+
 		// Build a string of hashes of all the torrents
 		String hashes = "";
 		for (Torrent torrent : torrents) {
 			hashes += RPC_URL_HASH + torrent.getUniqueID();
 		}
 		return hashes;
-		
+
 	}
 
 	@Override
@@ -612,5 +612,5 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	public DaemonSettings getSettings() {
 		return this.settings;
 	}
-		
+
 }

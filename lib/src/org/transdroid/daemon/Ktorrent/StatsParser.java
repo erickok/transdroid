@@ -16,7 +16,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * A Ktorrent-specific parser for it's /data/torrents.xml output.
- * 
+ *
  * @author erickok
  *
  */
@@ -25,7 +25,7 @@ public class StatsParser {
 	public static List<Torrent> parse(Reader in, String baseDir, String pathSeperator) throws DaemonException, LoggedOutException {
 
 		try {
-			
+
 			// Use a PullParser to handle XML tags one by one
 			XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
 			xpp.setInput(in);
@@ -47,41 +47,41 @@ public class StatsParser {
 			int leechersTotal = 0;
 			float progress = 0;
 			int numFiles = -1;
-			
+
 			// Start pulling
 			List<Torrent> torrents = new ArrayList<Torrent>();
 			int next = xpp.nextTag();
 			String name = xpp.getName();
-			
+
 			// Check if we had a proper XML result
 			if (name.equals("html")) {
 				// Apparently we were returned an HTML page instead of the expected XML
 				// This happens in particular when we were logged out (because somebody else logged into KTorrent's web interface)
 				throw new LoggedOutException();
 			}
-			
+
 			while (next != XmlPullParser.END_DOCUMENT) {
-				
+
 				if (next == XmlPullParser.END_TAG && name.equals("torrent")) {
-					
+
 					// End of a 'transfer' item, add gathered torrent data
 					torrents.add(new Torrent(
-							id, 
-							""+id, 
-							tname, 
-							status, 
-							(baseDir == null? null: (numFiles > 0? baseDir + tname + pathSeperator: baseDir)), 
-							downRate, 
-							upRate, 
-							seeders, 
+							id,
+							""+id,
+							tname,
+							status,
+							(baseDir == null? null: (numFiles > 0? baseDir + tname + pathSeperator: baseDir)),
+							downRate,
+							upRate,
+							seeders,
 							seedersTotal,
-							leechers, 
-							leechersTotal, 
+							leechers,
+							leechersTotal,
 							(int) (status == TorrentStatus.Downloading? (total - down) / downRate: -1), // eta (in seconds) = (total_size_in_btes - bytes_already_downloaded) / bytes_per_second
-							down, 
-							up, 
-							total, 
-							progress, 
+							down,
+							up,
+							total,
+							progress,
 							0f,
 							null, // Not supported in the web interface
 							null, // Not supported in the web interface
@@ -89,9 +89,9 @@ public class StatsParser {
 							null, // Not supported in the web interface
 							Daemon.KTorrent));
 					id++; // Stop/start/etc. requests are made by ID, which is the order number in the returned XML list :-S
-					
+
 				} else if (next == XmlPullParser.START_TAG && name.equals("torrent")){
-					
+
 					// Start of a new 'transfer' item; reset gathered torrent data
 					tname = "";
 					//hash = "";
@@ -109,7 +109,7 @@ public class StatsParser {
 					numFiles = -1;
 
 				} else if (next == XmlPullParser.START_TAG){
-					
+
 					// Probably encountered a torrent property, i.e. '<status>Stopped</status>'
 					next = xpp.next();
 					if (next == XmlPullParser.TEXT) {
@@ -149,17 +149,17 @@ public class StatsParser {
 				if (next == XmlPullParser.START_TAG || next == XmlPullParser.END_TAG) {
 					name = xpp.getName();
 				}
-				
+
 			}
-			
+
 			return torrents;
-			
+
 		} catch (XmlPullParserException e) {
 			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
 		} catch (IOException e) {
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class StatsParser {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the size of the torrent, as parsed form some string
 	 * @param size The size in a string format, e.g. '1,011.7 MiB'
@@ -260,5 +260,5 @@ public class StatsParser {
 		}
 		return TorrentStatus.Unknown;
 	}
-	
+
 }

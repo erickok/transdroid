@@ -27,9 +27,9 @@ public class StructSerializer implements Serializer {
 		String s;
 		Object o;
 		for(int i = 0; i < content.getChildNodes().getLength(); i++) {
-			
+
 			n = content.getChildNodes().item(i);
-			
+
 			// Strip only whitespace text elements and comments
 			if((n.getNodeType() == Node.TEXT_NODE
 						&& n.getNodeValue().trim().length() <= 0)
@@ -45,7 +45,7 @@ public class StructSerializer implements Serializer {
 			s = null; o = null;
 			for(int j = 0; j < n.getChildNodes().getLength(); j++) {
 				m = n.getChildNodes().item(j);
-				
+
 				// Strip only whitespace text elements and comments
 				if((m.getNodeType() == Node.TEXT_NODE
 							&& m.getNodeValue().trim().length() <= 0)

@@ -9,10 +9,10 @@ public class Utf8StringPart extends PartBase {
 
     /** Contents of this StringPart. */
     private byte[] content;
-    
+
     /** The String value of this part. */
     private String value;
-	
+
 	public Utf8StringPart(String name, String value) {
 		super(name, null, null, null);
 		this.value = value;
@@ -21,7 +21,7 @@ public class Utf8StringPart extends PartBase {
     /**
      * Gets the content in bytes.  Bytes are lazily created to allow the charset to be changed
      * after the part is created.
-     * 
+     *
      * @return the content in bytes
      */
     private byte[] getContent() {
@@ -30,7 +30,7 @@ public class Utf8StringPart extends PartBase {
         }
         return content;
     }
-	
+
 	@Override
 	protected void sendData(OutputStream out) throws IOException {
         out.write(getContent());

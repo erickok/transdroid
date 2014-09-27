@@ -54,11 +54,11 @@ The API is kept as simple as the Toast API:
 Create a Crouton for any CharSequence:
 
     Crouton.makeText(Activity, CharSequence, [Style]).show();
-    
+
 Create a Crouton with a String from your application's resources:
 
     Crouton.makeText(Activity, int, Style).show();
-    
+
 Further you can attach a Crouton to any view like this:
 
     Crouton.makeText(Activity, int, Style, int).show();
@@ -70,7 +70,7 @@ If you would like a more graphical introduction to Crouton check out [this prese
 In your Activity.onDestroy() make sure to call
 
     Crouton.cancelAllCroutons();
-    
+
 to cancel cancel all scheduled Croutons.
 
 This is a workaround and further description is available in #24.
@@ -120,7 +120,7 @@ To use crouton simply add
 
 to your pom.xml
 
-If you also want the sources or javadoc add the respective classifier  
+If you also want the sources or javadoc add the respective classifier
 
 ```xml
   <classifier>sources</classifier>

@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2013 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -113,7 +113,7 @@ public class ServerCheckerService extends IntentService {
 				} catch (JSONException e) {
 					// Can't build the JSON object; this should not happen and we can safely ignore it
 				}
-				
+
 				// See if this torrent was done the last time we checked
 				if (lastStats != null) {
 					Boolean wasDone = findLastDoneStat(lastStats, torrent);
@@ -126,7 +126,7 @@ public class ServerCheckerService extends IntentService {
 						// This torrent is now done, but wasn't before
 						doneTorrents.add(torrent);
 				}
-				
+
 			}
 
 			// Store the now-current statistics on torrents for the next time we check this server
@@ -143,7 +143,7 @@ public class ServerCheckerService extends IntentService {
 			ArrayList<Torrent> affectedTorrents = new ArrayList<Torrent>(newTorrents.size() + doneTorrents.size());
 			affectedTorrents.addAll(newTorrents);
 			affectedTorrents.addAll(doneTorrents);
-			
+
 			String title;
 			if (newTorrents.size() > 0 && doneTorrents.size() > 0) {
 				// Note: use the 'one' plural iif 1 new torrent was added and 1 was newly finished
@@ -165,7 +165,7 @@ public class ServerCheckerService extends IntentService {
 				forString += affected.getName() + ", ";
 			}
 			forString = forString.substring(0, forString.length() - 2);
-			
+
 			// Build the basic notification
 			Builder builder = new Notification.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
 					.setTicker(title).setContentTitle(title).setContentText(forString)

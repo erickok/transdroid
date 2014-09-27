@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon.Transmission;
 
@@ -74,16 +74,16 @@ import org.transdroid.daemon.util.HttpHelper;
 
 /**
  * The daemon adapter from the Transmission torrent client.
- * 
+ *
  * @author erickok
  *
  */
 public class TransmissionAdapter implements IDaemonAdapter {
 
 	private static final String LOG_NAME = "Transdroid daemon";
-	
+
 	private static final int FOR_ALL = -1;
-	
+
 	private static final String RPC_ID = "id";
 	private static final String RPC_NAME = "name";
 	private static final String RPC_STATUS = "status";
@@ -104,45 +104,45 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	private static final String RPC_DATEDONE = "doneDate";
 	private static final String RPC_AVAILABLE = "desiredAvailable";
 	private static final String RPC_COMMENT = "comment";
-	
+
 	private static final String RPC_FILE_NAME = "name";
 	private static final String RPC_FILE_LENGTH = "length";
 	private static final String RPC_FILE_COMPLETED = "bytesCompleted";
 	private static final String RPC_FILESTAT_WANTED = "wanted";
 	private static final String RPC_FILESTAT_PRIORITY = "priority";
-	
+
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 	private static String sessionToken;
 
 	private long rpcVersion = -1;
-	
+
 	public TransmissionAdapter(DaemonSettings settings) {
 		this.settings = settings;
 	}
-	
+
 	@Override
 	public DaemonTaskResult executeTask(DaemonTask task) {
-		
+
 		try {
-			
+
 			// Get the server version
 			if (rpcVersion <= -1) {
 				// Get server session statistics
 				JSONObject response = makeRequest(buildRequestObject("session-get", new JSONObject()));
 				rpcVersion = response.getJSONObject("arguments").getInt("rpc-version");
 			}
-			
+
 			JSONObject request = new JSONObject();
 			switch (task.getMethod()) {
 			case Retrieve:
 
 				// Request all torrents from server
 				JSONArray fields = new JSONArray();
-				final String[] fieldsArray = new String[] { RPC_ID, RPC_NAME, RPC_ERROR, RPC_ERRORSTRING, RPC_STATUS, 
-						RPC_DOWNLOADDIR, RPC_RATEDOWNLOAD, RPC_RATEUPLOAD, RPC_PEERSGETTING, RPC_PEERSSENDING, 
-						RPC_PEERSCONNECTED, RPC_ETA, RPC_DOWNLOADSIZE1, RPC_DOWNLOADSIZE2, RPC_UPLOADEDEVER, 
-						RPC_TOTALSIZE, RPC_DATEADDED, RPC_DATEDONE, RPC_AVAILABLE, RPC_COMMENT }; 
+				final String[] fieldsArray = new String[] { RPC_ID, RPC_NAME, RPC_ERROR, RPC_ERRORSTRING, RPC_STATUS,
+						RPC_DOWNLOADDIR, RPC_RATEDOWNLOAD, RPC_RATEUPLOAD, RPC_PEERSGETTING, RPC_PEERSSENDING,
+						RPC_PEERSCONNECTED, RPC_ETA, RPC_DOWNLOADSIZE1, RPC_DOWNLOADSIZE2, RPC_UPLOADEDEVER,
+						RPC_TOTALSIZE, RPC_DATEADDED, RPC_DATEDONE, RPC_AVAILABLE, RPC_COMMENT };
 				for (String field : fieldsArray) {
 					fields.put(field);
 				}
@@ -155,12 +155,12 @@ public class TransmissionAdapter implements IDaemonAdapter {
 
 				// Request the current server statistics
 				JSONObject stats = makeRequest(buildRequestObject("session-get", new JSONObject())).getJSONObject("arguments");
-				return new GetStatsTaskSuccessResult((GetStatsTask) task, stats.getBoolean("alt-speed-enabled"), 
+				return new GetStatsTaskSuccessResult((GetStatsTask) task, stats.getBoolean("alt-speed-enabled"),
 						rpcVersion >= 12? stats.getLong("download-dir-free-space"): -1);
 
 			case GetTorrentDetails:
 
-				// Request fine details of a specific torrent 
+				// Request fine details of a specific torrent
 				JSONArray dfields = new JSONArray();
 				dfields.put("trackers");
 				dfields.put("trackerStats");
@@ -169,24 +169,24 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				buildDGet.put("fields", dfields);
 				JSONObject getDResult = makeRequest(buildRequestObject("torrent-get", buildDGet));
 				return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, parseJsonTorrentDetails(getDResult.getJSONObject("arguments")));
-				
+
 			case GetFileList:
 
-				// Request all details for a specific torrent 
+				// Request all details for a specific torrent
 				JSONArray ffields = new JSONArray();
 				ffields.put("files");
 				ffields.put("fileStats");
-				
+
 				JSONObject buildGet = buildTorrentRequestObject(task.getTargetTorrent().getUniqueID(), null, false);
 				buildGet.put("fields", ffields);
 				JSONObject getResult = makeRequest(buildRequestObject("torrent-get", buildGet));
 				return new GetFileListTaskSuccessResult((GetFileListTask) task, parseJsonFileList(getResult.getJSONObject("arguments"), task.getTargetTorrent()));
-				
+
 			case AddByFile:
-				
+
 				// Add a torrent to the server by sending the contents of a local .torrent file
 				String file = ((AddByFileTask)task).getFile();
-				
+
 				// Encode the .torrent file's data
 				InputStream in = new Base64.InputStream(new FileInputStream(new File(URI.create(file))), Base64.ENCODE);
 				StringWriter writer = new StringWriter();
@@ -195,7 +195,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 					writer.write(c);
 				}
 				in.close();
-				
+
 				// Request to add a torrent by Base64-encoded meta data
 				request.put("metainfo", writer.toString());
 
@@ -207,7 +207,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				// Request to add a torrent by URL
 				String url = ((AddByUrlTask)task).getUrl();
 				request.put("filename", url);
-				
+
 				makeRequest(buildRequestObject("torrent-add", request));
 				return new DaemonTaskSuccessResult(task);
 
@@ -216,7 +216,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				// Request to add a magnet link by URL
 				String magnet = ((AddByMagnetUrlTask)task).getUrl();
 				request.put("filename", magnet);
-				
+
 				makeRequest(buildRequestObject("torrent-add", request));
 				return new DaemonTaskSuccessResult(task);
 
@@ -226,14 +226,14 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				RemoveTask removeTask = (RemoveTask) task;
 				makeRequest(buildRequestObject("torrent-remove", buildTorrentRequestObject(removeTask.getTargetTorrent().getUniqueID(), "delete-local-data", removeTask.includingData())));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case Pause:
 
 				// Pause a torrent
 				PauseTask pauseTask = (PauseTask) task;
 				makeRequest(buildRequestObject("torrent-stop", buildTorrentRequestObject(pauseTask.getTargetTorrent().getUniqueID(), null, false)));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case PauseAll:
 
 				// Resume all torrents
@@ -246,7 +246,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				ResumeTask resumeTask = (ResumeTask) task;
 				makeRequest(buildRequestObject("torrent-start", buildTorrentRequestObject(resumeTask.getTargetTorrent().getUniqueID(), null, false)));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case ResumeAll:
 
 				// Resume all torrents
@@ -254,7 +254,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				return new DaemonTaskSuccessResult(task);
 
 			case SetDownloadLocation:
-				
+
 				// Change the download location
 				SetDownloadLocationTask sdlTask = (SetDownloadLocationTask) task;
 				// Build request
@@ -266,7 +266,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				sdlrequest.put("move", true);
 				makeRequest(buildRequestObject("torrent-set-location", sdlrequest));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			case SetFilePriorities:
 
 				// Set priorities of the files of some torrent
@@ -298,12 +298,12 @@ public class TransmissionAdapter implements IDaemonAdapter {
 					prequest.put("priority-high", fileids);
 					break;
 				}
-				
+
 				makeRequest(buildRequestObject("torrent-set", prequest));
 				return new DaemonTaskSuccessResult(task);
 
 			case SetTransferRates:
-				
+
 				// Request to set the maximum transfer rates
 				SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
 				if (ratesTask.getUploadRate() == null) {
@@ -323,13 +323,13 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				return new DaemonTaskSuccessResult(task);
 
 			case SetAlternativeMode:
-				
+
 				// Request to set the alternative speed mode (Tutle Mode)
 				SetAlternativeModeTask altModeTask = (SetAlternativeModeTask) task;
 				request.put("alt-speed-enabled", altModeTask.isAlternativeModeEnabled());
 				makeRequest(buildRequestObject("session-set", request));
 				return new DaemonTaskSuccessResult(task);
-				
+
 			default:
 				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
 			}
@@ -343,11 +343,11 @@ public class TransmissionAdapter implements IDaemonAdapter {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
 		}
 	}
-	
+
 	private JSONObject buildTorrentRequestObject(String torrentID, String extraKey, boolean extraValue ) throws JSONException {
 		return buildTorrentRequestObject(Long.parseLong(torrentID), extraKey, extraValue);
 	}
-	
+
 	private JSONObject buildTorrentRequestObject(long torrentID, String extraKey, boolean extraValue ) throws JSONException {
 
 		// Build request for one specific torrent
@@ -363,7 +363,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 		return request;
 
 	}
-	
+
 	private JSONObject buildRequestObject(String sendMethod, JSONObject arguments) throws JSONException {
 
 		// Build request for method
@@ -373,40 +373,40 @@ public class TransmissionAdapter implements IDaemonAdapter {
 		request.put("tag", 0);
 		return request;
 	}
-	
+
 	private synchronized JSONObject makeRequest(JSONObject data) throws DaemonException {
 
 		try {
-				
+
 			// Initialise the HTTP client
 			if (httpclient == null) {
 				initialise();
 			}
 			final String sessionHeader = "X-Transmission-Session-Id";
-	
+
 			// Setup request using POST stream with URL and data
 			HttpPost httppost = new HttpPost(buildWebUIUrl());
 			StringEntity se = new StringEntity(data.toString(), "UTF-8");
 			httppost.setEntity(se);
-	
+
 			// Send the stored session token as a header
 			if (sessionToken != null) {
 				httppost.addHeader(sessionHeader, sessionToken);
 			}
-			
+
 			// Execute
 			DLog.d(LOG_NAME, "Execute " + data.getString("method") + " request to " + httppost.getURI().toString());
 			HttpResponse response = httpclient.execute(httppost);
-			
+
 			// Authentication error?
-			if (response.getStatusLine().getStatusCode() == 401) { 
+			if (response.getStatusLine().getStatusCode() == 401) {
 				throw new DaemonException(ExceptionType.AuthenticationFailure,
 						"401 HTTP response (username or password incorrect)");
 			}
-			
+
 			// 409 error because of a session id?
 			if (response.getStatusLine().getStatusCode() == 409) {
-				
+
 				// Retry post, but this time with the new session token that was encapsulated in the 409 response
 				DLog.d(LOG_NAME, "Receive HTTP 409 with new session code; now try again for the actual request");
 				sessionToken = response.getFirstHeader(sessionHeader).getValue();
@@ -414,12 +414,12 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				DLog.d(LOG_NAME, "Retry to execute " + data.getString("method") + " request, now with " + sessionHeader
 						+ ": " + sessionToken);
 				response = httpclient.execute(httppost);
-				
+
 			}
-			
+
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
-				
+
 				// Read JSON response
 				java.io.InputStream instream = entity.getContent();
 				String result = HttpHelper.convertStreamToString(instream);
@@ -428,7 +428,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 								+ (result.length() > 100 ? result.substring(0, 100) + "..." : result));
 				JSONObject json = new JSONObject(result);
 				instream.close();
-				
+
 				// Return the JSON object
 				return json;
 			}
@@ -445,7 +445,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 			DLog.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
-		
+
 	}
 
 	/**
@@ -456,7 +456,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	private void initialise() throws DaemonException {
 		httpclient = HttpHelper.createStandardHttpClient(settings, true);
 	}
-	
+
 	/**
 	 * Build the URL of the Transmission web UI from the user settings.
 	 * @return The URL of the RPC API
@@ -475,7 +475,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	}
 
 	private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONObject response) throws JSONException {
-	
+
 		// Parse response
 		ArrayList<Torrent> torrents = new ArrayList<Torrent>();
 		JSONArray rarray = response.getJSONArray("torrents");
@@ -520,10 +520,10 @@ public class TransmissionAdapter implements IDaemonAdapter {
 					errorString,
 					settings.getType()));
 		}
-		
+
 		// Return the list
 		return torrents;
-		
+
 	}
 
 	private TorrentStatus getStatus(int status) {
@@ -553,7 +553,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	}
 
 	private ArrayList<TorrentFile> parseJsonFileList(JSONObject response, Torrent torrent) throws JSONException {
-	
+
 		// Parse response
 		ArrayList<TorrentFile> torrentfiles = new ArrayList<TorrentFile>();
 		JSONArray rarray = response.getJSONArray("torrents");
@@ -573,10 +573,10 @@ public class TransmissionAdapter implements IDaemonAdapter {
 						convertTransmissionPriority(stat.getBoolean(RPC_FILESTAT_WANTED), stat.getInt(RPC_FILESTAT_PRIORITY))));
 			}
 		}
-		
+
 		// Return the list
 		return torrentfiles;
-		
+
 	}
 
 	private Priority convertTransmissionPriority(boolean isWanted, int priority) {
@@ -595,7 +595,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	}
 
 	private TorrentDetails parseJsonTorrentDetails(JSONObject response) throws JSONException {
-	
+
 		// Parse response
 		// NOTE: Assumes only details for one torrent are requested at a time
 		JSONArray rarray = response.getJSONArray("torrents");
@@ -616,9 +616,9 @@ public class TransmissionAdapter implements IDaemonAdapter {
 			}
 			return new TorrentDetails(trackers, errors);
 		}
-		
+
 		return null;
-		
+
 	}
 
 	@Override
@@ -630,5 +630,5 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	public DaemonSettings getSettings() {
 		return this.settings;
 	}
-	
+
 }

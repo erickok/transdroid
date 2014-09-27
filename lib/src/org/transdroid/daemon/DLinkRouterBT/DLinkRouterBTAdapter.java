@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon.DLinkRouterBT;
 
@@ -58,9 +58,9 @@ import com.android.internalcopy.http.multipart.Part;
 
 /**
  * The daemon adapter for the DLink Router Bittorrent client.
- * 
+ *
  * @author AvengerMoJo <avengermojo at gmail.com>
- * 
+ *
  */
 public class DLinkRouterBTAdapter implements IDaemonAdapter {
 
@@ -301,7 +301,7 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 
 	/**
 	 * Instantiates an HTTP client with proper credentials that can be used for all Transmission requests.
-	 * 
+	 *
 	 * @param connectionTimeout
 	 *            The connection timeout in milliseconds
 	 * @throws DaemonException
@@ -313,7 +313,7 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 
 	/**
 	 * Build the URL of the Transmission web UI from the user settings.
-	 * 
+	 *
 	 * @return The URL of the RPC API
 	 */
 	private String buildWebUIUrl() {
@@ -355,23 +355,23 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 				eta = -1;
 
 			Torrent new_t = new Torrent(
-				i, 
-				tor.getString(BT_HASH), 
-				tor.getString(BT_CAPTION), 
+				i,
+				tor.getString(BT_HASH),
+				tor.getString(BT_CAPTION),
 				status,
 				null, // Not supported?
-				tor.getInt(BT_DOWNLOAD_RATE), 
-				tor.getInt(BT_UPLOAD_RATE), 
-				tor.getInt(BT_PEERS_CONNECTED), 
-				tor.getInt(BT_PEERS_TOTAL), 
-				tor.getInt(BT_SEEDS_CONNECTED), 
+				tor.getInt(BT_DOWNLOAD_RATE),
+				tor.getInt(BT_UPLOAD_RATE),
+				tor.getInt(BT_PEERS_CONNECTED),
+				tor.getInt(BT_PEERS_TOTAL),
+				tor.getInt(BT_SEEDS_CONNECTED),
 				tor.getInt(BT_SEEDS_TOTAL),
-				(int) ((tor.getLong(BT_SIZE) - tor.getLong(BT_DONE)) / (tor.getInt(BT_DOWNLOAD_RATE) + 1)), 
-				tor.getLong(BT_DONE), 
-				tor.getLong(BT_PAYLOAD_UPLOAD), 
-				tor.getLong(BT_SIZE), 
-				(float) (tor.getLong(BT_DONE) / (float) tor.getLong(BT_SIZE)), 
-				Float.parseFloat(tor.getString(BT_COPYS)), 
+				(int) ((tor.getLong(BT_SIZE) - tor.getLong(BT_DONE)) / (tor.getInt(BT_DOWNLOAD_RATE) + 1)),
+				tor.getLong(BT_DONE),
+				tor.getLong(BT_PAYLOAD_UPLOAD),
+				tor.getLong(BT_SIZE),
+				(float) (tor.getLong(BT_DONE) / (float) tor.getLong(BT_SIZE)),
+				Float.parseFloat(tor.getString(BT_COPYS)),
 				null,
 				null,
 				null,
@@ -396,13 +396,13 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 			for (int i = 0; i < files.length(); i++) {
 				JSONObject file = files.getJSONObject(i);
 				torrentfiles.add(new TorrentFile(
-					i + "", 
+					i + "",
 					// TODO: How is an individual file identified? Index in the array?
-					file.getString(BT_FILE_NAME), 
-					file.getString(BT_FILE_NAME), 
+					file.getString(BT_FILE_NAME),
+					file.getString(BT_FILE_NAME),
 					null, // Not supported?
-					file.getLong(BT_FILE_SIZE), 
-					file.getLong(BT_FILE_DONE), 
+					file.getLong(BT_FILE_SIZE),
+					file.getLong(BT_FILE_DONE),
 					convertTransmissionPriority(file.getInt(BT_FILE_PRIORITY))));
 			}
 		}

@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon;
 
@@ -33,59 +33,59 @@ import org.transdroid.daemon.BitComet.BitCometAdapter;
 
 /**
  * Factory for new instances of server daemons, based on user settings.
- * 
+ *
  * @author erickok
  *
  */
 public enum Daemon {
 
 	Bitflu {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new BitfluAdapter(settings);
 		}
 	},
 	BitTorrent {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new UtorrentAdapter(settings);
 		}
 	},
 	BuffaloNas {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new BuffaloNasAdapter(settings);
 		}
 	},
 	Deluge {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new DelugeAdapter(settings);
 		}
 	},
 	Dummy {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new DummyAdapter(settings);
 		}
 	},
 	DLinkRouterBT {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new DLinkRouterBTAdapter(settings);
 		}
 	},
 	KTorrent {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new KtorrentAdapter(settings);
 		}
 	},
 	qBittorrent {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new QbittorrentAdapter(settings);
 		}
 	},
 	rTorrent {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new RtorrentAdapter(settings);
 		}
 	},
 	Tfb4rt {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new Tfb4rtAdapter(settings);
 		}
 	},
@@ -100,23 +100,23 @@ public enum Daemon {
 		}
 	},
 	uTorrent {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new UtorrentAdapter(settings);
 		}
 	},
 	Vuze {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new VuzeAdapter(settings);
 		}
 	},
 	BitComet {
-		public IDaemonAdapter createAdapter(DaemonSettings settings) { 
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new BitCometAdapter(settings);
 		}
 	};
-	
+
 	public abstract IDaemonAdapter createAdapter(DaemonSettings settings);
-	
+
 	/**
 	 * Returns the code as used in preferences matching the given daemon type
 	 * @return A string of the form 'daemon_<type>' that represents the daemon's enum value
@@ -297,14 +297,14 @@ public enum Daemon {
 	}
 
 	public static boolean supportsAddByFile(Daemon type) {
-		// Supported by every client except Bitflu 
+		// Supported by every client except Bitflu
 		return type != Bitflu;
 	}
 
 	public static boolean supportsAddByMagnetUrl(Daemon type) {
 		return type == uTorrent || type == BitTorrent || type == Transmission || type == Synology || type == Deluge || type == Bitflu || type == KTorrent || type == rTorrent || type == qBittorrent || type == BitComet || type == Dummy;
 	}
-	
+
 	public static boolean supportsRemoveWithData(Daemon type) {
 		return type == uTorrent || type == Vuze || type == Transmission || type == Deluge || type == BitTorrent || type == Tfb4rt || type == DLinkRouterBT || type == Bitflu || type == qBittorrent || type == BuffaloNas || type == BitComet || type == rTorrent || type == Dummy;
 	}
@@ -312,7 +312,7 @@ public enum Daemon {
 	public static boolean supportsFilePrioritySetting(Daemon type) {
 		return type == BitTorrent || type == uTorrent || type == Transmission || type == KTorrent || type == rTorrent || type == Vuze || type == Deluge || type == qBittorrent || type == Dummy;
 	}
-	
+
 	public static boolean supportsDateAdded(Daemon type) {
 		return type == Vuze || type == Transmission || type == rTorrent || type == Bitflu || type == BitComet || type == uTorrent || type == BitTorrent || type == Deluge || type == Dummy;
 	}

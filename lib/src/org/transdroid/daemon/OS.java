@@ -11,7 +11,7 @@ public enum OS {
 	Linux {
 		@Override public String getPathSeperator() { return "/"; }
 	};
-	
+
 	public static String toCode(OS os) {
 		if (os == null)
 			return null;
@@ -26,7 +26,7 @@ public enum OS {
 			return null;
 		}
 	}
-	
+
 	public static OS fromCode(String osCode) {
 		if (osCode == null) {
 			return null;

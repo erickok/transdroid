@@ -5,11 +5,11 @@
     <property name="generated.dir" value=".apt_generated" />
     <property name="generated.absolute.dir" location="${generated.dir}" />
     <property name="java.compilerargs" value="-s &apos;${generated.absolute.dir}&apos;" />
-    
+
     <target name="-pre-compile">
       <mkdir dir="${generated.absolute.dir}" />
     </target>
-    
+
     <!-- copied (and modified) from $ANDROID_SDK_ROOT$/tools/ant/build.xml -->
     <target name="-compile" depends="-build-setup, -pre-build, -code-gen, -pre-compile">
         <do-only-if-manifest-hasCode elseText="hasCode = false. Skipping...">
@@ -88,5 +88,5 @@
 
         </do-only-if-manifest-hasCode>
     </target>
-    
+
 </project>

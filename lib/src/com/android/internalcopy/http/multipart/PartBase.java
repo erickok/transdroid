@@ -33,29 +33,29 @@ package com.android.internalcopy.http.multipart;
 
 /**
  * Provides setters and getters for the basic Part properties.
- * 
+ *
  * @author Michael Becke
  */
 public abstract class PartBase extends Part {
 
     /** Name of the file part. */
     private String name;
-        
+
     /** Content type of the file part. */
     private String contentType;
 
     /** Content encoding of the file part. */
     private String charSet;
-    
+
     /** The transfer encoding. */
     private String transferEncoding;
 
     /**
      * Constructor.
-     * 
+     *
      * @param name The name of the part
      * @param contentType The content type, or <code>null</code>
-     * @param charSet The character encoding, or <code>null</code> 
+     * @param charSet The character encoding, or <code>null</code>
      * @param transferEncoding The transfer encoding, or <code>null</code>
      */
     public PartBase(String name, String contentType, String charSet, String transferEncoding) {
@@ -75,8 +75,8 @@ public abstract class PartBase extends Part {
      * @see Part#getName()
      */
     @Override
-    public String getName() { 
-        return this.name; 
+    public String getName() {
+        return this.name;
     }
 
     /**
@@ -108,8 +108,8 @@ public abstract class PartBase extends Part {
 
     /**
      * Sets the character encoding.
-     * 
-     * @param charSet the character encoding, or <code>null</code> to exclude the character 
+     *
+     * @param charSet the character encoding, or <code>null</code> to exclude the character
      * encoding header
      */
     public void setCharSet(String charSet) {
@@ -118,7 +118,7 @@ public abstract class PartBase extends Part {
 
     /**
      * Sets the content type.
-     * 
+     *
      * @param contentType the content type, or <code>null</code> to exclude the content type header
      */
     public void setContentType(String contentType) {
@@ -127,7 +127,7 @@ public abstract class PartBase extends Part {
 
     /**
      * Sets the part name.
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -139,8 +139,8 @@ public abstract class PartBase extends Part {
 
     /**
      * Sets the transfer encoding.
-     * 
-     * @param transferEncoding the transfer encoding, or <code>null</code> to exclude the 
+     *
+     * @param transferEncoding the transfer encoding, or <code>null</code> to exclude the
      * transfer encoding header
      */
     public void setTransferEncoding(String transferEncoding) {

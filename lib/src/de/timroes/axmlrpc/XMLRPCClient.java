@@ -139,7 +139,7 @@ public class XMLRPCClient {
 	private final int flags;
 
 	private DefaultHttpClient httpclient;
-	
+
 	private String url;
 
 	private Map<Long,Caller> backgroundCalls = new ConcurrentHashMap<Long, Caller>();
@@ -148,7 +148,7 @@ public class XMLRPCClient {
 
 	/**
 	 * Create a new XMLRPC client for the given URL.
-	 * 
+	 *
 	 * @param httpclient The already-initialized Apache HttpClient to use for connection.
 	 * @param url The URL to send the requests to.
 	 * @param flags A combination of flags to be set.
@@ -160,7 +160,7 @@ public class XMLRPCClient {
 		this.httpclient = httpclient;
 		this.url = url;
 		this.flags = flags;
-		
+
 		// Create a parser for the http responses.
 		responseParser = new ResponseParser();
 
@@ -367,7 +367,7 @@ public class XMLRPCClient {
 			try {
 
 				Call c = createCall(methodName, params);
-				
+
 				// Prepare POST request
 				HttpPost post = new HttpPost(url);
 				post.getParams().setParameter("http.protocol.handle-redirects",	false);
@@ -375,10 +375,10 @@ public class XMLRPCClient {
 				StringEntity entity = new StringEntity(c.getXML(), HTTP.UTF_8);
 				entity.setContentType(TYPE_XML);
 				post.setEntity(entity);
-				
+
 				HttpResponse response = httpclient.execute(post);
 				int statusCode = response.getStatusLine().getStatusCode();
-				
+
 				InputStream istream;
 
 				// If status code was 401 or 403 throw exception or if appropriate
@@ -460,9 +460,9 @@ public class XMLRPCClient {
 			}
 
 		}
-		
+
 	}
-	
+
 	public static class CancelException extends Exception {
 		private static final long serialVersionUID = 9125122307255855136L;
 	}
@@ -473,5 +473,5 @@ public class XMLRPCClient {
 		public UnauthorizdException(int statusCode) { this.statusCode = statusCode; }
 		public int getStatusCode() { return statusCode; }
 	}
-	
+
 }

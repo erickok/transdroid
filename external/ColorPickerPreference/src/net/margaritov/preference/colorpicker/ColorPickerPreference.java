@@ -148,7 +148,7 @@ public class ColorPickerPreference
 		showDialog(null);
 		return false;
 	}
-	
+
 	protected void showDialog(Bundle state) {
 		mDialog = new ColorPickerDialog(getContext(), mValue);
 		mDialog.setOnColorChangedListener(this);
@@ -228,7 +228,7 @@ public class ColorPickerPreference
 
         return Color.argb(alpha, red, green, blue);
     }
-    
+
     @Override
     protected Parcelable onSaveInstanceState() {
         final Parcelable superState = super.onSaveInstanceState();
@@ -256,7 +256,7 @@ public class ColorPickerPreference
 
     private static class SavedState extends BaseSavedState {
         Bundle dialogBundle;
-        
+
         public SavedState(Parcel source) {
             super(source);
             dialogBundle = source.readBundle();
@@ -271,7 +271,7 @@ public class ColorPickerPreference
         public SavedState(Parcelable superState) {
             super(superState);
         }
-        
+
         @SuppressWarnings("unused")
         public static final Parcelable.Creator<SavedState> CREATOR =
                 new Parcelable.Creator<SavedState>() {

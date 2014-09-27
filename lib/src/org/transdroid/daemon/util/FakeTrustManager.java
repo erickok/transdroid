@@ -12,7 +12,7 @@ public class FakeTrustManager implements X509TrustManager {
 		private String certKey = null;
         private static final X509Certificate[] _AcceptedIssuers = new X509Certificate[] {};
 		private static final String LOG_NAME = "TrustManager";
-        
+
         public FakeTrustManager(String certKey){
         	super();
         	this.certKey = certKey;
@@ -30,7 +30,7 @@ public class FakeTrustManager implements X509TrustManager {
         		// This is the Accept All certificates case.
         		return;
         	}
-        	
+
         	// Otherwise, we have a certKey defined. We should now examine the one we got from the server.
         	// They match? All is good. They don't, throw an exception.
         	String our_key = this.certKey.replaceAll("[^a-fA-F0-9]+", "");
@@ -48,7 +48,7 @@ public class FakeTrustManager implements X509TrustManager {
 			} catch (NoSuchAlgorithmException e) {
 				throw new CertificateException("Unable to check self-signed cert, unknown algorithm. " + e.toString());
 			}
-        	
+
         }
 
         public boolean isClientTrusted(X509Certificate[] chain) {
@@ -74,7 +74,7 @@ public class FakeTrustManager implements X509TrustManager {
         }
 
         private static String hexify (byte bytes[]) {
-            char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', 
+            char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7',
                             '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
             StringBuffer buf = new StringBuffer(bytes.length * 2);

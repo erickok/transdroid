@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon.Rtorrent;
 
@@ -95,31 +95,31 @@ public class RtorrentAdapter implements IDaemonAdapter {
 			case Retrieve:
 
 				// @formatter:off
-				Object result = makeRtorrentCall("d.multicall", 
-						new String[] { "main", 
-						"d.get_hash=", 
+				Object result = makeRtorrentCall("d.multicall",
+						new String[] { "main",
+						"d.get_hash=",
 						"d.get_name=",
-						"d.get_state=", 
-						"d.get_down_rate=", 
-						"d.get_up_rate=", 
+						"d.get_state=",
+						"d.get_down_rate=",
+						"d.get_up_rate=",
 						"d.get_peers_connected=",
-						"d.get_peers_not_connected=", 
-						"d.get_peers_accounted=", 
-						"d.get_bytes_done=", 
+						"d.get_peers_not_connected=",
+						"d.get_peers_accounted=",
+						"d.get_bytes_done=",
 						"d.get_up_total=",
-						"d.get_size_bytes=", 
-						"d.get_creation_date=", 
-						"d.get_left_bytes=", 
+						"d.get_size_bytes=",
+						"d.get_creation_date=",
+						"d.get_left_bytes=",
 						"d.get_complete=",
-						"d.is_active=", 
-						"d.is_hash_checking=", 
-						"d.get_base_path=", 
+						"d.is_active=",
+						"d.is_hash_checking=",
+						"d.get_base_path=",
 						"d.get_base_filename=",
-						"d.get_message=", 
-						"d.get_custom=addtime", 
-						"d.get_custom=seedingtime", 
+						"d.get_message=",
+						"d.get_custom=addtime",
+						"d.get_custom=seedingtime",
 						"d.get_custom1=",
-						"d.get_peers_complete=", 
+						"d.get_peers_complete=",
 						"d.get_peers_accounted=" });
 				// @formatter:on
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result), lastKnownLabels);
@@ -127,9 +127,9 @@ public class RtorrentAdapter implements IDaemonAdapter {
 			case GetTorrentDetails:
 
 				// @formatter:off
-				Object dresult = makeRtorrentCall("t.multicall", new String[] { 
+				Object dresult = makeRtorrentCall("t.multicall", new String[] {
 						task.getTargetTorrent().getUniqueID(),
-						"", 
+						"",
 						"t.get_url=" });
 				// @formatter:on
 				return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
@@ -138,15 +138,15 @@ public class RtorrentAdapter implements IDaemonAdapter {
 			case GetFileList:
 
 				// @formatter:off
-				Object fresult = makeRtorrentCall("f.multicall", new String[] { 
+				Object fresult = makeRtorrentCall("f.multicall", new String[] {
 						task.getTargetTorrent().getUniqueID(),
-						"", 
-						"f.get_path=", 
-						"f.get_size_bytes=", 
-						"f.get_priority=", 
+						"",
+						"f.get_path=",
+						"f.get_size_bytes=",
+						"f.get_priority=",
 						"f.get_completed_chunks=",
-						"f.get_size_chunks=", 
-						"f.get_priority=", 
+						"f.get_size_chunks=",
+						"f.get_priority=",
 						"f.get_frozen_path=" });
 				// @formatter:on
 				return new GetFileListTaskSuccessResult((GetFileListTask) task, onTorrentFilesRetrieved(fresult,

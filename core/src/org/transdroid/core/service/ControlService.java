@@ -135,20 +135,20 @@ public class ControlService extends IntentService {
 
 		// The task was successful, so maybe we need to update the original calling widget now too
 		if (appWidgetId >= 0) {
-			
+
 			// Just wait for (max) two seconds, to give the server time to finish its last action
 			try {
 				Thread.sleep(2000);
 			} catch (Exception e) {
 			}
-			
+
 			// Ask the app widget provider to update this specific widget
 			Intent update = new Intent(this, ListWidgetProvider_.class);
 			update.setAction("android.appwidget.action.APPWIDGET_UPDATE");
 			update.putExtra(ListWidgetProvider.EXTRA_REFRESH, appWidgetId);
 			update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 			sendBroadcast(update);
-			
+
 		}
 
 	}

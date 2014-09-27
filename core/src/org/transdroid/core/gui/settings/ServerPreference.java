@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2013 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,7 +31,7 @@ public class ServerPreference extends Preference {
 
 	protected ServerSetting serverSetting;
 	private OnServerClickedListener onServerClickedListener = null;
-	
+
 	public ServerPreference(Context context) {
 		super(context);
 		setOnPreferenceClickListener(onPreferenceClicked);
@@ -49,7 +49,7 @@ public class ServerPreference extends Preference {
 		setOrder(ORDER_START + serverSetting.getOrder());
 		return this;
 	}
-	
+
 	/**
 	 * Set a listener that will be notified of click events on this preference
 	 * @param onServerClickedListener The click listener to register
@@ -68,9 +68,9 @@ public class ServerPreference extends Preference {
 			return true;
 		}
 	};
-	
+
 	public interface OnServerClickedListener {
 		public void onServerClicked(ServerSetting serverSetting);
 	}
-	
+
 }

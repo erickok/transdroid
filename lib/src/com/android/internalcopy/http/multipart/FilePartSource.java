@@ -39,12 +39,12 @@ import java.io.InputStream;
 
 /**
  * A PartSource that reads from a File.
- * 
+ *
  * @author <a href="mailto:becke@u.washington.edu">Michael Becke</a>
  * @author <a href="mailto:mdiggory@latte.harvard.edu">Mark Diggory</a>
  * @author <a href="mailto:mbowler@GargoyleSoftware.com">Mike Bowler</a>
- *   
- * @since 2.0 
+ *
+ * @since 2.0
  */
 public class FilePartSource implements PartSource {
 
@@ -53,13 +53,13 @@ public class FilePartSource implements PartSource {
 
     /** File part file name. */
     private String fileName = null;
-    
+
     /**
      * Constructor for FilePartSource.
-     * 
-     * @param file the FilePart source File. 
      *
-     * @throws FileNotFoundException if the file does not exist or 
+     * @param file the FilePart source File.
+     *
+     * @throws FileNotFoundException if the file does not exist or
      * cannot be read
      */
     public FilePartSource(File file) throws FileNotFoundException {
@@ -71,27 +71,27 @@ public class FilePartSource implements PartSource {
             if (!file.canRead()) {
                 throw new FileNotFoundException("File is not readable.");
             }
-            this.fileName = file.getName();       
+            this.fileName = file.getName();
         }
     }
 
     /**
      * Constructor for FilePartSource.
-     * 
+     *
      * @param fileName the file name of the FilePart
      * @param file the source File for the FilePart
      *
-     * @throws FileNotFoundException if the file does not exist or 
+     * @throws FileNotFoundException if the file does not exist or
      * cannot be read
      */
-    public FilePartSource(String fileName, File file) 
+    public FilePartSource(String fileName, File file)
       throws FileNotFoundException {
         this(file);
         if (fileName != null) {
             this.fileName = fileName;
         }
     }
-    
+
     /**
      * Return the length of the file
      * @return the length of the file.
