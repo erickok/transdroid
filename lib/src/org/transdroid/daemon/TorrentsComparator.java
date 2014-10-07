@@ -74,6 +74,8 @@ public class TorrentsComparator implements Comparator<Torrent> {
 				return new Integer(tor1.getRateUpload()).compareTo(new Integer(tor2.getRateUpload()));
 			case Ratio:
 				return new Double(tor1.getRatio()).compareTo(new Double(tor2.getRatio()));
+			case Size:
+				return new Double(tor1.getTotalSize()).compareTo(new Double(tor2.getTotalSize()));
 			default:
 				return alphanumComparator.compare(tor1.getName().toLowerCase(), tor2.getName().toLowerCase());
 			}
@@ -97,6 +99,8 @@ public class TorrentsComparator implements Comparator<Torrent> {
 				return 0 - (new Integer(tor1.getRateUpload()).compareTo(new Integer(tor2.getRateUpload())));
 			case Ratio:
 				return 0 - new Double(tor1.getRatio()).compareTo(new Double(tor2.getRatio()));
+			case Size:
+				return 0 - new Double(tor1.getTotalSize()).compareTo(new Double(tor2.getTotalSize()));
 			default:
 				return 0 - alphanumComparator.compare(tor1.getName().toLowerCase(), tor2.getName().toLowerCase());
 			}

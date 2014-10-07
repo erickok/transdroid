@@ -816,6 +816,11 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		fragmentTorrents.sortBy(TorrentsSortBy.Ratio);
 	}
 
+	@OptionsItem(resName = "action_sort_size")
+	protected void sortBySize() {
+		fragmentTorrents.sortBy(TorrentsSortBy.Size);
+	}
+
 	@OptionsItem(resName = "action_filter")
 	protected void startFilterEntryDialog() {
 		FilterEntryDialog.startFilterEntry(this);
