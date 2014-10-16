@@ -85,7 +85,7 @@ public class ServerCheckerService extends IntentService {
 			// enabled by the user for this specific server
 			if (server.getType() == null || server.getAddress() == null || server.getAddress().equals("")
 					|| !(server.shouldAlarmOnFinishedDownload() || server.shouldAlarmOnNewTorrent()))
-				return;
+				continue;
 
 			// Get the statistics for the last time we checked this server
 			JSONArray lastStats = applicationSettings.getServerLastStats(server);
@@ -95,7 +95,7 @@ public class ServerCheckerService extends IntentService {
 			DaemonTaskResult result = RetrieveTask.create(adapter).execute();
 			if (!(result instanceof RetrieveTaskSuccessResult)) {
 				// Cannot retrieve torrents at this time
-				return;
+				continue;
 			}
 			List<Torrent> retrieved = ((RetrieveTaskSuccessResult) result).getTorrents();
 			Log.d(this, server.getName() + ": Retrieved torrent listing");
