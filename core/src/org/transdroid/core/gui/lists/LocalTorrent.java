@@ -143,9 +143,9 @@ public class LocalTorrent {
 		case Checking:
 			return r.getString(R.string.status_checking);
 		case Downloading:
-			return r.getString(R.string.status_leechers, t.getSeedersConnected(), t.getSeedersKnown());
+			return r.getString(R.string.status_seeders, t.getSeedersConnected(), t.getSeedersKnown());
 		case Seeding:
-			return r.getString(R.string.status_seeders, t.getLeechersConnected(), t.getLeechersKnown());
+			return r.getString(R.string.status_leechers, t.getLeechersConnected(), t.getLeechersKnown());
 		case Paused:
 			return r.getString(R.string.status_paused);
 		case Queued:
