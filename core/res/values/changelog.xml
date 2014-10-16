@@ -17,10 +17,15 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.3.0\n
+- Aria2 support\n
+\n
 Transdroid 2.2.0\n
 - Dropped legacy Android support; Android 4.0.3 is the new minimum\n
+- Added Default Server option\n
 - Fixed list selection quirks\n
 - Another language-related qBittorrent fix\n
+- Copy RSS item or torrent file name to clipboard\n
 - Properly disable FTP download option when not supported\n
 - Support KitKat file picker and more file managers\n
 - Many updated translations\n

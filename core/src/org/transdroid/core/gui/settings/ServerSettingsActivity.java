@@ -117,6 +117,8 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		Daemon daemonType = Daemon.fromCode(prefs.getString("server_type_" + key, null));
 		extraPass.setEnabled(Daemon.supportsExtraPassword(daemonType));
+		extraPass.setTitle(getString(daemonType == Daemon.Deluge ? R.string.pref_extrapassword : R.string.pref_secret));
+		extraPass.setDialogTitle(extraPass.getTitle());
 		folder.setEnabled(daemonType == null ? false : Daemon.supportsCustomFolder(daemonType));
 		downloadDir.setEnabled(daemonType == null ? false : Daemon.needsManualPathSpecified(daemonType));
 		// sslTrustKey.setEnabled(sslValue && !sslTAValue);

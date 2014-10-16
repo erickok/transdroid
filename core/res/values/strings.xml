@@ -244,7 +244,8 @@
 	<string name="pref_port">Port number</string>
 	<string name="pref_user">User name</string>
 	<string name="pref_pass">Password</string>
-	<string name="pref_extrapass">Deluge web password</string>
+	<string name="pref_extrapassword">Deluge web password</string>
+	<string name="pref_secret">Secret token</string>
 	<string name="pref_advanced">Advanced settings</string>
 	<string name="pref_localaddress">Local IP or host</string>
 	<string name="pref_localaddress_info">When connected to the specified local network</string>
@@ -350,6 +351,7 @@
 	</string-array>
 	
     <string-array name="pref_daemon_types" translatable="false">
+        <item>Aria2</item>
         <item>BitComet</item>
         <item>Bitflu 1.2+</item>
         <item>BitTorrent 6+</item>
@@ -366,6 +368,7 @@
         <item>Vuze</item>
     </string-array>
     <string-array name="pref_daemon_values" translatable="false">
+        <item>daemon_aria2</item>
         <item>daemon_bitcomet</item>
         <item>daemon_bitflu</item>
         <item>daemon_bittorrent</item>
