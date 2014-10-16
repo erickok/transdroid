@@ -341,6 +341,8 @@ public class Aria2Adapter implements IDaemonAdapter {
 				JSONArray files = tor.getJSONArray("files");
 				if (files.length() > 0) {
 					name = Uri.parse(files.getJSONObject(0).getString("path")).getLastPathSegment();
+					if (name == null)
+						name = files.getJSONObject(0).getString("path");
 				}
 			}
 			if (name == null)
