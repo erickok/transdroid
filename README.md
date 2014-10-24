@@ -2,14 +2,12 @@ Transdroid
 ==========
 
 [www.transdroid.org](http://www.transdroid.org)  
-[Google+](https://plus.google.com/u/0/b/106240944422491053650/106240944422491053650) - [Twitter](https://twitter.com/transdroid) - [Old Google Code site](https://code.google.com/p/transdroid/) - [transdroid@2312.nl](transdroid@2312.nl)  
+[Google+](https://plus.google.com/u/0/b/106240944422491053650/106240944422491053650) - [Twitter](https://twitter.com/transdroid) - [transdroid@2312.nl](transdroid@2312.nl) - [Transdrone in Play Store](https://play.google.com/store/apps/details?id=org.transdroid.lite)
 "Manage your torrents from your Android device"
 
-![Screen shot of the main torretns listing screen](http://2312.nl/img/portfolio-transdroid/240x400-transdroid-main.png)
+![Screen shot of the main torretnts listing screen](http://2312.nl/img/portfolio-transdroid/240x400-transdroid-main.png)
 
-Manage your torrents from your Android device with Transdroid. All popular clients are supported, including µTorrent, Transmission, rTorrent, Vuze, Deluge and BitTorrent 6. You can view and manage the running torrents and individual files. Adding is easy via the integrated search, RSS feeds or the barcode scanner. Monitor progress using the home screen widget or background alarm service.
-
-Transdroid was migrated from its Google Code Mercurial repo to GitHub with the 2.0-alpha3 tag and its .apk release.
+Manage your torrents from your Android device with Transdroid. All popular clients are supported: µTorrent, Transmission, rTorrent, Vuze, Deluge, BitTorrent 6, qBittorrent and many more. You can view and manage the running torrents and individual files. Adding is easy via the integrated search, RSS feeds or the barcode scanner (full version required). Monitor progress using the home screen widget or background alarm service.
 
 Contributions
 =============
@@ -21,13 +19,7 @@ Please respect the coding standards for easier merging. master contains the curr
 Code structure
 ==============
 
-Transdroid is currently developed in Eclipse, against Android 4.4 (API level 19) and since version 2.2.0 supporting ICS (API level 15) and up. To support lite and full version of the app, the core UI is contained in a separate Android library project. The torrent client adapters are also in a seperate project, called Transdroid Connect, but this is a classic Java project. If the Connect project is updated, a fresh .jar needs to be exported to core/libs/transdroid.jar. In order to do so, run ant (without parameters) within the lib/ directory.
-
-* core - Contains the core Android library project with UI, services, resources, etc.
-* full - Full app version (website release) through AndroidManifest.xml configuration
-* lite - Lite version (for Play Store, without search and RSS) through AndroidManifest.xml configuration
-* external - Local copies of required external Android libraries
-* lib - The Torrent Connect project containing torrent client communication code
+Starting with version 2.3.0, Transdroid is developed in Android Studio, fully integrating with the Gradle build system. It is compiled against Android 4.4 (API level 19) and since version 2.2.0 supporting ICS (API level 15) and up only. To support lite (Transdrone, specially for the Play Store) and full (Transdroid) versions of the app, build flavours are defined in gradle, which contain version-specific resources. Dependencies are managed via Maven Central in the app's build.gradle file.
 
 Developed By
 ============
