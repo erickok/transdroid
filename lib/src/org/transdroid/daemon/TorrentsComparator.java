@@ -66,12 +66,16 @@ public class TorrentsComparator implements Comparator<Torrent> {
 				return tor1.getDateAdded().compareTo(tor2.getDateAdded());
 			case DateDone:
 				return tor1.getDateDone().compareTo(tor2.getDateDone());
+			case Percent:
+				return new Float(tor1.getDownloadedPercentage()).compareTo(new Float(tor2.getDownloadedPercentage()));
 			case DownloadSpeed:
 				return new Integer(tor1.getRateDownload()).compareTo(new Integer(tor2.getRateDownload()));
 			case UploadSpeed:
 				return new Integer(tor1.getRateUpload()).compareTo(new Integer(tor2.getRateUpload()));
 			case Ratio:
 				return new Double(tor1.getRatio()).compareTo(new Double(tor2.getRatio()));
+			case Size:
+				return new Double(tor1.getTotalSize()).compareTo(new Double(tor2.getTotalSize()));
 			default:
 				return alphanumComparator.compare(tor1.getName().toLowerCase(), tor2.getName().toLowerCase());
 			}
@@ -87,12 +91,16 @@ public class TorrentsComparator implements Comparator<Torrent> {
 				return 0 - tor1.getDateAdded().compareTo(tor2.getDateAdded());
 			case DateDone:
 				return 0 - tor1.getDateDone().compareTo(tor2.getDateDone());
+			case Percent:
+				return 0 - (new Float(tor1.getDownloadedPercentage()).compareTo(new Float(tor2.getDownloadedPercentage())));
 			case DownloadSpeed:
 				return 0 - (new Integer(tor1.getRateDownload()).compareTo(new Integer(tor2.getRateDownload())));
 			case UploadSpeed:
 				return 0 - (new Integer(tor1.getRateUpload()).compareTo(new Integer(tor2.getRateUpload())));
 			case Ratio:
 				return 0 - new Double(tor1.getRatio()).compareTo(new Double(tor2.getRatio()));
+			case Size:
+				return 0 - new Double(tor1.getTotalSize()).compareTo(new Double(tor2.getTotalSize()));
 			default:
 				return 0 - alphanumComparator.compare(tor1.getName().toLowerCase(), tor2.getName().toLowerCase());
 			}

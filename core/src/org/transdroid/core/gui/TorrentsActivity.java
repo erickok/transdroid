@@ -796,6 +796,11 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		fragmentTorrents.sortBy(TorrentsSortBy.DateAdded);
 	}
 
+	@OptionsItem(resName = "action_sort_percent")
+	protected void sortByPercent() {
+		fragmentTorrents.sortBy(TorrentsSortBy.Percent);
+	}
+
 	@OptionsItem(resName = "action_sort_downspeed")
 	protected void sortByDownspeed() {
 		fragmentTorrents.sortBy(TorrentsSortBy.DownloadSpeed);
@@ -809,6 +814,11 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@OptionsItem(resName = "action_sort_ratio")
 	protected void sortByRatio() {
 		fragmentTorrents.sortBy(TorrentsSortBy.Ratio);
+	}
+
+	@OptionsItem(resName = "action_sort_size")
+	protected void sortBySize() {
+		fragmentTorrents.sortBy(TorrentsSortBy.Size);
 	}
 
 	@OptionsItem(resName = "action_filter")

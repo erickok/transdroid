@@ -28,7 +28,9 @@ public enum TorrentsSortBy {
 	DateAdded (4), 
 	UploadSpeed (5),
 	Ratio (6),
-	DownloadSpeed (7);
+	DownloadSpeed (7),
+	Percent (8),
+	Size (9);
 
 	private int code;
     private static final Map<Integer,TorrentsSortBy> lookup  = new HashMap<Integer,TorrentsSortBy>();
