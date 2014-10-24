@@ -151,6 +151,16 @@ public class ApplicationSettings {
 		String localPort = prefs.getString("server_localport_" + order, "");
 		if (localPort.equals(""))
 			localPort = port; // Default to the normal (non-local) port
+		try {
+			Integer.parseInt(port);
+		} catch (NumberFormatException e) {
+			port = Integer.toString(Daemon.getDefaultPortNumber(type, ssl));
+		}
+		try {
+			Integer.parseInt(localPort);
+		} catch (NumberFormatException e) {
+			localPort = port;
+		}
 
 		return new ServerSetting(order, 
 				prefs.getString("server_name_" + order, null), 

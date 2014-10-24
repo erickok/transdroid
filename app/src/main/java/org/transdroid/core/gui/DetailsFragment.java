@@ -447,11 +447,14 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				andftpStart.putExtra("local_folder", "/sdcard/Download");
 				for (int f = 0; f < checked.size(); f++) {
 					String file = checked.get(f).getRelativePath();
-					// If the file is directly in the root, AndFTP fails if we supply the proper path (like /file.pdf)
-					// Work around this bug by removing the leading / if no further directories are used in the path
-					if (file.startsWith("/") && file.indexOf("/", 1) < 0)
-						file = file.substring(1);
-					andftpStart.putExtra("remote_file" + (f + 1), file);
+					if (file != null) {
+						// If the file is directly in the root, AndFTP fails if we supply the proper path (like
+						// /file.pdf)
+						// Work around this bug by removing the leading / if no further directories are used in the path
+						if (file.startsWith("/") && file.indexOf("/", 1) < 0)
+							file = file.substring(1);
+						andftpStart.putExtra("remote_file" + (f + 1), file);
+					}
 				}
 				if (andftpStart.resolveActivity(getActivity().getPackageManager()) != null) {
 					startActivity(andftpStart);
