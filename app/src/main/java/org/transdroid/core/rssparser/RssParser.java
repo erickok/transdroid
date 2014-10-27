@@ -2,7 +2,7 @@
  * Taken from the 'Learning Android' project, released as Public Domain software at
  * http://github.com/digitalspaghetti/learning-android and modified heavily for Transdroid
  */
-package org.transdroid.Rssparser;
+package org.transdroid.core.rssparser;
 
 import java.io.IOException;
 import java.util.Date;
@@ -22,6 +22,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.transdroid.daemon.util.HttpHelper;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

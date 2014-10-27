@@ -28,8 +28,8 @@ import org.transdroid.core.app.settings.NotificationSettings;
 import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.rss.RssfeedsActivity_;
-import org.transdroid.Rssparser.Item;
-import org.transdroid.Rssparser.RssParser;
+import org.transdroid.core.rssparser.Item;
+import org.transdroid.core.rssparser.RssParser;
 import org.transdroid.daemon.util.Collections2;
 
 import android.app.IntentService;
@@ -112,7 +112,7 @@ public class RssCheckerService extends IntentService {
 
 		// Provide a notification, since there are new RSS items
 		PendingIntent pi = PendingIntent.getActivity(this, 80000, new Intent(this, RssfeedsActivity_.class),
-				Intent.FLAG_ACTIVITY_NEW_TASK);
+				PendingIntent.FLAG_UPDATE_CURRENT);
 		String title = getResources().getQuantityString(R.plurals.rss_service_new, unread, Integer.toString(unread));
 		String forString = Collections2.joinString(hasUnread, ", ");
 		Builder builder = new Notification.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)

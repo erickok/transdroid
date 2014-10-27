@@ -21,7 +21,6 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.gui.navigation.NavigationHelper;
-import org.transdroid.Rssparser.Channel;
 
 import android.content.Context;
 import android.view.View;
@@ -74,10 +73,6 @@ public class RssfeedView extends LinearLayout {
 		navigationHelper.getImageCache().displayImage(String.format(GETFVO_URL, rssfeedLoader.getSetting().getUrl()),
 				faviconImage);
 		
-	}
-
-	public Channel getChannel() {
-		return null;
 	}
 
 }

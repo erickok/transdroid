@@ -2,7 +2,7 @@
  * Taken from the 'Learning Android' project, released as Public Domain software at
  * http://github.com/digitalspaghetti/learning-android and modified heavily for Transdroid
  */
-package org.transdroid.Rssparser;
+package org.transdroid.core.rssparser;
 
 import java.util.Date;
 

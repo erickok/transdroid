@@ -18,7 +18,7 @@ package org.transdroid.core.gui.rss;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
-import org.transdroid.Rssparser.Item;
+import org.transdroid.core.rssparser.Item;
 
 import android.content.Context;
 import android.text.format.DateUtils;

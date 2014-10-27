@@ -25,7 +25,7 @@ import org.transdroid.R;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.*;
 import org.transdroid.core.gui.navigation.NavigationHelper;
-import org.transdroid.Rssparser.Channel;
+import org.transdroid.core.rssparser.Channel;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

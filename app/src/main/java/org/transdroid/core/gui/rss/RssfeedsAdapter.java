@@ -21,7 +21,6 @@ import java.util.List;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.transdroid.core.app.settings.RssfeedSetting;
-import org.transdroid.Rssparser.Channel;
 
 import android.content.Context;
 import android.view.View;
@@ -29,7 +28,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 /**
- * Adapter that contains a list of {@link RssfeedSetting}s, each with associated loaded RSS feed {@link Channel}.
+ * Adapter that contains a list of {@link RssfeedSetting}s, each with associated loaded RSS feed {@link org.transdroid.core.rssparser.Channel}.
  * @author Eric Kok
  */
 @EBean

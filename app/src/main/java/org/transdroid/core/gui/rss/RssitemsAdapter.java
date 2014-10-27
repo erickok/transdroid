@@ -18,8 +18,8 @@ package org.transdroid.core.gui.rss;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
-import org.transdroid.Rssparser.Channel;
-import org.transdroid.Rssparser.Item;
+import org.transdroid.core.rssparser.Channel;
+import org.transdroid.core.rssparser.Item;
 
 import android.content.Context;
 import android.view.View;
@@ -40,7 +40,7 @@ public class RssitemsAdapter extends BaseAdapter {
 
 	/**
 	 * Allows updating the full RSS feed (channel and contained items), replacing the old data
-	 * @param newRssfeeds The new RSS feed contents
+	 * @param rssfeed The new RSS feed contents
 	 */
 	public void update(Channel rssfeed) {
 		this.rssfeed = rssfeed;

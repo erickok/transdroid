@@ -223,7 +223,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_searchurl">직접 검색 URL</string>
 <string name="pref_searchurl_info">%s가 검색어로 대체됩니다</string>
 <string name="pref_cookies">쿠키</string>
-<string name="pref_cookies_info">선택적; 'key1=value1;key2=value2' 형식을 사용하세요</string>
+<string name="pref_cookies_info">선택적; \'key1=value1;key2=value2\' 형식을 사용하세요</string>
 <string name="pref_feedurl">피드 URL</string>
 <string name="pref_reqauth">인증 필요</string>
 <string name="pref_reqauth_info">사용자 로그인을 위해 링크를 웹 브라우저로 엽니다</string>

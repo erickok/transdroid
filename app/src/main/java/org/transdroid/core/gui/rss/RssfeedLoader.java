@@ -22,8 +22,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.transdroid.core.app.settings.RssfeedSetting;
-import org.transdroid.Rssparser.Channel;
-import org.transdroid.Rssparser.Item;
+import org.transdroid.core.rssparser.Channel;
+import org.transdroid.core.rssparser.Item;
 
 /**
  * A container class that holds RSS feed settings and, after they have been retrieved, the contents as {@link Channel},

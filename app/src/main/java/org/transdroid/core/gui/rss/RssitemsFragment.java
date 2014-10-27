@@ -30,8 +30,8 @@ import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 import org.transdroid.core.gui.search.SearchActivity_;
-import org.transdroid.Rssparser.Channel;
-import org.transdroid.Rssparser.Item;
+import org.transdroid.core.rssparser.Channel;
+import org.transdroid.core.rssparser.Item;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
