@@ -168,7 +168,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	 */
 	public void updateTorrentDetails(Torrent checkTorrent, TorrentDetails newTorrentDetails) {
 		// Check if these are actually the details of the torrent we are now showing
-		if (!torrent.getUniqueID().equals(checkTorrent.getUniqueID()))
+		if (torrent == null || !torrent.getUniqueID().equals(checkTorrent.getUniqueID()))
 			return;
 		this.torrentDetails = newTorrentDetails;
 		((DetailsAdapter) detailsList.getAdapter()).updateTrackers(SimpleListItemAdapter.SimpleStringItem
@@ -184,7 +184,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	 */
 	public void updateTorrentFiles(Torrent checkTorrent, ArrayList<TorrentFile> newTorrentFiles) {
 		// Check if these are actually the details of the torrent we are now showing
-		if (!torrent.getUniqueID().equals(checkTorrent.getUniqueID()))
+		if (torrent == null || !torrent.getUniqueID().equals(checkTorrent.getUniqueID()))
 			return;
 		Collections.sort(newTorrentFiles);
 		this.torrentFiles = newTorrentFiles;
@@ -227,7 +227,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		emptyText.setVisibility(!isLoadingTorrent && !hasCriticalError ? View.VISIBLE : View.GONE);
 		errorText.setVisibility(!isLoadingTorrent && hasCriticalError ? View.VISIBLE : View.GONE);
 		loadingProgress.setVisibility(isLoadingTorrent ? View.VISIBLE : View.GONE);
-		// Note: this.torrent is not cleared as we need to know later what the fragment was originally bound to
+		torrent = null;
 		torrentDetails = null;
 		torrentFiles = null;
 	}
@@ -349,16 +349,22 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
 	@Override
 	public void onLabelPicked(String newLabel) {
+		if (torrent == null)
+			return;
 		getTasksExecutor().updateLabel(torrent, newLabel);
 	}
 
 	@Override
 	public void onTrackersUpdated(List<String> updatedTrackers) {
+		if (torrent == null)
+			return;
 		getTasksExecutor().updateTrackers(torrent, updatedTrackers);
 	}
 
 	@Override
 	public void onStorageLocationUpdated(String newLocation) {
+		if (torrent == null)
+			return;
 		getTasksExecutor().updateLocation(torrent, newLocation);
 	}
 
