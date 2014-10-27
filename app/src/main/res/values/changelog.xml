@@ -21,6 +21,7 @@ Transdroid 2.3.0\n
 - Aria2 support\n
 - Fixed server checker when one is unavailable\n
 - Fixed Deluge magnet links from Chrome\n
+- Enable RSS notifications per feed\n
 \n
 Transdroid 2.2.0\n
 - Dropped legacy Android support; Android 4.0.3 is the new minimum\n

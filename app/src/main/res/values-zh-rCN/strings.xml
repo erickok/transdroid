@@ -104,7 +104,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="status_ofsize">OF %1$s</string>
 <string name="status_unknowneta">无法预计</string>
 <string name="status_ratio">比率 %1$s</string>
-<string name="status_peers">%1$s OF %2$s PEERS</string>
 <string name="status_downloading">下载中</string>
 <string name="status_seeding">上传中</string>
 <string name="status_paused">已暂停</string>

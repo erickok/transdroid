@@ -83,7 +83,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="status_ofsize">DE %1$s</string>
 <string name="status_unknowneta">ETA desconhecido</string>
 <string name="status_ratio">RÁCIO %1$s</string>
-<string name="status_peers">%1$s DE %2$s PEERS</string>
 <string name="status_downloading">Downloading</string>
 <string name="status_seeding">Seeding</string>
 <string name="status_paused">Pausados</string>
@@ -169,7 +168,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_sslacceptall">Aceitar todos os certificados SSL</string>
 
 <string name="pref_background">Notificações fundo</string>
-<string name="pref_notifications">Ativar notificações</string>
 <string name="pref_notifyinterval">Intervalo</string>
 <string name="pref_notifysound">Som</string>
 <string name="pref_notifyvibrate">Vibrar</string>
@@ -179,6 +177,9 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_checkupdates">Verificar atualizações</string>
 <string name="pref_import_success">Configurações importadas com sucesso</string>
 <string name="pref_export">Exportar configurações</string>
+
+
+
 
 <string name="error_invalid_port_number">O número da porto é sempre numérico</string>
 <string name="error_norssfeed">O URL não é um feed  RSS válido</string>

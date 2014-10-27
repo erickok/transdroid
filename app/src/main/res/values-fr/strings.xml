@@ -104,7 +104,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="status_ofsize">DE %1$s</string>
 <string name="status_unknowneta">ETA INCONNUE</string>
 <string name="status_ratio">RATIO %1$s</string>
-<string name="status_peers">%1$s DE %2$s PAIRS</string>
 <string name="status_downloading">Réception</string>
 <string name="status_seeding">Envoi</string>
 <string name="status_paused">En Pause</string>

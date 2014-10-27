@@ -96,7 +96,6 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="status_ofsize">OF %1$s</string>
 <string name="status_unknowneta">Ende unbekannt</string>
 <string name="status_ratio">RATIO %1$s</string>
-<string name="status_peers">%1$s OF %2$s PEERS</string>
 <string name="status_downloading">Downloading</string>
 <string name="status_seeding">Seeding</string>
 <string name="status_paused">Pausiert</string>

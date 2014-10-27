@@ -32,9 +32,11 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_sort_status">Status</string>
 <string name="action_sort_done">Datum gereed</string>
 <string name="action_sort_added">Datum toegevoegd</string>
+<string name="action_sort_percent">Percentage gedownload</string>
 <string name="action_sort_downspeed">Downloadsnelheid</string>
 <string name="action_sort_upspeed">Uploadsnelheid</string>
 <string name="action_sort_ratio">Ratio</string>
+<string name="action_sort_size">Grootte</string>
 <string name="action_filter">Lijst filteren</string>
 <string name="action_settings">Instellingen</string>
 <string name="action_help">Help</string>
@@ -61,6 +63,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="action_priority_high">Hoog</string>
 <string name="action_remoteplay">Afspelen op server met VLC</string>
 <string name="action_download">Downloaden met (S)FTP</string>
+<string name="action_copytoclipboard">Kopiëer naar klembord</string>
 <string name="action_showdetails">Toon details</string>
 <string name="action_openwebsite">Website openen</string>
 <string name="action_useassearch">Gebruiken als zoekopdracht</string>
@@ -90,6 +93,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="navigation_selectall">Alles selecteren</string>
 <string name="navigation_selectfinished">Selecteer geëindigd</string>
 <string name="navigation_invertselection">Selectie omdraaien</string>
+<string name="navigation_pickserver">Torrent toevoegen aan&#8230;</string>
 
 <string name="status_status">STATUS: %1$s</string>
 <string name="status_waiting">Zal worden gecontroleerd&#8230;</string>
@@ -212,6 +216,9 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_servers">Servers</string>
 <string name="pref_addserver">Nieuwe server toevoegen</string>
 <string name="pref_addseedbox">Seedbox toevoegen</string>
+<string name="pref_defaultserver">Standaardserver</string>
+<string name="pref_defaultserver_lastused">Laatstgebruikte</string>
+<string name="pref_defaultserver_askonadd">Vraag bij toevoegen van torrent</string>
 <string name="pref_searchsites">Zoeksites</string>
 <string name="pref_setsearchsite">Stel standaardsite in</string>
 <string name="pref_addwebsearch">Nieuwe webgebaseerde site toevoegen</string>
@@ -229,13 +236,15 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_feedurl">URL van de feed</string>
 <string name="pref_reqauth">Inloggen vereist</string>
 <string name="pref_reqauth_info">Links zullen in de browser worden geopend op in te loggen</string>
+<string name="pref_alarmrssnew">Nieuweitemmelding</string>
+<string name="pref_alarmrssnew_info">Meld als er nieuwe torrent beschikbaar zijn</string>
 
 <string name="pref_servertype">Servertype</string>
 <string name="pref_address">IP of domeinnaam</string>
 <string name="pref_port">Poortnummer</string>
 <string name="pref_user">Gebruikersnaam</string>
 <string name="pref_pass">Wachtwoord</string>
-<string name="pref_extrapass">Deluge webwachtwoord</string>
+<string name="pref_secret">Geheime token</string>
 <string name="pref_advanced">Geavanceerde instellingen</string>
 <string name="pref_localaddress">Loale IP of hostnaam</string>
 <string name="pref_localaddress_info">Mits verbonden met het opgegeven lokale netwerk</string>

@@ -67,7 +67,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="navigation_labels">CÍMKÉK</string>
 <string name="navigation_status_showall">Összes</string>
 <string name="navigation_status_onlydown">Letöltés</string>
-<string name="navigation_status_onlyup">Feltültés</string>
+<string name="navigation_status_onlyup">Feltöltés</string>
 <string name="navigation_status_onlyactive">Aktív</string>
 <string name="navigation_status_onlyinactive">Inaktív</string>
 <plurals name="navigation_torrentsselected">
@@ -122,6 +122,9 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <item quantity="one">New RSS feed torrent available</item>
 <item quantity="other">%1$s new RSS feed torrents</item>
 </plurals>
+
+
+
 
 
 

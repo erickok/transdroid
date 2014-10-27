@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2010-2013 Eric Kok et al.
+
+Transdroid is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Transdroid is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+<string name="action_add">追加</string>
+<string name="action_addall">すべて追加</string>
+<string name="action_addfromfile">ファイルから</string>
+<string name="action_addfromurl">URL から</string>
+<string name="action_scanbarcode">ﾊﾞｰｺｰﾄﾞをスキャン</string>
+<string name="action_search">検索</string>
+<string name="action_refresh">更新</string>
+<string name="action_rss">RSS</string>
+<string name="action_enableturtle">タートル･モードを有効</string>
+<string name="action_disableturtle">タートル･モードを無効</string>
+<string name="action_sort">リストをｿｰﾄ</string>
+<string name="action_sort_alpha">名前</string>
+<string name="action_sort_status">ステータス</string>
+<string name="action_sort_done">完了日</string>
+<string name="action_sort_added">追加日</string>
+<string name="action_sort_downspeed">ダウンロード・スピード</string>
+<string name="action_sort_upspeed">アップロード･スピード</string>
+<string name="action_sort_ratio">割合</string>
+<string name="action_filter">リストをフィルター</string>
+<string name="action_settings">設定</string>
+<string name="action_help">ヘルプ</string>
+<string name="action_start">開始</string>
+<string name="action_start_default">通常開始</string>
+<string name="action_start_forced">強制開始</string>
+<string name="action_startall">すべて開始</string>
+<string name="action_stop">停止</string>
+<string name="action_stopall">すべて停止</string>
+<string name="action_resume">再開</string>
+<string name="action_resumeall">すべて再開</string>
+<string name="action_pause">一時停止</string>
+<string name="action_pauseall">すべて一時停止</string>
+<string name="action_remove">削除</string>
+<string name="action_remove_default">Torrent を削除</string>
+<string name="action_remove_withdata">データも削除</string>
+<string name="action_setlabel">ラベルを設定</string>
+<string name="action_updatetrackers">トラッカーを更新</string>
+<string name="action_changelocation">格納場所を変更</string>
+<string name="action_forcerecheck">強制データ再チェック</string>
+<string name="action_priority_off">オフ</string>
+<string name="action_priority_low">低</string>
+<string name="action_priority_normal">通常</string>
+<string name="action_priority_high">高</string>
+<string name="action_remoteplay">VLC でリモート再生</string>
+<string name="action_download">FTP でダウンロード</string>
+<string name="action_showdetails">詳細を表示</string>
+<string name="action_openwebsite">Web サイトを開く</string>
+<string name="action_useassearch">新規検索として使用</string>
+<string name="action_removesettings">リモート設定</string>
+<string name="action_visitwebsite">transdroid.org を表示</string>
+<string name="action_close">閉じる</string>
+
+<string name="navigation_nosettings">%1$s で、自宅や自分のシードボックスで実行している Torrent クライアントのモニターや管理ができます。設定は少しわかりづらいですが、ステップ・バイ・ステップのガイドで進めるのでお勧めです!</string>
+<string name="navigation_emptytorrents">接続しましたが、現在のフィルターにアクティブな Torrent がありません</string>
+<string name="navigation_emptydetails">詳細を表示する Torrent を選択してください</string>
+<string name="navigation_servers">サーバー</string>
+<string name="navigation_status">ステータス</string>
+<string name="navigation_labels">ラベル</string>
+<string name="navigation_status_showall">すべて</string>
+<string name="navigation_status_onlydown">ダウンロード中</string>
+<string name="navigation_status_onlyup">アップロード中</string>
+<string name="navigation_status_onlyactive">アクティブ</string>
+<string name="navigation_status_onlyinactive">非アクティブ</string>
+<plurals name="navigation_torrentsselected">
+<item quantity="one">%1$d torrent selected</item>
+<item quantity="other">%1$d torrents selected</item>
+</plurals>
+<plurals name="navigation_filesselected">
+<item quantity="one">%1$d files selected</item>
+<item quantity="other">%1$d files selected</item>
+</plurals>
+<string name="navigation_selectall">すべて選択</string>
+<string name="navigation_selectfinished">完了を選択</string>
+<string name="navigation_invertselection">選択を反転</string>
+
+<string name="status_status">ステータス: %1$s</string>
+<string name="status_waiting">チェック待機中#8230</string>
+<string name="status_checking">ローカルデータ・ベリファイ中&#8230;</string>
+<string name="status_waitingtodl">ダウンロード待機中 %s</string>
+<string name="status_error">エラー#8230</string>
+<string name="status_size1">%1$s / %2$s (%3$s)</string>
+<string name="status_size2">%1$s, アップロード済 %2$s</string>
+<string name="status_sincedate">%1$s から</string>
+<string name="status_eta">～ %1$s</string>
+<string name="status_etalong">完了予定 %1$s</string>
+<string name="status_ofsize">/ %1$s</string>
+<string name="status_unknowneta">完了予定 不明</string>
+<string name="status_ratio">割合 %1$s</string>
+<string name="status_seeders">%1$s / %2$s シード人数</string>
+<string name="status_leechers">%1$s / %2$s リーチ人数</string>
+<string name="status_downloading">ダウンロード中</string>
+<string name="status_seeding">シード中</string>
+<string name="status_paused">一時停止</string>
+<string name="status_queued">キュー</string>
+<string name="status_stopped">停止</string>
+<string name="status_unknown">不明なステータス</string>
+<string name="status_priority_off">未ダウンロード</string>
+<string name="status_priority_low">優先度 低</string>
+<string name="status_priority_normal">優先度 通常</string>
+<string name="status_priority_high">優先度 高</string>
+<string name="status_trackers">トラッカー</string>
+<string name="status_errors">エラー</string>
+<string name="status_files">ファイル</string>
+<string name="status_maxspeed">最大転送速度</string>
+<string name="status_maxspeed_down">最大ダウンロード</string>
+<string name="status_maxspeed_up">最大アップロード</string>
+<string name="status_maxspeed_unit">KB/S</string>
+<string name="status_maxspeed_reset">リセット</string>
+<string name="status_update">更新</string>
+<plurals name="status_service_added">
+<item quantity="one">New torrent added</item>
+<item quantity="other">%1$s new torrents added</item>
+</plurals>
+<plurals name="status_service_finished">
+<item quantity="one">Torrent is finished</item>
+<item quantity="other">%1$s torrents are finished</item>
+</plurals>
+<plurals name="status_service_addedfinished">
+<item quantity="one">%1$s added, %2$s finished torrent</item>
+<item quantity="other">%1$s added, %2$s finished torrents</item>
+</plurals>
+<string name="status_service_andothers">%1$s およびその他</string>
+
+<string name="labels_showall">すべてのラベル</string>
+<string name="labels_unlabeled">ラベルなし</string>
+<string name="labels_newlabel">新しいラベル</string>
+<string name="labels_no_support">あなたのクライアントではラベルの設定はサポートされていません</string>
+<string name="status_label_pick">ラベルを選択</string>
+<string name="status_label_new">新しいラベル</string>
+<string name="status_label_remove">ラベルを削除</string>
+<string name="status_label_hint">例: movies または linux</string>
+
+<string name="result_added">%1$s を追加しました (更新中)</string>
+<string name="result_removed">%1$s を削除しました</string>
+<string name="result_removed_with_data">%1$s を削除してデータも削除しました</string>
+<string name="result_resumed">%1$s を再開しました (更新中)</string>
+<string name="result_stopped">%1$s を停止しました (更新中)</string>
+<string name="result_started">%1$s を開始しました (更新中)</string>
+<string name="result_paused">%1$s を一時停止しました (更新中)</string>
+<string name="result_paused_all">Torrent を一時停止しました (更新中)</string>
+<string name="result_resumed_all">Torrent を再開しました (更新中)</string>
+<string name="result_stopped_all">Torrent を停止しました (更新中)</string>
+<string name="result_started_all">Torrent を開始しました (更新中)</string>
+<string name="result_trackersupdated">トラッカーを更新しました</string>
+<string name="result_labelset">ラベルを設定 \'%1$s\'</string>
+<string name="result_labelremoved">ラベルを削除しました</string>
+<string name="result_recheckedstarted">%1$s データをチェック中</string>
+<string name="result_locationset">Torrent を \'%1$s\' に移動しました</string>
+<string name="result_priotitiesset">ファイル･プロパティを更新しました</string>
+<string name="result_maxspeedsset">最大転送速度の設定</string>
+
+<string name="search_torrentsearch">Torrent 検索</string>
+<string name="search_queryonsite">%2$s の \'%1$s\'</string>
+<string name="search_hint">Torrent の検索</string>
+<string name="search_noresults">検索結果はありません</string>
+<string name="search_seeders">S: %1$s</string>
+<string name="search_leechers">L: %1$s</string>
+<string name="search_installsearch">この機能は一度だけ Torrent 検索モジュールをインストールする必要があります。transdroid.org からパッケージ (apk) を取得してインストールするには、ダウンロードをクリックしてから、検索を再度行ってください。</string>
+<string name="search_download">モジュールをダウンロード</string>
+<string name="search_openingdetails">%1$s の詳細を開いています</string>
+<string name="search_barcodescannernotfound">ﾊﾞｰｺｰﾄﾞスキャナーが見つかりません。Play Store からインストールしてもよろしいですか?</string>
+<string name="search_filemanagernotfound">互換性のあるファイルマネージャーが見つかりません。Play Store から IO File Manager をインストールしてもよろしいですか?</string>
+<plurals name="search_resutlsselected">
+<item quantity="one">%1$d result selected</item>
+<item quantity="other">%1$d results selected</item>
+</plurals>
+
+<string name="rss_feeds">RSS フィード</string>
+<string name="rss_nosettings">RSS フィードがまだ定義されていません。Torrent 固有の RSS フィードは新しいリリースや新しいアイテムが通知されます。</string>
+<string name="rss_noselection">新しいアイテムを表示するには RSS フィードを 1 つ選択してください</string>
+<string name="rss_empty">RSS フィードは有効ではないか、アイテムが含まれていません</string>
+<string name="rss_notloaded">RSS フィードがロードされるまでしばらくお待ちください</string>
+<string name="rss_error">この RSS フィードはまだロードされていません</string>
+<plurals name="rss_itemsselected">
+<item quantity="one">%1$d item selected</item>
+<item quantity="other">%1$d items selected</item>
+</plurals>
+<plurals name="rss_service_new">
+<item quantity="one">New RSS feed torrent available</item>
+<item quantity="other">%1$s new RSS feed torrents</item>
+</plurals>
+<string name="rss_service_newfor">%1$s の新しい Torrent</string>
+
+<string name="widget_loading">ロード中&#8230;</string>
+<string name="widget_opentransdroid">Transdroid を開く</string>
+<string name="widget_filter">サーバー表示</string>
+<string name="widget_lookfeel">ルック &amp; フィール</string>
+<string name="widget_sortby">ｿｰﾄ順</string>
+<string name="widget_reversesortorder">ソート順を逆にする</string>
+<string name="widget_showstatusview">タイトルにサーバーステータスを表示</string>
+<string name="widget_usedarktheme">ダーク･テーマを使用 (プレビューなし)</string>
+<string name="widget_done">完了</string>
+
+<string name="pref_servers">サーバー</string>
+<string name="pref_addserver">新しいサーバーを追加</string>
+<string name="pref_addseedbox">シードボックスを追加</string>
+<string name="pref_searchsites">サイトを検索</string>
+<string name="pref_setsearchsite">デフォルト・サイトを設定</string>
+<string name="pref_addwebsearch">Web 検索サイトを追加</string>
+<string name="pref_rssfeeds">RSS フィード</string>
+<string name="pref_addrssfeed">RSS フィードを追加</string>
+<string name="pref_others">その他の設定</string>
+<string name="pref_confirmremove">この設定を削除してもよろしいですか?</string>
+
+<string name="pref_name">名前</string>
+<string name="pref_name_optional">オプションの個人名</string>
+<string name="pref_searchurl">ダイレクト検索 URL</string>
+<string name="pref_searchurl_info">%s は検索条件で置き換えられます</string>
+<string name="pref_cookies">クッキー</string>
+<string name="pref_cookies_info">オプション: キー1=値1;キー2=値2 の形式を使用してください</string>
+<string name="pref_feedurl">フィード URL</string>
+<string name="pref_reqauth">認証が必要</string>
+<string name="pref_reqauth_info">ユーザーログインしてブラウザーでリンクを開きます</string>
+
+<string name="pref_servertype">サーバー種類</string>
+<string name="pref_address">IP またはホスト名</string>
+<string name="pref_port">ポート番号</string>
+<string name="pref_user">ユーザー名</string>
+<string name="pref_pass">パスワード</string>
+<string name="pref_extrapass">Web パスワードを埋める</string>
+<string name="pref_advanced">拡張設定</string>
+<string name="pref_localaddress">ローカル IP またはホスト名</string>
+<string name="pref_localaddress_info">指定したローカル･ネットワークに接続した時</string>
+<string name="pref_localport">ローカル・ポート番号</string>
+<string name="pref_localnetwork">ローカル･ネットワーク</string>
+<string name="pref_localnetwork_info">サーバーのローカル･ネットワーク SSID</string>
+<string name="pref_folder">フォルダー</string>
+<string name="pref_folder_info">通常空にします</string>
+<string name="pref_scgifolder">SCGI マウント･ポイント</string>
+<string name="pref_optional">オプション設定</string>
+<string name="pref_alarmdone">完了通知</string>
+<string name="pref_alarmdone_info">Torrent が完了した時に通知します</string>
+<string name="pref_alarmnew">新しい Torrent 通知</string>
+<string name="pref_alarmnew_info">Torrent が追加された時に通知します</string>
+<string name="pref_os">サーバー OS</string>
+<string name="pref_downdir">ダウンロード・ディレクトリ</string>
+<string name="pref_downdir_info">リモート接続の絶対パスを手動で設定</string>
+<string name="pref_timeout">接続タイムアウト</string>
+<string name="pref_timeout_info">接続されるまで待機し、接続できなければアボートする秒数</string>
+<string name="pref_ftpurl">ベースの FTP URL</string>
+<string name="pref_ftpurl_into">例 ftp://me@server/downloads/</string>
+<string name="pref_ftppass">FTP パスワード</string>
+<string name="pref_disableauth">認証を無効</string>
+<string name="pref_disableauth_info">ユーザー名とパスワードを送信しません</string>
+<string name="pref_sslenable">SSL を使用</string>
+<string name="pref_sslenable_info">https を使用して接続します</string>
+<string name="pref_sslkey">カスタム SSL サムプリント (SHA-1)</string>
+<string name="pref_sslkey_info">この特定の証明書のみ接続を許可します</string>
+<string name="pref_sslacceptall">すべての SSL 証明書を受付</string>
+<string name="pref_sslacceptall_info">すべてのサムプリントですべての接続を許可します</string>
+
+<string name="pref_background">バックグランド通知</string>
+<string name="pref_notifications_rss">RSS 通知を有効</string>
+<string name="pref_notifications_torrent">Torrent 通知を有効</string>
+<string name="pref_notifications_info">バックグランド・サービスを有効にします</string>
+<string name="pref_notifyinterval">間隔</string>
+<string name="pref_notifyinterval_info">RSS や Torrent をチェックする間隔</string>
+<string name="pref_notifysound">サウンド</string>
+<string name="pref_notifyvibrate">バイブレート</string>
+<string name="pref_notifyled">LED カラー</string>
+<string name="pref_notifyled_info">デバイスでサポートされている場合</string>
+<string name="pref_adw">ADW 通知サポート</string>
+<string name="pref_adw_info">ADW ランチャーで Torrent カウンターを表示します</string>
+
+<string name="pref_system">システム</string>
+<string name="pref_autorefresh">自動更新</string>
+<string name="pref_autorefresh_info">メイン･スクリーンを定期的に更新</string>
+<string-array name="pref_autorefresh_intervals">
+<item>無効</item>
+<item>2 秒</item>
+<item>5 秒</item>
+<item>10 秒</item>
+<item>30 秒</item>
+</string-array>
+<string name="pref_dormantasinactive">休止 Torrent を非アクティブ</string>
+<string name="pref_dormantasinactive_info">0KB/s (データ転送なし) の Torrent を非アクティブとしてフィルターします</string>
+<string name="pref_checkupdates">更新チェック</string>
+<string name="pref_checkupdates_info">transdroid.org で最新バージョンのアプリケーションをチェックします</string>
+<string name="pref_usedarktheme">ダーク UI テーマを使用</string>
+<string name="pref_usedarktheme_info">反映するにはリスタートが必要です</string>
+<string name="pref_clearsearch">検索履歴をクリア</string>
+<string name="pref_clearsearch_success">検索履歴はクリアされました</string>
+<string name="pref_import">インポート設定</string>
+<string name="pref_import_dialog">%1$s がサーバー, Web 検索, RSS およびシステム設定にインポートします: %2$s</string>
+<string name="pref_import_success">設定がインポートされました</string>
+<string name="pref_export">エクスポート設定</string>
+<string name="pref_export_dialog">%1$s がサーバー, Web 検索, RSS および システム設定を次のプレーンテキスト JSON ファイルにエクスポートします: %2$s</string>
+<string name="pref_export_success">設定がインポートされました</string>
+
+<string name="pref_help">Transdroid ヘルプ</string>
+<string name="pref_sendlog">エラー・ログを送信</string>
+<string name="pref_sendlog_info">サポートを受けるか、バグを報告します</string>
+<string name="pref_installhelp">インストール・ガイドを表示</string>
+<string name="pref_installhelp_info">transdroid.org/download にあります</string>
+<string name="pref_changelog">最近の更新</string>
+<string name="pref_about">%1$s について</string>
+
+<string name="pref_seedbox_addseedbox">%1$s シードボックスを追加</string>
+<string name="pref_seedbox_client">Torrent クライアント</string>
+<string name="pref_seedbox_client_info">クライアントの接続先</string>
+<string name="pref_seedbox_server">サーバー・アドレス</string>
+<string name="pref_seedbox_xirvikhint">eplus001.xirvik.com のように</string>
+<string name="pref_seedbox_xirvikhint2">semixl001a.xirvik.com のように</string>
+<string name="pref_seedbox_xirvikhint3">desharedgbit001.xirvik.com のように</string>
+<string name="pref_seedbox_xirviknofolder">Xirvik SCGI フォルダー設定を読み取りできません。後で再度実行するか、サーバー･アドレス設定を確認してください</string>
+<string name="pref_seedbox_seedstuffhint">001.seedstuff.ca のように</string>
+
+<string-array name="pref_notifyinterval_types">
+<item>1 分</item>
+<item>10 分</item>
+<item>30 分</item>
+<item>1 時間</item>
+<item>3 時間</item>
+<item>12 時間</item>
+<item>1 日</item>
+</string-array>
+
+<string name="error_httperror">通信時にエラー。接続を確認してください</string>
+<string name="error_jsonrequesterror">リクエスト構築中に内部エラー</string>
+<string name="error_jsonresponseerror">サーバー・レスポンスの解析中にエラー (設定を確認してください)</string>
+<string name="error_daemonnotconnected">実行中のデーモンに Web インターフェースが接続されていません</string>
+<string name="error_401">アクセスが拒否されました (設定を確認してください)</string>
+<string name="error_torrentfile">Torrent ファイルを読めません</string>
+<string name="error_parsingrss">RSS フィードの解析中にエラー</string>
+<string name="error_invalid_url_form">URL の形式が正しくありません</string>
+<string name="error_invalid_search_url">Web 検索 URL が正しくありません</string>
+<string name="error_invalid_ip_or_hostname">入力された IP アドレスかホスト名が正しくありません</string>
+<string name="error_invalid_port_number">ポート番号は数字で入力してください</string>
+<string name="error_invalid_directory">ディレクトリー・パスは / か \ で終わります</string>
+<string name="error_invalid_timeout">タイムアウトは正の数字で入力してください。空にはできません</string>
+<string name="error_notorrentfile">検索結果は Torrent ファイルではないようです</string>
+<string name="error_no_url_enclosure">RSS フィード・アイテムに URL がありません</string>
+<string name="error_no_link">RSS フィード・アイテムに表示先のリンクがありません</string>
+<string name="error_norssfeed">URL は有効な RSS フィードではありません</string>
+<string name="error_media_not_available">SD カードの読み/書きができません</string>
+<string name="error_no_valid_settings_file">ファイルに %1$s 設定がないようです</string>
+<string name="error_file_not_found">設定ファイルが見つかりません</string>
+<string name="error_cant_write_settings_file">設定ファイルに書き込みできません</string>
+<string name="error_notanumber">速度には正の数字で入力してください</string>
+<string name="error_notalabel">有効なラベルを入力するかリストから選択してください</string>
+<string name="error_stillloadingdetails">Torrent の詳細がロードされるまでしばらくお待ちください</string>
+<string name="error_noftpapp">ダウンロード可能なアプリケーションが見つかりません %1$s</string>
+
+<string name="update_app_newversion">新しいバージョンの Transdroid があります</string>
+<string name="update_search_newversion">新しい Transdroid 検索モジュールがあります</string>
+<string name="update_updateto">新しい %1$s に更新できます</string>
+
+<string name="system_librarieslabel">いくつかのコード/ライブラリはプロジェクトで使用されます</string>
+<string name="system_description">Android デバイスから自分の Torrent を管理</string>
+
+</resources>

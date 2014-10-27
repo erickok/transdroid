@@ -104,7 +104,8 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="status_ofsize">DI %1$s</string>
 <string name="status_unknowneta">ETA SCONOSCIUTO</string>
 <string name="status_ratio">RATIO %1$s</string>
-<string name="status_peers">%1$s DI %2$s PEERS</string>
+<string name="status_seeders">%1$s DI %2$ SEEDER</string>
+<string name="status_leechers">%1$s DI %2$ LEECHER</string>
 <string name="status_downloading">In download</string>
 <string name="status_seeding">In invio</string>
 <string name="status_paused">In pausa</string>
@@ -217,6 +218,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_rssfeeds">RSS feeds</string>
 <string name="pref_addrssfeed">Aggiungi feed RSS</string>
 <string name="pref_others">Altre impostazioni</string>
+<string name="pref_confirmremove">Sei sicuro di voler rimuovere queste impostazioni?</string>
 
 <string name="pref_name">Nome</string>
 <string name="pref_name_optional">Nome personale opzionale</string>
@@ -318,6 +320,7 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="pref_seedbox_xirvikhint">Esempio: eplus001.xirvik.com</string>
 <string name="pref_seedbox_xirvikhint2">Esempio: semixl001a.xirvik.com</string>
 <string name="pref_seedbox_xirvikhint3">Esempio: desharedgbit001.xirvik.com</string>
+<string name="pref_seedbox_xirviknofolder">Impossibile recuperare la cartella Xirvik SCGI; riprovare più tardi o correggere l\'indirizzo del server</string>
 <string name="pref_seedbox_seedstuffhint">Esempio: 001.seedstuff.ca</string>
 
 <string-array name="pref_notifyinterval_types">
