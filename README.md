@@ -3,6 +3,7 @@ Transdroid
 
 [www.transdroid.org](http://www.transdroid.org)  
 [Google+](https://plus.google.com/u/0/b/106240944422491053650/106240944422491053650) - [Twitter](https://twitter.com/transdroid) - [transdroid@2312.nl](transdroid@2312.nl) - [Transdrone in Play Store](https://play.google.com/store/apps/details?id=org.transdroid.lite)
+
 "Manage your torrents from your Android device"
 
 ![Screen shot of the main torretnts listing screen](http://2312.nl/img/portfolio-transdroid/240x400-transdroid-main.png)

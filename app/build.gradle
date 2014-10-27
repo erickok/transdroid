@@ -11,7 +11,6 @@ android {
         targetSdkVersion 19
         versionCode 216
         versionName '2.3.0'
-        resValue "string", "search_history_authority", applicationId + ".search.SearchHistoryProvider"
     }
     signingConfigs {
         release {
@@ -30,9 +29,11 @@ android {
     productFlavors {
         full {
             applicationId 'org.transdroid.full'
+            resValue "string", "search_history_authority", applicationId + ".search.SearchHistoryProvider"
         }
         lite {
             applicationId 'org.transdroid.lite'
+            resValue "string", "search_history_authority", applicationId + ".search.SearchHistoryProvider"
         }
     }
     lintOptions {

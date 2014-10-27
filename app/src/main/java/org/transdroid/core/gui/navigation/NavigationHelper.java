@@ -36,6 +36,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
+import org.transdroid.BuildConfig;
 import org.transdroid.R;
 
 import java.io.IOException;
@@ -110,23 +111,6 @@ public class NavigationHelper {
 			return appName + " " + m.versionName + " (" + m.versionCode + ")";
 		} catch (NameNotFoundException e) {
 			return appName;
-		}
-	}
-
-	/**
-	 * Returns whether the application is running in debug mode, as opposed to release mode. Use to show/hide features
-	 * in the ui based on the build mode.
-	 * @return True if the app is compiled in/running as debug mode, false otherwise
-	 */
-	public boolean inDebugMode() {
-		try {
-			if (inDebugMode == null) {
-				PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-				inDebugMode = (pi.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
-			}
-			return inDebugMode;
-		} catch (NameNotFoundException e) {
-			return false;
 		}
 	}
 

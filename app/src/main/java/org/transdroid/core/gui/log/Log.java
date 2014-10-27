@@ -23,6 +23,7 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EBean.Scope;
 import org.androidannotations.annotations.OrmLiteDao;
+import org.transdroid.BuildConfig;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.daemon.util.ITLogger;
 
@@ -53,7 +54,7 @@ public class Log implements ITLogger {
 	}
 	
 	protected void log(String logName, int priority, String message) {
-		if (navigationHelper.inDebugMode())
+		if (BuildConfig.DEBUG)
 			android.util.Log.println(priority, LOG_NAME, message);
 		try {
 			// Store this log message to the database

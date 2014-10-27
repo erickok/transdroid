@@ -647,7 +647,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			if (match != null && match.getCookies() != null) {
 				addTorrentFromWeb(data, match, title);
 			} else if (privateSource != null) {
-				addTorrentFromPrivateSource(data.toString(), title, privateSource);
+				addTorrentFromPrivateSource(data, title, privateSource);
 			} else {
 				// Normally send the URL to the torrent client
 				addTorrentByUrl(data, title);
@@ -699,7 +699,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@OnActivityResult(FilePickerHelper.ACTIVITY_FILEPICKER)
 	public void onFilePicked(int resultCode, Intent data) {
 		// We should have received an Intent with a local torrent's Uri as data from the file picker
-		if (data != null && data.getData() != null && !data.getData().equals("")) {
+		if (data != null && data.getData() != null && !data.getData().toString().equals("")) {
 			String url = data.getData().getPath();
 			addTorrentByFile(data.getData().toString(), url.substring(url.lastIndexOf("/")));
 		}
@@ -715,7 +715,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	public void onBarcodeScanned(int resultCode, Intent data) {
 		// We receive from the helper either a URL (as string) or a query we can start a search for
 		String query = BarcodeHelper.handleScanResult(resultCode, data);
-		if (query.startsWith("http"))
+		if (query.startsWith("http") || query.startsWith("https"))
 			addTorrentByUrl(query, "QR code result"); // No torrent title known
 		else
 			startSearch(query, false, null, false);
