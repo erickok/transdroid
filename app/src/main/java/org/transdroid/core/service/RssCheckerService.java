@@ -75,6 +75,11 @@ public class RssCheckerService extends IntentService {
 		for (RssfeedSetting feed : applicationSettings.getRssfeedSettings()) {
 			try {
 
+				if (!feed.shouldAlarmOnNewItems()) {
+					Log.d(this, "Skip checker for " + feed.getName() + " as alarms are disabled");
+					continue;
+				}
+
 				Log.d(this, "Try to parse " + feed.getName() + " (" + feed.getUrl() + ")");
 				RssParser parser = new RssParser(feed.getUrl());
 				parser.parse();

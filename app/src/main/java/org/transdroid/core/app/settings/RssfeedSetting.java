@@ -35,15 +35,17 @@ public class RssfeedSetting implements SimpleListItem {
 	private final String name;
 	private final String url;
 	private final boolean requiresAuth;
+	private final boolean alarm;
 	private Date lastViewed;
 	private final String lastViewedItemUrl;
 
-	public RssfeedSetting(int order, String name, String baseUrl, boolean needsAuth, Date lastViewed,
+	public RssfeedSetting(int order, String name, String baseUrl, boolean needsAuth, boolean alarm, Date lastViewed,
 			String lastViewedItemUrl) {
 		this.order = order;
 		this.name = name;
 		this.url = baseUrl;
 		this.requiresAuth = needsAuth;
+		this.alarm = alarm;
 		this.lastViewed = lastViewed;
 		this.lastViewedItemUrl = lastViewedItemUrl;
 	}
@@ -69,6 +71,10 @@ public class RssfeedSetting implements SimpleListItem {
 
 	public boolean requiresExternalAuthentication() {
 		return requiresAuth;
+	}
+
+	public boolean shouldAlarmOnNewItems() {
+		return alarm;
 	}
 
 	/**

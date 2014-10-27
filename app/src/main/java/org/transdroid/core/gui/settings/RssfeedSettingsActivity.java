@@ -52,6 +52,7 @@ public class RssfeedSettingsActivity extends KeyBoundPreferencesActivity {
 		init(R.xml.pref_rssfeed, ApplicationSettings_.getInstance_(this).getMaxRssfeed());
 		initTextPreference("rssfeed_name");
 		initTextPreference("rssfeed_url");
+		initBooleanPreference("rssfeed_alarmnew");
 		initBooleanPreference("rssfeed_reqauth");
 		// TODO: Replace this for cookies support like web searches
 

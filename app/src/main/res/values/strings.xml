@@ -240,6 +240,8 @@
 	<string name="pref_feedurl">Feed URL</string>
 	<string name="pref_reqauth">Requires authentication</string>
 	<string name="pref_reqauth_info">Opens links in the webbrowser for user login</string>
+	<string name="pref_alarmrssnew">New item notification</string>
+	<string name="pref_alarmrssnew_info">Nofity when new torrents are released</string>
 	
 	<string name="pref_servertype">Server type</string>
 	<string name="pref_address">IP or host name</string>

@@ -470,7 +470,8 @@ public class ApplicationSettings {
 		return new RssfeedSetting(order, 
 				prefs.getString("rssfeed_name_" + order, null), 
 				prefs.getString("rssfeed_url_" + order, null), 
-				prefs.getBoolean("rssfeed_reqauth_" + order, false), 
+				prefs.getBoolean("rssfeed_reqauth_" + order, false),
+				prefs.getBoolean("rssfeed_alarmnew_" + order, true),
 				lastViewed == -1L ? null : new Date(lastViewed),
 				prefs.getString("rssfeed_lastvieweditemurl_" + order, null));
 		// @formatter:on
@@ -492,6 +493,7 @@ public class ApplicationSettings {
 			edit.putString("rssfeed_name_" + i, prefs.getString("rssfeed_name_" + (i + 1), null));
 			edit.putString("rssfeed_url_" + i, prefs.getString("rssfeed_url_" + (i + 1), null));
 			edit.putBoolean("rssfeed_reqauth_" + i, prefs.getBoolean("rssfeed_reqauth_" + (i + 1), false));
+			edit.putBoolean("rssfeed_alarmnew_" + i, prefs.getBoolean("rssfeed_alarmnew_" + (i + 1), true));
 			edit.putLong("rssfeed_lastviewed_" + i, prefs.getLong("rssfeed_lastviewed_" + (i + 1), -1));
 		}
 
@@ -499,6 +501,7 @@ public class ApplicationSettings {
 		edit.remove("rssfeed_name_" + max);
 		edit.remove("rssfeed_url_" + max);
 		edit.remove("rssfeed_reqauth_" + max);
+		edit.remove("rssfeed_alarmnew_" + max);
 		edit.remove("rssfeed_lastviewed_" + max);
 		edit.commit();
 
