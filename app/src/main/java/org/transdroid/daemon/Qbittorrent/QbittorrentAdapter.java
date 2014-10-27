@@ -461,7 +461,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		} else if (parts[1].equals("KiB/s")) {
 			return (int) (number * 1024);
 		}
-		return (int) (Double.parseDouble(parts[0]));
+		return (int) (Double.parseDouble(normalizeNumber(parts[0])));
 	}
 
 	private String normalizeNumber(String in) {
