@@ -16,6 +16,7 @@
  */
 package org.transdroid.core.gui.navigation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.androidannotations.annotations.EBean;
@@ -23,6 +24,7 @@ import org.androidannotations.annotations.RootContext;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.MergeAdapter;
+import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.lists.ViewHolderAdapter;
 import org.transdroid.core.gui.navigation.StatusType.StatusTypeFilter;
 
@@ -63,8 +65,9 @@ public class FilterListAdapter extends MergeAdapter {
 			this.serverItems.update(servers);
 		} else {
 			serverSeparator.setViewVisibility(View.GONE);
-			this.serverItems = null;
+			this.serverItems.update(new ArrayList<SimpleListItem>());
 		}
+		notifyDataSetChanged();
 	}
 
 	/**
@@ -84,8 +87,9 @@ public class FilterListAdapter extends MergeAdapter {
 			this.statusTypeItems.update(statusTypes);
 		} else {
 			statusTypeSeparator.setViewVisibility(View.GONE);
-			this.statusTypeItems = null;
+			this.statusTypeItems.update(new ArrayList<SimpleListItem>());
 		}
+		notifyDataSetChanged();
 	}
 
 	/**
@@ -105,8 +109,9 @@ public class FilterListAdapter extends MergeAdapter {
 			this.labelItems.update(labels);
 		} else {
 			labelSeperator.setViewVisibility(View.GONE);
-			this.labelItems = null;
+			this.labelItems.update(new ArrayList<SimpleListItem>());
 		}
+		notifyDataSetChanged();
 	}
 
 }
