@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 19
         versionCode 216
-        versionName '2.3.0'
+        versionName '2.3.0-beta'
     }
     signingConfigs {
         release {

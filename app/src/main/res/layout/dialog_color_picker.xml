@@ -26,7 +26,7 @@
 		android:id="@+id/color_picker_view"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true"
+		android:layout_gravity="center_horizontal"
 		android:tag="portrait"
 		android:layerType="software"
 	/>
@@ -46,7 +46,6 @@
 		android:layout_width="wrap_content"
 		android:layout_height="40dp"
 		android:orientation="horizontal"
-		android:layout_below="@id/color_picker_view"
 		android:layout_marginBottom="10dp">
 
 		<net.margaritov.preference.colorpicker.ColorPickerPanelView

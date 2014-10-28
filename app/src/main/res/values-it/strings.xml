@@ -104,8 +104,8 @@ along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 <string name="status_ofsize">DI %1$s</string>
 <string name="status_unknowneta">ETA SCONOSCIUTO</string>
 <string name="status_ratio">RATIO %1$s</string>
-<string name="status_seeders">%1$s DI %2$ SEEDER</string>
-<string name="status_leechers">%1$s DI %2$ LEECHER</string>
+<string name="status_seeders">%1$s DI %2$s SEEDER</string>
+<string name="status_leechers">%1$s DI %2$s LEECHER</string>
 <string name="status_downloading">In download</string>
 <string name="status_seeding">In invio</string>
 <string name="status_paused">In pausa</string>

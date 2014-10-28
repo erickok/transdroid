@@ -168,7 +168,7 @@ public class AppUpdateService extends IntentService {
 	@SuppressWarnings("deprecation")
 	private void newNotification(String ticker, String title, String text, String downloadUrl, int notifyID) {
 		PendingIntent pi = PendingIntent.getActivity(this, notifyID,
-				new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)), Intent.FLAG_ACTIVITY_NEW_TASK);
+				new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)), PendingIntent.FLAG_UPDATE_CURRENT);
 		Builder builder = new Notification.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
 				.setTicker(ticker).setContentTitle(title).setContentText(text)
 				.setLights(notificationSettings.getDesiredLedColour(), 600, 1000)

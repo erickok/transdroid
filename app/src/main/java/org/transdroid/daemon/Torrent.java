@@ -118,7 +118,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 				// Finished but no finished date: set so move to bottom of list
 				Calendar cal = Calendar.getInstance();
 				cal.clear();
-				cal.set(1900, 12, 31);
+				cal.set(1900, Calendar.DECEMBER, 31);
 				this.dateDone = cal.getTime();
 			} else if (eta == -1 || eta == -2) {
 				// UNknown eta: move to the top of the list
