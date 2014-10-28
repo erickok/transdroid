@@ -55,7 +55,7 @@ public class XirvikDediSettings extends SeedboxSettingsImpl implements SeedboxSe
 				null,
 				type == Daemon.uTorrent? 5010: 443, 
 				type == Daemon.uTorrent? false: true, 
-				type == Daemon.uTorrent? false: true, 
+				false,
 				null,
 				type == Daemon.Deluge? "/deluge": null,
 				true, 

@@ -19,6 +19,7 @@
 <string name="system_changelog">
 Transdroid 2.3.0\n
 - Aria2 support\n
+- Improved SSL support with TLS 1.1/1.2 and SNI hostname verification\n
 - Fixed server checker when one is unavailable\n
 - Fixed Deluge magnet links from Chrome\n
 - Enable RSS notifications per feed\n

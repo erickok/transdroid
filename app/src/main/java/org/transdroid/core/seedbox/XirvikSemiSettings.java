@@ -54,7 +54,7 @@ public class XirvikSemiSettings extends SeedboxSettingsImpl implements SeedboxSe
 				null,
 				443, 
 				true, 
-				true, 
+				false,
 				null,
 				"/RPC2",
 				true, 

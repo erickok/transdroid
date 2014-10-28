@@ -41,7 +41,6 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.scheme.SocketFactory;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -91,7 +90,7 @@ public class HttpHelper {
 	 * Creates a standard Apache HttpClient that is thread safe, supports different SSL auth methods and basic
 	 * authentication
 	 * @param sslTrustAll Whether to trust all SSL certificates
-	 * @param sslTrustkey A specific SSL key to accept exclusively
+	 * @param sslTrustKey A specific SSL key to accept exclusively
 	 * @param timeout The connection timeout for all requests
 	 * @param authAddress The authentication domain address
 	 * @param authPort The authentication domain port number
@@ -99,15 +98,21 @@ public class HttpHelper {
 	 * @throws DaemonException Thrown when information (such as username/password) is missing
 	 */
 	public static DefaultHttpClient createStandardHttpClient(boolean userBasicAuth, String username, String password,
-			boolean sslTrustAll, String sslTrustkey, int timeout, String authAddress, int authPort)
+			boolean sslTrustAll, String sslTrustKey, int timeout, String authAddress, int authPort)
 			throws DaemonException {
 
 		// Register http and https sockets
 		SchemeRegistry registry = new SchemeRegistry();
+		SocketFactory httpsSocketFactory;
+		if (sslTrustKey != null) {
+			httpsSocketFactory = new TlsSniSocketFactory(sslTrustKey);
+		} else if (sslTrustAll) {
+			httpsSocketFactory = new TlsSniSocketFactory(true);
+		} else {
+			httpsSocketFactory = new TlsSniSocketFactory();
+		}
 		registry.register(new Scheme("http", new PlainSocketFactory(), 80));
-		SocketFactory https_socket = sslTrustAll ? new FakeSocketFactory()
-				: sslTrustkey != null ? new FakeSocketFactory(sslTrustkey) : SSLSocketFactory.getSocketFactory();
-		registry.register(new Scheme("https", https_socket, 443));
+		registry.register(new Scheme("https", httpsSocketFactory, 443));
 
 		// Standard parameters
 		HttpParams httpparams = new BasicHttpParams();
@@ -124,7 +129,7 @@ public class HttpHelper {
 		if (userBasicAuth) {
 			if (username == null || password == null) {
 				throw new DaemonException(ExceptionType.AuthenticationFailure,
-						"No username or password was provided while we hadauthentication enabled");
+						"No username or password was provided while we had authentication enabled");
 			}
 			httpclient.getCredentialsProvider().setCredentials(
 					new AuthScope(authAddress, authPort, AuthScope.ANY_REALM),

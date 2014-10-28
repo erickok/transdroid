@@ -47,7 +47,7 @@ import org.base64.android.Base64;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.DaemonException.ExceptionType;
-import org.transdroid.daemon.util.FakeSocketFactory;
+import org.transdroid.daemon.util.TlsSniSocketFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -114,12 +114,16 @@ public class VuzeXmlOverHttpClient {
         HttpConnectionParams.setSoTimeout(httpParams, settings.getTimeoutInMilliseconds()); 
         
         SchemeRegistry registry = new SchemeRegistry();
+		SocketFactory httpsSocketFactory;
+		if (settings.getSslTrustKey() != null) {
+			httpsSocketFactory = new TlsSniSocketFactory(settings.getSslTrustKey());
+		} else if (settings.getSslTrustAll()) {
+			httpsSocketFactory = new TlsSniSocketFactory(true);
+		} else {
+			httpsSocketFactory = new TlsSniSocketFactory();
+		}
 		registry.register(new Scheme("http", new PlainSocketFactory(), 80));
-		SocketFactory https_socket =
-			  settings.getSslTrustAll() 				? new FakeSocketFactory()
-			: settings.getSslTrustKey() != null			? new FakeSocketFactory(settings.getSslTrustKey())
-			: SSLSocketFactory.getSocketFactory();
-		registry.register(new Scheme("https", https_socket, 443)); 
+		registry.register(new Scheme("https", httpsSocketFactory, 443));
 		
         client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, registry), httpParams);
         if (settings.shouldUseAuthentication()) {
@@ -128,7 +132,7 @@ public class VuzeXmlOverHttpClient {
             } else {
             	username = settings.getUsername();
             	password = settings.getPassword();
-                ((DefaultHttpClient) client).getCredentialsProvider().setCredentials(
+                client.getCredentialsProvider().setCredentials(
                         new AuthScope(postMethod.getURI().getHost(), postMethod.getURI().getPort(), AuthScope.ANY_REALM),
                         new UsernamePasswordCredentials(username, password));
             }
@@ -141,7 +145,7 @@ public class VuzeXmlOverHttpClient {
 	/**
 	 * Convenience constructor. Creates new instance based on server String address
 	 * @param settings The server connection settings
-	 * @param uri The URI of the XML RPC to connect to
+	 * @param url The URL of the XML RPC to connect to
 	 * @throws DaemonException Thrown when settings are missing or conflicting
 	 */
 	public VuzeXmlOverHttpClient(DaemonSettings settings, String url) throws DaemonException {

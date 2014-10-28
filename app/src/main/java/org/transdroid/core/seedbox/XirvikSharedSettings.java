@@ -55,7 +55,7 @@ public class XirvikSharedSettings extends SeedboxSettingsImpl implements Seedbox
 				null,
 				443, 
 				true, 
-				true, 
+				false,
 				null,
 				rpc,
 				true, 

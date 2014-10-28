@@ -54,7 +54,7 @@ public class SeedstuffSettings extends SeedboxSettingsImpl implements SeedboxSet
 				null,
 				443, 
 				true, 
-				true, 
+				false,
 				null,
 				"/user/" + user,
 				true, 
