@@ -185,6 +185,9 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			setTheme(R.style.TransdroidTheme_Dark);
 			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
+		// Catch any uncaught exception to log it
+		Thread.setDefaultUncaughtExceptionHandler(new LogUncaughtExceptionHandler(this,
+				Thread.getDefaultUncaughtExceptionHandler()));
 		super.onCreate(savedInstanceState);
 	}
 
@@ -265,7 +268,6 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			// Handle any start up intents
 			if (openTorrent != null) {
 				openDetails(openTorrent);
-				openTorrent = null;
 			} else if (getIntent() != null) {
 				handleStartIntent();
 			}

@@ -46,8 +46,6 @@ public class Log implements ITLogger {
 	private Context context;
 	@OrmLiteDao(helper = DatabaseHelper.class, model = ErrorLogEntry.class)
 	Dao<ErrorLogEntry, Integer> errorLogDao;
-	@Bean
-	protected NavigationHelper navigationHelper;
 
 	protected Log(Context context) {
 		this.context = context;

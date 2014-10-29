@@ -74,7 +74,7 @@ public class ErrorLogSender {
 
 			Intent target = new Intent(Intent.ACTION_SEND);
 			target.setType("message/rfc822");
-			target.putExtra(Intent.EXTRA_EMAIL, new String[] { "transdroid.org@gmail.com" });
+			target.putExtra(Intent.EXTRA_EMAIL, new String[] { "transdroid@2312.nl" });
 			target.putExtra(Intent.EXTRA_SUBJECT, "Transdroid error report");
 			target.putExtra(Intent.EXTRA_TEXT, body.toString());
 			try {
