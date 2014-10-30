@@ -236,8 +236,10 @@ public class Aria2Adapter implements IDaemonAdapter {
 			JSONArray signed = new JSONArray();
 			// Start with the secret token as parameter and then add the normal parameters
 			signed.put("token:" + settings.getExtraPassword());
-			for (int i = 0; i < params.length(); i++) {
-				signed.put(params.get(i));
+			if (params != null) {
+				for (int i = 0; i < params.length(); i++) {
+					signed.put(params.get(i));
+				}
 			}
 			params = signed;
 		}

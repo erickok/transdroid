@@ -61,7 +61,7 @@ public class Log implements ITLogger {
 			DeleteBuilder<ErrorLogEntry, Integer> db = errorLogDao.deleteBuilder();
 			db.setWhere(db.where().le(ErrorLogEntry.DATEANDTIME, new Date(new Date().getTime() - MAX_LOG_AGE)));
 			errorLogDao.delete(db.prepare());
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			android.util.Log.e(LOG_NAME, "Cannot write log message to database: " + e.toString());
 		}
 	}
