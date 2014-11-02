@@ -181,6 +181,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 				// Request to add a magnet link by URL
 				String magnet = ((AddByMagnetUrlTask) task).getUrl();
+				magnet = URLDecoder.decode(magnet, "UTF-8");
 				makeRtorrentCall("load_start", new String[] { magnet });
 				return new DaemonTaskSuccessResult(task);
 
