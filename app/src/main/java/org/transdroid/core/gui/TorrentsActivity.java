@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -945,6 +947,14 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	@Background
 	public void addTorrentByMagnetUrl(String url, String title) {
+
+		// Since v39 Chrome sends application/x-www-form-urlencoded magnet links and most torrent clients do not understand those, so decode first
+		try {
+			url = URLDecoder.decode(url, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// Ignore: UTF-8 is always available on Android devices
+		}
+
 		AddByMagnetUrlTask addByMagnetUrlTask = AddByMagnetUrlTask.create(currentConnection, url);
 		if (!Daemon.supportsAddByMagnetUrl(currentConnection.getType())) {
 			// No support for magnet links: forcefully let the task fail to report the error
@@ -953,6 +963,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 							currentConnection.getType().name() + " does not support magnet links")), false);
 			return;
 		}
+
 		DaemonTaskResult result = addByMagnetUrlTask.execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
@@ -960,6 +971,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
+
 	}
 
 	@Background

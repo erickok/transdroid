@@ -274,8 +274,6 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 					// Request to add a magnet link by URL
 					String magnet = ((AddByMagnetUrlTask) task).getUrl();
-					// Deluge doesn't support (fully) application/x-www-form-urlencoded magnet links
-					magnet = URLDecoder.decode(magnet, "UTF-8");
 					params.put(magnet);
 					params.put(new JSONArray());
 
