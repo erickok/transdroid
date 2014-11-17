@@ -228,7 +228,7 @@ public class LocalTorrent {
 	public static int getResourceForDaemonException(DaemonException e) {
 		switch (e.getType()) {
 		case MethodUnsupported:
-			return R.string.error_jsonrequesterror;
+			return R.string.error_unsupported;
 		case ConnectionError:
 			return R.string.error_httperror;
 		case UnexpectedResponse:

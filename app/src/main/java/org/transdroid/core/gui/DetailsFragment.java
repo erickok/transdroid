@@ -76,6 +76,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	@InstanceState
 	protected Torrent torrent = null;
 	@InstanceState
+	protected String torrentId = null;
+	@InstanceState
 	protected TorrentDetails torrentDetails = null;
 	@InstanceState
 	protected ArrayList<TorrentFile> torrentFiles = null;
@@ -139,6 +141,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	 */
 	public void updateTorrent(Torrent newTorrent) {
 		this.torrent = newTorrent;
+		this.torrentId = newTorrent.getUniqueID();
 		this.hasCriticalError = false;
 		((DetailsAdapter) detailsList.getAdapter()).updateTorrent(newTorrent);
 		// Make the list (with details header) visible
@@ -162,13 +165,13 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	 */
 	public void updateTorrentDetails(Torrent checkTorrent, TorrentDetails newTorrentDetails) {
 		// Check if these are actually the details of the torrent we are now showing
-		if (torrent == null || !torrent.getUniqueID().equals(checkTorrent.getUniqueID()))
+		if (torrentId == null || !torrentId.equals(checkTorrent.getUniqueID()))
 			return;
 		this.torrentDetails = newTorrentDetails;
-		((DetailsAdapter) detailsList.getAdapter()).updateTrackers(SimpleListItemAdapter.SimpleStringItem
-				.wrapStringsList(newTorrentDetails.getTrackers()));
-		((DetailsAdapter) detailsList.getAdapter()).updateErrors(SimpleListItemAdapter.SimpleStringItem
-				.wrapStringsList(newTorrentDetails.getErrors()));
+		((DetailsAdapter) detailsList.getAdapter()).updateTrackers(
+				SimpleListItemAdapter.SimpleStringItem.wrapStringsList(newTorrentDetails.getTrackers()));
+		((DetailsAdapter) detailsList.getAdapter()).updateErrors(
+				SimpleListItemAdapter.SimpleStringItem.wrapStringsList(newTorrentDetails.getErrors()));
 	}
 
 	/**
@@ -178,7 +181,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	 */
 	public void updateTorrentFiles(Torrent checkTorrent, ArrayList<TorrentFile> newTorrentFiles) {
 		// Check if these are actually the details of the torrent we are now showing
-		if (torrent == null || !torrent.getUniqueID().equals(checkTorrent.getUniqueID()))
+		if (torrentId == null || !torrentId.equals(checkTorrent.getUniqueID()))
 			return;
 		Collections.sort(newTorrentFiles);
 		this.torrentFiles = newTorrentFiles;
@@ -192,10 +195,10 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	 */
 	public void perhapsUpdateTorrent(List<Torrent> torrents) {
 		// Only try to update if we actually were showing a torrent
-		if (this.torrent == null || torrents == null)
+		if (this.torrentId == null || torrents == null)
 			return;
 		for (Torrent newTorrent : torrents) {
-			if (newTorrent.getUniqueID().equals(this.torrent.getUniqueID())) {
+			if (newTorrent.getUniqueID().equals(torrentId)) {
 				// Found, so we can update our data as well
 				updateTorrent(newTorrent);
 				break;
@@ -252,10 +255,12 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 			menu.findItem(R.id.action_resume).setVisible(false);
 			menu.findItem(R.id.action_pause).setVisible(false);
 			menu.findItem(R.id.action_start).setVisible(false);
+			menu.findItem(R.id.action_start_direct).setVisible(false);
 			menu.findItem(R.id.action_stop).setVisible(false);
 			menu.findItem(R.id.action_remove).setVisible(false);
 			menu.findItem(R.id.action_remove_withdata).setVisible(false);
 			menu.findItem(R.id.action_setlabel).setVisible(false);
+			menu.findItem(R.id.action_forcerecheck).setVisible(false);
 			menu.findItem(R.id.action_updatetrackers).setVisible(false);
 			menu.findItem(R.id.action_changelocation).setVisible(false);
 			return;
@@ -264,13 +269,17 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		boolean startStop = Daemon.supportsStoppingStarting(torrent.getDaemon());
 		menu.findItem(R.id.action_resume).setVisible(torrent.canResume());
 		menu.findItem(R.id.action_pause).setVisible(torrent.canPause());
-		menu.findItem(R.id.action_start).setVisible(startStop && torrent.canStart());
+		boolean forcedStart = Daemon.supportsForcedStarting(torrent.getDaemon());
+		menu.findItem(R.id.action_start).setVisible(startStop && forcedStart && torrent.canStart());
+		menu.findItem(R.id.action_start_direct).setVisible(startStop && !forcedStart && torrent.canStart());
 		menu.findItem(R.id.action_stop).setVisible(startStop && torrent.canStop());
 		menu.findItem(R.id.action_remove).setVisible(true);
 		boolean removeWithData = Daemon.supportsRemoveWithData(torrent.getDaemon());
 		menu.findItem(R.id.action_remove_withdata).setVisible(removeWithData);
 		boolean setLabel = Daemon.supportsSetLabel(torrent.getDaemon());
 		menu.findItem(R.id.action_setlabel).setVisible(setLabel);
+		boolean forceRecheck = Daemon.supportsForceRecheck(torrent.getDaemon());
+		menu.findItem(R.id.action_forcerecheck).setVisible(forceRecheck);
 		boolean setTrackers = Daemon.supportsSetTrackers(torrent.getDaemon());
 		menu.findItem(R.id.action_updatetrackers).setVisible(setTrackers);
 		boolean setLocation = Daemon.supportsSetDownloadLocation(torrent.getDaemon());
@@ -286,6 +295,11 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	@OptionsItem(resName = "action_pause")
 	protected void pauseTorrent() {
 		getTasksExecutor().pauseTorrent(torrent);
+	}
+
+	@OptionsItem(resName = "action_start_direct")
+	protected void startTorrentDirect() {
+		getTasksExecutor().startTorrent(torrent, false);
 	}
 
 	@OptionsItem(resName = "action_start_default")
@@ -399,8 +413,15 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				((TorrentsActivity) getActivity()).stopRefresh = true;
 				((TorrentsActivity) getActivity()).stopAutoRefresh();
 			}
-			menu.findItem(R.id.action_download).setVisible(
-					currentServerSettings != null && Daemon.supportsFilePaths(currentServerSettings.getType()));
+			boolean filePaths =
+					currentServerSettings != null && Daemon.supportsFilePaths(currentServerSettings.getType());
+			menu.findItem(R.id.action_download).setVisible(filePaths);
+			boolean filePriorities = currentServerSettings != null &&
+					Daemon.supportsFilePrioritySetting(currentServerSettings.getType());
+			menu.findItem(R.id.action_priority_off).setVisible(filePriorities);
+			menu.findItem(R.id.action_priority_low).setVisible(filePriorities);
+			menu.findItem(R.id.action_priority_normal).setVisible(filePriorities);
+			menu.findItem(R.id.action_priority_high).setVisible(filePriorities);
 			return selectionManagerMode.onPrepareActionMode(mode, menu);
 		}
 

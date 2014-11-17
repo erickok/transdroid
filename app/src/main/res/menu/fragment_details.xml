@@ -32,13 +32,19 @@
 		android:id="@+id/action_start"
 		android:icon="?attr/ic_action_start"
 		android:showAsAction="ifRoom"
-		android:title="@string/action_start_default"
+		android:title="@string/action_start"
 		android:orderInCategory="202">
 		<menu>
 			<item android:id="@+id/action_start_default" android:title="@string/action_start_default" />
 			<item android:id="@+id/action_start_forced" android:title="@string/action_start_forced" />
 		</menu>
 	</item>
+	<item
+		android:id="@+id/action_start_direct"
+		android:icon="?attr/ic_action_start"
+		android:showAsAction="ifRoom"
+		android:title="@string/action_start"
+		android:orderInCategory="202" />
 	<item
 		android:id="@+id/action_stop"
 		android:icon="?attr/ic_action_stop"

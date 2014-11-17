@@ -27,15 +27,10 @@ import android.widget.RemoteViewsService;
 
 import org.androidannotations.annotations.EService;
 import org.transdroid.R;
-import org.transdroid.core.app.settings.ApplicationSettings;
-import org.transdroid.core.app.settings.ApplicationSettings_;
-import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.app.settings.SystemSettings;
-import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.lists.LocalTorrent;
-import org.transdroid.core.gui.log.Log;
-import org.transdroid.core.gui.log.Log_;
-import org.transdroid.core.service.ConnectivityHelper_;
+import org.transdroid.core.gui.log.*;
+import org.transdroid.core.service.*;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;

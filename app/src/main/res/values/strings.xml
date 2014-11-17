@@ -418,6 +418,7 @@
 	</string-array>
 	
 	<string name="error_httperror">Error during communication; check your connection</string>
+	<string name="error_unsupported">Your torrent client does not support this operation</string>
 	<string name="error_jsonrequesterror">Internal error building request</string>
 	<string name="error_jsonresponseerror">Error parsing server response (please check your settings)</string>
 	<string name="error_daemonnotconnected">Web interface not connected to a running daemon</string>

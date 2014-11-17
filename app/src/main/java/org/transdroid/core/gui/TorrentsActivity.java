@@ -60,6 +60,7 @@ import org.transdroid.core.service.BootReceiver;
 import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.core.widget.ListWidgetProvider;
 import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
@@ -424,6 +425,8 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 		// There is a connection (read: settings to some server known)
 		menu.findItem(R.id.action_add).setVisible(true);
+		boolean addByFile = Daemon.supportsAddByFile(currentConnection.getType());
+		menu.findItem(R.id.action_add_fromfile).setVisible(addByFile);
 		menu.findItem(R.id.action_search).setVisible(navigationHelper.enableSearchUi());
 		menu.findItem(R.id.action_rss).setVisible(navigationHelper.enableRssUi());
 		boolean hasAltMode = Daemon.supportsSetAlternativeMode(currentConnection.getType());
@@ -942,7 +945,15 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	@Background
 	public void addTorrentByMagnetUrl(String url, String title) {
-		DaemonTaskResult result = AddByMagnetUrlTask.create(currentConnection, url).execute(log);
+		AddByMagnetUrlTask addByMagnetUrlTask = AddByMagnetUrlTask.create(currentConnection, url);
+		if (!Daemon.supportsAddByMagnetUrl(currentConnection.getType())) {
+			// No support for magnet links: forcefully let the task fail to report the error
+			onCommunicationError(new DaemonTaskFailureResult(addByMagnetUrlTask,
+					new DaemonException(DaemonException.ExceptionType.MethodUnsupported,
+							currentConnection.getType().name() + " does not support magnet links")), false);
+			return;
+		}
+		DaemonTaskResult result = addByMagnetUrlTask.execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
 			refreshTorrents();
@@ -1259,7 +1270,8 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		}
 
 		// Update the server status (counts and speeds) in the action bar
-		serverStatusView.update(torrents, systemSettings.treatDormantAsInactive());
+		serverStatusView.update(torrents, systemSettings.treatDormantAsInactive(),
+				Daemon.supportsSetTransferRates(currentConnection.getType()));
 
 	}
 
