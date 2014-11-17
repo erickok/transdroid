@@ -19,6 +19,7 @@ package org.transdroid.daemon.util;
 import android.annotation.TargetApi;
 import android.net.SSLCertificateSocketFactory;
 import android.os.Build;
+import android.util.Log;
 
 import org.apache.http.conn.scheme.LayeredSocketFactory;
 import org.apache.http.conn.ssl.StrictHostnameVerifier;
@@ -130,7 +131,7 @@ public class TlsSniSocketFactory implements LayeredSocketFactory {
 				java.lang.reflect.Method setHostnameMethod = ssl.getClass().getMethod("setHostname", String.class);
 				setHostnameMethod.invoke(ssl, host);
 			} catch (Exception e) {
-				DLog.d(TlsSniSocketFactory.class.getSimpleName(), "SNI not usable: " + e);
+				Log.d(TlsSniSocketFactory.class.getSimpleName(), "SNI not usable: " + e);
 			}
 		}
 

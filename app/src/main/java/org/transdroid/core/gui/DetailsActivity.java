@@ -95,6 +95,8 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 
 	// Settings
 	@Bean
+	protected Log log;
+	@Bean
 	protected NavigationHelper navigationHelper;
 	@Bean
 	protected ConnectivityHelper connectivityHelper;
@@ -185,7 +187,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 
 	@Background
 	protected void refreshTorrent() {
-		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute();
+		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute(log);
 		if (result instanceof RetrieveTaskSuccessResult) {
 			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
 					((RetrieveTaskSuccessResult) result).getLabels());
@@ -198,7 +200,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	public void refreshTorrentDetails(Torrent torrent) {
 		if (!Daemon.supportsFineDetails(torrent.getDaemon()))
 			return;
-		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof GetTorrentDetailsTaskSuccessResult) {
 			onTorrentDetailsRetrieved(torrent, ((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
 		} else {
@@ -210,7 +212,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	public void refreshTorrentFiles(Torrent torrent) {
 		if (!Daemon.supportsFileListing(torrent.getDaemon()))
 			return;
-		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof GetFileListTaskSuccessResult) {
 			onTorrentFilesRetrieved(torrent, ((GetFileListTaskSuccessResult) result).getFiles());
 		} else {
@@ -222,7 +224,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Override
 	public void resumeTorrent(Torrent torrent) {
 		torrent.mimicResume();
-		DaemonTaskResult result = ResumeTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = ResumeTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_resumed, torrent.getName()));
 		} else {
@@ -234,7 +236,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Override
 	public void pauseTorrent(Torrent torrent) {
 		torrent.mimicPause();
-		DaemonTaskResult result = PauseTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = PauseTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_paused, torrent.getName()));
 		} else {
@@ -246,7 +248,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Override
 	public void startTorrent(Torrent torrent, boolean forced) {
 		torrent.mimicStart();
-		DaemonTaskResult result = StartTask.create(currentConnection, torrent, forced).execute();
+		DaemonTaskResult result = StartTask.create(currentConnection, torrent, forced).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_started, torrent.getName()));
 		} else {
@@ -258,7 +260,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Override
 	public void stopTorrent(Torrent torrent) {
 		torrent.mimicStop();
-		DaemonTaskResult result = StopTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = StopTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_stopped, torrent.getName()));
 		} else {
@@ -269,7 +271,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Background
 	@Override
 	public void removeTorrent(Torrent torrent, boolean withData) {
-		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute();
+		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			// Close the details activity (as the torrent is now removed)
 			closeActivity(getString(withData ? R.string.result_removed_with_data : R.string.result_removed,
@@ -293,7 +295,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	public void updateLabel(Torrent torrent, String newLabel) {
 		torrent.mimicNewLabel(newLabel);
 		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel)
-				.execute();
+				.execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_labelset, newLabel));
 		} else {
@@ -305,7 +307,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Override
 	public void forceRecheckTorrent(Torrent torrent) {
 		torrent.mimicCheckingStatus();
-		DaemonTaskResult result = ForceRecheckTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = ForceRecheckTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result,
 					getString(R.string.result_recheckedstarted, torrent.getName()));
@@ -317,7 +319,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Background
 	@Override
 	public void updateTrackers(Torrent torrent, List<String> newTrackers) {
-		DaemonTaskResult result = SetTrackersTask.create(currentConnection, torrent, newTrackers).execute();
+		DaemonTaskResult result = SetTrackersTask.create(currentConnection, torrent, newTrackers).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_trackersupdated));
 		} else {
@@ -328,7 +330,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Background
 	@Override
 	public void updateLocation(Torrent torrent, String newLocation) {
-		DaemonTaskResult result = SetDownloadLocationTask.create(currentConnection, torrent, newLocation).execute();
+		DaemonTaskResult result = SetDownloadLocationTask.create(currentConnection, torrent, newLocation).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_locationset, newLocation));
 		} else {
@@ -340,7 +342,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Override
 	public void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority) {
 		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority,
-				new ArrayList<TorrentFile>(files)).execute();
+				new ArrayList<TorrentFile>(files)).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
 		} else {
@@ -373,7 +375,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
-		Log.i(this, result.getException().toString());
+		log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
 		fragmentDetails.updateIsLoading(false, isCritical ? error : null);
 		Crouton.showText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),

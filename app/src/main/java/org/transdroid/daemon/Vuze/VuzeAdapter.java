@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.openjpa.lib.util.Base16Encoder;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
@@ -52,7 +53,6 @@ import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
-import org.transdroid.daemon.util.DLog;
 
 /**
  * An adapter that allows for easy access to Vuze torrent data. Communication
@@ -81,14 +81,14 @@ public class VuzeAdapter implements IDaemonAdapter {
 	}
 
 	@Override
-	public DaemonTaskResult executeTask(DaemonTask task) {
+	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 		
 		try {
 			switch (task.getMethod()) {
 			case Retrieve:
 
 				Object result = makeVuzeCall(DaemonMethod.Retrieve, "getDownloads");
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result),null);
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(log, result),null);
 				
 			case GetFileList:
 				
@@ -189,8 +189,10 @@ public class VuzeAdapter implements IDaemonAdapter {
 				// Request to set the maximum transfer rates
 				SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
 				makeVuzeCall(DaemonMethod.SetTransferRates, "setBooleanParameter[String,boolean]", new Object[] { "Auto Upload Speed Enabled", false } );
-				makeVuzeCall(DaemonMethod.SetTransferRates, "setCoreIntParameter[String,int]", new Object[] { "Max Upload Speed KBs", (ratesTask.getUploadRate() == null? 0: ratesTask.getUploadRate().intValue())} );
-				makeVuzeCall(DaemonMethod.SetTransferRates, "setCoreIntParameter[String,int]", new Object[] { "Max Download Speed KBs", (ratesTask.getDownloadRate() == null? 0: ratesTask.getDownloadRate().intValue())} );
+				makeVuzeCall(DaemonMethod.SetTransferRates, "setCoreIntParameter[String,int]", new Object[] { "Max Upload Speed KBs", (ratesTask.getUploadRate() == null? 0:
+						ratesTask.getUploadRate())} );
+				makeVuzeCall(DaemonMethod.SetTransferRates, "setCoreIntParameter[String,int]", new Object[] { "Max Download Speed KBs", (ratesTask.getDownloadRate() == null? 0:
+						ratesTask.getDownloadRate())} );
 				return new DaemonTaskSuccessResult(task);
 				
 			default:
@@ -318,7 +320,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 			Map<String, Object> torrentData = rpcclient.callXMLRPC(vuzeObjectID, serverMethod, params, savedConnectionID, false);
 			serverMethod = "addDownload[Torrent]";
 			vuzeObjectID = savedDownloadManagerID;
-			params = new String[] { ((Long) torrentData.get("_object_id")).toString() };
+			params = new String[] { torrentData.get("_object_id").toString() };
 			paramsAreVuzeObjects = true;
 		}
 		
@@ -346,7 +348,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Torrent> onTorrentsRetrieved(Object result) throws DaemonException {
+	private List<Torrent> onTorrentsRetrieved(Log log, Object result) throws DaemonException {
 		
 		Map<String, Object> response = (Map<String, Object>) result;
 		
@@ -355,7 +357,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 			return new ArrayList<Torrent>();
 		}
 		
-		DLog.d(LOG_NAME, response.toString().length() > 300? response.toString().substring(0, 300) + "... (" + response.toString().length() + " chars)": response.toString());
+		log.d(LOG_NAME, response.toString().length() > 300? response.toString().substring(0, 300) + "... (" + response.toString().length() + " chars)": response.toString());
 		
 		List<Torrent> torrents = new ArrayList<Torrent>();
 		
@@ -376,7 +378,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 				}
 			 */
 			Map<String, Object> info = (Map<String, Object>) response.get(key);
-			if (info == null || !info.containsKey("_object_id") || ((Long)info.get("_object_id")) == null) {
+			if (info == null || !info.containsKey("_object_id") || info.get("_object_id") == null) {
 				// No valid XML data object returned
 				throw new DaemonException(DaemonException.ExceptionType.UnexpectedResponse, "Map of objects returned by Vuze, but these object do not have some <info> attached or no <_object_id> is available");
 			}
@@ -396,10 +398,10 @@ public class VuzeAdapter implements IDaemonAdapter {
 			
 			torrents.add(new Torrent(
 				(Long) info.get("_object_id"), // id
-				((Long) info.get("_object_id")).toString(), // hash	//(String) torrentinfo.get("hash"), // hash
-				(String) info.get("name").toString().trim(), // name
+				info.get("_object_id").toString(), // hash	//(String) torrentinfo.get("hash"), // hash
+				info.get("name").toString().trim(), // name
 				convertTorrentStatus((Long) info.get("state")), // status
-				(String) statsinfo.get("target_file_or_dir") + "/", // locationDir
+				statsinfo.get("target_file_or_dir") + "/", // locationDir
 				rateDownload, // rateDownload
 				((Long)statsinfo.get("upload_average")).intValue(), // rateUpload
 				announceSeedCount, // seedersConnected
@@ -461,7 +463,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 			String file = (String)info.get("file");
 			
 			files.add(new TorrentFile(
-				"" + (Long)info.get("_object_id"),
+				String.valueOf(info.get("_object_id")),
 				new File(file).getName(), // name
 				(file.length() > torrent.getLocationDir().length()? file.substring(torrent.getLocationDir().length()): file), // name
 				file, // fullPath

@@ -16,29 +16,6 @@
  */
 package org.transdroid.core.gui.settings;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.OptionsItem;
-import org.transdroid.R;
-import org.transdroid.core.app.search.SearchHelper;
-import org.transdroid.core.app.search.SearchSite;
-import org.transdroid.core.app.settings.ApplicationSettings;
-import org.transdroid.core.app.settings.RssfeedSetting;
-import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.app.settings.WebsearchSetting;
-import org.transdroid.core.gui.TorrentsActivity_;
-import org.transdroid.core.gui.navigation.NavigationHelper;
-import org.transdroid.core.gui.settings.OverflowPreference.OnOverflowClicked;
-import org.transdroid.core.gui.settings.RssfeedPreference.OnRssfeedClickedListener;
-import org.transdroid.core.gui.settings.ServerPreference.OnServerClickedListener;
-import org.transdroid.core.gui.settings.WebsearchPreference.OnWebsearchClickedListener;
-import org.transdroid.core.seedbox.SeedboxPreference;
-import org.transdroid.core.seedbox.SeedboxPreference.OnSeedboxClickedListener;
-import org.transdroid.core.seedbox.SeedboxProvider;
-
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -54,6 +31,29 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.view.View;
 
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
+import org.transdroid.R;
+import org.transdroid.core.app.search.SearchHelper;
+import org.transdroid.core.app.search.SearchSite;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.RssfeedSetting;
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.WebsearchSetting;
+import org.transdroid.core.gui.*;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.settings.OverflowPreference.OnOverflowClicked;
+import org.transdroid.core.gui.settings.RssfeedPreference.OnRssfeedClickedListener;
+import org.transdroid.core.gui.settings.ServerPreference.OnServerClickedListener;
+import org.transdroid.core.gui.settings.WebsearchPreference.OnWebsearchClickedListener;
+import org.transdroid.core.seedbox.SeedboxPreference;
+import org.transdroid.core.seedbox.SeedboxPreference.OnSeedboxClickedListener;
+import org.transdroid.core.seedbox.SeedboxProvider;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The main activity that provides access to all application settings. It shows the configured serves, web search sites
  * and RSS feeds along with other general settings.
@@ -63,7 +63,13 @@ import android.view.View;
 public class MainSettingsActivity extends PreferenceActivity {
 
 	protected static final int DIALOG_ADDSEEDBOX = 0;
-
+	private OnOverflowClicked onOverflowClicked = new OnOverflowClicked() {
+		@SuppressWarnings("deprecation")
+		@Override
+		public void onOverflowClicked(View overflowButton) {
+			showDialog(DIALOG_ADDSEEDBOX);
+		}
+	};
 	@Bean
 	protected NavigationHelper navigationHelper;
 	@Bean
@@ -71,6 +77,83 @@ public class MainSettingsActivity extends PreferenceActivity {
 	@Bean
 	protected SearchHelper searchHelper;
 	protected SharedPreferences prefs;
+	private OnPreferenceClickListener onAddServer = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			ServerSettingsActivity_.intent(MainSettingsActivity.this).start();
+			return true;
+		}
+	};
+	private OnPreferenceClickListener onAddWebsearch = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			WebsearchSettingsActivity_.intent(MainSettingsActivity.this).start();
+			return true;
+		}
+	};
+	private OnPreferenceClickListener onAddRssfeed = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			RssfeedSettingsActivity_.intent(MainSettingsActivity.this).start();
+			return true;
+		}
+	};
+	private OnPreferenceClickListener onBackgroundSettings = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			NotificationSettingsActivity_.intent(MainSettingsActivity.this).start();
+			return true;
+		}
+	};
+	private OnPreferenceClickListener onSystemSettings = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			SystemSettingsActivity_.intent(MainSettingsActivity.this).start();
+			return true;
+		}
+	};
+	private OnPreferenceClickListener onHelpSettings = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			HelpSettingsActivity_.intent(MainSettingsActivity.this).start();
+			return true;
+		}
+	};
+	private OnServerClickedListener onServerClicked = new OnServerClickedListener() {
+		@Override
+		public void onServerClicked(ServerSetting serverSetting) {
+			ServerSettingsActivity_.intent(MainSettingsActivity.this).key(serverSetting.getOrder()).start();
+		}
+	};
+	private OnSeedboxClickedListener onSeedboxClicked = new OnSeedboxClickedListener() {
+		@Override
+		public void onSeedboxClicked(ServerSetting serverSetting, SeedboxProvider provider, int seedboxOffset) {
+			// NOTE: The seedboxOffset is the seedbox type-unique order that we need to supply uin the Extras bundle to
+			// edit this specific seedbox
+			startActivity(provider.getSettings().getSettingsActivityIntent(MainSettingsActivity.this)
+					.putExtra("key", seedboxOffset));
+		}
+	};
+	private OnWebsearchClickedListener onWebsearchClicked = new OnWebsearchClickedListener() {
+		@Override
+		public void onWebsearchClicked(WebsearchSetting websearchSetting) {
+			WebsearchSettingsActivity_.intent(MainSettingsActivity.this).key(websearchSetting.getOrder()).start();
+		}
+	};
+	private OnRssfeedClickedListener onRssfeedClicked = new OnRssfeedClickedListener() {
+		@Override
+		public void onRssfeedClicked(RssfeedSetting rssfeedSetting) {
+			RssfeedSettingsActivity_.intent(MainSettingsActivity.this).key(rssfeedSetting.getOrder()).start();
+		}
+	};
+	private OnClickListener onAddSeedbox = new OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			// Start the configuration activity for this specific chosen seedbox
+			startActivity(
+					SeedboxProvider.values()[which].getSettings().getSettingsActivityIntent(MainSettingsActivity.this));
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +169,9 @@ public class MainSettingsActivity extends PreferenceActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		prefs = getPreferenceManager().getSharedPreferences();
-		if (getPreferenceScreen() != null)
+		if (getPreferenceScreen() != null) {
 			getPreferenceScreen().removeAll();
+		}
 
 		boolean enableSearchUi = navigationHelper.enableSearchUi();
 		boolean enableRssUi = navigationHelper.enableRssUi();
@@ -96,14 +180,17 @@ public class MainSettingsActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.pref_main);
 		OverflowPreference addServerPrefernce = (OverflowPreference) findPreference("header_addserver");
 		addServerPrefernce.setOnPreferenceClickListener(onAddServer);
-		if (navigationHelper.enableSeedboxes())
+		if (navigationHelper.enableSeedboxes()) {
 			addServerPrefernce.setOnOverflowClickedListener(onOverflowClicked);
-		else
+		} else {
 			addServerPrefernce.hideOverflowButton();
-		if (enableSearchUi)
+		}
+		if (enableSearchUi) {
 			findPreference("header_addwebsearch").setOnPreferenceClickListener(onAddWebsearch);
-		if (enableRssUi)
+		}
+		if (enableRssUi) {
 			findPreference("header_addrssfeed").setOnPreferenceClickListener(onAddRssfeed);
+		}
 		findPreference("header_background").setOnPreferenceClickListener(onBackgroundSettings);
 		findPreference("header_system").setOnPreferenceClickListener(onSystemSettings);
 		findPreference("header_help").setOnPreferenceClickListener(onHelpSettings);
@@ -115,13 +202,12 @@ public class MainSettingsActivity extends PreferenceActivity {
 		serverCodes.add(Integer.toString(ApplicationSettings.DEFAULTSERVER_ASKONADD));
 		serverNames.add(getString(R.string.pref_defaultserver_lastused));
 		serverNames.add(getString(R.string.pref_defaultserver_askonadd));
-		
+
 		// Add existing servers
 		List<ServerSetting> servers = applicationSettings.getNormalServerSettings();
 		for (ServerSetting serverSetting : servers) {
-			getPreferenceScreen().addPreference(
-					new ServerPreference(this).setServerSetting(serverSetting).setOnServerClickedListener(
-							onServerClicked));
+			getPreferenceScreen().addPreference(new ServerPreference(this).setServerSetting(serverSetting)
+							.setOnServerClickedListener(onServerClicked));
 			if (serverSetting.getUniqueIdentifier() != null) {
 				serverCodes.add(Integer.toString(serverSetting.getOrder()));
 				serverNames.add(serverSetting.getName());
@@ -156,9 +242,8 @@ public class MainSettingsActivity extends PreferenceActivity {
 		} else {
 			List<RssfeedSetting> rssfeeds = applicationSettings.getRssfeedSettings();
 			for (RssfeedSetting rssfeedSetting : rssfeeds) {
-				getPreferenceScreen().addPreference(
-						new RssfeedPreference(this).setRssfeedSetting(rssfeedSetting).setOnRssfeedClickedListener(
-								onRssfeedClicked));
+				getPreferenceScreen().addPreference(new RssfeedPreference(this).setRssfeedSetting(rssfeedSetting)
+								.setOnRssfeedClickedListener(onRssfeedClicked));
 			}
 		}
 
@@ -171,17 +256,17 @@ public class MainSettingsActivity extends PreferenceActivity {
 		// Add existing websearch sites
 		List<WebsearchSetting> websearches = applicationSettings.getWebsearchSettings();
 		for (WebsearchSetting websearchSetting : websearches) {
-			getPreferenceScreen().addPreference(
-					new WebsearchPreference(this).setWebsearchSetting(websearchSetting).setOnWebsearchClickedListener(
-							onWebsearchClicked));
+			getPreferenceScreen().addPreference(new WebsearchPreference(this).setWebsearchSetting(websearchSetting)
+							.setOnWebsearchClickedListener(onWebsearchClicked));
 		}
 
 		// Construct list of all available search sites, in-app and web
 		ListPreference setSite = (ListPreference) findPreference("header_setsearchsite");
 		// Retrieve the available in-app search sites (using the Torrent Search package)
 		List<SearchSite> searchsites = searchHelper.getAvailableSites();
-		if (searchsites == null)
+		if (searchsites == null) {
 			searchsites = new ArrayList<SearchSite>();
+		}
 		List<String> siteNames = new ArrayList<String>(websearches.size() + searchsites.size());
 		List<String> siteValues = new ArrayList<String>(websearches.size() + searchsites.size());
 		for (SearchSite searchSite : searchsites) {
@@ -210,114 +295,18 @@ public class MainSettingsActivity extends PreferenceActivity {
 		super.onBuildHeaders(target);
 	}
 
-	private OnPreferenceClickListener onAddServer = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			ServerSettingsActivity_.intent(MainSettingsActivity.this).start();
-			return true;
-		}
-	};
-
-	private OnOverflowClicked onOverflowClicked = new OnOverflowClicked() {
-		@SuppressWarnings("deprecation")
-		@Override
-		public void onOverflowClicked(View overflowButton) {
-			showDialog(DIALOG_ADDSEEDBOX);
-		}
-	};
-
-	private OnPreferenceClickListener onAddWebsearch = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			WebsearchSettingsActivity_.intent(MainSettingsActivity.this).start();
-			return true;
-		}
-	};
-
-	private OnPreferenceClickListener onAddRssfeed = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			RssfeedSettingsActivity_.intent(MainSettingsActivity.this).start();
-			return true;
-		}
-	};
-
-	private OnPreferenceClickListener onBackgroundSettings = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			NotificationSettingsActivity_.intent(MainSettingsActivity.this).start();
-			return true;
-		}
-	};
-
-	private OnPreferenceClickListener onSystemSettings = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			SystemSettingsActivity_.intent(MainSettingsActivity.this).start();
-			return true;
-		}
-	};
-
-	private OnPreferenceClickListener onHelpSettings = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			HelpSettingsActivity_.intent(MainSettingsActivity.this).start();
-			return true;
-		}
-	};
-
-	private OnServerClickedListener onServerClicked = new OnServerClickedListener() {
-		@Override
-		public void onServerClicked(ServerSetting serverSetting) {
-			ServerSettingsActivity_.intent(MainSettingsActivity.this).key(serverSetting.getOrder()).start();
-		}
-	};
-
-	private OnSeedboxClickedListener onSeedboxClicked = new OnSeedboxClickedListener() {
-		@Override
-		public void onSeedboxClicked(ServerSetting serverSetting, SeedboxProvider provider, int seedboxOffset) {
-			// NOTE: The seedboxOffset is the seedbox type-unique order that we need to supply uin the Extras bundle to
-			// edit this specific seedbox
-			startActivity(provider.getSettings().getSettingsActivityIntent(MainSettingsActivity.this)
-					.putExtra("key", seedboxOffset));
-		}
-	};
-
-	private OnWebsearchClickedListener onWebsearchClicked = new OnWebsearchClickedListener() {
-		@Override
-		public void onWebsearchClicked(WebsearchSetting websearchSetting) {
-			WebsearchSettingsActivity_.intent(MainSettingsActivity.this).key(websearchSetting.getOrder()).start();
-		}
-	};
-
-	private OnRssfeedClickedListener onRssfeedClicked = new OnRssfeedClickedListener() {
-		@Override
-		public void onRssfeedClicked(RssfeedSetting rssfeedSetting) {
-			RssfeedSettingsActivity_.intent(MainSettingsActivity.this).key(rssfeedSetting.getOrder()).start();
-		}
-	};
-
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
-		case DIALOG_ADDSEEDBOX:
-			// Open dialog to pick one of the supported seedbox providers
-			String[] seedboxes = new String[SeedboxProvider.values().length];
-			for (int i = 0; i < seedboxes.length; i++) {
-				seedboxes[i] = getString(R.string.pref_seedbox_addseedbox, SeedboxProvider.values()[i].getSettings()
-						.getName());
-			}
-			return new AlertDialog.Builder(this).setItems(seedboxes, onAddSeedbox).create();
+			case DIALOG_ADDSEEDBOX:
+				// Open dialog to pick one of the supported seedbox providers
+				String[] seedboxes = new String[SeedboxProvider.values().length];
+				for (int i = 0; i < seedboxes.length; i++) {
+					seedboxes[i] = getString(R.string.pref_seedbox_addseedbox,
+							SeedboxProvider.values()[i].getSettings().getName());
+				}
+				return new AlertDialog.Builder(this).setItems(seedboxes, onAddSeedbox).create();
 		}
 		return null;
 	}
-
-	private OnClickListener onAddSeedbox = new OnClickListener() {
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			// Start the configuration activity for this specific chosen seedbox
-			startActivity(SeedboxProvider.values()[which].getSettings().getSettingsActivityIntent(
-					MainSettingsActivity.this));
-		}
-	};
 
 }

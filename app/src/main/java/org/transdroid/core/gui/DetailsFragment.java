@@ -29,16 +29,10 @@ import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.lists.DetailsAdapter;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
-import org.transdroid.core.gui.navigation.Label;
-import org.transdroid.core.gui.navigation.NavigationHelper;
-import org.transdroid.core.gui.navigation.NavigationHelper_;
-import org.transdroid.core.gui.navigation.RefreshableActivity;
-import org.transdroid.core.gui.navigation.SelectionManagerMode;
-import org.transdroid.core.gui.navigation.SetLabelDialog;
+import org.transdroid.core.gui.navigation.*;
 import org.transdroid.core.gui.navigation.SetLabelDialog.OnLabelPickedListener;
 import org.transdroid.core.gui.navigation.SetStorageLocationDialog;
 import org.transdroid.core.gui.navigation.SetStorageLocationDialog.OnStorageLocationUpdatedListener;
@@ -180,7 +174,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	/**
 	 * Updates the list adapter to show a new list of torrent files, replacing the old files list.
 	 * @param checkTorrent The torrent for which the details were retrieved
-	 * @param newTorrents The new, updated list of torrent file objects
+	 * @param newTorrentFiles The new, updated list of torrent file objects
 	 */
 	public void updateTorrentFiles(Torrent checkTorrent, ArrayList<TorrentFile> newTorrentFiles) {
 		// Check if these are actually the details of the torrent we are now showing

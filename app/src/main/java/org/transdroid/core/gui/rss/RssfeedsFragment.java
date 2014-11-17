@@ -26,7 +26,7 @@ import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.gui.settings.MainSettingsActivity_;
+import org.transdroid.core.gui.settings.*;
 
 import android.app.Fragment;
 import android.view.Menu;

@@ -30,6 +30,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonSettings;
@@ -45,7 +46,6 @@ import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
-import org.transdroid.daemon.util.DLog;
 import org.transdroid.daemon.util.HttpHelper;
 import com.android.internalcopy.http.multipart.FilePart;
 import com.android.internalcopy.http.multipart.MultipartEntity;
@@ -80,59 +80,59 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
 	}
 
 	@Override
-	public DaemonTaskResult executeTask(DaemonTask task) {
+	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 
 		try {
 			switch (task.getMethod()) {
 			case Retrieve:
 
 				// Request all torrents from server
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, makeStatsRequest(), null);
+				return new RetrieveTaskSuccessResult((RetrieveTask) task, makeStatsRequest(log), null);
 
 			case AddByFile:
 
 				// Add a torrent to the server by sending the contents of a local .torrent file
 				String file = ((AddByFileTask) task).getFile();
-				makeFileUploadRequest("fileUpload", file);
+				makeFileUploadRequest(log, "fileUpload", file);
 				return null;
 
 			case AddByUrl:
 
 				// Request to add a torrent by URL
 				String url = ((AddByUrlTask) task).getUrl();
-				makeActionRequest("urlUpload", url);
+				makeActionRequest(log, "urlUpload", url);
 				return new DaemonTaskSuccessResult(task);
 
 			case Remove:
 
 				// Remove a torrent
 				RemoveTask removeTask = (RemoveTask) task;
-				makeActionRequest((removeTask.includingData() ? "deleteWithData" : "delete"), task.getTargetTorrent()
+				makeActionRequest(log, (removeTask.includingData() ? "deleteWithData" : "delete"), task.getTargetTorrent()
 						.getUniqueID());
 				return new DaemonTaskSuccessResult(task);
 
 			case Pause:
 
 				// Pause a torrent
-				makeActionRequest("stop", task.getTargetTorrent().getUniqueID());
+				makeActionRequest(log, "stop", task.getTargetTorrent().getUniqueID());
 				return new DaemonTaskSuccessResult(task);
 
 			case PauseAll:
 
 				// Pause all torrents
-				makeActionRequest("bulkStop", null);
+				makeActionRequest(log, "bulkStop", null);
 				return new DaemonTaskSuccessResult(task);
 
 			case Resume:
 
 				// Resume a torrent
-				makeActionRequest("start", task.getTargetTorrent().getUniqueID());
+				makeActionRequest(log, "start", task.getTargetTorrent().getUniqueID());
 				return new DaemonTaskSuccessResult(task);
 
 			case ResumeAll:
 
 				// Resume all torrents
-				makeActionRequest("bulkStart", null);
+				makeActionRequest(log, "bulkStart", null);
 				return new DaemonTaskSuccessResult(task);
 
 			case SetTransferRates:
@@ -150,7 +150,7 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
 		}
 	}
 
-	private List<Torrent> makeStatsRequest() throws DaemonException {
+	private List<Torrent> makeStatsRequest(Log log) throws DaemonException {
 
 		try {
 
@@ -170,16 +170,16 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
 			return torrents;
 
 		} catch (DaemonException e) {
-			DLog.d(LOG_NAME, "Parsing error: " + e.toString());
+			log.d(LOG_NAME, "Parsing error: " + e.toString());
 			throw e;
 		} catch (Exception e) {
-			DLog.d(LOG_NAME, "Error: " + e.toString());
+			log.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
 
 	}
 
-	private boolean makeActionRequest(String action, String target) throws DaemonException {
+	private boolean makeActionRequest(Log log, String action, String target) throws DaemonException {
 
 		try {
 
@@ -204,16 +204,16 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
 			}
 
 		} catch (DaemonException e) {
-			DLog.d(LOG_NAME, action + " request error: " + e.toString());
+			log.d(LOG_NAME, action + " request error: " + e.toString());
 			throw e;
 		} catch (Exception e) {
-			DLog.d(LOG_NAME, "Error: " + e.toString());
+			log.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
 
 	}
 
-	private boolean makeFileUploadRequest(String action, String target) throws DaemonException {
+	private boolean makeFileUploadRequest(Log log, String action, String target) throws DaemonException {
 
 		try {
 
@@ -241,10 +241,10 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
 			}
 
 		} catch (DaemonException e) {
-			DLog.d(LOG_NAME, action + " request error: " + e.toString());
+			log.d(LOG_NAME, action + " request error: " + e.toString());
 			throw e;
 		} catch (Exception e) {
-			DLog.d(LOG_NAME, "Error: " + e.toString());
+			log.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
 
@@ -252,7 +252,6 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
 
 	/**
 	 * Instantiates an HTTP client that can be used for all Torrentflux-b4rt requests.
-	 * @param connectionTimeout The connection timeout in milliseconds
 	 * @throws DaemonException On conflicting or missing settings
 	 */
 	private void initialise() throws DaemonException {

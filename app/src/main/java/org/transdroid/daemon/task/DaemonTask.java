@@ -15,46 +15,51 @@
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  *	
  */
- package org.transdroid.daemon.task;
-
-import org.transdroid.daemon.Daemon;
-import org.transdroid.daemon.DaemonMethod;
-import org.transdroid.daemon.IDaemonAdapter;
-import org.transdroid.daemon.Torrent;
+package org.transdroid.daemon.task;
 
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.transdroid.core.gui.log.Log;
+import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.DaemonMethod;
+import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.Torrent;
+
 /**
- * A daemon task represents some action that needs to be performed
- * on the server daemon. It has no capabilities on itself; these are 
- * marshaled to the daemon adapter. Therefore all needed info (the
- * parameters) needs to be added to the extras bundle.
- * 
- * To help create these tasks and there data, each possible daemon 
- * method is created using a task-specific separate class with a 
- * create() method.
- * 
- * This class is Parcelable so it can be persisted in between an 
- * Activity breakdown and recreation.
- * 
+ * A daemon task represents some action that needs to be performed on the server daemon. It has no capabilities on
+ * itself; these are marshaled to the daemon adapter. Therefore all needed info (the parameters) needs to be added to
+ * the extras bundle.
+ * <p/>
+ * To help create these tasks and there data, each possible daemon method is created using a task-specific separate
+ * class with a create() method.
+ * <p/>
+ * This class is Parcelable so it can be persisted in between an Activity breakdown and recreation.
  * @author erickok
- *
  */
 public class DaemonTask implements Parcelable {
 
-	protected IDaemonAdapter adapter;
+	public static final Parcelable.Creator<DaemonTask> CREATOR = new Parcelable.Creator<DaemonTask>() {
+		public DaemonTask createFromParcel(Parcel in) {
+			return new DaemonTask(in);
+		}
+
+		public DaemonTask[] newArray(int size) {
+			return new DaemonTask[size];
+		}
+	};
 	protected final DaemonMethod method;
 	protected final Torrent targetTorrent;
 	protected final Bundle extras;
+	protected IDaemonAdapter adapter;
 
 	private DaemonTask(Parcel in) {
 		this.method = DaemonMethod.getStatus(in.readInt());
 		this.targetTorrent = in.readParcelable(Torrent.class.getClassLoader());
 		this.extras = in.readBundle();
 	}
-	
+
 	protected DaemonTask(IDaemonAdapter adapter, DaemonMethod method, Torrent targetTorrent, Bundle extras) {
 		this.adapter = adapter;
 		this.method = method;
@@ -65,18 +70,19 @@ public class DaemonTask implements Parcelable {
 			this.extras = extras;
 		}
 	}
-	
+
 	/**
 	 * Execute the task on the appropriate daemon adapter
+	 * @param log The logger to use when writing exceptions and debug information
 	 */
-	public DaemonTaskResult execute() {
-		return adapter.executeTask(this);
+	public DaemonTaskResult execute(Log log) {
+		return adapter.executeTask(log, this);
 	}
 
 	public DaemonMethod getMethod() {
 		return method;
 	}
-	
+
 	public Daemon getAdapterType() {
 		return this.adapter.getType();
 	}
@@ -89,33 +95,27 @@ public class DaemonTask implements Parcelable {
 		return extras;
 	}
 
-    public static final Parcelable.Creator<DaemonTask> CREATOR = new Parcelable.Creator<DaemonTask>() {
-    	public DaemonTask createFromParcel(Parcel in) {
-    		return new DaemonTask(in);
-    	}
-
-		public DaemonTask[] newArray(int size) {
-		    return new DaemonTask[size];
-		}
-    };
-
 	@Override
 	public int describeContents() {
 		return 0;
 	}
-	
+
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(method.getCode());
 		dest.writeParcelable(targetTorrent, 0);
 		dest.writeBundle(extras);
 	}
-	
+
 	/**
-	 * Returns a readable description of this task in the form 'MethodName on AdapterName with TorrentName and AllExtras'
+	 * Returns a readable description of this task in the form 'MethodName on AdapterName with TorrentName and
+	 * AllExtras'
 	 */
 	public String toString() {
-		return method.toString() + (adapter == null? "": " on " + adapter.getType()) + (targetTorrent != null || extras != null? " with ": "") + (targetTorrent == null? "": targetTorrent.toString() + (targetTorrent != null && extras != null? " and ": "")) + (extras == null? "": extras.toString());
+		return method.toString() + (adapter == null ? "" : " on " + adapter.getType()) +
+				(targetTorrent != null || extras != null ? " with " : "") +
+				(targetTorrent == null ? "" : targetTorrent.toString() + (extras != null ? " and " : "")) +
+				(extras == null ? "" : extras.toString());
 	}
 
 }

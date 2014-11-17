@@ -18,6 +18,7 @@ package org.transdroid.core.seedbox;
 
 import java.io.InputStream;
 
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
@@ -50,6 +51,9 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 @EActivity
 @OptionsMenu(resName = "activity_deleteableprefs")
 public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
+
+	@Bean
+	protected Log log;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -99,7 +103,7 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 
 				} catch (Exception e) {
 
-					Log.d(XirvikSharedSettingsActivity.this,
+					log.d(XirvikSharedSettingsActivity.this,
 							"Could not retrieve the Xirvik shared seedbox RPC mount point setting: " + e.toString());
 					return null;
 
@@ -126,7 +130,7 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 			edit.putString("seedbox_xirvikshared_rpc_" + key, result);
 			pref.setSummary(result);
 		}
-		edit.commit();
+		edit.apply();
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

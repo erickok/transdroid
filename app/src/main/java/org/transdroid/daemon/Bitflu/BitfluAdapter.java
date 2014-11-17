@@ -17,26 +17,22 @@
  */
 package org.transdroid.daemon.Bitflu;
 
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTask;
@@ -51,7 +47,11 @@ import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.util.HttpHelper;
-import org.transdroid.daemon.util.DLog;
+
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 
 /**
  * An adapter that allows for easy access to uTorrent torrent data. Communication is handled via authenticated JSON-RPC
@@ -84,60 +84,61 @@ public class BitfluAdapter implements IDaemonAdapter {
 	}
 
 	@Override
-	public DaemonTaskResult executeTask(DaemonTask task) {
+	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 
 		try {
 			switch (task.getMethod()) {
-			case Retrieve:
-				// Request all torrents from server
-				JSONObject result = makeBitfluRequest(RPC_TORRENT_LIST);
-				return new RetrieveTaskSuccessResult((RetrieveTask) task,
-						parseJsonRetrieveTorrents(result.getJSONArray(JSON_ROOT)), null);
-			case GetStats:
-				return new GetStatsTaskSuccessResult((GetStatsTask) task, false, -1);
-			case Pause:
-				makeBitfluRequest(RPC_PAUSE_TORRENT + task.getTargetTorrent().getUniqueID());
-				return new DaemonTaskSuccessResult(task);
-			case Resume:
-				makeBitfluRequest(RPC_RESUME_TORRENT + task.getTargetTorrent().getUniqueID());
-				return new DaemonTaskSuccessResult(task);
-			case Remove:
-				// Remove a torrent
-				RemoveTask removeTask = (RemoveTask) task;
-				String removeUriBase = RPC_CANCEL_TORRENT;
+				case Retrieve:
+					// Request all torrents from server
+					JSONObject result = makeBitfluRequest(log, RPC_TORRENT_LIST);
+					return new RetrieveTaskSuccessResult((RetrieveTask) task,
+							parseJsonRetrieveTorrents(result.getJSONArray(JSON_ROOT)), null);
+				case GetStats:
+					return new GetStatsTaskSuccessResult((GetStatsTask) task, false, -1);
+				case Pause:
+					makeBitfluRequest(log, RPC_PAUSE_TORRENT + task.getTargetTorrent().getUniqueID());
+					return new DaemonTaskSuccessResult(task);
+				case Resume:
+					makeBitfluRequest(log, RPC_RESUME_TORRENT + task.getTargetTorrent().getUniqueID());
+					return new DaemonTaskSuccessResult(task);
+				case Remove:
+					// Remove a torrent
+					RemoveTask removeTask = (RemoveTask) task;
+					String removeUriBase = RPC_CANCEL_TORRENT;
 
-				if (removeTask.includingData()) {
-					removeUriBase = RPC_REMOVE_TORRENT;
-				}
-				DLog.d(LOG_NAME, "*** CALLING " + removeUriBase);
-				makeBitfluRequest(removeUriBase + task.getTargetTorrent().getUniqueID());
-				return new DaemonTaskSuccessResult(task);
-			case GetFileList:
-				JSONObject jfiles = makeBitfluRequest(RPC_TORRENT_FILES + task.getTargetTorrent().getUniqueID());
-				return new GetFileListTaskSuccessResult((GetFileListTask) task,
-						parseJsonShowFilesTorrent(jfiles.getJSONArray(JSON_ROOT)));
-			case AddByUrl:
-				String url = URLEncoder.encode(((AddByUrlTask) task).getUrl(), "UTF-8");
-				makeBitfluRequest(RPC_START_DOWNLOAD + url);
-				return new DaemonTaskSuccessResult(task);
-			case AddByMagnetUrl:
-				String magnet = URLEncoder.encode(((AddByMagnetUrlTask) task).getUrl(), "UTF-8");
-				makeBitfluRequest(RPC_START_DOWNLOAD + magnet);
-				return new DaemonTaskSuccessResult(task);
-			default:
-				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
-						task.getMethod() + " is not supported by " + getType()));
+					if (removeTask.includingData()) {
+						removeUriBase = RPC_REMOVE_TORRENT;
+					}
+					makeBitfluRequest(log, removeUriBase + task.getTargetTorrent().getUniqueID());
+					return new DaemonTaskSuccessResult(task);
+				case GetFileList:
+					JSONObject jfiles =
+							makeBitfluRequest(log, RPC_TORRENT_FILES + task.getTargetTorrent().getUniqueID());
+					return new GetFileListTaskSuccessResult((GetFileListTask) task,
+							parseJsonShowFilesTorrent(jfiles.getJSONArray(JSON_ROOT)));
+				case AddByUrl:
+					String url = URLEncoder.encode(((AddByUrlTask) task).getUrl(), "UTF-8");
+					makeBitfluRequest(log, RPC_START_DOWNLOAD + url);
+					return new DaemonTaskSuccessResult(task);
+				case AddByMagnetUrl:
+					String magnet = URLEncoder.encode(((AddByMagnetUrlTask) task).getUrl(), "UTF-8");
+					makeBitfluRequest(log, RPC_START_DOWNLOAD + magnet);
+					return new DaemonTaskSuccessResult(task);
+				default:
+					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+							task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (JSONException e) {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
 		} catch (UnsupportedEncodingException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, e.toString()));
+			return new DaemonTaskFailureResult(task,
+					new DaemonException(ExceptionType.MethodUnsupported, e.toString()));
 		}
 	}
 
-	private JSONObject makeBitfluRequest(String addToUrl) throws DaemonException {
+	private JSONObject makeBitfluRequest(Log log, String addToUrl) throws DaemonException {
 
 		try {
 
@@ -174,10 +175,10 @@ public class BitfluAdapter implements IDaemonAdapter {
 		} catch (DaemonException e) {
 			throw e;
 		} catch (JSONException e) {
-			DLog.d(LOG_NAME, "Error: " + e.toString());
+			log.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
 		} catch (Exception e) {
-			DLog.d(LOG_NAME, "Error: " + e.toString());
+			log.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
 
@@ -267,7 +268,6 @@ public class BitfluAdapter implements IDaemonAdapter {
 
 	/**
 	 * Instantiates an HTTP client with proper credentials that can be used for all HTTP requests.
-	 * @param connectionTimeout The connection timeout in milliseconds
 	 * @throws DaemonException On conflicting or missing settings
 	 */
 	private void initialise() throws DaemonException {
@@ -281,10 +281,11 @@ public class BitfluAdapter implements IDaemonAdapter {
 	 */
 	private String buildWebUIUrl() {
 		String webuiroot = "";
-		if (settings.getFolder() != null)
+		if (settings.getFolder() != null) {
 			webuiroot = settings.getFolder();
-		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort()
-				+ webuiroot + "/";
+		}
+		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() +
+				webuiroot + "/";
 	}
 
 	@Override

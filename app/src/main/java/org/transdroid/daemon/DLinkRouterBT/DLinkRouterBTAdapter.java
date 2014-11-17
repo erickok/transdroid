@@ -17,9 +17,9 @@
  */
 package org.transdroid.daemon.DLinkRouterBT;
 
-import java.io.File;
-import java.net.URI;
-import java.util.ArrayList;
+import com.android.internalcopy.http.multipart.FilePart;
+import com.android.internalcopy.http.multipart.MultipartEntity;
+import com.android.internalcopy.http.multipart.Part;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -28,15 +28,16 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTask;
@@ -50,17 +51,15 @@ import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.ResumeTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
-import org.transdroid.daemon.util.DLog;
 import org.transdroid.daemon.util.HttpHelper;
-import com.android.internalcopy.http.multipart.FilePart;
-import com.android.internalcopy.http.multipart.MultipartEntity;
-import com.android.internalcopy.http.multipart.Part;
+
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
 
 /**
  * The daemon adapter for the DLink Router Bittorrent client.
- * 
  * @author AvengerMoJo <avengermojo at gmail.com>
- * 
  */
 public class DLinkRouterBTAdapter implements IDaemonAdapter {
 
@@ -115,54 +114,54 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 	}
 
 	@Override
-	public DaemonTaskResult executeTask(DaemonTask task) {
+	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 
 		try {
 			switch (task.getMethod()) {
-			case Retrieve:
+				case Retrieve:
 
-				// Request all torrents from server
-				JSONObject result = makeRequest(API_GET);
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result),null);
+					// Request all torrents from server
+					JSONObject result = makeRequest(log, API_GET);
+					return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result), null);
 
-			case GetFileList:
+				case GetFileList:
 
-				// Request all details for a specific torrent
-				JSONObject result2 = makeRequest(API_GET_FILES + task.getTargetTorrent().getUniqueID());
-				return new GetFileListTaskSuccessResult((GetFileListTask) task, parseJsonFileList(result2, task
-					.getTargetTorrent().getUniqueID()));
+					// Request all details for a specific torrent
+					JSONObject result2 = makeRequest(log, API_GET_FILES + task.getTargetTorrent().getUniqueID());
+					return new GetFileListTaskSuccessResult((GetFileListTask) task,
+							parseJsonFileList(result2, task.getTargetTorrent().getUniqueID()));
 
-			case AddByFile:
+				case AddByFile:
 
-				// Add a torrent to the server by sending the contents of a local .torrent file
-				String file = ((AddByFileTask) task).getFile();
+					// Add a torrent to the server by sending the contents of a local .torrent file
+					String file = ((AddByFileTask) task).getFile();
 
-				// put .torrent file's data into the request
-				makeRequest(API_ADD_BY_FILE, new File(URI.create(file)));
-				return new DaemonTaskSuccessResult(task);
+					// put .torrent file's data into the request
+					makeRequest(log, API_ADD_BY_FILE, new File(URI.create(file)));
+					return new DaemonTaskSuccessResult(task);
 
-			case AddByUrl:
+				case AddByUrl:
 
-				// Request to add a torrent by URL
-				String url = ((AddByUrlTask) task).getUrl();
-				makeRequest(API_ADD + url);
-				return new DaemonTaskSuccessResult(task);
+					// Request to add a torrent by URL
+					String url = ((AddByUrlTask) task).getUrl();
+					makeRequest(log, API_ADD + url);
+					return new DaemonTaskSuccessResult(task);
 
-			case Remove:
+				case Remove:
 
-				// Remove a torrent
-				RemoveTask removeTask = (RemoveTask) task;
-				makeRequest(API_REMOVE + removeTask.getTargetTorrent().getUniqueID()
-					+ (removeTask.includingData() ? API_DEL_DATA + "yes" : ""), false);
-				return new DaemonTaskSuccessResult(task);
+					// Remove a torrent
+					RemoveTask removeTask = (RemoveTask) task;
+					makeRequest(log, API_REMOVE + removeTask.getTargetTorrent().getUniqueID() +
+							(removeTask.includingData() ? API_DEL_DATA + "yes" : ""), false);
+					return new DaemonTaskSuccessResult(task);
 
 				// case Stop:
-			case Pause:
+				case Pause:
 
-				// Pause a torrent
-				PauseTask pauseTask = (PauseTask) task;
-				makeRequest(API_STOP + pauseTask.getTargetTorrent().getUniqueID(), false);
-				return new DaemonTaskSuccessResult(task);
+					// Pause a torrent
+					PauseTask pauseTask = (PauseTask) task;
+					makeRequest(log, API_STOP + pauseTask.getTargetTorrent().getUniqueID(), false);
+					return new DaemonTaskSuccessResult(task);
 
 				// case PauseAll:
 
@@ -172,12 +171,12 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 				// return new DaemonTaskSuccessResult(task);
 
 				// case Start:
-			case Resume:
+				case Resume:
 
-				// Resume a torrent
-				ResumeTask resumeTask = (ResumeTask) task;
-				makeRequest(API_START + resumeTask.getTargetTorrent().getUniqueID(), false);
-				return new DaemonTaskSuccessResult(task);
+					// Resume a torrent
+					ResumeTask resumeTask = (ResumeTask) task;
+					makeRequest(log, API_START + resumeTask.getTargetTorrent().getUniqueID(), false);
+					return new DaemonTaskSuccessResult(task);
 
 				// case ResumeAll:
 
@@ -206,10 +205,9 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 				// makeRequest( RPC_METHOD_SESSIONSET );
 				// return new DaemonTaskSuccessResult(task);
 
-			default:
-				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task
-					.getMethod()
-					+ " is not supported by " + getType()));
+				default:
+					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+							task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (JSONException e) {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
@@ -218,31 +216,31 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 		}
 	}
 
-	private JSONObject makeRequest(String requestUrl, File upload) throws DaemonException {
-		return makeRequest(requestUrl, false, upload);
+	private JSONObject makeRequest(Log log, String requestUrl, File upload) throws DaemonException {
+		return makeRequest(log, requestUrl, false, upload);
 	}
 
-	private JSONObject makeRequest(String requestUrl) throws DaemonException {
-		return makeRequest(requestUrl, true, null);
+	private JSONObject makeRequest(Log log, String requestUrl) throws DaemonException {
+		return makeRequest(log, requestUrl, true, null);
 	}
 
-	private JSONObject makeRequest(String requestUrl, boolean hasRespond) throws DaemonException {
-		return makeRequest(requestUrl, hasRespond, null);
+	private JSONObject makeRequest(Log log, String requestUrl, boolean hasRespond) throws DaemonException {
+		return makeRequest(log, requestUrl, hasRespond, null);
 	}
 
-	private JSONObject makeRequest(String requestUrl, boolean hasRespond, File upload) throws DaemonException {
+	private JSONObject makeRequest(Log log, String requestUrl, boolean hasRespond, File upload) throws DaemonException {
 
 		try {
 
 			// Initialise the HTTP client
 			if (httpclient == null) {
-				initialise(HttpHelper.DEFAULT_CONNECTION_TIMEOUT);
+				initialise();
 			}
 
 			// Setup request using POST stream with URL and data
 			HttpPost httppost = new HttpPost(buildWebUIUrl() + requestUrl);
 			if (upload != null) {
-				Part[] parts = { new FilePart(BT_ADD_BY_FILE, upload) };
+				Part[] parts = {new FilePart(BT_ADD_BY_FILE, upload)};
 				httppost.setEntity(new MultipartEntity(parts, httppost.getParams()));
 			}
 
@@ -264,8 +262,9 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 				response = httpclient.execute(httppost);
 
 			}
-			if (!hasRespond)
+			if (!hasRespond) {
 				return null;
+			}
 
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
@@ -276,24 +275,24 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 				JSONObject json = new JSONObject(result);
 				instream.close();
 
-				DLog.d(LOG_NAME, "Success: "
-					+ (result.length() > 300 ? result.substring(0, 300) + "... (" + result.length() + " chars)"
-						: result));
+				log.d(LOG_NAME, "Success: " +
+						(result.length() > 300 ? result.substring(0, 300) + "... (" + result.length() + " chars)" :
+								result));
 
 				// Return the JSON object
 				return json;
 			}
 
-			DLog.d(LOG_NAME, "Error: No entity in HTTP response");
+			log.d(LOG_NAME, "Error: No entity in HTTP response");
 			throw new DaemonException(ExceptionType.UnexpectedResponse, "No HTTP entity object in response.");
 
 		} catch (DaemonException e) {
 			throw e;
 		} catch (JSONException e) {
-			DLog.d(LOG_NAME, "Error: " + e.toString());
+			log.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
 		} catch (Exception e) {
-			DLog.d(LOG_NAME, "Error: " + e.toString());
+			log.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
 
@@ -301,39 +300,40 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 
 	/**
 	 * Instantiates an HTTP client with proper credentials that can be used for all Transmission requests.
-	 * 
-	 * @param connectionTimeout
-	 *            The connection timeout in milliseconds
-	 * @throws DaemonException
-	 *             On conflicting or missing settings
+	 * @throws DaemonException On conflicting or missing settings
 	 */
-	private void initialise(int connectionTimeout) throws DaemonException {
+	private void initialise() throws DaemonException {
 		httpclient = HttpHelper.createStandardHttpClient(settings, true);
 	}
 
 	/**
 	 * Build the URL of the Transmission web UI from the user settings.
-	 * 
 	 * @return The URL of the RPC API
 	 */
 	private String buildWebUIUrl() {
-		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort()
-			+ PATH_TO_API;
+		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() +
+				PATH_TO_API;
 	}
 
 	private TorrentStatus convertStatus(String state) {
-		if ("allocating".equals(state))
+		if ("allocating".equals(state)) {
 			return TorrentStatus.Checking;
-		if ("seeding".equals(state))
+		}
+		if ("seeding".equals(state)) {
 			return TorrentStatus.Seeding;
-		if ("finished".equals(state))
+		}
+		if ("finished".equals(state)) {
 			return TorrentStatus.Downloading;
-		if ("connecting_to_tracker".equals(state))
+		}
+		if ("connecting_to_tracker".equals(state)) {
 			return TorrentStatus.Checking;
-		if ("queued_for_checking".equals(state))
+		}
+		if ("queued_for_checking".equals(state)) {
 			return TorrentStatus.Queued;
-		if ("downloading".equals(state))
+		}
+		if ("downloading".equals(state)) {
 			return TorrentStatus.Downloading;
+		}
 		return TorrentStatus.Unknown;
 	}
 
@@ -345,15 +345,18 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 		for (int i = 0; i < rarray.length(); i++) {
 			JSONObject tor = rarray.getJSONObject(i);
 			// Add the parsed torrent to the list
-			TorrentStatus status = TorrentStatus.Unknown;
-			if (tor.getInt(BT_STOPPED) == 1)
+			TorrentStatus status;
+			if (tor.getInt(BT_STOPPED) == 1) {
 				status = TorrentStatus.Paused;
-			else
+			} else {
 				status = convertStatus(tor.getString(BT_STATE));
-			int eta = (int) (tor.getLong(BT_SIZE) / (tor.getInt(BT_DOWNLOAD_RATE) + 1));
-			if (0 > eta)
+			}
+			int eta = (int) ((tor.getLong(BT_SIZE) - tor.getLong(BT_DONE)) / (tor.getInt(BT_DOWNLOAD_RATE) + 1));
+			if (0 > eta) {
 				eta = -1;
+			}
 
+			// @formatter:off
 			Torrent new_t = new Torrent(
 				i, 
 				tor.getString(BT_HASH), 
@@ -366,17 +369,18 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 				tor.getInt(BT_PEERS_TOTAL), 
 				tor.getInt(BT_SEEDS_CONNECTED), 
 				tor.getInt(BT_SEEDS_TOTAL),
-				(int) ((tor.getLong(BT_SIZE) - tor.getLong(BT_DONE)) / (tor.getInt(BT_DOWNLOAD_RATE) + 1)), 
+				eta,
 				tor.getLong(BT_DONE), 
 				tor.getLong(BT_PAYLOAD_UPLOAD), 
 				tor.getLong(BT_SIZE), 
-				(float) (tor.getLong(BT_DONE) / (float) tor.getLong(BT_SIZE)), 
+				tor.getLong(BT_DONE) / (float) tor.getLong(BT_SIZE),
 				Float.parseFloat(tor.getString(BT_COPYS)), 
 				null,
 				null,
 				null,
 				null,
 				settings.getType());
+			// @formatter:on
 
 			torrents.add(new_t);
 		}
@@ -395,15 +399,16 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 			JSONArray files = jobj.getJSONArray(hash); // "Hash id"
 			for (int i = 0; i < files.length(); i++) {
 				JSONObject file = files.getJSONObject(i);
+				// @formatter:off
 				torrentfiles.add(new TorrentFile(
-					i + "", 
-					// TODO: How is an individual file identified? Index in the array?
+					String.valueOf(i),
 					file.getString(BT_FILE_NAME), 
 					file.getString(BT_FILE_NAME), 
 					null, // Not supported?
 					file.getLong(BT_FILE_SIZE), 
 					file.getLong(BT_FILE_DONE), 
 					convertTransmissionPriority(file.getInt(BT_FILE_PRIORITY))));
+				// @formatter:on
 			}
 		}
 
@@ -414,12 +419,12 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 
 	private Priority convertTransmissionPriority(int priority) {
 		switch (priority) {
-		case 1:
-			return Priority.High;
-		case -1:
-			return Priority.Low;
-		default:
-			return Priority.Normal;
+			case 1:
+				return Priority.High;
+			case -1:
+				return Priority.Low;
+			default:
+				return Priority.Normal;
 		}
 	}
 

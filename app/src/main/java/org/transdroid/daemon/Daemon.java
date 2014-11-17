@@ -306,7 +306,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsSetTransferRates(Daemon type) {
-		return type == Deluge || type == Transmission || type == uTorrent || type == BitTorrent || type == Deluge || type == rTorrent || type == Vuze || type == BuffaloNas || type == BitComet || type == Aria2 || type == Dummy;
+		return type == Deluge || type == Transmission || type == uTorrent || type == BitTorrent || type == rTorrent || type == Vuze || type == BuffaloNas || type == BitComet || type == Aria2 || type == Dummy;
 	}
 
 	public static boolean supportsAddByFile(Daemon type) {
@@ -351,7 +351,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsForceRecheck(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Deluge || type == rTorrent || type == Dummy;
+		return type == uTorrent || type == BitTorrent || type == Deluge || type == rTorrent || type == Transmission || type == Dummy;
 	}
 
 	public static boolean supportsExtraPassword(Daemon type) {

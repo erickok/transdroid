@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
@@ -47,7 +48,6 @@ import org.transdroid.daemon.task.SetDownloadLocationTask;
 import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
-import org.transdroid.daemon.util.DLog;
 
 import android.net.Uri;
 
@@ -124,7 +124,7 @@ public class DummyAdapter implements IDaemonAdapter {
 	}
 
 	@Override
-	public DaemonTaskResult executeTask(DaemonTask task) {
+	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 
 		try {
 			switch (task.getMethod()) {
@@ -164,7 +164,7 @@ public class DummyAdapter implements IDaemonAdapter {
 			case AddByFile:
 
 				String file = ((AddByFileTask) task).getFile();
-				DLog.d(LOG_NAME, "Adding torrent " + file);
+				log.d(LOG_NAME, "Adding torrent " + file);
 				File upload = new File(URI.create(file));
 				dummyTorrents.add(new Torrent(0, "torrent_file", upload.getName(), TorrentStatus.Queued, "/downloads/"
 						+ file, 0, 0, 0, 0, 0, 0, -1, 0, 0, 1024 * 1024 * 1000, 0, 1F, "isos", new Date(), null, null,
@@ -174,7 +174,7 @@ public class DummyAdapter implements IDaemonAdapter {
 			case AddByUrl:
 
 				String url = ((AddByUrlTask) task).getUrl();
-				DLog.d(LOG_NAME, "Adding torrent " + url);
+				log.d(LOG_NAME, "Adding torrent " + url);
 				if (url == null || url.equals(""))
 					throw new DaemonException(DaemonException.ExceptionType.ParsingFailed, "No url specified");
 				Uri uri = Uri.parse(url);
@@ -186,7 +186,7 @@ public class DummyAdapter implements IDaemonAdapter {
 			case AddByMagnetUrl:
 
 				String magnet = ((AddByMagnetUrlTask) task).getUrl();
-				DLog.d(LOG_NAME, "Adding torrent " + magnet);
+				log.d(LOG_NAME, "Adding torrent " + magnet);
 				Uri magnetUri = Uri.parse(magnet);
 				dummyTorrents.add(new Torrent(0, "torrent_magnet", magnetUri.getLastPathSegment(),
 						TorrentStatus.Queued, "/downloads/" + magnetUri.getLastPathSegment(), 0, 0, 0, 0, 0, 0, -1, 0,

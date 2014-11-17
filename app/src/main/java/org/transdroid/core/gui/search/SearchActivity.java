@@ -16,25 +16,6 @@
  */
 package org.transdroid.core.gui.search;
 
-import java.util.List;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.FragmentById;
-import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
-import org.androidannotations.annotations.SystemService;
-import org.androidannotations.annotations.ViewById;
-import org.transdroid.R;
-import org.transdroid.core.app.search.SearchHelper;
-import org.transdroid.core.app.search.SearchSite;
-import org.transdroid.core.app.settings.ApplicationSettings;
-import org.transdroid.core.app.settings.SystemSettings_;
-import org.transdroid.core.app.settings.WebsearchSetting;
-import org.transdroid.core.gui.TorrentsActivity_;
-import org.transdroid.core.gui.navigation.NavigationHelper;
-
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
@@ -53,6 +34,23 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.FragmentById;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.SystemService;
+import org.androidannotations.annotations.ViewById;
+import org.transdroid.R;
+import org.transdroid.core.app.search.SearchHelper;
+import org.transdroid.core.app.search.SearchSite;
+import org.transdroid.core.app.settings.*;
+import org.transdroid.core.gui.*;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+
+import java.util.List;
 
 /**
  * An activity that shows search results to the user (after a query was supplied by the standard Android search manager)
@@ -79,11 +77,19 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 	@SystemService
 	protected SearchManager searchManager;
 	private MenuItem searchMenu = null;
-	private SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchHistoryProvider.AUTHORITY,
-			SearchHistoryProvider.MODE);
+	private SearchRecentSuggestions suggestions =
+			new SearchRecentSuggestions(this, SearchHistoryProvider.AUTHORITY, SearchHistoryProvider.MODE);
 
 	private List<SearchSetting> searchSites;
 	private SearchSetting lastUsedSite;
+	private OnItemClickListener onSearchSiteClicked = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			lastUsedSite = searchSites.get(position);
+			refreshSearch();
+		}
+	};
 	private String lastUsedQuery;
 
 	@Override
@@ -129,16 +135,18 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 			searchsitesList.setAdapter(searchSitesAdapter);
 			searchsitesList.setOnItemClickListener(onSearchSiteClicked);
 			// Select the last used site; this also starts the search!
-			if (lastUsedPosition >= 0)
+			if (lastUsedPosition >= 0) {
 				searchsitesList.setItemChecked(lastUsedPosition, true);
+			}
 		} else {
 			// Use the action bar spinner to select sites
 			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			getActionBar().setDisplayShowTitleEnabled(false);
 			getActionBar().setListNavigationCallbacks(new SearchSettingsDropDownAdapter(this, searchSites), this);
 			// Select the last used site; this also starts the search!
-			if (lastUsedPosition >= 0)
+			if (lastUsedPosition >= 0) {
 				getActionBar().setSelectedNavigationItem(lastUsedPosition);
+			}
 		}
 
 	}
@@ -166,12 +174,14 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 		menu.findItem(R.id.action_search).setVisible(searchInstalled);
 		menu.findItem(R.id.action_refresh).setVisible(searchInstalled);
 		menu.findItem(R.id.action_downloadsearch).setVisible(!searchInstalled);
-		if (searchsitesList != null)
+		if (searchsitesList != null) {
 			searchsitesList.setVisibility(searchInstalled ? View.VISIBLE : View.GONE);
-		if (searchInstalled)
+		}
+		if (searchInstalled) {
 			getFragmentManager().beginTransaction().show(fragmentResults).commit();
-		else
+		} else {
 			getFragmentManager().beginTransaction().hide(fragmentResults).commit();
+		}
 		installmoduleText.setVisibility(searchInstalled ? View.GONE : View.VISIBLE);
 
 		return true;
@@ -186,17 +196,15 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 	private void handleIntent(Intent intent) {
 
 		lastUsedQuery = parseQuery(intent);
-		
+
 		// Is this actually a full HTTP URL? Then redirect this request to add the URL directly
-		if (lastUsedQuery != null
-				&& (lastUsedQuery.startsWith("http") || lastUsedQuery.startsWith("https")
-						|| lastUsedQuery.startsWith("magnet") || lastUsedQuery.startsWith("file"))) {
+		if (lastUsedQuery != null && (lastUsedQuery.startsWith("http") || lastUsedQuery.startsWith("https") ||
+				lastUsedQuery.startsWith("magnet") || lastUsedQuery.startsWith("file"))) {
 			// Don't broadcast this intent; we can safely assume this is intended for Transdroid only
 			Intent i = TorrentsActivity_.intent(this).get();
 			i.setData(Uri.parse(lastUsedQuery));
 			startActivity(i);
 			finish();
-			return;
 		}
 
 	}
@@ -215,15 +223,6 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 
-	private OnItemClickListener onSearchSiteClicked = new OnItemClickListener() {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			lastUsedSite = searchSites.get(position);
-			refreshSearch();
-		}
-	};
-
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		lastUsedSite = searchSites.get(itemPosition);
@@ -239,11 +238,10 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 
 		String query = null;
 		if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
-			query = intent.getStringExtra(SearchManager.QUERY);
+			query = intent.getStringExtra(SearchManager.QUERY).trim();
 		} else if (intent.getAction().equals(Intent.ACTION_SEND)) {
-			query = SendIntentHelper.cleanUpText(intent);
+			query = SendIntentHelper.cleanUpText(intent).trim();
 		}
-		query = query.trim();
 		if (query != null && query.length() > 0) {
 
 			// Remember this search query to later show as a suggestion
@@ -267,7 +265,8 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 
 			// Start a browser page directly to the requested search results
 			WebsearchSetting websearch = (WebsearchSetting) lastUsedSite;
-			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(websearch.getBaseUrl().replace("%s", lastUsedQuery))));
+			startActivity(
+					new Intent(Intent.ACTION_VIEW, Uri.parse(websearch.getBaseUrl().replace("%s", lastUsedQuery))));
 			finish();
 
 		} else if (lastUsedSite instanceof SearchSite) {
@@ -275,9 +274,8 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 			// Save the search site currently used to search for future usage
 			applicationSettings.setLastUsedSearchSite(lastUsedSite);
 			// Update the activity title (only shown on large devices)
-			getActionBar().setTitle(
-					NavigationHelper.buildCondensedFontString(getString(R.string.search_queryonsite, lastUsedQuery,
-							lastUsedSite.getName())));
+			getActionBar().setTitle(NavigationHelper.buildCondensedFontString(
+							getString(R.string.search_queryonsite, lastUsedQuery, lastUsedSite.getName())));
 			// Ask the results fragment to start a search for the specified query
 			fragmentResults.startSearch(lastUsedQuery, (SearchSite) lastUsedSite);
 

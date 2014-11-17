@@ -17,15 +17,8 @@
  */
 package org.transdroid.daemon.Aria2c;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import android.net.Uri;
+import android.text.TextUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -36,6 +29,7 @@ import org.base64.android.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
@@ -63,15 +57,20 @@ import org.transdroid.daemon.task.ResumeTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetTransferRatesTask;
-import org.transdroid.daemon.util.DLog;
 import org.transdroid.daemon.util.HttpHelper;
 
-import android.net.Uri;
-import android.text.TextUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * The daemon adapter from the Aria2 torrent client. Documentation available at
- * http://aria2.sourceforge.net/manual/en/html/aria2c.html
+ * The daemon adapter from the Aria2 torrent client. Documentation available at http://aria2.sourceforge.net/manual/en/html/aria2c.html
  * @author erickok
  */
 public class Aria2Adapter implements IDaemonAdapter {
@@ -86,137 +85,143 @@ public class Aria2Adapter implements IDaemonAdapter {
 	}
 
 	@Override
-	public DaemonTaskResult executeTask(DaemonTask task) {
+	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 
 		try {
 			JSONArray params = new JSONArray();
 
 			switch (task.getMethod()) {
-			case Retrieve:
+				case Retrieve:
 
-				// Request all torrents from server
-				// NOTE Since there is no aria2.tellAll (or something) we have to use batch requests
-				JSONArray fields = new JSONArray().put("gid").put("status").put("totalLength").put("completedLength")
-						.put("uploadLength").put("downloadSpeed").put("uploadSpeed").put("numSeeders").put("dir")
-						.put("connections").put("errorCode").put("bittorrent").put("files");
-				JSONObject active = buildRequest("aria2.tellActive", new JSONArray().put(fields));
-				JSONObject waiting = buildRequest("aria2.tellWaiting", new JSONArray().put(0).put(9999).put(fields));
-				JSONObject stopped = buildRequest("aria2.tellStopped", new JSONArray().put(0).put(9999).put(fields));
-				params.put(active).put(waiting).put(stopped);
+					// Request all torrents from server
+					// NOTE Since there is no aria2.tellAll (or something) we have to use batch requests
+					JSONArray fields =
+							new JSONArray().put("gid").put("status").put("totalLength").put("completedLength")
+									.put("uploadLength").put("downloadSpeed").put("uploadSpeed").put("numSeeders")
+									.put("dir").put("connections").put("errorCode").put("bittorrent").put("files");
+					JSONObject active = buildRequest("aria2.tellActive", new JSONArray().put(fields));
+					JSONObject waiting =
+							buildRequest("aria2.tellWaiting", new JSONArray().put(0).put(9999).put(fields));
+					JSONObject stopped =
+							buildRequest("aria2.tellStopped", new JSONArray().put(0).put(9999).put(fields));
+					params.put(active).put(waiting).put(stopped);
 
-				List<Torrent> torrents = new ArrayList<Torrent>();
-				JSONArray lists = makeRequestForArray(params.toString());
-				for (int i = 0; i < lists.length(); i++) {
-					torrents.addAll(parseJsonRetrieveTorrents(lists.getJSONObject(i).getJSONArray("result")));
-				}
-				return new RetrieveTaskSuccessResult((RetrieveTask) task, torrents, null);
+					List<Torrent> torrents = new ArrayList<Torrent>();
+					JSONArray lists = makeRequestForArray(log, params.toString());
+					for (int i = 0; i < lists.length(); i++) {
+						torrents.addAll(parseJsonRetrieveTorrents(lists.getJSONObject(i).getJSONArray("result")));
+					}
+					return new RetrieveTaskSuccessResult((RetrieveTask) task, torrents, null);
 
-			case GetTorrentDetails:
+				case GetTorrentDetails:
 
-				// Request file listing of a torrent
-				params.put(task.getTargetTorrent().getUniqueID()); // gid
-				params.put(new JSONArray().put("bittorrent").put("errorCode"));
+					// Request file listing of a torrent
+					params.put(task.getTargetTorrent().getUniqueID()); // gid
+					params.put(new JSONArray().put("bittorrent").put("errorCode"));
 
-				JSONObject dinfo = makeRequest(buildRequest("aria2.tellStatus", params).toString());
-				return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
-						parseJsonTorrentDetails(dinfo.getJSONObject("result")));
+					JSONObject dinfo = makeRequest(log, buildRequest("aria2.tellStatus", params).toString());
+					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
+							parseJsonTorrentDetails(dinfo.getJSONObject("result")));
 
-			case GetFileList:
+				case GetFileList:
 
-				// Request file listing of a torrent
-				params.put(task.getTargetTorrent().getUniqueID()); // torrent_id
+					// Request file listing of a torrent
+					params.put(task.getTargetTorrent().getUniqueID()); // torrent_id
 
-				JSONObject finfo = makeRequest(buildRequest("aria2.getFiles", params).toString());
-				return new GetFileListTaskSuccessResult((GetFileListTask) task, parseJsonFileListing(
-						finfo.getJSONArray("result"), task.getTargetTorrent()));
+					JSONObject finfo = makeRequest(log, buildRequest("aria2.getFiles", params).toString());
+					return new GetFileListTaskSuccessResult((GetFileListTask) task,
+							parseJsonFileListing(finfo.getJSONArray("result"), task.getTargetTorrent()));
 
-			case AddByFile:
+				case AddByFile:
 
-				// Encode the .torrent file's data
-				String file = ((AddByFileTask) task).getFile();
-				InputStream in = new Base64.InputStream(new FileInputStream(new File(URI.create(file))), Base64.ENCODE);
-				StringWriter writer = new StringWriter();
-				int c;
-				while ((c = in.read()) != -1) {
-					writer.write(c);
-				}
-				in.close();
+					// Encode the .torrent file's data
+					String file = ((AddByFileTask) task).getFile();
+					InputStream in =
+							new Base64.InputStream(new FileInputStream(new File(URI.create(file))), Base64.ENCODE);
+					StringWriter writer = new StringWriter();
+					int c;
+					while ((c = in.read()) != -1) {
+						writer.write(c);
+					}
+					in.close();
 
-				// Request to add a torrent by local .torrent file
-				params.put(writer.toString());
-				makeRequest(buildRequest("aria2.addTorrent", params).toString());
-				return new DaemonTaskSuccessResult(task);
+					// Request to add a torrent by local .torrent file
+					params.put(writer.toString());
+					makeRequest(log, buildRequest("aria2.addTorrent", params).toString());
+					return new DaemonTaskSuccessResult(task);
 
-			case AddByUrl:
+				case AddByUrl:
 
-				// Request to add a torrent by URL
-				String url = ((AddByUrlTask) task).getUrl();
-				params.put(new JSONArray().put(url));
+					// Request to add a torrent by URL
+					String url = ((AddByUrlTask) task).getUrl();
+					params.put(new JSONArray().put(url));
 
-				makeRequest(buildRequest("aria2.addUri", params).toString());
-				return new DaemonTaskSuccessResult(task);
+					makeRequest(log, buildRequest("aria2.addUri", params).toString());
+					return new DaemonTaskSuccessResult(task);
 
-			case AddByMagnetUrl:
+				case AddByMagnetUrl:
 
-				// Request to add a magnet link by URL
-				String magnet = ((AddByMagnetUrlTask) task).getUrl();
-				params.put(new JSONArray().put(magnet));
+					// Request to add a magnet link by URL
+					String magnet = ((AddByMagnetUrlTask) task).getUrl();
+					params.put(new JSONArray().put(magnet));
 
-				makeRequest(buildRequest("aria2.addUri", params).toString());
-				return new DaemonTaskSuccessResult(task);
+					makeRequest(log, buildRequest("aria2.addUri", params).toString());
+					return new DaemonTaskSuccessResult(task);
 
-			case Remove:
+				case Remove:
 
-				// Remove a torrent
-				RemoveTask removeTask = (RemoveTask) task;
-				makeRequest(buildRequest(removeTask.includingData() ? "aria2.removeDownloadResult" : "aria2.remove",
-						params.put(removeTask.getTargetTorrent().getUniqueID())).toString());
-				return new DaemonTaskSuccessResult(task);
+					// Remove a torrent
+					RemoveTask removeTask = (RemoveTask) task;
+					makeRequest(log,
+							buildRequest(removeTask.includingData() ? "aria2.removeDownloadResult" : "aria2.remove",
+									params.put(removeTask.getTargetTorrent().getUniqueID())).toString());
+					return new DaemonTaskSuccessResult(task);
 
-			case Pause:
+				case Pause:
 
-				// Pause a torrent
-				PauseTask pauseTask = (PauseTask) task;
-				makeRequest(buildRequest("aria2.pause", params.put(pauseTask.getTargetTorrent().getUniqueID()))
-						.toString());
-				return new DaemonTaskSuccessResult(task);
+					// Pause a torrent
+					PauseTask pauseTask = (PauseTask) task;
+					makeRequest(log, buildRequest("aria2.pause", params.put(pauseTask.getTargetTorrent().getUniqueID()))
+							.toString());
+					return new DaemonTaskSuccessResult(task);
 
-			case PauseAll:
+				case PauseAll:
 
-				// Resume all torrents
-				makeRequest(buildRequest("aria2.pauseAll", null).toString());
-				return new DaemonTaskSuccessResult(task);
+					// Resume all torrents
+					makeRequest(log, buildRequest("aria2.pauseAll", null).toString());
+					return new DaemonTaskSuccessResult(task);
 
-			case Resume:
+				case Resume:
 
-				// Resume a torrent
-				ResumeTask resumeTask = (ResumeTask) task;
-				makeRequest(buildRequest("aria2.unpause", params.put(resumeTask.getTargetTorrent().getUniqueID()))
-						.toString());
-				return new DaemonTaskSuccessResult(task);
+					// Resume a torrent
+					ResumeTask resumeTask = (ResumeTask) task;
+					makeRequest(log,
+							buildRequest("aria2.unpause", params.put(resumeTask.getTargetTorrent().getUniqueID()))
+									.toString());
+					return new DaemonTaskSuccessResult(task);
 
-			case ResumeAll:
+				case ResumeAll:
 
-				// Resume all torrents
-				makeRequest(buildRequest("aria2.unpauseAll", null).toString());
-				return new DaemonTaskSuccessResult(task);
+					// Resume all torrents
+					makeRequest(log, buildRequest("aria2.unpauseAll", null).toString());
+					return new DaemonTaskSuccessResult(task);
 
-			case SetTransferRates:
+				case SetTransferRates:
 
-				// Request to set the maximum transfer rates
-				SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
-				JSONObject options = new JSONObject();
-				options.put("max-overall-download-limit", (ratesTask.getDownloadRate() == null ? -1 : ratesTask
-						.getDownloadRate().intValue()));
-				options.put("max-overall-upload-limit", (ratesTask.getUploadRate() == null ? -1 : ratesTask
-						.getUploadRate().intValue()));
+					// Request to set the maximum transfer rates
+					SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
+					JSONObject options = new JSONObject();
+					options.put("max-overall-download-limit",
+							(ratesTask.getDownloadRate() == null ? -1 : ratesTask.getDownloadRate()));
+					options.put("max-overall-upload-limit",
+							(ratesTask.getUploadRate() == null ? -1 : ratesTask.getUploadRate()));
 
-				makeRequest(buildRequest("aria2.changeGlobalOption", params.put(options)).toString());
-				return new DaemonTaskSuccessResult(task);
+					makeRequest(log, buildRequest("aria2.changeGlobalOption", params.put(options)).toString());
+					return new DaemonTaskSuccessResult(task);
 
-			default:
-				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
-						task.getMethod() + " is not supported by " + getType()));
+				default:
+					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+							task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (JSONException e) {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
@@ -252,27 +257,27 @@ public class Aria2Adapter implements IDaemonAdapter {
 
 	}
 
-	private synchronized JSONObject makeRequest(String data) throws DaemonException {
-		String raw = makeRawRequest(data);
+	private synchronized JSONObject makeRequest(Log log, String data) throws DaemonException {
+		String raw = makeRawRequest(log, data);
 		try {
 			return new JSONObject(raw);
 		} catch (JSONException e) {
-			DLog.d(LOG_NAME, "Error: " + e.toString());
+			log.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
 		}
 	}
 
-	private synchronized JSONArray makeRequestForArray(String data) throws DaemonException {
-		String raw = makeRawRequest(data);
+	private synchronized JSONArray makeRequestForArray(Log log, String data) throws DaemonException {
+		String raw = makeRawRequest(log, data);
 		try {
 			return new JSONArray(raw);
 		} catch (JSONException e) {
-			DLog.d(LOG_NAME, "Error: " + e.toString());
+			log.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
 		}
 	}
 
-	private synchronized String makeRawRequest(String data) throws DaemonException {
+	private synchronized String makeRawRequest(Log log, String data) throws DaemonException {
 
 		try {
 
@@ -284,8 +289,9 @@ public class Aria2Adapter implements IDaemonAdapter {
 			}
 
 			// Set POST URL and data
-			String url = (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":"
-					+ settings.getPort() + (settings.getFolder() == null ? "" : settings.getFolder()) + "/jsonrpc";
+			String url =
+					(settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() +
+							(settings.getFolder() == null ? "" : settings.getFolder()) + "/jsonrpc";
 			HttpPost httppost = new HttpPost(url);
 			httppost.setEntity(new StringEntity(data));
 			httppost.setHeader("Content-Type", "application/json");
@@ -295,22 +301,22 @@ public class Aria2Adapter implements IDaemonAdapter {
 			HttpResponse response = httpclient.execute(httppost);
 
 			HttpEntity entity = response.getEntity();
-			if (entity == null)
+			if (entity == null) {
 				throw new DaemonException(ExceptionType.UnexpectedResponse, "No HTTP entity in response object.");
+			}
 
 			// Read JSON response
 			InputStream instream = entity.getContent();
 			String result = HttpHelper.convertStreamToString(instream);
 			instream.close();
 
-			DLog.d(LOG_NAME,
-					"Success: "
-							+ (result.length() > 300 ? result.substring(0, 300) + "... (" + result.length() + " chars)"
-									: result));
+			log.d(LOG_NAME, "Success: " +
+					(result.length() > 300 ? result.substring(0, 300) + "... (" + result.length() + " chars)" :
+							result));
 			return result;
 
 		} catch (Exception e) {
-			DLog.d(LOG_NAME, "Error: " + e.toString());
+			log.d(LOG_NAME, "Error: " + e.toString());
 			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
 		}
 
@@ -332,23 +338,26 @@ public class Aria2Adapter implements IDaemonAdapter {
 			int errorCode = tor.optInt("errorCode", 0);
 			String error = errorCode > 0 ? convertAriaError(errorCode) : null;
 			String name = null;
-			JSONObject bittorrent = null;
+			JSONObject bittorrent;
 			if (tor.has("bittorrent")) {
 				// Get name form the bittorrent info object
 				bittorrent = tor.getJSONObject("bittorrent");
-				if (bittorrent.has("info"))
+				if (bittorrent.has("info")) {
 					name = bittorrent.getJSONObject("info").getString("name");
+				}
 			} else if (tor.has("files")) {
 				// Get name from the first included file we can find
 				JSONArray files = tor.getJSONArray("files");
 				if (files.length() > 0) {
 					name = Uri.parse(files.getJSONObject(0).getString("path")).getLastPathSegment();
-					if (name == null)
+					if (name == null) {
 						name = files.getJSONObject(0).getString("path");
+					}
 				}
 			}
-			if (name == null)
+			if (name == null) {
 				name = tor.getString("gid"); // Fallback name
+			}
 			// @formatter:off
 			torrents.add(new Torrent(
 					j, 
@@ -388,11 +397,11 @@ public class Aria2Adapter implements IDaemonAdapter {
 
 			JSONObject file = response.getJSONObject(j);
 			// Add the parsed torrent to the list
-			// @formatter:off
 			String rel = file.getString("path");
 			if (rel.startsWith(torrent.getLocationDir())) {
 				rel = rel.substring(torrent.getLocationDir().length());
 			}
+			// @formatter:off
 			files.add(new TorrentFile(
 					Integer.toString(file.getInt("index")), 
 					rel, 
@@ -415,8 +424,9 @@ public class Aria2Adapter implements IDaemonAdapter {
 		List<String> errors = new ArrayList<String>();
 
 		int error = response.optInt("errorCode", 0);
-		if (error > 0)
+		if (error > 0) {
 			errors.add(convertAriaError(error));
+		}
 
 		if (response.has("bittorrent")) {
 			JSONObject bittorrent = response.getJSONObject("bittorrent");
@@ -454,42 +464,42 @@ public class Aria2Adapter implements IDaemonAdapter {
 		// Aria2 sends an exit code as error (http://aria2.sourceforge.net/manual/en/html/aria2c.html#id1)
 		String error = "Aria error #" + Integer.toString(errorCode);
 		switch (errorCode) {
-		case 3:
-		case 4:
-			return error + ": Resource was not found";
-		case 5:
-			return error + ": Aborted because download speed was too slow";
-		case 6:
-			return error + ": Network problem occurred";
-		case 8:
-			return error + ": Remote server did not support resume when resume was required to complete download";
-		case 9:
-			return error + ": There was not enough disk space available";
-		case 11:
-		case 12:
-			return error + ": Duplicate file or info hash download";
-		case 15:
-		case 16:
-			return error + ": Aria2 could not create new or open or truncate existing file";
-		case 17:
-		case 18:
-		case 19:
-			return error + ": File I/O error occurred";
-		case 20:
-		case 27:
-			return error + ": Aria2 could not parse Magnet URI or Metalink document";
-		case 21:
-			return error + ": FTP command failed";
-		case 22:
-			return error + ": HTTP response header was bad or unexpected";
-		case 23:
-			return error + ": Too many redirects occurred";
-		case 24:
-			return error + ": HTTP authorization failed";
-		case 26:
-			return error + ": \".torrent\" file is corrupted or missing information that aria2 needs";
-		default:
-			return error;
+			case 3:
+			case 4:
+				return error + ": Resource was not found";
+			case 5:
+				return error + ": Aborted because download speed was too slow";
+			case 6:
+				return error + ": Network problem occurred";
+			case 8:
+				return error + ": Remote server did not support resume when resume was required to complete download";
+			case 9:
+				return error + ": There was not enough disk space available";
+			case 11:
+			case 12:
+				return error + ": Duplicate file or info hash download";
+			case 15:
+			case 16:
+				return error + ": Aria2 could not create new or open or truncate existing file";
+			case 17:
+			case 18:
+			case 19:
+				return error + ": File I/O error occurred";
+			case 20:
+			case 27:
+				return error + ": Aria2 could not parse Magnet URI or Metalink document";
+			case 21:
+				return error + ": FTP command failed";
+			case 22:
+				return error + ": HTTP response header was bad or unexpected";
+			case 23:
+				return error + ": Too many redirects occurred";
+			case 24:
+				return error + ": HTTP authorization failed";
+			case 26:
+				return error + ": \".torrent\" file is corrupted or missing information that aria2 needs";
+			default:
+				return error;
 		}
 	}
 

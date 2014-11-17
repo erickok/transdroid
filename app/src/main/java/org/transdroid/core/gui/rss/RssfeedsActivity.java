@@ -49,6 +49,8 @@ public class RssfeedsActivity extends Activity {
 
 	// Settings and local data
 	@Bean
+	protected Log log;
+	@Bean
 	protected ApplicationSettings applicationSettings;
 	protected List<RssfeedLoader> loaders;
 
@@ -116,7 +118,7 @@ public class RssfeedsActivity extends Activity {
 		} catch (Exception e) {
 			// Catch any error that may occurred and register this failure
 			handleRssfeedResult(loader, null, true);
-			Log.i(this, "RSS feed " + loader.getSetting().getUrl() + " error: " + e.toString());
+			log.i(this, "RSS feed " + loader.getSetting().getUrl() + " error: " + e.toString());
 		}
 
 	}
@@ -182,8 +184,7 @@ public class RssfeedsActivity extends Activity {
 			if (TextUtils.isEmpty(name))
 				name = loader.getSetting().getName();
 			if (TextUtils.isEmpty(name) && !TextUtils.isEmpty(loader.getSetting().getUrl())) {
-				String host = Uri.parse(loader.getSetting().getUrl()).getHost();
-				name = host;
+				name = Uri.parse(loader.getSetting().getUrl()).getHost();
 			}
 			RssitemsActivity_.intent(this).rssfeed(loader.getChannel()).rssfeedName(name).start();
 

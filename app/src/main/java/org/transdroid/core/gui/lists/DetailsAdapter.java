@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.transdroid.R;
-import org.transdroid.core.gui.navigation.FilterSeparatorView_;
+import org.transdroid.core.gui.navigation.*;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentFile;
 

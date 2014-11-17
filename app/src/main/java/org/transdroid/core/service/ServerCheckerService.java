@@ -55,6 +55,8 @@ import android.os.Build;
 public class ServerCheckerService extends IntentService {
 
 	@Bean
+	protected Log log;
+	@Bean
 	protected ConnectivityHelper connectivityHelper;
 	@Bean
 	protected NotificationSettings notificationSettings;
@@ -73,7 +75,7 @@ public class ServerCheckerService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 
 		if (!connectivityHelper.shouldPerformBackgroundActions() || !notificationSettings.isEnabledForTorrents()) {
-			Log.d(this,
+			log.d(this,
 					"Skip the server checker service, as background data is disabled, the service is disabled or we are not connected.");
 			return;
 		}
@@ -92,13 +94,13 @@ public class ServerCheckerService extends IntentService {
 
 			// Synchronously retrieve torrents listing
 			IDaemonAdapter adapter = server.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
-			DaemonTaskResult result = RetrieveTask.create(adapter).execute();
+			DaemonTaskResult result = RetrieveTask.create(adapter).execute(log);
 			if (!(result instanceof RetrieveTaskSuccessResult)) {
 				// Cannot retrieve torrents at this time
 				continue;
 			}
 			List<Torrent> retrieved = ((RetrieveTaskSuccessResult) result).getTorrents();
-			Log.d(this, server.getName() + ": Retrieved torrent listing");
+			log.d(this, server.getName() + ": Retrieved torrent listing");
 
 			// Check for differences between the last and the current stats
 			JSONArray currentStats = new JSONArray();
@@ -133,7 +135,7 @@ public class ServerCheckerService extends IntentService {
 			applicationSettings.setServerLastStats(server, currentStats);
 
 			// Notify on new and now-done torrents for this server
-			Log.d(this, server.getName() + ": " + newTorrents.size() + " new torrents, " + doneTorrents.size()
+			log.d(this, server.getName() + ": " + newTorrents.size() + " new torrents, " + doneTorrents.size()
 					+ " newly finished torrents.");
 			Intent i = new Intent(this, TorrentsActivity_.class);
 			i.putExtra("org.transdroid.START_SERVER", server.getOrder());

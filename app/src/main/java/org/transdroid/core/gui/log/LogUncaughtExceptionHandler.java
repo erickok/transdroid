@@ -33,14 +33,15 @@ public class LogUncaughtExceptionHandler implements Thread.UncaughtExceptionHand
 
 		// Write exception stack trace to the log
 		String prefix = "E: ";
-		Log.e(context, prefix + ex.toString());
+		Log_ log = Log_.getInstance_(context);
+		log.e(this, prefix + ex.toString());
 		if (ex.getCause() != null) {
 			for (StackTraceElement e : ex.getCause().getStackTrace()) {
-				Log.e(context, prefix + e.toString());
+				log.e(this, prefix + e.toString());
 			}
 		}
 		for (StackTraceElement e : ex.getStackTrace()) {
-			Log.e(context, prefix + e.toString());
+			log.e(this, prefix + e.toString());
 		}
 
 		// Rely on default Android exception handling

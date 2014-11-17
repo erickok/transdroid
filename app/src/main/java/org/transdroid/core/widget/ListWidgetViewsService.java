@@ -16,16 +16,26 @@
  */
 package org.transdroid.core.widget;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import android.annotation.TargetApi;
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.view.View;
+import android.widget.RemoteViews;
+import android.widget.RemoteViewsService;
 
 import org.androidannotations.annotations.EService;
 import org.transdroid.R;
-import org.transdroid.core.app.settings.*;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ApplicationSettings_;
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.SystemSettings;
+import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
-import org.transdroid.core.service.*;
+import org.transdroid.core.gui.log.Log_;
+import org.transdroid.core.service.ConnectivityHelper_;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
@@ -35,14 +45,9 @@ import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.util.FileSizeConverter;
 
-import android.annotation.TargetApi;
-import android.appwidget.AppWidgetManager;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.view.View;
-import android.widget.RemoteViews;
-import android.widget.RemoteViewsService;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A service for the list widget to update the remote views that a list widget shows, by getting the torrents from the
@@ -65,13 +70,15 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	private final Context context;
 	private final int appWidgetId;
+	private final Log log;
 	private List<Torrent> torrents = null;
 	private ListWidgetConfig config = null;
 
 	public WidgetViewsFactory(Context applicationContext, Intent intent) {
 		this.context = applicationContext;
-		this.appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-				AppWidgetManager.INVALID_APPWIDGET_ID);
+		this.appWidgetId =
+				intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+		this.log = Log_.getInstance_(applicationContext);
 	}
 
 	@Override
@@ -86,27 +93,30 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		ApplicationSettings settings = ApplicationSettings_.getInstance_(context);
 		config = settings.getWidgetConfig(appWidgetId);
 		if (config == null || config.getServerId() < 0) {
-			Log.e(context, "Looking for widget data while the widget wasn't yet configured");
+			log.e(context, "Looking for widget data while the widget wasn't yet configured");
 			return;
 		}
 		ServerSetting server = settings.getServerSetting(config.getServerId());
 		if (server == null) {
 			// TODO: Show error text some how in the remote view, perhaps via the EmptyView's text?
-			Log.e(context, "The server for which this widget was created no longer exists");
-			if (torrents != null)
+			log.e(context, "The server for which this widget was created no longer exists");
+			if (torrents != null) {
 				torrents.clear();
+			}
 			return;
 		}
 
 		// Load the torrents; synchronously
-		IDaemonAdapter connection = server.createServerAdapter(ConnectivityHelper_.getInstance_(context)
-				.getConnectedNetworkName(), context);
-		DaemonTaskResult result = RetrieveTask.create(connection).execute();
+		IDaemonAdapter connection =
+				server.createServerAdapter(ConnectivityHelper_.getInstance_(context).getConnectedNetworkName(),
+						context);
+		DaemonTaskResult result = RetrieveTask.create(connection).execute(log);
 		if (!(result instanceof RetrieveTaskSuccessResult)) {
 			// TODO: Show error text somehow in the remote view, perhaps via the EmptyView's text?
-			Log.e(context, "The torrents could not be retrieved at this time; probably a connection issue");
-			if (torrents != null)
+			log.e(context, "The torrents could not be retrieved at this time; probably a connection issue");
+			if (torrents != null) {
 				torrents.clear();
+			}
 			return;
 		}
 
@@ -115,8 +125,10 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>();
 		List<Torrent> allTorrents = ((RetrieveTaskSuccessResult) result).getTorrents();
 		for (Torrent torrent : allTorrents) {
-			if (config.getStatusType().getFilterItem(context).matches(torrent, systemSettings.treatDormantAsInactive()))
+			if (config.getStatusType().getFilterItem(context)
+					.matches(torrent, systemSettings.treatDormantAsInactive())) {
 				filteredTorrents.add(torrent);
+			}
 		}
 		if (filteredTorrents.size() > 0) {
 			// Only sort when there are actually torrents left after filtering
@@ -129,7 +141,7 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		// If the user asked to show the server status statistics, we need to update the widget remote views again
 		RemoteViews rv = ListWidgetProvider.buildRemoteViews(context, appWidgetId, config);
 		if (config.shouldShowStatusView()) {
-			
+
 			// Update the server status count and speeds in the 'action bar'
 			int downcount = 0, upcount = 0, downspeed = 0, upspeed = 0;
 			for (Torrent torrent : torrents) {
@@ -150,7 +162,7 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			rv.setTextViewText(R.id.upspeed_text, FileSizeConverter.getSize(upspeed) + "/s");
 
 			AppWidgetManager.getInstance(context.getApplicationContext()).updateAppWidget(appWidgetId, rv);
-			
+
 		}
 
 	}
@@ -170,21 +182,21 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		rv.setTextViewText(R.id.ratio_text, local.getProgressEtaRatioText(context.getResources()));
 		int statusColour;
 		switch (torrent.getStatusCode()) {
-		case Downloading:
-			statusColour = R.color.torrent_downloading;
-			break;
-		case Paused:
-			statusColour = R.color.torrent_paused;
-			break;
-		case Seeding:
-			statusColour = R.color.torrent_seeding;
-			break;
-		case Error:
-			statusColour = R.color.torrent_error;
-			break;
-		default: // Checking, Waiting, Queued, Unknown
-			statusColour = R.color.torrent_other;
-			break;
+			case Downloading:
+				statusColour = R.color.torrent_downloading;
+				break;
+			case Paused:
+				statusColour = R.color.torrent_paused;
+				break;
+			case Seeding:
+				statusColour = R.color.torrent_seeding;
+				break;
+			case Error:
+				statusColour = R.color.torrent_error;
+				break;
+			default: // Checking, Waiting, Queued, Unknown
+				statusColour = R.color.torrent_other;
+				break;
 		}
 		rv.setInt(R.id.status_view, "setBackgroundColor", context.getResources().getColor(statusColour));
 		Intent startIntent = new Intent();
@@ -203,8 +215,9 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public void onDestroy() {
-		if (torrents != null)
+		if (torrents != null) {
 			torrents.clear();
+		}
 		torrents = null;
 	}
 
@@ -220,8 +233,9 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public int getCount() {
-		if (torrents == null)
+		if (torrents == null) {
 			return 0;
+		}
 		return torrents.size();
 	}
 

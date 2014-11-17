@@ -16,15 +16,6 @@
  */
 package org.transdroid.core.widget;
 
-import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EReceiver;
-import org.transdroid.R;
-import org.transdroid.core.app.settings.*;
-import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.gui.*;
-import org.transdroid.core.gui.log.Log;
-import org.transdroid.core.service.ControlService;
-
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -33,7 +24,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
+
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EReceiver;
+import org.transdroid.R;
+import org.transdroid.core.app.settings.*;
+import org.transdroid.core.gui.*;
+import org.transdroid.core.gui.log.*;
+import org.transdroid.core.service.ControlService;
 
 /**
  * The provider of a list-style Transdroid widget, which controls the general loading and (touch) event handling. The
@@ -52,49 +52,6 @@ public class ListWidgetProvider extends AppWidgetProvider {
 	@Bean
 	protected ApplicationSettings applicationSettings;
 
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		super.onReceive(context, intent);
-		if (intent == null)
-			return;
-
-		int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-
-		// Refresh a specific app widget
-		if (intent.hasExtra(EXTRA_REFRESH)) {
-			// Manually requested a refresh for the app widget of which the ID was supplied
-			RemoteViews views = buildRemoteViews(context, appWidgetId, applicationSettings.getWidgetConfig(appWidgetId));
-			if (views != null) {
-				AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views);
-				AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
-			}
-			return;
-		}
-
-		// No refresh: this is a control intent: copy the action and EXTRA_APPWIDGET_ID to start the control service
-		if (intent.getAction().startsWith("org.transdroid.control.")) {
-			Intent action = new Intent(intent.getAction());
-			action.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-			context.startService(action);
-		}
-	}
-
-	@Override
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-		for (int appWidgetId : appWidgetIds) {
-			appWidgetManager.updateAppWidget(appWidgetId,
-					buildRemoteViews(context, appWidgetId, applicationSettings.getWidgetConfig(appWidgetId)));
-			appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
-		}
-	}
-
-	@Override
-	public void onDeleted(Context context, int[] appWidgetIds) {
-		for (int appWidgetId : appWidgetIds) {
-			applicationSettings.removeWidgetConfig(appWidgetId);
-		}
-	}
-
 	/**
 	 * Loads and sets up the layout for some specific app widget given the user's widget settings. Note that the views
 	 * for the list view rows are loaded separately in the {@link WidgetViewsFactory}.
@@ -107,12 +64,14 @@ public class ListWidgetProvider extends AppWidgetProvider {
 	public static RemoteViews buildRemoteViews(Context context, int appWidgetId, ListWidgetConfig config) {
 
 		// Does the server to show and its widget settings actually still exist?
-		if (context == null || config == null)
+		if (context == null || config == null) {
 			return null;
+		}
 		ApplicationSettings appSettings = ApplicationSettings_.getInstance_(context);
 		if (config.getServerId() < 0 || config.getServerId() > appSettings.getMaxOfAllServers()) {
-			Log.e(context, "Tried to set up widget " + appWidgetId + " but the bound server ID " + config.getServerId()
-					+ " no longer exists.");
+			Log_.getInstance_(context).e("ListWidgetProvider",
+					"Tried to set up widget " + appWidgetId + " but the bound server ID " + config.getServerId() +
+							" no longer exists.");
 			return null;
 		}
 
@@ -137,7 +96,7 @@ public class ListWidgetProvider extends AppWidgetProvider {
 		ServerSetting server = appSettings.getServerSetting(config.getServerId());
 		rv.setTextViewText(R.id.server_text, server.getName());
 		rv.setTextViewText(R.id.filter_text, config.getStatusType().getFilterItem(context).getName());
-		
+
 		// Set up the START_SERVER intent for 'action bar' clicks to start Transdroid normally
 		Intent start = new Intent(context, TorrentsActivity_.class);
 		// start.setData(Uri.parse("intent://widget/" + appWidgetId + "/start/" + config.getServerId()));
@@ -174,6 +133,48 @@ public class ListWidgetProvider extends AppWidgetProvider {
 
 		return rv;
 
+	}
+
+	@Override
+	public void onReceive(Context context, @NonNull Intent intent) {
+		super.onReceive(context, intent);
+
+		int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+
+		// Refresh a specific app widget
+		if (intent.hasExtra(EXTRA_REFRESH)) {
+			// Manually requested a refresh for the app widget of which the ID was supplied
+			RemoteViews views =
+					buildRemoteViews(context, appWidgetId, applicationSettings.getWidgetConfig(appWidgetId));
+			if (views != null) {
+				AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views);
+				AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
+			}
+			return;
+		}
+
+		// No refresh: this is a control intent: copy the action and EXTRA_APPWIDGET_ID to start the control service
+		if (intent.getAction().startsWith("org.transdroid.control.")) {
+			Intent action = new Intent(intent.getAction());
+			action.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+			context.startService(action);
+		}
+	}
+
+	@Override
+	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+		for (int appWidgetId : appWidgetIds) {
+			appWidgetManager.updateAppWidget(appWidgetId,
+					buildRemoteViews(context, appWidgetId, applicationSettings.getWidgetConfig(appWidgetId)));
+			appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
+		}
+	}
+
+	@Override
+	public void onDeleted(Context context, int[] appWidgetIds) {
+		for (int appWidgetId : appWidgetIds) {
+			applicationSettings.removeWidgetConfig(appWidgetId);
+		}
 	}
 
 }

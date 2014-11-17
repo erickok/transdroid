@@ -119,8 +119,8 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		extraPass.setEnabled(Daemon.supportsExtraPassword(daemonType));
 		extraPass.setTitle(getString(daemonType == Daemon.Deluge ? R.string.pref_extrapassword : R.string.pref_secret));
 		extraPass.setDialogTitle(extraPass.getTitle());
-		folder.setEnabled(daemonType == null ? false : Daemon.supportsCustomFolder(daemonType));
-		downloadDir.setEnabled(daemonType == null ? false : Daemon.needsManualPathSpecified(daemonType));
+		folder.setEnabled(daemonType != null && Daemon.supportsCustomFolder(daemonType));
+		downloadDir.setEnabled(daemonType != null && Daemon.needsManualPathSpecified(daemonType));
 		// sslTrustKey.setEnabled(sslValue && !sslTAValue);
 
 		// Adjust title texts accordingly

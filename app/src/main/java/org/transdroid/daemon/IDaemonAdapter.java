@@ -17,6 +17,7 @@
  */
  package org.transdroid.daemon;
 
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.task.DaemonTask;
 import org.transdroid.daemon.task.DaemonTaskResult;
 
@@ -29,7 +30,7 @@ import org.transdroid.daemon.task.DaemonTaskResult;
  */
 public interface IDaemonAdapter {
 
-	public DaemonTaskResult executeTask(DaemonTask task);
+	public DaemonTaskResult executeTask(Log log, DaemonTask task);
 
 	public Daemon getType();
 

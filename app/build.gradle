@@ -49,6 +49,7 @@ dependencies {
     compile 'com.github.chrisbanes.actionbarpulltorefresh:library:0.8'
     compile 'de.keyboardsurfer.android.widget:crouton:1.8.+'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.+'
+    compile 'com.android.support:support-annotations:20.0.0'
     apt "org.androidannotations:androidannotations:3.1"
 }
 

@@ -17,13 +17,6 @@
  */
 package org.transdroid.daemon.Synology;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -31,6 +24,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
@@ -55,12 +49,17 @@ import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.Collections2;
-import org.transdroid.daemon.util.DLog;
 import org.transdroid.daemon.util.HttpHelper;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The daemon adapter from the Synology Download Station torrent client.
- *
  */
 public class SynologyAdapter implements IDaemonAdapter {
 
@@ -76,47 +75,48 @@ public class SynologyAdapter implements IDaemonAdapter {
 	}
 
 	@Override
-	public DaemonTaskResult executeTask(DaemonTask task) {
+	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 		String tid;
 		try {
 			switch (task.getMethod()) {
 				case Retrieve:
-					return new RetrieveTaskSuccessResult((RetrieveTask) task, tasksList(), null);
+					return new RetrieveTaskSuccessResult((RetrieveTask) task, tasksList(log), null);
 				case GetStats:
 					return null;
 				case GetTorrentDetails:
 					tid = task.getTargetTorrent().getUniqueID();
-					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, torrentDetails(tid));
+					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
+							torrentDetails(log, tid));
 				case GetFileList:
 					tid = task.getTargetTorrent().getUniqueID();
-					return new GetFileListTaskSuccessResult((GetFileListTask) task, fileList(tid));
+					return new GetFileListTaskSuccessResult((GetFileListTask) task, fileList(log, tid));
 				case AddByFile:
 					return null;
 				case AddByUrl:
-					String url = ((AddByUrlTask)task).getUrl();
-					createTask(url);
+					String url = ((AddByUrlTask) task).getUrl();
+					createTask(log, url);
 					return new DaemonTaskSuccessResult(task);
 				case AddByMagnetUrl:
-					String magnet = ((AddByMagnetUrlTask)task).getUrl();
-					createTask(magnet);
+					String magnet = ((AddByMagnetUrlTask) task).getUrl();
+					createTask(log, magnet);
 					return new DaemonTaskSuccessResult(task);
 				case Remove:
 					tid = task.getTargetTorrent().getUniqueID();
-					removeTask(tid);
+					removeTask(log, tid);
 					return new DaemonTaskSuccessResult(task);
 				case Pause:
 					tid = task.getTargetTorrent().getUniqueID();
-					pauseTask(tid);
+					pauseTask(log, tid);
 					return new DaemonTaskSuccessResult(task);
 				case PauseAll:
-					pauseAllTasks();
+					pauseAllTasks(log);
 					return new DaemonTaskSuccessResult(task);
 				case Resume:
 					tid = task.getTargetTorrent().getUniqueID();
-					resumeTask(tid);
+					resumeTask(log, tid);
 					return new DaemonTaskSuccessResult(task);
 				case ResumeAll:
-					resumeAllTasks();
+					resumeAllTasks(log);
 					return new DaemonTaskSuccessResult(task);
 				case SetDownloadLocation:
 					return null;
@@ -124,9 +124,9 @@ public class SynologyAdapter implements IDaemonAdapter {
 					return null;
 				case SetTransferRates:
 					SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
-					int uploadRate = ratesTask.getUploadRate() == null ? 0 : ratesTask.getUploadRate().intValue();
-					int downloadRate = ratesTask.getDownloadRate() == null ? 0 : ratesTask.getDownloadRate().intValue();
-					setTransferRates(uploadRate, downloadRate);
+					int uploadRate = ratesTask.getUploadRate() == null ? 0 : ratesTask.getUploadRate();
+					int downloadRate = ratesTask.getDownloadRate() == null ? 0 : ratesTask.getDownloadRate();
+					setTransferRates(log, uploadRate, downloadRate);
 					return new DaemonTaskSuccessResult(task);
 				case SetAlternativeMode:
 				default:
@@ -149,84 +149,87 @@ public class SynologyAdapter implements IDaemonAdapter {
 
 	// Synology API
 
-	private String login() throws DaemonException {
-		DLog.d(LOG_NAME, "login()");
+	private String login(Log log) throws DaemonException {
+		log.d(LOG_NAME, "login()");
 		try {
-			return new SynoRequest(
-					"auth.cgi",
-					"SYNO.API.Auth",
-					"2"
-			).get("&method=login&account=" + settings.getUsername() + "&passwd=" + settings.getPassword() + "&session=DownloadStation&format=sid"
-			).getData().getString("sid");
+			return new SynoRequest("auth.cgi", "SYNO.API.Auth", "2")
+					.get("&method=login&account=" + settings.getUsername() + "&passwd=" + settings.getPassword() +
+							"&session=DownloadStation&format=sid").getData(log).getString("sid");
 		} catch (JSONException e) {
 			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
 		}
 	}
 
-	private void setTransferRates(int uploadRate, int downloadRate) throws DaemonException {
-		authGet("SYNO.DownloadStation.Info", "1", "DownloadStation/info.cgi",
-				"&method=setserverconfig&bt_max_upload=" + uploadRate + "&bt_max_download=" + downloadRate).ensureSuccess();
+	private void setTransferRates(Log log, int uploadRate, int downloadRate) throws DaemonException {
+		authGet(log, "SYNO.DownloadStation.Info", "1", "DownloadStation/info.cgi",
+				"&method=setserverconfig&bt_max_upload=" + uploadRate + "&bt_max_download=" + downloadRate)
+				.ensureSuccess(log);
 	}
 
-	private void createTask(String uri) throws DaemonException {
+	private void createTask(Log log, String uri) throws DaemonException {
 		try {
-			authGet("SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi", "&method=create&uri=" + URLEncoder.encode(uri, "UTF-8")).ensureSuccess();
+			authGet(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
+					"&method=create&uri=" + URLEncoder.encode(uri, "UTF-8")).ensureSuccess(log);
 		} catch (UnsupportedEncodingException e) {
 			// Never happens
 			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
 		}
 	}
 
-	private void removeTask(String tid) throws DaemonException {
+	private void removeTask(Log log, String tid) throws DaemonException {
 		List<String> tids = new ArrayList<String>();
 		tids.add(tid);
-		removeTasks(tids);
+		removeTasks(log, tids);
 	}
 
-	private void pauseTask(String tid) throws DaemonException {
+	private void pauseTask(Log log, String tid) throws DaemonException {
 		List<String> tids = new ArrayList<String>();
 		tids.add(tid);
-		pauseTasks(tids);
+		pauseTasks(log, tids);
 	}
 
-	private void resumeTask(String tid) throws DaemonException {
+	private void resumeTask(Log log, String tid) throws DaemonException {
 		List<String> tids = new ArrayList<String>();
 		tids.add(tid);
-		resumeTasks(tids);
+		resumeTasks(log, tids);
 	}
 
-	private void pauseAllTasks() throws DaemonException {
+	private void pauseAllTasks(Log log) throws DaemonException {
 		List<String> tids = new ArrayList<String>();
-		for (Torrent torrent: tasksList()) {
+		for (Torrent torrent : tasksList(log)) {
 			tids.add(torrent.getUniqueID());
 		}
-		pauseTasks(tids);
+		pauseTasks(log, tids);
 	}
 
-	private void resumeAllTasks() throws DaemonException {
+	private void resumeAllTasks(Log log) throws DaemonException {
 		List<String> tids = new ArrayList<String>();
-		for (Torrent torrent: tasksList()) {
+		for (Torrent torrent : tasksList(log)) {
 			tids.add(torrent.getUniqueID());
 		}
-		resumeTasks(tids);
+		resumeTasks(log, tids);
 	}
 
-	private void removeTasks(List<String> tids) throws DaemonException {
-		authGet("SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi", "&method=delete&id=" + Collections2.joinString(tids, ",") + "").ensureSuccess();
+	private void removeTasks(Log log, List<String> tids) throws DaemonException {
+		authGet(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
+				"&method=delete&id=" + Collections2.joinString(tids, ",") + "").ensureSuccess(log);
 	}
 
-	private void pauseTasks(List<String> tids) throws DaemonException {
-		authGet("SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi", "&method=pause&id=" + Collections2.joinString(tids, ",")).ensureSuccess();
+	private void pauseTasks(Log log, List<String> tids) throws DaemonException {
+		authGet(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
+				"&method=pause&id=" + Collections2.joinString(tids, ",")).ensureSuccess(log);
 	}
 
-	private void resumeTasks(List<String> tids) throws DaemonException {
-		authGet("SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi", "&method=resume&id=" + Collections2.joinString(tids, ",")).ensureSuccess();
+	private void resumeTasks(Log log, List<String> tids) throws DaemonException {
+		authGet(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
+				"&method=resume&id=" + Collections2.joinString(tids, ",")).ensureSuccess(log);
 	}
 
-	private List<Torrent> tasksList() throws DaemonException {
+	private List<Torrent> tasksList(Log log) throws DaemonException {
 		try {
-			JSONArray jsonTasks = authGet("SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi", "&method=list&additional=detail,transfer,tracker").getData().getJSONArray("tasks");
-			DLog.d(LOG_NAME, "Tasks = " + jsonTasks.toString());
+			JSONArray jsonTasks = authGet(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
+					"&method=list&additional=detail,transfer,tracker").getData(log).getJSONArray("tasks");
+			log.d(LOG_NAME, "Tasks = " + jsonTasks.toString());
 			List<Torrent> result = new ArrayList<Torrent>();
 			for (int i = 0; i < jsonTasks.length(); i++) {
 				result.add(parseTorrent(i, jsonTasks.getJSONObject(i)));
@@ -237,16 +240,21 @@ public class SynologyAdapter implements IDaemonAdapter {
 		}
 	}
 
-	private List<TorrentFile> fileList(String torrentId) throws DaemonException {
+	private List<TorrentFile> fileList(Log log, String torrentId) throws DaemonException {
 		try {
 			List<TorrentFile> result = new ArrayList<TorrentFile>();
-			JSONObject jsonTask = authGet("SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi", "&method=getinfo&id=" + torrentId + "&additional=detail,transfer,tracker,file").getData().getJSONArray("tasks").getJSONObject(0);
-			DLog.d(LOG_NAME, "File list = " + jsonTask.toString());
+			JSONObject jsonTask = authGet(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
+					"&method=getinfo&id=" + torrentId + "&additional=detail,transfer,tracker,file").getData(log)
+					.getJSONArray("tasks").getJSONObject(0);
+			log.d(LOG_NAME, "File list = " + jsonTask.toString());
 			JSONObject additional = jsonTask.getJSONObject("additional");
-			if (!additional.has("file")) return result;
+			if (!additional.has("file")) {
+				return result;
+			}
 			JSONArray files = additional.getJSONArray("file");
 			for (int i = 0; i < files.length(); i++) {
 				JSONObject task = files.getJSONObject(i);
+				// @formatter:off
 				result.add(new TorrentFile(
 						task.getString("filename"),
 						task.getString("filename"),
@@ -255,6 +263,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 						task.getLong("size"),
 						task.getLong("size_downloaded"),
 						priority(task.getString("priority"))
+				// @formatter:on
 				));
 			}
 			return result;
@@ -263,11 +272,13 @@ public class SynologyAdapter implements IDaemonAdapter {
 		}
 	}
 
-	private TorrentDetails torrentDetails(String torrentId) throws DaemonException {
+	private TorrentDetails torrentDetails(Log log, String torrentId) throws DaemonException {
 		List<String> trackers = new ArrayList<String>();
 		List<String> errors = new ArrayList<String>();
 		try {
-			JSONObject jsonTorrent = authGet("SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi", "&method=getinfo&id=" + torrentId + "&additional=tracker").getData().getJSONArray("tasks").getJSONObject(0);
+			JSONObject jsonTorrent = authGet(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
+					"&method=getinfo&id=" + torrentId + "&additional=tracker").getData(log).getJSONArray("tasks")
+					.getJSONObject(0);
 			JSONObject additional = jsonTorrent.getJSONObject("additional");
 			if (additional.has("tracker")) {
 				JSONArray tracker = additional.getJSONArray("tracker");
@@ -293,7 +304,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 		long downloaded = transfer.getLong("size_downloaded");
 		int speed = transfer.getInt("speed_download");
 		long size = jsonTorrent.getLong("size");
-		Float eta = new Float(size - downloaded) / speed;
+		Float eta = Float.valueOf(size - downloaded) / speed;
 		int totalSeeders = 0;
 		int totalLeechers = 0;
 		if (additional.has("tracker")) {
@@ -306,6 +317,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 				}
 			}
 		}
+		// @formatter:off
 		return new Torrent(
 				id,
 				jsonTorrent.getString("id"),
@@ -322,48 +334,128 @@ public class SynologyAdapter implements IDaemonAdapter {
 				downloaded,
 				transfer.getLong("size_uploaded"),
 				size,
-				(size == 0) ? 0 : (new Float(downloaded) / size),
+				(size == 0) ? 0 : (Float.valueOf(downloaded) / size),
 				0,
 				jsonTorrent.getString("title"),
 				new Date(detail.getLong("create_time") * 1000),
 				null,
 				"",
 				settings.getType()
+			// @formatter:on
 		);
 	}
 
 	private TorrentStatus torrentStatus(String status) {
-		if ("downloading".equals(status)) return TorrentStatus.Downloading;
-		if ("seeding".equals(status)) return TorrentStatus.Seeding;
-		if ("finished".equals(status)) return TorrentStatus.Paused;
-		if ("finishing".equals(status)) return TorrentStatus.Paused;
-		if ("waiting".equals(status)) return TorrentStatus.Waiting;
-		if ("paused".equals(status)) return TorrentStatus.Paused;
-		if ("error".equals(status)) return TorrentStatus.Error;
+		if ("downloading".equals(status)) {
+			return TorrentStatus.Downloading;
+		}
+		if ("seeding".equals(status)) {
+			return TorrentStatus.Seeding;
+		}
+		if ("finished".equals(status)) {
+			return TorrentStatus.Paused;
+		}
+		if ("finishing".equals(status)) {
+			return TorrentStatus.Paused;
+		}
+		if ("waiting".equals(status)) {
+			return TorrentStatus.Waiting;
+		}
+		if ("paused".equals(status)) {
+			return TorrentStatus.Paused;
+		}
+		if ("error".equals(status)) {
+			return TorrentStatus.Error;
+		}
 		return TorrentStatus.Unknown;
 	}
 
 	private Priority priority(String priority) {
-		if ("low".equals(priority)) return Priority.Low;
-		if ("normal".equals(priority)) return Priority.Normal;
-		if ("high".equals(priority)) return Priority.High;
+		if ("low".equals(priority)) {
+			return Priority.Low;
+		}
+		if ("normal".equals(priority)) {
+			return Priority.Normal;
+		}
+		if ("high".equals(priority)) {
+			return Priority.High;
+		}
 		return Priority.Off;
 	}
 
 	/**
 	 * Authenticated GET. If no session open, a login authGet will be done before-hand.
 	 */
-	private SynoResponse authGet(String api, String version, String path, String params) throws DaemonException {
+	private SynoResponse authGet(Log log, String api, String version, String path, String params)
+			throws DaemonException {
 		if (sid == null) {
-			sid = login();
+			sid = login(log);
 		}
 		return new SynoRequest(path, api, version).get(params + "&_sid=" + sid);
 	}
 
 	private DefaultHttpClient getHttpClient() throws DaemonException {
-		if (httpClient == null)
+		if (httpClient == null) {
 			httpClient = HttpHelper.createStandardHttpClient(settings, true);
+		}
 		return httpClient;
+	}
+
+	private static class SynoResponse {
+
+		private final HttpResponse response;
+
+		public SynoResponse(HttpResponse response) {
+			this.response = response;
+		}
+
+		public JSONObject getData(Log log) throws DaemonException {
+			JSONObject json = getJson(log);
+			try {
+				if (json.getBoolean("success")) {
+					return json.getJSONObject("data");
+				} else {
+					log.e(LOG_NAME, "not a success: " + json.toString());
+					throw new DaemonException(ExceptionType.AuthenticationFailure, json.getString("error"));
+				}
+			} catch (JSONException e) {
+				throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			}
+		}
+
+		public JSONObject getJson(Log log) throws DaemonException {
+			try {
+				HttpEntity entity = response.getEntity();
+				if (entity == null) {
+					log.e(LOG_NAME, "Error: No entity in HTTP response");
+					throw new DaemonException(ExceptionType.UnexpectedResponse, "No HTTP entity object in response.");
+				}
+				// Read JSON response
+				java.io.InputStream instream = entity.getContent();
+				String result = HttpHelper.convertStreamToString(instream);
+				JSONObject json;
+				json = new JSONObject(result);
+				instream.close();
+				return json;
+			} catch (JSONException e) {
+				throw new DaemonException(ExceptionType.UnexpectedResponse, "Bad JSON");
+			} catch (IOException e) {
+				log.e(LOG_NAME, "getJson error: " + e.toString());
+				throw new DaemonException(ExceptionType.AuthenticationFailure, e.toString());
+			}
+		}
+
+		public void ensureSuccess(Log log) throws DaemonException {
+			JSONObject json = getJson(log);
+			try {
+				if (!json.getBoolean("success")) {
+					throw new DaemonException(ExceptionType.UnexpectedResponse, json.getString("error"));
+				}
+			} catch (JSONException e) {
+				throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			}
+		}
+
 	}
 
 	private class SynoRequest {
@@ -386,69 +478,8 @@ public class SynologyAdapter implements IDaemonAdapter {
 		}
 
 		private String buildURL(String params) {
-			return (settings.getSsl() ? "https://" : "http://")
-					+ settings.getAddress()
-					+ ":" + settings.getPort()
-					+ "/webapi/" + path
-					+ "?api=" + api
-					+ "&version=" + version
-					+ params;
-		}
-
-	}
-
-	private static class SynoResponse {
-
-		private final HttpResponse response;
-
-		public SynoResponse(HttpResponse response) {
-			this.response = response;
-		}
-
-		public JSONObject getData() throws DaemonException {
-			JSONObject json = getJson();
-			try {
-				if (json.getBoolean("success")) {
-					return json.getJSONObject("data");
-				} else {
-					DLog.e(LOG_NAME, "not a success: " + json.toString());
-					throw new DaemonException(ExceptionType.AuthenticationFailure, json.getString("error"));
-				}
-			} catch (JSONException e) {
-				throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
-			}
-		}
-
-		public JSONObject getJson() throws DaemonException {
-			try {
-				HttpEntity entity = response.getEntity();
-				if (entity == null) {
-					DLog.e(LOG_NAME, "Error: No entity in HTTP response");
-					throw new DaemonException(ExceptionType.UnexpectedResponse, "No HTTP entity object in response.");
-				}
-				// Read JSON response
-				java.io.InputStream instream = entity.getContent();
-				String result = HttpHelper.convertStreamToString(instream);
-				JSONObject json;
-				json = new JSONObject(result);
-				instream.close();
-				return json;
-			} catch (JSONException e) {
-				throw new DaemonException(ExceptionType.UnexpectedResponse, "Bad JSON");
-			} catch (IOException e) {
-				DLog.e(LOG_NAME, "getJson error: " + e.toString());
-				throw new DaemonException(ExceptionType.AuthenticationFailure, e.toString());
-			}
-		}
-
-		public void ensureSuccess() throws DaemonException {
-			JSONObject json = getJson();
-			try {
-				if (!json.getBoolean("success"))
-					throw new DaemonException(ExceptionType.UnexpectedResponse, json.getString("error"));
-			} catch (JSONException e) {
-				throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
-			}
+			return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() +
+					"/webapi/" + path + "?api=" + api + "&version=" + version + params;
 		}
 
 	}

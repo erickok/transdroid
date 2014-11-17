@@ -54,7 +54,7 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 	/**
 	 * Updates the statistics as shown in the action bar through this server status view.
 	 * @param torrents The most recently received list of torrents
-	 * @param dormantAsInactive 
+	 * @param dormantAsInactive Whether to treat dormant (0KB/s) torrent as inactive state torrents
 	 */
 	public void update(List<Torrent> torrents, boolean dormantAsInactive) {
 
@@ -66,6 +66,7 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 			downcountSign.setVisibility(View.INVISIBLE);
 			upcountSign.setVisibility(View.INVISIBLE);
 			speedswrapperLayout.setOnClickListener(null);
+			return;
 		}
 
 		int downcount = 0, upcount = 0, downspeed = 0, upspeed = 0;

@@ -16,13 +16,6 @@
  */
 package org.transdroid.core.service;
 
-import org.transdroid.core.app.settings.NotificationSettings;
-import org.transdroid.core.app.settings.NotificationSettings_;
-import org.transdroid.core.app.settings.SystemSettings;
-import org.transdroid.core.app.settings.SystemSettings_;
-import org.transdroid.core.gui.log.Log;
-import org.transdroid.core.gui.navigation.NavigationHelper_;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -30,10 +23,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EReceiver;
+import org.transdroid.core.app.settings.*;
+import org.transdroid.core.gui.log.*;
+import org.transdroid.core.gui.navigation.*;
+
 /**
  * Receives the intent that the device has been started in order to set up proper alarms for all background services.
  * @author Eric Kok
  */
+@EReceiver
 public class BootReceiver extends BroadcastReceiver {
 
 	public static final int ALARM_SERVERCHECKER = 0;
@@ -42,26 +42,24 @@ public class BootReceiver extends BroadcastReceiver {
 
 	public static PendingIntent piServerChecker = null, piRssChecker = null, piAppUpdates = null;
 
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		startBackgroundServices(context, false);
-		startAppUpdatesService(context);
-	}
+	@Bean
+	protected Log log;
 
 	public static void startBackgroundServices(Context context, boolean forceReload) {
 		NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
 		AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		// Start the alarms if one of the notifications are enabled and we do not yet have the alarms running
 		// (or should reload it forcefully)
-		if ((notificationSettings.isEnabledForRss() || notificationSettings.isEnabledForTorrents())
-				&& (forceReload || (piServerChecker == null && piRssChecker == null))) {
+		if ((notificationSettings.isEnabledForRss() || notificationSettings.isEnabledForTorrents()) &&
+				(forceReload || (piServerChecker == null && piRssChecker == null))) {
 
-			Log.d(context, "Boot signal received, starting server and rss checker background services");
+			Log_.getInstance_(context)
+					.d("BootReceiver", "Boot signal received, starting server and rss checker background services");
 			// Schedule repeating alarms, with the first being (somewhat) in 1 second from now
-			piServerChecker = PendingIntent.getBroadcast(context, ALARM_SERVERCHECKER, new Intent(context,
-					AlarmReceiver_.class).putExtra("service", ALARM_SERVERCHECKER), 0);
-			piRssChecker = PendingIntent.getBroadcast(context, ALARM_RSSCHECKER, new Intent(context,
-					AlarmReceiver_.class).putExtra("service", ALARM_RSSCHECKER), 0);
+			piServerChecker = PendingIntent.getBroadcast(context, ALARM_SERVERCHECKER,
+					new Intent(context, AlarmReceiver_.class).putExtra("service", ALARM_SERVERCHECKER), 0);
+			piRssChecker = PendingIntent.getBroadcast(context, ALARM_RSSCHECKER,
+					new Intent(context, AlarmReceiver_.class).putExtra("service", ALARM_RSSCHECKER), 0);
 			alarms.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000,
 					notificationSettings.getInvervalInMilliseconds(), piServerChecker);
 			alarms.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000,
@@ -73,13 +71,13 @@ public class BootReceiver extends BroadcastReceiver {
 	public static void startAppUpdatesService(Context context) {
 		SystemSettings systemSettings = SystemSettings_.getInstance_(context);
 		AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		if (NavigationHelper_.getInstance_(context).enableUpdateChecker() && systemSettings.checkForUpdates()
-				&& piAppUpdates == null) {
+		if (NavigationHelper_.getInstance_(context).enableUpdateChecker() && systemSettings.checkForUpdates() &&
+				piAppUpdates == null) {
 
-			Log.d(context, "Boot signal received, starting app update checker service");
+			Log_.getInstance_(context).d("BootReceiver", "Boot signal received, starting app update checker service");
 			// Schedule a daily, with the first being (somewhat) in 1 second from now
-			piAppUpdates = PendingIntent.getBroadcast(context, ALARM_APPUPDATES, new Intent(context,
-					AlarmReceiver_.class).putExtra("service", ALARM_APPUPDATES), 0);
+			piAppUpdates = PendingIntent.getBroadcast(context, ALARM_APPUPDATES,
+					new Intent(context, AlarmReceiver_.class).putExtra("service", ALARM_APPUPDATES), 0);
 			alarms.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000,
 					AlarmManager.INTERVAL_DAY, piAppUpdates);
 
@@ -104,6 +102,12 @@ public class BootReceiver extends BroadcastReceiver {
 			alarms.cancel(piAppUpdates);
 			piAppUpdates = null;
 		}
+	}
+
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		startBackgroundServices(context, false);
+		startAppUpdatesService(context);
 	}
 
 }

@@ -36,6 +36,8 @@ import com.j256.ormlite.dao.Dao;
 public class ErrorLogSender {
 
 	@Bean
+	protected Log log;
+	@Bean
 	protected NavigationHelper navigationHelper;
 	@OrmLiteDao(helper = DatabaseHelper.class, model = ErrorLogEntry.class)
 	protected Dao<ErrorLogEntry, Integer> errorLogDao;
@@ -81,11 +83,11 @@ public class ErrorLogSender {
 				callingActivity.startActivity(Intent.createChooser(target,
 						callingActivity.getString(R.string.pref_sendlog)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 			} catch (ActivityNotFoundException e) {
-				Log.i(callingActivity, "Tried to send error log, but there is no email app installed.");
+				log.i(callingActivity, "Tried to send error log, but there is no email app installed.");
 			}
 
 		} catch (SQLException e) {
-			Log.e(callingActivity, "Cannot read the error log to build an error report to send: " + e.toString());
+			log.e(callingActivity, "Cannot read the error log to build an error report to send: " + e.toString());
 		}
 
 	}

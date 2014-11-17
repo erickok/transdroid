@@ -17,15 +17,7 @@
  */
 package org.transdroid.daemon.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.zip.GZIPInputStream;
+import android.net.Uri;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -53,7 +45,15 @@ import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 
-import android.net.Uri;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Provides a set of general helper methods that can be used in web-based communication.
@@ -62,15 +62,41 @@ import android.net.Uri;
 public class HttpHelper {
 
 	public static final int DEFAULT_CONNECTION_TIMEOUT = 8000;
-	public static final String SCHEME_HTTP = "http";
-	public static final String SCHEME_HTTPS = "https";
-	public static final String SCHEME_MAGNET = "magnet";
-	public static final String SCHEME_FILE = "file";
 
 	/**
 	 * The 'User-Agent' name to send to the server
 	 */
 	public static String userAgent = "Transdroid Torrent Connect";
+	/**
+	 * HTTP request interceptor to allow for GZip-encoded data transfer
+	 */
+	public static HttpRequestInterceptor gzipRequestInterceptor = new HttpRequestInterceptor() {
+		public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
+			if (!request.containsHeader("Accept-Encoding")) {
+				request.addHeader("Accept-Encoding", "gzip");
+			}
+		}
+	};
+	/**
+	 * HTTP response interceptor that decodes GZipped data
+	 */
+	public static HttpResponseInterceptor gzipResponseInterceptor = new HttpResponseInterceptor() {
+		public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
+			HttpEntity entity = response.getEntity();
+			Header ceheader = entity.getContentEncoding();
+			if (ceheader != null) {
+				HeaderElement[] codecs = ceheader.getElements();
+				for (HeaderElement codec : codecs) {
+
+					if (codec.getName().equalsIgnoreCase("gzip")) {
+						response.setEntity(new GzipDecompressingEntity(response.getEntity()));
+						return;
+					}
+				}
+			}
+		}
+
+	};
 
 	/**
 	 * Creates a standard Apache HttpClient that is thread safe, supports different SSL auth methods and basic
@@ -98,8 +124,8 @@ public class HttpHelper {
 	 * @throws DaemonException Thrown when information (such as username/password) is missing
 	 */
 	public static DefaultHttpClient createStandardHttpClient(boolean userBasicAuth, String username, String password,
-			boolean sslTrustAll, String sslTrustKey, int timeout, String authAddress, int authPort)
-			throws DaemonException {
+															 boolean sslTrustAll, String sslTrustKey, int timeout,
+															 String authAddress, int authPort) throws DaemonException {
 
 		// Register http and https sockets
 		SchemeRegistry registry = new SchemeRegistry();
@@ -122,8 +148,8 @@ public class HttpHelper {
 			HttpProtocolParams.setUserAgent(httpparams, userAgent);
 		}
 
-		DefaultHttpClient httpclient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpparams, registry),
-				httpparams);
+		DefaultHttpClient httpclient =
+				new DefaultHttpClient(new ThreadSafeClientConnManager(httpparams, registry), httpparams);
 
 		// Authentication credentials
 		if (userBasicAuth) {
@@ -131,70 +157,12 @@ public class HttpHelper {
 				throw new DaemonException(ExceptionType.AuthenticationFailure,
 						"No username or password was provided while we had authentication enabled");
 			}
-			httpclient.getCredentialsProvider().setCredentials(
-					new AuthScope(authAddress, authPort, AuthScope.ANY_REALM),
-					new UsernamePasswordCredentials(username, password));
+			httpclient.getCredentialsProvider()
+					.setCredentials(new AuthScope(authAddress, authPort, AuthScope.ANY_REALM),
+							new UsernamePasswordCredentials(username, password));
 		}
 
 		return httpclient;
-
-	}
-
-	/**
-	 * HTTP request interceptor to allow for GZip-encoded data transfer
-	 */
-	public static HttpRequestInterceptor gzipRequestInterceptor = new HttpRequestInterceptor() {
-		public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
-			if (!request.containsHeader("Accept-Encoding")) {
-				request.addHeader("Accept-Encoding", "gzip");
-			}
-		}
-	};
-
-	/**
-	 * HTTP response interceptor that decodes GZipped data
-	 */
-	public static HttpResponseInterceptor gzipResponseInterceptor = new HttpResponseInterceptor() {
-		public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
-			HttpEntity entity = response.getEntity();
-			Header ceheader = entity.getContentEncoding();
-			if (ceheader != null) {
-				HeaderElement[] codecs = ceheader.getElements();
-				for (int i = 0; i < codecs.length; i++) {
-
-					if (codecs[i].getName().equalsIgnoreCase("gzip")) {
-						response.setEntity(new HttpHelper.GzipDecompressingEntity(response.getEntity()));
-						return;
-					}
-				}
-			}
-		}
-
-	};
-
-	/**
-	 * HTTP entity wrapper to decompress GZipped HTTP responses
-	 */
-	private static class GzipDecompressingEntity extends HttpEntityWrapper {
-
-		public GzipDecompressingEntity(final HttpEntity entity) {
-			super(entity);
-		}
-
-		@Override
-		public InputStream getContent() throws IOException, IllegalStateException {
-
-			// the wrapped entity's getContent() decides about repeatability
-			InputStream wrappedin = wrappedEntity.getContent();
-
-			return new GZIPInputStream(wrappedin);
-		}
-
-		@Override
-		public long getContentLength() {
-			// length of ungzipped content is not known
-			return -1;
-		}
 
 	}
 
@@ -202,7 +170,7 @@ public class HttpHelper {
 	 * To convert the InputStream to String we use the BufferedReader.readLine() method. We iterate until the
 	 * BufferedReader return null which means there's no more data to read. Each line will appended to a StringBuilder
 	 * and returned as String.
-	 * 
+	 *
 	 * Taken from http://senior.ceng.metu.edu.tr/2009/praeda/2009/01/11/a-simple-restful-client-at-android/
 	 */
 	public static String convertStreamToString(InputStream is, String encoding) throws UnsupportedEncodingException {
@@ -215,10 +183,10 @@ public class HttpHelper {
 		BufferedReader reader = new BufferedReader(isr);
 		StringBuilder sb = new StringBuilder();
 
-		String line = null;
+		String line;
 		try {
 			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
+				sb.append(line).append("\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -269,6 +237,32 @@ public class HttpHelper {
 		} while (start < raw.length());
 
 		return Collections.unmodifiableMap(pairs);
+
+	}
+
+	/**
+	 * HTTP entity wrapper to decompress GZipped HTTP responses
+	 */
+	private static class GzipDecompressingEntity extends HttpEntityWrapper {
+
+		public GzipDecompressingEntity(final HttpEntity entity) {
+			super(entity);
+		}
+
+		@Override
+		public InputStream getContent() throws IOException, IllegalStateException {
+
+			// the wrapped entity's getContent() decides about repeatability
+			InputStream wrappedin = wrappedEntity.getContent();
+
+			return new GZIPInputStream(wrappedin);
+		}
+
+		@Override
+		public long getContentLength() {
+			// length of ungzipped content is not known
+			return -1;
+		}
 
 	}
 

@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
-import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.*;
 
 import android.app.Activity;
 import android.app.Dialog;

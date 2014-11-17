@@ -29,12 +29,12 @@ import java.util.Comparator;
 
 public class AlphanumComparator implements Comparator<String> {
 
-	private final boolean isDigit(char ch) {
+	private boolean isDigit(char ch) {
 		return ch >= 48 && ch <= 57;
 	}
 
 	/** Length of string is passed in for improved efficiency (only need to calculate it once) **/
-	private final String getChunk(String s, int slength, int marker) {
+	private String getChunk(String s, int slength, int marker) {
 		StringBuilder chunk = new StringBuilder();
 		char c = s.charAt(marker);
 		chunk.append(c);
@@ -59,12 +59,14 @@ public class AlphanumComparator implements Comparator<String> {
 		return chunk.toString();
 	}
 
-	public int compare(String o1, String o2) {
-		if (!(o1 instanceof String) || !(o2 instanceof String)) {
+	public int compare(String s1, String s2) {
+		if (s1 == null && s2 != null) {
+			return -1;
+		} else if (s1 != null && s2 == null) {
+			return 1;
+		} else if (s1 == null) {
 			return 0;
 		}
-		String s1 = (String) o1;
-		String s2 = (String) o2;
 
 		int thisMarker = 0;
 		int thatMarker = 0;
@@ -79,7 +81,7 @@ public class AlphanumComparator implements Comparator<String> {
 			thatMarker += thatChunk.length();
 
 			// If both chunks contain numeric characters, sort them numerically
-			int result = 0;
+			int result;
 			if (isDigit(thisChunk.charAt(0)) && isDigit(thatChunk.charAt(0))) {
 				// Simple chunk comparison by length.
 				int thisChunkLength = thisChunk.length();

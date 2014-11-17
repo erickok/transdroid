@@ -56,6 +56,8 @@ public class AppUpdateService extends IntentService {
 	private static final String DOWNLOAD_URL_SEARCH = "http://www.transdroid.org/latest-search";
 
 	@Bean
+	protected Log log;
+	@Bean
 	protected NavigationHelper navigationHelper;
 	@Bean
 	protected ConnectivityHelper connectivityHelper;
@@ -78,7 +80,7 @@ public class AppUpdateService extends IntentService {
 			return;
 		
 		if (!connectivityHelper.shouldPerformBackgroundActions() || !systemSettings.checkForUpdates()) {
-			Log.d(this, "Skip the app update service, as background data is disabled, the service is explicitly " +
+			log.d(this, "Skip the app update service, as background data is disabled, the service is explicitly " +
 					"disabled or we are not connected.");
 			return;
 		}
@@ -87,7 +89,7 @@ public class AppUpdateService extends IntentService {
 		Calendar lastDay = Calendar.getInstance();
 		lastDay.add(Calendar.DAY_OF_MONTH, -1);
 		if (lastChecked != null && lastChecked.after(lastDay.getTime())) {
-			Log.d(this, "Skip the update service, as we already checked the last 24 hours (or to be exact at "
+			log.d(this, "Skip the update service, as we already checked the last 24 hours (or to be exact at "
 					+ lastChecked.toString() + ").");
 			return;
 		}
@@ -106,7 +108,7 @@ public class AppUpdateService extends IntentService {
 			// New version of the app?
 			try {
 				PackageInfo appPackage = getPackageManager().getPackageInfo(getPackageName(), 0);
-				Log.d(this, "Local Transdroid is at " + appPackage.versionCode + " and the reported latest version is "
+				log.d(this, "Local Transdroid is at " + appPackage.versionCode + " and the reported latest version is "
 						+ appVersion);
 				if (appPackage.versionCode < appVersion) {
 					// New version available! Notify the user.
@@ -122,7 +124,7 @@ public class AppUpdateService extends IntentService {
 			// New version of the search module?
 			try {
 				PackageInfo searchPackage = getPackageManager().getPackageInfo("org.transdroid.search", 0);
-				Log.d(this, "Local Transdroid Seach is at " + searchPackage.versionCode
+				log.d(this, "Local Transdroid Seach is at " + searchPackage.versionCode
 						+ " and the reported latest version is " + searchVersion);
 				if (searchPackage.versionCode < searchVersion) {
 					// New version available! Notify the user.
@@ -142,7 +144,7 @@ public class AppUpdateService extends IntentService {
 
 		} catch (Exception e) {
 			// Cannot check right now for some reason; log and ignore
-			Log.d(this, "Cannot retrieve latest app or search module version code from the site: " + e.toString());
+			log.d(this, "Cannot retrieve latest app or search module version code from the site: " + e.toString());
 		}
 
 	}
@@ -156,8 +158,7 @@ public class AppUpdateService extends IntentService {
 	 * @throws ClientProtocolException Thrown when the provided URL is invalid
 	 * @throws IOException Thrown when the last version information could not be retrieved
 	 */
-	private String[] retrieveLatestVersion(AbstractHttpClient httpclient, String url) throws ClientProtocolException,
-			IOException {
+	private String[] retrieveLatestVersion(AbstractHttpClient httpclient, String url) throws IOException {
 		HttpResponse request = httpclient.execute(new HttpGet(url));
 		InputStream stream = request.getEntity().getContent();
 		String appVersion[] = HttpHelper.convertStreamToString(stream).split("\\|");

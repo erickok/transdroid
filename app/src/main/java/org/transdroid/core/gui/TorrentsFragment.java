@@ -31,8 +31,7 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.SystemSettings;
-import org.transdroid.core.gui.lists.TorrentsAdapter;
-import org.transdroid.core.gui.lists.TorrentsAdapter_;
+import org.transdroid.core.gui.lists.*;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
@@ -158,7 +157,8 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 
 	/**
 	 * Clears the currently visible list of torrents.
-	 * @param b
+	 * @param clearError Also clear any error message
+	 * @param clearFilter Also clear any selected filter
 	 */
 	public void clear(boolean clearError, boolean clearFilter) {
 		this.torrents = null;
@@ -213,14 +213,14 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 
 		// Filter the list of torrents to show according to navigation and text filters
 		ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>(torrents);
-		if (filteredTorrents != null && currentNavigationFilter != null) {
+		if (currentNavigationFilter != null) {
 			// Remove torrents that do not match the selected navigation filter
 			for (Iterator<Torrent> torrentIter = filteredTorrents.iterator(); torrentIter.hasNext();) {
 				if (!currentNavigationFilter.matches(torrentIter.next(), systemSettings.treatDormantAsInactive()))
 					torrentIter.remove();
 			}
 		}
-		if (filteredTorrents != null && currentTextFilter != null) {
+		if (currentTextFilter != null) {
 			// Remove torrent that do not contain the text filter string
 			for (Iterator<Torrent> torrentIter = filteredTorrents.iterator(); torrentIter.hasNext();) {
 				if (!torrentIter.next().getName().toLowerCase(Locale.getDefault())

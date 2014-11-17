@@ -92,7 +92,6 @@ import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
-import org.transdroid.daemon.util.DLog;
 import org.transdroid.daemon.util.HttpHelper;
 
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
@@ -135,6 +134,8 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	private static final int RESULT_DETAILS = 0;
 
 	// Navigation components
+	@Bean
+	protected Log log;
 	@Bean
 	protected NavigationHelper navigationHelper;
 	@Bean
@@ -231,9 +232,6 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		}
 		actionBar.setListNavigationCallbacks(navigationSpinnerAdapter, this);
 
-		// Log messages from the server daemons using our singleton logger
-		DLog.setLogger(Log_.getInstance_(this));
-
 		// Load the default server or a server that was explicitly supplied in the starting intent
 		ServerSetting defaultServer = applicationSettings.getDefaultServer();
 		if (defaultServer == null) {
@@ -246,7 +244,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			// A server settings order ID was provided in this org.transdroid.START_SERVER action intent
 			int serverId = getIntent().getExtras().getInt(ListWidgetProvider.EXTRA_SERVER);
 			if (serverId < 0 || serverId > applicationSettings.getMaxOfAllServers()) {
-				Log.e(this, "Tried to start with " + ListWidgetProvider.EXTRA_SERVER + " intent but " + serverId
+				log.e(this, "Tried to start with " + ListWidgetProvider.EXTRA_SERVER + " intent but " + serverId
 						+ " is not an existing server order id");
 			} else {
 				defaultServer = applicationSettings.getServerSetting(serverId);
@@ -853,7 +851,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Background
 	protected void refreshTorrents() {
 		String startConnectionId = currentConnection.getSettings().getIdString();
-		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute();
+		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute(log);
 		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
 			// During the command execution the user changed the server, so we are no longer interested in the result
 			return;
@@ -871,7 +869,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		if (!Daemon.supportsFineDetails(currentConnection.getType()))
 			return;
 		String startConnectionId = currentConnection.getSettings().getIdString();
-		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute(log);
 		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
 			// During the command execution the user changed the server, so we are no longer interested in the result
 			return;
@@ -888,7 +886,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		if (!Daemon.supportsFileListing(currentConnection.getType()))
 			return;
 		String startConnectionId = currentConnection.getSettings().getIdString();
-		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute(log);
 		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
 			// During the command execution the user changed the server, so we are no longer interested in the result
 			return;
@@ -903,7 +901,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Background
 	protected void getAdditionalStats() {
 		String startConnectionId = currentConnection.getSettings().getIdString();
-		DaemonTaskResult result = GetStatsTask.create(currentConnection).execute();
+		DaemonTaskResult result = GetStatsTask.create(currentConnection).execute(log);
 		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
 			// During the command execution the user changed the server, so we are no longer interested in the result
 			return;
@@ -918,7 +916,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Background
 	protected void updateTurtleMode(boolean enable) {
 		String startConnectionId = currentConnection.getSettings().getIdString();
-		DaemonTaskResult result = SetAlternativeModeTask.create(currentConnection, enable).execute();
+		DaemonTaskResult result = SetAlternativeModeTask.create(currentConnection, enable).execute(log);
 		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
 			// During the command execution the user changed the server, so we are no longer interested in the result
 			return;
@@ -933,7 +931,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	@Background
 	public void addTorrentByUrl(String url, String title) {
-		DaemonTaskResult result = AddByUrlTask.create(currentConnection, url, title).execute();
+		DaemonTaskResult result = AddByUrlTask.create(currentConnection, url, title).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
 			refreshTorrents();
@@ -944,7 +942,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	@Background
 	public void addTorrentByMagnetUrl(String url, String title) {
-		DaemonTaskResult result = AddByMagnetUrlTask.create(currentConnection, url).execute();
+		DaemonTaskResult result = AddByMagnetUrlTask.create(currentConnection, url).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
 			refreshTorrents();
@@ -955,7 +953,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	@Background
 	protected void addTorrentByFile(String localFile, String title) {
-		DaemonTaskResult result = AddByFileTask.create(currentConnection, localFile).execute();
+		DaemonTaskResult result = AddByFileTask.create(currentConnection, localFile).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
 			refreshTorrents();
@@ -971,10 +969,10 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			addTorrentFromStream(getContentResolver().openInputStream(contentUri), title);
 		} catch (SecurityException e) {
 			// No longer access to this file
-			Log.e(this, "No access given to " + contentUri.toString() + ": " + e.toString());
+			log.e(this, "No access given to " + contentUri.toString() + ": " + e.toString());
 			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 		} catch (FileNotFoundException e) {
-			Log.e(this, contentUri.toString() + " does not exist: " + e.toString());
+			log.e(this, contentUri.toString() + " does not exist: " + e.toString());
 			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 		}
 	}
@@ -986,7 +984,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			InputStream input = SearchHelper_.getInstance_(this).getFile(source, url);
 			addTorrentFromStream(input, title);
 		} catch (Exception e) {
-			Log.e(this, "Can't download private site torrent " + url + " from " + source + ": " + e.toString());
+			log.e(this, "Can't download private site torrent " + url + " from " + source + ": " + e.toString());
 			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 		}
 
@@ -1014,7 +1012,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED
 					|| response.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN
 					|| response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-				Log.e(this, "Can't retrieve web torrent " + url + ": Unexpected HTTP response status code "
+				log.e(this, "Can't retrieve web torrent " + url + ": Unexpected HTTP response status code "
 						+ response.getStatusLine().toString());
 				Crouton.showText(this, R.string.error_401, NavigationHelper.CROUTON_ERROR_STYLE);
 				return;
@@ -1022,7 +1020,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			InputStream input = response.getEntity().getContent();
 			addTorrentFromStream(input, title);
 		} catch (Exception e) {
-			Log.e(this, "Can't retrieve web torrent " + url + ": " + e.toString());
+			log.e(this, "Can't retrieve web torrent " + url + ": " + e.toString());
 			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 		}
 	}
@@ -1047,14 +1045,14 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 				output.close();
 			}
 		} catch (IOException e) {
-			Log.e(this, "Can't write input stream to " + tempFile.toString() + ": " + e.toString());
+			log.e(this, "Can't write input stream to " + tempFile.toString() + ": " + e.toString());
 			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 		} finally {
 			try {
 				if (input != null)
 					input.close();
 			} catch (IOException e) {
-				Log.e(this, "Error closing the input stream " + tempFile.toString() + ": " + e.toString());
+				log.e(this, "Error closing the input stream " + tempFile.toString() + ": " + e.toString());
 				Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
 			}
 		}
@@ -1064,7 +1062,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Override
 	public void resumeTorrent(Torrent torrent) {
 		torrent.mimicResume();
-		DaemonTaskResult result = ResumeTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = ResumeTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_resumed, torrent.getName()));
 		} else {
@@ -1076,7 +1074,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Override
 	public void pauseTorrent(Torrent torrent) {
 		torrent.mimicPause();
-		DaemonTaskResult result = PauseTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = PauseTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_paused, torrent.getName()));
 		} else {
@@ -1088,7 +1086,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Override
 	public void startTorrent(Torrent torrent, boolean forced) {
 		torrent.mimicStart();
-		DaemonTaskResult result = StartTask.create(currentConnection, torrent, forced).execute();
+		DaemonTaskResult result = StartTask.create(currentConnection, torrent, forced).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_started, torrent.getName()));
 		} else {
@@ -1100,7 +1098,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Override
 	public void stopTorrent(Torrent torrent) {
 		torrent.mimicStop();
-		DaemonTaskResult result = StopTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = StopTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_stopped, torrent.getName()));
 		} else {
@@ -1111,7 +1109,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Background
 	@Override
 	public void removeTorrent(Torrent torrent, boolean withData) {
-		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute();
+		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded(
 					(DaemonTaskSuccessResult) result,
@@ -1126,7 +1124,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	public void updateLabel(Torrent torrent, String newLabel) {
 		torrent.mimicNewLabel(newLabel);
 		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel)
-				.execute();
+				.execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded(
 					(DaemonTaskSuccessResult) result,
@@ -1141,7 +1139,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Override
 	public void forceRecheckTorrent(Torrent torrent) {
 		torrent.mimicCheckingStatus();
-		DaemonTaskResult result = ForceRecheckTask.create(currentConnection, torrent).execute();
+		DaemonTaskResult result = ForceRecheckTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result,
 					getString(R.string.result_recheckedstarted, torrent.getName()));
@@ -1153,7 +1151,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Background
 	@Override
 	public void updateTrackers(Torrent torrent, List<String> newTrackers) {
-		DaemonTaskResult result = SetTrackersTask.create(currentConnection, torrent, newTrackers).execute();
+		DaemonTaskResult result = SetTrackersTask.create(currentConnection, torrent, newTrackers).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_trackersupdated));
 		} else {
@@ -1164,7 +1162,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Background
 	@Override
 	public void updateLocation(Torrent torrent, String newLocation) {
-		DaemonTaskResult result = SetDownloadLocationTask.create(currentConnection, torrent, newLocation).execute();
+		DaemonTaskResult result = SetDownloadLocationTask.create(currentConnection, torrent, newLocation).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_locationset, newLocation));
 		} else {
@@ -1176,7 +1174,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Override
 	public void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority) {
 		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority,
-				new ArrayList<TorrentFile>(files)).execute();
+				new ArrayList<TorrentFile>(files)).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
 		} else {
@@ -1187,7 +1185,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Background
 	public void updateMaxSpeeds(Integer maxDownloadSpeed, Integer maxUploadSpeed) {
 		DaemonTaskResult result = SetTransferRatesTask.create(currentConnection, maxUploadSpeed, maxDownloadSpeed)
-				.execute();
+				.execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_maxspeedsset));
 		} else {
@@ -1204,7 +1202,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
-		Log.i(this, result.getException().toString());
+		log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
 		Crouton.showText(this, error, NavigationHelper.CROUTON_ERROR_STYLE);
 		fragmentTorrents.updateIsLoading(false);

@@ -1,7 +1,5 @@
 package org.transdroid.daemon.util;
 
-import java.util.Iterator;
-
 /**
  * Helpers on Collections
  */
@@ -13,9 +11,8 @@ public class Collections2 {
 	public static <T> String joinString(Iterable<T> iterable, String separator) {
 		boolean first = true;
 		String result = "";
-		Iterator<T> it = iterable.iterator();
-		while (it.hasNext()) {
-			result += (first ? "" : separator) + it.next().toString();
+		for (T anIterable : iterable) {
+			result += (first ? "" : separator) + anIterable.toString();
 			first = false;
 		}
 		return result;

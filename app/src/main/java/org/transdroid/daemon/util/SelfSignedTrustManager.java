@@ -27,7 +27,6 @@ import javax.net.ssl.X509TrustManager;
 public class SelfSignedTrustManager implements X509TrustManager {
 
 	private static final X509Certificate[] acceptedIssuers = new X509Certificate[]{};
-	private static final String LOG_NAME = "TrustManager";
 
 	private String certKey = null;
 
@@ -50,9 +49,9 @@ public class SelfSignedTrustManager implements X509TrustManager {
 
 		char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 		StringBuffer buf = new StringBuffer(bytes.length * 2);
-		for (int i = 0; i < bytes.length; ++i) {
-			buf.append(hexDigits[(bytes[i] & 0xf0) >> 4]);
-			buf.append(hexDigits[bytes[i] & 0x0f]);
+		for (byte aByte : bytes) {
+			buf.append(hexDigits[(aByte & 0xf0) >> 4]);
+			buf.append(hexDigits[aByte & 0x0f]);
 		}
 		return buf.toString();
 
@@ -75,15 +74,15 @@ public class SelfSignedTrustManager implements X509TrustManager {
 			// Assume self-signed root is okay?
 			X509Certificate sslCert = chain[0];
 			String thumbprint = SelfSignedTrustManager.getThumbPrint(sslCert);
-			DLog.d(LOG_NAME, thumbprint);
 			if (ourKey.equalsIgnoreCase(thumbprint)) {
 				return;
-			} else {
-				CertificateException certificateException =
-						new CertificateException("Certificate key [" + thumbprint + "] doesn't match expected value.");
-				DLog.e(SelfSignedTrustManager.class.getSimpleName(), certificateException.toString());
-				throw certificateException;
 			}
+
+			CertificateException certificateException =
+					new CertificateException("Certificate key [" + thumbprint + "] doesn't match expected value.");
+			//Log.e(SelfSignedTrustManager.class.getSimpleName(), certificateException.toString());
+			throw certificateException;
+
 		} catch (NoSuchAlgorithmException e) {
 			throw new CertificateException("Unable to check self-signed cert, unknown algorithm. " + e.toString());
 		}
