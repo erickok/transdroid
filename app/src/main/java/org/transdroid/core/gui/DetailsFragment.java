@@ -463,7 +463,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 					if (file != null) {
 						if (file.startsWith("/"))
 							file = file.substring(1);
-					andftpStart.putExtra("remote_file" + (f + 1), basePath + file);
+						andftpStart.putExtra("remote_file" + (f + 1), basePath + file);
 					}
 				}
 				if (andftpStart.resolveActivity(getActivity().getPackageManager()) != null) {
