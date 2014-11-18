@@ -18,38 +18,9 @@
 
 <resources>
 
-    <style name="Theme.Transdroid.Dark" parent="@android:style/Theme.Holo">
-        <item name="android:actionBarItemBackground">@drawable/selectable_background_transdroid</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu.Transdroid.Dark</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Transdroid.Dark</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Transdroid.Dark</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav.Transdroid.Dark</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Solid.Transdroid.Dark</item>
-        <item name="android:panelBackground">@drawable/menu_hardkey_panel_transdroid</item>
+    <style name="Theme.Transdroid.Dark" parent="Theme.AppCompat">
+		<item name="colorPrimary">@color/green</item>
+		<item name="colorPrimaryDark">@color/green_dark</item>
     </style>
 
-    <style name="ActionBar.Solid.Transdroid.Dark" parent="@android:style/Widget.Holo.ActionBar.Solid">
-        <item name="android:background">@drawable/ab_solid_transdroid</item>
-        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_transdroid</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_transdroid</item>
-    </style>
-
-    <style name="PopupMenu.Transdroid.Dark" parent="@android:style/Widget.Holo.ListPopupWindow">	
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid</item>	
-    </style>
-	
-    <style name="DropDownListView.Transdroid.Dark" parent="@android:style/Widget.Holo.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_background_transdroid</item>
-    </style>
-
-    <style name="ActionBarTabStyle.Transdroid.Dark" parent="@android:style/Widget.Holo.ActionBar.TabView">
-        <item name="android:background">@drawable/tab_indicator_ab_transdroid</item>
-    </style>
-	
-    <style name="DropDownNav.Transdroid.Dark" parent="@android:style/Widget.Holo.Spinner">
-        <item name="android:background">@drawable/spinner_background_ab_transdroid</item>
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid</item>
-        <item name="android:dropDownSelector">@drawable/selectable_background_transdroid</item>
-    </style>
-    
 </resources>

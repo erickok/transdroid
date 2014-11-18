@@ -49,7 +49,6 @@ import org.transdroid.R;
 import org.transdroid.core.app.search.*;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.lists.LocalTorrent;
-import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.*;
 import org.transdroid.core.gui.navigation.*;
@@ -97,13 +96,7 @@ import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
 import org.transdroid.daemon.util.HttpHelper;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.Options;
 import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -111,10 +104,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -132,7 +127,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EActivity(resName = "activity_torrents")
 @OptionsMenu(resName = "activity_torrents")
-public class TorrentsActivity extends Activity implements OnNavigationListener, TorrentTasksExecutor,
+public class TorrentsActivity extends ActionBarActivity implements ActionBar.OnNavigationListener, TorrentTasksExecutor,
 		RefreshableActivity {
 
 	private static final int RESULT_DETAILS = 0;
@@ -174,7 +169,6 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	boolean firstStart = true;
 	int skipNextOnNavigationItemSelectedCalls = 2;
 	private MenuItem searchMenu = null;
-	private PullToRefreshAttacher pullToRefreshAttacher = null;
 	private IDaemonAdapter currentConnection = null;
 	// Auto refresh task
 	private AsyncTask<Void, Void, Void> autoRefreshTask;
@@ -194,7 +188,6 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		// Catch any uncaught exception to log it
 		Thread.setDefaultUncaughtExceptionHandler(new LogUncaughtExceptionHandler(this,
@@ -208,7 +201,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		// Set up navigation, with an action bar spinner, server status indicator and possibly (if room) with a filter
 		// list
 		serverStatusView = ServerStatusView_.build(this);
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		actionBar.setHomeButtonEnabled(false);
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -391,7 +384,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 					stopAutoRefresh();
 				}
 			});
-			item.setOnActionExpandListener(new OnActionExpandListener() {
+			MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
 				@Override
 				public boolean onMenuItemActionExpand(MenuItem item) {
 					return true;
@@ -404,7 +397,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 					return true;
 				}
 			});
-			item.setActionView(searchView);
+			MenuItemCompat.setActionView(item, searchView);
 			searchMenu = item;
 		}
 		return true;
@@ -428,7 +421,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			menu.findItem(R.id.action_help).setVisible(true);
 			if (fragmentTorrents != null)
 				fragmentTorrents.updateConnectionStatus(false, null);
-			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			return true;
 		}
 
@@ -449,7 +442,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		menu.findItem(R.id.action_help).setVisible(false);
 		if (fragmentTorrents != null)
 			fragmentTorrents.updateConnectionStatus(true, currentConnection.getType());
-		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		return true;
 	}
@@ -571,7 +564,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		filterSelected(selectedServer, false);
 		addFromIntent();
 		skipNextOnNavigationItemSelectedCalls++; // Prevent this selection from launching filterSelected() again
-		getActionBar().setSelectedNavigationItem(position + 1);
+		getSupportActionBar().setSelectedNavigationItem(position + 1);
 	}
 
 	/**
@@ -665,7 +658,6 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		// Adding a local .torrent file; the title we show is just the file name
 		if (dataUri.getScheme().equals("file")) {
 			addTorrentByFile(data, title);
-			return;
 		}
 
 	}
@@ -737,20 +729,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	 */
 	@Override
 	public void addRefreshableView(View view) {
-		if (pullToRefreshAttacher == null) {
-			// Still need to initialise the PullToRefreshAttacher
-			Options options = new PullToRefreshAttacher.Options();
-			options.headerTransformer = new NoProgressHeaderTransformer();
-			pullToRefreshAttacher = PullToRefreshAttacher.get(this, options);
-		}
-		pullToRefreshAttacher.addRefreshableView(view, new OnRefreshListener() {
-			@Override
-			public void onRefreshStarted(View view) {
-				// Just refresh the full screen, now that the user has pulled to refresh
-				pullToRefreshAttacher.setRefreshComplete();
-				refreshScreen();
-			}
-		});
+		// TODO Add new style pull to refresh library
 	}
 
 	@OptionsItem(resName = "action_refresh")

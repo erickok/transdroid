@@ -166,7 +166,7 @@ public class MainSettingsActivity extends PreferenceActivity {
 	protected void onResume() {
 		super.onResume();
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		//TODO getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		prefs = getPreferenceManager().getSharedPreferences();
 		if (getPreferenceScreen() != null) {

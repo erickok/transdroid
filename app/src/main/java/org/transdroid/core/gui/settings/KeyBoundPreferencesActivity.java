@@ -78,14 +78,14 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceActivity {
 		// Monitor preference changes
 		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(
 				onPreferenceChangeListener);
-	};
+	}
 
 	protected void onPause() {
 		super.onPause();
 		// Stop monitoring preference changes
 		PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(
 				onPreferenceChangeListener);
-	};
+	}
 
 	private OnSharedPreferenceChangeListener onPreferenceChangeListener = new OnSharedPreferenceChangeListener() {
 		@Override

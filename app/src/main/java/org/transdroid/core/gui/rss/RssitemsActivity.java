@@ -28,13 +28,13 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.rssparser.Channel;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
 @EActivity(resName = "activity_rssitems")
-public class RssitemsActivity extends Activity {
+public class RssitemsActivity extends ActionBarActivity {
 
 	@Extra
 	protected Channel rssfeed = null;
@@ -49,7 +49,6 @@ public class RssitemsActivity extends Activity {
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -64,8 +63,8 @@ public class RssitemsActivity extends Activity {
 		}
 
 		// Simple action bar with up button and torrent name as title
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeedName));
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeedName));
 
 		// Get the intent extras and show them to the already loaded fragment
 		fragmentItems.update(rssfeed, false);

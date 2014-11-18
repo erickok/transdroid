@@ -32,7 +32,6 @@ import org.androidannotations.annotations.UiThread;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.lists.LocalTorrent;
-import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper;
@@ -64,14 +63,11 @@ import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.Options;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Toast;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -84,7 +80,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  */
 @EActivity(resName = "activity_details")
 @OptionsMenu(resName = "activity_details")
-public class DetailsActivity extends Activity implements TorrentTasksExecutor, RefreshableActivity {
+public class DetailsActivity extends ActionBarActivity implements TorrentTasksExecutor, RefreshableActivity {
 
 	@Extra
 	@InstanceState
@@ -103,7 +99,6 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Bean
 	protected ApplicationSettings applicationSettings;
 	private IDaemonAdapter currentConnection = null;
-	private PullToRefreshAttacher pullToRefreshAttacher = null;
 
 	// Details view components
 	@FragmentById(resName = "torrentdetails_fragment")
@@ -114,7 +109,6 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -129,8 +123,8 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 		}
 
 		// Simple action bar with up, torrent name as title and refresh button
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
 
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
@@ -161,20 +155,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	 */
 	@Override
 	public void addRefreshableView(View view) {
-		if (pullToRefreshAttacher == null) {
-			// Still need to initialise the PullToRefreshAttacher
-			Options options = new PullToRefreshAttacher.Options();
-			options.headerTransformer = new NoProgressHeaderTransformer();
-			pullToRefreshAttacher = PullToRefreshAttacher.get(this, options);
-		}
-		pullToRefreshAttacher.addRefreshableView(view, new OnRefreshListener() {
-			@Override
-			public void onRefreshStarted(View view) {
-				// Just refresh the full screen, now that the user has pulled to refresh
-				pullToRefreshAttacher.setRefreshComplete();
-				refreshScreen();
-			}
-		});
+		// TODO Add new style pull to refresh library
 	}
 
 	@OptionsItem(resName = "action_refresh")

@@ -43,7 +43,7 @@ public class NotificationSettingsActivity extends PreferenceActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		// TODO getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Load the notification-related preferences from XML and update availability thereof
 		addPreferencesFromResource(R.xml.pref_notifications);

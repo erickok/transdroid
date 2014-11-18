@@ -57,7 +57,7 @@ public class HelpSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		// TODO getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Just load the system-related preferences from XML
 		addPreferencesFromResource(R.xml.pref_help);

@@ -3,12 +3,12 @@ apply plugin: 'android-apt'
 apply from: '../signing.gradle'
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 21
     buildToolsVersion '20.0.0'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 216
         versionName '2.3.0-beta'
     }
@@ -46,9 +46,9 @@ dependencies {
     compile 'org.androidannotations:androidannotations-api:3.1'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
-    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:0.8'
-    compile 'de.keyboardsurfer.android.widget:crouton:1.8.+'
+    compile 'de.keyboardsurfer.android.widget:crouton:1.8.5@aar'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.+'
+    compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'com.android.support:support-annotations:20.0.0'
     apt "org.androidannotations:androidannotations:3.1"
 }

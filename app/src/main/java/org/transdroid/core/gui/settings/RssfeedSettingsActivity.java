@@ -46,7 +46,7 @@ public class RssfeedSettingsActivity extends KeyBoundPreferencesActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		// TODO getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Load the raw preferences to show in this screen
 		init(R.xml.pref_rssfeed, ApplicationSettings_.getInstance_(this).getMaxRssfeed());
