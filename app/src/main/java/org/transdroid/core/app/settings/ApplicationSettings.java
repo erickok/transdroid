@@ -258,7 +258,7 @@ public class ApplicationSettings {
 			edit.putInt("header_defaultserver", --order);
 		}
 
-		edit.commit();
+		edit.apply();
 
 	}
 
@@ -352,7 +352,7 @@ public class ApplicationSettings {
 	 * @param order The key identifying the specific server
 	 */
 	public void setLastUsedServerKey(int order) {
-		prefs.edit().putInt("system_lastusedserver", order).commit();
+		prefs.edit().putInt("system_lastusedserver", order).apply();
 	}
 
 	/**
@@ -367,10 +367,10 @@ public class ApplicationSettings {
 
 	/**
 	 * Registers some navigation filter as being the last used by the user
-	 * @param server The navigation filter that the user last used in the interface
+	 * @param filter The navigation filter that the user last used in the interface
 	 */
 	public void setLastUsedNavigationFilter(NavigationFilter filter) {
-		prefs.edit().putString("system_lastusedfilter", filter.getCode()).commit();
+		prefs.edit().putString("system_lastusedfilter", filter.getCode()).apply();
 	}
 
 	/**
@@ -432,7 +432,7 @@ public class ApplicationSettings {
 		edit.remove("websearch_name_" + max);
 		edit.remove("websearch_baseurl_" + max);
 		edit.remove("websearch_cookies_" + max);
-		edit.commit();
+		edit.apply();
 
 	}
 
@@ -503,7 +503,7 @@ public class ApplicationSettings {
 		edit.remove("rssfeed_reqauth_" + max);
 		edit.remove("rssfeed_alarmnew_" + max);
 		edit.remove("rssfeed_lastviewed_" + max);
-		edit.commit();
+		edit.apply();
 
 	}
 
@@ -522,7 +522,7 @@ public class ApplicationSettings {
 		Editor edit = prefs.edit();
 		edit.putLong("rssfeed_lastviewed_" + order, lastViewed.getTime());
 		edit.putString("rssfeed_lastvieweditemurl_" + order, lastViewedItemUrl);
-		edit.commit();
+		edit.apply();
 	}
 
 	/**
@@ -531,8 +531,10 @@ public class ApplicationSettings {
 	 * @param currentSortAscending The sort order direction that was last used
 	 */
 	public void setLastUsedSortOrder(TorrentsSortBy currentSortOrder, boolean currentSortAscending) {
-		prefs.edit().putInt("system_lastusedsortorder", currentSortOrder.getCode()).commit();
-		prefs.edit().putBoolean("system_lastusedsortdirection", currentSortAscending).commit();
+		Editor edit = prefs.edit();
+		edit.putInt("system_lastusedsortorder", currentSortOrder.getCode());
+		edit.putBoolean("system_lastusedsortdirection", currentSortAscending);
+		edit.apply();
 	}
 
 	/**
@@ -631,10 +633,10 @@ public class ApplicationSettings {
 
 	/**
 	 * Registers the unique key of some web search or in-app search site as being last used by the user
-	 * @param order The key identifying the specific server
+	 * @param site The site settings to register as being last used
 	 */
 	public void setLastUsedSearchSite(SearchSetting site) {
-		prefs.edit().putString("header_setsearchsite", site.getKey()).commit();
+		prefs.edit().putString("header_setsearchsite", site.getKey()).apply();
 	}
 
 	/**
@@ -660,7 +662,7 @@ public class ApplicationSettings {
 	 * @param lastStats A JSON array of JSON objects that each represent a single seen torrent
 	 */
 	public void setServerLastStats(ServerSetting server, JSONArray lastStats) {
-		prefs.edit().putString(server.getUniqueIdentifier(), lastStats.toString()).commit();
+		prefs.edit().putString(server.getUniqueIdentifier(), lastStats.toString()).apply();
 	}
 
 	/**
@@ -699,7 +701,7 @@ public class ApplicationSettings {
 		edit.putBoolean("widget_reverse_" + appWidgetId, settings.shouldReserveSort());
 		edit.putBoolean("widget_showstatus_" + appWidgetId, settings.shouldShowStatusView());
 		edit.putBoolean("widget_darktheme_" + appWidgetId, settings.shouldUseDarkTheme());
-		edit.commit();
+		edit.apply();
 	}
 
 	/**
@@ -714,7 +716,7 @@ public class ApplicationSettings {
 		edit.remove("widget_reverse_" + appWidgetId);
 		edit.remove("widget_showstatus_" + appWidgetId);
 		edit.remove("widget_darktheme_" + appWidgetId);
-		edit.commit();
+		edit.apply();
 	}
 
 }

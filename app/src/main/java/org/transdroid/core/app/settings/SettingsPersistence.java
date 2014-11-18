@@ -53,20 +53,36 @@ public class SettingsPersistence {
 	public static final File DEFAULT_SETTINGS_FILE = new File(DEFAULT_SETTINGS_DIR + DEFAULT_SETTINGS_FILENAME);
 
 	/**
-	 * Synchronously reads the server, web searches, RSS feed, background service and system settings from a file in
-	 * JSON format.
-	 * @param settingsFile The local file to write the settings to
-	 * @throws FileNotFoundException Thrown when the settings file doesn't exist or couln't be read
+	 * Reads the server, web searches, RSS feed, background service and system settings from a JSON-encoded String, such as when read via a QR code.
+	 * @param prefs The application-global preferences object to write settings to
+	 * @param contents The JSON-encoded settings as raw String
 	 * @throws JSONException Thrown when the file did not contain valid JSON content
 	 */
-	public void importSettings(SharedPreferences prefs, File settingsFile) throws FileNotFoundException,
+	public void importSettingsAsString(SharedPreferences prefs, String contents) throws JSONException {
+
+		importSettings(prefs, new JSONObject(contents));
+
+	}
+
+	/**
+	 * Synchronously reads the server, web searches, RSS feed, background service and system settings from a file in
+	 * JSON format.
+	 * @param prefs The application-global preferences object to write settings to
+	 * @param settingsFile The local file to read the settings from
+	 * @throws FileNotFoundException Thrown when the settings file doesn't exist or couldn't be read
+	 * @throws JSONException Thrown when the file did not contain valid JSON content
+	 */
+	public void importSettingsFromFile(SharedPreferences prefs, File settingsFile) throws FileNotFoundException,
 			JSONException {
 
-		Editor editor = prefs.edit();
-
-		// Read the settings file
 		String raw = HttpHelper.convertStreamToString(new FileInputStream(settingsFile));
-		JSONObject json = new JSONObject(raw);
+		importSettings(prefs, new JSONObject(raw));
+
+	}
+
+	public void importSettings(SharedPreferences prefs, JSONObject json) throws JSONException {
+
+		Editor editor = prefs.edit();
 
 		// Import servers
 		if (json.has("servers")) {
@@ -96,7 +112,7 @@ public class SettingsPersistence {
 				if (server.has("folder"))
 					editor.putString("server_folder_" + postfix, server.getString("folder"));
 				if (server.has("use_auth"))
-					editor.putBoolean("server_useauth_" + postfix, server.getBoolean("use_auth"));
+					editor.putBoolean("server_disableauth_" + postfix, !server.getBoolean("use_auth"));
 				if (server.has("username"))
 					editor.putString("server_user_" + postfix, server.getString("username"));
 				if (server.has("password"))
@@ -132,6 +148,8 @@ public class SettingsPersistence {
 					editor.putString("websearch_name_" + postfix, site.getString("name"));
 				if (site.has("url"))
 					editor.putString("websearch_baseurl_" + postfix, site.getString("url"));
+				if (site.has("cookies"))
+					editor.putString("websearch_cookies_" + postfix, site.getString("cookies"));
 
 			}
 		}
@@ -149,6 +167,8 @@ public class SettingsPersistence {
 					editor.putString("rssfeed_url_" + postfix, feed.getString("url"));
 				if (feed.has("needs_auth"))
 					editor.putBoolean("rssfeed_reqauth_" + postfix, feed.getBoolean("needs_auth"));
+				if (feed.has("new_item_alarm"))
+					editor.putBoolean("rssfeed_alarmnew_" + postfix, feed.getBoolean("new_item_alarm"));
 				if (feed.has("last_seen"))
 					editor.putString("rssfeed_lastnew_" + postfix, feed.getString("last_seen"));
 
@@ -168,24 +188,54 @@ public class SettingsPersistence {
 			editor.putInt("notifications_ledcolour", json.getInt("alarm_ledcolour"));
 		if (json.has("alarm_adwnotifications"))
 			editor.putBoolean("notifications_adwnotify", json.getBoolean("alarm_adwnotifications"));
+		if (json.has("system_dormantasinactive"))
+			editor.putBoolean("system_dormantasinactive", json.getBoolean("system_dormantasinactive"));
+		if (json.has("system_autorefresh"))
+			editor.putString("system_autorefresh", json.getString("system_autorefresh"));
 		if (json.has("system_checkupdates"))
 			editor.putBoolean("system_checkupdates", json.getBoolean("system_checkupdates"));
 		if (json.has("system_usedarktheme"))
 			editor.putBoolean("system_usedarktheme", json.getBoolean("system_usedarktheme"));
 
-		editor.commit();
+		editor.apply();
 
 	}
 
 	/**
+	 * Returns encoded server, web searches, RSS feed, background service and system settings as a JSON data object structure, serialized to a String.
+	 * @param prefs The application-global preferences object to read settings from
+	 * @throws JSONException Thrown when the JSON content could not be constructed properly
+	 */
+	public String exportSettingsAsString(SharedPreferences prefs) throws JSONException {
+		return exportSettings(prefs).toString();
+	}
+	
+	/**
 	 * Synchronously writes the server, web searches, RSS feed, background service and system settings to a file in JSON
 	 * format.
-	 * @param prefs The application-global preferences object to write settings to
+	 * @param prefs The application-global preferences object to read settings from
 	 * @param settingsFile The local file to read the settings from
 	 * @throws JSONException Thrown when the JSON content could not be constructed properly
 	 * @throws IOException Thrown when the settings file could not be created or written to
 	 */
-	public void exportSettings(SharedPreferences prefs, File settingsFile) throws JSONException, IOException {
+	public void exportSettingsToFile(SharedPreferences prefs, File settingsFile) throws JSONException, IOException {
+
+		JSONObject json = exportSettings(prefs);
+		
+		// Serialise the JSON object to a file
+		if (settingsFile.exists()) {
+			settingsFile.delete();
+		}
+		settingsFile.getParentFile().mkdirs();
+		settingsFile.createNewFile();
+		FileWriter writer = new FileWriter(settingsFile);
+		writer.write(json.toString(2));
+		writer.flush();
+		writer.close();
+
+	}
+
+	private JSONObject exportSettings(SharedPreferences prefs) throws JSONException {
 
 		// Create a single JSON object that will contain all settings
 		JSONObject json = new JSONObject();
@@ -207,7 +257,7 @@ public class SettingsPersistence {
 			server.put("ssl_accept_all", prefs.getBoolean("server_ssltrustall_" + postfixi, false));
 			server.put("ssl_trust_key", prefs.getString("server_ssltrustkey_" + postfixi, null));
 			server.put("folder", prefs.getString("server_folder_" + postfixi, null));
-			server.put("use_auth", prefs.getBoolean("server_useauth_" + postfixi, true));
+			server.put("use_auth", !prefs.getBoolean("server_disableauth_" + postfixi, false));
 			server.put("username", prefs.getString("server_user_" + postfixi, null));
 			server.put("password", prefs.getString("server_pass_" + postfixi, null));
 			server.put("extra_password", prefs.getString("server_extrapass_" + postfixi, null));
@@ -234,6 +284,7 @@ public class SettingsPersistence {
 			JSONObject site = new JSONObject();
 			site.put("name", prefs.getString("websearch_name_" + postfixj, null));
 			site.put("url", prefs.getString("websearch_baseurl_" + postfixj, null));
+			site.put("cookies", prefs.getString("websearch_cookies_" + postfixj, null));
 
 			sites.put(site);
 			j++;
@@ -251,6 +302,7 @@ public class SettingsPersistence {
 			feed.put("name", prefs.getString("rssfeed_name_" + postfixk, null));
 			feed.put("url", prefs.getString("rssfeed_url_" + postfixk, null));
 			feed.put("needs_auth", prefs.getBoolean("rssfeed_reqauth_" + postfixk, false));
+			feed.put("new_item_alarm", prefs.getBoolean("rssfeed_alarmnew_" + postfixk, false));
 			feed.put("last_seen", prefs.getString("rssfeed_lastnew_" + postfixk, null));
 
 			feeds.put(feed);
@@ -266,20 +318,13 @@ public class SettingsPersistence {
 		json.put("alarm_vibrate", prefs.getBoolean("notifications_vibrate", false));
 		json.put("alarm_ledcolour", prefs.getInt("notifications_ledcolour", -1));
 		json.put("alarm_adwnotifications", prefs.getBoolean("notifications_adwnotify", false));
-		json.put("system_checkupdates", prefs.getBoolean("system_checkupdates", true));
+		json.put("system_dormantasinactive", prefs.getBoolean("system_dormantasinactive", false));
+		json.put("system_autorefresh", prefs.getString("system_autorefresh", "0"));
 		json.put("system_usedarktheme", prefs.getBoolean("system_usedarktheme", false));
+		json.put("system_checkupdates", prefs.getBoolean("system_checkupdates", true));
 
-		// Serialise the JSON object to a file
-		if (settingsFile.exists()) {
-			settingsFile.delete();
-		}
-		settingsFile.getParentFile().mkdirs();
-		settingsFile.createNewFile();
-		FileWriter writer = new FileWriter(settingsFile);
-		writer.write(json.toString(2));
-		writer.flush();
-		writer.close();
-
+		return json;
+		
 	}
-
+	
 }

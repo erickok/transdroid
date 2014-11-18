@@ -712,11 +712,11 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	@OptionsItem(resName = "action_add_frombarcode")
 	protected void startBarcodeScanner() {
-		BarcodeHelper.startBarcodeScanner(this);
+		BarcodeHelper.startBarcodeScanner(this, BarcodeHelper.ACTIVITY_BARCODE_ADDTORRENT);
 	}
 
 	@Background
-	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE)
+	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE_ADDTORRENT)
 	public void onBarcodeScanned(int resultCode, Intent data) {
 		// We receive from the helper either a URL (as string) or a query we can start a search for
 		String query = BarcodeHelper.handleScanResult(resultCode, data);
