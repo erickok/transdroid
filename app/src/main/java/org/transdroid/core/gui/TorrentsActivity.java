@@ -111,6 +111,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnActionExpandListener;
@@ -135,7 +136,8 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		RefreshableActivity {
 
 	private static final int RESULT_DETAILS = 0;
-
+	// Fragment uses this to pause the refresh across restarts
+	public boolean stopRefresh = false;
 	// Navigation components
 	@Bean
 	protected Log log;
@@ -150,18 +152,11 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	protected ServerStatusView serverStatusView;
 	@SystemService
 	protected SearchManager searchManager;
-	private MenuItem searchMenu = null;
-	private PullToRefreshAttacher pullToRefreshAttacher = null;
-
 	// Settings
 	@Bean
 	protected ApplicationSettings applicationSettings;
 	@Bean
 	protected SystemSettings systemSettings;
-	@InstanceState
-	boolean firstStart = true;
-	int skipNextOnNavigationItemSelectedCalls = 2;
-	private IDaemonAdapter currentConnection = null;
 	@InstanceState
 	protected NavigationFilter currentFilter = null;
 	@InstanceState
@@ -170,17 +165,29 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	protected boolean turleModeEnabled = false;
 	@InstanceState
 	protected ArrayList<Label> lastNavigationLabels;
-
 	// Contained torrent and details fragments
 	@FragmentById(resName = "torrents_fragment")
 	protected TorrentsFragment fragmentTorrents;
 	@FragmentById(resName = "torrentdetails_fragment")
 	protected DetailsFragment fragmentDetails;
-
+	@InstanceState
+	boolean firstStart = true;
+	int skipNextOnNavigationItemSelectedCalls = 2;
+	private MenuItem searchMenu = null;
+	private PullToRefreshAttacher pullToRefreshAttacher = null;
+	private IDaemonAdapter currentConnection = null;
 	// Auto refresh task
 	private AsyncTask<Void, Void, Void> autoRefreshTask;
-	// Fragment uses this to pause the refresh across restarts
-	public boolean stopRefresh = false;
+	// Handles item selections on the dedicated list of filter items
+	private OnItemClickListener onFilterListItemClicked = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			filtersList.setItemChecked(position, true);
+			Object item = filtersList.getAdapter().getItem(position);
+			if (item instanceof SimpleListItem)
+				filterSelected((SimpleListItem) item, false);
+		}
+	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -466,17 +473,6 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		return false;
 	}
 
-	// Handles item selections on the dedicated list of filter items
-	private OnItemClickListener onFilterListItemClicked = new OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			filtersList.setItemChecked(position, true);
-			Object item = filtersList.getAdapter().getItem(position);
-			if (item instanceof SimpleListItem)
-				filterSelected((SimpleListItem) item, false);
-		}
-	};
-
 	/**
 	 * A new filter was selected; update the view over the current data
 	 * @param item The touched filter item
@@ -719,11 +715,20 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE_ADDTORRENT)
 	public void onBarcodeScanned(int resultCode, Intent data) {
 		// We receive from the helper either a URL (as string) or a query we can start a search for
-		String query = BarcodeHelper.handleScanResult(resultCode, data);
-		if (query.startsWith("http") || query.startsWith("https"))
-			addTorrentByUrl(query, "QR code result"); // No torrent title known
-		else
-			startSearch(query, false, null, false);
+		String query = BarcodeHelper.handleScanResult(resultCode, data, navigationHelper.enableSearchUi());
+		onBarcodeScanHandled(data.getStringExtra("SCAN_RESULT"), query);
+	}
+
+	@UiThread
+	protected void onBarcodeScanHandled(String barcode, String result) {
+		log.d(this, "Scanned barcode " + barcode + " and got " + result);
+		if (TextUtils.isEmpty(result)) {
+			Crouton.showText(this, R.string.error_noproductforcode, NavigationHelper.CROUTON_ERROR_STYLE);
+		} else if (result.startsWith("http") || result.startsWith("https")) {
+			addTorrentByUrl(result, "QR code result"); // No torrent title known
+		} else if (navigationHelper.enableSearchUi()) {
+			startSearch(result, false, null, false);
+		}
 	}
 
 	/**

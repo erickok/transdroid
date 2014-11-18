@@ -40,8 +40,8 @@ public class BarcodeHelper {
 	/**
 	 * Call this to start a bar code scanner intent. The calling activity will receive an Intent result with ID {@link
 	 * #ACTIVITY_BARCODE_ADDTORRENT} or {@link #ACTIVITY_BARCODE_QRSETTINGS}. From there {@link #handleScanResult(int,
-	 * Intent)} can be called to parse the result into a search query, in case of {@link #ACTIVITY_BARCODE_ADDTORRENT}
-	 * scans.
+	 * android.content.Intent, boolean)} can be called to parse the result into a search query, in case of {@link
+	 * #ACTIVITY_BARCODE_ADDTORRENT} scans.
 	 * @param activity The calling activity, to which the result is returned or a dialog is bound that asks to install
 	 * the bar code scanner
 	 * @param requestCode {@link #ACTIVITY_BARCODE_ADDTORRENT} or {@link #ACTIVITY_BARCODE_QRSETTINGS
@@ -100,17 +100,19 @@ public class BarcodeHelper {
 	 * and return a query search query appropriate to the bar code.
 	 * @param resultCode The raw result code as returned by the bar code scanner
 	 * @param data The raw data as returned from the bar code scanner
+	 * @param supportsSearch Whether the application has the search UI enabled, such that it can use the scanned barcode
+	 * to find torrents
 	 * @return A String that can be used as new search query, or null if the bar code could not be scanned or no query
 	 * can be constructed for it
 	 */
-	public static String handleScanResult(int resultCode, Intent data) {
+	public static String handleScanResult(int resultCode, Intent data, boolean supportsSearch) {
 		String contents = data.getStringExtra("SCAN_RESULT");
 		String formatName = data.getStringExtra("SCAN_RESULT_FORMAT");
 		if (formatName != null && formatName.equals("QR_CODE")) {
 			// Scanned barcode was a QR code: return the contents directly
 			return contents;
 		} else {
-			if (TextUtils.isEmpty(contents)) {
+			if (TextUtils.isEmpty(contents) || !supportsSearch) {
 				return null;
 			}
 			// Get a meaningful search query based on a Google Search product lookup
