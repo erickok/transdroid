@@ -433,7 +433,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				if (urlBase == null || urlBase.equals(""))
 					urlBase = "ftp://" + currentServerSettings.getAddress();
 				if (!urlBase.endsWith("/"))
-					urlBase = urlBase + "/";
+					urlBase += "/";
 				Uri urlBaseUri = Uri.parse(urlBase);
 				urlBaseUri = urlBaseUri.normalizeScheme();
 				String basePath = urlBaseUri.getPath();
@@ -445,7 +445,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				andftpStart.putExtra("command_type", "download");
 				andftpStart.putExtra("ftp_pasv", "true");
 				if (urlBaseUri.getUserInfo() != null)
-					andftpStart.putExtra("ftp_username", Uri.parse(urlBase).getUserInfo());
+					andftpStart.putExtra("ftp_username", urlBaseUri.getUserInfo());
 				else
 					andftpStart.putExtra("ftp_username", currentServerSettings.getUsername());
 				if (currentServerSettings.getFtpPassword() != null
@@ -463,7 +463,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 					if (file != null) {
 						if (file.startsWith("/"))
 							file = file.substring(1);
-						andftpStart.putExtra("remote_file" + (f + 1), basePath + file);
+					andftpStart.putExtra("remote_file" + (f + 1), basePath + file);
 					}
 				}
 				if (andftpStart.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -473,7 +473,11 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				}
 
 				// Try using a VIEW intent given an ftp:// scheme URI
-				String url = urlBase + checked.get(0).getRelativePath();
+				String file = checked.get(0).getRelativePath();
+				if (file != null) {
+					if (file.startsWith("/"))
+						file = file.substring(1);
+				String url = urlBase + file;
 				Intent simpleStart = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
 						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				if (simpleStart.resolveActivity(getActivity().getPackageManager()) != null) {
