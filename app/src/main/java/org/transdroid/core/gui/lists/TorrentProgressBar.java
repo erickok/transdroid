@@ -82,12 +82,12 @@ public class TorrentProgressBar extends View {
 	}
 
 	private void initPaints() {
-		notdonePaint.setColor(0xFFEEEEEE);		// Light grey
-		inactiveDonePaint.setColor(0xFFA759D4);	// Purple
-		inactivePaint.setColor(0xFF9E9E9E);		// Grey
-		progressPaint.setColor(0xFF42A8FA);		// Blue
-		donePaint.setColor(0xFF8ACC12);			// Green
-		errorPaint.setColor(0xFFDE3939);		// Red
+		notdonePaint.setColor(getResources().getColor(R.color.torrent_background));
+		inactiveDonePaint.setColor(getResources().getColor(R.color.torrent_paused));
+		inactivePaint.setColor(getResources().getColor(R.color.torrent_other));
+		progressPaint.setColor(getResources().getColor(R.color.torrent_downloading));
+		donePaint.setColor(getResources().getColor(R.color.torrent_seeding));
+		errorPaint.setColor(getResources().getColor(R.color.torrent_error));
 	}
 
 	@Override

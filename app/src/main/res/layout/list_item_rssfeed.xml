@@ -19,7 +19,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:background="?attr/activatable_background_transdroid"
+	android:background="?attr/activatable_background"
 	android:orientation="horizontal"
 	android:paddingBottom="@dimen/margin_half"
 	android:paddingLeft="@dimen/margin_default"

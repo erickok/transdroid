@@ -27,7 +27,6 @@
 		android:choiceMode="multipleChoiceModal"
 		android:divider="@null"
 		android:dividerHeight="0dip"
-		android:listSelector="@null"
 		android:visibility="gone" />
 
 	<ProgressBar

@@ -16,23 +16,25 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
-	
-	<!-- General layout colours -->
-	<color name="green">#80c713</color>
-	<color name="green_dark">#4b6617</color>
+
+    <!-- General layout colours -->
+    <color name="green_light">#A5D6A7</color>
+    <color name="green">#388E3C</color>
+    <color name="green_dark">#1B5E20</color>
     <color name="ledgreen">#7dbb21</color>
-    <color name="crouton_error">#c81113</color>
-    <color name="crouton_info">#aada62</color>
-    
+    <color name="crouton_error">#C62828</color>
+    <color name="crouton_info">#A5D6A7</color>
+
     <!-- Torrent and file status colours -->
-    <color name="torrent_downloading">#42a8fa</color>	<!-- Blue -->
-    <color name="torrent_paused">#a759d4</color>		<!-- Purple -->
-    <color name="torrent_seeding">#8acc12</color>		<!-- Green -->
-    <color name="torrent_error">#de3939</color>			<!-- Red -->
-    <color name="torrent_other">#9e9e9e</color>			<!-- Grey -->
-    <color name="file_low">#c8e88e</color>				<!-- Light green -->
-    <color name="file_normal">#80c713</color>			<!-- Normal green -->
-    <color name="file_high">#4b6617</color>				<!-- Dark green -->
-    <color name="file_off">#9e9e9e</color>				<!-- Grey -->
-    
+    <color name="torrent_downloading">#1E88E5</color>	<!-- Blue -->
+    <color name="torrent_paused">#AB47BC</color>		<!-- Purple -->
+    <color name="torrent_seeding">#66BB6A</color>		<!-- Green -->
+    <color name="torrent_error">#C62828</color>			<!-- Red -->
+    <color name="torrent_other">#757575</color>			<!-- Grey -->
+    <color name="torrent_background">#BDBDBD</color>	<!-- Light grey -->
+    <color name="file_low">#A5D6A7</color>				<!-- Light green -->
+    <color name="file_normal">#66BB6A</color>			<!-- Normal green -->
+    <color name="file_high">#1B5E20</color>				<!-- Dark green -->
+    <color name="file_off">#757575</color>				<!-- Grey -->
+
 </resources>

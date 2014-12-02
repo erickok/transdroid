@@ -14,24 +14,25 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
 		android:id="@+id/action_resume"
 		android:icon="?attr/ic_action_resume"
-		android:showAsAction="always"
+		app:showAsAction="always"
 		android:title="@string/action_resume"
 		android:orderInCategory="200" />
 	<item
 		android:id="@+id/action_pause"
 		android:icon="?attr/ic_action_pause"
-		android:showAsAction="always"
+		app:showAsAction="always"
 		android:title="@string/action_pause"
 		android:orderInCategory="201" />
 	<item
 		android:id="@+id/action_start"
 		android:icon="?attr/ic_action_start"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_start"
 		android:orderInCategory="202">
 		<menu>
@@ -42,19 +43,19 @@
 	<item
 		android:id="@+id/action_start_direct"
 		android:icon="?attr/ic_action_start"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_start"
 		android:orderInCategory="202" />
 	<item
 		android:id="@+id/action_stop"
 		android:icon="?attr/ic_action_stop"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_stop"
 		android:orderInCategory="203" />
 	<item
 		android:id="@+id/action_remove"
 		android:icon="?attr/ic_action_remove"
-		android:showAsAction="always"
+		app:showAsAction="always"
 		android:title="@string/action_remove"
 		android:orderInCategory="204">
 		<menu>
@@ -65,25 +66,25 @@
 	<item
 		android:id="@+id/action_setlabel"
 		android:icon="?attr/ic_action_labels"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_setlabel"
 		android:orderInCategory="205" />
 	<item
 		android:id="@+id/action_forcerecheck"
 		android:icon="?attr/ic_action_forcerecheck"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_forcerecheck"
 		android:orderInCategory="206" />
 	<item
 		android:id="@+id/action_updatetrackers"
 		android:icon="?attr/ic_action_trackers"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_updatetrackers"
 		android:orderInCategory="207" />
 	<item
 		android:id="@+id/action_changelocation"
 		android:icon="?attr/ic_action_save"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_changelocation"
 		android:orderInCategory="208" />
 

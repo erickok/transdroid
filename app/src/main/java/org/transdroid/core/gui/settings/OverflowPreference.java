@@ -3,6 +3,8 @@ package org.transdroid.core.gui.settings;
 import org.transdroid.R;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.os.Build;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
@@ -48,7 +50,9 @@ public class OverflowPreference extends Preference {
 	    int top = layout.getPaddingTop();
 	    int right = layout.getPaddingRight();
 	    int left = layout.getPaddingLeft();
-	    layout.setBackgroundResource(R.drawable.selectable_background_holo_light);
+		TypedArray ta = getContext().obtainStyledAttributes(new int[] { android.R.attr.selectableItemBackground });
+	    layout.setBackgroundDrawable(ta.getDrawable(0));
+		ta.recycle();
 	    layout.setPadding(left, top, right, bottom);
 		layout.setOnClickListener(new OnClickListener() {
 			@Override

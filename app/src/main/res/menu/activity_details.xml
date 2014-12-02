@@ -14,12 +14,13 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
 		android:id="@+id/action_refresh"
 		android:icon="?attr/ic_action_refresh"
-		android:showAsAction="always"
+		app:showAsAction="always"
 		android:title="@string/action_refresh"
 		android:orderInCategory="100"/>
 

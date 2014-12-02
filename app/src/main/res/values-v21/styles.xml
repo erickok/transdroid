@@ -86,41 +86,4 @@
 		<item name="text_actionbar_secondary">@color/text_actionbar_light</item>
 	</style>
 
-	<!-- No theme background to let the user's wall paper shine through -->
-	<!-- Inspired by NoNonsenseNotes's ThemeWidgetConfig -->
-	<style name="TransdroidTheme.WidgetConfig" parent="@style/TransdroidTheme">
-		<item name="android:background">@null</item>
-		<item name="android:colorBackgroundCacheHint">@null</item>
-		<item name="android:windowContentOverlay">@null</item>
-		<item name="android:windowShowWallpaper">true</item>
-		<item name="android:windowBackground">@android:color/transparent</item>
-	</style>
-
-	<style name="SectionHeader" parent="TextAppearance.AppCompat">
-		<item name="android:drawablePadding">4dp</item>
-		<item name="android:layout_marginTop">8dp</item>
-		<item name="android:textColor">@color/green</item>
-		<item name="android:textSize">13sp</item>
-	</style>
-	
-	<style name="DefaultTextView" parent="TextAppearance.AppCompat">
-		<item name="android:textSize">@dimen/text_default</item>
-	</style>
-
-	<style name="LabelTextView" parent="TextAppearance.AppCompat">
-		<item name="android:textSize">@dimen/text_label</item>
-		<item name="android:background">#333</item>
-		<item name="android:textColor">#fff</item>
-		<item name="android:paddingLeft">4dip</item>
-		<item name="android:paddingRight">4dip</item>
-		<item name="android:paddingTop">2dip</item>
-		<item name="android:paddingBottom">2dip</item>
-	</style>
-	
-	<style name="BigNumberButton">
-		<item name="android:background">?android:attr/selectableItemBackground</item>
-		<item name="android:padding">@dimen/ui_bignumber_padding</item>
-		<item name="android:textSize">@dimen/ui_bignumber_size</item>
-	</style>
-	
 </resources>

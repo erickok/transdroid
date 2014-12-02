@@ -14,12 +14,13 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
 		android:id="@+id/action_add"
 		android:icon="?attr/ic_action_new"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_add"
 		android:orderInCategory="100">
 		<menu>
@@ -31,37 +32,37 @@
 	<item
 		android:id="@+id/action_search"
 		android:icon="?attr/ic_action_search"
-		android:showAsAction="collapseActionView|ifRoom"
+		app:showAsAction="collapseActionView|ifRoom"
 		android:title="@string/action_search"
 		android:orderInCategory="101"/>
 	<item
 		android:id="@+id/action_rss"
 		android:icon="?attr/ic_action_rss"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_rss"
 		android:orderInCategory="900"/>
 	<item
 		android:id="@+id/action_enableturtle"
 		android:icon="@drawable/ic_action_turtle_disabled"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_enableturtle"
 		android:orderInCategory="901"/>
 	<item
 		android:id="@+id/action_disableturtle"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:icon="@drawable/ic_action_turtle_enabled"
 		android:title="@string/action_disableturtle"
 		android:orderInCategory="902"/>
 	<item
 		android:id="@+id/action_refresh"
 		android:icon="?attr/ic_action_refresh"
-		android:showAsAction="always"
+		app:showAsAction="always"
 		android:title="@string/action_refresh"
 		android:orderInCategory="903"/>
 	<item
 		android:id="@+id/action_sort"
 		android:icon="?attr/ic_action_sort_by_size"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_sort"
 		android:orderInCategory="904">
 		<menu>
@@ -79,17 +80,17 @@
 	<item
 		android:id="@+id/action_filter"
 		android:icon="?attr/ic_action_filter"
-		android:showAsAction="ifRoom"
+		app:showAsAction="ifRoom"
 		android:title="@string/action_filter"
 		android:orderInCategory="905"/>
 	<item
 		android:id="@+id/action_help"
-		android:showAsAction="always"
+		app:showAsAction="always"
 		android:title="@string/action_help"
 		android:orderInCategory="906"/>
 	<item
 		android:id="@+id/action_settings"
-		android:showAsAction="always"
+		app:showAsAction="always"
 		android:title="@string/action_settings"
 		android:orderInCategory="907"/>
 

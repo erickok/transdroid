@@ -17,15 +17,14 @@
 package org.transdroid.core.gui.search;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,7 +59,7 @@ import java.util.List;
  */
 @EActivity(resName = "activity_search")
 @OptionsMenu(resName = "activity_search")
-public class SearchActivity extends Activity implements OnNavigationListener {
+public class SearchActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
 
 	@FragmentById(resName = "searchresults_fragment")
 	protected SearchResultsFragment fragmentResults;
@@ -97,7 +96,7 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getActionBar().setIcon(R.drawable.ic_activity_torrents);
+			getSupportActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -127,7 +126,7 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 		}
 
 		// Allow site selection via list (on large screens) or action bar spinner
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		if (searchsitesList != null) {
 			// The current layout has a dedicated list view to select the search site
 			SearchSitesAdapter searchSitesAdapter = SearchSitesAdapter_.getInstance_(this);
@@ -140,12 +139,12 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 			}
 		} else {
 			// Use the action bar spinner to select sites
-			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			getActionBar().setDisplayShowTitleEnabled(false);
-			getActionBar().setListNavigationCallbacks(new SearchSettingsDropDownAdapter(this, searchSites), this);
+			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			getSupportActionBar().setDisplayShowTitleEnabled(false);
+			getSupportActionBar().setListNavigationCallbacks(new SearchSettingsDropDownAdapter(this, searchSites), this);
 			// Select the last used site; this also starts the search!
 			if (lastUsedPosition >= 0) {
-				getActionBar().setSelectedNavigationItem(lastUsedPosition);
+				getSupportActionBar().setSelectedNavigationItem(lastUsedPosition);
 			}
 		}
 
@@ -274,7 +273,7 @@ public class SearchActivity extends Activity implements OnNavigationListener {
 			// Save the search site currently used to search for future usage
 			applicationSettings.setLastUsedSearchSite(lastUsedSite);
 			// Update the activity title (only shown on large devices)
-			getActionBar().setTitle(NavigationHelper.buildCondensedFontString(
+			getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(
 							getString(R.string.search_queryonsite, lastUsedQuery, lastUsedSite.getName())));
 			// Ask the results fragment to start a search for the specified query
 			fragmentResults.startSearch(lastUsedQuery, (SearchSite) lastUsedSite);

@@ -207,7 +207,7 @@ public class TorrentsActivity extends ActionBarActivity implements ActionBar.OnN
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayShowCustomEnabled(true);
 		actionBar.setCustomView(serverStatusView);
-		navigationSpinnerAdapter = FilterListDropDownAdapter_.getInstance_(this);
+		navigationSpinnerAdapter = FilterListDropDownAdapter_.getInstance_(getSupportActionBar().getThemedContext());
 		// Servers are always added to the action bar spinner
 		navigationSpinnerAdapter.updateServers(applicationSettings.getAllServerSettings());
 

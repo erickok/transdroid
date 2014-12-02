@@ -319,7 +319,7 @@
 			android:layout_width="0dip"
 			android:layout_height="match_parent"
 			android:layout_weight="1"
-			android:background="?attr/selectable_background_transdroid"
+			android:background="?attr/activatable_background"
 			android:textSize="14sp"
 			android:text="@android:string/cancel" />
 
@@ -334,7 +334,7 @@
 			android:layout_height="match_parent"
 			android:layout_weight="1"
 			android:textSize="14sp"
-			android:background="?attr/selectable_background_transdroid"
+			android:background="?attr/activatable_background"
 			android:text="@string/status_maxspeed_reset" />
 
 		<View
@@ -348,7 +348,7 @@
 			android:layout_height="match_parent"
 			android:layout_weight="1"
 			android:textSize="14sp"
-			android:background="?attr/selectable_background_transdroid"
+			android:background="?attr/activatable_background"
 			android:text="@android:string/ok" />
 	</LinearLayout>
 

@@ -32,6 +32,7 @@
 		android:drawablePadding="8dp"
 		android:gravity="center_vertical"
 		android:paddingRight="20dp"
+		android:textColor="?attr/text_actionbar"
 		android:text="@string/widget_done" />
 
 </FrameLayout>
