@@ -21,9 +21,11 @@ import java.util.List;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
+import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.SetTransferRatesDialog;
 import org.transdroid.core.gui.navigation.SetTransferRatesDialog.OnRatesPickedListener;
+import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.util.FileSizeConverter;
 
@@ -37,7 +39,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 public class ServerStatusView extends RelativeLayout implements OnRatesPickedListener {
 
 	@ViewById
-	protected TextView downcountText, upcountText, downcountSign, upcountSign, downspeedText, upspeedText;
+	protected TextView filterText, serverText, downcountText, upcountText, downcountSign, upcountSign, downspeedText, upspeedText;
 	@ViewById
 	protected View speedswrapperLayout;
 	private TorrentsActivity activity;
@@ -47,8 +49,24 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 	}
 
 	public ServerStatusView(TorrentsActivity activity) {
-		super(activity);
+		super(activity.getSupportActionBar().getThemedContext());
 		this.activity = activity;
+	}
+
+	/**
+	 * Updates the name of the current connected server.
+	 * @param currentServer The server currently connected to
+	 */
+	public void updateCurrentServer(IDaemonAdapter currentServer) {
+		serverText.setText(currentServer.getSettings().getName());
+	}
+
+	/**
+	 * Updates the name of the selected filter.
+	 * @param currentFilter The filter that is currently selected
+	 */
+	public void updateCurrentFilter(NavigationFilter currentFilter) {
+		filterText.setText(currentFilter.getName());
 	}
 
 	/**
@@ -57,7 +75,7 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 	 * @param dormantAsInactive Whether to treat dormant (0KB/s) torrent as inactive state torrents
 	 * @param supportsSetTransferRates Whether the connected torrent client supports setting of max transfer speeds
 	 */
-	public void update(List<Torrent> torrents, boolean dormantAsInactive, boolean supportsSetTransferRates) {
+	public void updateStatus(List<Torrent> torrents, boolean dormantAsInactive, boolean supportsSetTransferRates) {
 
 		if (torrents == null) {
 			downcountText.setText(null);

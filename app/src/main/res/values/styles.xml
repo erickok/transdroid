@@ -96,9 +96,21 @@
 		<item name="android:windowBackground">@android:color/transparent</item>
 	</style>
 
+	<style name="DefaultToolbar">
+		<item name="android:background">?attr/colorPrimary</item>
+		<item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+		<item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+	</style>
+
+	<style name="DefaultToolbarShadow">
+		<item name="android:background">@drawable/elevation_shadow</item>
+		<item name="android:layout_height">3dp</item>
+		<item name="android:layout_width">match_parent</item>
+	</style>
+
 	<style name="SectionHeader" parent="TextAppearance.AppCompat">
 		<item name="android:drawablePadding">4dp</item>
-		<item name="android:layout_marginTop">8dp</item>
+		<item name="android:layout_marginTop">@dimen/margin_default</item>
 		<item name="android:textColor">@color/green</item>
 		<item name="android:textSize">13sp</item>
 	</style>

@@ -1,35 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This layout is for 7" and 10" tablets in landscape shows torrents, filters and details. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="horizontal"
-	android:baselineAligned="false"
-	tools:context=".TorrentsActivity" >
+	android:orientation="vertical"
+	tools:context=".core.gui.TorrentsActivity_">
 
-	<ListView
-		android:id="@+id/filters_list"
-		android:layout_width="0dip"
-		android:layout_height="match_parent"
-		android:layout_weight="1"
-		android:choiceMode="singleChoice"
-		android:listSelector="?attr/activatable_background" />
-	
-	<fragment
-		android:id="@+id/torrents_fragment"
-		android:layout_width="0dip"
-		android:layout_height="match_parent"
-		android:layout_weight="2"
-		class="org.transdroid.core.gui.TorrentsFragment_"
-		tools:layout="@layout/fragment_torrents" />
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/torrents_toolbar"
+		style="@style/DefaultToolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:minHeight="?attr/actionBarSize"/>
 
-	<fragment
-		android:id="@+id/torrentdetails_fragment"
-		android:layout_width="0dip"
+	<View
+		style="@style/DefaultToolbarShadow"
+		android:layout_below="@id/torrents_toolbar"/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_weight="2"
-		class="org.transdroid.core.gui.DetailsFragment_"
-		tools:layout="@layout/fragment_details" />
-	
-</LinearLayout>
+		android:layout_below="@id/torrents_toolbar"
+		android:baselineAligned="false"
+		android:orientation="horizontal">
+
+		<ListView
+			android:id="@+id/filters_list"
+			android:layout_width="0dip"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:choiceMode="singleChoice"
+			tools:listitem="@layout/list_item_filter"/>
+
+		<fragment
+			android:id="@+id/torrents_fragment"
+			class="org.transdroid.core.gui.TorrentsFragment_"
+			android:layout_width="0dip"
+			android:layout_height="match_parent"
+			android:layout_weight="2"
+			tools:layout="@layout/fragment_torrents"/>
+
+		<fragment
+			android:id="@+id/torrentdetails_fragment"
+			class="org.transdroid.core.gui.DetailsFragment_"
+			android:layout_width="0dip"
+			android:layout_height="match_parent"
+			android:layout_weight="2"
+			tools:layout="@layout/fragment_details"/>
+
+	</LinearLayout>
+</RelativeLayout>

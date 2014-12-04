@@ -18,7 +18,7 @@
 
 <resources>
 
-    <style name="Theme.Transdroid.Dark" parent="Theme.AppCompat">
+    <style name="Theme.Transdroid.Dark" parent="Theme.AppCompat.NoActionBar">
 		<item name="colorPrimary">@color/green</item>
 		<item name="colorPrimaryDark">@color/green_dark</item>
     </style>

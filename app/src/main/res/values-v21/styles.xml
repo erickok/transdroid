@@ -45,7 +45,7 @@
 		<item name="ic_action_trackers">@drawable/ic_action_trackers_light</item>
 		<item name="ic_action_website">@drawable/ic_action_website_light</item>
 		<item name="loading_progress">@drawable/loading_progress_light</item>
-		<item name="activatable_background">@drawable/activatable_background</item>
+		<item name="activatable_background">?android:attr/selectableItemBackground</item>
 		<item name="text_bright">@color/text_bright_light</item>
 		<item name="text_actionbar">@color/text_actionbar_dark</item>
 		<item name="text_actionbar_secondary">@color/text_actionbar_light</item>
@@ -80,10 +80,23 @@
 		<item name="ic_action_trackers">@drawable/ic_action_trackers_dark</item>
 		<item name="ic_action_website">@drawable/ic_action_website_dark</item>
 		<item name="loading_progress">@drawable/loading_progress_dark</item>
-		<item name="activatable_background">@drawable/activatable_background</item>
+		<item name="activatable_background">?android:attr/selectableItemBackground</item>
 		<item name="text_bright">@color/text_bright_dark</item>
 		<item name="text_actionbar">@color/text_actionbar_dark</item>
 		<item name="text_actionbar_secondary">@color/text_actionbar_light</item>
+	</style>
+
+	<style name="DefaultToolbar">
+		<item name="android:background">?attr/colorPrimary</item>
+		<item name="android:elevation">3dp</item>
+		<item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+		<item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+	</style>
+
+	<style name="DefaultToolbarShadow">
+		<item name="android:visibility">gone</item>
+		<item name="android:layout_height">3dp</item>
+		<item name="android:layout_width">match_parent</item>
 	</style>
 
 </resources>

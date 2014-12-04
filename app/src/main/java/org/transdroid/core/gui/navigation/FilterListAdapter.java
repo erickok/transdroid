@@ -114,9 +114,4 @@ public class FilterListAdapter extends MergeAdapter {
 		notifyDataSetChanged();
 	}
 
-	@Override
-	public int getViewTypeCount() {
-		return 1;
-	}
-
 }

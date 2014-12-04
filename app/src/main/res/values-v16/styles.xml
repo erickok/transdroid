@@ -19,7 +19,7 @@
 	<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->
 	<style name="SectionHeader" parent="TextAppearance.AppCompat">
 		<item name="android:drawablePadding">4dp</item>
-		<item name="android:layout_marginTop">8dp</item>
+		<item name="android:layout_marginTop">@dimen/margin_default</item>
 		<item name="android:textColor">@color/green</item>
 		<item name="android:textSize">13sp</item>
 		<item name="android:fontFamily">sans-serif</item>

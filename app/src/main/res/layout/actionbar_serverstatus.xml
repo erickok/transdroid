@@ -15,82 +15,106 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
 	android:layout_height="?android:attr/actionBarSize"
-	android:layout_width="match_parent" >
+	android:orientation="horizontal">
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+		android:background="?attr/activatable_background"
+		android:clickable="true"
+		android:focusable="true"
+		android:orientation="vertical"
+		android:padding="@dimen/ui_serverstatus_margin">
+
+		<TextView
+			android:id="@+id/filter_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:fontFamily="sans-serif-condensed"
+			android:textColor="?attr/text_actionbar"
+			android:textIsSelectable="false"
+			android:textSize="@dimen/ui_navigation_filter"
+			tools:text="Downloading"/>
+
+		<TextView
+			android:id="@+id/server_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="-4dip"
+			android:fontFamily="sans-serif-light"
+			android:textColor="?attr/text_actionbar"
+			android:textIsSelectable="false"
+			android:textSize="@dimen/ui_navigation_server"
+			tools:text="XIRVIK RTORRENT"/>
+
+	</LinearLayout>
+
+	<View
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:layout_weight="1"/>
 
 	<RelativeLayout
 		android:id="@+id/speedswrapper_layout"
 		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:layout_gravity="right"
-		android:background="?attr/selectableItemBackground"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+		android:background="?attr/activatable_background"
 		android:clickable="true"
 		android:focusable="true"
-		android:paddingLeft="@dimen/margin_default"
-		android:paddingRight="@dimen/margin_default"
-		android:paddingTop="@dimen/ui_serverstatus_margin"
-		tools:ignore="UselessParent" >
-
-		<TextView
-			android:id="@+id/upcount_sign"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentRight="true"
-			android:fontFamily="sans-serif-light"
-			android:paddingTop="@dimen/ui_serverstatus_signmargin"
-			android:text="↑"
-			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_sign"
-			android:visibility="invisible"
-			tools:ignore="HardcodedText" />
-
-		<TextView
-			android:id="@+id/upcount_text"
-			android:layout_width="@dimen/ui_serverstatus_width"
-			android:layout_height="wrap_content"
-			android:layout_toLeftOf="@id/upcount_sign"
-			android:fontFamily="sans-serif-light"
-			android:gravity="right"
-			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_bignumber" />
-
-		<TextView
-			android:id="@+id/downcount_sign"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_toLeftOf="@id/upcount_text"
-			android:fontFamily="sans-serif-light"
-			android:paddingTop="@dimen/ui_serverstatus_signmargin"
-			android:text="↓"
-			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_sign"
-			android:visibility="invisible"
-			tools:ignore="HardcodedText" />
+		android:padding="@dimen/ui_serverstatus_margin">
 
 		<TextView
 			android:id="@+id/downcount_text"
 			android:layout_width="@dimen/ui_serverstatus_width"
 			android:layout_height="wrap_content"
-			android:layout_toLeftOf="@id/downcount_sign"
 			android:fontFamily="sans-serif-light"
 			android:gravity="right"
 			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_bignumber" />
+			android:textSize="@dimen/ui_serverstatus_bignumber"
+			tools:text="7"/>
 
 		<TextView
-			android:id="@+id/upspeed_text"
+			android:id="@+id/downcount_sign"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/downcount_text"
+			android:fontFamily="sans-serif-light"
+			android:text="↓"
+			android:textColor="?attr/text_actionbar"
+			android:textSize="@dimen/ui_serverstatus_sign"
+			android:visibility="invisible"
+			tools:ignore="HardcodedText"
+			tools:visibility="visible"/>
+
+		<TextView
+			android:id="@+id/upcount_text"
 			android:layout_width="@dimen/ui_serverstatus_width"
 			android:layout_height="wrap_content"
-			android:layout_alignLeft="@id/upcount_text"
-			android:layout_alignParentRight="true"
-			android:layout_below="@id/upcount_text"
-			android:layout_marginTop="-4dip"
+			android:layout_toRightOf="@id/downcount_sign"
 			android:fontFamily="sans-serif-light"
 			android:gravity="right"
 			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_smallnumber" />
+			android:textSize="@dimen/ui_serverstatus_bignumber"
+			tools:text="128"/>
+
+		<TextView
+			android:id="@+id/upcount_sign"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/upcount_text"
+			android:fontFamily="sans-serif-light"
+			android:text="↑"
+			android:textColor="?attr/text_actionbar"
+			android:textSize="@dimen/ui_serverstatus_sign"
+			android:visibility="invisible"
+			tools:ignore="HardcodedText"
+			tools:visibility="visible"/>
 
 		<TextView
 			android:id="@+id/downspeed_text"
@@ -103,7 +127,23 @@
 			android:fontFamily="sans-serif-light"
 			android:gravity="right"
 			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_smallnumber" />
+			android:textSize="@dimen/ui_serverstatus_smallnumber"
+			tools:text="1.2 MB/s"/>
+
+		<TextView
+			android:id="@+id/upspeed_text"
+			android:layout_width="@dimen/ui_serverstatus_width"
+			android:layout_height="wrap_content"
+			android:layout_alignLeft="@id/upcount_text"
+			android:layout_alignRight="@id/upcount_sign"
+			android:layout_below="@id/upcount_text"
+			android:layout_marginTop="-4dip"
+			android:fontFamily="sans-serif-light"
+			android:gravity="right"
+			android:textColor="?attr/text_actionbar"
+			android:textSize="@dimen/ui_serverstatus_smallnumber"
+			tools:text="678 KB/s"/>
+
 	</RelativeLayout>
 
-</FrameLayout>
+</LinearLayout>

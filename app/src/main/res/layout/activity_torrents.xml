@@ -1,16 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This layout is for phones in portrait and shows only the torrents list. -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+	android:id="@+id/drawer_layout"
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".TorrentsActivity" >
+	tools:context=".core.gui.TorrentsActivity_">
 
-	<fragment
-		android:id="@+id/torrents_fragment"
+	<!-- The main content view -->
+	<RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		class="org.transdroid.core.gui.TorrentsFragment_"
-		tools:layout="@layout/fragment_torrents" />
+		android:orientation="vertical">
 
-</FrameLayout>
+		<android.support.v7.widget.Toolbar
+			android:id="@+id/torrents_toolbar"
+			style="@style/DefaultToolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:minHeight="?attr/actionBarSize"/>
+
+		<View
+			style="@style/DefaultToolbarShadow"
+			android:layout_below="@id/torrents_toolbar"/>
+
+		<fragment
+			android:id="@+id/torrents_fragment"
+			class="org.transdroid.core.gui.TorrentsFragment_"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_below="@id/torrents_toolbar"
+			tools:layout="@layout/fragment_torrents"/>
+
+	</RelativeLayout>
+
+	<!-- The navigation drawer -->
+	<ListView
+		android:id="@+id/drawer_list"
+		android:layout_width="240dp"
+		android:layout_height="match_parent"
+		android:layout_gravity="start"
+		android:background="@android:color/white"
+		android:choiceMode="singleChoice"
+		android:divider="@android:color/transparent"
+		android:dividerHeight="0dp"/>
+
+</android.support.v4.widget.DrawerLayout>
