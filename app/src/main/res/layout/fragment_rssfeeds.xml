@@ -16,15 +16,16 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent" >
+	android:layout_height="match_parent">
 
 	<ListView
 		android:id="@+id/rssfeeds_list"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:choiceMode="singleChoice"
-		android:visibility="gone" />
+		android:visibility="gone"/>
 
 	<TextView
 		android:id="@+id/nosettings_text"
@@ -38,6 +39,7 @@
 		android:padding="@dimen/margin_default"
 		android:text="@string/rss_nosettings"
 		android:textIsSelectable="false"
-		android:visibility="gone" />
+		android:visibility="gone"
+		tools:visibility="visible"/>
 
 </FrameLayout>

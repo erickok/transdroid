@@ -50,6 +50,7 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.+'
     compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'com.android.support:support-annotations:20.0.0'
+    //compile 'com.getbase:floatingactionbutton:1.2.1'
     apt "org.androidannotations:androidannotations:3.1"
 }
 

@@ -16,13 +16,14 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <org.transdroid.core.gui.rss.RssitemStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:background="?attr/activatable_background"
-	android:paddingBottom="@dimen/margin_half"
+	android:paddingBottom="@dimen/margin_default"
 	android:paddingLeft="@dimen/margin_default"
 	android:paddingRight="@dimen/margin_default"
-	android:paddingTop="@dimen/margin_half" >
+	android:paddingTop="@dimen/margin_default">
 
 	<TextView
 		android:id="@+id/name_text"
@@ -31,7 +32,8 @@
 		android:fontFamily="sans-serif-condensed"
 		android:textColor="?attr/text_bright"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_enlarged" />
+		android:textSize="@dimen/text_enlarged"
+		tools:text="Test RSS Item Text Here"/>
 
 	<TextView
 		android:id="@+id/date_text"
@@ -40,6 +42,7 @@
 		android:layout_below="@id/name_text"
 		android:layout_marginTop="4dip"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small" />
+		android:textSize="@dimen/text_small"
+		tools:text="25-12-2015"/>
 
 </org.transdroid.core.gui.rss.RssitemStatusLayout>

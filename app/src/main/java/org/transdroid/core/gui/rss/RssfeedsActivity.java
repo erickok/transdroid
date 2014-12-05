@@ -27,6 +27,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.*;
@@ -41,6 +42,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
@@ -59,6 +61,8 @@ public class RssfeedsActivity extends ActionBarActivity {
 	protected RssfeedsFragment fragmentFeeds;
 	@FragmentById(resName = "rssitems_fragment")
 	protected RssitemsFragment fragmentItems;
+	@ViewById
+	protected Toolbar rssfeedsToolbar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,9 +75,9 @@ public class RssfeedsActivity extends ActionBarActivity {
 
 	@AfterViews
 	protected void init() {
-		// Simple action bar with up button and correct title font
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		setSupportActionBar(rssfeedsToolbar);
 		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(getString(R.string.rss_feeds)));
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

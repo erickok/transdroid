@@ -21,6 +21,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.*;
@@ -28,10 +29,12 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.rssparser.Channel;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 
 @EActivity(resName = "activity_rssitems")
 public class RssitemsActivity extends ActionBarActivity {
@@ -43,6 +46,8 @@ public class RssitemsActivity extends ActionBarActivity {
 
 	@FragmentById(resName = "rssitems_fragment")
 	protected RssitemsFragment fragmentItems;
+	@ViewById
+	protected Toolbar rssfeedsToolbar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,9 +67,9 @@ public class RssitemsActivity extends ActionBarActivity {
 			return;
 		}
 
-		// Simple action bar with up button and torrent name as title
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		setSupportActionBar(rssfeedsToolbar);
 		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeedName));
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Get the intent extras and show them to the already loaded fragment
 		fragmentItems.update(rssfeed, false);

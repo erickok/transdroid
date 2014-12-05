@@ -15,17 +15,29 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".RssfeedsActivity" >
+	tools:context=".core.gui.rss.RssfeedsActivity_" >
+
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/rssfeeds_toolbar"
+		style="@style/DefaultToolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:minHeight="?attr/actionBarSize"/>
+
+	<View
+		style="@style/DefaultToolbarShadow"
+		android:layout_below="@id/rssfeeds_toolbar"/>
 
 	<fragment
 		android:id="@+id/rssfeeds_fragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:layout_below="@id/rssfeeds_toolbar"
 		class="org.transdroid.core.gui.rss.RssfeedsFragment_"
 		tools:layout="@layout/fragment_rssfeeds" />
 
-</FrameLayout>
+</RelativeLayout>
