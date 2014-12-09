@@ -23,6 +23,8 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
+import org.transdroid.R;
+
 /**
  * A relative layout that that is checkable (to be used in a contextual action bar) and shows a coloured bar in the far
  * left indicating the view status, that is, if the item is new to the user or was viewed earlier.
@@ -32,11 +34,10 @@ public class RssitemStatusLayout extends RelativeLayout {
 
 	private final float scale = getContext().getResources().getDisplayMetrics().density;
 	private final int WIDTH = (int) (6 * scale + 0.5f);
-
-	private Boolean isNew = null;
 	private final Paint oldPaint = new Paint();
 	private final Paint newPaint = new Paint();
 	private final RectF fullRect = new RectF();
+	private Boolean isNew = null;
 
 	public RssitemStatusLayout(Context context) {
 		super(context);
@@ -51,8 +52,8 @@ public class RssitemStatusLayout extends RelativeLayout {
 	}
 
 	private void initPaints() {
-		oldPaint.setColor(0xFF9E9E9E); // Grey
-		newPaint.setColor(0xFF8ACC12); // Normal green
+		oldPaint.setColor(getResources().getColor(R.color.file_off)); // Grey
+		newPaint.setColor(getResources().getColor(R.color.file_normal)); // Normal green
 	}
 
 	public void setIsNew(Boolean isNew) {
@@ -72,7 +73,7 @@ public class RssitemStatusLayout extends RelativeLayout {
 			return;
 		}
 
-		canvas.drawRect(fullRect, isNew? newPaint: oldPaint);
+		canvas.drawRect(fullRect, isNew ? newPaint : oldPaint);
 
 	}
 

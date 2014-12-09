@@ -1,29 +1,19 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
-apply from: '../signing.gradle'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '20.0.0'
+    buildToolsVersion '21.1.1'
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 216
-        versionName '2.3.0-beta'
-    }
-    signingConfigs {
-        release {
-            storeFile STORE_FILE
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
+        versionCode 217
+        versionName '2.5.0-SNAPSHOT'
     }
     buildTypes {
         release {
             runProguard false
-            signingConfig signingConfigs.release
         }
     }
     productFlavors {
@@ -50,8 +40,9 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.+'
     compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'com.android.support:support-annotations:20.0.0'
-    //compile 'com.getbase:floatingactionbutton:1.2.1'
-    apt "org.androidannotations:androidannotations:3.1"
+    compile 'com.getbase:floatingactionbutton:1.2.1'
+    compile 'com.afollestad:material-dialogs:0.3.6'
+    apt 'org.androidannotations:androidannotations:3.1'
 }
 
 apt {

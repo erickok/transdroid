@@ -16,15 +16,19 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent" >
+	android:layout_height="match_parent">
 
 	<ListView
 		android:id="@+id/torrents_list"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:choiceMode="multipleChoiceModal"
-		android:visibility="gone" />
+		android:visibility="gone"
+		tools:visibility="visible"
+		tools:listitem="@layout/list_item_torrent"/>
 
 	<ProgressBar
 		android:id="@+id/loading_progress"
@@ -34,7 +38,8 @@
 		android:indeterminate="true"
 		android:indeterminateDrawable="?attr/loading_progress"
 		android:indeterminateOnly="true"
-		android:visibility="visible" />
+		android:visibility="visible"
+		tools:visibility="gone" />
 
 	<TextView
 		android:id="@+id/empty_text"
