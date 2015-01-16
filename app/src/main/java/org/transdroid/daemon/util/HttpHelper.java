@@ -130,7 +130,7 @@ public class HttpHelper {
 		// Register http and https sockets
 		SchemeRegistry registry = new SchemeRegistry();
 		SocketFactory httpsSocketFactory;
-		if (sslTrustKey != null) {
+		if (sslTrustKey != null && sslTrustKey.length() != 0) {
 			httpsSocketFactory = new TlsSniSocketFactory(sslTrustKey);
 		} else if (sslTrustAll) {
 			httpsSocketFactory = new TlsSniSocketFactory(true);
