@@ -447,14 +447,20 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				String urlBase = currentServerSettings.getFtpUrl();
 				if (urlBase == null || urlBase.equals(""))
 					urlBase = "ftp://" + currentServerSettings.getAddress();
+				if (!urlBase.endsWith("/"))
+					urlBase += "/";
+				Uri urlBaseUri = Uri.parse(urlBase);
+				urlBaseUri = urlBaseUri.normalizeScheme();
+				String basePath = urlBaseUri.getPath();
 
 				// Try using AndFTP intents
 				Intent andftpStart = new Intent(Intent.ACTION_PICK);
-				andftpStart.setDataAndType(Uri.parse(urlBase), "vnd.android.cursor.dir/lysesoft.andftp.uri");
+				andftpStart.setDataAndType(Uri.fromParts(urlBaseUri.getScheme(), urlBaseUri.getAuthority(), null),
+					"vnd.android.cursor.dir/lysesoft.andftp.uri");
 				andftpStart.putExtra("command_type", "download");
 				andftpStart.putExtra("ftp_pasv", "true");
-				if (Uri.parse(urlBase).getUserInfo() != null)
-					andftpStart.putExtra("ftp_username", Uri.parse(urlBase).getUserInfo());
+				if (urlBaseUri.getUserInfo() != null)
+					andftpStart.putExtra("ftp_username", urlBaseUri.getUserInfo());
 				else
 					andftpStart.putExtra("ftp_username", currentServerSettings.getUsername());
 				if (currentServerSettings.getFtpPassword() != null
@@ -465,16 +471,14 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				}
 				// Note: AndFTP doesn't understand the directory that Environment.getExternalStoragePublicDirectory()
 				// uses :(
+				// Todo: Let user choose the download directory / make it configurable
 				andftpStart.putExtra("local_folder", "/sdcard/Download");
 				for (int f = 0; f < checked.size(); f++) {
 					String file = checked.get(f).getRelativePath();
 					if (file != null) {
-						// If the file is directly in the root, AndFTP fails if we supply the proper path (like
-						// /file.pdf)
-						// Work around this bug by removing the leading / if no further directories are used in the path
-						if (file.startsWith("/") && file.indexOf("/", 1) < 0)
+						if (file.startsWith("/"))
 							file = file.substring(1);
-						andftpStart.putExtra("remote_file" + (f + 1), file);
+						andftpStart.putExtra("remote_file" + (f + 1), basePath + file);
 					}
 				}
 				if (andftpStart.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -484,7 +488,10 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				}
 
 				// Try using a VIEW intent given an ftp:// scheme URI
-				String url = urlBase + checked.get(0).getFullPath();
+				String file = checked.get(0).getRelativePath();
+				if (file != null && file.startsWith("/"))
+					file = file.substring(1);
+				String url = urlBase + file;
 				Intent simpleStart = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
 						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				if (simpleStart.resolveActivity(getActivity().getPackageManager()) != null) {
