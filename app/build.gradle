@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
         }
     }
     productFlavors {
@@ -47,7 +47,7 @@ dependencies {
 
 apt {
     arguments {
-        androidManifestFile variant.processResources.manifestFile
+        androidManifestFile variant.outputs[0].processResources.manifestFile
         resourcePackageName 'org.transdroid'
         //logLevel 'INFO'
         //logFile '/Users/erickok/Dev/transdroid/transdroid/app/build/aa-log.txt'
