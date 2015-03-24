@@ -16,6 +16,13 @@
  */
 package org.transdroid.core.gui.rss;
 
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -23,20 +30,12 @@ import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.app.settings.*;
-import org.transdroid.core.gui.*;
+import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.rssparser.Channel;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
-
-@EActivity(resName = "activity_rssitems")
+@EActivity(R.layout.activity_rssitems)
 public class RssitemsActivity extends ActionBarActivity {
 
 	@Extra
@@ -44,7 +43,7 @@ public class RssitemsActivity extends ActionBarActivity {
 	@Extra
 	protected String rssfeedName;
 
-	@FragmentById(resName = "rssitems_fragment")
+	@FragmentById(R.id.rssitems_fragment)
 	protected RssitemsFragment fragmentItems;
 	@ViewById
 	protected Toolbar rssfeedsToolbar;

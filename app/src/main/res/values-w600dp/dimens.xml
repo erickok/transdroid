@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<!-- UI elements -->
+	<dimen name="ui_filters_list">180dp</dimen>
+
+</resources>

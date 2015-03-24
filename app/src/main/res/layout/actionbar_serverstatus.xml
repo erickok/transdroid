@@ -21,49 +21,16 @@
 	android:layout_height="?android:attr/actionBarSize"
 	android:orientation="horizontal">
 
-	<LinearLayout
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_vertical"
-		android:background="?attr/activatable_background"
-		android:clickable="true"
-		android:focusable="true"
-		android:orientation="vertical"
-		android:padding="@dimen/ui_serverstatus_margin">
-
-		<TextView
-			android:id="@+id/filter_text"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:fontFamily="sans-serif-condensed"
-			android:textColor="?attr/text_actionbar"
-			android:textIsSelectable="false"
-			android:textSize="@dimen/ui_navigation_filter"
-			tools:text="Downloading"/>
-
-		<TextView
-			android:id="@+id/server_text"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="-4dip"
-			android:fontFamily="sans-serif-light"
-			android:textColor="?attr/text_actionbar"
-			android:textIsSelectable="false"
-			android:textSize="@dimen/ui_navigation_server"
-			tools:text="XIRVIK RTORRENT"/>
-
-	</LinearLayout>
-
 	<View
 		android:layout_width="0dp"
-		android:layout_height="match_parent"
-		android:layout_weight="1"/>
+		android:layout_height="0dp"
+		android:layout_weight="1" />
 
 	<RelativeLayout
 		android:id="@+id/speedswrapper_layout"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="center_vertical"
+		android:layout_gravity="center_vertical|end"
 		android:background="?attr/activatable_background"
 		android:clickable="true"
 		android:focusable="true"

@@ -19,25 +19,25 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".core.gui.rss.RssfeedsActivity_" >
+	tools:context=".core.gui.rss.RssfeedsActivity_">
 
 	<android.support.v7.widget.Toolbar
 		android:id="@+id/rssfeeds_toolbar"
 		style="@style/DefaultToolbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:minHeight="?attr/actionBarSize"/>
+		android:minHeight="?attr/actionBarSize" />
 
 	<View
 		style="@style/DefaultToolbarShadow"
-		android:layout_below="@id/rssfeeds_toolbar"/>
+		android:layout_below="@id/rssfeeds_toolbar" />
 
 	<fragment
 		android:id="@+id/rssfeeds_fragment"
+		class="org.transdroid.core.gui.rss.RssfeedsFragment_"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_below="@id/rssfeeds_toolbar"
-		class="org.transdroid.core.gui.rss.RssfeedsFragment_"
 		tools:layout="@layout/fragment_rssfeeds" />
 
 </RelativeLayout>

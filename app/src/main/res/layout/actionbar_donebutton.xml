@@ -16,23 +16,25 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
 	android:id="@+id/actionbar_done"
 	style="?android:actionButtonStyle"
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="0dp"
 	android:layout_height="match_parent"
-	android:layout_weight="1" >
+	android:layout_weight="1">
 
 	<TextView
 		style="?android:actionBarTabTextStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
-		android:drawableLeft="?attr/ic_action_done"
+		android:drawableLeft="@drawable/ic_action_done"
 		android:drawablePadding="8dp"
 		android:gravity="center_vertical"
+		android:paddingEnd="20dp"
 		android:paddingRight="20dp"
-		android:textColor="?attr/text_actionbar"
-		android:text="@string/widget_done" />
+		android:text="@string/widget_done"
+		android:textColor="?attr/text_actionbar" />
 
 </FrameLayout>

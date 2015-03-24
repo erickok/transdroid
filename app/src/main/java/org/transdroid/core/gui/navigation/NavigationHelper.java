@@ -42,8 +42,8 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
- * Helper for activities to make navigation-related decisions, such as when a device can display a larger, tablet style
- * layout or how to display errors.
+ * Helper for activities to make navigation-related decisions, such as when a device can display a larger, tablet style layout or how to display
+ * errors.
  * @author Eric Kok
  */
 @SuppressLint("ResourceAsColor")
@@ -53,13 +53,11 @@ public class NavigationHelper {
 	/**
 	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display error messages.
 	 */
-	public static Style CROUTON_ERROR_STYLE =
-			new Style.Builder().setBackgroundColor(R.color.crouton_error).setTextSize(13).build();
+	public static Style CROUTON_ERROR_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_error).setTextSize(13).build();
 	/**
 	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display info messages.
 	 */
-	public static Style CROUTON_INFO_STYLE =
-			new Style.Builder().setBackgroundColor(R.color.crouton_info).setTextSize(13).build();
+	public static Style CROUTON_INFO_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_info).setTextSize(13).build();
 	private static ImageLoader imageCache;
 	@RootContext
 	protected Context context;
@@ -67,8 +65,8 @@ public class NavigationHelper {
 	/**
 	 * Converts a string into a {@link Spannable} that displays the string in the Roboto Condensed font
 	 * @param string A plain text {@link String}
-	 * @return A {@link Spannable} that can be applied to supporting views (such as the action bar title) so that the
-	 * input string will be displayed using the Roboto Condensed font (if the OS has this)
+	 * @return A {@link Spannable} that can be applied to supporting views (such as the action bar title) so that the input string will be displayed
+	 * using the Roboto Condensed font (if the OS has this)
 	 */
 	public static SpannableString buildCondensedFontString(String string) {
 		if (string == null) {
@@ -136,8 +134,7 @@ public class NavigationHelper {
 		if (imageCache == null) {
 			imageCache = ImageLoader.getInstance();
 			try {
-				LruDiscCache diskCache =
-						new LruDiscCache(context.getCacheDir(), null, new Md5FileNameGenerator(), 640000, 25);
+				LruDiscCache diskCache = new LruDiscCache(context.getCacheDir(), null, new Md5FileNameGenerator(), 640000, 25);
 				// @formatter:off
 				Builder imageCacheBuilder = new Builder(context)
 						.defaultDisplayImageOptions(
@@ -158,19 +155,16 @@ public class NavigationHelper {
 	}
 
 	/**
-	 * Returns the application name (like Transdroid) and version name (like 1.5.0), appended by the version code (like
-	 * 180).
+	 * Returns the application name (like Transdroid) and version name (like 1.5.0), appended by the version code (like 180).
 	 * @return The app name and version, such as 'Transdroid 1.5.0 (180)'
 	 */
 	public String getAppNameAndVersion() {
-		return context.getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME + " (" +
-				Integer.toString(BuildConfig.VERSION_CODE) + ")";
+		return context.getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME + " (" + Integer.toString(BuildConfig.VERSION_CODE) + ")";
 	}
 
 	/**
-	 * Returns whether the device is considered small (i.e. a phone) rather than large (i.e. a tablet). Can, for
-	 * example, be used to determine if a dialog should be shown full screen. Currently is true if the device's smallest
-	 * dimension is 500 dip.
+	 * Returns whether the device is considered small (i.e. a phone) rather than large (i.e. a tablet). Can, for example, be used to determine if a
+	 * dialog should be shown full screen. Currently is true if the device's smallest dimension is 500 dip.
 	 * @return True if the app runs on a small device, false otherwise
 	 */
 	public boolean isSmallScreen() {
@@ -178,8 +172,8 @@ public class NavigationHelper {
 	}
 
 	/**
-	 * Whether any search-related UI components should be shown in the interface. At the moment returns false only if we
-	 * run as Transdroid Lite version.
+	 * Whether any search-related UI components should be shown in the interface. At the moment returns false only if we run as Transdroid Lite
+	 * version.
 	 * @return True if search is enabled, false otherwise
 	 */
 	public boolean enableSearchUi() {
@@ -187,8 +181,7 @@ public class NavigationHelper {
 	}
 
 	/**
-	 * Whether any RSS-related UI components should be shown in the interface. At the moment returns false only if we
-	 * run as Transdroid Lite version.
+	 * Whether any RSS-related UI components should be shown in the interface. At the moment returns false only if we run as Transdroid Lite version.
 	 * @return True if search is enabled, false otherwise
 	 */
 	public boolean enableRssUi() {
@@ -196,8 +189,8 @@ public class NavigationHelper {
 	}
 
 	/**
-	 * Returns whether any seedbox-related components should be shown in the interface; specifically the option to add
-	 * server settings via easy seedbox-specific screens.
+	 * Returns whether any seedbox-related components should be shown in the interface; specifically the option to add server settings via easy
+	 * seedbox-specific screens.
 	 * @return True if seedbox settings should be shown, false otherwise
 	 */
 	public boolean enableSeedboxes() {
@@ -206,8 +199,8 @@ public class NavigationHelper {
 
 	/**
 	 * Whether the custom app update checker should be used to check for new app and search module versions.
-	 * @return True if it should be checked against transdroid.org if there are app updates (as opposed to using the
-	 * Play Store for updates, for example), false otherwise
+	 * @return True if it should be checked against transdroid.org if there are app updates (as opposed to using the Play Store for updates, for
+	 * example), false otherwise
 	 */
 	public boolean enableUpdateChecker() {
 		return context.getResources().getBoolean(R.bool.updatecheck_available);

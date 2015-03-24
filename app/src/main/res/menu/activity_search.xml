@@ -19,17 +19,18 @@
 
 	<item
 		android:id="@+id/action_search"
-		android:icon="?attr/ic_action_search"
-		app:showAsAction="collapseActionView|ifRoom"
-		android:title="@string/action_search"/>
+		android:icon="@drawable/ic_action_search"
+		android:title="@string/action_search"
+		app:actionViewClass="android.support.v7.widget.SearchView"
+		app:showAsAction="collapseActionView|ifRoom" />
 	<item
 		android:id="@+id/action_refresh"
-		android:icon="?attr/ic_action_refresh"
-		app:showAsAction="always"
-		android:title="@string/action_refresh"/>
+		android:icon="@drawable/ic_action_refresh"
+		android:title="@string/action_refresh"
+		app:showAsAction="ifRoom" />
 	<item
 		android:id="@+id/action_downloadsearch"
-		app:showAsAction="always"
-		android:title="@string/search_download"/>
+		android:title="@string/search_download"
+		app:showAsAction="always" />
 
 </menu>

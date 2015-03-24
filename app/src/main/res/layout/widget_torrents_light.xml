@@ -41,7 +41,7 @@
 		android:contentDescription="@string/action_refresh"
 		android:padding="@dimen/widget_header_padding"
 		android:scaleType="fitXY"
-		android:src="@drawable/ic_action_refresh_light" />
+		android:src="@drawable/ic_action_refresh" />
 
 	<ImageButton
 		android:id="@+id/pauseall_button"
@@ -52,7 +52,7 @@
 		android:contentDescription="@string/action_pauseall"
 		android:padding="@dimen/widget_header_padding"
 		android:scaleType="fitXY"
-		android:src="@drawable/ic_action_pause_light" />
+		android:src="@drawable/ic_action_pause" />
 
 	<ImageButton
 		android:id="@+id/resumeall_button"
@@ -63,7 +63,7 @@
 		android:contentDescription="@string/action_resumeall"
 		android:padding="@dimen/widget_header_padding"
 		android:scaleType="fitXY"
-		android:src="@drawable/ic_action_resume_light" />
+		android:src="@drawable/ic_action_resume" />
 
 	<LinearLayout
 		android:id="@+id/navigation_view"

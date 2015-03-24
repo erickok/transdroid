@@ -26,8 +26,8 @@ import android.widget.RelativeLayout;
 import org.transdroid.R;
 
 /**
- * A relative layout that that is checkable (to be used in a contextual action bar) and shows a coloured bar in the far
- * left indicating the view status, that is, if the item is new to the user or was viewed earlier.
+ * A relative layout that that is checkable (to be used in a contextual action bar) and shows a coloured bar in the far left indicating the view
+ * status, that is, if the item is new to the user or was viewed earlier.
  * @author Eric Kok
  */
 public class RssitemStatusLayout extends RelativeLayout {

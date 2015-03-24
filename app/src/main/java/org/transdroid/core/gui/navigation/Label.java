@@ -16,16 +16,16 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.TextUtils;
 
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.daemon.Torrent;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.TextUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents some label that is active or available on the server.
@@ -44,18 +44,19 @@ public class Label implements SimpleListItem, NavigationFilter, Comparable<Label
 		this.count = count;
 		this.isEmptyLabel = isEmptyLabel;
 	}
-	
+
 	public Label(org.transdroid.daemon.Label daemonLabel) {
 		this(daemonLabel.getName(), daemonLabel.getCount(), false);
 	}
 
 	@Override
 	public String getName() {
-		if (TextUtils.isEmpty(this.name))
+		if (TextUtils.isEmpty(this.name)) {
 			return unnamedLabelText;
+		}
 		return this.name;
 	}
-	
+
 	@Override
 	public String getCode() {
 		// Use the class name and label name to provide a unique navigation filter code
@@ -77,8 +78,9 @@ public class Label implements SimpleListItem, NavigationFilter, Comparable<Label
 	 */
 	@Override
 	public boolean matches(Torrent torrent, boolean dormantAsInactive) {
-		if (isEmptyLabel)
+		if (isEmptyLabel) {
 			return TextUtils.isEmpty(torrent.getLabelName());
+		}
 		return torrent.getLabelName() != null && torrent.getLabelName().equals(name);
 	}
 
@@ -88,22 +90,22 @@ public class Label implements SimpleListItem, NavigationFilter, Comparable<Label
 	}
 
 	/**
-	 * Converts a list of labels as retrieved from a server daemon into a list of labels that can be used in the UI as
-	 * navigation filters.
+	 * Converts a list of labels as retrieved from a server daemon into a list of labels that can be used in the UI as navigation filters.
 	 * @param daemonLabels The raw list of labels as received from the server daemon adapter
 	 * @param unnamedLabel The text to show for the empty label (i.e. the unnamed label)
 	 * @return A label items that can be used in a filter list such as the action bar spinner
 	 */
-	public static ArrayList<Label> convertToNavigationLabels(List<org.transdroid.daemon.Label> daemonLabels,
-			String unnamedLabel) {
-		if (daemonLabels == null)
+	public static ArrayList<Label> convertToNavigationLabels(List<org.transdroid.daemon.Label> daemonLabels, String unnamedLabel) {
+		if (daemonLabels == null) {
 			return null;
-		ArrayList<Label> localLabels = new ArrayList<Label>();
+		}
+		ArrayList<Label> localLabels = new ArrayList<>();
 		unnamedLabelText = unnamedLabel;
 		localLabels.add(new Label(unnamedLabel, -1, true));
 		for (org.transdroid.daemon.Label label : daemonLabels) {
-			if (!TextUtils.isEmpty(label.getName()))
+			if (!TextUtils.isEmpty(label.getName())) {
 				localLabels.add(new Label(label));
+			}
 		}
 		Collections.sort(localLabels);
 		return localLabels;
@@ -134,7 +136,7 @@ public class Label implements SimpleListItem, NavigationFilter, Comparable<Label
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(name);
 		dest.writeInt(count);
-		dest.writeInt(isEmptyLabel? 1: 0);
+		dest.writeInt(isEmptyLabel ? 1 : 0);
 	}
 
 }

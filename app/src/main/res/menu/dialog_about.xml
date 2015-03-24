@@ -19,8 +19,8 @@
 
 	<item
 		android:id="@+id/action_visitwebsite"
-		android:icon="?attr/ic_action_website"
-		app:showAsAction="always"
-		android:title="@string/action_visitwebsite" />
+		android:icon="@drawable/ic_action_link"
+		android:title="@string/action_visitwebsite"
+		app:showAsAction="always" />
 
 </menu>

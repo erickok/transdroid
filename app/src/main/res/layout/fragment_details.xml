@@ -15,19 +15,27 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
 	android:id="@+id/details_container"
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent" >
+	android:layout_height="match_parent">
 
-	<ListView
-		android:id="@+id/details_list"
+	<android.support.v4.widget.SwipeRefreshLayout
+		android:id="@+id/swipe_refresh_layout"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:choiceMode="multipleChoiceModal"
-		android:divider="@null"
-		android:dividerHeight="0dip"
-		android:visibility="gone" />
+		android:layout_height="match_parent">
+
+		<ListView
+			android:id="@+id/details_list"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:choiceMode="multipleChoiceModal"
+			android:divider="@null"
+			android:dividerHeight="0dip"
+			android:visibility="gone" />
+
+	</android.support.v4.widget.SwipeRefreshLayout>
 
 	<ProgressBar
 		android:id="@+id/loading_progress"
@@ -64,5 +72,5 @@
 		android:padding="@dimen/margin_default"
 		android:textIsSelectable="false"
 		android:visibility="gone" />
-	
+
 </FrameLayout>

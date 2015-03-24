@@ -16,13 +16,6 @@
  */
 package org.transdroid.core.gui.lists;
 
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
-import org.transdroid.R;
-import org.transdroid.daemon.Daemon;
-import org.transdroid.daemon.Torrent;
-import org.transdroid.daemon.util.FileSizeConverter;
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -30,16 +23,23 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.ViewById;
+import org.transdroid.R;
+import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.util.FileSizeConverter;
+
 /**
  * Represents a group of views that show torrent status, sizes, speeds and other details.
  * @author Eric Kok
  */
-@EViewGroup(resName="fragment_details_header")
+@EViewGroup(R.layout.fragment_details_header)
 public class TorrentDetailsView extends RelativeLayout {
 
 	@ViewById
-	protected TextView labelText, dateaddedText, uploadedText, uploadedunitText, ratioText, upspeedText, seedersText,
-			downloadedunitText, downloadedText, totalsizeText, downspeedText, leechersText, statusText;
+	protected TextView labelText, dateaddedText, uploadedText, uploadedunitText, ratioText, upspeedText, seedersText, downloadedunitText,
+			downloadedText, totalsizeText, downspeedText, leechersText, statusText;
 	@ViewById
 	protected TorrentStatusLayout statusLayout;
 
@@ -73,36 +73,31 @@ public class TorrentDetailsView extends RelativeLayout {
 
 		// Set status texts
 		if (torrent.getDateAdded() != null) {
-			dateaddedText.setText(getResources().getString(
-					R.string.status_sincedate,
-					DateUtils.getRelativeDateTimeString(getContext(), torrent.getDateAdded().getTime(),
-							DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_MONTH)));
+			dateaddedText.setText(getResources().getString(R.string.status_sincedate, DateUtils
+							.getRelativeDateTimeString(getContext(), torrent.getDateAdded().getTime(), DateUtils.SECOND_IN_MILLIS,
+									DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_MONTH)));
 			dateaddedText.setVisibility(View.VISIBLE);
 		} else {
 			dateaddedText.setVisibility(View.INVISIBLE);
 		}
-		
+
 		statusLayout.setStatus(torrent.getStatusCode());
 		statusText.setText(getResources().getString(R.string.status_status, local.getProgressStatusEta(getResources())));
 		ratioText.setText(getResources().getString(R.string.status_ratio, local.getRatioString()));
-		seedersText.setText(getResources().getString(R.string.status_seeders, torrent.getSeedersConnected(),
-				torrent.getSeedersKnown()));
-		leechersText.setText(getResources().getString(R.string.status_leechers, torrent.getLeechersConnected(),
-				torrent.getLeechersKnown()));
+		seedersText.setText(getResources().getString(R.string.status_seeders, torrent.getSeedersConnected(), torrent.getSeedersKnown()));
+		leechersText.setText(getResources().getString(R.string.status_leechers, torrent.getLeechersConnected(), torrent.getLeechersKnown()));
 		// TODO: Add field that displays torrent errors (as opposed to tracker errors)
 		// TODO: Add field that displays availability
 
 		// Sizes and speeds texts
-		totalsizeText.setText(getResources().getString(R.string.status_ofsize,
-				FileSizeConverter.getSize(torrent.getTotalSize())));
+		totalsizeText.setText(getResources().getString(R.string.status_ofsize, FileSizeConverter.getSize(torrent.getTotalSize())));
 		downloadedText.setText(FileSizeConverter.getSize(torrent.getDownloadedEver(), false));
 		downloadedunitText.setText(FileSizeConverter.getSizeUnit(torrent.getDownloadedEver()).toString());
 		uploadedText.setText(FileSizeConverter.getSize(torrent.getUploadedEver(), false));
 		uploadedunitText.setText(FileSizeConverter.getSizeUnit(torrent.getUploadedEver()).toString());
-		downspeedText.setText(getResources().getString(R.string.status_speed_down_details,
-				FileSizeConverter.getSize(torrent.getRateDownload()) + "/s"));
-		upspeedText.setText(getResources().getString(R.string.status_speed_up,
-				FileSizeConverter.getSize(torrent.getRateUpload()) + "/s"));
+		downspeedText
+				.setText(getResources().getString(R.string.status_speed_down_details, FileSizeConverter.getSize(torrent.getRateDownload()) + "/s"));
+		upspeedText.setText(getResources().getString(R.string.status_speed_up, FileSizeConverter.getSize(torrent.getRateUpload()) + "/s"));
 
 	}
 

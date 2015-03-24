@@ -42,9 +42,11 @@ import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchHelper.SearchSortOrder;
 import org.transdroid.core.app.search.SearchResult;
 import org.transdroid.core.app.search.SearchSite;
-import org.transdroid.core.app.settings.*;
-import org.transdroid.core.gui.*;
-import org.transdroid.core.gui.navigation.*;
+import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.NavigationHelper_;
+import org.transdroid.core.gui.navigation.SelectionManagerMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +57,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  * Fragment that lists the items in a specific RSS feed
  * @author Eric Kok
  */
-@EFragment(resName = "fragment_searchresults")
+@EFragment(R.layout.fragment_searchresults)
 public class SearchResultsFragment extends Fragment {
 
 	@InstanceState
@@ -66,80 +68,8 @@ public class SearchResultsFragment extends Fragment {
 	protected SearchHelper searchHelper;
 
 	// Views
-	@ViewById(resName = "searchresults_list")
+	@ViewById(R.id.searchresults_list)
 	protected ListView resultsList;
-	private MultiChoiceModeListener onItemsSelected = new MultiChoiceModeListener() {
-
-		SelectionManagerMode selectionManagerMode;
-
-		@Override
-		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			// Show contextual action bar to add items in batch mode
-			mode.getMenuInflater().inflate(R.menu.fragment_searchresults_cab, menu);
-			selectionManagerMode = new SelectionManagerMode(resultsList, R.plurals.search_resutlsselected);
-			selectionManagerMode.onCreateActionMode(mode, menu);
-			return true;
-		}
-
-		@Override
-		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-			return selectionManagerMode.onPrepareActionMode(mode, menu);
-		}
-
-		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-
-			// Get checked torrents
-			List<SearchResult> checked = new ArrayList<SearchResult>();
-			for (int i = 0; i < resultsList.getCheckedItemPositions().size(); i++) {
-				if (resultsList.getCheckedItemPositions().valueAt(i)) {
-					checked.add(resultsAdapter.getItem(resultsList.getCheckedItemPositions().keyAt(i)));
-				}
-			}
-
-			int itemId = item.getItemId();
-			if (itemId == R.id.action_addall) {
-				// Start an Intent that adds multiple items at once, by supplying the urls and titles as string array
-				// extras and setting the Intent action to ADD_MULTIPLE
-				Intent intent = new Intent("org.transdroid.ADD_MULTIPLE");
-				String[] urls = new String[checked.size()];
-				String[] titles = new String[checked.size()];
-				for (int i = 0; i < checked.size(); i++) {
-					urls[i] = checked.get(i).getTorrentUrl();
-					titles[i] = checked.get(i).getName();
-				}
-				intent.putExtra("TORRENT_URLS", urls);
-				intent.putExtra("TORRENT_TITLES", titles);
-				if (resultsSource != null) {
-					intent.putExtra("PRIVATE_SOURCE", resultsSource);
-				}
-				startActivity(intent);
-				mode.finish();
-				return true;
-			} else if (itemId == R.id.action_showdetails) {
-				SearchResult first = checked.get(0);
-				// Open the torrent's web page in the browser
-				if (checked.size() > 1) {
-					Toast.makeText(getActivity(), getString(R.string.search_openingdetails, first.getName()),
-							Toast.LENGTH_LONG).show();
-				}
-				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(first.getDetailsUrl())));
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		@Override
-		public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-			selectionManagerMode.onItemCheckedStateChanged(mode, position, id, checked);
-		}
-
-		@Override
-		public void onDestroyActionMode(ActionMode mode) {
-			selectionManagerMode.onDestroyActionMode(mode);
-		}
-
-	};
 	@Bean
 	protected SearchResultsAdapter resultsAdapter;
 	@ViewById
@@ -196,7 +126,7 @@ public class SearchResultsFragment extends Fragment {
 		emptyText.setVisibility(View.GONE);
 	}
 
-	@ItemClick(resName = "searchresults_list")
+	@ItemClick(R.id.searchresults_list)
 	protected void onItemClicked(SearchResult item) {
 		if (item.getTorrentUrl() == null) {
 			Crouton.showText(getActivity(), R.string.error_notorrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
@@ -211,5 +141,77 @@ public class SearchResultsFragment extends Fragment {
 		}
 		startActivity(i);
 	}
+
+	private MultiChoiceModeListener onItemsSelected = new MultiChoiceModeListener() {
+
+		SelectionManagerMode selectionManagerMode;
+
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			// Show contextual action bar to add items in batch mode
+			mode.getMenuInflater().inflate(R.menu.fragment_searchresults_cab, menu);
+			selectionManagerMode = new SelectionManagerMode(resultsList, R.plurals.search_resutlsselected);
+			selectionManagerMode.onCreateActionMode(mode, menu);
+			return true;
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return selectionManagerMode.onPrepareActionMode(mode, menu);
+		}
+
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+			// Get checked torrents
+			List<SearchResult> checked = new ArrayList<SearchResult>();
+			for (int i = 0; i < resultsList.getCheckedItemPositions().size(); i++) {
+				if (resultsList.getCheckedItemPositions().valueAt(i)) {
+					checked.add(resultsAdapter.getItem(resultsList.getCheckedItemPositions().keyAt(i)));
+				}
+			}
+
+			int itemId = item.getItemId();
+			if (itemId == R.id.action_addall) {
+				// Start an Intent that adds multiple items at once, by supplying the urls and titles as string array
+				// extras and setting the Intent action to ADD_MULTIPLE
+				Intent intent = new Intent("org.transdroid.ADD_MULTIPLE");
+				String[] urls = new String[checked.size()];
+				String[] titles = new String[checked.size()];
+				for (int i = 0; i < checked.size(); i++) {
+					urls[i] = checked.get(i).getTorrentUrl();
+					titles[i] = checked.get(i).getName();
+				}
+				intent.putExtra("TORRENT_URLS", urls);
+				intent.putExtra("TORRENT_TITLES", titles);
+				if (resultsSource != null) {
+					intent.putExtra("PRIVATE_SOURCE", resultsSource);
+				}
+				startActivity(intent);
+				mode.finish();
+				return true;
+			} else if (itemId == R.id.action_showdetails) {
+				SearchResult first = checked.get(0);
+				// Open the torrent's web page in the browser
+				if (checked.size() > 1) {
+					Toast.makeText(getActivity(), getString(R.string.search_openingdetails, first.getName()), Toast.LENGTH_LONG).show();
+				}
+				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(first.getDetailsUrl())));
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		@Override
+		public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+			selectionManagerMode.onItemCheckedStateChanged(mode, position, id, checked);
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			selectionManagerMode.onDestroyActionMode(mode);
+		}
+
+	};
 
 }

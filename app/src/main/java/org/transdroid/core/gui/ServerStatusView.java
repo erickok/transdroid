@@ -16,30 +16,29 @@
  */
 package org.transdroid.core.gui;
 
-import java.util.List;
-
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
-import org.transdroid.R;
-import org.transdroid.core.gui.navigation.NavigationFilter;
-import org.transdroid.core.gui.navigation.NavigationHelper;
-import org.transdroid.core.gui.navigation.SetTransferRatesDialog;
-import org.transdroid.core.gui.navigation.SetTransferRatesDialog.OnRatesPickedListener;
-import org.transdroid.daemon.IDaemonAdapter;
-import org.transdroid.daemon.Torrent;
-import org.transdroid.daemon.util.FileSizeConverter;
-
 import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.ViewById;
+import org.transdroid.R;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.SetTransferRatesDialog;
+import org.transdroid.core.gui.navigation.SetTransferRatesDialog.OnRatesPickedListener;
+import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.util.FileSizeConverter;
+
+import java.util.List;
+
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
-@EViewGroup(resName = "actionbar_serverstatus")
+@EViewGroup(R.layout.actionbar_serverstatus)
 public class ServerStatusView extends RelativeLayout implements OnRatesPickedListener {
 
 	@ViewById
-	protected TextView filterText, serverText, downcountText, upcountText, downcountSign, upcountSign, downspeedText, upspeedText;
+	protected TextView downcountText, upcountText, downcountSign, upcountSign, downspeedText, upspeedText;
 	@ViewById
 	protected View speedswrapperLayout;
 	private TorrentsActivity activity;
@@ -49,24 +48,8 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 	}
 
 	public ServerStatusView(TorrentsActivity activity) {
-		super(activity.getSupportActionBar().getThemedContext());
+		super(activity);
 		this.activity = activity;
-	}
-
-	/**
-	 * Updates the name of the current connected server.
-	 * @param currentServer The server currently connected to
-	 */
-	public void updateCurrentServer(IDaemonAdapter currentServer) {
-		serverText.setText(currentServer.getSettings().getName());
-	}
-
-	/**
-	 * Updates the name of the selected filter.
-	 * @param currentFilter The filter that is currently selected
-	 */
-	public void updateCurrentFilter(NavigationFilter currentFilter) {
-		filterText.setText(currentFilter.getName());
 	}
 
 	/**
@@ -115,8 +98,8 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 
 	private OnClickListener onStartDownPickerClicked = new OnClickListener() {
 		public void onClick(View v) {
-			new SetTransferRatesDialog().setOnRatesPickedListener(ServerStatusView.this).show(
-					activity.getFragmentManager(), "SetTransferRatesDialog");
+			new SetTransferRatesDialog().setOnRatesPickedListener(ServerStatusView.this)
+					.show(activity.getFragmentManager(), "SetTransferRatesDialog");
 		}
 	};
 

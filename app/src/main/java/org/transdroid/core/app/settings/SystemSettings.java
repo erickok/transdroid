@@ -76,7 +76,7 @@ public class SystemSettings {
 	 * @param lastChecked The date/time at which the {@link AppUpdateService} last checked the server for updates
 	 */
 	public void setLastCheckedForAppUpdates(Date lastChecked) {
-		prefs.edit().putLong("system_lastappupdatecheck", lastChecked == null ? -1L : lastChecked.getTime()).commit();
+		prefs.edit().putLong("system_lastappupdatecheck", lastChecked == null ? -1L : lastChecked.getTime()).apply();
 	}
 
 }

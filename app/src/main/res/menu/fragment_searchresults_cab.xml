@@ -19,14 +19,13 @@
 
 	<item
 		android:id="@+id/action_addall"
-		android:icon="?attr/ic_action_new"
-		app:showAsAction="always"
-		android:title="@string/action_addall" />
-
+		android:icon="@drawable/ic_action_add"
+		android:title="@string/action_addall"
+		app:showAsAction="ifRoom" />
 	<item
 		android:id="@+id/action_showdetails"
-		android:icon="?attr/ic_action_website"
-		app:showAsAction="always"
-		android:title="@string/action_showdetails" />
-	
+		android:icon="@drawable/ic_action_link"
+		android:title="@string/action_showdetails"
+		app:showAsAction="ifRoom" />
+
 </menu>

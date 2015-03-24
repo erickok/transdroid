@@ -16,15 +16,15 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import java.util.List;
-
-import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.lists.SimpleListItemView;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import org.transdroid.core.gui.lists.SimpleListItem;
+import org.transdroid.core.gui.lists.SimpleListItemView;
+
+import java.util.List;
 
 public class FilterListItemAdapter extends BaseAdapter {
 

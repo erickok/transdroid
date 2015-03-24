@@ -16,10 +16,16 @@
  */
 package org.transdroid.core.gui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Locale;
+import android.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -31,7 +37,8 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.SystemSettings;
-import org.transdroid.core.gui.lists.*;
+import org.transdroid.core.gui.lists.TorrentsAdapter;
+import org.transdroid.core.gui.lists.TorrentsAdapter_;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
@@ -43,23 +50,17 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentsComparator;
 import org.transdroid.daemon.TorrentsSortBy;
 
-import android.app.Fragment;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AbsListView.MultiChoiceModeListener;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Locale;
 
 /**
- * Fragment that shows a list of torrents that are active on the server. It supports sorting and filtering and can show
- * connection progress and issues. However, actual task starting and execution and overall navigation elements are part
- * of the containing activity, not this fragment.
+ * Fragment that shows a list of torrents that are active on the server. It supports sorting and filtering and can show connection progress and
+ * issues. However, actual task starting and execution and overall navigation elements are part of the containing activity, not this fragment.
  * @author Eric Kok
  */
-@EFragment(resName = "fragment_torrents")
+@EFragment(R.layout.fragment_torrents)
 public class TorrentsFragment extends Fragment implements OnLabelPickedListener {
 
 	// Local data
@@ -91,7 +92,9 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	protected Daemon daemonType;
 
 	// Views
-	@ViewById(resName = "torrents_list")
+	@ViewById
+	protected SwipeRefreshLayout swipeRefreshLayout;
+	@ViewById
 	protected ListView torrentsList;
 	@ViewById
 	protected TextView emptyText;
@@ -113,11 +116,12 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 		torrentsList.setAdapter(TorrentsAdapter_.getInstance_(getActivity()));
 		torrentsList.setMultiChoiceModeListener(onTorrentsSelected);
 		torrentsList.setFastScrollEnabled(true);
-		if (torrents != null)
+		if (torrents != null) {
 			updateTorrents(torrents, currentLabels);
+		}
 		// Allow pulls on the list view to refresh the torrents
 		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
-			((RefreshableActivity) getActivity()).addRefreshableView(torrentsList);
+			((RefreshableActivity) getActivity()).addSwipeRefreshLayout(swipeRefreshLayout);
 		}
 		nosettingsText.setText(getString(R.string.navigation_nosettings, getString(R.string.app_name)));
 
@@ -149,8 +153,9 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 			}
 		}
 		// In case it was an update, add the updated torrent object
-		if (!wasRemoved)
+		if (!wasRemoved) {
 			this.torrents.add(affected);
+		}
 		// Now refresh the screen
 		applyAllFilters();
 	}
@@ -162,8 +167,9 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	 */
 	public void clear(boolean clearError, boolean clearFilter) {
 		this.torrents = null;
-		if (clearError)
+		if (clearError) {
 			this.connectionErrorMessage = null;
+		}
 		if (clearFilter) {
 			this.currentTextFilter = null;
 			this.currentNavigationFilter = null;
@@ -172,8 +178,8 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	}
 
 	/**
-	 * Stores the new sort order (for future refreshes) and sorts the current visible list. If the given new sort
-	 * property equals the existing property, the list sort order is reversed instead.
+	 * Stores the new sort order (for future refreshes) and sorts the current visible list. If the given new sort property equals the existing
+	 * property, the list sort order is reversed instead.
 	 * @param newSortOrder The sort order that the user selected.
 	 */
 	public void sortBy(TorrentsSortBy newSortOrder) {
@@ -212,26 +218,26 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 		}
 
 		// Filter the list of torrents to show according to navigation and text filters
-		ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>(torrents);
+		ArrayList<Torrent> filteredTorrents = new ArrayList<>(torrents);
 		if (currentNavigationFilter != null) {
 			// Remove torrents that do not match the selected navigation filter
-			for (Iterator<Torrent> torrentIter = filteredTorrents.iterator(); torrentIter.hasNext();) {
-				if (!currentNavigationFilter.matches(torrentIter.next(), systemSettings.treatDormantAsInactive()))
+			for (Iterator<Torrent> torrentIter = filteredTorrents.iterator(); torrentIter.hasNext(); ) {
+				if (!currentNavigationFilter.matches(torrentIter.next(), systemSettings.treatDormantAsInactive())) {
 					torrentIter.remove();
+				}
 			}
 		}
 		if (currentTextFilter != null) {
-			// Remove torrent that do not contain the text filter string
-			for (Iterator<Torrent> torrentIter = filteredTorrents.iterator(); torrentIter.hasNext();) {
-				if (!torrentIter.next().getName().toLowerCase(Locale.getDefault())
-						.contains(currentTextFilter.toLowerCase(Locale.getDefault())))
+			// Remove torrents that do not contain the text filter string
+			for (Iterator<Torrent> torrentIter = filteredTorrents.iterator(); torrentIter.hasNext(); ) {
+				if (!torrentIter.next().getName().toLowerCase(Locale.getDefault()).contains(currentTextFilter.toLowerCase(Locale.getDefault()))) {
 					torrentIter.remove();
+				}
 			}
 		}
 
 		// Sort the list of filtered torrents
-		Collections.sort(filteredTorrents, new TorrentsComparator(daemonType, this.currentSortOrder,
-				this.currentSortDescending));
+		Collections.sort(filteredTorrents, new TorrentsComparator(daemonType, this.currentSortOrder, this.currentSortDescending));
 
 		((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);
 		updateViewVisibility();
@@ -270,11 +276,11 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
 			// Get checked torrents
-			ArrayList<Torrent> checked = new ArrayList<Torrent>();
+			ArrayList<Torrent> checked = new ArrayList<>();
 			for (int i = 0; i < torrentsList.getCheckedItemPositions().size(); i++) {
-				if (torrentsList.getCheckedItemPositions().valueAt(i) && i < torrentsList.getAdapter().getCount())
-					checked.add((Torrent) torrentsList.getAdapter().getItem(
-							torrentsList.getCheckedItemPositions().keyAt(i)));
+				if (torrentsList.getCheckedItemPositions().valueAt(i) && i < torrentsList.getAdapter().getCount()) {
+					checked.add((Torrent) torrentsList.getAdapter().getItem(torrentsList.getCheckedItemPositions().keyAt(i)));
+				}
 			}
 
 			int itemId = item.getItemId();
@@ -316,9 +322,10 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 				return true;
 			} else if (itemId == R.id.action_setlabel) {
 				lastMultiSelectedTorrents = checked;
-				if (currentLabels != null)
+				if (currentLabels != null) {
 					new SetLabelDialog().setOnLabelPickedListener(TorrentsFragment.this).setCurrentLabels(currentLabels)
-						.show(getFragmentManager(), "SetLabelDialog");
+							.show(getFragmentManager(), "SetLabelDialog");
+				}
 				mode.finish();
 				return true;
 			} else {
@@ -359,7 +366,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 		}
 	}
 
-	@ItemClick(resName = "torrents_list")
+	@ItemClick(R.id.torrents_list)
 	protected void torrentsListClicked(Torrent torrent) {
 		// Show the torrent details fragment
 		((TorrentsActivity) getActivity()).openDetails(torrent);
@@ -373,8 +380,8 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	}
 
 	/**
-	 * Updates the shown screen depending on whether we have a connection (so torrents can be shown) or not (in case we
-	 * need to show a message suggesting help). This should only ever be called on the UI thread.
+	 * Updates the shown screen depending on whether we have a connection (so torrents can be shown) or not (in case we need to show a message
+	 * suggesting help). This should only ever be called on the UI thread.
 	 * @param hasAConnection True if the user has servers configured and therefore has a connection that can be used
 	 */
 	public void updateConnectionStatus(boolean hasAConnection, Daemon daemonType) {
@@ -393,12 +400,12 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	}
 
 	/**
-	 * Updates the shown screen depending on whether the torrents are loading. This should only ever be called on the UI
-	 * thread.
+	 * Updates the shown screen depending on whether the torrents are loading. This should only ever be called on the UI thread.
 	 * @param isLoading True if the list of torrents is (re)loading, false otherwise
 	 */
 	public void updateIsLoading(boolean isLoading) {
 		this.isLoading = isLoading;
+		swipeRefreshLayout.setRefreshing(isLoading);
 		if (isLoading) {
 			clear(true, false); // Indirectly also calls updateViewVisibility()
 		} else {
@@ -407,10 +414,8 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	}
 
 	/**
-	 * Updates the shown screen depending on whether a connection error occurred. This should only ever be called on the
-	 * UI thread.
-	 * @param connectionErrorMessage The error message from the last failed connection attempt, or null to clear the
-	 *            visible error text
+	 * Updates the shown screen depending on whether a connection error occurred. This should only ever be called on the UI thread.
+	 * @param connectionErrorMessage The error message from the last failed connection attempt, or null to clear the visible error text
 	 */
 	public void updateError(String connectionErrorMessage) {
 		this.connectionErrorMessage = connectionErrorMessage;

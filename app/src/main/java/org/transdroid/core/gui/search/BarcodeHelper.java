@@ -106,6 +106,9 @@ public class BarcodeHelper {
 	 * can be constructed for it
 	 */
 	public static String handleScanResult(int resultCode, Intent data, boolean supportsSearch) {
+		if (data == null || !data.hasExtra("SCAN_RESULT")) {
+			return null;
+		}
 		String contents = data.getStringExtra("SCAN_RESULT");
 		String formatName = data.getStringExtra("SCAN_RESULT_FORMAT");
 		if (formatName != null && formatName.equals("QR_CODE")) {

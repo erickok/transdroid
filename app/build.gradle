@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    compileSdkVersion 22
+    buildToolsVersion '21.1.2'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode 217
         versionName '2.5.0-SNAPSHOT'
     }
@@ -33,16 +33,16 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'org.androidannotations:androidannotations-api:3.1'
+    compile 'org.androidannotations:androidannotations-api:3.2'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'de.keyboardsurfer.android.widget:crouton:1.8.5@aar'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.+'
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+    compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.android.support:support-annotations:20.0.0'
-    compile 'com.getbase:floatingactionbutton:1.2.1'
-    compile 'com.afollestad:material-dialogs:0.3.6'
-    apt 'org.androidannotations:androidannotations:3.1'
+    compile 'com.getbase:floatingactionbutton:1.8.0'
+    compile 'com.afollestad:material-dialogs:0.6.3.3'
+    apt 'org.androidannotations:androidannotations:3.2'
 }
 
 apt {

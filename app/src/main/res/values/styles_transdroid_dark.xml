@@ -21,6 +21,14 @@
     <style name="Theme.Transdroid.Dark" parent="Theme.AppCompat.NoActionBar">
 		<item name="colorPrimary">@color/green</item>
 		<item name="colorPrimaryDark">@color/green_dark</item>
+		<item name="windowActionModeOverlay">true</item>
+		<item name="actionModeBackground">@color/grey</item>
+		<item name="android:textViewStyle">@style/DefaultTextView</item>
+		<item name="android:windowBackground">@color/background_dark</item>
+		<item name="loading_progress">@drawable/loading_progress_dark</item>
+		<item name="text_bright">@color/text_bright_dark</item>
+		<item name="text_actionbar">@color/text_actionbar_dark</item>
+		<item name="text_actionbar_secondary">@color/text_actionbar_light</item>
     </style>
 
 </resources>

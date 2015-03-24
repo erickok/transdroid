@@ -19,38 +19,42 @@
 
 	<item
 		android:id="@+id/action_resume"
-		android:icon="?attr/ic_action_resume"
-		app:showAsAction="always"
-		android:title="@string/action_resume" />
+		android:icon="@drawable/ic_action_resume"
+		android:title="@string/action_resume"
+		app:showAsAction="ifRoom" />
 	<item
 		android:id="@+id/action_pause"
-		android:icon="?attr/ic_action_pause"
-		app:showAsAction="always"
-		android:title="@string/action_pause" />
+		android:icon="@drawable/ic_action_pause"
+		android:title="@string/action_pause"
+		app:showAsAction="ifRoom" />
 	<item
 		android:id="@+id/action_start"
-		android:icon="?attr/ic_action_start"
-		app:showAsAction="always"
-		android:title="@string/action_start" />
+		android:icon="@drawable/ic_action_start"
+		android:title="@string/action_start"
+		app:showAsAction="ifRoom" />
 	<item
 		android:id="@+id/action_stop"
-		android:icon="?attr/ic_action_stop"
-		app:showAsAction="always"
-		android:title="@string/action_stop" />
+		android:icon="@drawable/ic_action_stop"
+		android:title="@string/action_stop"
+		app:showAsAction="ifRoom" />
 	<item
 		android:id="@+id/action_remove"
-		android:icon="?attr/ic_action_remove"
-		app:showAsAction="always"
-		android:title="@string/action_remove">
+		android:icon="@drawable/ic_action_remove"
+		android:title="@string/action_remove"
+		app:showAsAction="ifRoom">
 		<menu>
-			<item android:id="@+id/action_remove_default" android:title="@string/action_remove_default" />
-			<item android:id="@+id/action_remove_withdata" android:title="@string/action_remove_withdata" />
+			<item
+				android:id="@+id/action_remove_default"
+				android:title="@string/action_remove_default" />
+			<item
+				android:id="@+id/action_remove_withdata"
+				android:title="@string/action_remove_withdata" />
 		</menu>
 	</item>
 	<item
 		android:id="@+id/action_setlabel"
-		android:icon="?attr/ic_action_labels"
-		app:showAsAction="ifRoom"
-		android:title="@string/action_setlabel" />
+		android:icon="@drawable/ic_action_labels"
+		android:title="@string/action_setlabel"
+		app:showAsAction="ifRoom" />
 
 </menu>

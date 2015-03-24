@@ -21,6 +21,7 @@
     <color name="green_light">#A5D6A7</color>
     <color name="green">#388E3C</color>
     <color name="green_dark">#1B5E20</color>
+	<color name="grey">#757575</color>
     <color name="ledgreen">#7dbb21</color>
     <color name="crouton_error">#C62828</color>
     <color name="crouton_info">#A5D6A7</color>

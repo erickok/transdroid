@@ -22,7 +22,8 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".core.gui.TorrentsActivity_">
+	tools:context=".core.gui.TorrentsActivity_"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<!-- The main content view -->
 	<RelativeLayout
@@ -35,31 +36,77 @@
 			style="@style/DefaultToolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:minHeight="?attr/actionBarSize"/>
+			android:minHeight="?attr/actionBarSize" />
 
-		<View
-			style="@style/DefaultToolbarShadow"
-			android:layout_below="@id/torrents_toolbar"/>
+		<android.support.v7.widget.Toolbar
+			android:id="@+id/actions_toolbar"
+			style="@style/SplitToolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:minHeight="?attr/actionBarSize"
+			android:paddingRight="85dp"
+			android:paddingEnd="85dp" />
 
 		<fragment
 			android:id="@+id/torrents_fragment"
 			class="org.transdroid.core.gui.TorrentsFragment_"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
+			android:layout_above="@id/actions_toolbar"
 			android:layout_below="@id/torrents_toolbar"
-			tools:layout="@layout/fragment_torrents"/>
+			tools:layout="@layout/fragment_torrents" />
+
+		<View
+			style="@style/DefaultToolbarShadow"
+			android:layout_below="@id/torrents_toolbar" />
+
+		<View
+			style="@style/SplitToolbarShadow"
+			android:layout_above="@id/actions_toolbar" />
+
+		<include
+			layout="@layout/actionbar_addbutton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:layout_alignParentEnd="true"
+			android:layout_alignParentRight="true"
+			android:layout_gravity="bottom|end"
+			android:layout_marginBottom="16dp"
+			android:layout_marginEnd="10dp"
+			android:layout_marginRight="10dp" />
 
 	</RelativeLayout>
 
 	<!-- The navigation drawer -->
-	<ListView
-		android:id="@+id/drawer_list"
-		android:layout_width="240dp"
+	<LinearLayout
+		android:layout_width="@dimen/ui_filters_list"
 		android:layout_height="match_parent"
 		android:layout_gravity="start"
 		android:background="@android:color/white"
-		android:choiceMode="singleChoice"
-		android:divider="@android:color/transparent"
-		android:dividerHeight="0dp"/>
+		android:orientation="vertical">
+
+		<ListView
+			android:id="@+id/drawer_list"
+			android:layout_width="@dimen/ui_filters_list"
+			android:layout_height="0dp"
+			android:layout_weight="1"
+			android:choiceMode="singleChoice"
+			android:divider="@null"
+			tools:listitem="@layout/list_item_filter" />
+
+		<android.support.v7.widget.SearchView
+			android:id="@+id/filter_search"
+			android:layout_width="@dimen/ui_filters_list"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="5dp"
+			android:layout_marginBottom="5dp"
+			android:layout_marginRight="10dp"
+			android:layout_marginEnd="10dp"
+			app:queryHint="@string/action_filter"
+			app:iconifiedByDefault="false" />
+
+	</LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>
