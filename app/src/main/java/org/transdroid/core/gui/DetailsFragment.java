@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.ActionMenuView;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +40,6 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ServerSetting;
@@ -76,7 +76,6 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
  * @author Eric Kok
  */
 @EFragment(R.layout.fragment_details)
-@OptionsMenu(R.menu.fragment_details)
 public class DetailsFragment extends Fragment implements OnTrackersUpdatedListener, OnLabelPickedListener, OnStorageLocationUpdatedListener {
 
 	// Local data
@@ -99,6 +98,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	// Views
 	@ViewById
 	protected View detailsContainer;
+	@ViewById(R.id.details_menu)
+	protected ActionMenuView detailsMenu;
 	@ViewById
 	protected SwipeRefreshLayout swipeRefreshLayout;
 	@ViewById
@@ -111,6 +112,9 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	@AfterViews
 	protected void init() {
 
+		// Inject menu options in the actions toolbar
+		setHasOptionsMenu(true);
+
 		// On large screens where this fragment is shown next to the torrents list, we show a continues grey vertical
 		// line to separate the lists visually
 		if (!NavigationHelper_.getInstance_(getActivity()).isSmallScreen()) {
@@ -121,13 +125,21 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 			}
 		}
 
+		createMenuOptions();
+
 		// Set up details adapter (itself containing the actual lists to show), which allows multi-select and fast
 		// scrolling
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));
 		detailsList.setMultiChoiceModeListener(onDetailsSelected);
 		detailsList.setFastScrollEnabled(true);
 		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
-			((RefreshableActivity) getActivity()).addSwipeRefreshLayout(swipeRefreshLayout);
+			swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+				@Override
+				public void onRefresh() {
+					((RefreshableActivity) getActivity()).refreshScreen();
+					swipeRefreshLayout.setRefreshing(false); // Use our custom indicator
+				}
+			});
 		}
 
 		// Restore the fragment state (on orientation changes et al.)
@@ -162,7 +174,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		errorText.setVisibility(View.GONE);
 		loadingProgress.setVisibility(View.GONE);
 		// Also update the available actions in the action bar
-		getActivity().invalidateOptionsMenu();
+		updateMenuOptions();
 		// Refresh the detailed statistics (errors) and list of files
 		torrentDetails = null;
 		torrentFiles = null;
@@ -252,7 +264,6 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		this.isLoadingTorrent = isLoading;
 		this.hasCriticalError = connectionErrorMessage != null;
 		errorText.setText(connectionErrorMessage);
-		swipeRefreshLayout.setRefreshing(isLoading);
 		if (isLoading || hasCriticalError) {
 			clear();
 		}
@@ -263,43 +274,89 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		detailsList.setItemChecked(position, false);
 	}
 
-	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
+	public void createMenuOptions() {
+		getActivity().getMenuInflater().inflate(R.menu.fragment_details, detailsMenu.getMenu());
+		detailsMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem menuItem) {
+				switch (menuItem.getItemId()) {
+					case R.id.action_pause:
+						pauseTorrent();
+						return true;
+					case R.id.action_updatetrackers:
+						updateTrackers();
+						return true;
+					case R.id.action_start_forced:
+						startTorrentForced();
+						return true;
+					case R.id.action_remove_withdata:
+						removeTorrentWithData();
+						return true;
+					case R.id.action_stop:
+						stopTorrent();
+						return true;
+					case R.id.action_forcerecheck:
+						setForceRecheck();
+						return true;
+					case R.id.action_changelocation:
+						changeStorageLocation();
+						return true;
+					case R.id.action_start_default:
+						startTorrentDefault();
+						return true;
+					case R.id.action_remove_default:
+						removeTorrentDefault();
+						return true;
+					case R.id.action_start_direct:
+						startTorrentDirect();
+						return true;
+					case R.id.action_setlabel:
+						setLabel();
+						return true;
+					case R.id.action_resume:
+						resumeTorrent();
+						return true;
+				}
+				return false;
+			}
+		});
+	}
+
+	private void updateMenuOptions() {
 
 		if (torrent == null) {
-			menu.findItem(R.id.action_resume).setVisible(false);
-			menu.findItem(R.id.action_pause).setVisible(false);
-			menu.findItem(R.id.action_start).setVisible(false);
-			menu.findItem(R.id.action_start_direct).setVisible(false);
-			menu.findItem(R.id.action_stop).setVisible(false);
-			menu.findItem(R.id.action_remove).setVisible(false);
-			menu.findItem(R.id.action_remove_withdata).setVisible(false);
-			menu.findItem(R.id.action_setlabel).setVisible(false);
-			menu.findItem(R.id.action_forcerecheck).setVisible(false);
-			menu.findItem(R.id.action_updatetrackers).setVisible(false);
-			menu.findItem(R.id.action_changelocation).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_resume).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_pause).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_start).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_start_direct).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_stop).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_remove).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_remove_withdata).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_forcerecheck).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_updatetrackers).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_changelocation).setVisible(false);
 			return;
 		}
 		// Update action availability
 		boolean startStop = Daemon.supportsStoppingStarting(torrent.getDaemon());
-		menu.findItem(R.id.action_resume).setVisible(torrent.canResume());
-		menu.findItem(R.id.action_pause).setVisible(torrent.canPause());
+		detailsMenu.getMenu().findItem(R.id.action_resume).setVisible(torrent.canResume());
+		detailsMenu.getMenu().findItem(R.id.action_pause).setVisible(torrent.canPause());
 		boolean forcedStart = Daemon.supportsForcedStarting(torrent.getDaemon());
-		menu.findItem(R.id.action_start).setVisible(startStop && forcedStart && torrent.canStart());
-		menu.findItem(R.id.action_start_direct).setVisible(startStop && !forcedStart && torrent.canStart());
-		menu.findItem(R.id.action_stop).setVisible(startStop && torrent.canStop());
-		menu.findItem(R.id.action_remove).setVisible(true);
+		detailsMenu.getMenu().findItem(R.id.action_start).setVisible(startStop && forcedStart && torrent.canStart());
+		detailsMenu.getMenu().findItem(R.id.action_start_direct).setVisible(startStop && !forcedStart && torrent.canStart());
+		detailsMenu.getMenu().findItem(R.id.action_stop).setVisible(startStop && torrent.canStop());
+		detailsMenu.getMenu().findItem(R.id.action_remove).setVisible(true);
 		boolean removeWithData = Daemon.supportsRemoveWithData(torrent.getDaemon());
-		menu.findItem(R.id.action_remove_withdata).setVisible(removeWithData);
+		detailsMenu.getMenu().findItem(R.id.action_remove_withdata).setVisible(removeWithData);
 		boolean setLabel = Daemon.supportsSetLabel(torrent.getDaemon());
-		menu.findItem(R.id.action_setlabel).setVisible(setLabel);
+		detailsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(setLabel);
 		boolean forceRecheck = Daemon.supportsForceRecheck(torrent.getDaemon());
-		menu.findItem(R.id.action_forcerecheck).setVisible(forceRecheck);
+		detailsMenu.getMenu().findItem(R.id.action_forcerecheck).setVisible(forceRecheck);
 		boolean setTrackers = Daemon.supportsSetTrackers(torrent.getDaemon());
-		menu.findItem(R.id.action_updatetrackers).setVisible(setTrackers);
+		detailsMenu.getMenu().findItem(R.id.action_updatetrackers).setVisible(setTrackers);
 		boolean setLocation = Daemon.supportsSetDownloadLocation(torrent.getDaemon());
-		menu.findItem(R.id.action_changelocation).setVisible(setLocation);
+		detailsMenu.getMenu().findItem(R.id.action_changelocation).setVisible(setLocation);
 
 	}
 

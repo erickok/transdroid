@@ -16,8 +16,6 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import android.support.v4.widget.SwipeRefreshLayout;
-
 /**
  * Interface to be implemented by any activity that allows its content to be refreshed; fragments can ask for user-initiated refreshes.
  * @author Eric Kok
@@ -25,7 +23,5 @@ import android.support.v4.widget.SwipeRefreshLayout;
 public interface RefreshableActivity {
 
 	void refreshScreen();
-
-	void addSwipeRefreshLayout(SwipeRefreshLayout container);
 
 }

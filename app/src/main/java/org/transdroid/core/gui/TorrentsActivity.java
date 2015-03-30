@@ -36,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -171,6 +172,8 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	protected FloatingActionButton addmenuFileButton;
 	@ViewById
 	protected DrawerLayout drawerLayout;
+	@ViewById(R.id.drawer_container)
+	protected ViewGroup drawerContainer;
 	@ViewById
 	protected ListView drawerList;
 	@ViewById
@@ -193,7 +196,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	@InstanceState
 	protected String preselectNavigationFilter = null;
 	@InstanceState
-	protected boolean turleModeEnabled = false;
+	protected boolean turtleModeEnabled = false;
 	@InstanceState
 	protected ArrayList<Label> lastNavigationLabels;
 	// Contained torrent and details fragments
@@ -232,6 +235,13 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 			torrentsToolbar.addView(serverSelectionView);
 		}
 		actionsToolbar.addView(serverStatusView);
+		actionsToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem menuItem) {
+				// Redirect to the classic activity implementation so we can use @OptionsItem methods
+				return onOptionsItemSelected(menuItem);
+			}
+		});
 		setSupportActionBar(torrentsToolbar); // For direct menu item inflation by the contained fragments
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -405,36 +415,38 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		super.onCreateOptionsMenu(menu);
 		// Manually insert the actions into the main torrent and secondary actions toolbars
 		torrentsToolbar.inflateMenu(R.menu.activity_torrents_main);
-		actionsToolbar.inflateMenu(R.menu.activity_torrents_secondary);
-		if (navigationHelper.enableSearchUi()) {
-			// Add an expandable SearchView to the action bar
-			MenuItem item = menu.findItem(R.id.action_search);
-			SearchView searchView = new SearchView(this);
-			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-			searchView.setQueryRefinementEnabled(true);
-			searchView.setOnSearchClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					// Pause autorefresh
-					stopRefresh = true;
-					stopAutoRefresh();
-				}
-			});
-			MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
-				@Override
-				public boolean onMenuItemActionExpand(MenuItem item) {
-					return true;
-				}
+		if (actionsToolbar.getMenu().size() == 0) {
+			actionsToolbar.inflateMenu(R.menu.activity_torrents_secondary);
+		}
+			if (navigationHelper.enableSearchUi()) {
+				// Add an expandable SearchView to the action bar
+				MenuItem item = menu.findItem(R.id.action_search);
+				SearchView searchView = new SearchView(this);
+				searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+				searchView.setQueryRefinementEnabled(true);
+				searchView.setOnSearchClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						// Pause autorefresh
+						stopRefresh = true;
+						stopAutoRefresh();
+					}
+				});
+				MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+					@Override
+					public boolean onMenuItemActionExpand(MenuItem item) {
+						return true;
+					}
 
-				@Override
-				public boolean onMenuItemActionCollapse(MenuItem item) {
-					stopRefresh = false;
-					startAutoRefresh();
-					return true;
-				}
-			});
-			MenuItemCompat.setActionView(item, searchView);
-			searchMenu = item;
+					@Override
+					public boolean onMenuItemActionCollapse(MenuItem item) {
+						stopRefresh = false;
+						startAutoRefresh();
+						return true;
+					}
+				});
+				MenuItemCompat.setActionView(item, searchView);
+				searchMenu = item;
 		}
 		return true;
 	}
@@ -447,6 +459,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		if (currentConnection == null) {
 			torrentsToolbar.setNavigationIcon(null);
 			addmenuButton.setVisibility(View.GONE);
+			actionsToolbar.setVisibility(View.GONE);
 			torrentsToolbar.getMenu().findItem(R.id.action_search).setVisible(false);
 			torrentsToolbar.getMenu().findItem(R.id.action_rss).setVisible(false);
 			torrentsToolbar.getMenu().findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -464,6 +477,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		// There is a connection (read: settings to some server known)
 		torrentsToolbar.setNavigationIcon(R.drawable.ic_action_drawer);
 		addmenuButton.setVisibility(View.VISIBLE);
+		actionsToolbar.setVisibility(View.VISIBLE);
 		boolean addByFile = Daemon.supportsAddByFile(currentConnection.getType());
 		addmenuFileButton.setVisibility(addByFile ? View.VISIBLE : View.GONE);
 		// Primary toolbar menu
@@ -473,8 +487,8 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		torrentsToolbar.getMenu().findItem(R.id.action_help).setVisible(false);
 		// Secondary toolbar menu
 		boolean hasAltMode = Daemon.supportsSetAlternativeMode(currentConnection.getType());
-		actionsToolbar.getMenu().findItem(R.id.action_enableturtle).setVisible(hasAltMode && !turleModeEnabled);
-		actionsToolbar.getMenu().findItem(R.id.action_disableturtle).setVisible(hasAltMode && turleModeEnabled);
+		actionsToolbar.getMenu().findItem(R.id.action_enableturtle).setVisible(hasAltMode && !turtleModeEnabled);
+		actionsToolbar.getMenu().findItem(R.id.action_disableturtle).setVisible(hasAltMode && turtleModeEnabled);
 		actionsToolbar.getMenu().findItem(R.id.action_refresh).setVisible(true);
 		actionsToolbar.getMenu().findItem(R.id.action_sort).setVisible(true);
 		actionsToolbar.getMenu().findItem(R.id.action_sort_added).setVisible(Daemon.supportsDateAdded(currentConnection.getType()));
@@ -502,7 +516,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 			if (item instanceof SimpleListItem) {
 				filterSelected((SimpleListItem) item, false);
 			}
-			drawerLayout.closeDrawer(drawerList);
+			drawerLayout.closeDrawer(drawerContainer);
 		}
 	};
 
@@ -760,20 +774,6 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		} else if (navigationHelper.enableSearchUi()) {
 			startSearch(result, false, null, false);
 		}
-	}
-
-	/**
-	 * Attaches some view (perhaps contained in a fragment) to this activity's pull to refresh support
-	 * @param container The refresh container to handle user refresh requests and show the progress
-	 */
-	@Override
-	public void addSwipeRefreshLayout(SwipeRefreshLayout container) {
-		container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				refreshScreen();
-			}
-		});
 	}
 
 	@OptionsItem(R.id.action_refresh)
@@ -1229,7 +1229,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	@Background
 	@Override
 	public void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority) {
-		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority, new ArrayList<TorrentFile>(files)).execute(log);
+		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority, new ArrayList<>(files)).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
 		} else {
@@ -1276,7 +1276,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 
 		// Report the newly retrieved list of torrents to the torrents fragment
 		fragmentTorrents.updateIsLoading(false);
-		fragmentTorrents.updateTorrents(new ArrayList<Torrent>(torrents), lastNavigationLabels);
+		fragmentTorrents.updateTorrents(new ArrayList<>(torrents), lastNavigationLabels);
 
 		// Update the details fragment if the currently shown torrent is in the newly retrieved list
 		if (fragmentDetails != null && fragmentDetails.isAdded()) {
@@ -1323,13 +1323,13 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
 		// Update the details fragment with the newly retrieved list of files
 		if (fragmentDetails != null && fragmentDetails.isAdded()) {
-			fragmentDetails.updateTorrentFiles(torrent, new ArrayList<TorrentFile>(torrentFiles));
+			fragmentDetails.updateTorrentFiles(torrent, new ArrayList<>(torrentFiles));
 		}
 	}
 
 	@UiThread
 	protected void onTurtleModeRetrieved(boolean turtleModeEnabled) {
-		turleModeEnabled = turtleModeEnabled;
+		this.turtleModeEnabled = turtleModeEnabled;
 		invalidateOptionsMenu();
 	}
 

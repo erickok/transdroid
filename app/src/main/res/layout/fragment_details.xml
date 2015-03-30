@@ -15,16 +15,27 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<FrameLayout
+<RelativeLayout
+	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/details_container"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	tools:context=".core.gui.DetailsActivity_">
+
+	<android.support.v7.widget.ActionMenuView
+		android:id="@+id/details_menu"
+		style="@style/SplitToolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:minHeight="?attr/actionBarSize" />
 
 	<android.support.v4.widget.SwipeRefreshLayout
 		android:id="@+id/swipe_refresh_layout"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:layout_above="@id/details_menu">
 
 		<ListView
 			android:id="@+id/details_list"
@@ -42,6 +53,7 @@
 		android:layout_width="128dp"
 		android:layout_height="128dp"
 		android:layout_gravity="center"
+		android:layout_above="@id/details_menu"
 		android:indeterminate="true"
 		android:indeterminateDrawable="?attr/loading_progress"
 		android:indeterminateOnly="true"
@@ -51,7 +63,7 @@
 		android:id="@+id/empty_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="center"
+		android:layout_centerInParent="true"
 		android:drawablePadding="8dip"
 		android:drawableTop="?attr/loading_progress"
 		android:gravity="center"
@@ -64,13 +76,18 @@
 		android:id="@+id/error_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="center"
+		android:layout_centerInParent="true"
 		android:drawablePadding="8dip"
 		android:drawableTop="?attr/loading_progress"
 		android:gravity="center"
 		android:maxWidth="400dip"
 		android:padding="@dimen/margin_default"
 		android:textIsSelectable="false"
-		android:visibility="gone" />
+		android:visibility="gone"
+		tools:visibility="visible"/>
 
-</FrameLayout>
+	<View
+		style="@style/SplitToolbarShadow"
+		android:layout_above="@id/details_menu" />
+
+</RelativeLayout>

@@ -34,7 +34,7 @@
 		android:icon="@drawable/ic_action_start"
 		android:orderInCategory="202"
 		android:title="@string/action_start"
-		app:showAsAction="ifRoom">
+		app:showAsAction="always">
 		<menu>
 			<item
 				android:id="@+id/action_start_default"
@@ -49,13 +49,13 @@
 		android:icon="@drawable/ic_action_start"
 		android:orderInCategory="202"
 		android:title="@string/action_start"
-		app:showAsAction="ifRoom" />
+		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_stop"
 		android:icon="@drawable/ic_action_stop"
 		android:orderInCategory="203"
 		android:title="@string/action_stop"
-		app:showAsAction="ifRoom" />
+		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_remove"
 		android:icon="@drawable/ic_action_remove"
@@ -76,24 +76,24 @@
 		android:icon="@drawable/ic_action_labels"
 		android:orderInCategory="205"
 		android:title="@string/action_setlabel"
-		app:showAsAction="ifRoom" />
+		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_forcerecheck"
 		android:icon="@drawable/ic_action_force_recheck"
 		android:orderInCategory="206"
 		android:title="@string/action_forcerecheck"
-		app:showAsAction="ifRoom" />
+		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_updatetrackers"
 		android:icon="@drawable/ic_action_trackers"
 		android:orderInCategory="207"
 		android:title="@string/action_updatetrackers"
-		app:showAsAction="ifRoom" />
+		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_changelocation"
 		android:icon="@drawable/ic_action_save"
 		android:orderInCategory="208"
 		android:title="@string/action_changelocation"
-		app:showAsAction="ifRoom" />
+		app:showAsAction="always" />
 
 </menu>

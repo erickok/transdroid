@@ -121,7 +121,13 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 		}
 		// Allow pulls on the list view to refresh the torrents
 		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
-			((RefreshableActivity) getActivity()).addSwipeRefreshLayout(swipeRefreshLayout);
+			swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+				@Override
+				public void onRefresh() {
+					((RefreshableActivity) getActivity()).refreshScreen();
+					swipeRefreshLayout.setRefreshing(false); // Use our custom indicator
+				}
+			});
 		}
 		nosettingsText.setText(getString(R.string.navigation_nosettings, getString(R.string.app_name)));
 
@@ -393,6 +399,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 			loadingProgress.setVisibility(View.GONE);
 			errorText.setVisibility(View.GONE);
 			nosettingsText.setVisibility(View.VISIBLE);
+			swipeRefreshLayout.setEnabled(false);
 			clear(true, true); // Indirectly also calls updateViewVisibility()
 		} else {
 			updateViewVisibility();
@@ -405,7 +412,6 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	 */
 	public void updateIsLoading(boolean isLoading) {
 		this.isLoading = isLoading;
-		swipeRefreshLayout.setRefreshing(isLoading);
 		if (isLoading) {
 			clear(true, false); // Indirectly also calls updateViewVisibility()
 		} else {
@@ -438,6 +444,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 		torrentsList.setVisibility(!hasError && !isLoading && !isEmpty ? View.VISIBLE : View.GONE);
 		loadingProgress.setVisibility(!hasError && isLoading ? View.VISIBLE : View.GONE);
 		emptyText.setVisibility(!hasError && !isLoading && isEmpty ? View.VISIBLE : View.GONE);
+		swipeRefreshLayout.setEnabled(true);
 	}
 
 	/**

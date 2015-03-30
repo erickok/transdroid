@@ -68,7 +68,7 @@ public class RssfeedsFragment extends Fragment {
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		boolean hasFeeds = rssfeedsAdapter != null && rssfeedsAdapter.getCount() > 0;
-		menu.findItem(R.id.action_refresh).setShowAsAction(hasFeeds ? MenuItem.SHOW_AS_ACTION_ALWAYS : MenuItem.SHOW_AS_ACTION_NEVER);
+		menu.findItem(R.id.action_refresh).setVisible(hasFeeds);
 		menu.findItem(R.id.action_settings).setShowAsAction(!hasFeeds ? MenuItem.SHOW_AS_ACTION_ALWAYS : MenuItem.SHOW_AS_ACTION_NEVER);
 	}
 

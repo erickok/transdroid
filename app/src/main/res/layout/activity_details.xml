@@ -7,7 +7,7 @@
 	tools:context=".DetailsActivity">
 
 	<android.support.v7.widget.Toolbar
-		android:id="@+id/torrents_toolbar"
+		android:id="@+id/selection_toolbar"
 		style="@style/DefaultToolbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -18,11 +18,11 @@
 		class="org.transdroid.core.gui.DetailsFragment_"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_below="@id/torrents_toolbar"
+		android:layout_below="@id/selection_toolbar"
 		tools:layout="@layout/fragment_details" />
 
 	<View
 		style="@style/DefaultToolbarShadow"
-		android:layout_below="@id/torrents_toolbar" />
+		android:layout_below="@id/selection_toolbar" />
 
 </RelativeLayout>

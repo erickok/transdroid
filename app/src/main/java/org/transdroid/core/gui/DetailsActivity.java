@@ -20,7 +20,6 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
@@ -107,7 +106,7 @@ public class DetailsActivity extends ActionBarActivity implements TorrentTasksEx
 
 	// Details view components
 	@ViewById
-	protected Toolbar torrentsToolbar;
+	protected Toolbar selectionToolbar;
 	@FragmentById(R.id.torrentdetails_fragment)
 	protected DetailsFragment fragmentDetails;
 
@@ -130,7 +129,7 @@ public class DetailsActivity extends ActionBarActivity implements TorrentTasksEx
 		}
 
 		// Simple action bar with up, torrent name as title and refresh button
-		setSupportActionBar(torrentsToolbar);
+		setSupportActionBar(selectionToolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
 
@@ -155,20 +154,6 @@ public class DetailsActivity extends ActionBarActivity implements TorrentTasksEx
 	@OptionsItem(android.R.id.home)
 	protected void navigateUp() {
 		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-	}
-
-	/**
-	 * Attaches some view (perhaps contained in a fragment) to this activity's pull to refresh support
-	 * @param container The refresh container to handle user refresh requests and show the progress
-	 */
-	@Override
-	public void addSwipeRefreshLayout(SwipeRefreshLayout container) {
-		container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				refreshScreen();
-			}
-		});
 	}
 
 	@OptionsItem(R.id.action_refresh)

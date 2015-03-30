@@ -81,6 +81,7 @@
 
 	<!-- The navigation drawer -->
 	<LinearLayout
+		android:id="@+id/drawer_container"
 		android:layout_width="@dimen/ui_filters_list"
 		android:layout_height="match_parent"
 		android:layout_gravity="start"
