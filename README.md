@@ -20,7 +20,7 @@ Please respect the coding standards for easier merging. master contains the curr
 Code structure
 ==============
 
-Starting with version 2.3.0, Transdroid is developed in Android Studio, fully integrating with the Gradle build system. It is compiled against Android 4.4 (API level 19) and since version 2.2.0 supporting ICS (API level 15) and up only. To support lite (Transdrone, specially for the Play Store) and full (Transdroid) versions of the app, build flavours are defined in gradle, which contain version-specific resources. Dependencies are managed via Maven Central in the app's build.gradle file.
+Starting with version 2.3.0, Transdroid is developed in Android Studio, fully integrating with the Gradle build system. It is (since version 2.5.0) compiled against Android 5.1 (API level 22) and (since version 2.2.0) supporting ICS (API level 15) and up only. To support lite (Transdrone, specially for the Play Store) and full (Transdroid) versions of the app, build flavours are defined in gradle, which contain version-specific resources. Dependencies are managed via JCentral in the app's build.gradle file.
 
 Developed By
 ============

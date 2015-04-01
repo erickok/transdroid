@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,8 @@ import java.util.List;
 @OptionsMenu(R.menu.activity_search)
 public class SearchActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
 
+	@ViewById
+	protected Toolbar searchToolbar;
 	@FragmentById(R.id.searchresults_fragment)
 	protected SearchResultsFragment fragmentResults;
 	@ViewById
@@ -125,6 +128,7 @@ public class SearchActivity extends ActionBarActivity implements ActionBar.OnNav
 		}
 
 		// Allow site selection via list (on large screens) or action bar spinner
+		setSupportActionBar(searchToolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		if (searchsitesList != null) {
 			// The current layout has a dedicated list view to select the search site
@@ -140,7 +144,7 @@ public class SearchActivity extends ActionBarActivity implements ActionBar.OnNav
 			// Use the action bar spinner to select sites
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			getSupportActionBar().setDisplayShowTitleEnabled(false);
-			getSupportActionBar().setListNavigationCallbacks(new SearchSettingsDropDownAdapter(this, searchSites), this);
+			getSupportActionBar().setListNavigationCallbacks(new SearchSettingsDropDownAdapter(searchToolbar.getContext(), searchSites), this);
 			// Select the last used site; this also starts the search!
 			if (lastUsedPosition >= 0) {
 				getSupportActionBar().setSelectedNavigationItem(lastUsedPosition);
@@ -155,7 +159,7 @@ public class SearchActivity extends ActionBarActivity implements ActionBar.OnNav
 		if (navigationHelper.enableSearchUi()) {
 			// Add an expandable SearchView to the action bar
 			MenuItem item = menu.findItem(R.id.action_search);
-			final SearchView searchView = new SearchView(this);
+			final SearchView searchView = new SearchView(searchToolbar.getContext());
 			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 			searchView.setQueryRefinementEnabled(true);
 			item.setActionView(searchView);

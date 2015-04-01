@@ -24,12 +24,13 @@
 	android:paddingBottom="@dimen/margin_half"
 	android:paddingLeft="@dimen/margin_default"
 	android:paddingRight="@dimen/margin_default"
-	android:paddingTop="@dimen/margin_half" >
+	android:paddingTop="@dimen/margin_half">
 
 	<ImageView
 		android:id="@+id/favicon_image"
 		android:layout_width="24dip"
 		android:layout_height="24dip"
+		android:layout_marginEnd="@dimen/margin_half"
 		android:layout_marginRight="@dimen/margin_half"
 		android:scaleType="centerCrop"
 		tools:ignore="contentDescription" />
@@ -40,6 +41,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginTop="1dip"
 		android:layout_weight="1"
-		android:textIsSelectable="false" />
+		android:textIsSelectable="false"
+		tools:text="Mininova" />
 
 </LinearLayout>

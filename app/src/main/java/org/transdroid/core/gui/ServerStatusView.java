@@ -21,6 +21,9 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
@@ -31,8 +34,6 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.util.FileSizeConverter;
 
 import java.util.List;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 @EViewGroup(R.layout.actionbar_serverstatus)
 public class ServerStatusView extends RelativeLayout implements OnRatesPickedListener {
@@ -115,7 +116,7 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 
 	@Override
 	public void onInvalidNumber() {
-		Crouton.showText(activity, R.string.error_notanumber, NavigationHelper.CROUTON_ERROR_STYLE);
+		SnackbarManager.show(Snackbar.with(activity).text(R.string.error_notanumber).colorResource(R.color.crouton_error));
 	}
 
 }

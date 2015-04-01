@@ -38,9 +38,6 @@ import org.transdroid.R;
 
 import java.io.IOException;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
-
 /**
  * Helper for activities to make navigation-related decisions, such as when a device can display a larger, tablet style layout or how to display
  * errors.
@@ -50,14 +47,6 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 @EBean
 public class NavigationHelper {
 
-	/**
-	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display error messages.
-	 */
-	public static Style CROUTON_ERROR_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_error).setTextSize(13).build();
-	/**
-	 * Use with {@link Crouton#showText(android.app.Activity, int, Style)} (and variants) to display info messages.
-	 */
-	public static Style CROUTON_INFO_STYLE = new Style.Builder().setBackgroundColor(R.color.crouton_info).setTextSize(13).build();
 	private static ImageLoader imageCache;
 	@RootContext
 	protected Context context;

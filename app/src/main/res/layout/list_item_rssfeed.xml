@@ -21,16 +21,14 @@
 	android:layout_height="wrap_content"
 	android:background="?attr/activatable_background"
 	android:orientation="horizontal"
-	android:paddingBottom="@dimen/margin_default"
-	android:paddingLeft="@dimen/margin_default"
-	android:paddingRight="@dimen/margin_default"
-	android:paddingTop="@dimen/margin_default" >
+	android:padding="@dimen/margin_default" >
 
 	<ImageView
 		android:id="@+id/favicon_image"
 		android:layout_width="24dip"
 		android:layout_height="24dip"
 		android:layout_marginRight="@dimen/margin_default"
+		android:layout_marginEnd="@dimen/margin_default"
 		android:scaleType="centerCrop"
 		tools:src="@drawable/ic_launcher"
 		tools:ignore="contentDescription" />

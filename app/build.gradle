@@ -36,12 +36,12 @@ dependencies {
     compile 'org.androidannotations:androidannotations-api:3.2'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
-    compile 'de.keyboardsurfer.android.widget:crouton:1.8.5@aar'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.android.support:support-annotations:20.0.0'
     compile 'com.getbase:floatingactionbutton:1.8.0'
     compile 'com.afollestad:material-dialogs:0.6.3.3'
+    compile 'com.nispok:snackbar:2.10.6'
     apt 'org.androidannotations:androidannotations:3.2'
 }
 

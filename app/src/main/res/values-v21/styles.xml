@@ -17,7 +17,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<style name="TransdroidTheme" parent="Theme.Transdroid.Light">
-		<item name="activatable_background">?android:attr/selectableItemBackground</item>
+		<item name="activatable_background">?android:attr/activatedBackgroundIndicator</item>
 	</style>
 
 	<style name="TransdroidTheme.Dark" parent="Theme.Transdroid.Dark">

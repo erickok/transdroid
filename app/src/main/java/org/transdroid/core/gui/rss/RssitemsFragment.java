@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -37,6 +38,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
@@ -45,7 +49,6 @@ import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.gui.TorrentsActivity_;
-import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 import org.transdroid.core.gui.search.SearchActivity_;
 import org.transdroid.core.rssparser.Channel;
@@ -53,8 +56,6 @@ import org.transdroid.core.rssparser.Item;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
  * Fragment that lists the items in a specific RSS feed
@@ -79,7 +80,8 @@ public class RssitemsFragment extends Fragment {
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Show contextual action bar to add items in batch mode
 			mode.getMenuInflater().inflate(R.menu.fragment_rssitems_cab, menu);
-			selectionManagerMode = new SelectionManagerMode(rssitemsList, R.plurals.rss_itemsselected);
+			Context themedContext = ((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext();
+			selectionManagerMode = new SelectionManagerMode(themedContext, rssitemsList, R.plurals.rss_itemsselected);
 			selectionManagerMode.onCreateActionMode(mode, menu);
 			return true;
 		}
@@ -153,7 +155,7 @@ public class RssitemsFragment extends Fragment {
 						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(first.getLink())));
 					} else {
 						// No URL was specified in the RSS feed item link tag (or no link tag was present)
-						Crouton.showText(getActivity(), R.string.error_no_link, NavigationHelper.CROUTON_ERROR_STYLE);
+						SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_no_link).colorResource(R.color.crouton_error));
 					}
 				} else if (itemId == R.id.action_useassearch) {
 					// Use the RSS item title to start a new search (mimicking the search manager style)

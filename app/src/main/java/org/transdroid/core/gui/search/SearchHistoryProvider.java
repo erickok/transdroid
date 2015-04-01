@@ -28,7 +28,7 @@ import org.transdroid.BuildConfig;
  */
 public class SearchHistoryProvider extends SearchRecentSuggestionsProvider {
 
-	public final static String AUTHORITY = BuildConfig.PACKAGE_NAME + ".search.SearchHistoryProvider";
+	public final static String AUTHORITY = BuildConfig.APPLICATION_ID + ".search.SearchHistoryProvider";
 	public final static int MODE = DATABASE_MODE_QUERIES;
 
 	public SearchHistoryProvider() {

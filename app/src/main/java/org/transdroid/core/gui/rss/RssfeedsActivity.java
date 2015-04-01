@@ -25,6 +25,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
@@ -46,8 +49,6 @@ import org.transdroid.core.rssparser.RssParser;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 @EActivity(R.layout.activity_rssfeeds)
 public class RssfeedsActivity extends ActionBarActivity {
@@ -167,11 +168,11 @@ public class RssfeedsActivity extends ActionBarActivity {
 
 			// Error message or not yet loaded? Show a toast message instead of opening the items activity
 			if (loader.hasError()) {
-				Crouton.showText(this, R.string.rss_error, NavigationHelper.CROUTON_INFO_STYLE);
+				SnackbarManager.show(Snackbar.with(this).text(R.string.rss_error).colorResource(R.color.crouton_error));
 				return;
 			}
 			if (loader.getChannel() == null || loader.getChannel().getItems().size() == 0) {
-				Crouton.showText(this, R.string.rss_notloaded, NavigationHelper.CROUTON_INFO_STYLE);
+				SnackbarManager.show(Snackbar.with(this).text(R.string.rss_notloaded).colorResource(R.color.crouton_error));
 				return;
 			}
 

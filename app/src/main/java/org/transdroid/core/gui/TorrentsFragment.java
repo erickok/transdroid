@@ -17,7 +17,11 @@
 package org.transdroid.core.gui;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +30,8 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -251,13 +257,33 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 
 	private MultiChoiceModeListener onTorrentsSelected = new MultiChoiceModeListener() {
 
-		SelectionManagerMode selectionManagerMode;
+		private SelectionManagerMode selectionManagerMode;
+		private ActionMenuView actionsMenu;
+		private Toolbar actionsToolbar;
+		private FloatingActionsMenu addmenuButton;
 
 		@Override
-		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			// Show contextual action bar to start/stop/remove/etc. torrents in batch mode
-			mode.getMenuInflater().inflate(R.menu.fragment_torrents_cab, menu);
-			selectionManagerMode = new SelectionManagerMode(torrentsList, R.plurals.navigation_torrentsselected);
+		public boolean onCreateActionMode(final ActionMode mode, Menu menu) {
+			// Show contextual action bars to start/stop/remove/etc. torrents in batch mode
+			if (actionsMenu == null) {
+				actionsMenu = ((TorrentsActivity) getActivity()).contextualMenu;
+				actionsToolbar = ((TorrentsActivity) getActivity()).actionsToolbar;
+				addmenuButton = ((TorrentsActivity) getActivity()).addmenuButton;
+			}
+			actionsToolbar.setEnabled(false);
+			actionsMenu.setVisibility(View.VISIBLE);
+			addmenuButton.setVisibility(View.GONE);
+			actionsMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+				@Override
+				public boolean onMenuItemClick(MenuItem menuItem) {
+					return onActionItemClicked(mode, menuItem);
+				}
+			});
+			if (actionsMenu.getMenu().size() == 0) {
+				getActivity().getMenuInflater().inflate(R.menu.fragment_torrents_cab, actionsMenu.getMenu());
+			}
+			Context themedContext = ((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext();
+			selectionManagerMode = new SelectionManagerMode(themedContext, torrentsList, R.plurals.navigation_torrentsselected);
 			selectionManagerMode.onCreateActionMode(mode, menu);
 			return true;
 		}
@@ -267,9 +293,9 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 			selectionManagerMode.onPrepareActionMode(mode, menu);
 			// Hide/show options depending on the type of server we are connected to
 			if (daemonType != null) {
-				menu.findItem(R.id.action_start).setVisible(Daemon.supportsStoppingStarting(daemonType));
-				menu.findItem(R.id.action_stop).setVisible(Daemon.supportsStoppingStarting(daemonType));
-				menu.findItem(R.id.action_setlabel).setVisible(Daemon.supportsSetLabel(daemonType));
+				actionsMenu.getMenu().findItem(R.id.action_start).setVisible(Daemon.supportsStoppingStarting(daemonType));
+				actionsMenu.getMenu().findItem(R.id.action_stop).setVisible(Daemon.supportsStoppingStarting(daemonType));
+				actionsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(Daemon.supportsSetLabel(daemonType));
 			}
 			// Pause autorefresh
 			if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
@@ -352,6 +378,9 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 				((TorrentsActivity) getActivity()).startAutoRefresh();
 			}
 			selectionManagerMode.onDestroyActionMode(mode);
+			actionsMenu.setVisibility(View.GONE);
+			actionsToolbar.setEnabled(true);
+			addmenuButton.setVisibility(View.VISIBLE);
 		}
 
 	};

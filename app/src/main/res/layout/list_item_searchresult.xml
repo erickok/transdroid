@@ -16,13 +16,14 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <org.transdroid.core.gui.rss.RssitemStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:background="?attr/activatable_background"
 	android:paddingBottom="@dimen/margin_half"
 	android:paddingLeft="@dimen/margin_default"
 	android:paddingRight="@dimen/margin_default"
-	android:paddingTop="@dimen/margin_half" >
+	android:paddingTop="@dimen/margin_half">
 
 	<TextView
 		android:id="@+id/name_text"
@@ -31,44 +32,54 @@
 		android:fontFamily="sans-serif-condensed"
 		android:textColor="?attr/text_bright"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_enlarged" />
+		android:textSize="@dimen/text_enlarged"
+		tools:text="Torrent.Title.2016.1080p.mkv" />
 
 	<TextView
 		android:id="@+id/leechers_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/name_text"
+		android:layout_alignParentEnd="true"
 		android:layout_alignParentRight="true"
+		android:layout_below="@id/name_text"
 		android:layout_marginTop="4dip"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small" />
-	
+		android:textSize="@dimen/text_small"
+		tools:text="@string/search_seeders" />
+
 	<TextView
 		android:id="@+id/seeders_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@id/leechers_text"
-		android:layout_toLeftOf="@id/leechers_text"
+		android:layout_marginEnd="@dimen/margin_default"
 		android:layout_marginRight="@dimen/margin_default"
+		android:layout_toLeftOf="@id/leechers_text"
+		android:layout_toStartOf="@id/leechers_text"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small" />
-	
+		android:textSize="@dimen/text_small"
+		tools:text="@string/search_leechers" />
+
 	<TextView
 		android:id="@+id/size_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@id/leechers_text"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small" />
+		android:textSize="@dimen/text_small"
+		tools:text="1.5GB" />
 
 	<TextView
 		android:id="@+id/date_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@id/leechers_text"
-		android:layout_toRightOf="@id/size_text"
 		android:layout_marginLeft="@dimen/margin_default"
+		android:layout_marginStart="@dimen/margin_default"
+		android:layout_toEndOf="@id/size_text"
+		android:layout_toRightOf="@id/size_text"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small" />
-	
+		android:textSize="@dimen/text_small"
+		tools:text="0 weeks ago" />
+
 </org.transdroid.core.gui.rss.RssitemStatusLayout>

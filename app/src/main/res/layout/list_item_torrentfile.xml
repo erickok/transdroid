@@ -16,6 +16,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <org.transdroid.core.gui.lists.TorrentFilePriorityLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:background="?attr/activatable_background"
@@ -23,7 +24,7 @@
 	android:paddingBottom="@dimen/margin_half"
 	android:paddingLeft="@dimen/margin_default"
 	android:paddingRight="@dimen/margin_default"
-	android:paddingTop="@dimen/margin_half" >
+	android:paddingTop="@dimen/margin_half">
 
 	<TextView
 		android:id="@+id/name_text"
@@ -32,18 +33,22 @@
 		android:fontFamily="sans-serif-condensed"
 		android:textColor="?attr/text_bright"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_enlarged" />
+		android:textSize="@dimen/text_enlarged"
+		tools:text="File.In.Torrent.Title.Which.Can.Be.Long.2016.1080p.Release.mkv" />
 
 	<TextView
 		android:id="@+id/progress_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_alignParentEnd="true"
 		android:layout_alignParentRight="true"
 		android:layout_below="@id/name_text"
 		android:layout_marginLeft="@dimen/margin_half"
+		android:layout_marginStart="@dimen/margin_half"
 		android:layout_marginTop="4dip"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small" />
+		android:textSize="@dimen/text_small"
+		tools:text="41%" />
 
 	<TextView
 		android:id="@+id/sizes_text"
@@ -51,6 +56,7 @@
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@+id/progress_text"
 		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small" />
+		android:textSize="@dimen/text_small"
+		tools:text="3.4GB / 8.2GB" />
 
 </org.transdroid.core.gui.lists.TorrentFilePriorityLayout>

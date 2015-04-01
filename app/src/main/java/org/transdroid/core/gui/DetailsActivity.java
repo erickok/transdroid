@@ -24,6 +24,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
@@ -73,8 +76,6 @@ import org.transdroid.daemon.task.StopTask;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
  * An activity that holds a single torrents details fragment. It is used on devices (i.e. phones) where there is no room to show details in the {@link
@@ -142,12 +143,6 @@ public class DetailsActivity extends ActionBarActivity implements TorrentTasksEx
 		fragmentDetails.updateTorrent(torrent);
 		fragmentDetails.updateLabels(currentLabels);
 
-	}
-
-	@Override
-	protected void onDestroy() {
-		Crouton.cancelAllCroutons();
-		super.onDestroy();
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -333,7 +328,7 @@ public class DetailsActivity extends ActionBarActivity implements TorrentTasksEx
 		// Refresh the screen as well
 		refreshTorrent();
 		refreshTorrentDetails(torrent);
-		Crouton.showText(this, successMessage, NavigationHelper.CROUTON_INFO_STYLE);
+		SnackbarManager.show(Snackbar.with(this).text(successMessage));
 	}
 
 	@UiThread
@@ -353,7 +348,8 @@ public class DetailsActivity extends ActionBarActivity implements TorrentTasksEx
 		log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
 		fragmentDetails.updateIsLoading(false, isCritical ? error : null);
-		Crouton.showText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())), NavigationHelper.CROUTON_ERROR_STYLE);
+		SnackbarManager.show(Snackbar.with(this).text(getString(LocalTorrent.getResourceForDaemonException(result.getException())))
+				.colorResource(R.color.crouton_error));
 	}
 
 	@UiThread

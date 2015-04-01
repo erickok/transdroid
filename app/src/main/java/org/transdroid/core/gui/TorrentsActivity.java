@@ -26,9 +26,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -43,6 +43,8 @@ import android.widget.ListView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -135,8 +137,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-
 /**
  * Main activity that holds the fragment that shows the torrents list, presents a way to filter the list (via an action bar spinner or list side list)
  * and potentially shows a torrent details fragment too, if there is room. Task execution such as loading of and adding torrents is performs in this
@@ -166,6 +166,8 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	protected Toolbar torrentsToolbar;
 	@ViewById
 	protected Toolbar actionsToolbar;
+	@ViewById(R.id.contextual_menu)
+	protected ActionMenuView contextualMenu;
 	@ViewById
 	protected FloatingActionsMenu addmenuButton;
 	@ViewById
@@ -405,12 +407,6 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	}
 
 	@Override
-	protected void onDestroy() {
-		Crouton.cancelAllCroutons();
-		super.onDestroy();
-	}
-
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		// Manually insert the actions into the main torrent and secondary actions toolbars
@@ -418,35 +414,35 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		if (actionsToolbar.getMenu().size() == 0) {
 			actionsToolbar.inflateMenu(R.menu.activity_torrents_secondary);
 		}
-			if (navigationHelper.enableSearchUi()) {
-				// Add an expandable SearchView to the action bar
-				MenuItem item = menu.findItem(R.id.action_search);
-				SearchView searchView = new SearchView(this);
-				searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-				searchView.setQueryRefinementEnabled(true);
-				searchView.setOnSearchClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						// Pause autorefresh
-						stopRefresh = true;
-						stopAutoRefresh();
-					}
-				});
-				MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
-					@Override
-					public boolean onMenuItemActionExpand(MenuItem item) {
-						return true;
-					}
+		if (navigationHelper.enableSearchUi()) {
+			// Add an expandable SearchView to the action bar
+			MenuItem item = menu.findItem(R.id.action_search);
+			SearchView searchView = new SearchView(torrentsToolbar.getContext());
+			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+			searchView.setQueryRefinementEnabled(true);
+			searchView.setOnSearchClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// Pause autorefresh
+					stopRefresh = true;
+					stopAutoRefresh();
+				}
+			});
+			MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+				@Override
+				public boolean onMenuItemActionExpand(MenuItem item) {
+					return true;
+				}
 
-					@Override
-					public boolean onMenuItemActionCollapse(MenuItem item) {
-						stopRefresh = false;
-						startAutoRefresh();
-						return true;
-					}
-				});
-				MenuItemCompat.setActionView(item, searchView);
-				searchMenu = item;
+				@Override
+				public boolean onMenuItemActionCollapse(MenuItem item) {
+					stopRefresh = false;
+					startAutoRefresh();
+					return true;
+				}
+			});
+			MenuItemCompat.setActionView(item, searchView);
+			searchMenu = item;
 		}
 		return true;
 	}
@@ -652,7 +648,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 			return;
 		}
 		if (dataUri.getScheme() == null) {
-			Crouton.showText(this, R.string.error_invalid_url_form, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_invalid_url_form).colorResource(R.color.crouton_error));
 			return;
 		}
 
@@ -768,7 +764,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	protected void onBarcodeScanHandled(String barcode, String result) {
 		log.d(this, "Scanned barcode " + barcode + " and got " + result);
 		if (TextUtils.isEmpty(result)) {
-			Crouton.showText(this, R.string.error_noproductforcode, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_noproductforcode).colorResource(R.color.crouton_error));
 		} else if (result.startsWith("http") || result.startsWith("https")) {
 			addTorrentByUrl(result, "QR code result"); // No torrent title known
 		} else if (navigationHelper.enableSearchUi()) {
@@ -1030,10 +1026,10 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		} catch (SecurityException e) {
 			// No longer access to this file
 			log.e(this, "No access given to " + contentUri.toString() + ": " + e.toString());
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.crouton_error));
 		} catch (FileNotFoundException e) {
 			log.e(this, contentUri.toString() + " does not exist: " + e.toString());
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.crouton_error));
 		}
 	}
 
@@ -1045,7 +1041,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 			addTorrentFromStream(input, title);
 		} catch (Exception e) {
 			log.e(this, "Can't download private site torrent " + url + " from " + source + ": " + e.toString());
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.crouton_error));
 		}
 
 	}
@@ -1073,14 +1069,14 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 					response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
 				log.e(this, "Can't retrieve web torrent " + url + ": Unexpected HTTP response status code " +
 						response.getStatusLine().toString());
-				Crouton.showText(this, R.string.error_401, NavigationHelper.CROUTON_ERROR_STYLE);
+				SnackbarManager.show(Snackbar.with(this).text(R.string.error_401).colorResource(R.color.crouton_error));
 				return;
 			}
 			InputStream input = response.getEntity().getContent();
 			addTorrentFromStream(input, title);
 		} catch (Exception e) {
 			log.e(this, "Can't retrieve web torrent " + url + ": " + e.toString());
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.crouton_error));
 		}
 	}
 
@@ -1106,7 +1102,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 			}
 		} catch (IOException e) {
 			log.e(this, "Can't write input stream to " + tempFile.toString() + ": " + e.toString());
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.crouton_error));
 		} finally {
 			try {
 				if (input != null) {
@@ -1114,7 +1110,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 				}
 			} catch (IOException e) {
 				log.e(this, "Error closing the input stream " + tempFile.toString() + ": " + e.toString());
-				Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+				SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.crouton_error));
 			}
 		}
 	}
@@ -1251,7 +1247,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
 		// Refresh the screen as well
 		refreshScreen();
-		Crouton.showText(this, successMessage, NavigationHelper.CROUTON_INFO_STYLE);
+		SnackbarManager.show(Snackbar.with(this).text(successMessage));
 	}
 
 	@UiThread
@@ -1259,7 +1255,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		//noinspection ThrowableResultOfMethodCallIgnored
 		log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
-		Crouton.showText(this, error, NavigationHelper.CROUTON_ERROR_STYLE);
+		SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.crouton_error));
 		fragmentTorrents.updateIsLoading(false);
 		if (isCritical) {
 			fragmentTorrents.updateError(error);

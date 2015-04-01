@@ -32,6 +32,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OnActivityResult;
@@ -48,8 +51,6 @@ import org.transdroid.core.service.BootReceiver;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 @EActivity
 public class SystemSettingsActivity extends PreferenceActivity {
@@ -95,8 +96,7 @@ public class SystemSettingsActivity extends PreferenceActivity {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
 			SearchHistoryProvider.clearHistory(getApplicationContext());
-			Crouton.showText(SystemSettingsActivity.this, R.string.pref_clearsearch_success,
-					NavigationHelper.CROUTON_INFO_STYLE);
+			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_clearsearch_success));
 			return true;
 		}
 	};
@@ -106,15 +106,13 @@ public class SystemSettingsActivity extends PreferenceActivity {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
 			try {
 				settingsPersistence.importSettingsFromFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
-				Crouton.showText(SystemSettingsActivity.this, R.string.pref_import_success,
-						NavigationHelper.CROUTON_INFO_STYLE);
+				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
 			} catch (FileNotFoundException e) {
-				Crouton.showText(SystemSettingsActivity.this, R.string.error_file_not_found,
-						NavigationHelper.CROUTON_ERROR_STYLE);
+				SnackbarManager
+						.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.crouton_error));
 			} catch (JSONException e) {
-				Crouton.showText(SystemSettingsActivity.this,
-						getString(R.string.error_no_valid_settings_file, getString(R.string.app_name)),
-						NavigationHelper.CROUTON_ERROR_STYLE);
+				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this)
+						.text(getString(R.string.error_no_valid_settings_file, getString(R.string.app_name))).colorResource(R.color.crouton_error));
 			}
 		}
 	};
@@ -130,14 +128,10 @@ public class SystemSettingsActivity extends PreferenceActivity {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
 			try {
 				settingsPersistence.exportSettingsToFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
-				Crouton.showText(SystemSettingsActivity.this, R.string.pref_export_success,
-						NavigationHelper.CROUTON_INFO_STYLE);
-			} catch (JSONException e) {
-				Crouton.showText(SystemSettingsActivity.this, R.string.error_cant_write_settings_file,
-						NavigationHelper.CROUTON_ERROR_STYLE);
-			} catch (IOException e) {
-				Crouton.showText(SystemSettingsActivity.this, R.string.error_cant_write_settings_file,
-						NavigationHelper.CROUTON_ERROR_STYLE);
+				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
+			} catch (JSONException | IOException e) {
+				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
+						.colorResource(R.color.crouton_error));
 			}
 		}
 	};
@@ -149,8 +143,8 @@ public class SystemSettingsActivity extends PreferenceActivity {
 				String settings = settingsPersistence.exportSettingsAsString(prefs);
 				BarcodeHelper.shareContentBarcode(SystemSettingsActivity.this, settings);
 			} catch (JSONException e) {
-				Crouton.showText(SystemSettingsActivity.this, R.string.error_cant_write_settings_file,
-						NavigationHelper.CROUTON_ERROR_STYLE);
+				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
+						.colorResource(R.color.crouton_error));
 			}
 		}
 	};
@@ -191,11 +185,10 @@ public class SystemSettingsActivity extends PreferenceActivity {
 		if (formatName != null && formatName.equals("QR_CODE") && !TextUtils.isEmpty(contents)) {
 			try {
 				settingsPersistence.importSettingsAsString(prefs, contents);
-				Crouton.showText(SystemSettingsActivity.this, R.string.pref_import_success,
-						NavigationHelper.CROUTON_INFO_STYLE);
+				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
 			} catch (JSONException e) {
-				Crouton.showText(SystemSettingsActivity.this, R.string.error_file_not_found,
-						NavigationHelper.CROUTON_ERROR_STYLE);
+				SnackbarManager
+						.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.crouton_error));
 			}
 		}
 	}

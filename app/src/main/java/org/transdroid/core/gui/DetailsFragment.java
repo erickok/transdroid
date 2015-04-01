@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.ActionMenuView;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -33,6 +34,9 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -47,7 +51,6 @@ import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.DetailsAdapter;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.navigation.Label;
-import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
@@ -66,8 +69,6 @@ import org.transdroid.daemon.TorrentFile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
  * Fragment that shows detailed statistics about some torrent. These come from some already fetched {@link Torrent} object, but it also retrieves
@@ -100,6 +101,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	protected View detailsContainer;
 	@ViewById(R.id.details_menu)
 	protected ActionMenuView detailsMenu;
+	@ViewById(R.id.contextual_menu)
+	protected ActionMenuView contextualMenu;
 	@ViewById
 	protected SwipeRefreshLayout swipeRefreshLayout;
 	@ViewById
@@ -415,7 +418,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	@OptionsItem(R.id.action_updatetrackers)
 	protected void updateTrackers() {
 		if (torrentDetails == null) {
-			Crouton.showText(getActivity(), R.string.error_stillloadingdetails, NavigationHelper.CROUTON_INFO_STYLE);
+			SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_stillloadingdetails));
 			return;
 		}
 		new SetTrackersDialog().setOnTrackersUpdated(this).setCurrentTrackers(torrentDetails.getTrackersText())
@@ -473,10 +476,22 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		SelectionManagerMode selectionManagerMode;
 
 		@Override
-		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		public boolean onCreateActionMode(final ActionMode mode, Menu menu) {
 			// Show contextual action bar to start/stop/remove/etc. torrents in batch mode
-			mode.getMenuInflater().inflate(R.menu.fragment_details_cab, menu);
-			selectionManagerMode = new SelectionManagerMode(detailsList, R.plurals.navigation_filesselected);
+			detailsMenu.setEnabled(false);
+			contextualMenu.setVisibility(View.VISIBLE);
+			contextualMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+				@Override
+				public boolean onMenuItemClick(MenuItem menuItem) {
+					return onActionItemClicked(mode, menuItem);
+				}
+			});
+			if (contextualMenu.getMenu().size() == 0) {
+				getActivity().getMenuInflater().inflate(R.menu.fragment_details_cab_main, contextualMenu.getMenu());
+			}
+			Context themedContext = ((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext();
+			mode.getMenuInflater().inflate(R.menu.fragment_details_cab_secondary, menu);
+			selectionManagerMode = new SelectionManagerMode(themedContext, detailsList, R.plurals.navigation_filesselected);
 			selectionManagerMode.setOnlyCheckClass(TorrentFile.class);
 			selectionManagerMode.onCreateActionMode(mode, menu);
 			return true;
@@ -484,19 +499,20 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			selectionManagerMode.onPrepareActionMode(mode, menu);
 			// Pause autorefresh
 			if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
 				((TorrentsActivity) getActivity()).stopRefresh = true;
 				((TorrentsActivity) getActivity()).stopAutoRefresh();
 			}
 			boolean filePaths = currentServerSettings != null && Daemon.supportsFilePaths(currentServerSettings.getType());
-			menu.findItem(R.id.action_download).setVisible(filePaths);
+			contextualMenu.getMenu().findItem(R.id.action_download).setVisible(filePaths);
 			boolean filePriorities = currentServerSettings != null && Daemon.supportsFilePrioritySetting(currentServerSettings.getType());
-			menu.findItem(R.id.action_priority_off).setVisible(filePriorities);
-			menu.findItem(R.id.action_priority_low).setVisible(filePriorities);
-			menu.findItem(R.id.action_priority_normal).setVisible(filePriorities);
-			menu.findItem(R.id.action_priority_high).setVisible(filePriorities);
-			return selectionManagerMode.onPrepareActionMode(mode, menu);
+			contextualMenu.getMenu().findItem(R.id.action_priority_off).setVisible(filePriorities);
+			contextualMenu.getMenu().findItem(R.id.action_priority_low).setVisible(filePriorities);
+			contextualMenu.getMenu().findItem(R.id.action_priority_normal).setVisible(filePriorities);
+			contextualMenu.getMenu().findItem(R.id.action_priority_high).setVisible(filePriorities);
+			return true;
 		}
 
 		@SuppressLint("SdCardPath")
@@ -569,7 +585,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				}
 
 				// No app is available that can handle FTP downloads
-				Crouton.showText(getActivity(), getString(R.string.error_noftpapp, url), NavigationHelper.CROUTON_ERROR_STYLE);
+				SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_noftpapp).colorResource(R.color.crouton_error));
 				mode.finish();
 				return true;
 
@@ -617,6 +633,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				((TorrentsActivity) getActivity()).startAutoRefresh();
 			}
 			selectionManagerMode.onDestroyActionMode(mode);
+			contextualMenu.setVisibility(View.GONE);
+			detailsMenu.setEnabled(true);
 		}
 
 	};

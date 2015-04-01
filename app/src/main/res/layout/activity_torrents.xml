@@ -19,11 +19,11 @@
 <android.support.v4.widget.DrawerLayout
 	android:id="@+id/drawer_layout"
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".core.gui.TorrentsActivity_"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	tools:context=".core.gui.TorrentsActivity_">
 
 	<!-- The main content view -->
 	<RelativeLayout
@@ -45,8 +45,18 @@
 			android:layout_height="wrap_content"
 			android:layout_alignParentBottom="true"
 			android:minHeight="?attr/actionBarSize"
-			android:paddingRight="85dp"
-			android:paddingEnd="85dp" />
+			android:paddingEnd="@dimen/ui_actions_padding"
+			android:paddingRight="@dimen/ui_actions_padding" />
+
+		<android.support.v7.widget.ActionMenuView
+			android:id="@+id/contextual_menu"
+			style="@style/SplitToolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:minHeight="?attr/actionBarSize"
+			android:visibility="gone"
+			tools:visibility="visible"/>
 
 		<fragment
 			android:id="@+id/torrents_fragment"
@@ -101,12 +111,13 @@
 			android:id="@+id/filter_search"
 			android:layout_width="@dimen/ui_filters_list"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="5dp"
 			android:layout_marginBottom="5dp"
+			android:layout_marginEnd="5dp"
 			android:layout_marginRight="10dp"
-			android:layout_marginEnd="10dp"
+			android:layout_marginTop="5dp"
+			app:iconifiedByDefault="false"
 			app:queryHint="@string/action_filter"
-			app:iconifiedByDefault="false" />
+			app:searchIcon="@drawable/ic_action_filter" />
 
 	</LinearLayout>
 

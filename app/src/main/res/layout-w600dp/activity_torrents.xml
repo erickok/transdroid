@@ -37,7 +37,19 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
-		android:minHeight="?attr/actionBarSize" />
+		android:minHeight="?attr/actionBarSize"
+		android:paddingEnd="@dimen/ui_actions_padding"
+		android:paddingRight="@dimen/ui_actions_padding" />
+
+	<android.support.v7.widget.ActionMenuView
+		android:id="@+id/contextual_menu"
+		style="@style/SplitToolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:minHeight="?attr/actionBarSize"
+		android:visibility="gone"
+		tools:visibility="visible" />
 
 	<android.support.v7.widget.SearchView
 		android:id="@+id/filter_search"
@@ -46,7 +58,11 @@
 		android:layout_above="@id/actions_toolbar"
 		android:layout_alignParentLeft="true"
 		android:layout_alignParentStart="true"
-		android:layout_margin="5dp"
+		android:layout_marginBottom="5dp"
+		android:layout_marginEnd="5dp"
+		android:layout_marginRight="5dp"
+		android:layout_marginTop="5dp"
+		app:searchIcon="@drawable/ic_action_filter"
 		app:queryHint="@string/action_filter"
 		app:iconifiedByDefault="false" />
 

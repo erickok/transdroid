@@ -17,8 +17,10 @@
 package org.transdroid.core.gui.search;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.app.ActionBarActivity;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +30,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -44,14 +49,11 @@ import org.transdroid.core.app.search.SearchResult;
 import org.transdroid.core.app.search.SearchSite;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.TorrentsActivity_;
-import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 /**
  * Fragment that lists the items in a specific RSS feed
@@ -129,7 +131,7 @@ public class SearchResultsFragment extends Fragment {
 	@ItemClick(R.id.searchresults_list)
 	protected void onItemClicked(SearchResult item) {
 		if (item.getTorrentUrl() == null) {
-			Crouton.showText(getActivity(), R.string.error_notorrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_notorrentfile).colorResource(R.color.crouton_error));
 			return;
 		}
 		// Don't broadcast this intent; we can safely assume this is intended for Transdroid only
@@ -150,7 +152,8 @@ public class SearchResultsFragment extends Fragment {
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Show contextual action bar to add items in batch mode
 			mode.getMenuInflater().inflate(R.menu.fragment_searchresults_cab, menu);
-			selectionManagerMode = new SelectionManagerMode(resultsList, R.plurals.search_resutlsselected);
+			Context themedContext = ((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext();
+			selectionManagerMode = new SelectionManagerMode(themedContext, resultsList, R.plurals.search_resutlsselected);
 			selectionManagerMode.onCreateActionMode(mode, menu);
 			return true;
 		}

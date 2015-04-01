@@ -22,7 +22,7 @@
 	android:paddingBottom="@dimen/margin_half"
 	android:paddingLeft="@dimen/margin_default"
 	android:paddingRight="@dimen/margin_default"
-	android:paddingTop="@dimen/margin_half" >
+	android:paddingTop="@dimen/margin_half">
 
 	<TextView
 		android:id="@+id/item_text"

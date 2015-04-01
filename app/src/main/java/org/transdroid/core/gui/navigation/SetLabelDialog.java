@@ -16,13 +16,6 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import java.security.InvalidParameterException;
-import java.util.Iterator;
-import java.util.List;
-
-import org.transdroid.R;
-import org.transdroid.core.gui.lists.SimpleListItem;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -34,7 +27,16 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
+
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+
+import org.transdroid.R;
+import org.transdroid.core.gui.lists.SimpleListItem;
+
+import java.security.InvalidParameterException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A dialog fragment that allows picking a label or entering a new label to set this new label to the torrent.
@@ -60,16 +62,17 @@ public class SetLabelDialog extends DialogFragment {
 	}
 
 	/**
-	 * Sets the list of currently known labels as are active on the server. These are offered to the user to pick a new
-	 * label for the target torrents.
+	 * Sets the list of currently known labels as are active on the server. These are offered to the user to pick a new label for the target
+	 * torrents.
 	 * @param currentLabels The list of torrent labels
 	 * @return This dialog, for method chaining
 	 */
 	public SetLabelDialog setCurrentLabels(List<Label> currentLabels) {
 		// Discard the empty label in this list before storing it locally
-		for (Iterator<Label> iter = currentLabels.iterator(); iter.hasNext();) {
-			if (iter.next().isEmptyLabel())
+		for (Iterator<Label> iter = currentLabels.iterator(); iter.hasNext(); ) {
+			if (iter.next().isEmptyLabel()) {
 				iter.remove();
+			}
 		}
 		this.currentLabels = currentLabels;
 		return this;
@@ -77,12 +80,13 @@ public class SetLabelDialog extends DialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		if (onLabelPickedListener == null)
-			throw new InvalidParameterException(
-					"Please first set the callback listener using setOnLabelPickedListener before opening the dialog.");
-		if (currentLabels == null)
+		if (onLabelPickedListener == null) {
+			throw new InvalidParameterException("Please first set the callback listener using setOnLabelPickedListener before opening the dialog.");
+		}
+		if (currentLabels == null) {
 			throw new InvalidParameterException(
 					"Please first set the list of currently known labels before opening the dialog, even if the list is empty.");
+		}
 		final View setlabelFrame = getActivity().getLayoutInflater().inflate(R.layout.dialog_setlabel, null, false);
 		final ListView labelsList = (ListView) setlabelFrame.findViewById(R.id.labels_list);
 		final EditText newlabelEdit = (EditText) setlabelFrame.findViewById(R.id.newlabel_edit);
@@ -102,23 +106,22 @@ public class SetLabelDialog extends DialogFragment {
 				}
 			});
 		}
-		return new AlertDialog.Builder(getActivity()).setView(setlabelFrame)
-				.setPositiveButton(R.string.status_update, new OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// User should have provided a new label
-						if (newlabelEdit.getText().toString().equals("")) {
-							Crouton.showText(getActivity(), R.string.error_notalabel,
-									NavigationHelper.CROUTON_ERROR_STYLE);
-						}
-						onLabelPickedListener.onLabelPicked(newlabelEdit.getText().toString());
-					}
-				}).setNeutralButton(R.string.status_label_remove, new OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						onLabelPickedListener.onLabelPicked(null);
-					}
-				}).setNegativeButton(android.R.string.cancel, null).show();
+		return new AlertDialog.Builder(getActivity()).setView(setlabelFrame).setPositiveButton(R.string.status_update, new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// User should have provided a new label
+				if (newlabelEdit.getText().toString().equals("")) {
+					SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_notalabel).colorResource(R.color.crouton_error));
+					return;
+				}
+				onLabelPickedListener.onLabelPicked(newlabelEdit.getText().toString());
+			}
+		}).setNeutralButton(R.string.status_label_remove, new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				onLabelPickedListener.onLabelPicked(null);
+			}
+		}).setNegativeButton(android.R.string.cancel, null).show();
 	}
 
 	public interface OnLabelPickedListener {

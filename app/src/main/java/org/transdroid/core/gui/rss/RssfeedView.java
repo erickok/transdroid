@@ -38,7 +38,7 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 @EViewGroup(R.layout.list_item_rssfeed)
 public class RssfeedView extends LinearLayout {
 
-	private static final String GETFVO_URL = "http://g.etfv.co/%1$s";
+	private static final String GRABICON_URL = "http://grabicon.com/icon?origin=www.transdroid.org&domain=%1$s";
 
 	@Bean
 	protected NavigationHelper navigationHelper;
@@ -71,7 +71,7 @@ public class RssfeedView extends LinearLayout {
 		// Clear and then asynchronously load the RSS feed site' favicon
 		// Uses the g.etfv.co service to resolve the favicon of any feed URL
 		faviconImage.setImageDrawable(null);
-		navigationHelper.getImageCache().displayImage(String.format(GETFVO_URL, rssfeedLoader.getSetting().getUrl()), faviconImage);
+		navigationHelper.getImageCache().displayImage(String.format(GRABICON_URL, rssfeedLoader.getSetting().getUrl()), faviconImage);
 
 	}
 
