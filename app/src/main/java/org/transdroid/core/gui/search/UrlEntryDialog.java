@@ -16,21 +16,18 @@
  */
 package org.transdroid.core.gui.search;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
-import android.os.Build;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.inputmethod.InputMethodManager;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import org.transdroid.R;
 import org.transdroid.core.gui.TorrentsActivity;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 
@@ -41,25 +38,20 @@ public class UrlEntryDialog {
 	 * TorrentsActivity#addTorrentByUrl(String, String) method}.
 	 * @param activity The activity that opens (and owns) this dialog
 	 */
-	@SuppressLint("ValidFragment")
-	public static void startUrlEntry(final TorrentsActivity activity) {
-		new DialogFragment() {
-			@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-			public android.app.Dialog onCreateDialog(android.os.Bundle savedInstanceState) {
-				final EditText urlInput = new EditText(activity);
-				urlInput.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
-				ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-				if (clipboard.hasPrimaryClip() && clipboard.getPrimaryClip().getItemCount() > 0) {
-					CharSequence content = clipboard.getPrimaryClip().getItemAt(0).coerceToText(activity);
-					urlInput.setText(content);
-				}
-				((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE))
-						.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-				return new AlertDialog.Builder(activity).setView(urlInput).setPositiveButton(android.R.string.ok, new OnClickListener() {
+	public static void show(final TorrentsActivity activity) {
+		View inputLayout = LayoutInflater.from(activity).inflate(R.layout.dialog_url, null);
+		final EditText urlEdit = (EditText) inputLayout.findViewById(R.id.url_edit);
+		urlEdit.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+		ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+		if (clipboard.hasPrimaryClip() && clipboard.getPrimaryClip().getItemCount() > 0) {
+			CharSequence content = clipboard.getPrimaryClip().getItemAt(0).coerceToText(activity);
+			urlEdit.setText(content);
+		}
+		new MaterialDialog.Builder(activity).customView(inputLayout, false).positiveText(android.R.string.ok).negativeText(android.R.string.cancel)
+				.callback(new MaterialDialog.ButtonCallback() {
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// Assume text entry box input as URL and treat the filename (after the last /) as title
-						String url = urlInput.getText().toString();
+					public void onPositive(MaterialDialog dialog) {
+						String url = urlEdit.getText().toString();
 						Uri uri = Uri.parse(url);
 						if (!TextUtils.isEmpty(url)) {
 							String title = NavigationHelper.extractNameFromUri(uri);
@@ -70,11 +62,7 @@ public class UrlEntryDialog {
 							}
 						}
 					}
-				}).setNegativeButton(android.R.string.cancel, null).create();
-			}
-
-			;
-		}.show(activity.getFragmentManager(), "urlentry");
+				}).show();
 	}
 
 }

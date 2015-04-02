@@ -93,8 +93,6 @@ public class SetLabelDialog extends DialogFragment {
 		if (currentLabels.size() == 0) {
 			// Hide the list (and its label) if there are no labels yet
 			setlabelFrame.findViewById(R.id.pick_label).setVisibility(View.GONE);
-			setlabelFrame.findViewById(R.id.line1).setVisibility(View.GONE);
-			setlabelFrame.findViewById(R.id.line2).setVisibility(View.GONE);
 			labelsList.setVisibility(View.GONE);
 		} else {
 			labelsList.setAdapter(new FilterListItemAdapter(getActivity(), currentLabels));

@@ -45,6 +45,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.enums.SnackbarType;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -580,7 +581,6 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	 * @param hasServerSettings Whether there are server settings available, so we can continue to connect
 	 */
 	private void updateFragmentVisibility(boolean hasServerSettings) {
-		// TODO Hide hamburger icon?
 		if (fragmentDetails != null && fragmentDetails.isAdded()) {
 			if (hasServerSettings) {
 				getFragmentManager().beginTransaction().show(fragmentDetails).commit();
@@ -729,11 +729,13 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 
 	@Click(R.id.addmenu_link_button)
 	protected void startUrlEntryDialog() {
-		UrlEntryDialog.startUrlEntry(this);
+		addmenuButton.collapse();
+		UrlEntryDialog.show(this);
 	}
 
 	@Click(R.id.addmenu_file_button)
 	protected void startFilePicker() {
+		addmenuButton.collapse();
 		FilePickerHelper.startFilePicker(this);
 	}
 
@@ -742,13 +744,28 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	public void onFilePicked(int resultCode, Intent data) {
 		// We should have received an Intent with a local torrent's Uri as data from the file picker
 		if (data != null && data.getData() != null && !data.getData().toString().equals("")) {
-			String url = data.getData().getPath();
-			addTorrentByFile(data.getData().toString(), url.substring(url.lastIndexOf("/")));
+			Uri dataUri = data.getData();
+
+			// Get torrent title
+			String title = NavigationHelper.extractNameFromUri(dataUri);
+
+			// Adding a torrent from the via a content:// scheme (access through content provider stream)
+			if (dataUri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+				addTorrentFromDownloads(dataUri, title);
+				return;
+			}
+
+			// Adding a .torrent file directly via the file:// scheme (we can access it directly)
+			if (dataUri.getScheme().equals("file")) {
+				addTorrentByFile(data.getDataString(), title);
+			}
+
 		}
 	}
 
 	@Click(R.id.addmenu_barcode_button)
 	protected void startBarcodeScanner() {
+		addmenuButton.collapse();
 		BarcodeHelper.startBarcodeScanner(this, BarcodeHelper.ACTIVITY_BARCODE_ADDTORRENT);
 	}
 
@@ -764,7 +781,8 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	protected void onBarcodeScanHandled(String barcode, String result) {
 		log.d(this, "Scanned barcode " + barcode + " and got " + result);
 		if (TextUtils.isEmpty(result)) {
-			SnackbarManager.show(Snackbar.with(this).text(R.string.error_noproductforcode).colorResource(R.color.crouton_error));
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_noproductforcode).colorResource(R.color.crouton_error)
+					.type(SnackbarType.MULTI_LINE));
 		} else if (result.startsWith("http") || result.startsWith("https")) {
 			addTorrentByUrl(result, "QR code result"); // No torrent title known
 		} else if (navigationHelper.enableSearchUi()) {
@@ -1255,7 +1273,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		//noinspection ThrowableResultOfMethodCallIgnored
 		log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
-		SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.crouton_error));
+		SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.crouton_error).type(SnackbarType.MULTI_LINE));
 		fragmentTorrents.updateIsLoading(false);
 		if (isCritical) {
 			fragmentTorrents.updateError(error);
