@@ -22,7 +22,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
 
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -260,7 +259,7 @@ public class DetailsActivity extends ActionBarActivity implements TorrentTasksEx
 		setResult(RESULT_OK, new Intent().putExtra("torrent_removed", true).putExtra("affected_torrent", torrent));
 		finish();
 		if (closeText != null) {
-			Toast.makeText(this, closeText, Toast.LENGTH_LONG).show();
+			SnackbarManager.show(Snackbar.with(this).text(closeText));
 		}
 	}
 
@@ -349,7 +348,7 @@ public class DetailsActivity extends ActionBarActivity implements TorrentTasksEx
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
 		fragmentDetails.updateIsLoading(false, isCritical ? error : null);
 		SnackbarManager.show(Snackbar.with(this).text(getString(LocalTorrent.getResourceForDaemonException(result.getException())))
-				.colorResource(R.color.crouton_error));
+				.colorResource(R.color.red));
 	}
 
 	@UiThread

@@ -16,110 +16,80 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.os.Bundle;
+import android.content.Context;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
 import org.transdroid.R;
-import org.transdroid.core.gui.lists.SimpleListItem;
 
-import java.security.InvalidParameterException;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * A dialog fragment that allows picking a label or entering a new label to set this new label to the torrent.
- * @author Eric Kok
- */
-public class SetLabelDialog extends DialogFragment {
-
-	private OnLabelPickedListener onLabelPickedListener = null;
-	private List<? extends SimpleListItem> currentLabels = null;
-
-	public SetLabelDialog() {
-		setRetainInstance(true);
-	}
+public class SetLabelDialog {
 
 	/**
-	 * Sets the callback for when the user is has picked a label for the target torrent.
-	 * @param onLabelPickedListener The event listener to this dialog
-	 * @return This dialog, for method chaining
+	 * A dialog fragment that allows picking a label or entering a new label to set this new label to the torrent.
+	 * @param context The activity context that opens (and owns) this dialog
+	 * @param onLabelPickedListener The callback when a new label has been entered or picked by the user
+	 * @param currentLabels The list of labels as currently exist on the server, to present as list for easy selection
 	 */
-	public SetLabelDialog setOnLabelPickedListener(OnLabelPickedListener onLabelPickedListener) {
-		this.onLabelPickedListener = onLabelPickedListener;
-		return this;
-	}
+	public static void show(final Context context, final OnLabelPickedListener onLabelPickedListener, List<Label> currentLabels) {
 
-	/**
-	 * Sets the list of currently known labels as are active on the server. These are offered to the user to pick a new label for the target
-	 * torrents.
-	 * @param currentLabels The list of torrent labels
-	 * @return This dialog, for method chaining
-	 */
-	public SetLabelDialog setCurrentLabels(List<Label> currentLabels) {
 		// Discard the empty label in this list before storing it locally
 		for (Iterator<Label> iter = currentLabels.iterator(); iter.hasNext(); ) {
 			if (iter.next().isEmptyLabel()) {
 				iter.remove();
 			}
 		}
-		this.currentLabels = currentLabels;
-		return this;
-	}
 
-	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		if (onLabelPickedListener == null) {
-			throw new InvalidParameterException("Please first set the callback listener using setOnLabelPickedListener before opening the dialog.");
-		}
-		if (currentLabels == null) {
-			throw new InvalidParameterException(
-					"Please first set the list of currently known labels before opening the dialog, even if the list is empty.");
-		}
-		final View setlabelFrame = getActivity().getLayoutInflater().inflate(R.layout.dialog_setlabel, null, false);
-		final ListView labelsList = (ListView) setlabelFrame.findViewById(R.id.labels_list);
-		final EditText newlabelEdit = (EditText) setlabelFrame.findViewById(R.id.newlabel_edit);
+		final View setLabelLayout = LayoutInflater.from(context).inflate(R.layout.dialog_setlabel, null);
+		final ListView labelsList = (ListView) setLabelLayout.findViewById(R.id.labels_list);
+		final EditText newLabelEdit = (EditText) setLabelLayout.findViewById(R.id.newlabel_edit);
+
+		final MaterialDialog dialog = new MaterialDialog.Builder(context).customView(setLabelLayout, false).positiveText(R.string.status_update)
+				.neutralText(R.string.status_label_remove).negativeText(android.R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
+					@Override
+					public void onPositive(MaterialDialog dialog) {
+						// User should have provided a new label
+						if (TextUtils.isEmpty(newLabelEdit.getText())) {
+							SnackbarManager.show(Snackbar.with(context).text(R.string.error_notalabel).colorResource(R.color.red));
+							return;
+						}
+						onLabelPickedListener.onLabelPicked(newLabelEdit.getText().toString());
+					}
+
+					@Override
+					public void onNeutral(MaterialDialog dialog) {
+						onLabelPickedListener.onLabelPicked(null);
+					}
+				}).build();
+
 		if (currentLabels.size() == 0) {
 			// Hide the list (and its label) if there are no labels yet
-			setlabelFrame.findViewById(R.id.pick_label).setVisibility(View.GONE);
+			setLabelLayout.findViewById(R.id.pick_label).setVisibility(View.GONE);
 			labelsList.setVisibility(View.GONE);
 		} else {
-			labelsList.setAdapter(new FilterListItemAdapter(getActivity(), currentLabels));
+			labelsList.setAdapter(new FilterListItemAdapter(context, currentLabels));
 			labelsList.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 					onLabelPickedListener.onLabelPicked(((Label) labelsList.getItemAtPosition(position)).getName());
-					dismiss();
+					dialog.dismiss();
 				}
 			});
 		}
-		return new AlertDialog.Builder(getActivity()).setView(setlabelFrame).setPositiveButton(R.string.status_update, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// User should have provided a new label
-				if (newlabelEdit.getText().toString().equals("")) {
-					SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_notalabel).colorResource(R.color.crouton_error));
-					return;
-				}
-				onLabelPickedListener.onLabelPicked(newlabelEdit.getText().toString());
-			}
-		}).setNeutralButton(R.string.status_label_remove, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				onLabelPickedListener.onLabelPicked(null);
-			}
-		}).setNegativeButton(android.R.string.cancel, null).show();
+
+		dialog.show();
+
 	}
 
 	public interface OnLabelPickedListener {

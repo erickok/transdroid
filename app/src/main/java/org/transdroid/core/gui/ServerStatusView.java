@@ -27,7 +27,6 @@ import com.nispok.snackbar.SnackbarManager;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.SetTransferRatesDialog;
 import org.transdroid.core.gui.navigation.SetTransferRatesDialog.OnRatesPickedListener;
 import org.transdroid.daemon.Torrent;
@@ -99,8 +98,7 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 
 	private OnClickListener onStartDownPickerClicked = new OnClickListener() {
 		public void onClick(View v) {
-			new SetTransferRatesDialog().setOnRatesPickedListener(ServerStatusView.this)
-					.show(activity.getFragmentManager(), "SetTransferRatesDialog");
+			SetTransferRatesDialog.show(getContext(), ServerStatusView.this);
 		}
 	};
 
@@ -116,7 +114,7 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 
 	@Override
 	public void onInvalidNumber() {
-		SnackbarManager.show(Snackbar.with(activity).text(R.string.error_notanumber).colorResource(R.color.crouton_error));
+		SnackbarManager.show(Snackbar.with(activity).text(R.string.error_notanumber).colorResource(R.color.red));
 	}
 
 }

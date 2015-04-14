@@ -168,11 +168,11 @@ public class RssfeedsActivity extends ActionBarActivity {
 
 			// Error message or not yet loaded? Show a toast message instead of opening the items activity
 			if (loader.hasError()) {
-				SnackbarManager.show(Snackbar.with(this).text(R.string.rss_error).colorResource(R.color.crouton_error));
+				SnackbarManager.show(Snackbar.with(this).text(R.string.rss_error).colorResource(R.color.red));
 				return;
 			}
 			if (loader.getChannel() == null || loader.getChannel().getItems().size() == 0) {
-				SnackbarManager.show(Snackbar.with(this).text(R.string.rss_notloaded).colorResource(R.color.crouton_error));
+				SnackbarManager.show(Snackbar.with(this).text(R.string.rss_notloaded).colorResource(R.color.red));
 				return;
 			}
 

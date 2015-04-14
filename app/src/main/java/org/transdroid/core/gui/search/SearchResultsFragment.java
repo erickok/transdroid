@@ -131,7 +131,7 @@ public class SearchResultsFragment extends Fragment {
 	@ItemClick(R.id.searchresults_list)
 	protected void onItemClicked(SearchResult item) {
 		if (item.getTorrentUrl() == null) {
-			SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_notorrentfile).colorResource(R.color.crouton_error));
+			SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_notorrentfile).colorResource(R.color.red));
 			return;
 		}
 		// Don't broadcast this intent; we can safely assume this is intended for Transdroid only

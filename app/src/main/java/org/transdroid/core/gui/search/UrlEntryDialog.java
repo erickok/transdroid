@@ -41,7 +41,6 @@ public class UrlEntryDialog {
 	public static void show(final TorrentsActivity activity) {
 		View inputLayout = LayoutInflater.from(activity).inflate(R.layout.dialog_url, null);
 		final EditText urlEdit = (EditText) inputLayout.findViewById(R.id.url_edit);
-		urlEdit.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
 		ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
 		if (clipboard.hasPrimaryClip() && clipboard.getPrimaryClip().getItemCount() > 0) {
 			CharSequence content = clipboard.getPrimaryClip().getItemAt(0).coerceToText(activity);

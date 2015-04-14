@@ -121,7 +121,7 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 		Editor edit = PreferenceManager.getDefaultSharedPreferences(XirvikSharedSettingsActivity.this).edit();
 		EditTextPreference pref = (EditTextPreference) findPreference("seedbox_xirvikshared_rpc_" + key);
 		if (result == null) {
-			SnackbarManager.show(Snackbar.with(this).text(R.string.pref_seedbox_xirviknofolder).colorResource(R.color.crouton_error));
+			SnackbarManager.show(Snackbar.with(this).text(R.string.pref_seedbox_xirviknofolder).colorResource(R.color.red));
 			edit.remove("seedbox_xirvikshared_rpc_" + key);
 			pref.setSummary("");
 		} else {

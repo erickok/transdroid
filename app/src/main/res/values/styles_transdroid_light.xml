@@ -22,7 +22,6 @@
     <style name="Theme.Transdroid.Light" parent="Theme.AppCompat.Light.NoActionBar">
 		<item name="colorPrimary">@color/green</item>
 		<item name="colorPrimaryDark">@color/green_dark</item>
-		<item name="colorAccent">@color/green_light</item>
 		<item name="colorControlHighlight">@color/green_light</item>
 		<item name="windowActionModeOverlay">true</item>
 		<item name="actionModeBackground">@color/grey</item>

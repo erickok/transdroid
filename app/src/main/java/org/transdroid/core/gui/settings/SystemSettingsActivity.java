@@ -109,10 +109,10 @@ public class SystemSettingsActivity extends PreferenceActivity {
 				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
 			} catch (FileNotFoundException e) {
 				SnackbarManager
-						.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.crouton_error));
+						.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.red));
 			} catch (JSONException e) {
 				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this)
-						.text(getString(R.string.error_no_valid_settings_file, getString(R.string.app_name))).colorResource(R.color.crouton_error));
+						.text(getString(R.string.error_no_valid_settings_file, getString(R.string.app_name))).colorResource(R.color.red));
 			}
 		}
 	};
@@ -131,7 +131,7 @@ public class SystemSettingsActivity extends PreferenceActivity {
 				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
 			} catch (JSONException | IOException e) {
 				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
-						.colorResource(R.color.crouton_error));
+						.colorResource(R.color.red));
 			}
 		}
 	};
@@ -144,7 +144,7 @@ public class SystemSettingsActivity extends PreferenceActivity {
 				BarcodeHelper.shareContentBarcode(SystemSettingsActivity.this, settings);
 			} catch (JSONException e) {
 				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
-						.colorResource(R.color.crouton_error));
+						.colorResource(R.color.red));
 			}
 		}
 	};
@@ -188,7 +188,7 @@ public class SystemSettingsActivity extends PreferenceActivity {
 				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
 			} catch (JSONException e) {
 				SnackbarManager
-						.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.crouton_error));
+						.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.red));
 			}
 		}
 	}

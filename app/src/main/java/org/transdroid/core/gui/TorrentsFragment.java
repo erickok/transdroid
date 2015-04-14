@@ -355,8 +355,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 			} else if (itemId == R.id.action_setlabel) {
 				lastMultiSelectedTorrents = checked;
 				if (currentLabels != null) {
-					new SetLabelDialog().setOnLabelPickedListener(TorrentsFragment.this).setCurrentLabels(currentLabels)
-							.show(getFragmentManager(), "SetLabelDialog");
+					SetLabelDialog.show(getActivity(), TorrentsFragment.this,currentLabels);
 				}
 				mode.finish();
 				return true;

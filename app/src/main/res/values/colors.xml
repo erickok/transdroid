@@ -23,8 +23,7 @@
     <color name="green_dark">#1B5E20</color>
 	<color name="grey">#757575</color>
     <color name="ledgreen">#7dbb21</color>
-    <color name="crouton_error">#C62828</color>
-    <color name="crouton_info">#A5D6A7</color>
+    <color name="red">#C62828</color>
 
     <!-- Torrent and file status colours -->
     <color name="torrent_downloading">#1E88E5</color>	<!-- Blue -->

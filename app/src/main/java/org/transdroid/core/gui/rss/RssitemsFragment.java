@@ -155,7 +155,7 @@ public class RssitemsFragment extends Fragment {
 						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(first.getLink())));
 					} else {
 						// No URL was specified in the RSS feed item link tag (or no link tag was present)
-						SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_no_link).colorResource(R.color.crouton_error));
+						SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_no_link).colorResource(R.color.red));
 					}
 				} else if (itemId == R.id.action_useassearch) {
 					// Use the RSS item title to start a new search (mimicking the search manager style)

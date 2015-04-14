@@ -35,7 +35,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="0dip"
 		android:layout_weight="1"
-		android:listSelector="?attr/activatable_background"
 		tools:listitem="@layout/list_item_simple"/>
 
 	<TextView
