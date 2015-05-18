@@ -33,8 +33,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.client.CookieStore;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,6 +82,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 	private int version = -1;
+	private int apiVersion = -1;
 
 	public QbittorrentAdapter(DaemonSettings settings) {
 		this.settings = settings;
@@ -93,6 +94,24 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		// We still need to retrieve the version number from the server
 		// Do this by getting the web interface about page and trying to parse the version number
 		// Format is something like 'qBittorrent v2.9.7 (Web UI)'
+
+		try {
+			String apiVerText = makeRequest(log, "/version/api");
+			apiVersion = Integer.parseInt(apiVerText.trim());
+		}
+		catch (DaemonException e) {
+			apiVersion = 1;
+			log.d(LOG_NAME, e.toString());
+		}
+		catch (NumberFormatException e) {
+			apiVersion = 1;
+			log.d(LOG_NAME, e.toString());
+		}
+
+		log.d(LOG_NAME, "qBittorrent API version is " + apiVersion);
+
+		// TODO:  In API ver 2, query this information from /version/qbittorrent instead.
+		// For now at least this works fine, though
 		String about = makeRequest(log, "/about.html");
 		String aboutStartText = "qBittorrent v";
 		String aboutEndText = " (Web UI)";
@@ -129,47 +148,72 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		}
 		// Unable to establish version number; assume an old version by setting it to version 1
 		version = 10000;
+		apiVersion = 1;
 	}
 
 	private synchronized void ensureAuthenticated(Log log) throws DaemonException {
-            // org.apache.http.impl.client.DefaultHttpClient
-            // private DefaultHttpClient httpclient;
-            // API changed in 3.2.0, you now login and are given a cookie.
-            // If we don't have that cookie, let's try and get it.
-            
-            if (version < 30200) {
-                return;
-            }
-            
-            // TODO: Don't do this if we already have the "SID" cookie set
+		// API changed in 3.2.0, login is now handled by its own request, which provides you a cookie.
+		// If we don't have that cookie, let's try and get it.
 
-            makeRequest(log, "/login", 
-                    new BasicNameValuePair("username", settings.getUsername()),
-                    new BasicNameValuePair("password", settings.getPassword()));
+		if (apiVersion < 2) {
+			return;
+		}
 
-        }
+		// Have we already authenticated?  Check if we have the cookie that we need
+		List<Cookie> cookies = httpclient.getCookieStore().getCookies();
+		for (Cookie c : cookies) {
+			log.d(LOG_NAME, "Looking at this cookie: " + c.getName());
+			if (c.getName().equals("SID")) {
+				// And here it is!  Okay, no need authenticate again.
+				log.d(LOG_NAME, "We're already authed, no need to do it again.");
+				return;
+			}
+		}
+
+		log.d(LOG_NAME, "Authenticating...");
+
+		makeRequest(log, "/login", 
+				new BasicNameValuePair("username", settings.getUsername()),
+				new BasicNameValuePair("password", settings.getPassword()));
+		// The HttpClient will automatically remember the cookie for us, no need to parse it out.
+
+		// However, we would like to see if authentication was successful or not... 
+		cookies = httpclient.getCookieStore().getCookies();
+		for (Cookie c : cookies) {
+			log.d(LOG_NAME, "post auth looking at this cookie: " + c.getName());
+			if (c.getName().equals("SID")) {
+				// Good.  Let's get out of here.
+				log.d(LOG_NAME, "Authentication success!");
+				return;
+			}
+		}
+
+		// No cookie found, we didn't authenticate.
+		throw new DaemonException(ExceptionType.AuthenticationFailure, "Server rejected our login");
+	}
 
 	@Override
 	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 
 		try {
 			ensureVersion(log);
-                        ensureAuthenticated(log);
+			ensureAuthenticated(log);
 
 			switch (task.getMethod()) {
 			case Retrieve:
 
 				// Request all torrents from server
 				JSONArray result = new JSONArray(makeRequest(log,
-                                            version >= 30200 ? "/query/torrents" :
-                                            version >= 30000 ? "/json/torrents" : "/json/events"));
+					version >= 30200 ? "/query/torrents" :
+					version >= 30000 ? "/json/torrents" : "/json/events"));
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result), null);
 
 			case GetTorrentDetails:
 
 				// Request tracker and error details for a specific teacher
 				String mhash = task.getTargetTorrent().getUniqueID();
-				JSONArray messages = new JSONArray(makeRequest(log, "/json/propertiesTrackers/" + mhash));
+				JSONArray messages = new JSONArray(makeRequest(log,
+					(version >= 30200 ? "/query/propertiesTrackers/" : "/json/propertiesTrackers/") + mhash));
 				return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
 						parseJsonTorrentDetails(messages));
 
@@ -177,7 +221,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 				// Request files listing for a specific torrent
 				String fhash = task.getTargetTorrent().getUniqueID();
-				JSONArray files = new JSONArray(makeRequest(log, "/json/propertiesFiles/" + fhash));
+				JSONArray files = new JSONArray(makeRequest(log, 
+					(version >= 30200 ? "/query/propertiesFiles/" : "/json/propertiesFiles/") + fhash));
 				return new GetFileListTaskSuccessResult((GetFileListTask) task, parseJsonFiles(files));
 
 			case AddByFile:
@@ -398,10 +443,22 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			JSONObject tor = response.getJSONObject(i);
 			int leechers[] = parsePeers(tor.getString("num_leechs"));
 			int seeders[] = parsePeers(tor.getString("num_seeds"));
-			long size = tor.getLong("size"); // parseSize(tor.get("size"));
 			double ratio = parseRatio(tor.getString("ratio"));
 			double progress = tor.getDouble("progress");
-			int dlspeed = tor.getInt("dlspeed"); // parseSpeed(tor.getString("dlspeed"));
+			long size;
+			int dlspeed;
+			int upspeed;
+
+			if (apiVersion >= 2) {
+				size = tor.getLong("size");
+				dlspeed = tor.getInt("dlspeed");
+				upspeed = tor.getInt("upspeed");
+			} else {
+				size = parseSize(tor.getString("size"));
+				dlspeed = parseSpeed(tor.getString("dlspeed"));
+				upspeed = parseSpeed(tor.getString("upspeed"));
+			}
+
 			long eta = -1L;
 			if (dlspeed > 0)
 				eta = (long) (size - (size * progress)) / dlspeed;
@@ -415,7 +472,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					parseStatus(tor.getString("state")),
 					null,
 					dlspeed,
-					tor.getInt("upspeed"), // parseSpeed(tor.getString("upspeed")),
+					upspeed,
 					seeders[0],
 					seeders[1],
 					leechers[0],
@@ -550,7 +607,12 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		for (int i = 0; i < response.length(); i++) {
 			JSONObject file = response.getJSONObject(i);
 
-			long size = file.getLong("size"); // parseSize(file.getString("size"));
+			long size;
+			if (apiVersion >= 2) {
+				size = parseSize(file.getString("size"));
+			} else {
+				size = file.getLong("size");
+			}
 
 			torrentfiles.add(new TorrentFile("" + i, file.getString("name"), null, null, size, (long) (size * file
 					.getDouble("progress")), parsePriority(file.getInt("priority"))));
