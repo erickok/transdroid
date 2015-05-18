@@ -101,11 +101,9 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		}
 		catch (DaemonException e) {
 			apiVersion = 1;
-			log.d(LOG_NAME, e.toString());
 		}
 		catch (NumberFormatException e) {
 			apiVersion = 1;
-			log.d(LOG_NAME, e.toString());
 		}
 
 		log.d(LOG_NAME, "qBittorrent API version is " + apiVersion);
@@ -162,15 +160,11 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		// Have we already authenticated?  Check if we have the cookie that we need
 		List<Cookie> cookies = httpclient.getCookieStore().getCookies();
 		for (Cookie c : cookies) {
-			log.d(LOG_NAME, "Looking at this cookie: " + c.getName());
 			if (c.getName().equals("SID")) {
 				// And here it is!  Okay, no need authenticate again.
-				log.d(LOG_NAME, "We're already authed, no need to do it again.");
 				return;
 			}
 		}
-
-		log.d(LOG_NAME, "Authenticating...");
 
 		makeRequest(log, "/login", 
 				new BasicNameValuePair("username", settings.getUsername()),
@@ -180,10 +174,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		// However, we would like to see if authentication was successful or not... 
 		cookies = httpclient.getCookieStore().getCookies();
 		for (Cookie c : cookies) {
-			log.d(LOG_NAME, "post auth looking at this cookie: " + c.getName());
 			if (c.getName().equals("SID")) {
 				// Good.  Let's get out of here.
-				log.d(LOG_NAME, "Authentication success!");
 				return;
 			}
 		}
@@ -609,9 +601,9 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 			long size;
 			if (apiVersion >= 2) {
-				size = parseSize(file.getString("size"));
-			} else {
 				size = file.getLong("size");
+			} else {
+				size = parseSize(file.getString("size"));
 			}
 
 			torrentfiles.add(new TorrentFile("" + i, file.getString("name"), null, null, size, (long) (size * file
