@@ -33,6 +33,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.client.CookieStore;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -129,16 +131,38 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		version = 10000;
 	}
 
+	private synchronized void ensureAuthenticated(Log log) throws DaemonException {
+            // org.apache.http.impl.client.DefaultHttpClient
+            // private DefaultHttpClient httpclient;
+            // API changed in 3.2.0, you now login and are given a cookie.
+            // If we don't have that cookie, let's try and get it.
+            
+            if (version < 30200) {
+                return;
+            }
+            
+            // TODO: Don't do this if we already have the "SID" cookie set
+
+            makeRequest(log, "/login", 
+                    new BasicNameValuePair("username", settings.getUsername()),
+                    new BasicNameValuePair("password", settings.getPassword()));
+
+        }
+
 	@Override
 	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 
 		try {
 			ensureVersion(log);
+                        ensureAuthenticated(log);
+
 			switch (task.getMethod()) {
 			case Retrieve:
 
 				// Request all torrents from server
-				JSONArray result = new JSONArray(makeRequest(log, version >= 30000 ? "/json/torrents" : "/json/events"));
+				JSONArray result = new JSONArray(makeRequest(log,
+                                            version >= 30200 ? "/query/torrents" :
+                                            version >= 30000 ? "/json/torrents" : "/json/events"));
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result), null);
 
 			case GetTorrentDetails:
@@ -374,10 +398,10 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			JSONObject tor = response.getJSONObject(i);
 			int leechers[] = parsePeers(tor.getString("num_leechs"));
 			int seeders[] = parsePeers(tor.getString("num_seeds"));
-			long size = parseSize(tor.getString("size"));
+			long size = tor.getLong("size"); // parseSize(tor.get("size"));
 			double ratio = parseRatio(tor.getString("ratio"));
 			double progress = tor.getDouble("progress");
-			int dlspeed = parseSpeed(tor.getString("dlspeed"));
+			int dlspeed = tor.getInt("dlspeed"); // parseSpeed(tor.getString("dlspeed"));
 			long eta = -1L;
 			if (dlspeed > 0)
 				eta = (long) (size - (size * progress)) / dlspeed;
@@ -391,7 +415,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					parseStatus(tor.getString("state")),
 					null,
 					dlspeed,
-					parseSpeed(tor.getString("upspeed")),
+					tor.getInt("upspeed"), // parseSpeed(tor.getString("upspeed")),
 					seeders[0],
 					seeders[1],
 					leechers[0],
@@ -525,7 +549,9 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		ArrayList<TorrentFile> torrentfiles = new ArrayList<TorrentFile>();
 		for (int i = 0; i < response.length(); i++) {
 			JSONObject file = response.getJSONObject(i);
-			long size = parseSize(file.getString("size"));
+
+			long size = file.getLong("size"); // parseSize(file.getString("size"));
+
 			torrentfiles.add(new TorrentFile("" + i, file.getString("name"), null, null, size, (long) (size * file
 					.getDouble("progress")), parsePriority(file.getInt("priority"))));
 		}
