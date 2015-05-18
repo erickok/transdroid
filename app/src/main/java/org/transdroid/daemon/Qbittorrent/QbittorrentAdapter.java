@@ -193,11 +193,17 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 			switch (task.getMethod()) {
 			case Retrieve:
+				String path;
+				if (version >= 30200) {
+					path = "/query/torrents";
+				} else if (version >= 30000) {
+					path = "/json/torrents";
+				} else {
+					path = "/json/events";
+				}
 
 				// Request all torrents from server
-				JSONArray result = new JSONArray(makeRequest(log,
-					version >= 30200 ? "/query/torrents" :
-					version >= 30000 ? "/json/torrents" : "/json/events"));
+				JSONArray result = new JSONArray(makeRequest(log, path));
 				return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result), null);
 
 			case GetTorrentDetails:
