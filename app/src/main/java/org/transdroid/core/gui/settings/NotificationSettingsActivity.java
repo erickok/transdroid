@@ -16,6 +16,13 @@
  */
 package org.transdroid.core.gui.settings;
 
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Build;
+import android.os.Bundle;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
@@ -23,17 +30,8 @@ import org.transdroid.R;
 import org.transdroid.core.app.settings.NotificationSettings;
 import org.transdroid.core.service.BootReceiver;
 
-import android.annotation.TargetApi;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
-
 @EActivity
-public class NotificationSettingsActivity extends PreferenceActivity implements
-		OnSharedPreferenceChangeListener {
+public class NotificationSettingsActivity extends PreferenceCompatActivity implements OnSharedPreferenceChangeListener {
 
 	@Bean
 	protected NotificationSettings notificationSettings;
@@ -43,13 +41,13 @@ public class NotificationSettingsActivity extends PreferenceActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// TODO getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Load the notification-related preferences from XML and update availability thereof
 		addPreferencesFromResource(R.xml.pref_notifications);
 		boolean disabled = !notificationSettings.isEnabledForRss() && !notificationSettings.isEnabledForTorrents();
 		updatePrefsEnabled(disabled);
-		
+
 	}
 
 	@SuppressWarnings("deprecation")
@@ -59,7 +57,7 @@ public class NotificationSettingsActivity extends PreferenceActivity implements
 		// Start/stop the background service appropriately
 		getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onPause() {
@@ -78,8 +76,8 @@ public class NotificationSettingsActivity extends PreferenceActivity implements
 
 		boolean disabled = !notificationSettings.isEnabledForRss() && !notificationSettings.isEnabledForTorrents();
 		updatePrefsEnabled(disabled);
-		
-		if (disabled ) {
+
+		if (disabled) {
 			// Disabled all background notifications; disable the alarms that start the service
 			BootReceiver.cancelBackgroundServices(getApplicationContext());
 		}

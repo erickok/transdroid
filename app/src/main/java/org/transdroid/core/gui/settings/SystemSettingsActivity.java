@@ -53,7 +53,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @EActivity
-public class SystemSettingsActivity extends PreferenceActivity {
+public class SystemSettingsActivity extends PreferenceCompatActivity {
 
 	protected static final int DIALOG_IMPORTSETTINGS = 0;
 	private OnPreferenceClickListener onImportSettingsClick = new OnPreferenceClickListener() {
@@ -154,7 +154,7 @@ public class SystemSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// TODO getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Just load the system-related preferences from XML
 		addPreferencesFromResource(R.xml.pref_system);

@@ -222,6 +222,7 @@
 	
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
+	<string name="pref_addserver_normal">Add normal, custom server</string>
 	<string name="pref_addseedbox">Add seedbox</string>
 	<string name="pref_defaultserver">Default server</string>
 	<string name="pref_defaultserver_lastused">Last used</string>

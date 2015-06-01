@@ -472,7 +472,8 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		}
 
 		// There is a connection (read: settings to some server known)
-		torrentsToolbar.setNavigationIcon(R.drawable.ic_action_drawer);
+		if (drawerToggle != null)
+			torrentsToolbar.setNavigationIcon(R.drawable.ic_action_drawer);
 		addmenuButton.setVisibility(View.VISIBLE);
 		actionsToolbar.setVisibility(View.VISIBLE);
 		boolean addByFile = Daemon.supportsAddByFile(currentConnection.getType());
@@ -513,7 +514,8 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 			if (item instanceof SimpleListItem) {
 				filterSelected((SimpleListItem) item, false);
 			}
-			drawerLayout.closeDrawer(drawerContainer);
+			if (drawerLayout != null)
+				drawerLayout.closeDrawer(drawerContainer);
 		}
 	};
 

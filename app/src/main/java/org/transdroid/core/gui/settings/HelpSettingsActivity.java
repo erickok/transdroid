@@ -37,7 +37,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 
 @EActivity
-public class HelpSettingsActivity extends PreferenceActivity {
+public class HelpSettingsActivity extends PreferenceCompatActivity {
 
 	protected static final int DIALOG_CHANGELOG = 0;
 	protected static final int DIALOG_ABOUT = 1;
@@ -57,7 +57,7 @@ public class HelpSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// TODO getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Just load the system-related preferences from XML
 		addPreferencesFromResource(R.xml.pref_help);

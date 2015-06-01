@@ -16,10 +16,10 @@
  */
 package org.transdroid.core.gui.settings;
 
-import org.transdroid.core.app.settings.WebsearchSetting;
-
 import android.content.Context;
 import android.preference.Preference;
+
+import org.transdroid.core.app.settings.WebsearchSetting;
 
 /**
  * Represents a {@link WebsearchSetting} in a preferences screen.
@@ -31,7 +31,7 @@ public class WebsearchPreference extends Preference {
 
 	private WebsearchSetting websearchSetting;
 	private OnWebsearchClickedListener onWebsearchClickedListener = null;
-	
+
 	public WebsearchPreference(Context context) {
 		super(context);
 		setOnPreferenceClickListener(onPreferenceClicked);
@@ -49,7 +49,7 @@ public class WebsearchPreference extends Preference {
 		setOrder(ORDER_START + websearchSetting.getOrder());
 		return this;
 	}
-	
+
 	/**
 	 * Set a listener that will be notified of click events on this preference
 	 * @param onWebsearchClickedListener The click listener to register
@@ -68,9 +68,9 @@ public class WebsearchPreference extends Preference {
 			return true;
 		}
 	};
-	
+
 	public interface OnWebsearchClickedListener {
-		public void onWebsearchClicked(WebsearchSetting serverSetting);
+		void onWebsearchClicked(WebsearchSetting serverSetting);
 	}
-	
+
 }
