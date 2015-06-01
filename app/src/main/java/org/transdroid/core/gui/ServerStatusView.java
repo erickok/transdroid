@@ -92,7 +92,10 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 		upspeedText.setText(FileSizeConverter.getSize(upspeed) + "/s");
 		downcountSign.setVisibility(View.VISIBLE);
 		upcountSign.setVisibility(View.VISIBLE);
-		speedswrapperLayout.setOnClickListener(supportsSetTransferRates ? onStartDownPickerClicked : null);
+		if (supportsSetTransferRates)
+			speedswrapperLayout.setOnClickListener(onStartDownPickerClicked);
+		else
+			speedswrapperLayout.setBackgroundDrawable(null);
 
 	}
 
