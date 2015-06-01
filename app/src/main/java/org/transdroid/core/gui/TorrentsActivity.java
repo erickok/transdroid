@@ -787,6 +787,9 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 					.type(SnackbarType.MULTI_LINE));
 		} else if (result.startsWith("http") || result.startsWith("https")) {
 			addTorrentByUrl(result, "QR code result"); // No torrent title known
+		} else if (result.startsWith("magnet")) {
+			String title = NavigationHelper.extractNameFromUri(Uri.parse(result));
+			addTorrentByMagnetUrl(result, title);
 		} else if (navigationHelper.enableSearchUi()) {
 			startSearch(result, false, null, false);
 		}

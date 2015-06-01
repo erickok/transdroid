@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 218
-        versionName '2.5.0-SNAPSHOT'
+        versionName '2.5.0-beta1'
     }
     buildTypes {
         release {

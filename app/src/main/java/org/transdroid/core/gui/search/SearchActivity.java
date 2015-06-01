@@ -106,6 +106,9 @@ public class SearchActivity extends ActionBarActivity implements ActionBar.OnNav
 	@AfterViews
 	protected void init() {
 
+		setSupportActionBar(searchToolbar);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 		// Get the user query, as coming from the standard SearchManager
 		handleIntent(getIntent());
 
@@ -128,17 +131,17 @@ public class SearchActivity extends ActionBarActivity implements ActionBar.OnNav
 		}
 
 		// Allow site selection via list (on large screens) or action bar spinner
-		setSupportActionBar(searchToolbar);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		if (searchsitesList != null) {
 			// The current layout has a dedicated list view to select the search site
 			SearchSitesAdapter searchSitesAdapter = SearchSitesAdapter_.getInstance_(this);
 			searchSitesAdapter.update(searchSites);
 			searchsitesList.setAdapter(searchSitesAdapter);
 			searchsitesList.setOnItemClickListener(onSearchSiteClicked);
-			// Select the last used site; this also starts the search!
+			// Select the last used site and start the search
 			if (lastUsedPosition >= 0) {
 				searchsitesList.setItemChecked(lastUsedPosition, true);
+				lastUsedSite = searchSites.get(lastUsedPosition);
+				refreshSearch();
 			}
 		} else {
 			// Use the action bar spinner to select sites
