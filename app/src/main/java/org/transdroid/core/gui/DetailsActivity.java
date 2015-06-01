@@ -16,8 +16,15 @@
  */
 package org.transdroid.core.gui;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -29,10 +36,12 @@ import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.app.settings.*;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.LocalTorrent;
-import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper;
@@ -64,27 +73,18 @@ import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.Options;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * An activity that holds a single torrents details fragment. It is used on devices (i.e. phones) where there is no room
- * to show details in the {@link TorrentsActivity} directly. Task execution, such as loading of more details and
- * updating file priorities, is performed in this activity via background methods.
+ * An activity that holds a single torrents details fragment. It is used on devices (i.e. phones) where there is no room to show details in the {@link
+ * TorrentsActivity} directly. Task execution, such as loading of more details and updating file priorities, is performed in this activity via
+ * background methods.
  * @author Eric Kok
  */
-@EActivity(resName = "activity_details")
-@OptionsMenu(resName = "activity_details")
-public class DetailsActivity extends Activity implements TorrentTasksExecutor, RefreshableActivity {
+@EActivity(R.layout.activity_details)
+@OptionsMenu(R.menu.activity_details)
+public class DetailsActivity extends ActionBarActivity implements TorrentTasksExecutor, RefreshableActivity {
 
 	@Extra
 	@InstanceState
@@ -103,10 +103,11 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Bean
 	protected ApplicationSettings applicationSettings;
 	private IDaemonAdapter currentConnection = null;
-	private PullToRefreshAttacher pullToRefreshAttacher = null;
 
 	// Details view components
-	@FragmentById(resName = "torrentdetails_fragment")
+	@ViewById
+	protected Toolbar selectionToolbar;
+	@FragmentById(R.id.torrentdetails_fragment)
 	protected DetailsFragment fragmentDetails;
 
 	@Override
@@ -114,7 +115,6 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -129,8 +129,9 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 		}
 
 		// Simple action bar with up, torrent name as title and refresh button
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
+		setSupportActionBar(selectionToolbar);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
 
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
@@ -143,41 +144,13 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 
 	}
 
-	@Override
-	protected void onDestroy() {
-		Crouton.cancelAllCroutons();
-		super.onDestroy();
-	}
-
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@OptionsItem(android.R.id.home)
 	protected void navigateUp() {
 		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 
-	/**
-	 * Attaches some view (perhaps contained in a fragment) to this activity's pull to refresh support
-	 * @param view The view to attach
-	 */
-	@Override
-	public void addRefreshableView(View view) {
-		if (pullToRefreshAttacher == null) {
-			// Still need to initialise the PullToRefreshAttacher
-			Options options = new PullToRefreshAttacher.Options();
-			options.headerTransformer = new NoProgressHeaderTransformer();
-			pullToRefreshAttacher = PullToRefreshAttacher.get(this, options);
-		}
-		pullToRefreshAttacher.addRefreshableView(view, new OnRefreshListener() {
-			@Override
-			public void onRefreshStarted(View view) {
-				// Just refresh the full screen, now that the user has pulled to refresh
-				pullToRefreshAttacher.setRefreshComplete();
-				refreshScreen();
-			}
-		});
-	}
-
-	@OptionsItem(resName = "action_refresh")
+	@OptionsItem(R.id.action_refresh)
 	public void refreshScreen() {
 		fragmentDetails.updateIsLoading(true, null);
 		refreshTorrent();
@@ -189,8 +162,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	protected void refreshTorrent() {
 		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute(log);
 		if (result instanceof RetrieveTaskSuccessResult) {
-			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
-					((RetrieveTaskSuccessResult) result).getLabels());
+			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(), ((RetrieveTaskSuccessResult) result).getLabels());
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, true);
 		}
@@ -198,8 +170,9 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 
 	@Background
 	public void refreshTorrentDetails(Torrent torrent) {
-		if (!Daemon.supportsFineDetails(torrent.getDaemon()))
+		if (!Daemon.supportsFineDetails(torrent.getDaemon())) {
 			return;
+		}
 		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof GetTorrentDetailsTaskSuccessResult) {
 			onTorrentDetailsRetrieved(torrent, ((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
@@ -210,8 +183,9 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 
 	@Background
 	public void refreshTorrentFiles(Torrent torrent) {
-		if (!Daemon.supportsFileListing(torrent.getDaemon()))
+		if (!Daemon.supportsFileListing(torrent.getDaemon())) {
 			return;
+		}
 		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof GetFileListTaskSuccessResult) {
 			onTorrentFilesRetrieved(torrent, ((GetFileListTaskSuccessResult) result).getFiles());
@@ -274,8 +248,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			// Close the details activity (as the torrent is now removed)
-			closeActivity(getString(withData ? R.string.result_removed_with_data : R.string.result_removed,
-					torrent.getName()));
+			closeActivity(getString(withData ? R.string.result_removed_with_data : R.string.result_removed, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
@@ -283,19 +256,18 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 
 	@UiThread
 	protected void closeActivity(String closeText) {
-		setResult(RESULT_OK,
-				new Intent().putExtra("torrent_removed", true).putExtra("affected_torrent", torrent));
+		setResult(RESULT_OK, new Intent().putExtra("torrent_removed", true).putExtra("affected_torrent", torrent));
 		finish();
-		if (closeText != null)
-			Toast.makeText(this, closeText, Toast.LENGTH_LONG).show();
+		if (closeText != null) {
+			SnackbarManager.show(Snackbar.with(this).text(closeText));
+		}
 	}
 
 	@Background
 	@Override
 	public void updateLabel(Torrent torrent, String newLabel) {
 		torrent.mimicNewLabel(newLabel);
-		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel)
-				.execute(log);
+		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_labelset, newLabel));
 		} else {
@@ -309,8 +281,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 		torrent.mimicCheckingStatus();
 		DaemonTaskResult result = ForceRecheckTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result,
-					getString(R.string.result_recheckedstarted, torrent.getName()));
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_recheckedstarted, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
@@ -341,8 +312,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@Background
 	@Override
 	public void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority) {
-		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority,
-				new ArrayList<TorrentFile>(files)).execute(log);
+		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority, new ArrayList<>(files)).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
 		} else {
@@ -353,12 +323,11 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@UiThread
 	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
 		// Set the activity result so the calling activity knows it needs to update its view
-		setResult(RESULT_OK,
-				new Intent().putExtra("torrent_updated", true).putExtra("affected_torrent", torrent));
+		setResult(RESULT_OK, new Intent().putExtra("torrent_updated", true).putExtra("affected_torrent", torrent));
 		// Refresh the screen as well
 		refreshTorrent();
 		refreshTorrentDetails(torrent);
-		Crouton.showText(this, successMessage, NavigationHelper.CROUTON_INFO_STYLE);
+		SnackbarManager.show(Snackbar.with(this).text(successMessage));
 	}
 
 	@UiThread
@@ -370,7 +339,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 	@UiThread
 	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
 		// Update the details fragment with the newly retrieved list of files
-		fragmentDetails.updateTorrentFiles(torrent, new ArrayList<TorrentFile>(torrentFiles));
+		fragmentDetails.updateTorrentFiles(torrent, new ArrayList<>(torrentFiles));
 	}
 
 	@UiThread
@@ -378,8 +347,8 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 		log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
 		fragmentDetails.updateIsLoading(false, isCritical ? error : null);
-		Crouton.showText(this, getString(LocalTorrent.getResourceForDaemonException(result.getException())),
-				NavigationHelper.CROUTON_ERROR_STYLE);
+		SnackbarManager.show(Snackbar.with(this).text(getString(LocalTorrent.getResourceForDaemonException(result.getException())))
+				.colorResource(R.color.red));
 	}
 
 	@UiThread
@@ -387,8 +356,7 @@ public class DetailsActivity extends Activity implements TorrentTasksExecutor, R
 		// Update the details fragment accordingly
 		fragmentDetails.updateIsLoading(false, null);
 		fragmentDetails.perhapsUpdateTorrent(torrents);
-		fragmentDetails.updateLabels(Label.convertToNavigationLabels(labels,
-				getResources().getString(R.string.labels_unlabeled)));
+		fragmentDetails.updateLabels(Label.convertToNavigationLabels(labels, getResources().getString(R.string.labels_unlabeled)));
 	}
 
 }

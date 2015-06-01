@@ -14,31 +14,32 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
 		android:id="@+id/action_addall"
-		android:icon="?attr/ic_action_new"
-		android:showAsAction="always"
-		android:title="@string/action_addall"/>
+		android:icon="@drawable/ic_action_add"
+		android:title="@string/action_addall"
+		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_showdetails"
-		android:icon="?attr/ic_action_info"
-		android:showAsAction="ifRoom"
-		android:title="@string/action_showdetails"/>
+		android:icon="@drawable/ic_action_info"
+		android:title="@string/action_showdetails"
+		app:showAsAction="ifRoom" />
 	<item
 		android:id="@+id/action_openwebsite"
-		android:icon="?attr/ic_action_website"
-		android:showAsAction="ifRoom"
-		android:title="@string/action_openwebsite"/>
+		android:icon="@drawable/ic_action_link"
+		android:title="@string/action_openwebsite"
+		app:showAsAction="ifRoom" />
 	<item
 		android:id="@+id/action_useassearch"
-		android:icon="?attr/ic_action_search"
-		android:showAsAction="ifRoom"
-		android:title="@string/action_useassearch"/>
+		android:icon="@drawable/ic_action_search"
+		android:title="@string/action_useassearch"
+		app:showAsAction="ifRoom" />
 	<item
 		android:id="@+id/action_copytoclipboard"
-		android:showAsAction="never"
-		android:title="@string/action_copytoclipboard"/>
+		android:title="@string/action_copytoclipboard"
+		app:showAsAction="never" />
 
 </menu>

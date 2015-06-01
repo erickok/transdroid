@@ -41,7 +41,7 @@ import android.preference.PreferenceManager;
  * @author Eric Kok
  */
 @EActivity
-@OptionsMenu(resName = "activity_deleteableprefs")
+@OptionsMenu(R.menu.activity_deleteableprefs)
 public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 
 	private static final int DIALOG_CONFIRMREMOVE = 0;
@@ -52,7 +52,7 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Load the raw preferences to show in this screen
 		init(R.xml.pref_server, ApplicationSettings_.getInstance_(this).getMaxNormalServer());
@@ -89,11 +89,12 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 	}
 
 	@SuppressWarnings("deprecation")
-	@OptionsItem(resName = "action_removesettings")
+	@OptionsItem(R.id.action_removesettings)
 	protected void removeSettings() {
 		showDialog(DIALOG_CONFIRMREMOVE);
 	}
 
+	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DIALOG_CONFIRMREMOVE:

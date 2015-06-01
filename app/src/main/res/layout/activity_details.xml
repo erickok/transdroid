@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This layout is for phones in portrait and shows only the torrents list. -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".DetailsActivity" >
+	tools:context=".DetailsActivity">
+
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/selection_toolbar"
+		style="@style/DefaultToolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:minHeight="?attr/actionBarSize" />
 
 	<fragment
 		android:id="@+id/torrentdetails_fragment"
+		class="org.transdroid.core.gui.DetailsFragment_"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		class="org.transdroid.core.gui.DetailsFragment_"
+		android:layout_below="@id/selection_toolbar"
 		tools:layout="@layout/fragment_details" />
 
-</FrameLayout>
+	<View
+		style="@style/DefaultToolbarShadow"
+		android:layout_below="@id/selection_toolbar" />
+
+</RelativeLayout>

@@ -16,24 +16,25 @@
  */
 package org.transdroid.core.gui;
 
-import java.util.List;
+import android.content.Context;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.SetTransferRatesDialog;
 import org.transdroid.core.gui.navigation.SetTransferRatesDialog.OnRatesPickedListener;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.util.FileSizeConverter;
 
-import android.content.Context;
-import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
+import java.util.List;
 
-@EViewGroup(resName = "actionbar_serverstatus")
+@EViewGroup(R.layout.actionbar_serverstatus)
 public class ServerStatusView extends RelativeLayout implements OnRatesPickedListener {
 
 	@ViewById
@@ -57,7 +58,7 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 	 * @param dormantAsInactive Whether to treat dormant (0KB/s) torrent as inactive state torrents
 	 * @param supportsSetTransferRates Whether the connected torrent client supports setting of max transfer speeds
 	 */
-	public void update(List<Torrent> torrents, boolean dormantAsInactive, boolean supportsSetTransferRates) {
+	public void updateStatus(List<Torrent> torrents, boolean dormantAsInactive, boolean supportsSetTransferRates) {
 
 		if (torrents == null) {
 			downcountText.setText(null);
@@ -91,14 +92,16 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 		upspeedText.setText(FileSizeConverter.getSize(upspeed) + "/s");
 		downcountSign.setVisibility(View.VISIBLE);
 		upcountSign.setVisibility(View.VISIBLE);
-		speedswrapperLayout.setOnClickListener(supportsSetTransferRates ? onStartDownPickerClicked : null);
+		if (supportsSetTransferRates)
+			speedswrapperLayout.setOnClickListener(onStartDownPickerClicked);
+		else
+			speedswrapperLayout.setBackgroundDrawable(null);
 
 	}
 
 	private OnClickListener onStartDownPickerClicked = new OnClickListener() {
 		public void onClick(View v) {
-			new SetTransferRatesDialog().setOnRatesPickedListener(ServerStatusView.this).show(
-					activity.getFragmentManager(), "SetTransferRatesDialog");
+			SetTransferRatesDialog.show(getContext(), ServerStatusView.this);
 		}
 	};
 
@@ -114,7 +117,7 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
 
 	@Override
 	public void onInvalidNumber() {
-		Crouton.showText(activity, R.string.error_notanumber, NavigationHelper.CROUTON_ERROR_STYLE);
+		SnackbarManager.show(Snackbar.with(activity).text(R.string.error_notanumber).colorResource(R.color.red));
 	}
 
 }

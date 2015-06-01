@@ -48,7 +48,7 @@ public class DialogHelper extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(dialog.getDialogLayoutId());
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		// TODO getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override

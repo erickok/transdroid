@@ -17,12 +17,12 @@
 package org.transdroid.core.widget;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
@@ -66,7 +66,7 @@ import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EActivity(resName = "activity_widgetconfig")
-public class ListWidgetConfigActivity extends Activity {
+public class ListWidgetConfigActivity extends ActionBarActivity {
 
 	// Views and adapters
 	@ViewById
@@ -182,11 +182,11 @@ public class ListWidgetConfigActivity extends Activity {
 
 		// Set up action bar with a done button
 		// Inspired by NoNonsenseNotes's ListWidgetConfig.java (Apache License, Version 2.0)
-		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 				ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
 		View doneButtonFrame = getLayoutInflater().inflate(R.layout.actionbar_donebutton, null);
 		doneButtonFrame.findViewById(R.id.actionbar_done).setOnClickListener(doneClicked);
-		getActionBar().setCustomView(doneButtonFrame);
+		getSupportActionBar().setCustomView(doneButtonFrame);
 
 	}
 

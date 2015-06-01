@@ -16,16 +16,16 @@
  */
 package org.transdroid.core.gui.lists;
 
-import java.util.ArrayList;
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.transdroid.daemon.Torrent;
 
-import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import java.util.ArrayList;
 
 /**
  * Adapter that contains a list of torrent objects to show.
@@ -33,9 +33,9 @@ import android.widget.BaseAdapter;
  */
 @EBean
 public class TorrentsAdapter extends BaseAdapter {
-	
+
 	private ArrayList<Torrent> torrents = null;
-	
+
 	@RootContext
 	protected Context context;
 
@@ -47,23 +47,25 @@ public class TorrentsAdapter extends BaseAdapter {
 		this.torrents = newTorrents;
 		notifyDataSetChanged();
 	}
-	
+
 	@Override
 	public boolean hasStableIds() {
 		return true;
 	}
-	
+
 	@Override
 	public int getCount() {
-		if (torrents == null)
+		if (torrents == null) {
 			return 0;
+		}
 		return torrents.size();
 	}
 
 	@Override
 	public Torrent getItem(int position) {
-		if (torrents == null)
+		if (torrents == null) {
 			return null;
+		}
 		return torrents.get(position);
 	}
 

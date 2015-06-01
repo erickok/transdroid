@@ -28,7 +28,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.text.method.PasswordTransformationMethod;
@@ -43,13 +42,13 @@ import android.text.method.PasswordTransformationMethod;
  * @author Eric Kok
  */
 @EActivity
-public abstract class KeyBoundPreferencesActivity extends PreferenceActivity {
+public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivity {
 
 	@Extra
 	protected int key = -1;
 
 	private SharedPreferences sharedPrefs;
-	private Map<String, String> originalSummaries = new HashMap<String, String>();
+	private Map<String, String> originalSummaries = new HashMap<>();
 
 	/**
 	 * Should be called during the activity {@link #onCreate(android.os.Bundle)} (but after super.onCreate(Bundle)) to
@@ -78,14 +77,14 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceActivity {
 		// Monitor preference changes
 		PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(
 				onPreferenceChangeListener);
-	};
+	}
 
 	protected void onPause() {
 		super.onPause();
 		// Stop monitoring preference changes
 		PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(
 				onPreferenceChangeListener);
-	};
+	}
 
 	private OnSharedPreferenceChangeListener onPreferenceChangeListener = new OnSharedPreferenceChangeListener() {
 		@Override

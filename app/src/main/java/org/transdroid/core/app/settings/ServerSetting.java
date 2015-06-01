@@ -259,6 +259,11 @@ public class ServerSetting implements SimpleListItem {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return getUniqueIdentifier();
+	}
+
 	/**
 	 * Returns the appropriate daemon adapter to which tasks can be executed, in accordance with this server's settings
 	 * @param connectedToNetwork The name of the (wifi) network we are currently connected to, or null if this could not

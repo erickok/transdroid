@@ -20,13 +20,13 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:background="@color/background_dark"
-	android:padding="@dimen/margin_widget" >
+	android:padding="@dimen/margin_widget">
 
 	<ImageButton
 		android:id="@+id/icon_image"
 		android:layout_width="@dimen/widget_header_height"
 		android:layout_height="@dimen/widget_header_height"
-		android:background="@drawable/selectable_background_transdroid"
+		android:background="?android:attr/selectableItemBackground"
 		android:contentDescription="@string/widget_opentransdroid"
 		android:padding="@dimen/widget_header_padding"
 		android:scaleType="fitXY"
@@ -37,45 +37,45 @@
 		android:layout_width="@dimen/widget_header_height"
 		android:layout_height="@dimen/widget_header_height"
 		android:layout_alignParentRight="true"
-		android:background="@drawable/selectable_background_transdroid"
+		android:background="?android:attr/selectableItemBackground"
 		android:contentDescription="@string/action_refresh"
 		android:padding="@dimen/widget_header_padding"
 		android:scaleType="fitXY"
-		android:src="@drawable/ic_action_refresh_dark" />
+		android:src="@drawable/ic_action_refresh" />
 
 	<ImageButton
 		android:id="@+id/pauseall_button"
 		android:layout_width="@dimen/widget_header_height"
 		android:layout_height="@dimen/widget_header_height"
 		android:layout_toLeftOf="@id/refresh_button"
-		android:background="@drawable/selectable_background_transdroid2"
+		android:background="?android:attr/selectableItemBackground"
 		android:contentDescription="@string/action_pauseall"
 		android:padding="@dimen/widget_header_padding"
 		android:scaleType="fitXY"
-		android:src="@drawable/ic_action_pause_dark" />
-	
+		android:src="@drawable/ic_action_pause" />
+
 	<ImageButton
 		android:id="@+id/resumeall_button"
 		android:layout_width="@dimen/widget_header_height"
 		android:layout_height="@dimen/widget_header_height"
 		android:layout_toLeftOf="@id/pauseall_button"
-		android:background="@drawable/selectable_background_transdroid2"
+		android:background="?android:attr/selectableItemBackground"
 		android:contentDescription="@string/action_resumeall"
 		android:padding="@dimen/widget_header_padding"
 		android:scaleType="fitXY"
-		android:src="@drawable/ic_action_resume_dark" />
-	
+		android:src="@drawable/ic_action_resume" />
+
 	<LinearLayout
 		android:id="@+id/navigation_view"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/widget_header_height"
 		android:layout_toLeftOf="@id/resumeall_button"
 		android:layout_toRightOf="@id/icon_image"
-		android:background="@drawable/selectable_background_transdroid"
+		android:background="?android:attr/selectableItemBackground"
 		android:clickable="true"
 		android:orientation="vertical"
 		android:paddingRight="@dimen/margin_half"
-		android:paddingTop="3dp" >
+		android:paddingTop="3dp">
 
 		<TextView
 			android:id="@+id/filter_text"
@@ -107,10 +107,10 @@
 		android:layout_height="@dimen/widget_header_height"
 		android:layout_toLeftOf="@id/resumeall_button"
 		android:layout_toRightOf="@id/icon_image"
-		android:background="@drawable/selectable_background_transdroid"
+		android:background="?android:attr/selectableItemBackground"
 		android:clickable="true"
 		android:paddingTop="@dimen/ui_serverstatus_margin"
-		android:visibility="gone" >
+		android:visibility="gone">
 
 		<TextView
 			android:id="@+id/upcount_sign"
@@ -182,7 +182,7 @@
 			android:textColor="@color/text_bright_dark"
 			android:textSize="@dimen/ui_serverstatus_smallnumber" />
 	</RelativeLayout>
-	
+
 	<TextView
 		android:id="@+id/topline_view"
 		android:layout_width="match_parent"

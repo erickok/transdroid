@@ -19,6 +19,7 @@ package org.transdroid.core.gui.navigation;
 import org.transdroid.core.gui.navigation.SelectionModificationSpinner.OnModificationActionSelectedListener;
 import org.transdroid.daemon.Finishable;
 
+import android.content.Context;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -35,18 +36,21 @@ import android.widget.ListView;
  */
 public class SelectionManagerMode implements MultiChoiceModeListener, OnModificationActionSelectedListener {
 
-	private ListView managedList;
-	private int titleTemplateResource;
+	private final Context themedContext;
+	private final ListView managedList;
+	private final int titleTemplateResource;
 	private Class<?> onlyCheckClass = null;
 
 	/**
 	 * Instantiates the helper by binding it to a specific {@link ListView} and providing the text resource to display
 	 * as title in the spinner.
+	 * @param themedContext The context which is associated with the correct theme to apply when inflating views, i.e. the toolbar context
 	 * @param managedList The list to manage the selection for and execute selection action to
 	 * @param titleTemplateResource The string resource id to show as the spinners title; the number of selected items
 	 *            will be supplied as numeric formatting argument
 	 */
-	public SelectionManagerMode(ListView managedList, int titleTemplateResource) {
+	public SelectionManagerMode(Context themedContext, ListView managedList, int titleTemplateResource) {
+		this.themedContext = themedContext;
 		this.managedList = managedList;
 		this.titleTemplateResource = titleTemplateResource;
 	}
@@ -63,7 +67,7 @@ public class SelectionManagerMode implements MultiChoiceModeListener, OnModifica
 	@Override
 	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 		// Allow modification of selection through a spinner
-		SelectionModificationSpinner selectionSpinner = new SelectionModificationSpinner(managedList.getContext());
+		SelectionModificationSpinner selectionSpinner = new SelectionModificationSpinner(themedContext);
 		selectionSpinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.MATCH_PARENT));
 		selectionSpinner.setOnModificationActionSelectedListener(this);
@@ -85,7 +89,7 @@ public class SelectionManagerMode implements MultiChoiceModeListener, OnModifica
 							.getCheckedItemPositions().keyAt(i)))))
 				checkedCount++;
 		}
-		((SelectionModificationSpinner) mode.getCustomView()).updateTitle(managedList.getContext().getResources()
+		((SelectionModificationSpinner) mode.getCustomView()).updateTitle(themedContext.getResources()
 				.getQuantityString(titleTemplateResource, checkedCount, checkedCount));
 	}
 

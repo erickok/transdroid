@@ -95,32 +95,32 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				case Retrieve:
 
 					// @formatter:off
-				Object result = makeRtorrentCall(log,"d.multicall",
-						new String[] { "main", 
-						"d.get_hash=", 
-						"d.get_name=",
-						"d.get_state=", 
-						"d.get_down_rate=", 
-						"d.get_up_rate=", 
-						"d.get_peers_connected=",
-						"d.get_peers_not_connected=", 
-						"d.get_peers_accounted=", 
-						"d.get_bytes_done=", 
-						"d.get_up_total=",
-						"d.get_size_bytes=", 
-						"d.get_creation_date=", 
-						"d.get_left_bytes=", 
-						"d.get_complete=",
+				Object result = makeRtorrentCall(log,"d.multicall2",
+						new String[] { "", "main",
+						"d.hash=",
+						"d.name=",
+						"d.state=",
+						"d.down.rate=",
+						"d.up.rate=",
+						"d.peers_connected=",
+						"d.peers_not_connected=",
+						"d.peers_accounted=",
+						"d.bytes_done=",
+						"d.up.total=",
+						"d.size_bytes=",
+						"d.creation_date=",
+						"d.left_bytes=",
+						"d.complete=",
 						"d.is_active=", 
 						"d.is_hash_checking=", 
-						"d.get_base_path=", 
-						"d.get_base_filename=",
-						"d.get_message=", 
-						"d.get_custom=addtime", 
-						"d.get_custom=seedingtime", 
-						"d.get_custom1=",
-						"d.get_peers_complete=", 
-						"d.get_peers_accounted=" });
+						"d.base_path=",
+						"d.base_filename=",
+						"d.message=",
+						"d.custom=addtime",
+						"d.custom=seedingtime",
+						"d.custom1=",
+						"d.peers_complete=",
+						"d.peers_accounted=" });
 				// @formatter:on
 					return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result),
 							lastKnownLabels);
@@ -131,7 +131,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				Object dresult = makeRtorrentCall(log,"t.multicall", new String[] {
 						task.getTargetTorrent().getUniqueID(),
 						"", 
-						"t.get_url=" });
+						"t.url=" });
 				// @formatter:on
 					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
 							onTorrentDetailsRetrieved(log, dresult));
@@ -142,13 +142,13 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				Object fresult = makeRtorrentCall(log,"f.multicall", new String[] {
 						task.getTargetTorrent().getUniqueID(),
 						"", 
-						"f.get_path=", 
-						"f.get_size_bytes=", 
-						"f.get_priority=", 
-						"f.get_completed_chunks=",
-						"f.get_size_chunks=", 
-						"f.get_priority=", 
-						"f.get_frozen_path=" });
+						"f.path=",
+						"f.size_bytes=",
+						"f.priority=",
+						"f.completed_chunks=",
+						"f.size_chunks=",
+						"f.priority=",
+						"f.frozen_path=" });
 				// @formatter:on
 					return new GetFileListTaskSuccessResult((GetFileListTask) task,
 							onTorrentFilesRetrieved(fresult, task.getTargetTorrent()));
@@ -167,22 +167,22 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					byte[] bytes = baos.toByteArray();
 					int size = (int) file.length() * 2;
 					final int XMLRPC_EXTRA_PADDING = 1280;
-					makeRtorrentCall(log, "set_xmlrpc_size_limit", new Object[]{size + XMLRPC_EXTRA_PADDING});
-					makeRtorrentCall(log, "load_raw_start", new Object[]{bytes});
+					makeRtorrentCall(log, "network.xmlrpc.size_limit.set", new Object[]{size + XMLRPC_EXTRA_PADDING});
+					makeRtorrentCall(log, "load.raw_start", new Object[]{bytes});
 					return new DaemonTaskSuccessResult(task);
 
 				case AddByUrl:
 
 					// Request to add a torrent by URL
 					String url = ((AddByUrlTask) task).getUrl();
-					makeRtorrentCall(log, "load_start", new String[]{url});
+					makeRtorrentCall(log, "load.start", new String[]{"",url});
 					return new DaemonTaskSuccessResult(task);
 
 				case AddByMagnetUrl:
 
 					// Request to add a magnet link by URL
 					String magnet = ((AddByMagnetUrlTask) task).getUrl();
-					makeRtorrentCall(log, "load_start", new String[]{magnet});
+					makeRtorrentCall(log, "load.start", new String[]{"",magnet});
 					return new DaemonTaskSuccessResult(task);
 
 				case Remove:
@@ -190,7 +190,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					// Remove a torrent
 					RemoveTask removeTask = (RemoveTask) task;
 					if (removeTask.includingData()) {
-						makeRtorrentCall(log, "d.set_custom5",
+						makeRtorrentCall(log, "d.custom5.set",
 								new String[]{task.getTargetTorrent().getUniqueID(), "1"});
 					}
 					makeRtorrentCall(log, "d.erase", new String[]{task.getTargetTorrent().getUniqueID()});
@@ -205,7 +205,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				case PauseAll:
 
 					// Resume all torrents
-					makeRtorrentCall(log, "d.multicall", new String[]{"main", "d.pause="});
+					makeRtorrentCall(log, "d.multicall2", new String[]{"","main", "d.pause="});
 					return new DaemonTaskSuccessResult(task);
 
 				case Resume:
@@ -217,7 +217,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				case ResumeAll:
 
 					// Resume all torrents
-					makeRtorrentCall(log, "d.multicall", new String[]{"main", "d.resume="});
+					makeRtorrentCall(log, "d.multicall2", new String[]{"", "main", "d.resume="});
 					return new DaemonTaskSuccessResult(task);
 
 				case Stop:
@@ -229,7 +229,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				case StopAll:
 
 					// Stop all torrents
-					makeRtorrentCall(log, "d.multicall", new String[]{"main", "d.stop="});
+					makeRtorrentCall(log, "d.multicall2", new String[]{"", "main", "d.stop="});
 					return new DaemonTaskSuccessResult(task);
 
 				case Start:
@@ -241,7 +241,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				case StartAll:
 
 					// Start all torrents
-					makeRtorrentCall(log, "d.multicall", new String[]{"main", "d.start="});
+					makeRtorrentCall(log, "d.multicall2", new String[]{"", "main", "d.start="});
 					return new DaemonTaskSuccessResult(task);
 
 				case SetFilePriorities:
@@ -251,7 +251,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					String newPriority = "" + convertPriority(prioTask.getNewPriority());
 					// One at a time; rTorrent doesn't seem to support a multicall on a selective number of files
 					for (TorrentFile forFile : prioTask.getForFiles()) {
-						makeRtorrentCall(log, "f.set_priority",
+						makeRtorrentCall(log, "f.priority.set",
 								new String[]{task.getTargetTorrent().getUniqueID() + ":f" + forFile.getKey(),
 										newPriority});
 					}
@@ -261,16 +261,16 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 					// Request to set the maximum transfer rates
 					SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
-					makeRtorrentCall(log, "set_download_rate", new String[]{(ratesTask.getDownloadRate() == null ? "0" :
+					makeRtorrentCall(log, "throttle.global_down.max_rate.set", new String[]{"",(ratesTask.getDownloadRate() == null ? "0" :
 							ratesTask.getDownloadRate().toString() + "k")});
-					makeRtorrentCall(log, "set_upload_rate", new String[]{
+					makeRtorrentCall(log, "throttle.global_up.max_rate.set", new String[]{"",
 							(ratesTask.getUploadRate() == null ? "0" : ratesTask.getUploadRate().toString() + "k")});
 					return new DaemonTaskSuccessResult(task);
 
 				case SetLabel:
 
 					SetLabelTask labelTask = (SetLabelTask) task;
-					makeRtorrentCall(log, "d.set_custom1",
+					makeRtorrentCall(log, "d.custom1.set",
 							new String[]{task.getTargetTorrent().getUniqueID(), labelTask.getNewLabel()});
 					return new DaemonTaskSuccessResult(task);
 

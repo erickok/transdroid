@@ -16,31 +16,33 @@
  */
 package org.transdroid.core.gui.lists;
 
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
-
 import android.content.Context;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.ViewById;
+import org.transdroid.R;
 
 /**
  * View that represents some {@link SimpleListItem} object and simple prints out the text (in proper style)
  * @author Eric Kok
  */
-@EViewGroup(resName="list_item_simple")
+@EViewGroup(R.layout.list_item_simple)
 public class SimpleListItemView extends FrameLayout {
 
 	@ViewById
 	protected TextView itemText;
-	
+
 	public SimpleListItemView(Context context) {
 		super(context);
 	}
 
 	public void bind(SimpleListItem filterItem, int autoLinkMask) {
 		itemText.setText(filterItem.getName());
-		if (autoLinkMask > 0)
+		if (autoLinkMask > 0) {
 			itemText.setAutoLinkMask(autoLinkMask);
+		}
 	}
-	
+
 }

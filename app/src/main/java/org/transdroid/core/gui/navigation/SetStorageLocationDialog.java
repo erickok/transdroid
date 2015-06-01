@@ -16,73 +16,35 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import java.security.InvalidParameterException;
-
-import org.transdroid.R;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.os.Bundle;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-/**
- * A dialog fragment that allows changing of the storage location by editing the path text directly.
- * @author Eric Kok
- */
-public class SetStorageLocationDialog extends DialogFragment {
+import com.afollestad.materialdialogs.MaterialDialog;
 
-	private OnStorageLocationUpdatedListener onStorageLocationUpdatedListener = null;
-	private String currentLocation = null;
+import org.transdroid.R;
 
-	public SetStorageLocationDialog() {
-		setRetainInstance(true);
-	}
+public class SetStorageLocationDialog {
 
 	/**
-	 * Sets the callback for when the user is done updating the storage location.
-	 * @param onStorageLocationUpdatedListener The event listener to this dialog
-	 * @return This dialog, for method chaining
+	 * A dialog fragment that allows changing of the storage location by editing the path text directly.
+	 * @param context The activity context that opens (and owns) this dialog
+	 * @param onStorageLocationUpdatedListener The callback for when the user is done updating the storage location
+	 * @param currentLocation The current storage location that will be available to the user to edit
 	 */
-	public SetStorageLocationDialog setOnStorageLocationUpdated(
-			OnStorageLocationUpdatedListener onStorageLocationUpdatedListener) {
-		this.onStorageLocationUpdatedListener = onStorageLocationUpdatedListener;
-		return this;
-	}
-
-	/**
-	 * Sets the current storage location that will be available to the user to edit
-	 * @param currentLocation The current storage location path as text
-	 * @return This dialog, for method chaining
-	 */
-	public SetStorageLocationDialog setCurrentLocation(String currentLocation) {
-		this.currentLocation = currentLocation;
-		return this;
-	}
-
-	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		if (currentLocation == null)
-			throw new InvalidParameterException(
-					"Please first set the current trackers text using setCurrentLocation before opening the dialog.");
-		if (onStorageLocationUpdatedListener == null)
-			throw new InvalidParameterException(
-					"Please first set the callback listener using setOnStorageLocationUpdated before opening the dialog.");
-		final View locationFrame = getActivity().getLayoutInflater().inflate(R.layout.dialog_storagelocation, null,
-				false);
-		final EditText locationText = (EditText) locationFrame.findViewById(R.id.location_edit);
+	public static void show(final Context context, final OnStorageLocationUpdatedListener onStorageLocationUpdatedListener, String currentLocation) {
+		View locationLayout = LayoutInflater.from(context).inflate(R.layout.dialog_storagelocation, null);
+		final EditText locationText = (EditText) locationLayout.findViewById(R.id.location_edit);
 		locationText.setText(currentLocation);
-		return new AlertDialog.Builder(getActivity()).setView(locationFrame)
-				.setPositiveButton(R.string.status_update, new OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// User is done editing and requested to update given the text input
-						onStorageLocationUpdatedListener.onStorageLocationUpdated(locationText.getText().toString());
-					}
-				}).setNegativeButton(android.R.string.cancel, null).show();
+		new MaterialDialog.Builder(context).customView(locationLayout, false).positiveText(R.string.status_update)
+				.negativeText(android.R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
+			@Override
+			public void onPositive(MaterialDialog dialog) {
+				// User is done editing and requested to update given the text input
+				onStorageLocationUpdatedListener.onStorageLocationUpdated(locationText.getText().toString());
+			}
+		}).show();
 	}
 
 	public interface OnStorageLocationUpdatedListener {

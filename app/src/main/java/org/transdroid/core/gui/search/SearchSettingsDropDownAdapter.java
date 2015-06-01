@@ -16,18 +16,17 @@
  */
 package org.transdroid.core.gui.search;
 
-import java.util.List;
-
-import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.navigation.FilterListItemAdapter;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.transdroid.core.gui.lists.SimpleListItem;
+import org.transdroid.core.gui.navigation.FilterListItemAdapter;
+
+import java.util.List;
+
 /**
- * List adapter that holds search settings, that is, web searches and in-app search sites, displayed as content to a
- * Spinner instead of a ListView.
+ * List adapter that holds search settings, that is, web searches and in-app search sites, displayed as content to a Spinner instead of a ListView.
  * @author Eric Kok
  */
 public class SearchSettingsDropDownAdapter extends FilterListItemAdapter {

@@ -32,16 +32,8 @@ public class ConnectivityHelper {
 	@SystemService
 	protected WifiManager wifiManager;
 
-	public ConnectivityHelper(Context context) {
-	}
-
-	@SuppressWarnings("deprecation")
 	public boolean shouldPerformBackgroundActions() {
-		// First check the old background data setting (this will always be true for ICS+)
-		if (!connectivityManager.getBackgroundDataSetting())
-			return false;
-
-		// Still good? Check the current active network instead
+		// Check the current active network whether we are connected
 		return connectivityManager.getActiveNetworkInfo() != null
 				&& connectivityManager.getActiveNetworkInfo().isConnected();
 	}

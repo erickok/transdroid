@@ -70,13 +70,15 @@
 	<string name="action_removesettings">Remove settings</string>
 	<string name="action_visitwebsite">Visit transdroid.org</string>
 	<string name="action_close">Close</string>
-	
+
+	<string name="navigation_opendrawer">Select server and filter</string>
+	<string name="navigation_closedrawer">Close filters list</string>
 	<string name="navigation_nosettings">%1$s allows you to monitor and manage the torrent client you run at home or on your seedbox. Setting things up can be a bit tricky, but we offer step-by-step guides and promise it\'ll be worth it!</string>
 	<string name="navigation_emptytorrents">Connected, but no torrents are active within the current filter</string>
 	<string name="navigation_emptydetails">Select a torrent to view its details</string>
-	<string name="navigation_servers">SERVERS</string>
-	<string name="navigation_status">STATUS</string>
-	<string name="navigation_labels">LABELS</string>
+	<string name="navigation_servers">Servers</string>
+	<string name="navigation_status">Status</string>
+	<string name="navigation_labels">Labels</string>
 	<string name="navigation_status_showall">All</string>
 	<string name="navigation_status_onlydown">Downloading</string>
 	<string name="navigation_status_onlyup">Uploading</string>
@@ -94,6 +96,7 @@
 	<string name="navigation_selectfinished">Select finished</string>
 	<string name="navigation_invertselection">Invert selection</string>
 	<string name="navigation_pickserver">Add torrent to&#8230;</string>
+	<string name="navigation_url_hint" translatable="false">http://…</string>
 	
 	<string name="status_status">STATUS: %1$s</string>
 	<string name="status_waiting">Waiting to check&#8230;</string>
@@ -219,6 +222,7 @@
 	
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
+	<string name="pref_addserver_normal">Add normal, custom server</string>
 	<string name="pref_addseedbox">Add seedbox</string>
 	<string name="pref_defaultserver">Default server</string>
 	<string name="pref_defaultserver_lastused">Last used</string>
@@ -365,7 +369,8 @@
         <item>BitTorrent 6+</item>
         <item>Buffalo NAS -1.31</item>
         <item>Deluge 1.2+</item>
-        <item>DLink Router BT</item>
+		<item>DLink Router BT</item>
+		<item>Dummy</item>
         <item>Ktorrent</item>
         <item>qBittorrent</item>
         <item>rTorrent</item>
@@ -382,7 +387,8 @@
         <item>daemon_bittorrent</item>
         <item>daemon_buffalonas</item>
         <item>daemon_deluge</item>
-        <item>daemon_dlinkrouterbt</item>
+		<item>daemon_dlinkrouterbt</item>
+		<item>daemon_dummy</item>
         <item>daemon_ktorrent</item>
         <item>daemon_qbittorrent</item>
         <item>daemon_rtorrent</item>
