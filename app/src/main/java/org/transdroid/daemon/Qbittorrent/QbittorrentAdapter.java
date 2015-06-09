@@ -440,20 +440,30 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		ArrayList<Torrent> torrents = new ArrayList<>();
 		for (int i = 0; i < response.length(); i++) {
 			JSONObject tor = response.getJSONObject(i);
-			int leechers[] = parsePeers(tor.getString("num_leechs"));
-			int seeders[] = parsePeers(tor.getString("num_seeds"));
-			double ratio = parseRatio(tor.getString("ratio"));
 			double progress = tor.getDouble("progress");
+			int leechers[];
+			int seeders[];
+			double ratio;
 			long size;
 			int dlspeed;
 			int upspeed;
 
 			if (apiVersion >= 2) {
+				leechers = new int[2];
+				leechers[0] = tor.getInt("num_leechs");
+				leechers[1] = tor.getInt("num_complete") + tor.getInt("num_incomplete");
+				seeders = new int[2];
+				seeders[0] = tor.getInt("num_seeds");
+				seeders[1] = tor.getInt("num_complete");
 				size = tor.getLong("size");
+				ratio = tor.getDouble("ratio");
 				dlspeed = tor.getInt("dlspeed");
 				upspeed = tor.getInt("upspeed");
 			} else {
+				leechers = parsePeers(tor.getString("num_leechs"));
+				seeders = parsePeers(tor.getString("num_seeds"));
 				size = parseSize(tor.getString("size"));
+				ratio = parseRatio(tor.getString("ratio"));
 				dlspeed = parseSpeed(tor.getString("dlspeed"));
 				upspeed = parseSpeed(tor.getString("upspeed"));
 			}
