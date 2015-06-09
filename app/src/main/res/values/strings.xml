@@ -370,12 +370,12 @@
         <item>Buffalo NAS -1.31</item>
         <item>Deluge 1.2+</item>
 		<item>DLink Router BT</item>
-		<item>Dummy</item>
         <item>Ktorrent</item>
         <item>qBittorrent</item>
         <item>rTorrent</item>
         <item>Synology</item>
-        <item>Torrentflux-b4rt</item>
+		<item>Torrentflux-b4rt</item>
+		<item>tTorrent</item>
         <item>Transmission</item>
         <item>µTorrent</item>
         <item>Vuze</item>
@@ -388,12 +388,12 @@
         <item>daemon_buffalonas</item>
         <item>daemon_deluge</item>
 		<item>daemon_dlinkrouterbt</item>
-		<item>daemon_dummy</item>
         <item>daemon_ktorrent</item>
         <item>daemon_qbittorrent</item>
         <item>daemon_rtorrent</item>
         <item>daemon_synology</item>
-        <item>daemon_tfb4rt</item>
+		<item>daemon_tfb4rt</item>
+		<item>daemon_ttorrent</item>
         <item>daemon_transmission</item>
         <item>daemon_utorrent</item>
         <item>daemon_vuze</item>
@@ -462,7 +462,7 @@
 	<string name="system_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>
 	<string name="system_license" translatable="false">Published under GNU General Public License v3</string>
 	<string name="system_librarieslabel">Some code/libraries are used in the project:</string>
-	<string name="system_libraries" translatable="false">AndroidAnnotations\n \u00A0 http://androidannotations.org/\n \u00A0 Pierre-Yves Ricau (eBusinessInformations) et al.  \n \u00A0 Apache License, Version 2.0\nActionBar-PullToRefresh\n \u00A0 https://github.com/chrisbanes/ActionBar-PullToRefresh\n \u00A0 Chris Banes  \n \u00A0 Apache License, Version 2.0\nCrouton\n \u00A0 https://github.com/keyboardsurfer/Crouton\n \u00A0 Code: Benjamin Weiss (Neofonie Mobile Gmbh) et al.  \n \u00A0 Idea: Cyril Mottier  \n \u00A0 Apache License, Version 2.0\nBase16Encoder\n \u00A0 http://openjpa.apache.org/\n \u00A0 Marc Prud\'hommeaux  \n \u00A0 Apache OpenJPA\n MultipartEntity  \n \u00A0 Apache Software Foundation  \n \u00A0 Apache License, Version 2.0\nRssParser (learning-android)\n \u00A0 http://github.com/digitalspaghetti/learning-android\n \u00A0 Tane Piper  \n \u00A0 Public Domain\nBase64\n \u00A0 http://iharder.net/base64\n \u00A0 Robert Harder  \n \u00A0 Public Domain\naXMLRPC\n \u00A0 https://github.com/timroes/aXMLRPC\n \u00A0 Tim Roes  \n \u00A0 MIT License\nandroid-ColorPickerPreference\n \u00A0 https://github.com/attenzione/android-ColorPickerPreference\n \u00A0 Daniel Nilsson and Sergey Margaritov  \n \u00A0 Apache License, Version 2.0\nCheckableRelativeLayout\n \u00A0 http://www.marvinlabs.com/2010/10/custom-listview-ability-check-items/\n \u00A0 Cédric Caron (MarvinLabs)\n \u00A0 Public Domain\nFunnel icon\n \u00A0 http://thenounproject.com/noun/funnel/#icon-No5608\n \u00A0 Naomi Atkinson from The Noun Project\n \u00A0 Creative Commons Attribution 3.0</string>
+	<string name="system_libraries" translatable="false">AndroidAnnotations\n \u00A0 http://androidannotations.org/\n \u00A0 Pierre-Yves Ricau (eBusinessInformations) et al.  \n \u00A0 Apache License, Version 2.0\nMaterial Dialogs\n \u00A0 https://github.com/afollestad/material-dialogs\n \u00A0 Aidan Follestad et al.  \n \u00A0 MIT License\nSnackbar\n \u00A0 https://github.com/nispok/snackbar\n \u00A0 William Mora et al.  \n \u00A0 MIT License\nFloatingActionButton\n \u00A0 https://github.com/futuresimple/android-floating-action-button\n \u00A0 Jerzy Chałupski et al.  \n \u00A0 Apache License, Version 2.0\nBase16Encoder\n \u00A0 http://openjpa.apache.org/\n \u00A0 Marc Prud\'hommeaux  \n \u00A0 Apache OpenJPA\n MultipartEntity  \n \u00A0 Apache Software Foundation  \n \u00A0 Apache License, Version 2.0\nRssParser (learning-android)\n \u00A0 http://github.com/digitalspaghetti/learning-android\n \u00A0 Tane Piper  \n \u00A0 Public Domain\nBase64\n \u00A0 http://iharder.net/base64\n \u00A0 Robert Harder  \n \u00A0 Public Domain\naXMLRPC\n \u00A0 https://github.com/timroes/aXMLRPC\n \u00A0 Tim Roes  \n \u00A0 MIT License\nandroid-ColorPickerPreference\n \u00A0 https://github.com/attenzione/android-ColorPickerPreference\n \u00A0 Daniel Nilsson and Sergey Margaritov  \n \u00A0 Apache License, Version 2.0\nFunnel icon\n \u00A0 http://thenounproject.com/noun/funnel/#icon-No5608\n \u00A0 Naomi Atkinson from The Noun Project\n \u00A0 Creative Commons Attribution 3.0</string>
 	<string name="system_description">Manage your torrents from your Android device</string>
 
 </resources>
