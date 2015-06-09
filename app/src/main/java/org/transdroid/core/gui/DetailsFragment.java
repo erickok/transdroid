@@ -485,9 +485,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 					return onActionItemClicked(mode, menuItem);
 				}
 			});
-			if (contextualMenu.getMenu().size() == 0) {
-				getActivity().getMenuInflater().inflate(R.menu.fragment_details_cab_main, contextualMenu.getMenu());
-			}
+			contextualMenu.getMenu().clear();
+			getActivity().getMenuInflater().inflate(R.menu.fragment_details_cab_main, contextualMenu.getMenu());
 			Context themedContext = ((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext();
 			mode.getMenuInflater().inflate(R.menu.fragment_details_cab_secondary, menu);
 			selectionManagerMode = new SelectionManagerMode(themedContext, detailsList, R.plurals.navigation_filesselected);

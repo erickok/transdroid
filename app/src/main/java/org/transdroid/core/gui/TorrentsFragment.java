@@ -279,9 +279,8 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 					return onActionItemClicked(mode, menuItem);
 				}
 			});
-			if (actionsMenu.getMenu().size() == 0) {
-				getActivity().getMenuInflater().inflate(R.menu.fragment_torrents_cab, actionsMenu.getMenu());
-			}
+			actionsMenu.getMenu().clear();
+			getActivity().getMenuInflater().inflate(R.menu.fragment_torrents_cab, actionsMenu.getMenu());
 			Context themedContext = ((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext();
 			selectionManagerMode = new SelectionManagerMode(themedContext, torrentsList, R.plurals.navigation_torrentsselected);
 			selectionManagerMode.onCreateActionMode(mode, menu);
