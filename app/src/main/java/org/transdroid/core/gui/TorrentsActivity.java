@@ -774,9 +774,11 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	@Background
 	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE_ADDTORRENT)
 	public void onBarcodeScanned(int resultCode, Intent data) {
-		// We receive from the helper either a URL (as string) or a query we can start a search for
-		String query = BarcodeHelper.handleScanResult(resultCode, data, navigationHelper.enableSearchUi());
-		onBarcodeScanHandled(data.getStringExtra("SCAN_RESULT"), query);
+		if (data != null) {
+			// We receive from the helper either a URL (as string) or a query we can start a search for
+			String query = BarcodeHelper.handleScanResult(resultCode, data, navigationHelper.enableSearchUi());
+			onBarcodeScanHandled(data.getStringExtra("SCAN_RESULT"), query);
+		}
 	}
 
 	@UiThread
