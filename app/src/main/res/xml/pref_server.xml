@@ -41,7 +41,7 @@
 		android:inputType="textPassword" />
 	<EditTextPreference
 		android:key="server_extrapass"
-		android:title="@string/pref_extrapass"
+		android:title="@string/pref_extrapassword"
 		android:inputType="textPassword" />
 
 	<PreferenceScreen android:title="@string/pref_advanced" >
