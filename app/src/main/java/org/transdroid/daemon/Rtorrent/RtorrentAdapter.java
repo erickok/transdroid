@@ -178,7 +178,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					byte[] bytes = baos.toByteArray();
 					int size = (int) file.length() * 2;
 					final int XMLRPC_EXTRA_PADDING = 1280;
-					if (version >= 904) {
+					if (version >= 907) {
 						makeRtorrentCall(log, "network.xmlrpc.size_limit.set", new Object[]{size + XMLRPC_EXTRA_PADDING});
 						makeRtorrentCall(log, "load.raw_start", new Object[]{bytes});
 					} else {
@@ -191,7 +191,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 					// Request to add a torrent by URL
 					String url = ((AddByUrlTask) task).getUrl();
-					if (version >= 904) {
+					if (version >= 907) {
 						makeRtorrentCall(log, "load.start", new String[]{"", url});
 					} else {
 						makeRtorrentCall(log, "load_start", new String[]{url});
@@ -202,7 +202,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 					// Request to add a magnet link by URL
 					String magnet = ((AddByMagnetUrlTask) task).getUrl();
-					if (version >= 904) {
+					if (version >= 907) {
 						makeRtorrentCall(log, "load.start", new String[]{"", magnet});
 					} else {
 						makeRtorrentCall(log, "load_start", new String[]{magnet});

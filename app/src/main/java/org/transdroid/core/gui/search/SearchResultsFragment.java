@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -197,6 +198,10 @@ public class SearchResultsFragment extends Fragment {
 				// Open the torrent's web page in the browser
 				if (checked.size() > 1) {
 					Toast.makeText(getActivity(), getString(R.string.search_openingdetails, first.getName()), Toast.LENGTH_LONG).show();
+				}
+				if (TextUtils.isEmpty(first.getDetailsUrl())) {
+					Toast.makeText(getActivity(), getString(R.string.error_invalid_url_form, first.getName()), Toast.LENGTH_LONG).show();
+					return false;
 				}
 				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(first.getDetailsUrl())));
 				return true;

@@ -20,10 +20,11 @@
 		<attr name="progress" format="integer" />
 		<attr name="isActive" format="boolean" />
 	</declare-styleable>
-	
+
 	<!-- Themeable drawables-->
-	<attr name="loading_progress" format="reference"/>
-	<attr name="activatable_background" format="reference"/>
+	<attr name="drawer_background" format="reference" />
+	<attr name="loading_progress" format="reference" />
+	<attr name="activatable_background" format="reference" />
 	<attr name="text_bright" format="reference" />
 	<attr name="text_actionbar" format="reference" />
 	<attr name="text_actionbar_secondary" format="reference" />

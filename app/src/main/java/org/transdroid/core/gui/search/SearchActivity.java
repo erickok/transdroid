@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -73,8 +74,6 @@ public class SearchActivity extends ActionBarActivity implements ActionBar.OnNav
 	protected TextView installmoduleText;
 	@Bean
 	protected ApplicationSettings applicationSettings;
-	@Bean
-	protected NavigationHelper navigationHelper;
 	@Bean
 	protected SearchHelper searchHelper;
 	@SystemService
@@ -159,15 +158,15 @@ public class SearchActivity extends ActionBarActivity implements ActionBar.OnNav
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		if (navigationHelper.enableSearchUi()) {
-			// Add an expandable SearchView to the action bar
-			MenuItem item = menu.findItem(R.id.action_search);
-			final SearchView searchView = new SearchView(searchToolbar.getContext());
-			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-			searchView.setQueryRefinementEnabled(true);
-			item.setActionView(searchView);
-			searchMenu = item;
-		}
+		// Add an expandable SearchView to the action bar
+		MenuItem item = menu.findItem(R.id.action_search);
+		final SearchView searchView = new SearchView(searchToolbar.getContext());
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		searchView.setQueryRefinementEnabled(true);
+		//searchView.setIconified(false);
+		searchView.setIconifiedByDefault(false);
+		MenuItemCompat.setActionView(item, searchView);
+		searchMenu = item;
 		return true;
 	}
 

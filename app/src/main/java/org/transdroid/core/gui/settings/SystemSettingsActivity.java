@@ -179,6 +179,8 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE_QRSETTINGS)
 	public void onQrCodeScanned(int resultCode, Intent data) {
 		// We should have received Intent extras with the QR-decoded data representing Transdroid settings
+		if (data == null || !data.hasExtra("SCAN_RESULT"))
+			return; // Cancelled scan; ignore
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
 		String contents = data.getStringExtra("SCAN_RESULT");
 		String formatName = data.getStringExtra("SCAN_RESULT_FORMAT");

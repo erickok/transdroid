@@ -455,8 +455,13 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		// No connection yet; hide all menu options except settings
 		if (currentConnection == null) {
 			torrentsToolbar.setNavigationIcon(null);
+			if (selectionToolbar != null)
+				selectionToolbar.setVisibility(View.GONE);
 			addmenuButton.setVisibility(View.GONE);
 			actionsToolbar.setVisibility(View.GONE);
+			if (filtersList != null)
+				filtersList.setVisibility(View.GONE);
+			filterSearch.setVisibility(View.GONE);
 			torrentsToolbar.getMenu().findItem(R.id.action_search).setVisible(false);
 			torrentsToolbar.getMenu().findItem(R.id.action_rss).setVisible(false);
 			torrentsToolbar.getMenu().findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -474,8 +479,13 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 		// There is a connection (read: settings to some server known)
 		if (drawerToggle != null)
 			torrentsToolbar.setNavigationIcon(R.drawable.ic_action_drawer);
+		if (selectionToolbar != null)
+			selectionToolbar.setVisibility(View.VISIBLE);
 		addmenuButton.setVisibility(View.VISIBLE);
 		actionsToolbar.setVisibility(View.VISIBLE);
+		if (filtersList != null)
+			filtersList.setVisibility(View.VISIBLE);
+		filterSearch.setVisibility(View.VISIBLE);
 		boolean addByFile = Daemon.supportsAddByFile(currentConnection.getType());
 		addmenuFileButton.setVisibility(addByFile ? View.VISIBLE : View.GONE);
 		// Primary toolbar menu

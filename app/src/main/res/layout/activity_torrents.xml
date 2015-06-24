@@ -95,7 +95,7 @@
 		android:layout_width="@dimen/ui_filters_list"
 		android:layout_height="match_parent"
 		android:layout_gravity="start"
-		android:background="@android:color/white"
+		android:background="?attr/drawer_background"
 		android:orientation="vertical">
 
 		<ListView

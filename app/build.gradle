@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 219
-        versionName '2.5.0-beta2'
+        versionCode 221
+        versionName '2.5.1'
     }
     buildTypes {
         release {
@@ -37,8 +37,8 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-    compile 'com.android.support:appcompat-v7:22.1.0'
-    compile 'com.android.support:support-annotations:20.0.0'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:support-annotations:22.1.1'
     compile 'com.getbase:floatingactionbutton:1.8.0'
     compile 'com.afollestad:material-dialogs:0.6.3.3'
     compile 'com.nispok:snackbar:2.10.6'
