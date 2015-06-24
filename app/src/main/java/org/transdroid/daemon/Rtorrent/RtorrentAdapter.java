@@ -82,6 +82,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private XMLRPCClient rpcclient;
 	private List<Label> lastKnownLabels = null;
+	private Integer version = null;
 
 	public RtorrentAdapter(DaemonSettings settings) {
 		this.settings = settings;
@@ -91,37 +92,47 @@ public class RtorrentAdapter implements IDaemonAdapter {
 	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 
 		try {
+			// Ensure a version number is know to switch to the right methods
+			if (version == null) {
+				try {
+					Object versionObject = makeRtorrentCall(log, "system.client_version", new String[0]);
+					String[] versionRaw = versionObject.toString().split("\\.");
+					version = (Integer.parseInt(versionRaw[0]) * 10000) + (Integer.parseInt(versionRaw[1]) * 100) + Integer.parseInt(versionRaw[2]);
+				} catch (Exception e) {
+					version = 10000;
+				}
+			}
 			switch (task.getMethod()) {
 				case Retrieve:
 
 					// @formatter:off
-				Object result = makeRtorrentCall(log,"d.multicall2",
-						new String[] { "", "main",
-						"d.hash=",
-						"d.name=",
-						"d.state=",
-						"d.down.rate=",
-						"d.up.rate=",
-						"d.peers_connected=",
-						"d.peers_not_connected=",
-						"d.peers_accounted=",
-						"d.bytes_done=",
-						"d.up.total=",
-						"d.size_bytes=",
-						"d.creation_date=",
-						"d.left_bytes=",
-						"d.complete=",
-						"d.is_active=", 
-						"d.is_hash_checking=", 
-						"d.base_path=",
-						"d.base_filename=",
-						"d.message=",
-						"d.custom=addtime",
-						"d.custom=seedingtime",
-						"d.custom1=",
-						"d.peers_complete=",
-						"d.peers_accounted=" });
-				// @formatter:on
+					Object result = makeRtorrentCall(log, "d.multicall2",
+							new String[] { "", "main",
+							"d.hash=",
+							"d.name=",
+							"d.state=",
+							"d.down.rate=",
+							"d.up.rate=",
+							"d.peers_connected=",
+							"d.peers_not_connected=",
+							"d.peers_accounted=",
+							"d.bytes_done=",
+							"d.up.total=",
+							"d.size_bytes=",
+							"d.creation_date=",
+							"d.left_bytes=",
+							"d.complete=",
+							"d.is_active=",
+							"d.is_hash_checking=",
+							"d.base_path=",
+							"d.base_filename=",
+							"d.message=",
+							"d.custom=addtime",
+							"d.custom=seedingtime",
+							"d.custom1=",
+							"d.peers_complete=",
+							"d.peers_accounted=" });
+					// @formatter:on
 					return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result),
 							lastKnownLabels);
 
@@ -167,22 +178,35 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					byte[] bytes = baos.toByteArray();
 					int size = (int) file.length() * 2;
 					final int XMLRPC_EXTRA_PADDING = 1280;
-					makeRtorrentCall(log, "network.xmlrpc.size_limit.set", new Object[]{size + XMLRPC_EXTRA_PADDING});
-					makeRtorrentCall(log, "load.raw_start", new Object[]{bytes});
+					if (version >= 904) {
+						makeRtorrentCall(log, "network.xmlrpc.size_limit.set", new Object[]{size + XMLRPC_EXTRA_PADDING});
+						makeRtorrentCall(log, "load.raw_start", new Object[]{bytes});
+					} else {
+						makeRtorrentCall(log, "set_xmlrpc_size_limit", new Object[]{size + XMLRPC_EXTRA_PADDING});
+						makeRtorrentCall(log, "load_raw_start", new Object[]{bytes});
+					}
 					return new DaemonTaskSuccessResult(task);
 
 				case AddByUrl:
 
 					// Request to add a torrent by URL
 					String url = ((AddByUrlTask) task).getUrl();
-					makeRtorrentCall(log, "load.start", new String[]{"",url});
+					if (version >= 904) {
+						makeRtorrentCall(log, "load.start", new String[]{"", url});
+					} else {
+						makeRtorrentCall(log, "load_start", new String[]{url});
+					}
 					return new DaemonTaskSuccessResult(task);
 
 				case AddByMagnetUrl:
 
 					// Request to add a magnet link by URL
 					String magnet = ((AddByMagnetUrlTask) task).getUrl();
-					makeRtorrentCall(log, "load.start", new String[]{"",magnet});
+					if (version >= 904) {
+						makeRtorrentCall(log, "load.start", new String[]{"", magnet});
+					} else {
+						makeRtorrentCall(log, "load_start", new String[]{magnet});
+					}
 					return new DaemonTaskSuccessResult(task);
 
 				case Remove:
