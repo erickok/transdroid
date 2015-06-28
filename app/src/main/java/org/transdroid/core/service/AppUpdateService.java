@@ -50,8 +50,8 @@ import android.net.Uri;
 @EService
 public class AppUpdateService extends IntentService {
 
-	private static final String LATEST_URL_APP = "http://www.transdroid.org/update/latest-app.php";
-	private static final String LATEST_URL_SEARCH = "http://www.transdroid.org/update/latest-search.php";
+	private static final String LATEST_URL_APP = "https://raw.githubusercontent.com/erickok/transdroid/master/latest-app.html";
+	private static final String LATEST_URL_SEARCH = "https://raw.githubusercontent.com/erickok/transdroid/master/latest-search.php";
 	private static final String DOWNLOAD_URL_APP = "http://www.transdroid.org/latest";
 	private static final String DOWNLOAD_URL_SEARCH = "http://www.transdroid.org/latest-search";
 
