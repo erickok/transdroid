@@ -25,6 +25,12 @@ import org.transdroid.core.gui.settings.KeyBoundPreferencesActivity;
  */
 public enum SeedboxProvider {
 
+	Dediseedbox {
+		@Override
+		public SeedboxSettings getSettings() {
+			return new DediseedboxSettings();
+		}
+	},
 	Seedstuff {
 		@Override
 		public SeedboxSettings getSettings() {

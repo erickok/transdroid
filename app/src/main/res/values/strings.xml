@@ -351,6 +351,7 @@
 	<string name="pref_seedbox_xirvikhint3">Like desharedgbit001.xirvik.com</string>
 	<string name="pref_seedbox_xirviknofolder">Cannot retrieve the Xirvik SCGI folder setting; please try again later or correct your server address setting</string>
 	<string name="pref_seedbox_seedstuffhint">Like 001.seedstuff.ca</string>
+	<string name="pref_seedbox_dediseedboxhint">Like abcd123.dediseedbox.com</string>
 	<string-array name="pref_seedbox_xirvikclients" translatable="false">
 		<item>rTorrent</item>
 		<item>uTorrent</item>

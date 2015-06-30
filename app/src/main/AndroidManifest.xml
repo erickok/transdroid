@@ -190,6 +190,7 @@
 		<activity android:name="org.transdroid.core.gui.navigation.DialogHelper_" />
 
 		<!-- Seedbox settings -->
+		<activity android:name="org.transdroid.core.seedbox.DediseedboxSettingsActivity_" />
 		<activity android:name="org.transdroid.core.seedbox.SeedstuffSettingsActivity_" />
 		<activity android:name="org.transdroid.core.seedbox.XirvikSharedSettingsActivity_" />
 		<activity android:name="org.transdroid.core.seedbox.XirvikSemiSettingsActivity_" />
