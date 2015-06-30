@@ -78,6 +78,8 @@ public class RtorrentAdapter implements IDaemonAdapter {
 	private static final String LOG_NAME = "rTorrent daemon";
 
 	private static final String DEFAULT_RPC_URL = "/RPC2";
+	private static final int XMLRPC_MINIMUM_SIZE = 2 * 1024 * 1024;
+	private static final int XMLRPC_EXTRA_PADDING = 1280;
 
 	private DaemonSettings settings;
 	private XMLRPCClient rpcclient;
@@ -176,8 +178,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						baos.write(buffer, 0, read);
 					}
 					byte[] bytes = baos.toByteArray();
-					int size = (int) file.length() * 2;
-					final int XMLRPC_EXTRA_PADDING = 1280;
+					int size = Math.max(((int) file.length() * 2) + XMLRPC_EXTRA_PADDING, XMLRPC_MINIMUM_SIZE);
 					if (version >= 907) {
 						makeRtorrentCall(log, "network.xmlrpc.size_limit.set", new Object[]{size + XMLRPC_EXTRA_PADDING});
 						makeRtorrentCall(log, "load.raw_start", new Object[]{bytes});
