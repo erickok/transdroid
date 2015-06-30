@@ -20,7 +20,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.nispok.snackbar.Snackbar;
@@ -84,7 +84,7 @@ import java.util.List;
  */
 @EActivity(R.layout.activity_details)
 @OptionsMenu(R.menu.activity_details)
-public class DetailsActivity extends ActionBarActivity implements TorrentTasksExecutor, RefreshableActivity {
+public class DetailsActivity extends AppCompatActivity implements TorrentTasksExecutor, RefreshableActivity {
 
 	@Extra
 	@InstanceState

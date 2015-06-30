@@ -19,7 +19,7 @@ package org.transdroid.core.gui;
 import android.app.Fragment;
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
@@ -281,7 +281,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 			});
 			actionsMenu.getMenu().clear();
 			getActivity().getMenuInflater().inflate(R.menu.fragment_torrents_cab, actionsMenu.getMenu());
-			Context themedContext = ((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext();
+			Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
 			selectionManagerMode = new SelectionManagerMode(themedContext, torrentsList, R.plurals.navigation_torrentsselected);
 			selectionManagerMode.onCreateActionMode(mode, menu);
 			return true;
@@ -354,7 +354,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 			} else if (itemId == R.id.action_setlabel) {
 				lastMultiSelectedTorrents = checked;
 				if (currentLabels != null) {
-					SetLabelDialog.show(getActivity(), TorrentsFragment.this,currentLabels);
+					SetLabelDialog.show(getActivity(), TorrentsFragment.this, currentLabels);
 				}
 				mode.finish();
 				return true;

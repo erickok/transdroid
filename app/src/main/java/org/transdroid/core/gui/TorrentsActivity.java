@@ -26,8 +26,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -145,7 +145,7 @@ import java.util.Map.Entry;
  * @author Eric Kok
  */
 @EActivity(R.layout.activity_torrents)
-public class TorrentsActivity extends ActionBarActivity implements TorrentTasksExecutor, RefreshableActivity {
+public class TorrentsActivity extends AppCompatActivity implements TorrentTasksExecutor, RefreshableActivity {
 
 	private static final int RESULT_DETAILS = 0;
 
@@ -795,8 +795,7 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 	protected void onBarcodeScanHandled(String barcode, String result) {
 		log.d(this, "Scanned barcode " + barcode + " and got " + result);
 		if (TextUtils.isEmpty(result)) {
-			SnackbarManager.show(Snackbar.with(this).text(R.string.error_noproductforcode).colorResource(R.color.red)
-					.type(SnackbarType.MULTI_LINE));
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_noproductforcode).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
 		} else if (result.startsWith("http") || result.startsWith("https")) {
 			addTorrentByUrl(result, "QR code result"); // No torrent title known
 		} else if (result.startsWith("magnet")) {

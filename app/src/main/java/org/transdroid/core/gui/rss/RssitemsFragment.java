@@ -27,7 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -80,7 +80,7 @@ public class RssitemsFragment extends Fragment {
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Show contextual action bar to add items in batch mode
 			mode.getMenuInflater().inflate(R.menu.fragment_rssitems_cab, menu);
-			Context themedContext = ((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext();
+			Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
 			selectionManagerMode = new SelectionManagerMode(themedContext, rssitemsList, R.plurals.rss_itemsselected);
 			selectionManagerMode.onCreateActionMode(mode, menu);
 			return true;

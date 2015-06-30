@@ -26,6 +26,7 @@ import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,7 +63,7 @@ import java.util.List;
  */
 @EActivity(R.layout.activity_search)
 @OptionsMenu(R.menu.activity_search)
-public class SearchActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
+public class SearchActivity extends AppCompatActivity implements ActionBar.OnNavigationListener {
 
 	@ViewById
 	protected Toolbar searchToolbar;

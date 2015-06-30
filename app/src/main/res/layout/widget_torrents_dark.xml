@@ -19,8 +19,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="@color/background_dark"
-	android:padding="@dimen/margin_widget">
+	android:background="@color/background_dark">
 
 	<ImageButton
 		android:id="@+id/icon_image"
@@ -86,7 +85,8 @@
 			android:maxLines="1"
 			android:textColor="@color/text_actionbar_dark"
 			android:textIsSelectable="false"
-			android:textSize="@dimen/ui_navigation_filter" />
+			android:textSize="@dimen/ui_navigation_filter"
+			tools:text="Filter" />
 
 		<TextView
 			android:id="@+id/server_text"
@@ -98,7 +98,8 @@
 			android:maxLines="1"
 			android:textColor="@color/text_actionbar_dark"
 			android:textIsSelectable="false"
-			android:textSize="@dimen/ui_navigation_server" />
+			android:textSize="@dimen/ui_navigation_server"
+			tools:text="Server" />
 	</LinearLayout>
 
 	<RelativeLayout

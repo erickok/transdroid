@@ -19,176 +19,175 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="@color/background_light"
-	android:padding="@dimen/margin_widget" >
-
-	<ImageButton
-		android:id="@+id/icon_image"
-		android:layout_width="@dimen/widget_header_height"
-		android:layout_height="@dimen/widget_header_height"
-		android:background="?android:attr/selectableItemBackground"
-		android:contentDescription="@string/widget_opentransdroid"
-		android:padding="@dimen/widget_header_padding"
-		android:scaleType="fitXY"
-		android:src="@drawable/ic_launcher" />
-
-	<ImageButton
-		android:id="@+id/refresh_button"
-		android:layout_width="@dimen/widget_header_height"
-		android:layout_height="@dimen/widget_header_height"
-		android:layout_alignParentRight="true"
-		android:background="?android:attr/selectableItemBackground"
-		android:contentDescription="@string/action_refresh"
-		android:padding="@dimen/widget_header_padding"
-		android:scaleType="fitXY"
-		android:src="@drawable/ic_action_refresh" />
-
-	<ImageButton
-		android:id="@+id/pauseall_button"
-		android:layout_width="@dimen/widget_header_height"
-		android:layout_height="@dimen/widget_header_height"
-		android:layout_toLeftOf="@id/refresh_button"
-		android:background="?android:attr/selectableItemBackground"
-		android:contentDescription="@string/action_pauseall"
-		android:padding="@dimen/widget_header_padding"
-		android:scaleType="fitXY"
-		android:src="@drawable/ic_action_pause" />
-
-	<ImageButton
-		android:id="@+id/resumeall_button"
-		android:layout_width="@dimen/widget_header_height"
-		android:layout_height="@dimen/widget_header_height"
-		android:layout_toLeftOf="@id/pauseall_button"
-		android:background="?android:attr/selectableItemBackground"
-		android:contentDescription="@string/action_resumeall"
-		android:padding="@dimen/widget_header_padding"
-		android:scaleType="fitXY"
-		android:src="@drawable/ic_action_resume" />
+	android:background="@color/background_light">
 
 	<LinearLayout
-		android:id="@+id/navigation_view"
+		android:id="@+id/header_wrapper"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/widget_header_height"
-		android:layout_toLeftOf="@id/resumeall_button"
-		android:layout_toRightOf="@id/icon_image"
-		android:background="?android:attr/selectableItemBackground"
-		android:clickable="true"
-		android:orientation="vertical"
-		android:paddingRight="@dimen/margin_half"
-		android:paddingTop="3dp" >
+		android:background="@color/green"
+		android:orientation="horizontal">
 
-		<TextView
-			android:id="@+id/filter_text"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:ellipsize="marquee"
-			android:fontFamily="sans-serif-condensed"
-			android:maxLines="1"
-			android:textColor="@color/text_actionbar_light"
-			android:textIsSelectable="false"
-			android:textSize="@dimen/ui_navigation_filter" />
+		<ImageButton
+			android:id="@+id/icon_image"
+			android:layout_width="@dimen/widget_header_height"
+			android:layout_height="@dimen/widget_header_height"
+			android:background="?android:attr/selectableItemBackground"
+			android:contentDescription="@string/widget_opentransdroid"
+			android:padding="@dimen/widget_header_padding"
+			android:scaleType="fitXY"
+			android:src="@drawable/ic_launcher" />
 
-		<TextView
-			android:id="@+id/server_text"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="-4dip"
-			android:ellipsize="marquee"
-			android:fontFamily="sans-serif-light"
-			android:maxLines="1"
-			android:textColor="@color/text_actionbar_light"
-			android:textIsSelectable="false"
-			android:textSize="@dimen/ui_navigation_server" />
+		<LinearLayout
+			android:id="@+id/navigation_view"
+			android:layout_width="0dp"
+			android:layout_height="@dimen/widget_header_height"
+			android:layout_weight="1"
+			android:background="?android:attr/selectableItemBackground"
+			android:clickable="true"
+			android:orientation="vertical"
+			android:paddingRight="@dimen/margin_half"
+			android:paddingEnd="@dimen/margin_half"
+			android:paddingTop="3dp" >
+
+			<TextView
+				android:id="@+id/filter_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:ellipsize="marquee"
+				android:fontFamily="sans-serif-condensed"
+				android:maxLines="1"
+				android:textColor="@color/text_actionbar_dark"
+				android:textIsSelectable="false"
+				android:textSize="@dimen/ui_navigation_filter"
+				tools:text="Filter" />
+
+			<TextView
+				android:id="@+id/server_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="-4dip"
+				android:ellipsize="marquee"
+				android:fontFamily="sans-serif-light"
+				android:maxLines="1"
+				android:textColor="@color/text_actionbar_dark"
+				android:textIsSelectable="false"
+				android:textSize="@dimen/ui_navigation_server"
+				tools:text="Server"/>
+		</LinearLayout>
+
+		<RelativeLayout
+			android:id="@+id/serverstatus_view"
+			android:layout_width="0dp"
+			android:layout_height="@dimen/widget_header_height"
+			android:layout_weight="1"
+			android:background="?android:attr/selectableItemBackground"
+			android:clickable="true"
+			android:paddingTop="@dimen/ui_serverstatus_margin"
+			android:visibility="gone" >
+
+			<TextView
+				android:id="@+id/upcount_sign"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentRight="true"
+				android:fontFamily="sans-serif-light"
+				android:paddingTop="@dimen/ui_serverstatus_signmargin"
+				android:text="↑"
+				android:textColor="@color/text_bright_dark"
+				android:textSize="@dimen/ui_serverstatus_sign"
+				tools:ignore="HardcodedText" />
+
+			<TextView
+				android:id="@+id/upcount_text"
+				android:layout_width="@dimen/ui_serverstatus_width"
+				android:layout_height="wrap_content"
+				android:layout_toLeftOf="@id/upcount_sign"
+				android:fontFamily="sans-serif-light"
+				android:gravity="end"
+				android:textColor="@color/text_bright_dark"
+				android:textSize="@dimen/ui_serverstatus_bignumber" />
+
+			<TextView
+				android:id="@+id/downcount_sign"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_toLeftOf="@id/upcount_text"
+				android:fontFamily="sans-serif-light"
+				android:paddingTop="@dimen/ui_serverstatus_signmargin"
+				android:text="↓"
+				android:textColor="@color/text_bright_dark"
+				android:textSize="@dimen/ui_serverstatus_sign"
+				tools:ignore="HardcodedText" />
+
+			<TextView
+				android:id="@+id/downcount_text"
+				android:layout_width="@dimen/ui_serverstatus_width"
+				android:layout_height="wrap_content"
+				android:layout_toLeftOf="@id/downcount_sign"
+				android:fontFamily="sans-serif-light"
+				android:gravity="end"
+				android:textColor="@color/text_bright_dark"
+				android:textSize="@dimen/ui_serverstatus_bignumber" />
+
+			<TextView
+				android:id="@+id/upspeed_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignLeft="@id/upcount_text"
+				android:layout_alignParentRight="true"
+				android:layout_below="@id/upcount_text"
+				android:layout_marginTop="-4dip"
+				android:fontFamily="sans-serif-light"
+				android:gravity="end"
+				android:textColor="@color/text_bright_dark"
+				android:textSize="@dimen/ui_serverstatus_smallnumber" />
+
+			<TextView
+				android:id="@+id/downspeed_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignLeft="@id/downcount_text"
+				android:layout_alignRight="@id/downcount_sign"
+				android:layout_below="@id/downcount_text"
+				android:layout_marginTop="-4dip"
+				android:fontFamily="sans-serif-light"
+				android:gravity="end"
+				android:textColor="@color/text_bright_dark"
+				android:textSize="@dimen/ui_serverstatus_smallnumber" />
+		</RelativeLayout>
+
+		<ImageButton
+			android:id="@+id/resumeall_button"
+			android:layout_width="@dimen/widget_header_height"
+			android:layout_height="@dimen/widget_header_height"
+			android:background="?android:attr/selectableItemBackground"
+			android:contentDescription="@string/action_resumeall"
+			android:padding="@dimen/widget_header_padding"
+			android:scaleType="fitXY"
+			android:src="@drawable/ic_action_resume" />
+
+		<ImageButton
+			android:id="@+id/pauseall_button"
+			android:layout_width="@dimen/widget_header_height"
+			android:layout_height="@dimen/widget_header_height"
+			android:background="?android:attr/selectableItemBackground"
+			android:contentDescription="@string/action_pauseall"
+			android:padding="@dimen/widget_header_padding"
+			android:scaleType="fitXY"
+			android:src="@drawable/ic_action_pause" />
+
+		<ImageButton
+			android:id="@+id/refresh_button"
+			android:layout_width="@dimen/widget_header_height"
+			android:layout_height="@dimen/widget_header_height"
+			android:background="?android:attr/selectableItemBackground"
+			android:contentDescription="@string/action_refresh"
+			android:padding="@dimen/widget_header_padding"
+			android:scaleType="fitXY"
+			android:src="@drawable/ic_action_refresh" />
+
 	</LinearLayout>
-
-	<RelativeLayout
-		android:id="@+id/serverstatus_view"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/widget_header_height"
-		android:layout_toLeftOf="@id/resumeall_button"
-		android:layout_toRightOf="@id/icon_image"
-		android:background="?android:attr/selectableItemBackground"
-		android:clickable="true"
-		android:paddingTop="@dimen/ui_serverstatus_margin"
-		android:visibility="gone" >
-
-		<TextView
-			android:id="@+id/upcount_sign"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentRight="true"
-			android:fontFamily="sans-serif-light"
-			android:paddingTop="@dimen/ui_serverstatus_signmargin"
-			android:text="↑"
-			android:textColor="@color/text_bright_light"
-			android:textSize="@dimen/ui_serverstatus_sign"
-			tools:ignore="HardcodedText" />
-
-		<TextView
-			android:id="@+id/upcount_text"
-			android:layout_width="@dimen/ui_serverstatus_width"
-			android:layout_height="wrap_content"
-			android:layout_toLeftOf="@id/upcount_sign"
-			android:fontFamily="sans-serif-light"
-			android:gravity="end"
-			android:textColor="@color/text_bright_light"
-			android:textSize="@dimen/ui_serverstatus_bignumber" />
-
-		<TextView
-			android:id="@+id/downcount_sign"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_toLeftOf="@id/upcount_text"
-			android:fontFamily="sans-serif-light"
-			android:paddingTop="@dimen/ui_serverstatus_signmargin"
-			android:text="↓"
-			android:textColor="@color/text_bright_light"
-			android:textSize="@dimen/ui_serverstatus_sign"
-			tools:ignore="HardcodedText" />
-
-		<TextView
-			android:id="@+id/downcount_text"
-			android:layout_width="@dimen/ui_serverstatus_width"
-			android:layout_height="wrap_content"
-			android:layout_toLeftOf="@id/downcount_sign"
-			android:fontFamily="sans-serif-light"
-			android:gravity="end"
-			android:textColor="@color/text_bright_light"
-			android:textSize="@dimen/ui_serverstatus_bignumber" />
-
-		<TextView
-			android:id="@+id/upspeed_text"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignLeft="@id/upcount_text"
-			android:layout_alignParentRight="true"
-			android:layout_below="@id/upcount_text"
-			android:layout_marginTop="-4dip"
-			android:fontFamily="sans-serif-light"
-			android:gravity="end"
-			android:textColor="@color/text_bright_light"
-			android:textSize="@dimen/ui_serverstatus_smallnumber" />
-
-		<TextView
-			android:id="@+id/downspeed_text"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignLeft="@id/downcount_text"
-			android:layout_alignRight="@id/downcount_sign"
-			android:layout_below="@id/downcount_text"
-			android:layout_marginTop="-4dip"
-			android:fontFamily="sans-serif-light"
-			android:gravity="end"
-			android:textColor="@color/text_bright_light"
-			android:textSize="@dimen/ui_serverstatus_smallnumber" />
-	</RelativeLayout>
-
-	<TextView
-		android:id="@+id/topline_view"
-		android:layout_width="match_parent"
-		android:layout_height="2dp"
-		android:layout_below="@id/icon_image"
-		android:background="@color/green" />
 
 	<TextView
 		android:id="@+id/bottomline_view"
@@ -202,7 +201,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_above="@id/bottomline_view"
-		android:layout_below="@id/topline_view"
+		android:layout_below="@id/header_wrapper"
 		android:visibility="gone" />
 
 	<TextView

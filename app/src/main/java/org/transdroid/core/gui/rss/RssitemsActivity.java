@@ -20,7 +20,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import org.androidannotations.annotations.AfterViews;
@@ -36,7 +36,7 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.rssparser.Channel;
 
 @EActivity(R.layout.activity_rssitems)
-public class RssitemsActivity extends ActionBarActivity {
+public class RssitemsActivity extends AppCompatActivity {
 
 	@Extra
 	protected Channel rssfeed = null;

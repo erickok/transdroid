@@ -34,6 +34,8 @@
 		<item name="android:windowContentOverlay">@null</item>
 		<item name="android:windowShowWallpaper">true</item>
 		<item name="android:windowBackground">@android:color/transparent</item>
+		<item name="windowActionBar">true</item>
+		<item name="windowNoTitle">false</item>
 	</style>
 
 	<style name="DefaultToolbar">

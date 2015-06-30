@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
@@ -66,7 +66,7 @@ import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EActivity(resName = "activity_widgetconfig")
-public class ListWidgetConfigActivity extends ActionBarActivity {
+public class ListWidgetConfigActivity extends AppCompatActivity {
 
 	// Views and adapters
 	@ViewById
@@ -127,14 +127,12 @@ public class ListWidgetConfigActivity extends ActionBarActivity {
 			boolean reverseSort = reverseorderCheckBox.isChecked();
 			boolean showstatus = showstatusCheckBox.isChecked();
 			boolean useDarkTheme = darkthemeCheckBox.isChecked();
-			ListWidgetConfig config =
-					new ListWidgetConfig(server, statusType, sortBy, reverseSort, showstatus, useDarkTheme);
+			ListWidgetConfig config = new ListWidgetConfig(server, statusType, sortBy, reverseSort, showstatus, useDarkTheme);
 			applicationSettings.setWidgetConfig(appWidgetId, config);
 
 			// Return the widget configuration result
 			AppWidgetManager manager = AppWidgetManager.getInstance(ListWidgetConfigActivity.this);
-			manager.updateAppWidget(appWidgetId,
-					ListWidgetProvider.buildRemoteViews(getApplicationContext(), appWidgetId, config));
+			manager.updateAppWidget(appWidgetId, ListWidgetProvider.buildRemoteViews(getApplicationContext(), appWidgetId, config));
 			manager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.torrents_list);
 			setResult(RESULT_OK, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId));
 			finish();
@@ -149,14 +147,12 @@ public class ListWidgetConfigActivity extends ActionBarActivity {
 		if (getIntent() == null || getIntent().getExtras() == null ||
 				!getIntent().hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID)) {
 			// Invalid configuration; return canceled result
-			setResult(RESULT_CANCELED,
-					new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID));
+			setResult(RESULT_CANCELED, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID));
 			finish();
 		}
 
 		// Get the appwidget ID we are configuring
-		appWidgetId =
-				getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+		appWidgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 		// Set preliminary canceled result and continue with the initialisation
 		setResult(RESULT_CANCELED, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId));
 
@@ -166,27 +162,26 @@ public class ListWidgetConfigActivity extends ActionBarActivity {
 	protected void init() {
 
 		// Populate the selection spinners with custom array adapters
-		List<SortByListItem> sortOrders = new ArrayList<SortByListItem>();
+		List<SortByListItem> sortOrders = new ArrayList<>();
 		for (TorrentsSortBy order : TorrentsSortBy.values()) {
 			sortOrders.add(new SortByListItem(this, order));
 		}
-		serverSpinner.setAdapter(
-				new SimpleListItemSpinnerAdapter<ServerSetting>(this, 0, applicationSettings.getAllServerSettings()));
-		filterSpinner.setAdapter(
-				new SimpleListItemSpinnerAdapter<StatusTypeFilter>(this, 0, StatusType.getAllStatusTypes(this)));
-		sortSpinner.setAdapter(new SimpleListItemSpinnerAdapter<SortByListItem>(this, 0, sortOrders));
-		// TODO: Update to AndroidAnnotations 3.0 and use @CheckedChanged
+		serverSpinner.setAdapter(new SimpleListItemSpinnerAdapter<>(this, 0, applicationSettings.getAllServerSettings()));
+		filterSpinner.setAdapter(new SimpleListItemSpinnerAdapter<>(this, 0, StatusType.getAllStatusTypes(this)));
+		sortSpinner.setAdapter(new SimpleListItemSpinnerAdapter<>(this, 0, sortOrders));
 		reverseorderCheckBox.setOnCheckedChangeListener(reverseorderCheckedChanged);
 		showstatusCheckBox.setOnCheckedChangeListener(showstatusCheckChanged);
 		torrentsList.setEmptyView(errorText);
 
 		// Set up action bar with a done button
 		// Inspired by NoNonsenseNotes's ListWidgetConfig.java (Apache License, Version 2.0)
-		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-				ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-		View doneButtonFrame = getLayoutInflater().inflate(R.layout.actionbar_donebutton, null);
-		doneButtonFrame.findViewById(R.id.actionbar_done).setOnClickListener(doneClicked);
-		getSupportActionBar().setCustomView(doneButtonFrame);
+		if (getSupportActionBar() != null) {
+			getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+					ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+			View doneButtonFrame = getLayoutInflater().inflate(R.layout.actionbar_donebutton, null);
+			doneButtonFrame.findViewById(R.id.actionbar_done).setOnClickListener(doneClicked);
+			getSupportActionBar().setCustomView(doneButtonFrame);
+		}
 
 	}
 
@@ -215,13 +210,12 @@ public class ListWidgetConfigActivity extends ActionBarActivity {
 		}
 
 		// Create a connection object and retrieve the live torrents
-		IDaemonAdapter connection = ((ServerSetting) serverSpinner.getSelectedItem())
-				.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+		IDaemonAdapter connection =
+				((ServerSetting) serverSpinner.getSelectedItem()).createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 		DaemonTaskResult result = RetrieveTask.create(connection).execute(log);
 		if (result instanceof RetrieveTaskSuccessResult) {
 			// Success; show the active torrents in the widget preview
-			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
-					((RetrieveTaskSuccessResult) result).getLabels());
+			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(), ((RetrieveTaskSuccessResult) result).getLabels());
 		} else {
 			// Can't connect right now; provide a nice error message
 			showError(false);
@@ -252,7 +246,7 @@ public class ListWidgetConfigActivity extends ActionBarActivity {
 		}
 
 		// Get the already loaded torrents and filter and sort them
-		ArrayList<Torrent> filteredTorrents = new ArrayList<Torrent>(previewTorrents.size());
+		ArrayList<Torrent> filteredTorrents = new ArrayList<>(previewTorrents.size());
 		StatusTypeFilter statusTypeFilter = (StatusTypeFilter) filterSpinner.getSelectedItem();
 		boolean dormantAsInactive = systemSettings.treatDormantAsInactive();
 		for (Torrent torrent : previewTorrents) {
@@ -266,8 +260,7 @@ public class ListWidgetConfigActivity extends ActionBarActivity {
 		}
 		TorrentsSortBy sortBy = ((SortByListItem) sortSpinner.getSelectedItem()).getSortBy();
 		Daemon serverType = filteredTorrents.get(0).getDaemon();
-		Collections
-				.sort(filteredTorrents, new TorrentsComparator(serverType, sortBy, reverseorderCheckBox.isChecked()));
+		Collections.sort(filteredTorrents, new TorrentsComparator(serverType, sortBy, reverseorderCheckBox.isChecked()));
 
 		// Update the server status count and speeds
 		int downcount = 0, upcount = 0, downspeed = 0, upspeed = 0;

@@ -17,6 +17,10 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.5.2\n
+- Native Dediseedbox support\n
+- Prevent widget from crashing\n
+\n
 Transdroid 2.5.1\n
 - Improved rTorrent backwards compatibility\n
 - UI fixes for dark theme\n

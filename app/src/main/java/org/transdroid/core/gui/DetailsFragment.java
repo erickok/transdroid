@@ -24,7 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ActionMenuView;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -487,7 +487,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 			});
 			contextualMenu.getMenu().clear();
 			getActivity().getMenuInflater().inflate(R.menu.fragment_details_cab_main, contextualMenu.getMenu());
-			Context themedContext = ((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext();
+			Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
 			mode.getMenuInflater().inflate(R.menu.fragment_details_cab_secondary, menu);
 			selectionManagerMode = new SelectionManagerMode(themedContext, detailsList, R.plurals.navigation_filesselected);
 			selectionManagerMode.setOnlyCheckClass(TorrentFile.class);

@@ -21,7 +21,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 
@@ -51,7 +51,7 @@ import java.util.Date;
 import java.util.List;
 
 @EActivity(R.layout.activity_rssfeeds)
-public class RssfeedsActivity extends ActionBarActivity {
+public class RssfeedsActivity extends AppCompatActivity {
 
 	// Settings and local data
 	@Bean
