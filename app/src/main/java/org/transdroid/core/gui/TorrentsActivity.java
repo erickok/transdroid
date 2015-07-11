@@ -238,13 +238,13 @@ public class TorrentsActivity extends ActionBarActivity implements TorrentTasksE
 			torrentsToolbar.addView(serverSelectionView);
 		}
 		actionsToolbar.addView(serverStatusView);
-//		actionsToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//			@Override
-//			public boolean onMenuItemClick(MenuItem menuItem) {
-//				// Redirect to the classic activity implementation so we can use @OptionsItem methods
-//				return onOptionsItemSelected(menuItem);
-//			}
-//		});
+		actionsToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem menuItem) {
+				// Redirect to the classic activity implementation so we can use @OptionsItem methods
+				return onOptionsItemSelected(menuItem);
+			}
+		});
 		setSupportActionBar(torrentsToolbar); // For direct menu item inflation by the contained fragments
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
 

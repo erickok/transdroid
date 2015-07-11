@@ -123,8 +123,6 @@ public class NavigationHelper {
 		if (imageCache == null) {
 			imageCache = ImageLoader.getInstance();
 			try {
-//				LruDiskCache diskCache =
-//						new LruDiskCache(context.getCacheDir(), null, new Md5FileNameGenerator(), 640000, 25);
 				LruDiscCache diskCache = new LruDiscCache(context.getCacheDir(), null, new Md5FileNameGenerator(), 640000, 25);
 				// @formatter:off
 				Builder imageCacheBuilder = new Builder(context)

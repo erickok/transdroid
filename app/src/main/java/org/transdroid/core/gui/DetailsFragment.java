@@ -391,7 +391,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
 	@OptionsItem(resName = "action_remove")
 	protected void removeTorrent() {
-        ConfirmRemoveDialog.startConfirmRemove((TorrentsActivity) getActivity(), Arrays.asList(torrent));
+		ConfirmRemoveDialog.startConfirmRemove((TorrentsActivity) getActivity(), Arrays.asList(torrent));
 	}
 
 	@OptionsItem(R.id.action_setlabel)

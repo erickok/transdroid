@@ -64,9 +64,9 @@ public class PreferenceCompatActivity extends PreferenceActivity implements AppC
 
 	}
 
-    @Nullable
-    @Override
-    public ActionMode onWindowStartingSupportActionMode(ActionMode.Callback callback) {
-        return null;
-    }
+	@Nullable
+	@Override
+	public ActionMode onWindowStartingSupportActionMode(ActionMode.Callback callback) {
+		return null;
+	}
 }

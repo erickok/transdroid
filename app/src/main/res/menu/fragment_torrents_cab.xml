@@ -39,7 +39,7 @@
 		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_remove"
-        android:icon="@drawable/ic_action_remove"
+		android:icon="@drawable/ic_action_remove"
 		android:showAsAction="always"
 		android:title="@string/action_remove">
 	</item>

@@ -340,7 +340,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 				mode.finish();
 				return true;
 			} else if (itemId == R.id.action_remove) {
-                ConfirmRemoveDialog.startConfirmRemove((TorrentsActivity) getActivity(), checked);
+				ConfirmRemoveDialog.startConfirmRemove((TorrentsActivity) getActivity(), checked);
 				mode.finish();
 				return true;
 			} else if (itemId == R.id.action_setlabel) {
