@@ -302,16 +302,8 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 				}
 				mode.finish();
 				return true;
-			} else if (itemId == R.id.action_remove_default) {
-				for (Torrent torrent : checked) {
-					getTasksExecutor().removeTorrent(torrent, false);
-				}
-				mode.finish();
-				return true;
-			} else if (itemId == R.id.action_remove_withdata) {
-				for (Torrent torrent : checked) {
-					getTasksExecutor().removeTorrent(torrent, true);
-				}
+			} else if (itemId == R.id.action_remove) {
+                ConfirmRemoveDialog.startConfirmRemove((TorrentsActivity) getActivity(), checked);
 				mode.finish();
 				return true;
 			} else if (itemId == R.id.action_setlabel) {

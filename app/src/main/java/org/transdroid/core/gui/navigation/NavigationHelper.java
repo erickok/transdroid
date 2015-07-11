@@ -26,7 +26,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.TypefaceSpan;
 
-import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiscCache;
+import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -78,8 +78,8 @@ public class NavigationHelper {
 		if (imageCache == null) {
 			imageCache = ImageLoader.getInstance();
 			try {
-				LruDiscCache diskCache =
-						new LruDiscCache(context.getCacheDir(), null, new Md5FileNameGenerator(), 640000, 25);
+				LruDiskCache diskCache =
+						new LruDiskCache(context.getCacheDir(), null, new Md5FileNameGenerator(), 640000, 25);
 				// @formatter:off
 				Builder imageCacheBuilder = new Builder(context)
 						.defaultDisplayImageOptions(

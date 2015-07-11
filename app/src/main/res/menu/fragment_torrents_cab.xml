@@ -41,10 +41,6 @@
 		android:icon="?attr/ic_action_remove"
 		android:showAsAction="always"
 		android:title="@string/action_remove">
-		<menu>
-			<item android:id="@+id/action_remove_default" android:title="@string/action_remove_default" />
-			<item android:id="@+id/action_remove_withdata" android:title="@string/action_remove_withdata" />
-		</menu>
 	</item>
 	<item
 		android:id="@+id/action_setlabel"
