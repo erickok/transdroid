@@ -1,5 +1,3 @@
-*Note* This fork adds a confirmation dialog when removing torrents. One day, sleepy me deleted a rare torrent I was seeding, downloaded for many days painstakingly over 512 kbps "broadband"(#ThirdWorldProblems). I hit "Remove with data" instead of "Remove torrent", since the buttons were too close to each other. Here's a fix for that. 
-
 Transdroid
 ==========
 
