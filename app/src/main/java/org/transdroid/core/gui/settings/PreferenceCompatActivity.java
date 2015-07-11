@@ -3,6 +3,7 @@ package org.transdroid.core.gui.settings;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatCallback;
 import android.support.v7.app.AppCompatDelegate;
@@ -61,5 +62,11 @@ public class PreferenceCompatActivity extends PreferenceActivity implements AppC
 	@Override
 	public void onSupportActionModeFinished(ActionMode actionMode) {
 
+	}
+
+	@Nullable
+	@Override
+	public ActionMode onWindowStartingSupportActionMode(ActionMode.Callback callback) {
+		return null;
 	}
 }

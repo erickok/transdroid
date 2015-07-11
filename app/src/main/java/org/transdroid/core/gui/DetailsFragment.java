@@ -68,6 +68,7 @@ import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -293,9 +294,6 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 					case R.id.action_start_forced:
 						startTorrentForced();
 						return true;
-					case R.id.action_remove_withdata:
-						removeTorrentWithData();
-						return true;
 					case R.id.action_stop:
 						stopTorrent();
 						return true;
@@ -308,8 +306,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 					case R.id.action_start_default:
 						startTorrentDefault();
 						return true;
-					case R.id.action_remove_default:
-						removeTorrentDefault();
+					case R.id.action_remove:
+						removeTorrent();
 						return true;
 					case R.id.action_start_direct:
 						startTorrentDirect();
@@ -335,7 +333,6 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 			detailsMenu.getMenu().findItem(R.id.action_start_direct).setVisible(false);
 			detailsMenu.getMenu().findItem(R.id.action_stop).setVisible(false);
 			detailsMenu.getMenu().findItem(R.id.action_remove).setVisible(false);
-			detailsMenu.getMenu().findItem(R.id.action_remove_withdata).setVisible(false);
 			detailsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(false);
 			detailsMenu.getMenu().findItem(R.id.action_forcerecheck).setVisible(false);
 			detailsMenu.getMenu().findItem(R.id.action_updatetrackers).setVisible(false);
@@ -351,8 +348,6 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		detailsMenu.getMenu().findItem(R.id.action_start_direct).setVisible(startStop && !forcedStart && torrent.canStart());
 		detailsMenu.getMenu().findItem(R.id.action_stop).setVisible(startStop && torrent.canStop());
 		detailsMenu.getMenu().findItem(R.id.action_remove).setVisible(true);
-		boolean removeWithData = Daemon.supportsRemoveWithData(torrent.getDaemon());
-		detailsMenu.getMenu().findItem(R.id.action_remove_withdata).setVisible(removeWithData);
 		boolean setLabel = Daemon.supportsSetLabel(torrent.getDaemon());
 		detailsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(setLabel);
 		boolean forceRecheck = Daemon.supportsForceRecheck(torrent.getDaemon());
@@ -394,14 +389,9 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		getTasksExecutor().stopTorrent(torrent);
 	}
 
-	@OptionsItem(R.id.action_remove_default)
-	protected void removeTorrentDefault() {
-		getTasksExecutor().removeTorrent(torrent, false);
-	}
-
-	@OptionsItem(R.id.action_remove_withdata)
-	protected void removeTorrentWithData() {
-		getTasksExecutor().removeTorrent(torrent, true);
+	@OptionsItem(resName = "action_remove")
+	protected void removeTorrent() {
+		ConfirmRemoveDialog.startConfirmRemove((TorrentsActivity) getActivity(), Arrays.asList(torrent));
 	}
 
 	@OptionsItem(R.id.action_setlabel)

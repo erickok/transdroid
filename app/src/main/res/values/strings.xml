@@ -96,6 +96,8 @@
 	<string name="navigation_selectfinished">Select finished</string>
 	<string name="navigation_invertselection">Invert selection</string>
 	<string name="navigation_pickserver">Add torrent to&#8230;</string>
+	<string name="navigation_confirmremove">Confirm torrent removal?</string>
+	<string name="navigation_confirmdataremoval">Also remove downloaded files?</string>
 	<string name="navigation_url_hint" translatable="false">http://…</string>
 	
 	<string name="status_status">STATUS: %1$s</string>

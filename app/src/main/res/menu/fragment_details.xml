@@ -62,14 +62,6 @@
 		android:orderInCategory="204"
 		android:title="@string/action_remove"
 		app:showAsAction="always">
-		<menu>
-			<item
-				android:id="@+id/action_remove_default"
-				android:title="@string/action_remove_default" />
-			<item
-				android:id="@+id/action_remove_withdata"
-				android:title="@string/action_remove_withdata" />
-		</menu>
 	</item>
 	<item
 		android:id="@+id/action_setlabel"
