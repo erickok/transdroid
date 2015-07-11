@@ -16,27 +16,46 @@
  */
 package org.transdroid.core.gui;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import android.annotation.TargetApi;
+import android.app.SearchManager;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.enums.SnackbarType;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -46,18 +65,28 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.transdroid.R;
-import org.transdroid.core.app.search.*;
-import org.transdroid.core.app.settings.*;
+import org.transdroid.core.app.search.SearchHelper_;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.SystemSettings;
+import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
-import org.transdroid.core.gui.lists.NoProgressHeaderTransformer;
 import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.log.*;
-import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.rss.*;
+import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.log.LogUncaughtExceptionHandler;
+import org.transdroid.core.gui.navigation.FilterListAdapter;
+import org.transdroid.core.gui.navigation.FilterListAdapter_;
+import org.transdroid.core.gui.navigation.Label;
+import org.transdroid.core.gui.navigation.NavigationFilter;
+import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.navigation.RefreshableActivity;
+import org.transdroid.core.gui.navigation.StatusType;
+import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
-import org.transdroid.core.gui.settings.*;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.core.service.BootReceiver;
 import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.core.widget.ListWidgetProvider;
@@ -97,48 +126,35 @@ import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
 import org.transdroid.daemon.util.HttpHelper;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.Options;
-import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
-import android.app.SearchManager;
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MenuItem.OnActionExpandListener;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.SearchView;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
- * Main activity that holds the fragment that shows the torrents list, presents a way to filter the list (via an action
- * bar spinner or list side list) and potentially shows a torrent details fragment too, if there is room. Task execution
- * such as loading of and adding torrents is performs in this activity, using background methods. Finally, the activity
- * offers navigation elements such as access to settings and showing connection issues.
+ * Main activity that holds the fragment that shows the torrents list, presents a way to filter the list (via an action bar spinner or list side list)
+ * and potentially shows a torrent details fragment too, if there is room. Task execution such as loading of and adding torrents is performs in this
+ * activity, using background methods. Finally, the activity offers navigation elements such as access to settings and showing connection issues.
  * @author Eric Kok
  */
-@EActivity(resName = "activity_torrents")
-@OptionsMenu(resName = "activity_torrents")
-public class TorrentsActivity extends Activity implements OnNavigationListener, TorrentTasksExecutor,
-		RefreshableActivity {
+@EActivity(R.layout.activity_torrents)
+public class TorrentsActivity extends ActionBarActivity implements TorrentTasksExecutor, RefreshableActivity {
 
 	private static final int RESULT_DETAILS = 0;
+
 	// Fragment uses this to pause the refresh across restarts
 	public boolean stopRefresh = false;
+
 	// Navigation components
+	@SystemService
+	protected SearchManager searchManager;
 	@Bean
 	protected Log log;
 	@Bean
@@ -146,12 +162,33 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Bean
 	protected ConnectivityHelper connectivityHelper;
 	@ViewById
+	protected Toolbar selectionToolbar;
+	@ViewById
+	protected Toolbar torrentsToolbar;
+	@ViewById
+	protected Toolbar actionsToolbar;
+	@ViewById(R.id.contextual_menu)
+	protected ActionMenuView contextualMenu;
+	@ViewById
+	protected FloatingActionsMenu addmenuButton;
+	@ViewById
+	protected FloatingActionButton addmenuFileButton;
+	@ViewById
+	protected DrawerLayout drawerLayout;
+	@ViewById(R.id.drawer_container)
+	protected ViewGroup drawerContainer;
+	@ViewById
+	protected ListView drawerList;
+	@ViewById
 	protected ListView filtersList;
-	protected FilterListAdapter navigationListAdapter = null;
-	protected FilterListDropDownAdapter navigationSpinnerAdapter = null;
-	protected ServerStatusView serverStatusView;
-	@SystemService
-	protected SearchManager searchManager;
+	@ViewById
+	protected SearchView filterSearch;
+	private ListView navigationList;
+	private FilterListAdapter navigationListAdapter;
+	private ServerSelectionView serverSelectionView;
+	private ServerStatusView serverStatusView;
+	private ActionBarDrawerToggle drawerToggle;
+
 	// Settings
 	@Bean
 	protected ApplicationSettings applicationSettings;
@@ -162,85 +199,80 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@InstanceState
 	protected String preselectNavigationFilter = null;
 	@InstanceState
-	protected boolean turleModeEnabled = false;
+	protected boolean turtleModeEnabled = false;
 	@InstanceState
 	protected ArrayList<Label> lastNavigationLabels;
 	// Contained torrent and details fragments
-	@FragmentById(resName = "torrents_fragment")
+	@FragmentById(R.id.torrents_fragment)
 	protected TorrentsFragment fragmentTorrents;
-	@FragmentById(resName = "torrentdetails_fragment")
+	@FragmentById(R.id.torrentdetails_fragment)
 	protected DetailsFragment fragmentDetails;
 	@InstanceState
 	boolean firstStart = true;
-	int skipNextOnNavigationItemSelectedCalls = 2;
 	private MenuItem searchMenu = null;
-	private PullToRefreshAttacher pullToRefreshAttacher = null;
 	private IDaemonAdapter currentConnection = null;
+
 	// Auto refresh task
 	private AsyncTask<Void, Void, Void> autoRefreshTask;
-	// Handles item selections on the dedicated list of filter items
-	private OnItemClickListener onFilterListItemClicked = new OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			filtersList.setItemChecked(position, true);
-			Object item = filtersList.getAdapter().getItem(position);
-			if (item instanceof SimpleListItem)
-				filterSelected((SimpleListItem) item, false);
-		}
-	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		// Catch any uncaught exception to log it
-		Thread.setDefaultUncaughtExceptionHandler(new LogUncaughtExceptionHandler(this,
-				Thread.getDefaultUncaughtExceptionHandler()));
+		Thread.setDefaultUncaughtExceptionHandler(new LogUncaughtExceptionHandler(this, Thread.getDefaultUncaughtExceptionHandler()));
 		super.onCreate(savedInstanceState);
 	}
 
 	@AfterViews
 	protected void init() {
 
-		// Set up navigation, with an action bar spinner, server status indicator and possibly (if room) with a filter
-		// list
+		// Use custom views as action bar content, showing filter selection and current torrent counts/speeds
+		serverSelectionView = ServerSelectionView_.build(this);
 		serverStatusView = ServerStatusView_.build(this);
-		ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		actionBar.setHomeButtonEnabled(false);
-		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setCustomView(serverStatusView);
-		navigationSpinnerAdapter = FilterListDropDownAdapter_.getInstance_(this);
-		// Servers are always added to the action bar spinner
-		navigationSpinnerAdapter.updateServers(applicationSettings.getAllServerSettings());
-
-		// Check if there was room for a dedicated filter list (i.e. on tablets)
-		if (filtersList != null) {
-			// The action bar spinner doesn't have to show the 'servers' label, as it will only contain servers
-			navigationSpinnerAdapter.hideServersLabel();
-			// Create dedicated side list adapter and add the status types
-			navigationListAdapter = FilterListAdapter_.getInstance_(this);
-			navigationListAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));
-			// Add an empty labels list (which will be updated later, but the adapter needs to be created now)
-			navigationListAdapter.updateLabels(new ArrayList<Label>());
-			filtersList.setAdapter(navigationListAdapter);
-			filtersList.setOnItemClickListener(onFilterListItemClicked);
+		if (selectionToolbar != null) {
+			selectionToolbar.addView(serverSelectionView);
 		} else {
-			// Add status types directly to the action bar spinner
-			navigationSpinnerAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));
-			// Add an empty labels list (which will be updated later, but the adapter needs to be created now)
-			navigationSpinnerAdapter.updateLabels(new ArrayList<Label>());
+			torrentsToolbar.addView(serverSelectionView);
 		}
+		actionsToolbar.addView(serverStatusView);
+//		actionsToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//			@Override
+//			public boolean onMenuItemClick(MenuItem menuItem) {
+//				// Redirect to the classic activity implementation so we can use @OptionsItem methods
+//				return onOptionsItemSelected(menuItem);
+//			}
+//		});
+		setSupportActionBar(torrentsToolbar); // For direct menu item inflation by the contained fragments
+		getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+		// Construct the filters list, i.e. the list of servers, status types and labels
+		navigationListAdapter = FilterListAdapter_.getInstance_(this);
+		navigationListAdapter.updateServers(applicationSettings.getAllServerSettings());
+		navigationListAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));
+		// Add an empty labels list (which will be updated later, but the adapter needs to be created now)
+		navigationListAdapter.updateLabels(new ArrayList<Label>());
+
+		// Apply the filters list to the navigation drawer (on phones) or the dedicated side bar (i.e. on tablets)
+		if (filtersList != null) {
+			navigationList = filtersList;
+		} else {
+			navigationList = drawerList;
+			drawerToggle =
+					new ActionBarDrawerToggle(this, drawerLayout, torrentsToolbar, R.string.navigation_opendrawer, R.string.navigation_closedrawer);
+			drawerToggle.setDrawerIndicatorEnabled(true);
+			drawerLayout.setDrawerListener(drawerToggle);
+		}
+		navigationList.setAdapter(navigationListAdapter);
+		navigationList.setOnItemClickListener(onFilterListItemClicked);
 		// Now that all items (or at least their adapters) have been added, ensure a filter is selected
-		// NOTE When this is a fresh start, it might override the filter later (based on the last user selection)
+		// NOTE When this is a fresh start, we might override the filter later (based on the last user selection)
 		if (currentFilter == null) {
 			currentFilter = StatusType.getShowAllType(this);
 		}
-		actionBar.setListNavigationCallbacks(navigationSpinnerAdapter, this);
+		filterSearch.setOnQueryTextListener(filterQueryTextChanged);
 
 		// Load the default server or a server that was explicitly supplied in the starting intent
 		ServerSetting defaultServer = applicationSettings.getDefaultServer();
@@ -249,23 +281,20 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			return;
 		}
 		Torrent openTorrent = null;
-		if (getIntent().getAction() != null && getIntent().getAction().equals(ListWidgetProvider.INTENT_STARTSERVER)
-				&& getIntent().getExtras() == null && getIntent().hasExtra(ListWidgetProvider.EXTRA_SERVER)) {
+		if (getIntent().getAction() != null && getIntent().getAction().equals(ListWidgetProvider.INTENT_STARTSERVER) &&
+				getIntent().getExtras() == null && getIntent().hasExtra(ListWidgetProvider.EXTRA_SERVER)) {
 			// A server settings order ID was provided in this org.transdroid.START_SERVER action intent
 			int serverId = getIntent().getExtras().getInt(ListWidgetProvider.EXTRA_SERVER);
 			if (serverId < 0 || serverId > applicationSettings.getMaxOfAllServers()) {
-				log.e(this, "Tried to start with " + ListWidgetProvider.EXTRA_SERVER + " intent but " + serverId
-						+ " is not an existing server order id");
+				log.e(this, "Tried to start with " + ListWidgetProvider.EXTRA_SERVER + " intent but " + serverId +
+						" is not an existing server order id");
 			} else {
 				defaultServer = applicationSettings.getServerSetting(serverId);
-				if (getIntent().hasExtra(ListWidgetProvider.EXTRA_TORRENT))
+				if (getIntent().hasExtra(ListWidgetProvider.EXTRA_TORRENT)) {
 					openTorrent = getIntent().getParcelableExtra(ListWidgetProvider.EXTRA_TORRENT);
+				}
 			}
 		}
-
-		// Set this as selection in the action bar spinner; we can use the server setting key since we have stable ids
-		// Note: skipNextOnNavigationItemSelectedCalls is used to prevent this event from triggering filterSelected
-		actionBar.setSelectedNavigationItem(defaultServer.getOrder() + 1);
 
 		// Connect to the last used server or a server that was explicitly supplied in the starting intent
 		if (firstStart) {
@@ -283,8 +312,8 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			// Resume after instead of fully loading the torrents list; create connection and set action bar title
 			ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
-			navigationSpinnerAdapter.updateCurrentServer(currentConnection);
-			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
+			serverSelectionView.updateCurrentServer(currentConnection);
+			serverSelectionView.updateCurrentFilter(currentFilter);
 		}
 		firstStart = false;
 
@@ -295,11 +324,20 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	}
 
 	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred
+		if (drawerToggle != null) {
+			drawerToggle.syncState();
+		}
+	}
+
+	@Override
 	protected void onResume() {
 		super.onResume();
 
 		// Refresh server settings
-		navigationSpinnerAdapter.updateServers(applicationSettings.getAllServerSettings());
+		navigationListAdapter.updateServers(applicationSettings.getAllServerSettings());
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		if (lastUsed == null) {
 			// Still no settings
@@ -308,10 +346,11 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		}
 
 		// If we had no connection before, establish it now; otherwise just reload the settings
-		if (currentConnection == null)
+		if (currentConnection == null) {
 			filterSelected(lastUsed, true);
-		else
+		} else {
 			currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+		}
 
 		// Start auto refresh
 		startAutoRefresh();
@@ -331,8 +370,9 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void startAutoRefresh() {
 		// Check if already running
-		if (autoRefreshTask != null || stopRefresh || systemSettings.getRefreshIntervalMilliseconds() == 0)
+		if (autoRefreshTask != null || stopRefresh || systemSettings.getRefreshIntervalMilliseconds() == 0) {
 			return;
+		}
 
 		autoRefreshTask = new AsyncTask<Void, Void, Void>() {
 			@Override
@@ -344,43 +384,41 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 						// Ignore
 					}
 					// Just in case it was cancelled during sleep
-					if (isCancelled())
+					if (isCancelled()) {
 						return null;
+					}
 
 					refreshTorrents();
-					if (Daemon.supportsStats(currentConnection.getType()))
+					if (Daemon.supportsStats(currentConnection.getType())) {
 						getAdditionalStats();
+					}
 				}
 				return null;
 			}
 
 		};
-		// Executes serially by default on Honeycomb, was parallel before
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-			autoRefreshTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		else
-			autoRefreshTask.execute();
+		autoRefreshTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 
 	public void stopAutoRefresh() {
-		if (autoRefreshTask != null)
+		if (autoRefreshTask != null) {
 			autoRefreshTask.cancel(true);
+		}
 		autoRefreshTask = null;
-	}
-
-	@Override
-	protected void onDestroy() {
-		Crouton.cancelAllCroutons();
-		super.onDestroy();
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
+		// Manually insert the actions into the main torrent and secondary actions toolbars
+		torrentsToolbar.inflateMenu(R.menu.activity_torrents_main);
+		if (actionsToolbar.getMenu().size() == 0) {
+			actionsToolbar.inflateMenu(R.menu.activity_torrents_secondary);
+		}
 		if (navigationHelper.enableSearchUi()) {
 			// Add an expandable SearchView to the action bar
 			MenuItem item = menu.findItem(R.id.action_search);
-			SearchView searchView = new SearchView(this);
+			SearchView searchView = new SearchView(torrentsToolbar.getContext());
 			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 			searchView.setQueryRefinementEnabled(true);
 			searchView.setOnSearchClickListener(new OnClickListener() {
@@ -391,7 +429,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 					stopAutoRefresh();
 				}
 			});
-			item.setOnActionExpandListener(new OnActionExpandListener() {
+			MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
 				@Override
 				public boolean onMenuItemActionExpand(MenuItem item) {
 					return true;
@@ -404,7 +442,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 					return true;
 				}
 			});
-			item.setActionView(searchView);
+			MenuItemCompat.setActionView(item, searchView);
 			searchMenu = item;
 		}
 		return true;
@@ -416,62 +454,80 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 		// No connection yet; hide all menu options except settings
 		if (currentConnection == null) {
-			menu.findItem(R.id.action_add).setVisible(false);
-			menu.findItem(R.id.action_search).setVisible(false);
-			menu.findItem(R.id.action_rss).setVisible(false);
-			menu.findItem(R.id.action_enableturtle).setVisible(false);
-			menu.findItem(R.id.action_disableturtle).setVisible(false);
-			menu.findItem(R.id.action_refresh).setVisible(false);
-			menu.findItem(R.id.action_sort).setVisible(false);
-			menu.findItem(R.id.action_filter).setVisible(false);
-			menu.findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-			menu.findItem(R.id.action_help).setVisible(true);
-			if (fragmentTorrents != null)
+			torrentsToolbar.setNavigationIcon(null);
+			if (selectionToolbar != null)
+				selectionToolbar.setVisibility(View.GONE);
+			addmenuButton.setVisibility(View.GONE);
+			actionsToolbar.setVisibility(View.GONE);
+			if (filtersList != null)
+				filtersList.setVisibility(View.GONE);
+			filterSearch.setVisibility(View.GONE);
+			torrentsToolbar.getMenu().findItem(R.id.action_search).setVisible(false);
+			torrentsToolbar.getMenu().findItem(R.id.action_rss).setVisible(false);
+			torrentsToolbar.getMenu().findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+			torrentsToolbar.getMenu().findItem(R.id.action_help).setVisible(true);
+			actionsToolbar.getMenu().findItem(R.id.action_enableturtle).setVisible(false);
+			actionsToolbar.getMenu().findItem(R.id.action_disableturtle).setVisible(false);
+			actionsToolbar.getMenu().findItem(R.id.action_refresh).setVisible(false);
+			actionsToolbar.getMenu().findItem(R.id.action_sort).setVisible(false);
+			if (fragmentTorrents != null) {
 				fragmentTorrents.updateConnectionStatus(false, null);
-			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+			}
 			return true;
 		}
 
 		// There is a connection (read: settings to some server known)
-		menu.findItem(R.id.action_add).setVisible(true);
+		if (drawerToggle != null)
+			torrentsToolbar.setNavigationIcon(R.drawable.ic_action_drawer);
+		if (selectionToolbar != null)
+			selectionToolbar.setVisibility(View.VISIBLE);
+		addmenuButton.setVisibility(View.VISIBLE);
+		actionsToolbar.setVisibility(View.VISIBLE);
+		if (filtersList != null)
+			filtersList.setVisibility(View.VISIBLE);
+		filterSearch.setVisibility(View.VISIBLE);
 		boolean addByFile = Daemon.supportsAddByFile(currentConnection.getType());
-		menu.findItem(R.id.action_add_fromfile).setVisible(addByFile);
-		menu.findItem(R.id.action_search).setVisible(navigationHelper.enableSearchUi());
-		menu.findItem(R.id.action_rss).setVisible(navigationHelper.enableRssUi());
+		addmenuFileButton.setVisibility(addByFile ? View.VISIBLE : View.GONE);
+		// Primary toolbar menu
+		torrentsToolbar.getMenu().findItem(R.id.action_search).setVisible(navigationHelper.enableSearchUi());
+		torrentsToolbar.getMenu().findItem(R.id.action_rss).setVisible(navigationHelper.enableRssUi());
+		torrentsToolbar.getMenu().findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		torrentsToolbar.getMenu().findItem(R.id.action_help).setVisible(false);
+		// Secondary toolbar menu
 		boolean hasAltMode = Daemon.supportsSetAlternativeMode(currentConnection.getType());
-		menu.findItem(R.id.action_enableturtle).setVisible(hasAltMode && !turleModeEnabled);
-		menu.findItem(R.id.action_disableturtle).setVisible(hasAltMode && turleModeEnabled);
-		menu.findItem(R.id.action_refresh).setVisible(true);
-		menu.findItem(R.id.action_sort).setVisible(true);
-		menu.findItem(R.id.action_sort_added).setVisible(Daemon.supportsDateAdded(currentConnection.getType()));
-		menu.findItem(R.id.action_filter).setVisible(true);
-		menu.findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-		menu.findItem(R.id.action_help).setVisible(false);
-		if (fragmentTorrents != null)
+		actionsToolbar.getMenu().findItem(R.id.action_enableturtle).setVisible(hasAltMode && !turtleModeEnabled);
+		actionsToolbar.getMenu().findItem(R.id.action_disableturtle).setVisible(hasAltMode && turtleModeEnabled);
+		actionsToolbar.getMenu().findItem(R.id.action_refresh).setVisible(true);
+		actionsToolbar.getMenu().findItem(R.id.action_sort).setVisible(true);
+		actionsToolbar.getMenu().findItem(R.id.action_sort_added).setVisible(Daemon.supportsDateAdded(currentConnection.getType()));
+		if (fragmentTorrents != null) {
 			fragmentTorrents.updateConnectionStatus(true, currentConnection.getType());
-		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		}
 
 		return true;
 	}
 
-	/**
-	 * Called when an item in the action bar navigation spinner was selected
-	 */
 	@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		if (skipNextOnNavigationItemSelectedCalls > 0) {
-			skipNextOnNavigationItemSelectedCalls--;
-			return false;
-		}
-		Object item = navigationSpinnerAdapter.getItem(itemPosition);
-		if (item instanceof SimpleListItem) {
-			// A filter item was selected form the navigation spinner
-			filterSelected((SimpleListItem) item, false);
-			return true;
-		}
-		// A header was selected; no action
-		return false;
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle only if this is the drawer toggle; otherwise the AndroidAnnotations will be used
+		return drawerToggle != null && drawerToggle.onOptionsItemSelected(item);
 	}
+
+	/**
+	 * Handles item selections on the dedicated list of filter items
+	 */
+	private OnItemClickListener onFilterListItemClicked = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			navigationList.setItemChecked(position, true);
+			Object item = navigationList.getAdapter().getItem(position);
+			if (item instanceof SimpleListItem) {
+				filterSelected((SimpleListItem) item, false);
+			}
+			if (drawerLayout != null)
+				drawerLayout.closeDrawer(drawerContainer);
+		}
+	};
 
 	/**
 	 * A new filter was selected; update the view over the current data
@@ -497,9 +553,10 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			// Update connection to the newly selected server and refresh
 			currentConnection = server.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 			applicationSettings.setLastUsedServer(server);
-			navigationSpinnerAdapter.updateCurrentServer(currentConnection);
-			if (forceNewConnection)
-				navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
+			serverSelectionView.updateCurrentServer(currentConnection);
+			if (forceNewConnection) {
+				serverSelectionView.updateCurrentFilter(currentFilter);
+			}
 
 			// Clear the currently shown list of torrents and perhaps the details
 			fragmentTorrents.clear(true, true);
@@ -519,7 +576,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			// Set new filter
 			currentFilter = (NavigationFilter) item;
 			fragmentTorrents.applyNavigationFilter(currentFilter);
-			navigationSpinnerAdapter.updateCurrentFilter(currentFilter);
+			serverSelectionView.updateCurrentFilter(currentFilter);
 			// Remember that the user last selected this
 			applicationSettings.setLastUsedNavigationFilter(currentFilter);
 			// Clear the details view
@@ -536,13 +593,12 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	 * @param hasServerSettings Whether there are server settings available, so we can continue to connect
 	 */
 	private void updateFragmentVisibility(boolean hasServerSettings) {
-		if (filtersList != null)
-			filtersList.setVisibility(hasServerSettings ? View.VISIBLE : View.GONE);
 		if (fragmentDetails != null && fragmentDetails.isAdded()) {
-			if (hasServerSettings)
+			if (hasServerSettings) {
 				getFragmentManager().beginTransaction().show(fragmentDetails).commit();
-			else
+			} else {
 				getFragmentManager().beginTransaction().hide(fragmentDetails).commit();
+			}
 		}
 		invalidateOptionsMenu();
 	}
@@ -555,8 +611,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	protected void handleStartIntent() {
 		// For intents that come from out of the application, perhaps we can not directly add them
-		if (applicationSettings.getDefaultServerKey() == ApplicationSettings.DEFAULTSERVER_ASKONADD
-				&& getIntent().getData() != null) {
+		if (applicationSettings.getDefaultServerKey() == ApplicationSettings.DEFAULTSERVER_ASKONADD && getIntent().getData() != null) {
 			// First ask which server to use before adding any intent from the extras
 			ServerPickerDialog.startServerPicker(this, applicationSettings.getAllServerSettings());
 			return;
@@ -570,8 +625,6 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		ServerSetting selectedServer = applicationSettings.getAllServerSettings().get(position);
 		filterSelected(selectedServer, false);
 		addFromIntent();
-		skipNextOnNavigationItemSelectedCalls++; // Prevent this selection from launching filterSelected() again
-		getActionBar().setSelectedNavigationItem(position + 1);
 	}
 
 	/**
@@ -590,8 +643,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			String[] titles = intent.getStringArrayExtra("TORRENT_TITLES");
 			if (urls != null) {
 				for (int i = 0; i < urls.length; i++) {
-					String title = (titles != null && titles.length >= i ? titles[i] : NavigationHelper
-							.extractNameFromUri(Uri.parse(urls[i])));
+					String title = (titles != null && titles.length >= i ? titles[i] : NavigationHelper.extractNameFromUri(Uri.parse(urls[i])));
 					if (intent.hasExtra("PRIVATE_SOURCE")) {
 						// This is marked by the Search Module as being a private source site; get the url locally first
 						addTorrentFromPrivateSource(urls[i], title, intent.getStringExtra("PRIVATE_SOURCE"));
@@ -604,10 +656,11 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		}
 
 		// Add a torrent from a local or remote data URI?
-		if (dataUri == null)
+		if (dataUri == null) {
 			return;
+		}
 		if (dataUri.getScheme() == null) {
-			Crouton.showText(this, R.string.error_invalid_url_form, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_invalid_url_form).colorResource(R.color.red));
 			return;
 		}
 
@@ -665,15 +718,15 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		// Adding a local .torrent file; the title we show is just the file name
 		if (dataUri.getScheme().equals("file")) {
 			addTorrentByFile(data, title);
-			return;
 		}
 
 	}
 
 	@Override
 	protected void onPause() {
-		if (searchMenu != null)
+		if (searchMenu != null) {
 			searchMenu.collapseActionView();
+		}
 		stopAutoRefresh();
 		super.onPause();
 	}
@@ -686,13 +739,15 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		return true;
 	}
 
-	@OptionsItem(resName = "action_add_fromurl")
+	@Click(R.id.addmenu_link_button)
 	protected void startUrlEntryDialog() {
-		UrlEntryDialog.startUrlEntry(this);
+		addmenuButton.collapse();
+		UrlEntryDialog.show(this);
 	}
 
-	@OptionsItem(resName = "action_add_fromfile")
+	@Click(R.id.addmenu_file_button)
 	protected void startFilePicker() {
+		addmenuButton.collapse();
 		FilePickerHelper.startFilePicker(this);
 	}
 
@@ -701,140 +756,149 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	public void onFilePicked(int resultCode, Intent data) {
 		// We should have received an Intent with a local torrent's Uri as data from the file picker
 		if (data != null && data.getData() != null && !data.getData().toString().equals("")) {
-			String url = data.getData().getPath();
-			addTorrentByFile(data.getData().toString(), url.substring(url.lastIndexOf("/")));
+			Uri dataUri = data.getData();
+
+			// Get torrent title
+			String title = NavigationHelper.extractNameFromUri(dataUri);
+
+			// Adding a torrent from the via a content:// scheme (access through content provider stream)
+			if (dataUri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+				addTorrentFromDownloads(dataUri, title);
+				return;
+			}
+
+			// Adding a .torrent file directly via the file:// scheme (we can access it directly)
+			if (dataUri.getScheme().equals("file")) {
+				addTorrentByFile(data.getDataString(), title);
+			}
+
 		}
 	}
 
-	@OptionsItem(resName = "action_add_frombarcode")
+	@Click(R.id.addmenu_barcode_button)
 	protected void startBarcodeScanner() {
+		addmenuButton.collapse();
 		BarcodeHelper.startBarcodeScanner(this, BarcodeHelper.ACTIVITY_BARCODE_ADDTORRENT);
 	}
 
 	@Background
 	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE_ADDTORRENT)
 	public void onBarcodeScanned(int resultCode, Intent data) {
-		// We receive from the helper either a URL (as string) or a query we can start a search for
-		String query = BarcodeHelper.handleScanResult(resultCode, data, navigationHelper.enableSearchUi());
-		onBarcodeScanHandled(data.getStringExtra("SCAN_RESULT"), query);
+		if (data != null) {
+			// We receive from the helper either a URL (as string) or a query we can start a search for
+			String query = BarcodeHelper.handleScanResult(resultCode, data, navigationHelper.enableSearchUi());
+			onBarcodeScanHandled(data.getStringExtra("SCAN_RESULT"), query);
+		}
 	}
 
 	@UiThread
 	protected void onBarcodeScanHandled(String barcode, String result) {
 		log.d(this, "Scanned barcode " + barcode + " and got " + result);
 		if (TextUtils.isEmpty(result)) {
-			Crouton.showText(this, R.string.error_noproductforcode, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_noproductforcode).colorResource(R.color.red)
+					.type(SnackbarType.MULTI_LINE));
 		} else if (result.startsWith("http") || result.startsWith("https")) {
 			addTorrentByUrl(result, "QR code result"); // No torrent title known
+		} else if (result.startsWith("magnet")) {
+			String title = NavigationHelper.extractNameFromUri(Uri.parse(result));
+			addTorrentByMagnetUrl(result, title);
 		} else if (navigationHelper.enableSearchUi()) {
 			startSearch(result, false, null, false);
 		}
 	}
 
-	/**
-	 * Attaches some view (perhaps contained in a fragment) to this activity's pull to refresh support
-	 * @param view The view to attach
-	 */
-	@Override
-	public void addRefreshableView(View view) {
-		if (pullToRefreshAttacher == null) {
-			// Still need to initialise the PullToRefreshAttacher
-			Options options = new PullToRefreshAttacher.Options();
-			options.headerTransformer = new NoProgressHeaderTransformer();
-			pullToRefreshAttacher = PullToRefreshAttacher.get(this, options);
-		}
-		pullToRefreshAttacher.addRefreshableView(view, new OnRefreshListener() {
-			@Override
-			public void onRefreshStarted(View view) {
-				// Just refresh the full screen, now that the user has pulled to refresh
-				pullToRefreshAttacher.setRefreshComplete();
-				refreshScreen();
-			}
-		});
-	}
-
-	@OptionsItem(resName = "action_refresh")
+	@OptionsItem(R.id.action_refresh)
 	public void refreshScreen() {
 		fragmentTorrents.updateIsLoading(true);
 		refreshTorrents();
-		if (Daemon.supportsStats(currentConnection.getType()))
+		if (Daemon.supportsStats(currentConnection.getType())) {
 			getAdditionalStats();
+		}
 	}
 
-	@OptionsItem(resName = "action_enableturtle")
+	@OptionsItem(R.id.action_enableturtle)
 	protected void enableTurtleMode() {
 		updateTurtleMode(true);
 	}
 
-	@OptionsItem(resName = "action_disableturtle")
+	@OptionsItem(R.id.action_disableturtle)
 	protected void disableTurtleMode() {
 		updateTurtleMode(false);
 	}
 
-	@OptionsItem(resName = "action_rss")
+	@OptionsItem(R.id.action_rss)
 	protected void openRss() {
 		RssfeedsActivity_.intent(this).start();
 	}
 
-	@OptionsItem(resName = "action_settings")
+	@OptionsItem(R.id.action_settings)
 	protected void openSettings() {
 		MainSettingsActivity_.intent(this).start();
 	}
 
-	@OptionsItem(resName = "action_help")
+	@OptionsItem(R.id.action_help)
 	protected void openHelp() {
 		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.transdroid.org/download/")));
 	}
 
-	@OptionsItem(resName = "action_sort_byname")
+	@OptionsItem(R.id.action_sort_byname)
 	protected void sortByName() {
 		fragmentTorrents.sortBy(TorrentsSortBy.Alphanumeric);
 	}
 
-	@OptionsItem(resName = "action_sort_status")
+	@OptionsItem(R.id.action_sort_status)
 	protected void sortByStatus() {
 		fragmentTorrents.sortBy(TorrentsSortBy.Status);
 	}
 
-	@OptionsItem(resName = "action_sort_done")
+	@OptionsItem(R.id.action_sort_done)
 	protected void sortByDateDone() {
 		fragmentTorrents.sortBy(TorrentsSortBy.DateDone);
 	}
 
-	@OptionsItem(resName = "action_sort_added")
+	@OptionsItem(R.id.action_sort_added)
 	protected void sortByDateAdded() {
 		fragmentTorrents.sortBy(TorrentsSortBy.DateAdded);
 	}
 
-	@OptionsItem(resName = "action_sort_percent")
+	@OptionsItem(R.id.action_sort_percent)
 	protected void sortByPercent() {
 		fragmentTorrents.sortBy(TorrentsSortBy.Percent);
 	}
 
-	@OptionsItem(resName = "action_sort_downspeed")
+	@OptionsItem(R.id.action_sort_downspeed)
 	protected void sortByDownspeed() {
 		fragmentTorrents.sortBy(TorrentsSortBy.DownloadSpeed);
 	}
 
-	@OptionsItem(resName = "action_sort_upspeed")
+	@OptionsItem(R.id.action_sort_upspeed)
 	protected void sortByUpspeed() {
 		fragmentTorrents.sortBy(TorrentsSortBy.UploadSpeed);
 	}
 
-	@OptionsItem(resName = "action_sort_ratio")
+	@OptionsItem(R.id.action_sort_ratio)
 	protected void sortByRatio() {
 		fragmentTorrents.sortBy(TorrentsSortBy.Ratio);
 	}
 
-	@OptionsItem(resName = "action_sort_size")
+	@OptionsItem(R.id.action_sort_size)
 	protected void sortBySize() {
 		fragmentTorrents.sortBy(TorrentsSortBy.Size);
 	}
 
-	@OptionsItem(resName = "action_filter")
-	protected void startFilterEntryDialog() {
-		FilterEntryDialog.startFilterEntry(this);
-	}
+	private SearchView.OnQueryTextListener filterQueryTextChanged = new SearchView.OnQueryTextListener() {
+		@Override
+		public boolean onQueryTextSubmit(String query) {
+			return false;
+		}
+
+		@Override
+		public boolean onQueryTextChange(String newText) {
+			// Redirect to filter method which will directly apply it
+			filterTorrents(newText);
+			return true;
+		}
+	};
 
 	/**
 	 * Redirect the newly entered list filter to the torrents fragment.
@@ -845,16 +909,15 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	}
 
 	/**
-	 * Shows the a details fragment for the given torrent, either in the dedicated details fragment pane, in the same
-	 * pane as the torrent list was displayed or by starting a details activity.
+	 * Shows the a details fragment for the given torrent, either in the dedicated details fragment pane, in the same pane as the torrent list was
+	 * displayed or by starting a details activity.
 	 * @param torrent The torrent to show detailed statistics for
 	 */
 	public void openDetails(Torrent torrent) {
 		if (fragmentDetails != null && fragmentDetails.isAdded()) {
 			fragmentDetails.updateTorrent(torrent);
 		} else {
-			DetailsActivity_.intent(this).torrent(torrent).currentLabels(lastNavigationLabels)
-					.startForResult(RESULT_DETAILS);
+			DetailsActivity_.intent(this).torrent(torrent).currentLabels(lastNavigationLabels).startForResult(RESULT_DETAILS);
 		}
 	}
 
@@ -867,8 +930,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			return;
 		}
 		if (result instanceof RetrieveTaskSuccessResult) {
-			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(),
-					((RetrieveTaskSuccessResult) result).getLabels());
+			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(), ((RetrieveTaskSuccessResult) result).getLabels());
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, true);
 		}
@@ -876,8 +938,9 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	@Background
 	public void refreshTorrentDetails(Torrent torrent) {
-		if (!Daemon.supportsFineDetails(currentConnection.getType()))
+		if (!Daemon.supportsFineDetails(currentConnection.getType())) {
 			return;
+		}
 		String startConnectionId = currentConnection.getSettings().getIdString();
 		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute(log);
 		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
@@ -893,8 +956,9 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	@Background
 	public void refreshTorrentFiles(Torrent torrent) {
-		if (!Daemon.supportsFileListing(currentConnection.getType()))
+		if (!Daemon.supportsFileListing(currentConnection.getType())) {
 			return;
+		}
 		String startConnectionId = currentConnection.getSettings().getIdString();
 		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute(log);
 		if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
@@ -963,9 +1027,8 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		AddByMagnetUrlTask addByMagnetUrlTask = AddByMagnetUrlTask.create(currentConnection, url);
 		if (!Daemon.supportsAddByMagnetUrl(currentConnection.getType())) {
 			// No support for magnet links: forcefully let the task fail to report the error
-			onCommunicationError(new DaemonTaskFailureResult(addByMagnetUrlTask,
-					new DaemonException(DaemonException.ExceptionType.MethodUnsupported,
-							currentConnection.getType().name() + " does not support magnet links")), false);
+			onCommunicationError(new DaemonTaskFailureResult(addByMagnetUrlTask, new DaemonException(DaemonException.ExceptionType.MethodUnsupported,
+					currentConnection.getType().name() + " does not support magnet links")), false);
 			return;
 		}
 
@@ -998,10 +1061,10 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		} catch (SecurityException e) {
 			// No longer access to this file
 			log.e(this, "No access given to " + contentUri.toString() + ": " + e.toString());
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.red));
 		} catch (FileNotFoundException e) {
 			log.e(this, contentUri.toString() + " does not exist: " + e.toString());
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.red));
 		}
 	}
 
@@ -1013,7 +1076,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			addTorrentFromStream(input, title);
 		} catch (Exception e) {
 			log.e(this, "Can't download private site torrent " + url + " from " + source + ": " + e.toString());
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.red));
 		}
 
 	}
@@ -1023,8 +1086,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 		try {
 			// Cookies are taken from the websearchSetting that we already matched against this target URL
-			DefaultHttpClient httpclient = HttpHelper.createStandardHttpClient(false, null, null, true, null, 10000,
-					null, -1);
+			DefaultHttpClient httpclient = HttpHelper.createStandardHttpClient(false, null, null, true, null, 10000, null, -1);
 			Map<String, String> cookies = HttpHelper.parseCookiePairs(websearchSetting.getCookies());
 			String domain = Uri.parse(url).getHost();
 			for (Entry<String, String> pair : cookies.entrySet()) {
@@ -1037,19 +1099,19 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			// Download the torrent at the specified URL (which will first be written to a temporary file)
 			// If we get an HTTP 401, 403 or 404 response, show an error to the user
 			HttpResponse response = httpclient.execute(new HttpGet(url));
-			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED
-					|| response.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN
-					|| response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-				log.e(this, "Can't retrieve web torrent " + url + ": Unexpected HTTP response status code "
-						+ response.getStatusLine().toString());
-				Crouton.showText(this, R.string.error_401, NavigationHelper.CROUTON_ERROR_STYLE);
+			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED ||
+					response.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN ||
+					response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+				log.e(this, "Can't retrieve web torrent " + url + ": Unexpected HTTP response status code " +
+						response.getStatusLine().toString());
+				SnackbarManager.show(Snackbar.with(this).text(R.string.error_401).colorResource(R.color.red));
 				return;
 			}
 			InputStream input = response.getEntity().getContent();
 			addTorrentFromStream(input, title);
 		} catch (Exception e) {
 			log.e(this, "Can't retrieve web torrent " + url + ": " + e.toString());
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.red));
 		}
 	}
 
@@ -1064,8 +1126,9 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			try {
 				final byte[] buffer = new byte[1024];
 				int read;
-				while ((read = input.read(buffer)) != -1)
+				while ((read = input.read(buffer)) != -1) {
 					output.write(buffer, 0, read);
+				}
 				output.flush();
 				String fileName = Uri.fromFile(tempFile).toString();
 				addTorrentByFile(fileName, title);
@@ -1074,14 +1137,15 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 			}
 		} catch (IOException e) {
 			log.e(this, "Can't write input stream to " + tempFile.toString() + ": " + e.toString());
-			Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.red));
 		} finally {
 			try {
-				if (input != null)
+				if (input != null) {
 					input.close();
+				}
 			} catch (IOException e) {
 				log.e(this, "Error closing the input stream " + tempFile.toString() + ": " + e.toString());
-				Crouton.showText(this, R.string.error_torrentfile, NavigationHelper.CROUTON_ERROR_STYLE);
+				SnackbarManager.show(Snackbar.with(this).text(R.string.error_torrentfile).colorResource(R.color.red));
 			}
 		}
 	}
@@ -1139,8 +1203,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	public void removeTorrent(Torrent torrent, boolean withData) {
 		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
-			onTaskSucceeded(
-					(DaemonTaskSuccessResult) result,
+			onTaskSucceeded((DaemonTaskSuccessResult) result,
 					getString(withData ? R.string.result_removed_with_data : R.string.result_removed, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
@@ -1151,13 +1214,10 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Override
 	public void updateLabel(Torrent torrent, String newLabel) {
 		torrent.mimicNewLabel(newLabel);
-		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel)
-				.execute(log);
+		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
-			onTaskSucceeded(
-					(DaemonTaskSuccessResult) result,
-					newLabel == null ? getString(R.string.result_labelremoved) : getString(R.string.result_labelset,
-							newLabel));
+			onTaskSucceeded((DaemonTaskSuccessResult) result,
+					newLabel == null ? getString(R.string.result_labelremoved) : getString(R.string.result_labelset, newLabel));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
@@ -1169,8 +1229,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		torrent.mimicCheckingStatus();
 		DaemonTaskResult result = ForceRecheckTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result,
-					getString(R.string.result_recheckedstarted, torrent.getName()));
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_recheckedstarted, torrent.getName()));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
@@ -1201,8 +1260,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	@Background
 	@Override
 	public void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority) {
-		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority,
-				new ArrayList<TorrentFile>(files)).execute(log);
+		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority, new ArrayList<>(files)).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
 		} else {
@@ -1212,8 +1270,7 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 
 	@Background
 	public void updateMaxSpeeds(Integer maxDownloadSpeed, Integer maxUploadSpeed) {
-		DaemonTaskResult result = SetTransferRatesTask.create(currentConnection, maxUploadSpeed, maxDownloadSpeed)
-				.execute(log);
+		DaemonTaskResult result = SetTransferRatesTask.create(currentConnection, maxUploadSpeed, maxDownloadSpeed).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_maxspeedsset));
 		} else {
@@ -1225,31 +1282,32 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
 		// Refresh the screen as well
 		refreshScreen();
-		Crouton.showText(this, successMessage, NavigationHelper.CROUTON_INFO_STYLE);
+		SnackbarManager.show(Snackbar.with(this).text(successMessage));
 	}
 
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
+		//noinspection ThrowableResultOfMethodCallIgnored
 		log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
-		Crouton.showText(this, error, NavigationHelper.CROUTON_ERROR_STYLE);
+		SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
 		fragmentTorrents.updateIsLoading(false);
 		if (isCritical) {
 			fragmentTorrents.updateError(error);
-			if (fragmentDetails != null && fragmentDetails.isAdded())
+			if (fragmentDetails != null && fragmentDetails.isAdded()) {
 				fragmentDetails.updateIsLoading(false, error);
+			}
 		}
 	}
 
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
 
-		lastNavigationLabels = Label.convertToNavigationLabels(labels,
-				getResources().getString(R.string.labels_unlabeled));
+		lastNavigationLabels = Label.convertToNavigationLabels(labels, getResources().getString(R.string.labels_unlabeled));
 
 		// Report the newly retrieved list of torrents to the torrents fragment
 		fragmentTorrents.updateIsLoading(false);
-		fragmentTorrents.updateTorrents(new ArrayList<Torrent>(torrents), lastNavigationLabels);
+		fragmentTorrents.updateTorrents(new ArrayList<>(torrents), lastNavigationLabels);
 
 		// Update the details fragment if the currently shown torrent is in the newly retrieved list
 		if (fragmentDetails != null && fragmentDetails.isAdded()) {
@@ -1257,27 +1315,19 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		}
 
 		// Update local list of labels in the navigation
-		if (navigationListAdapter != null) {
-			// Labels are shown in the dedicated side navigation
-			navigationListAdapter.updateLabels(lastNavigationLabels);
-		} else {
-			// Labels are shown in the action bar spinner
-			navigationSpinnerAdapter.updateLabels(lastNavigationLabels);
-		}
-		if (fragmentDetails != null && fragmentDetails.isAdded())
+		navigationListAdapter.updateLabels(lastNavigationLabels);
+		if (fragmentDetails != null && fragmentDetails.isAdded()) {
 			fragmentDetails.updateLabels(lastNavigationLabels);
+		}
 
 		// Perhaps we were still waiting to preselect the last used filter (on a fresh application start)
-		if (preselectNavigationFilter != null) {
-			FilterListAdapter adapter = navigationListAdapter != null ? navigationListAdapter
-					: navigationSpinnerAdapter;
-			for (int i = 0; i < adapter.getCount(); i++) {
-				// Regardless of the navigation style (side list or action bar spinner), we can look up the navigation
-				// filter item, which is represented as simple list item (and might not exist any more, such as with a
-				// label that is deleted on the server)
-				Object item = adapter.getItem(i);
-				if (item instanceof SimpleListItem && item instanceof NavigationFilter
-						&& ((NavigationFilter) item).getCode().equals(preselectNavigationFilter)) {
+		if (preselectNavigationFilter != null && navigationListAdapter != null) {
+			for (int i = 0; i < navigationListAdapter.getCount(); i++) {
+				// Look up the navigation filter item, which is represented as simple list item (and might not exist any
+				// more, such as with a label that is deleted on the server)
+				Object item = navigationListAdapter.getItem(i);
+				if (item instanceof SimpleListItem && item instanceof NavigationFilter &&
+						((NavigationFilter) item).getCode().equals(preselectNavigationFilter)) {
 					filterSelected((SimpleListItem) item, false);
 					break;
 				}
@@ -1287,28 +1337,30 @@ public class TorrentsActivity extends Activity implements OnNavigationListener, 
 		}
 
 		// Update the server status (counts and speeds) in the action bar
-		serverStatusView.update(torrents, systemSettings.treatDormantAsInactive(),
-				Daemon.supportsSetTransferRates(currentConnection.getType()));
+		serverStatusView
+				.updateStatus(torrents, systemSettings.treatDormantAsInactive(), Daemon.supportsSetTransferRates(currentConnection.getType()));
 
 	}
 
 	@UiThread
 	protected void onTorrentDetailsRetrieved(Torrent torrent, TorrentDetails torrentDetails) {
 		// Update the details fragment with the new fine details for the shown torrent
-		if (fragmentDetails != null && fragmentDetails.isAdded())
+		if (fragmentDetails != null && fragmentDetails.isAdded()) {
 			fragmentDetails.updateTorrentDetails(torrent, torrentDetails);
+		}
 	}
 
 	@UiThread
 	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
 		// Update the details fragment with the newly retrieved list of files
-		if (fragmentDetails != null && fragmentDetails.isAdded())
-			fragmentDetails.updateTorrentFiles(torrent, new ArrayList<TorrentFile>(torrentFiles));
+		if (fragmentDetails != null && fragmentDetails.isAdded()) {
+			fragmentDetails.updateTorrentFiles(torrent, new ArrayList<>(torrentFiles));
+		}
 	}
 
 	@UiThread
 	protected void onTurtleModeRetrieved(boolean turtleModeEnabled) {
-		turleModeEnabled = turtleModeEnabled;
+		this.turtleModeEnabled = turtleModeEnabled;
 		invalidateOptionsMenu();
 	}
 

@@ -16,21 +16,22 @@
  */
 package org.transdroid.core.gui.lists;
 
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
-import org.transdroid.daemon.Torrent;
-import org.transdroid.daemon.TorrentStatus;
-
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.ViewById;
+import org.transdroid.R;
+import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.TorrentStatus;
+
 /**
  * View that represents some {@link Torrent} object and displays progress, status, speeds, etc.
  * @author Eric Kok
  */
-@EViewGroup(resName = "list_item_torrent")
+@EViewGroup(R.layout.list_item_torrent)
 public class TorrentView extends TorrentStatusLayout {
 
 	@ViewById
@@ -54,8 +55,8 @@ public class TorrentView extends TorrentStatusLayout {
 		priorityImage.setVisibility(View.INVISIBLE);
 
 		// Only show status bar, peers and speed fields if relevant, i.e. when downloading or actively seeding
-		if (torrent.getStatusCode() == TorrentStatus.Downloading
-				|| (torrent.getStatusCode() == TorrentStatus.Seeding && torrent.getRateUpload() > 0)) {
+		if (torrent.getStatusCode() == TorrentStatus.Downloading ||
+				(torrent.getStatusCode() == TorrentStatus.Seeding && torrent.getRateUpload() > 0)) {
 			torrentProgressbar.setVisibility(View.VISIBLE);
 			torrentProgressbar.setProgress((int) (torrent.getDownloadedPercentage() * 100));
 			torrentProgressbar.setActive(torrent.canPause());

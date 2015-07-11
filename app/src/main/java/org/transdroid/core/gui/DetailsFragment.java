@@ -16,10 +16,28 @@
  */
 package org.transdroid.core.gui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import android.annotation.SuppressLint;
+import android.app.Fragment;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ActionMenuView;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.enums.SnackbarType;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -27,13 +45,17 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.app.settings.*;
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.DetailsAdapter;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
-import org.transdroid.core.gui.navigation.*;
+import org.transdroid.core.gui.navigation.Label;
+import org.transdroid.core.gui.navigation.NavigationHelper_;
+import org.transdroid.core.gui.navigation.RefreshableActivity;
+import org.transdroid.core.gui.navigation.SelectionManagerMode;
+import org.transdroid.core.gui.navigation.SetLabelDialog;
 import org.transdroid.core.gui.navigation.SetLabelDialog.OnLabelPickedListener;
 import org.transdroid.core.gui.navigation.SetStorageLocationDialog;
 import org.transdroid.core.gui.navigation.SetStorageLocationDialog.OnStorageLocationUpdatedListener;
@@ -45,33 +67,19 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 
-import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AbsListView.MultiChoiceModeListener;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Fragment that shows detailed statistics about some torrent. These come from some already fetched {@link Torrent}
- * object, but it also retrieves further detailed statistics. The actual execution of tasks is performed by the activity
- * that contains this fragment, as per the {@link TorrentTasksExecutor} interface.
+ * Fragment that shows detailed statistics about some torrent. These come from some already fetched {@link Torrent} object, but it also retrieves
+ * further detailed statistics. The actual execution of tasks is performed by the activity that contains this fragment, as per the {@link
+ * TorrentTasksExecutor} interface.
  * @author Eric Kok
  */
-@EFragment(resName = "fragment_details")
-@OptionsMenu(resName = "fragment_details")
-public class DetailsFragment extends Fragment implements OnTrackersUpdatedListener, OnLabelPickedListener,
-		OnStorageLocationUpdatedListener {
+@EFragment(R.layout.fragment_details)
+public class DetailsFragment extends Fragment implements OnTrackersUpdatedListener, OnLabelPickedListener, OnStorageLocationUpdatedListener {
 
 	// Local data
 	@InstanceState
@@ -91,9 +99,15 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	private ServerSetting currentServerSettings = null;
 
 	// Views
-	@ViewById(resName = "details_container")
+	@ViewById
 	protected View detailsContainer;
-	@ViewById(resName = "details_list")
+	@ViewById(R.id.details_menu)
+	protected ActionMenuView detailsMenu;
+	@ViewById(R.id.contextual_menu)
+	protected ActionMenuView contextualMenu;
+	@ViewById
+	protected SwipeRefreshLayout swipeRefreshLayout;
+	@ViewById
 	protected ListView detailsList;
 	@ViewById
 	protected TextView emptyText, errorText;
@@ -102,6 +116,9 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
 	@AfterViews
 	protected void init() {
+
+		// Inject menu options in the actions toolbar
+		setHasOptionsMenu(true);
 
 		// On large screens where this fragment is shown next to the torrents list, we show a continues grey vertical
 		// line to separate the lists visually
@@ -113,22 +130,33 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 			}
 		}
 
+		createMenuOptions();
+
 		// Set up details adapter (itself containing the actual lists to show), which allows multi-select and fast
 		// scrolling
 		detailsList.setAdapter(new DetailsAdapter(getActivity()));
 		detailsList.setMultiChoiceModeListener(onDetailsSelected);
 		detailsList.setFastScrollEnabled(true);
 		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
-			((RefreshableActivity) getActivity()).addRefreshableView(detailsList);
+			swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+				@Override
+				public void onRefresh() {
+					((RefreshableActivity) getActivity()).refreshScreen();
+					swipeRefreshLayout.setRefreshing(false); // Use our custom indicator
+				}
+			});
 		}
 
 		// Restore the fragment state (on orientation changes et al.)
-		if (torrent != null)
+		if (torrent != null) {
 			updateTorrent(torrent);
-		if (torrentDetails != null)
+		}
+		if (torrentDetails != null) {
 			updateTorrentDetails(torrent, torrentDetails);
-		if (torrentFiles != null)
+		}
+		if (torrentFiles != null) {
 			updateTorrentFiles(torrent, torrentFiles);
+		}
 
 	}
 
@@ -151,7 +179,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		errorText.setVisibility(View.GONE);
 		loadingProgress.setVisibility(View.GONE);
 		// Also update the available actions in the action bar
-		getActivity().invalidateOptionsMenu();
+		updateMenuOptions();
 		// Refresh the detailed statistics (errors) and list of files
 		torrentDetails = null;
 		torrentFiles = null;
@@ -166,13 +194,14 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	 */
 	public void updateTorrentDetails(Torrent checkTorrent, TorrentDetails newTorrentDetails) {
 		// Check if these are actually the details of the torrent we are now showing
-		if (torrentId == null || !torrentId.equals(checkTorrent.getUniqueID()))
+		if (torrentId == null || !torrentId.equals(checkTorrent.getUniqueID())) {
 			return;
+		}
 		this.torrentDetails = newTorrentDetails;
-		((DetailsAdapter) detailsList.getAdapter()).updateTrackers(
-				SimpleListItemAdapter.SimpleStringItem.wrapStringsList(newTorrentDetails.getTrackers()));
-		((DetailsAdapter) detailsList.getAdapter()).updateErrors(
-				SimpleListItemAdapter.SimpleStringItem.wrapStringsList(newTorrentDetails.getErrors()));
+		((DetailsAdapter) detailsList.getAdapter())
+				.updateTrackers(SimpleListItemAdapter.SimpleStringItem.wrapStringsList(newTorrentDetails.getTrackers()));
+		((DetailsAdapter) detailsList.getAdapter())
+				.updateErrors(SimpleListItemAdapter.SimpleStringItem.wrapStringsList(newTorrentDetails.getErrors()));
 	}
 
 	/**
@@ -182,22 +211,23 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	 */
 	public void updateTorrentFiles(Torrent checkTorrent, ArrayList<TorrentFile> newTorrentFiles) {
 		// Check if these are actually the details of the torrent we are now showing
-		if (torrentId == null || !torrentId.equals(checkTorrent.getUniqueID()))
+		if (torrentId == null || !torrentId.equals(checkTorrent.getUniqueID())) {
 			return;
+		}
 		Collections.sort(newTorrentFiles);
 		this.torrentFiles = newTorrentFiles;
 		((DetailsAdapter) detailsList.getAdapter()).updateTorrentFiles(newTorrentFiles);
 	}
 
 	/**
-	 * Can be called if some outside activity returned new torrents, so we can perhaps piggyback on this by update our
-	 * data as well.
+	 * Can be called if some outside activity returned new torrents, so we can perhaps piggyback on this by update our data as well.
 	 * @param torrents The last of retrieved torrents
 	 */
 	public void perhapsUpdateTorrent(List<Torrent> torrents) {
 		// Only try to update if we actually were showing a torrent
-		if (this.torrentId == null || torrents == null)
+		if (this.torrentId == null || torrents == null) {
 			return;
+		}
 		for (Torrent newTorrent : torrents) {
 			if (newTorrent.getUniqueID().equals(torrentId)) {
 				// Found, so we can update our data as well
@@ -208,12 +238,12 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 	}
 
 	/**
-	 * Updates the locally maintained list of labels that are active on the server. Used in the label picking dialog and
-	 * should be updated every time after the list of torrents was retrieved to keep it updated.
+	 * Updates the locally maintained list of labels that are active on the server. Used in the label picking dialog and should be updated every time
+	 * after the list of torrents was retrieved to keep it updated.
 	 * @param currentLabels The list of known server labels
 	 */
 	public void updateLabels(ArrayList<Label> currentLabels) {
-		this.currentLabels = currentLabels == null ? null : new ArrayList<Label>(currentLabels);
+		this.currentLabels = currentLabels == null ? null : new ArrayList<>(currentLabels);
 	}
 
 	/**
@@ -239,8 +269,9 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		this.isLoadingTorrent = isLoading;
 		this.hasCriticalError = connectionErrorMessage != null;
 		errorText.setText(connectionErrorMessage);
-		if (isLoading || hasCriticalError)
+		if (isLoading || hasCriticalError) {
 			clear();
+		}
 	}
 
 	@ItemClick(resName = "details_list")
@@ -248,124 +279,168 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		detailsList.setItemChecked(position, false);
 	}
 
-	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
+	public void createMenuOptions() {
+		getActivity().getMenuInflater().inflate(R.menu.fragment_details, detailsMenu.getMenu());
+		detailsMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem menuItem) {
+				switch (menuItem.getItemId()) {
+					case R.id.action_pause:
+						pauseTorrent();
+						return true;
+					case R.id.action_updatetrackers:
+						updateTrackers();
+						return true;
+					case R.id.action_start_forced:
+						startTorrentForced();
+						return true;
+					case R.id.action_stop:
+						stopTorrent();
+						return true;
+					case R.id.action_forcerecheck:
+						setForceRecheck();
+						return true;
+					case R.id.action_changelocation:
+						changeStorageLocation();
+						return true;
+					case R.id.action_start_default:
+						startTorrentDefault();
+						return true;
+					case R.id.action_remove:
+						removeTorrent();
+						return true;
+					case R.id.action_start_direct:
+						startTorrentDirect();
+						return true;
+					case R.id.action_setlabel:
+						setLabel();
+						return true;
+					case R.id.action_resume:
+						resumeTorrent();
+						return true;
+				}
+				return false;
+			}
+		});
+	}
+
+	private void updateMenuOptions() {
 
 		if (torrent == null) {
-			menu.findItem(R.id.action_resume).setVisible(false);
-			menu.findItem(R.id.action_pause).setVisible(false);
-			menu.findItem(R.id.action_start).setVisible(false);
-			menu.findItem(R.id.action_start_direct).setVisible(false);
-			menu.findItem(R.id.action_stop).setVisible(false);
-			menu.findItem(R.id.action_remove).setVisible(false);
-			menu.findItem(R.id.action_setlabel).setVisible(false);
-			menu.findItem(R.id.action_forcerecheck).setVisible(false);
-			menu.findItem(R.id.action_updatetrackers).setVisible(false);
-			menu.findItem(R.id.action_changelocation).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_resume).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_pause).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_start).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_start_direct).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_stop).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_remove).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_forcerecheck).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_updatetrackers).setVisible(false);
+			detailsMenu.getMenu().findItem(R.id.action_changelocation).setVisible(false);
 			return;
 		}
 		// Update action availability
 		boolean startStop = Daemon.supportsStoppingStarting(torrent.getDaemon());
-		menu.findItem(R.id.action_resume).setVisible(torrent.canResume());
-		menu.findItem(R.id.action_pause).setVisible(torrent.canPause());
+		detailsMenu.getMenu().findItem(R.id.action_resume).setVisible(torrent.canResume());
+		detailsMenu.getMenu().findItem(R.id.action_pause).setVisible(torrent.canPause());
 		boolean forcedStart = Daemon.supportsForcedStarting(torrent.getDaemon());
-		menu.findItem(R.id.action_start).setVisible(startStop && forcedStart && torrent.canStart());
-		menu.findItem(R.id.action_start_direct).setVisible(startStop && !forcedStart && torrent.canStart());
-		menu.findItem(R.id.action_stop).setVisible(startStop && torrent.canStop());
-		menu.findItem(R.id.action_remove).setVisible(true);
+		detailsMenu.getMenu().findItem(R.id.action_start).setVisible(startStop && forcedStart && torrent.canStart());
+		detailsMenu.getMenu().findItem(R.id.action_start_direct).setVisible(startStop && !forcedStart && torrent.canStart());
+		detailsMenu.getMenu().findItem(R.id.action_stop).setVisible(startStop && torrent.canStop());
+		detailsMenu.getMenu().findItem(R.id.action_remove).setVisible(true);
 		boolean setLabel = Daemon.supportsSetLabel(torrent.getDaemon());
-		menu.findItem(R.id.action_setlabel).setVisible(setLabel);
+		detailsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(setLabel);
 		boolean forceRecheck = Daemon.supportsForceRecheck(torrent.getDaemon());
-		menu.findItem(R.id.action_forcerecheck).setVisible(forceRecheck);
+		detailsMenu.getMenu().findItem(R.id.action_forcerecheck).setVisible(forceRecheck);
 		boolean setTrackers = Daemon.supportsSetTrackers(torrent.getDaemon());
-		menu.findItem(R.id.action_updatetrackers).setVisible(setTrackers);
+		detailsMenu.getMenu().findItem(R.id.action_updatetrackers).setVisible(setTrackers);
 		boolean setLocation = Daemon.supportsSetDownloadLocation(torrent.getDaemon());
-		menu.findItem(R.id.action_changelocation).setVisible(setLocation);
+		detailsMenu.getMenu().findItem(R.id.action_changelocation).setVisible(setLocation);
 
 	}
 
-	@OptionsItem(resName = "action_resume")
+	@OptionsItem(R.id.action_resume)
 	protected void resumeTorrent() {
 		getTasksExecutor().resumeTorrent(torrent);
 	}
 
-	@OptionsItem(resName = "action_pause")
+	@OptionsItem(R.id.action_pause)
 	protected void pauseTorrent() {
 		getTasksExecutor().pauseTorrent(torrent);
 	}
 
-	@OptionsItem(resName = "action_start_direct")
+	@OptionsItem(R.id.action_start_direct)
 	protected void startTorrentDirect() {
 		getTasksExecutor().startTorrent(torrent, false);
 	}
 
-	@OptionsItem(resName = "action_start_default")
+	@OptionsItem(R.id.action_start_default)
 	protected void startTorrentDefault() {
 		getTasksExecutor().startTorrent(torrent, false);
 	}
 
-	@OptionsItem(resName = "action_start_forced")
+	@OptionsItem(R.id.action_start_forced)
 	protected void startTorrentForced() {
 		getTasksExecutor().startTorrent(torrent, true);
 	}
 
-	@OptionsItem(resName = "action_stop")
+	@OptionsItem(R.id.action_stop)
 	protected void stopTorrent() {
 		getTasksExecutor().stopTorrent(torrent);
 	}
 
 	@OptionsItem(resName = "action_remove")
-	protected void removeTorrentDefault() {
+	protected void removeTorrent() {
         ConfirmRemoveDialog.startConfirmRemove((TorrentsActivity) getActivity(), Arrays.asList(torrent));
 	}
 
-	@OptionsItem(resName = "action_setlabel")
+	@OptionsItem(R.id.action_setlabel)
 	protected void setLabel() {
-		if (currentLabels != null)
-			new SetLabelDialog().setOnLabelPickedListener(this).setCurrentLabels(currentLabels)
-					.show(getFragmentManager(), "SetLabelDialog");
+		if (currentLabels != null) {
+			SetLabelDialog.show(getActivity(), this, currentLabels);
+		}
 	}
 
-	@OptionsItem(resName = "action_forcerecheck")
+	@OptionsItem(R.id.action_forcerecheck)
 	protected void setForceRecheck() {
 		getTasksExecutor().forceRecheckTorrent(torrent);
 	}
 
-	@OptionsItem(resName = "action_updatetrackers")
+	@OptionsItem(R.id.action_updatetrackers)
 	protected void updateTrackers() {
 		if (torrentDetails == null) {
-			Crouton.showText(getActivity(), R.string.error_stillloadingdetails, NavigationHelper.CROUTON_INFO_STYLE);
+			SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_stillloadingdetails));
 			return;
 		}
-		new SetTrackersDialog().setOnTrackersUpdated(this).setCurrentTrackers(torrentDetails.getTrackersText())
-				.show(getFragmentManager(), "SetTrackersDialog");
+		SetTrackersDialog.show(getActivity(), this, torrentDetails.getTrackersText());
 	}
 
-	@OptionsItem(resName = "action_changelocation")
+	@OptionsItem(R.id.action_changelocation)
 	protected void changeStorageLocation() {
-		new SetStorageLocationDialog().setOnStorageLocationUpdated(this).setCurrentLocation(torrent.getLocationDir())
-				.show(getFragmentManager(), "SetStorageLocationDialog");
+		SetStorageLocationDialog.show(getActivity(), this, torrent.getLocationDir());
 	}
 
 	@Override
 	public void onLabelPicked(String newLabel) {
-		if (torrent == null)
+		if (torrent == null) {
 			return;
+		}
 		getTasksExecutor().updateLabel(torrent, newLabel);
 	}
 
 	@Override
 	public void onTrackersUpdated(List<String> updatedTrackers) {
-		if (torrent == null)
+		if (torrent == null) {
 			return;
+		}
 		getTasksExecutor().updateTrackers(torrent, updatedTrackers);
 	}
 
 	@Override
 	public void onStorageLocationUpdated(String newLocation) {
-		if (torrent == null)
+		if (torrent == null) {
 			return;
+		}
 		getTasksExecutor().updateLocation(torrent, newLocation);
 	}
 
@@ -390,10 +465,21 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		SelectionManagerMode selectionManagerMode;
 
 		@Override
-		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		public boolean onCreateActionMode(final ActionMode mode, Menu menu) {
 			// Show contextual action bar to start/stop/remove/etc. torrents in batch mode
-			mode.getMenuInflater().inflate(R.menu.fragment_details_cab, menu);
-			selectionManagerMode = new SelectionManagerMode(detailsList, R.plurals.navigation_filesselected);
+			detailsMenu.setEnabled(false);
+			contextualMenu.setVisibility(View.VISIBLE);
+			contextualMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+				@Override
+				public boolean onMenuItemClick(MenuItem menuItem) {
+					return onActionItemClicked(mode, menuItem);
+				}
+			});
+			contextualMenu.getMenu().clear();
+			getActivity().getMenuInflater().inflate(R.menu.fragment_details_cab_main, contextualMenu.getMenu());
+			Context themedContext = ((ActionBarActivity) getActivity()).getSupportActionBar().getThemedContext();
+			mode.getMenuInflater().inflate(R.menu.fragment_details_cab_secondary, menu);
+			selectionManagerMode = new SelectionManagerMode(themedContext, detailsList, R.plurals.navigation_filesselected);
 			selectionManagerMode.setOnlyCheckClass(TorrentFile.class);
 			selectionManagerMode.onCreateActionMode(mode, menu);
 			return true;
@@ -401,21 +487,20 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			selectionManagerMode.onPrepareActionMode(mode, menu);
 			// Pause autorefresh
 			if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
 				((TorrentsActivity) getActivity()).stopRefresh = true;
 				((TorrentsActivity) getActivity()).stopAutoRefresh();
 			}
-			boolean filePaths =
-					currentServerSettings != null && Daemon.supportsFilePaths(currentServerSettings.getType());
-			menu.findItem(R.id.action_download).setVisible(filePaths);
-			boolean filePriorities = currentServerSettings != null &&
-					Daemon.supportsFilePrioritySetting(currentServerSettings.getType());
-			menu.findItem(R.id.action_priority_off).setVisible(filePriorities);
-			menu.findItem(R.id.action_priority_low).setVisible(filePriorities);
-			menu.findItem(R.id.action_priority_normal).setVisible(filePriorities);
-			menu.findItem(R.id.action_priority_high).setVisible(filePriorities);
-			return selectionManagerMode.onPrepareActionMode(mode, menu);
+			boolean filePaths = currentServerSettings != null && Daemon.supportsFilePaths(currentServerSettings.getType());
+			contextualMenu.getMenu().findItem(R.id.action_download).setVisible(filePaths);
+			boolean filePriorities = currentServerSettings != null && Daemon.supportsFilePrioritySetting(currentServerSettings.getType());
+			contextualMenu.getMenu().findItem(R.id.action_priority_off).setVisible(filePriorities);
+			contextualMenu.getMenu().findItem(R.id.action_priority_low).setVisible(filePriorities);
+			contextualMenu.getMenu().findItem(R.id.action_priority_normal).setVisible(filePriorities);
+			contextualMenu.getMenu().findItem(R.id.action_priority_high).setVisible(filePriorities);
+			return true;
 		}
 
 		@SuppressLint("SdCardPath")
@@ -423,35 +508,36 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
 			// Get checked torrents
-			List<TorrentFile> checked = new ArrayList<TorrentFile>();
+			List<TorrentFile> checked = new ArrayList<>();
 			for (int i = 0; i < detailsList.getCheckedItemPositions().size(); i++) {
-				if (detailsList.getCheckedItemPositions().valueAt(i)
-						&& i < detailsList.getAdapter().getCount()
-						&& detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)) instanceof TorrentFile)
-					checked.add((TorrentFile) detailsList.getAdapter().getItem(
-							detailsList.getCheckedItemPositions().keyAt(i)));
+				if (detailsList.getCheckedItemPositions().valueAt(i) && i < detailsList.getAdapter().getCount() &&
+						detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)) instanceof TorrentFile) {
+					checked.add((TorrentFile) detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)));
+				}
 			}
 
 			int itemId = item.getItemId();
 			if (itemId == R.id.action_download) {
 
-				if (checked.size() < 1 || currentServerSettings == null)
+				if (checked.size() < 1 || currentServerSettings == null) {
 					return true;
+				}
 				String urlBase = currentServerSettings.getFtpUrl();
-				if (urlBase == null || urlBase.equals(""))
+				if (urlBase == null || urlBase.equals("")) {
 					urlBase = "ftp://" + currentServerSettings.getAddress();
+				}
 
 				// Try using AndFTP intents
 				Intent andftpStart = new Intent(Intent.ACTION_PICK);
 				andftpStart.setDataAndType(Uri.parse(urlBase), "vnd.android.cursor.dir/lysesoft.andftp.uri");
 				andftpStart.putExtra("command_type", "download");
 				andftpStart.putExtra("ftp_pasv", "true");
-				if (Uri.parse(urlBase).getUserInfo() != null)
+				if (Uri.parse(urlBase).getUserInfo() != null) {
 					andftpStart.putExtra("ftp_username", Uri.parse(urlBase).getUserInfo());
-				else
+				} else {
 					andftpStart.putExtra("ftp_username", currentServerSettings.getUsername());
-				if (currentServerSettings.getFtpPassword() != null
-						&& !currentServerSettings.getFtpPassword().equals("")) {
+				}
+				if (currentServerSettings.getFtpPassword() != null && !currentServerSettings.getFtpPassword().equals("")) {
 					andftpStart.putExtra("ftp_password", currentServerSettings.getFtpPassword());
 				} else {
 					andftpStart.putExtra("ftp_password", currentServerSettings.getPassword());
@@ -465,8 +551,9 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 						// If the file is directly in the root, AndFTP fails if we supply the proper path (like
 						// /file.pdf)
 						// Work around this bug by removing the leading / if no further directories are used in the path
-						if (file.startsWith("/") && file.indexOf("/", 1) < 0)
+						if (file.startsWith("/") && file.indexOf("/", 1) < 0) {
 							file = file.substring(1);
+						}
 						andftpStart.putExtra("remote_file" + (f + 1), file);
 					}
 				}
@@ -478,8 +565,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
 				// Try using a VIEW intent given an ftp:// scheme URI
 				String url = urlBase + checked.get(0).getFullPath();
-				Intent simpleStart = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
-						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				Intent simpleStart = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				if (simpleStart.resolveActivity(getActivity().getPackageManager()) != null) {
 					startActivity(simpleStart);
 					mode.finish();
@@ -487,8 +573,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				}
 
 				// No app is available that can handle FTP downloads
-				Crouton.showText(getActivity(), getString(R.string.error_noftpapp, url),
-						NavigationHelper.CROUTON_ERROR_STYLE);
+				SnackbarManager.show(Snackbar.with(getActivity()).text(getString(R.string.error_noftpapp, url)).type(SnackbarType.MULTI_LINE)
+						.colorResource(R.color.red));
 				mode.finish();
 				return true;
 
@@ -496,24 +582,27 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
 				StringBuilder names = new StringBuilder();
 				for (int f = 0; f < checked.size(); f++) {
-					if (f != 0)
+					if (f != 0) {
 						names.append("\n");
+					}
 					names.append(checked.get(f).getName());
 				}
-				ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(
-						Context.CLIPBOARD_SERVICE);
+				ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 				clipboardManager.setPrimaryClip(ClipData.newPlainText("Transdroid", names.toString()));
 				mode.finish();
 				return true;
 
 			} else {
 				Priority priority = Priority.Off;
-				if (itemId == R.id.action_priority_low)
+				if (itemId == R.id.action_priority_low) {
 					priority = Priority.Low;
-				if (itemId == R.id.action_priority_normal)
+				}
+				if (itemId == R.id.action_priority_normal) {
 					priority = Priority.Normal;
-				if (itemId == R.id.action_priority_high)
+				}
+				if (itemId == R.id.action_priority_high) {
 					priority = Priority.High;
+				}
 				getTasksExecutor().updatePriority(torrent, checked, priority);
 				mode.finish();
 				return true;
@@ -533,6 +622,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				((TorrentsActivity) getActivity()).startAutoRefresh();
 			}
 			selectionManagerMode.onDestroyActionMode(mode);
+			contextualMenu.setVisibility(View.GONE);
+			detailsMenu.setEnabled(true);
 		}
 
 	};

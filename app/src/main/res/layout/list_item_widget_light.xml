@@ -19,7 +19,7 @@
 	android:id="@+id/widget_line_layout"
 	android:layout_width="fill_parent"
 	android:layout_height="@dimen/widget_list_item_height"
-	android:background="@drawable/selectable_background_transdroid2"
+	android:background="?android:attr/selectableItemBackground"
 	android:paddingRight="@dimen/widget_list_item_padding" >
 
 	<TextView

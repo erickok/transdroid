@@ -14,38 +14,39 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
 		android:id="@+id/action_resume"
-		android:icon="?attr/ic_action_resume"
-		android:showAsAction="always"
-		android:title="@string/action_resume" />
+		android:icon="@drawable/ic_action_resume"
+		android:title="@string/action_resume"
+		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_pause"
-		android:icon="?attr/ic_action_pause"
-		android:showAsAction="always"
-		android:title="@string/action_pause" />
+		android:icon="@drawable/ic_action_pause"
+		android:title="@string/action_pause"
+		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_start"
-		android:icon="?attr/ic_action_start"
-		android:showAsAction="always"
-		android:title="@string/action_start" />
+		android:icon="@drawable/ic_action_start"
+		android:title="@string/action_start"
+		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_stop"
-		android:icon="?attr/ic_action_stop"
-		android:showAsAction="always"
-		android:title="@string/action_stop" />
+		android:icon="@drawable/ic_action_stop"
+		android:title="@string/action_stop"
+		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_remove"
-		android:icon="?attr/ic_action_remove"
+        android:icon="@drawable/ic_action_remove"
 		android:showAsAction="always"
 		android:title="@string/action_remove">
 	</item>
 	<item
 		android:id="@+id/action_setlabel"
-		android:icon="?attr/ic_action_labels"
-		android:showAsAction="ifRoom"
-		android:title="@string/action_setlabel" />
+		android:icon="@drawable/ic_action_labels"
+		android:title="@string/action_setlabel"
+		app:showAsAction="always" />
 
 </menu>

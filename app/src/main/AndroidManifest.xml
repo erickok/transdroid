@@ -44,7 +44,7 @@
 		android:hardwareAccelerated="true"
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name"
-		android:theme="@android:style/Theme.Holo" >
+		android:theme="@style/Theme.AppCompat" >
 
 		<!-- Main activities -->
 		<activity
@@ -53,7 +53,7 @@
 			android:label="@string/app_name"
 			android:launchMode="singleTop"
 			android:theme="@style/TransdroidTheme"
-			android:uiOptions="splitActionBarWhenNarrow" >
+			android:windowSoftInputMode="stateHidden" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
@@ -194,7 +194,7 @@
 		<activity android:name="org.transdroid.core.seedbox.XirvikSharedSettingsActivity_" />
 		<activity android:name="org.transdroid.core.seedbox.XirvikSemiSettingsActivity_" />
 		<activity android:name="org.transdroid.core.seedbox.XirvikDediSettingsActivity_" />
-		
+
 		<!-- Search -->
 		<activity
 			android:name="org.transdroid.core.gui.search.SearchActivity_"

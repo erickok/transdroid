@@ -70,13 +70,15 @@
 	<string name="action_removesettings">Remove settings</string>
 	<string name="action_visitwebsite">Visit transdroid.org</string>
 	<string name="action_close">Close</string>
-	
+
+	<string name="navigation_opendrawer">Select server and filter</string>
+	<string name="navigation_closedrawer">Close filters list</string>
 	<string name="navigation_nosettings">%1$s allows you to monitor and manage the torrent client you run at home or on your seedbox. Setting things up can be a bit tricky, but we offer step-by-step guides and promise it\'ll be worth it!</string>
 	<string name="navigation_emptytorrents">Connected, but no torrents are active within the current filter</string>
 	<string name="navigation_emptydetails">Select a torrent to view its details</string>
-	<string name="navigation_servers">SERVERS</string>
-	<string name="navigation_status">STATUS</string>
-	<string name="navigation_labels">LABELS</string>
+	<string name="navigation_servers">Servers</string>
+	<string name="navigation_status">Status</string>
+	<string name="navigation_labels">Labels</string>
 	<string name="navigation_status_showall">All</string>
 	<string name="navigation_status_onlydown">Downloading</string>
 	<string name="navigation_status_onlyup">Uploading</string>
@@ -96,8 +98,9 @@
 	<string name="navigation_pickserver">Add torrent to&#8230;</string>
     <string name="navigation_confirmremove">Confirm torrent removal?</string>
     <string name="navigation_confirmdataremoval">Also remove downloaded files?</string>
-
-    <string name="status_status">STATUS: %1$s</string>
+	<string name="navigation_url_hint" translatable="false">http://…</string>
+	
+	<string name="status_status">STATUS: %1$s</string>
 	<string name="status_waiting">Waiting to check&#8230;</string>
 	<string name="status_checking">Verifying local data&#8230;</string>
 	<string name="status_waitingtodl">Waiting to download %s</string>
@@ -221,6 +224,7 @@
 	
 	<string name="pref_servers">Servers</string>
 	<string name="pref_addserver">Add new server</string>
+	<string name="pref_addserver_normal">Add normal, custom server</string>
 	<string name="pref_addseedbox">Add seedbox</string>
 	<string name="pref_defaultserver">Default server</string>
 	<string name="pref_defaultserver_lastused">Last used</string>
@@ -367,12 +371,13 @@
         <item>BitTorrent 6+</item>
         <item>Buffalo NAS -1.31</item>
         <item>Deluge 1.2+</item>
-        <item>DLink Router BT</item>
+		<item>DLink Router BT</item>
         <item>Ktorrent</item>
         <item>qBittorrent</item>
         <item>rTorrent</item>
         <item>Synology</item>
-        <item>Torrentflux-b4rt</item>
+		<item>Torrentflux-b4rt</item>
+		<item>tTorrent</item>
         <item>Transmission</item>
         <item>µTorrent</item>
         <item>Vuze</item>
@@ -384,12 +389,13 @@
         <item>daemon_bittorrent</item>
         <item>daemon_buffalonas</item>
         <item>daemon_deluge</item>
-        <item>daemon_dlinkrouterbt</item>
+		<item>daemon_dlinkrouterbt</item>
         <item>daemon_ktorrent</item>
         <item>daemon_qbittorrent</item>
         <item>daemon_rtorrent</item>
         <item>daemon_synology</item>
-        <item>daemon_tfb4rt</item>
+		<item>daemon_tfb4rt</item>
+		<item>daemon_ttorrent</item>
         <item>daemon_transmission</item>
         <item>daemon_utorrent</item>
         <item>daemon_vuze</item>
@@ -458,7 +464,7 @@
 	<string name="system_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>
 	<string name="system_license" translatable="false">Published under GNU General Public License v3</string>
 	<string name="system_librarieslabel">Some code/libraries are used in the project:</string>
-	<string name="system_libraries" translatable="false">AndroidAnnotations\n \u00A0 http://androidannotations.org/\n \u00A0 Pierre-Yves Ricau (eBusinessInformations) et al.  \n \u00A0 Apache License, Version 2.0\nActionBar-PullToRefresh\n \u00A0 https://github.com/chrisbanes/ActionBar-PullToRefresh\n \u00A0 Chris Banes  \n \u00A0 Apache License, Version 2.0\nCrouton\n \u00A0 https://github.com/keyboardsurfer/Crouton\n \u00A0 Code: Benjamin Weiss (Neofonie Mobile Gmbh) et al.  \n \u00A0 Idea: Cyril Mottier  \n \u00A0 Apache License, Version 2.0\nBase16Encoder\n \u00A0 http://openjpa.apache.org/\n \u00A0 Marc Prud\'hommeaux  \n \u00A0 Apache OpenJPA\n MultipartEntity  \n \u00A0 Apache Software Foundation  \n \u00A0 Apache License, Version 2.0\nRssParser (learning-android)\n \u00A0 http://github.com/digitalspaghetti/learning-android\n \u00A0 Tane Piper  \n \u00A0 Public Domain\nBase64\n \u00A0 http://iharder.net/base64\n \u00A0 Robert Harder  \n \u00A0 Public Domain\naXMLRPC\n \u00A0 https://github.com/timroes/aXMLRPC\n \u00A0 Tim Roes  \n \u00A0 MIT License\nandroid-ColorPickerPreference\n \u00A0 https://github.com/attenzione/android-ColorPickerPreference\n \u00A0 Daniel Nilsson and Sergey Margaritov  \n \u00A0 Apache License, Version 2.0\nCheckableRelativeLayout\n \u00A0 http://www.marvinlabs.com/2010/10/custom-listview-ability-check-items/\n \u00A0 Cédric Caron (MarvinLabs)\n \u00A0 Public Domain\nFunnel icon\n \u00A0 http://thenounproject.com/noun/funnel/#icon-No5608\n \u00A0 Naomi Atkinson from The Noun Project\n \u00A0 Creative Commons Attribution 3.0</string>
+	<string name="system_libraries" translatable="false">AndroidAnnotations\n \u00A0 http://androidannotations.org/\n \u00A0 Pierre-Yves Ricau (eBusinessInformations) et al.  \n \u00A0 Apache License, Version 2.0\nMaterial Dialogs\n \u00A0 https://github.com/afollestad/material-dialogs\n \u00A0 Aidan Follestad et al.  \n \u00A0 MIT License\nSnackbar\n \u00A0 https://github.com/nispok/snackbar\n \u00A0 William Mora et al.  \n \u00A0 MIT License\nFloatingActionButton\n \u00A0 https://github.com/futuresimple/android-floating-action-button\n \u00A0 Jerzy Chałupski et al.  \n \u00A0 Apache License, Version 2.0\nBase16Encoder\n \u00A0 http://openjpa.apache.org/\n \u00A0 Marc Prud\'hommeaux  \n \u00A0 Apache OpenJPA\n MultipartEntity  \n \u00A0 Apache Software Foundation  \n \u00A0 Apache License, Version 2.0\nRssParser (learning-android)\n \u00A0 http://github.com/digitalspaghetti/learning-android\n \u00A0 Tane Piper  \n \u00A0 Public Domain\nBase64\n \u00A0 http://iharder.net/base64\n \u00A0 Robert Harder  \n \u00A0 Public Domain\naXMLRPC\n \u00A0 https://github.com/timroes/aXMLRPC\n \u00A0 Tim Roes  \n \u00A0 MIT License\nandroid-ColorPickerPreference\n \u00A0 https://github.com/attenzione/android-ColorPickerPreference\n \u00A0 Daniel Nilsson and Sergey Margaritov  \n \u00A0 Apache License, Version 2.0\nFunnel icon\n \u00A0 http://thenounproject.com/noun/funnel/#icon-No5608\n \u00A0 Naomi Atkinson from The Noun Project\n \u00A0 Creative Commons Attribution 3.0</string>
 	<string name="system_description">Manage your torrents from your Android device</string>
 
 </resources>

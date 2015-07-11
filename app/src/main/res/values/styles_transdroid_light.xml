@@ -17,50 +17,20 @@
      limitations under the License.
 -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
 
-    <style name="Theme.Transdroid.Light" parent="@android:style/Theme.Holo.Light">
-        <item name="android:actionBarItemBackground">@drawable/selectable_background_transdroid2</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu.Transdroid.Light</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Transdroid.Light</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Transdroid.Light</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav.Transdroid.Light</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Solid.Transdroid.Light</item>
-        <item name="android:actionModeBackground">@drawable/cab_background_top_transdroid2</item>
-        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_transdroid2</item>
-        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Transdroid.Light</item>
-    </style>
-
-    <style name="ActionBar.Solid.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
-        <item name="android:background">@drawable/ab_solid_transdroid2</item>
-        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_transdroid2</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_transdroid2</item>
+    <style name="Theme.Transdroid.Light" parent="Theme.AppCompat.Light.NoActionBar">
+		<item name="colorPrimary">@color/green</item>
+		<item name="colorPrimaryDark">@color/green_dark</item>
+		<item name="colorControlHighlight">@color/green_light</item>
+		<item name="windowActionModeOverlay">true</item>
+		<item name="actionModeBackground">@color/grey</item>
+		<item name="android:textViewStyle">@style/DefaultTextView</item>
+		<item name="android:windowBackground">@color/background_light</item>
+		<item name="loading_progress">@drawable/loading_progress_light</item>
+		<item name="text_bright">@color/text_bright_light</item>
+		<item name="text_actionbar">@color/text_actionbar_dark</item>
+		<item name="text_actionbar_secondary">@color/text_actionbar_light</item>
     </style>
 
-    <style name="ActionBar.Transparent.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@drawable/ab_transparent_transdroid2</item>
-    </style>
-	
-    <style name="PopupMenu.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ListPopupWindow">	
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid2</item>	
-    </style>
-	
-    <style name="DropDownListView.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_background_transdroid2</item>
-    </style>
-
-    <style name="ActionBarTabStyle.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
-        <item name="android:background">@drawable/tab_indicator_ab_transdroid2</item>
-    </style>
-	
-    <style name="DropDownNav.Transdroid.Light" parent="@android:style/Widget.Holo.Light.Spinner">
-        <item name="android:background">@drawable/spinner_background_ab_transdroid2</item>
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_transdroid2</item>
-        <item name="android:dropDownSelector">@drawable/selectable_background_transdroid2</item>
-    </style>
-    
-    <style name="ActionButton.CloseMode.Transdroid.Light" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
-        <item name="android:background">@drawable/btn_cab_done_transdroid2</item>
-    </style>
-    
 </resources>

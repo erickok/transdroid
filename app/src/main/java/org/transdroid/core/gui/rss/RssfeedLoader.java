@@ -16,18 +16,18 @@
  */
 package org.transdroid.core.gui.rss;
 
+import org.transdroid.core.app.settings.RssfeedSetting;
+import org.transdroid.core.rssparser.Channel;
+import org.transdroid.core.rssparser.Item;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.transdroid.core.app.settings.RssfeedSetting;
-import org.transdroid.core.rssparser.Channel;
-import org.transdroid.core.rssparser.Item;
-
 /**
- * A container class that holds RSS feed settings and, after they have been retrieved, the contents as {@link Channel},
- * the number of new items and an indication of a connection error.
+ * A container class that holds RSS feed settings and, after they have been retrieved, the contents as {@link Channel}, the number of new items and an
+ * indication of a connection error.
  * @author Eric Kok
  */
 public class RssfeedLoader {
@@ -45,7 +45,7 @@ public class RssfeedLoader {
 		this.channel = channel;
 		this.hasError = hasError;
 		if (channel == null || channel.getItems() == null || hasError) {
-			hasError = true;
+			this.hasError = true;
 			newCount = -1;
 			return;
 		}
@@ -67,8 +67,7 @@ public class RssfeedLoader {
 				}
 			});
 			for (Item item : items) {
-				if (item.getPubdate() == null || setting.getLastViewed() == null
-						|| item.getPubdate().after(setting.getLastViewed())) {
+				if (item.getPubdate() == null || setting.getLastViewed() == null || item.getPubdate().after(setting.getLastViewed())) {
 					newCount++;
 					item.setIsNew(true);
 				} else {
@@ -79,12 +78,12 @@ public class RssfeedLoader {
 			// Use the url of the last RSS item the last time the feed was viewed by the user to count new items
 			boolean isNew = true;
 			for (Item item : channel.getItems()) {
-				if (item.getTheLink() != null && setting.getLastViewedItemUrl() != null
-						&& item.getTheLink().equals(setting.getLastViewedItemUrl())) {
+				if (item.getTheLink() != null && setting.getLastViewedItemUrl() != null && item.getTheLink().equals(setting.getLastViewedItemUrl())) {
 					isNew = false;
 				}
-				if (isNew)
+				if (isNew) {
 					newCount++;
+				}
 				item.setIsNew(isNew);
 			}
 		}

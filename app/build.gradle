@@ -1,29 +1,19 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
-apply from: '../signing.gradle'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '20.0.0'
+    compileSdkVersion 22
+    buildToolsVersion '21.1.2'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 19
-        versionCode 217
-        versionName '2.3.0'
-    }
-    signingConfigs {
-        release {
-            storeFile STORE_FILE
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
+        targetSdkVersion 22
+        versionCode 221
+        versionName '2.5.1'
     }
     buildTypes {
         release {
-            runProguard false
-            signingConfig signingConfigs.release
+            minifyEnabled false
         }
     }
     productFlavors {
@@ -43,19 +33,21 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'org.androidannotations:androidannotations-api:3.1'
+    compile 'org.androidannotations:androidannotations-api:3.2'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
-    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:0.8'
-    compile 'de.keyboardsurfer.android.widget:crouton:1.8.+'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.+'
-    compile 'com.android.support:support-annotations:20.0.0'
-    apt "org.androidannotations:androidannotations:3.1"
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:support-annotations:22.1.1'
+    compile 'com.getbase:floatingactionbutton:1.8.0'
+    compile 'com.afollestad:material-dialogs:0.7.6.0'
+    compile 'com.nispok:snackbar:2.10.6'
+    apt 'org.androidannotations:androidannotations:3.2'
 }
 
 apt {
     arguments {
-        androidManifestFile variant.processResources.manifestFile
+        androidManifestFile variant.outputs[0].processResources.manifestFile
         resourcePackageName 'org.transdroid'
         //logLevel 'INFO'
         //logFile '/Users/erickok/Dev/transdroid/transdroid/app/build/aa-log.txt'

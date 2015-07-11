@@ -16,44 +16,35 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:padding="@dimen/margin_half"
-	android:orientation="vertical" >
+	android:padding="@dimen/margin_default"
+	android:orientation="vertical">
 
 	<TextView
 		android:id="@+id/pick_label"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/status_label_pick"
-		android:textAllCaps="true" />
-	
-	<View
-		android:id="@+id/line1"
-		android:layout_width="match_parent"
-		android:layout_height="1dip"
-		android:background="#28000000" />
+		android:layout_marginBottom="@dimen/margin_half"
+		style="@style/SectionHeader"/>
 	
 	<ListView
 		android:id="@+id/labels_list"
 		android:layout_width="match_parent"
 		android:layout_height="0dip"
 		android:layout_weight="1"
-		android:listSelector="?attr/selectable_background_transdroid" />
-	
-	<View
-		android:id="@+id/line2"
-		android:layout_width="match_parent"
-		android:layout_height="1dip"
-		android:background="#28000000" />
-	
+		tools:listitem="@layout/list_item_simple"/>
+
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/margin_half"
+		android:layout_marginTop="@dimen/margin_default"
 		android:text="@string/status_label_new"
-		android:textAllCaps="true" />
-	
+		android:layout_marginBottom="@dimen/margin_half"
+		style="@style/SectionHeader"/>
+
 	<EditText
 		android:id="@+id/newlabel_edit"
 		android:layout_width="match_parent"

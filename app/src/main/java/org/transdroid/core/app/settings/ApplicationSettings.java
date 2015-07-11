@@ -97,15 +97,15 @@ public class ApplicationSettings {
 	 * @return The server settings object, loaded from shared preferences
 	 */
 	public ServerSetting getServerSetting(int order) {
-		int max = getMaxNormalServer();
-		if (order <= max) {
+		int max = getMaxNormalServer() + 1;
+		if (order < max) {
 			return getNormalServerSetting(order);
 		}
 		for (SeedboxProvider provider : SeedboxProvider.values()) {
 			int offset = max;
 			max += provider.getSettings().getMaxSeedboxOrder(prefs) + 1;
-			if (order <= max) {
-				return provider.getSettings().getServerSetting(prefs, offset, order - offset - 1);
+			if (order < max) {
+				return provider.getSettings().getServerSetting(prefs, offset, order - offset);
 			}
 		}
 		return null;

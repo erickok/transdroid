@@ -1,35 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2010-2013 Eric Kok et al.
+
+  Transdroid is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Transdroid is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <!-- This layout is for 7" and 10" tablets in landscape shows torrents, filters and details. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="horizontal"
-	android:baselineAligned="false"
-	tools:context=".TorrentsActivity" >
+	tools:context=".core.gui.TorrentsActivity_">
+
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/selection_toolbar"
+		style="@style/DefaultToolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignEnd="@id/filters_list"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_alignRight="@id/filters_list"
+		android:minHeight="?attr/actionBarSize" />
+
+	<android.support.v7.widget.SearchView
+		android:id="@+id/filter_search"
+		android:layout_width="@dimen/ui_filters_list"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_marginBottom="5dp"
+		android:layout_marginEnd="5dp"
+		android:layout_marginRight="5dp"
+		android:layout_marginTop="5dp"
+		app:iconifiedByDefault="false"
+		app:queryHint="@string/action_filter"
+		app:searchIcon="@drawable/ic_action_filter" />
 
 	<ListView
 		android:id="@+id/filters_list"
-		android:layout_width="0dip"
+		android:layout_width="@dimen/ui_filters_list"
 		android:layout_height="match_parent"
-		android:layout_weight="1"
+		android:layout_above="@id/filter_search"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_below="@id/selection_toolbar"
 		android:choiceMode="singleChoice"
-		android:listSelector="?attr/selectable_background_transdroid" />
-	
-	<fragment
-		android:id="@+id/torrents_fragment"
-		android:layout_width="0dip"
-		android:layout_height="match_parent"
-		android:layout_weight="2"
-		class="org.transdroid.core.gui.TorrentsFragment_"
-		tools:layout="@layout/fragment_torrents" />
+		tools:listitem="@layout/list_item_filter" />
 
-	<fragment
-		android:id="@+id/torrentdetails_fragment"
-		android:layout_width="0dip"
+	<RelativeLayout
+		android:id="@+id/fragments_container"
+		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_weight="2"
-		class="org.transdroid.core.gui.DetailsFragment_"
-		tools:layout="@layout/fragment_details" />
-	
-</LinearLayout>
+		android:layout_toEndOf="@id/filters_list"
+		android:layout_toRightOf="@id/filters_list">
+
+		<View
+			android:id="@+id/fragments_divider"
+			android:layout_width="1dp"
+			android:layout_height="1dp"
+			android:layout_centerHorizontal="true" />
+
+		<android.support.v7.widget.Toolbar
+			android:id="@+id/actions_toolbar"
+			style="@style/DefaultToolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_toLeftOf="@id/fragments_divider"
+			android:layout_toStartOf="@id/fragments_divider"
+			android:minHeight="?attr/actionBarSize" />
+
+		<android.support.v7.widget.ActionMenuView
+			android:id="@+id/contextual_toolbar"
+			style="@style/SplitToolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_toLeftOf="@id/fragments_divider"
+			android:layout_toStartOf="@id/fragments_divider"
+			android:layout_alignParentBottom="true"
+			android:minHeight="?attr/actionBarSize"
+			android:visibility="gone"
+			tools:visibility="visible" />
+
+		<android.support.v7.widget.Toolbar
+			android:id="@+id/torrents_toolbar"
+			style="@style/DefaultToolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			android:layout_toEndOf="@id/fragments_divider"
+			android:layout_toRightOf="@id/fragments_divider"
+			android:minHeight="?attr/actionBarSize" />
+
+		<fragment
+			android:id="@+id/torrents_fragment"
+			class="org.transdroid.core.gui.TorrentsFragment_"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_below="@id/torrents_toolbar"
+			android:layout_toLeftOf="@id/fragments_divider"
+			android:layout_toStartOf="@id/fragments_divider"
+			tools:layout="@layout/fragment_torrents" />
+
+		<fragment
+			android:id="@+id/torrentdetails_fragment"
+			class="org.transdroid.core.gui.DetailsFragment_"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_below="@id/actions_toolbar"
+			android:layout_toEndOf="@id/fragments_divider"
+			android:layout_toRightOf="@id/fragments_divider"
+			tools:layout="@layout/fragment_details" />
+
+		<include
+			layout="@layout/actionbar_addbutton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:layout_gravity="bottom|end"
+			android:layout_marginBottom="20dp"
+			android:layout_marginEnd="10dp"
+			android:layout_marginRight="10dp"
+			android:layout_toLeftOf="@id/fragments_divider"
+			android:layout_toStartOf="@id/fragments_divider" />
+
+	</RelativeLayout>
+
+	<View
+		style="@style/DefaultToolbarShadow"
+		android:layout_below="@id/selection_toolbar" />
+
+</RelativeLayout>

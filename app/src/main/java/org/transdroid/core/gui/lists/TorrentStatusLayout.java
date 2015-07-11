@@ -68,7 +68,7 @@ public class TorrentStatusLayout extends RelativeLayout {
 	/**
 	 * Registers the status of the represented torrent and invalidates the view so the status colour will be updated
 	 * accordingly.
-	 * @param status
+	 * @param status The updated torrent status to show
 	 */
 	public void setStatus(TorrentStatus status) {
 		this.status = status;

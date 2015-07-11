@@ -29,6 +29,7 @@ import org.transdroid.daemon.Rtorrent.RtorrentAdapter;
 import org.transdroid.daemon.Synology.SynologyAdapter;
 import org.transdroid.daemon.Tfb4rt.Tfb4rtAdapter;
 import org.transdroid.daemon.Transmission.TransmissionAdapter;
+import org.transdroid.daemon.Ttorrent.TtorrentAdapter;
 import org.transdroid.daemon.Utorrent.UtorrentAdapter;
 import org.transdroid.daemon.Vuze.VuzeAdapter;
 
@@ -95,6 +96,11 @@ public enum Daemon {
 			return new Tfb4rtAdapter(settings);
 		}
 	},
+	tTorrent {
+		public IDaemonAdapter createAdapter(DaemonSettings settings) {
+			return new TtorrentAdapter(settings);
+		}
+	},
 	Synology {
 		public IDaemonAdapter createAdapter(DaemonSettings settings) {
 			return new SynologyAdapter(settings);
@@ -157,6 +163,8 @@ public enum Daemon {
 			return "daemon_synology";
 		case Tfb4rt:
 			return "daemon_tfb4rt";
+		case tTorrent:
+			return "daemon_ttorrent";
 		case Transmission:
 			return "daemon_transmission";
 		case uTorrent:
@@ -216,6 +224,9 @@ public enum Daemon {
 		if (daemonCode.equals("daemon_tfb4rt")) {
 			return Tfb4rt;
 		}
+		if (daemonCode.equals("daemon_ttorrent")) {
+			return tTorrent;
+		}
         if (daemonCode.equals("daemon_transmission")) {
             return Transmission;
         }
@@ -265,6 +276,8 @@ public enum Daemon {
         	return 6884;
         case Aria2:
         	return 6800;
+		case tTorrent:
+			return 1080;
         }
 		return 8080;
 	}
@@ -278,7 +291,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsFileListing(Daemon type) {
-		return type == Synology || type == Transmission || type == uTorrent || type == BitTorrent || type == KTorrent || type == Deluge || type == rTorrent || type == Vuze || type == DLinkRouterBT || type == Bitflu || type == qBittorrent || type == BuffaloNas || type == BitComet || type == Aria2 || type == Dummy;
+		return type == Synology || type == Transmission || type == uTorrent || type == BitTorrent || type == KTorrent || type == Deluge || type == rTorrent || type == Vuze || type == DLinkRouterBT || type == Bitflu || type == qBittorrent || type == BuffaloNas || type == BitComet || type == Aria2 || type == tTorrent || type == Dummy;
 	}
 
 	public static boolean supportsFineDetails(Daemon type) {
@@ -315,15 +328,15 @@ public enum Daemon {
 	}
 
 	public static boolean supportsAddByMagnetUrl(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Transmission || type == Synology || type == Deluge || type == Bitflu || type == KTorrent || type == rTorrent || type == qBittorrent || type == BitComet || type == Aria2 || type == Dummy;
+		return type == uTorrent || type == BitTorrent || type == Transmission || type == Synology || type == Deluge || type == Bitflu || type == KTorrent || type == rTorrent || type == qBittorrent || type == BitComet || type == Aria2 || type == tTorrent || type == Dummy;
 	}
 	
 	public static boolean supportsRemoveWithData(Daemon type) {
-		return type == uTorrent || type == Vuze || type == Transmission || type == Deluge || type == BitTorrent || type == Tfb4rt || type == DLinkRouterBT || type == Bitflu || type == qBittorrent || type == BuffaloNas || type == BitComet || type == rTorrent || type == Aria2 || type == Dummy;
+		return type == uTorrent || type == Vuze || type == Transmission || type == Deluge || type == BitTorrent || type == Tfb4rt || type == DLinkRouterBT || type == Bitflu || type == qBittorrent || type == BuffaloNas || type == BitComet || type == rTorrent || type == Aria2 || type == tTorrent || type == Dummy;
 	}
 
 	public static boolean supportsFilePrioritySetting(Daemon type) {
-		return type == BitTorrent || type == uTorrent || type == Transmission || type == KTorrent || type == rTorrent || type == Vuze || type == Deluge || type == qBittorrent || type == Dummy;
+		return type == BitTorrent || type == uTorrent || type == Transmission || type == KTorrent || type == rTorrent || type == Vuze || type == Deluge || type == qBittorrent || type == tTorrent || type == Dummy;
 	}
 	
 	public static boolean supportsDateAdded(Daemon type) {

@@ -35,6 +35,7 @@
 			android:drawableLeft="@drawable/ic_launcher"
 			android:drawablePadding="@dimen/margin_half"
 			android:fontFamily="sans-serif-condensed"
+			android:gravity="center_vertical"
 			android:text="@string/app_name"
 			android:textColor="@android:color/white"
 			android:textSize="36sp" />

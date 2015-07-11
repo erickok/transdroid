@@ -18,7 +18,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:padding="@dimen/margin_half" >
+	android:padding="@dimen/margin_default">
 
 	<EditText
 		android:id="@+id/location_edit"

@@ -28,8 +28,6 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceActivity;
-import android.view.View;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
@@ -41,9 +39,8 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.WebsearchSetting;
-import org.transdroid.core.gui.*;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.NavigationHelper;
-import org.transdroid.core.gui.settings.OverflowPreference.OnOverflowClicked;
 import org.transdroid.core.gui.settings.RssfeedPreference.OnRssfeedClickedListener;
 import org.transdroid.core.gui.settings.ServerPreference.OnServerClickedListener;
 import org.transdroid.core.gui.settings.WebsearchPreference.OnWebsearchClickedListener;
@@ -55,21 +52,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The main activity that provides access to all application settings. It shows the configured serves, web search sites
- * and RSS feeds along with other general settings.
+ * The main activity that provides access to all application settings. It shows the configured serves, web search sites and RSS feeds along with other
+ * general settings.
  * @author Eric Kok
  */
 @EActivity
-public class MainSettingsActivity extends PreferenceActivity {
+public class MainSettingsActivity extends PreferenceCompatActivity {
 
 	protected static final int DIALOG_ADDSEEDBOX = 0;
-	private OnOverflowClicked onOverflowClicked = new OnOverflowClicked() {
-		@SuppressWarnings("deprecation")
-		@Override
-		public void onOverflowClicked(View overflowButton) {
-			showDialog(DIALOG_ADDSEEDBOX);
-		}
-	};
 	@Bean
 	protected NavigationHelper navigationHelper;
 	@Bean
@@ -78,9 +68,13 @@ public class MainSettingsActivity extends PreferenceActivity {
 	protected SearchHelper searchHelper;
 	protected SharedPreferences prefs;
 	private OnPreferenceClickListener onAddServer = new OnPreferenceClickListener() {
+		@SuppressWarnings("deprecation")
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
-			ServerSettingsActivity_.intent(MainSettingsActivity.this).start();
+			if (navigationHelper.enableSeedboxes())
+				showDialog(DIALOG_ADDSEEDBOX);
+			else
+				ServerSettingsActivity_.intent(MainSettingsActivity.this).start();
 			return true;
 		}
 	};
@@ -130,8 +124,7 @@ public class MainSettingsActivity extends PreferenceActivity {
 		public void onSeedboxClicked(ServerSetting serverSetting, SeedboxProvider provider, int seedboxOffset) {
 			// NOTE: The seedboxOffset is the seedbox type-unique order that we need to supply uin the Extras bundle to
 			// edit this specific seedbox
-			startActivity(provider.getSettings().getSettingsActivityIntent(MainSettingsActivity.this)
-					.putExtra("key", seedboxOffset));
+			startActivity(provider.getSettings().getSettingsActivityIntent(MainSettingsActivity.this).putExtra("key", seedboxOffset));
 		}
 	};
 	private OnWebsearchClickedListener onWebsearchClicked = new OnWebsearchClickedListener() {
@@ -150,8 +143,10 @@ public class MainSettingsActivity extends PreferenceActivity {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			// Start the configuration activity for this specific chosen seedbox
-			startActivity(
-					SeedboxProvider.values()[which].getSettings().getSettingsActivityIntent(MainSettingsActivity.this));
+			if (which == 0)
+				ServerSettingsActivity_.intent(MainSettingsActivity.this).start();
+			else
+				startActivity(SeedboxProvider.values()[which - 1].getSettings().getSettingsActivityIntent(MainSettingsActivity.this));
 		}
 	};
 
@@ -166,7 +161,7 @@ public class MainSettingsActivity extends PreferenceActivity {
 	protected void onResume() {
 		super.onResume();
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		prefs = getPreferenceManager().getSharedPreferences();
 		if (getPreferenceScreen() != null) {
@@ -178,13 +173,7 @@ public class MainSettingsActivity extends PreferenceActivity {
 
 		// Load the preference menu and attach actions
 		addPreferencesFromResource(R.xml.pref_main);
-		OverflowPreference addServerPrefernce = (OverflowPreference) findPreference("header_addserver");
-		addServerPrefernce.setOnPreferenceClickListener(onAddServer);
-		if (navigationHelper.enableSeedboxes()) {
-			addServerPrefernce.setOnOverflowClickedListener(onOverflowClicked);
-		} else {
-			addServerPrefernce.hideOverflowButton();
-		}
+		findPreference("header_addserver").setOnPreferenceClickListener(onAddServer);
 		if (enableSearchUi) {
 			findPreference("header_addwebsearch").setOnPreferenceClickListener(onAddWebsearch);
 		}
@@ -196,8 +185,8 @@ public class MainSettingsActivity extends PreferenceActivity {
 		findPreference("header_help").setOnPreferenceClickListener(onHelpSettings);
 
 		// Keep a list of the server codes and names (for default server selection)
-		List<String> serverCodes = new ArrayList<String>();
-		List<String> serverNames = new ArrayList<String>();
+		List<String> serverCodes = new ArrayList<>();
+		List<String> serverNames = new ArrayList<>();
 		serverCodes.add(Integer.toString(ApplicationSettings.DEFAULTSERVER_LASTUSED));
 		serverCodes.add(Integer.toString(ApplicationSettings.DEFAULTSERVER_ASKONADD));
 		serverNames.add(getString(R.string.pref_defaultserver_lastused));
@@ -206,8 +195,8 @@ public class MainSettingsActivity extends PreferenceActivity {
 		// Add existing servers
 		List<ServerSetting> servers = applicationSettings.getNormalServerSettings();
 		for (ServerSetting serverSetting : servers) {
-			getPreferenceScreen().addPreference(new ServerPreference(this).setServerSetting(serverSetting)
-							.setOnServerClickedListener(onServerClicked));
+			getPreferenceScreen()
+					.addPreference(new ServerPreference(this).setServerSetting(serverSetting).setOnServerClickedListener(onServerClicked));
 			if (serverSetting.getUniqueIdentifier() != null) {
 				serverCodes.add(Integer.toString(serverSetting.getOrder()));
 				serverNames.add(serverSetting.getName());
@@ -219,9 +208,8 @@ public class MainSettingsActivity extends PreferenceActivity {
 		for (SeedboxProvider provider : SeedboxProvider.values()) {
 			int seedboxOffset = 0;
 			for (ServerSetting seedbox : provider.getSettings().getAllServerSettings(prefs, orderOffset)) {
-				getPreferenceScreen().addPreference(
-						new SeedboxPreference(this).setProvider(provider).setServerSetting(seedbox)
-								.setOnSeedboxClickedListener(onSeedboxClicked, seedboxOffset));
+				getPreferenceScreen().addPreference(new SeedboxPreference(this).setProvider(provider).setServerSetting(seedbox)
+						.setOnSeedboxClickedListener(onSeedboxClicked, seedboxOffset));
 				orderOffset++;
 				seedboxOffset++;
 				if (seedbox.getUniqueIdentifier() != null) {
@@ -242,8 +230,8 @@ public class MainSettingsActivity extends PreferenceActivity {
 		} else {
 			List<RssfeedSetting> rssfeeds = applicationSettings.getRssfeedSettings();
 			for (RssfeedSetting rssfeedSetting : rssfeeds) {
-				getPreferenceScreen().addPreference(new RssfeedPreference(this).setRssfeedSetting(rssfeedSetting)
-								.setOnRssfeedClickedListener(onRssfeedClicked));
+				getPreferenceScreen()
+						.addPreference(new RssfeedPreference(this).setRssfeedSetting(rssfeedSetting).setOnRssfeedClickedListener(onRssfeedClicked));
 			}
 		}
 
@@ -256,8 +244,8 @@ public class MainSettingsActivity extends PreferenceActivity {
 		// Add existing websearch sites
 		List<WebsearchSetting> websearches = applicationSettings.getWebsearchSettings();
 		for (WebsearchSetting websearchSetting : websearches) {
-			getPreferenceScreen().addPreference(new WebsearchPreference(this).setWebsearchSetting(websearchSetting)
-							.setOnWebsearchClickedListener(onWebsearchClicked));
+			getPreferenceScreen().addPreference(
+					new WebsearchPreference(this).setWebsearchSetting(websearchSetting).setOnWebsearchClickedListener(onWebsearchClicked));
 		}
 
 		// Construct list of all available search sites, in-app and web
@@ -265,10 +253,10 @@ public class MainSettingsActivity extends PreferenceActivity {
 		// Retrieve the available in-app search sites (using the Torrent Search package)
 		List<SearchSite> searchsites = searchHelper.getAvailableSites();
 		if (searchsites == null) {
-			searchsites = new ArrayList<SearchSite>();
+			searchsites = new ArrayList<>();
 		}
-		List<String> siteNames = new ArrayList<String>(websearches.size() + searchsites.size());
-		List<String> siteValues = new ArrayList<String>(websearches.size() + searchsites.size());
+		List<String> siteNames = new ArrayList<>(websearches.size() + searchsites.size());
+		List<String> siteValues = new ArrayList<>(websearches.size() + searchsites.size());
 		for (SearchSite searchSite : searchsites) {
 			siteNames.add(searchSite.getName());
 			siteValues.add(searchSite.getKey());
@@ -295,14 +283,15 @@ public class MainSettingsActivity extends PreferenceActivity {
 		super.onBuildHeaders(target);
 	}
 
+	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 			case DIALOG_ADDSEEDBOX:
-				// Open dialog to pick one of the supported seedbox providers
-				String[] seedboxes = new String[SeedboxProvider.values().length];
-				for (int i = 0; i < seedboxes.length; i++) {
-					seedboxes[i] = getString(R.string.pref_seedbox_addseedbox,
-							SeedboxProvider.values()[i].getSettings().getName());
+				// Open dialog to pick one of the supported seedbox providers (or a normal server)
+				String[] seedboxes = new String[SeedboxProvider.values().length + 1];
+				seedboxes[0] = getString(R.string.pref_addserver_normal);
+				for (int i = 0; i < seedboxes.length - 1; i++) {
+					seedboxes[i + 1] = getString(R.string.pref_seedbox_addseedbox, SeedboxProvider.values()[i].getSettings().getName());
 				}
 				return new AlertDialog.Builder(this).setItems(seedboxes, onAddSeedbox).create();
 		}

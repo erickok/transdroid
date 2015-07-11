@@ -17,6 +17,21 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.5.1\n
+- Improved rTorrent backwards compatibility\n
+- UI fixes for dark theme\n
+\n
+Transdroid 2.5.0-beta2\n
+- tTorrent support\n
+- Fixed qBittorrent 3.2+ ratio bug\n
+- Fixes in UI\n
+- Updated translations\n
+Transdroid 2.5.0-beta1\n
+- Graphical refresh with Material design in Android 5.x Lollipop style\n
+- Support rTorrent 0.9.7+ versions\n
+- Support qBittorrent 3.2+ versions\n
+- Fixed crash when adding torrent via file picker\n
+\n
 Transdroid 2.3.0\n
 - Aria2 support\n
 - Improved SSL support with TLS 1.1/1.2 and SNI hostname verification\n

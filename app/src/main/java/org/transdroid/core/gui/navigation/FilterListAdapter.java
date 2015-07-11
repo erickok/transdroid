@@ -16,8 +16,8 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context;
+import android.view.View;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
@@ -28,12 +28,11 @@ import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.lists.ViewHolderAdapter;
 import org.transdroid.core.gui.navigation.StatusType.StatusTypeFilter;
 
-import android.content.Context;
-import android.view.View;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * List adapter that holds filter items, that is, servers, view types and labels. A header item is inserted where
- * appropriate.
+ * List adapter that holds filter items, that is, servers, view types and labels. A header item is inserted where appropriate.
  * @author Eric Kok
  */
 @EBean
@@ -54,8 +53,7 @@ public class FilterListAdapter extends MergeAdapter {
 	 */
 	public void updateServers(List<ServerSetting> servers) {
 		if (this.serverItems == null && servers != null) {
-			serverSeparator = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(
-					context.getString(R.string.navigation_servers)));
+			serverSeparator = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_servers)));
 			serverSeparator.setViewVisibility(servers.isEmpty() ? View.GONE : View.VISIBLE);
 			addAdapter(serverSeparator);
 			this.serverItems = new FilterListItemAdapter(context, servers);
@@ -76,8 +74,7 @@ public class FilterListAdapter extends MergeAdapter {
 	 */
 	public void updateStatusTypes(List<StatusTypeFilter> statusTypes) {
 		if (this.statusTypeItems == null && statusTypes != null) {
-			statusTypeSeparator = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(
-					context.getString(R.string.navigation_status)));
+			statusTypeSeparator = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_status)));
 			statusTypeSeparator.setViewVisibility(statusTypes.isEmpty() ? View.GONE : View.VISIBLE);
 			addAdapter(statusTypeSeparator);
 			this.statusTypeItems = new FilterListItemAdapter(context, statusTypes);
@@ -98,8 +95,7 @@ public class FilterListAdapter extends MergeAdapter {
 	 */
 	public void updateLabels(List<Label> labels) {
 		if (this.labelItems == null && labels != null) {
-			labelSeperator = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(
-					context.getString(R.string.navigation_labels)));
+			labelSeperator = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(context.getString(R.string.navigation_labels)));
 			labelSeperator.setViewVisibility(labels.isEmpty() ? View.GONE : View.VISIBLE);
 			addAdapter(labelSeperator);
 			this.labelItems = new FilterListItemAdapter(context, labels);

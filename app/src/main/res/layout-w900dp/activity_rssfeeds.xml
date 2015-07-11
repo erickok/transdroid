@@ -15,28 +15,45 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="horizontal"
-	android:baselineAligned="false"
-	tools:context=".RssfeedsActivity" >
+	tools:context=".core.gui.rss.RssfeedsActivity_">
 
-	<fragment
-		android:id="@+id/rssfeeds_fragment"
-		android:layout_width="0dip"
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/rssfeeds_toolbar"
+		style="@style/DefaultToolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:minHeight="?attr/actionBarSize" />
+
+	<View
+		style="@style/DefaultToolbarShadow"
+		android:layout_below="@id/rssfeeds_toolbar" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_weight="2"
-		class="org.transdroid.core.gui.rss.RssfeedsFragment_"
-		tools:layout="@layout/fragment_rssfeeds" />
-	
-	<fragment
-		android:id="@+id/rssitems_fragment"
-		android:layout_width="0dip"
-		android:layout_height="match_parent"
-		android:layout_weight="3"
-		class="org.transdroid.core.gui.rss.RssitemsFragment_"
-		tools:layout="@layout/fragment_rssitems" />
-	
-</LinearLayout>
+		android:layout_below="@id/rssfeeds_toolbar"
+		android:baselineAligned="false"
+		android:orientation="horizontal">
+
+		<fragment
+			android:id="@+id/rssfeeds_fragment"
+			class="org.transdroid.core.gui.rss.RssfeedsFragment_"
+			android:layout_width="0dip"
+			android:layout_height="match_parent"
+			android:layout_weight="2"
+			tools:layout="@layout/fragment_rssfeeds" />
+
+		<fragment
+			android:id="@+id/rssitems_fragment"
+			class="org.transdroid.core.gui.rss.RssitemsFragment_"
+			android:layout_width="0dip"
+			android:layout_height="match_parent"
+			android:layout_weight="3"
+			tools:layout="@layout/fragment_rssitems" />
+	</LinearLayout>
+
+</RelativeLayout>

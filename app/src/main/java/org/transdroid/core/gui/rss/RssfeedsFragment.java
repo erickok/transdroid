@@ -16,7 +16,12 @@
  */
 package org.transdroid.core.gui.rss;
 
-import java.util.List;
+import android.app.Fragment;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -26,25 +31,20 @@ import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.gui.settings.*;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
 
-import android.app.Fragment;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.TextView;
+import java.util.List;
 
 /**
  * Fragment lists the RSS feeds the user wants to monitor and, if room, the list of items in a feed in a right pane.
  * @author Eric Kok
  */
-@EFragment(resName = "fragment_rssfeeds")
-@OptionsMenu(resName = "fragment_rssfeeds")
+@EFragment(R.layout.fragment_rssfeeds)
+@OptionsMenu(R.menu.fragment_rssfeeds)
 public class RssfeedsFragment extends Fragment {
 
 	// Views
-	@ViewById(resName = "rssfeeds_list")
+	@ViewById(R.id.rssfeeds_list)
 	protected ListView feedsList;
 	@Bean
 	protected RssfeedsAdapter rssfeedsAdapter;
@@ -59,39 +59,39 @@ public class RssfeedsFragment extends Fragment {
 	public void update(List<RssfeedLoader> loaders) {
 		rssfeedsAdapter.update(loaders);
 		boolean hasSettings = !(loaders == null || loaders.size() == 0);
-		feedsList.setVisibility(hasSettings ? View.VISIBLE: View.GONE);
-		nosettingsText.setVisibility(hasSettings ? View.GONE: View.VISIBLE);
+		feedsList.setVisibility(hasSettings ? View.VISIBLE : View.GONE);
+		nosettingsText.setVisibility(hasSettings ? View.GONE : View.VISIBLE);
 		getActivity().invalidateOptionsMenu();
 	}
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		menu.findItem(R.id.action_settings).setShowAsAction(
-				rssfeedsAdapter == null || rssfeedsAdapter.getCount() == 0 ? MenuItem.SHOW_AS_ACTION_ALWAYS
-						: MenuItem.SHOW_AS_ACTION_NEVER);
+		boolean hasFeeds = rssfeedsAdapter != null && rssfeedsAdapter.getCount() > 0;
+		menu.findItem(R.id.action_refresh).setVisible(hasFeeds);
+		menu.findItem(R.id.action_settings).setShowAsAction(!hasFeeds ? MenuItem.SHOW_AS_ACTION_ALWAYS : MenuItem.SHOW_AS_ACTION_NEVER);
 	}
 
-	@OptionsItem(resName = "action_settings")
+	@OptionsItem(R.id.action_settings)
 	protected void openSettings() {
 		MainSettingsActivity_.intent(getActivity()).start();
 	}
 
-	@OptionsItem(resName = "action_refresh")
+	@OptionsItem(R.id.action_refresh)
 	protected void refreshScreen() {
-		((RssfeedsActivity)getActivity()).refreshFeeds();
+		((RssfeedsActivity) getActivity()).refreshFeeds();
 	}
 
-	@ItemClick(resName = "rssfeeds_list")
+	@ItemClick(R.id.rssfeeds_list)
 	protected void onFeedClicked(RssfeedLoader loader) {
-		((RssfeedsActivity)getActivity()).openRssfeed(loader, true);
+		((RssfeedsActivity) getActivity()).openRssfeed(loader, true);
 	}
-	
+
 	/**
 	 * Notifies the contained list of RSS feeds that the underlying data has been changed.
 	 */
 	public void notifyDataSetChanged() {
 		rssfeedsAdapter.notifyDataSetChanged();
 	}
-	
+
 }

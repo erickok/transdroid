@@ -16,40 +16,43 @@
  */
 package org.transdroid.core.gui.rss;
 
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.app.settings.*;
-import org.transdroid.core.gui.*;
+import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.rssparser.Channel;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-
-@EActivity(resName = "activity_rssitems")
-public class RssitemsActivity extends Activity {
+@EActivity(R.layout.activity_rssitems)
+public class RssitemsActivity extends ActionBarActivity {
 
 	@Extra
 	protected Channel rssfeed = null;
 	@Extra
 	protected String rssfeedName;
 
-	@FragmentById(resName = "rssitems_fragment")
+	@FragmentById(R.id.rssitems_fragment)
 	protected RssitemsFragment fragmentItems;
+	@ViewById
+	protected Toolbar rssfeedsToolbar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// Set the theme according to the user preference
 		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
 			setTheme(R.style.TransdroidTheme_Dark);
-			getActionBar().setIcon(R.drawable.ic_activity_torrents);
 		}
 		super.onCreate(savedInstanceState);
 	}
@@ -63,9 +66,9 @@ public class RssitemsActivity extends Activity {
 			return;
 		}
 
-		// Simple action bar with up button and torrent name as title
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeedName));
+		setSupportActionBar(rssfeedsToolbar);
+		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeedName));
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Get the intent extras and show them to the already loaded fragment
 		fragmentItems.update(rssfeed, false);

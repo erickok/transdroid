@@ -16,9 +16,9 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import org.transdroid.daemon.Torrent;
-
 import android.os.Parcelable;
+
+import org.transdroid.daemon.Torrent;
 
 /**
  * Represents a filter, used in the app navigation, that can check if some torrent matches the user-set filter
@@ -27,11 +27,10 @@ import android.os.Parcelable;
 public interface NavigationFilter extends Parcelable {
 
 	/**
-	 * Implementations should check if the supplied torrent matches the filter; for example a label filter should return
-	 * true if the torrent's label equals this items label name.
+	 * Implementations should check if the supplied torrent matches the filter; for example a label filter should return true if the torrent's label
+	 * equals this items label name.
 	 * @param torrent The torrent to check for matches
-	 * @param dormantAsInactive If true, dormant (0KB/s, so no data transfer) torrents are never actively downloading or
-	 *            seeding
+	 * @param dormantAsInactive If true, dormant (0KB/s, so no data transfer) torrents are never actively downloading or seeding
 	 * @return True if the torrent matches the filter and should be shown in the current screen, false otherwise
 	 */
 	boolean matches(Torrent torrent, boolean dormantAsInactive);
@@ -43,8 +42,7 @@ public interface NavigationFilter extends Parcelable {
 	String getName();
 
 	/**
-	 * Implementations should return a code that (within reasonable expectations) uniquely identifies it in the list of
-	 * navigation filters
+	 * Implementations should return a code that (within reasonable expectations) uniquely identifies it in the list of navigation filters
 	 * @return The code to uniquely identify this specific navigation filter, such as the name with a class name prefix
 	 */
 	String getCode();

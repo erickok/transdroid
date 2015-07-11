@@ -16,18 +16,19 @@
  */
 package org.transdroid.core.gui.search;
 
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
-
 import android.content.Context;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.ViewById;
+import org.transdroid.R;
 
 /**
  * View that shows, as part of the action bar spinner, which {@link SearchSetting} is currently chosen.
  * @author Eric Kok
  */
-@EViewGroup(resName = "actionbar_searchsite")
+@EViewGroup(R.layout.actionbar_searchsite)
 public class SearchSettingSelectionView extends FrameLayout {
 
 	@ViewById

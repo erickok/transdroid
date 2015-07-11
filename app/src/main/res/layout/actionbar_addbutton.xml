@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.getbase.floatingactionbutton.FloatingActionsMenu
+	android:id="@+id/addmenu_button"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	app:fab_addButtonColorNormal="@color/green"
+	app:fab_addButtonColorPressed="@color/green_dark"
+	tools:showIn="@layout/activity_torrents">
+
+	<com.getbase.floatingactionbutton.FloatingActionButton
+		android:id="@+id/addmenu_file_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:fab_colorNormal="@color/green"
+		app:fab_colorPressed="@color/green_dark"
+		app:fab_icon="@drawable/ic_action_file" />
+
+	<com.getbase.floatingactionbutton.FloatingActionButton
+		android:id="@+id/addmenu_link_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:fab_colorNormal="@color/green"
+		app:fab_colorPressed="@color/green_dark"
+		app:fab_icon="@drawable/ic_action_link" />
+
+	<com.getbase.floatingactionbutton.FloatingActionButton
+		android:id="@+id/addmenu_barcode_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:fab_colorNormal="@color/green"
+		app:fab_colorPressed="@color/green_dark"
+		app:fab_icon="@drawable/ic_action_barcode" />
+
+</com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+	

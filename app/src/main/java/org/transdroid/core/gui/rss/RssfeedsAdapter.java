@@ -16,16 +16,16 @@
  */
 package org.transdroid.core.gui.rss;
 
-import java.util.List;
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.transdroid.core.app.settings.RssfeedSetting;
 
-import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import java.util.List;
 
 /**
  * Adapter that contains a list of {@link RssfeedSetting}s, each with associated loaded RSS feed {@link org.transdroid.core.rssparser.Channel}.
@@ -33,9 +33,9 @@ import android.widget.BaseAdapter;
  */
 @EBean
 public class RssfeedsAdapter extends BaseAdapter {
-	
+
 	private List<RssfeedLoader> loaders = null;
-	
+
 	@RootContext
 	protected Context context;
 
@@ -47,23 +47,25 @@ public class RssfeedsAdapter extends BaseAdapter {
 		this.loaders = loaders;
 		notifyDataSetChanged();
 	}
-	
+
 	@Override
 	public boolean hasStableIds() {
 		return true;
 	}
-	
+
 	@Override
 	public int getCount() {
-		if (loaders == null)
+		if (loaders == null) {
 			return 0;
+		}
 		return loaders.size();
 	}
 
 	@Override
 	public RssfeedLoader getItem(int position) {
-		if (loaders == null)
+		if (loaders == null) {
 			return null;
+		}
 		return loaders.get(position);
 	}
 

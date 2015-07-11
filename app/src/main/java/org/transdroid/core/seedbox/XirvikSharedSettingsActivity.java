@@ -16,7 +16,18 @@
  */
 package org.transdroid.core.seedbox;
 
-import java.io.InputStream;
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.preference.EditTextPreference;
+import android.preference.PreferenceManager;
+
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
@@ -27,25 +38,15 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
-import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.settings.KeyBoundPreferencesActivity;
-import org.transdroid.core.gui.settings.*;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
 import org.transdroid.daemon.util.HttpHelper;
 
-import android.annotation.TargetApi;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.PreferenceManager;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
+import java.io.InputStream;
 
 /**
- * Activity that allows for the configuration of a Xirvik shared seedbox. The key can be supplied to update an existing
- * server setting instead of creating a new one.
+ * Activity that allows for the configuration of a Xirvik shared seedbox. The key can be supplied to update an existing server setting instead of
+ * creating a new one.
  * @author Eric Kok
  */
 @EActivity
@@ -59,12 +60,11 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Load the raw preferences to show in this screen
 		init(R.xml.pref_seedbox_xirvikshared,
-				SeedboxProvider.XirvikShared.getSettings().getMaxSeedboxOrder(
-						PreferenceManager.getDefaultSharedPreferences(this)));
+				SeedboxProvider.XirvikShared.getSettings().getMaxSeedboxOrder(PreferenceManager.getDefaultSharedPreferences(this)));
 		initTextPreference("seedbox_xirvikshared_name");
 		initTextPreference("seedbox_xirvikshared_server");
 		initTextPreference("seedbox_xirvikshared_user");
@@ -82,15 +82,14 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 				try {
 
 					// When the shared server settings change, we also have to update the RPC mount point to use
-					SharedPreferences prefs = PreferenceManager
-							.getDefaultSharedPreferences(XirvikSharedSettingsActivity.this);
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(XirvikSharedSettingsActivity.this);
 					String server = prefs.getString("seedbox_xirvikshared_server_" + key, null);
 					String user = prefs.getString("seedbox_xirvikshared_user_" + key, null);
 					String pass = prefs.getString("seedbox_xirvikshared_pass_" + key, null);
 
 					// Retrieve the RPC mount point setting from the server itself
-					DefaultHttpClient httpclient = HttpHelper.createStandardHttpClient(true, user, pass, true, null,
-							HttpHelper.DEFAULT_CONNECTION_TIMEOUT, server, 443);
+					DefaultHttpClient httpclient =
+							HttpHelper.createStandardHttpClient(true, user, pass, true, null, HttpHelper.DEFAULT_CONNECTION_TIMEOUT, server, 443);
 					String url = "https://" + server + ":443/browsers_addons/transdroid_autoconf.txt";
 					HttpResponse request = httpclient.execute(new HttpGet(url));
 					InputStream stream = request.getEntity().getContent();
@@ -103,8 +102,7 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 
 				} catch (Exception e) {
 
-					log.d(XirvikSharedSettingsActivity.this,
-							"Could not retrieve the Xirvik shared seedbox RPC mount point setting: " + e.toString());
+					log.d(XirvikSharedSettingsActivity.this, "Could not retrieve the Xirvik shared seedbox RPC mount point setting: " + e.toString());
 					return null;
 
 				}
@@ -123,7 +121,7 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 		Editor edit = PreferenceManager.getDefaultSharedPreferences(XirvikSharedSettingsActivity.this).edit();
 		EditTextPreference pref = (EditTextPreference) findPreference("seedbox_xirvikshared_rpc_" + key);
 		if (result == null) {
-			Crouton.showText(this, R.string.pref_seedbox_xirviknofolder, NavigationHelper.CROUTON_ERROR_STYLE);
+			SnackbarManager.show(Snackbar.with(this).text(R.string.pref_seedbox_xirviknofolder).colorResource(R.color.red));
 			edit.remove("seedbox_xirvikshared_rpc_" + key);
 			pref.setSummary("");
 		} else {

@@ -1,0 +1,74 @@
+<!--
+  Copyright 2010-2013 Eric Kok et al.
+  
+  Transdroid is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  Transdroid is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:id="@+id/action_enableturtle"
+		android:icon="@drawable/ic_action_turtle_disabled"
+		android:title="@string/action_enableturtle"
+		app:showAsAction="ifRoom" />
+	<item
+		android:id="@+id/action_disableturtle"
+		android:icon="@drawable/ic_action_turtle_enabled"
+		android:title="@string/action_disableturtle"
+		app:showAsAction="ifRoom" />
+	<item
+		android:id="@+id/action_refresh"
+		android:icon="@drawable/ic_action_refresh"
+		android:title="@string/action_refresh"
+		app:showAsAction="ifRoom" />
+	<item
+		android:id="@+id/action_sort"
+		android:icon="@drawable/ic_action_sort"
+		android:title="@string/action_sort"
+		app:showAsAction="ifRoom">
+		<menu>
+			<group
+				android:checkableBehavior="single">
+				<item
+					android:id="@+id/action_sort_byname"
+					android:title="@string/action_sort_alpha" />
+				<item
+					android:id="@+id/action_sort_status"
+					android:title="@string/action_sort_status" />
+				<item
+					android:id="@+id/action_sort_done"
+					android:title="@string/action_sort_done" />
+				<item
+					android:id="@+id/action_sort_added"
+					android:title="@string/action_sort_added" />
+				<item
+					android:id="@+id/action_sort_percent"
+					android:title="@string/action_sort_percent" />
+				<item
+					android:id="@+id/action_sort_downspeed"
+					android:title="@string/action_sort_downspeed" />
+				<item
+					android:id="@+id/action_sort_upspeed"
+					android:title="@string/action_sort_upspeed" />
+				<item
+					android:id="@+id/action_sort_ratio"
+					android:title="@string/action_sort_ratio" />
+				<item
+					android:id="@+id/action_sort_size"
+					android:title="@string/action_sort_size" />
+			</group>
+		</menu>
+	</item>
+
+</menu>
