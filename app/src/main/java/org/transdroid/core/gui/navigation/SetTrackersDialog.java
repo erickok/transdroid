@@ -25,6 +25,7 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
+import org.transdroid.core.app.settings.SystemSettings_;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,11 +49,11 @@ public class SetTrackersDialog extends DialogFragment {
 				// User is done editing and requested to update given the text input
 				onTrackersUpdatedListener.onTrackersUpdated(Arrays.asList(trackersText.getText().toString().split("\n")));
 			}
-		}).show();
+		}).theme(SystemSettings_.getInstance_(context).getMaterialDialogtheme()).show();
 	}
 
 	public interface OnTrackersUpdatedListener {
-		public void onTrackersUpdated(List<String> updatedTrackers);
+		void onTrackersUpdated(List<String> updatedTrackers);
 	}
 
 }

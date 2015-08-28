@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
+import org.transdroid.core.app.settings.SystemSettings_;
 
 public class SetTransferRatesDialog {
 
@@ -62,7 +63,7 @@ public class SetTransferRatesDialog {
 					public void onNeutral(MaterialDialog dialog) {
 						onRatesPickedListener.resetRates();
 					}
-				}).build();
+				}).theme(SystemSettings_.getInstance_(context).getMaterialDialogtheme()).build();
 
 		bindButtons(dialog.getCustomView(), maxSpeedDown, R.id.down1Button, R.id.down2Button, R.id.down3Button, R.id.down4Button, R.id.down5Button,
 				R.id.down6Button, R.id.down7Button, R.id.down8Button, R.id.down9Button, R.id.down0Button);
@@ -98,11 +99,11 @@ public class SetTransferRatesDialog {
 	 * Listener interface to the user having picked or wanting to resets the current maximum transfer speeds;
 	 */
 	public interface OnRatesPickedListener {
-		public void onRatesPicked(int maxDownloadSpeed, int maxUploadSpeed);
+		void onRatesPicked(int maxDownloadSpeed, int maxUploadSpeed);
 
-		public void resetRates();
+		void resetRates();
 
-		public void onInvalidNumber();
+		void onInvalidNumber();
 	}
 
 }

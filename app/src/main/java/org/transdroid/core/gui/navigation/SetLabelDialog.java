@@ -30,6 +30,7 @@ import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
 import org.transdroid.R;
+import org.transdroid.core.app.settings.SystemSettings_;
 
 import java.util.Iterator;
 import java.util.List;
@@ -71,7 +72,7 @@ public class SetLabelDialog {
 					public void onNeutral(MaterialDialog dialog) {
 						onLabelPickedListener.onLabelPicked(null);
 					}
-				}).build();
+				}).theme(SystemSettings_.getInstance_(context).getMaterialDialogtheme()).build();
 
 		if (currentLabels.size() == 0) {
 			// Hide the list (and its label) if there are no labels yet
@@ -93,7 +94,7 @@ public class SetLabelDialog {
 	}
 
 	public interface OnLabelPickedListener {
-		public void onLabelPicked(String newLabel);
+		void onLabelPicked(String newLabel);
 	}
 
 }

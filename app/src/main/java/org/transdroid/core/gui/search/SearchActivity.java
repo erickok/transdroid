@@ -16,16 +16,12 @@
  */
 package org.transdroid.core.gui.search;
 
-import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -35,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -42,7 +39,6 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
@@ -62,11 +58,12 @@ import java.util.List;
  * @author Eric Kok
  */
 @EActivity(R.layout.activity_search)
-@OptionsMenu(R.menu.activity_search)
-public class SearchActivity extends AppCompatActivity implements ActionBar.OnNavigationListener {
+public class SearchActivity extends AppCompatActivity {
 
 	@ViewById
 	protected Toolbar searchToolbar;
+	@ViewById
+	protected Spinner sitesSpinner;
 	@FragmentById(R.id.searchresults_fragment)
 	protected SearchResultsFragment fragmentResults;
 	@ViewById
@@ -84,14 +81,6 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.OnNav
 
 	private List<SearchSetting> searchSites;
 	private SearchSetting lastUsedSite;
-	private OnItemClickListener onSearchSiteClicked = new OnItemClickListener() {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			lastUsedSite = searchSites.get(position);
-			refreshSearch();
-		}
-	};
 	private String lastUsedQuery;
 
 	@Override
@@ -106,8 +95,14 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.OnNav
 	@AfterViews
 	protected void init() {
 
+		searchToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+		searchToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				TorrentsActivity_.intent(SearchActivity.this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+			}
+		});
 		setSupportActionBar(searchToolbar);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Get the user query, as coming from the standard SearchManager
 		handleIntent(getIntent());
@@ -133,6 +128,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.OnNav
 		// Allow site selection via list (on large screens) or action bar spinner
 		if (searchsitesList != null) {
 			// The current layout has a dedicated list view to select the search site
+			sitesSpinner.setVisibility(View.GONE);
 			SearchSitesAdapter searchSitesAdapter = SearchSitesAdapter_.getInstance_(this);
 			searchSitesAdapter.update(searchSites);
 			searchsitesList.setAdapter(searchSitesAdapter);
@@ -145,26 +141,31 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.OnNav
 			}
 		} else {
 			// Use the action bar spinner to select sites
-			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			getSupportActionBar().setDisplayShowTitleEnabled(false);
-			getSupportActionBar().setListNavigationCallbacks(new SearchSettingsDropDownAdapter(searchToolbar.getContext(), searchSites), this);
+			sitesSpinner.setVisibility(View.VISIBLE);
+			sitesSpinner.setAdapter(new SearchSettingsDropDownAdapter(searchToolbar.getContext(), searchSites));
+			sitesSpinner.setOnItemSelectedListener(onSearchSiteSelected);
 			// Select the last used site; this also starts the search!
 			if (lastUsedPosition >= 0) {
-				getSupportActionBar().setSelectedNavigationItem(lastUsedPosition);
+				sitesSpinner.setSelection(lastUsedPosition);
+				lastUsedSite = searchSites.get(lastUsedPosition);
+				refreshSearch();
 			}
 		}
+		invalidateOptionsMenu();
 
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
+		// Manually insert the actions into the main torrent and secondary actions toolbars
+		searchToolbar.inflateMenu(R.menu.activity_search);
 		// Add an expandable SearchView to the action bar
 		MenuItem item = menu.findItem(R.id.action_search);
 		final SearchView searchView = new SearchView(searchToolbar.getContext());
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 		searchView.setQueryRefinementEnabled(true);
-		//searchView.setIconified(false);
+		searchView.setIconified(false);
 		searchView.setIconifiedByDefault(false);
 		MenuItemCompat.setActionView(item, searchView);
 		searchMenu = item;
@@ -176,9 +177,9 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.OnNav
 		super.onPrepareOptionsMenu(menu);
 
 		boolean searchInstalled = searchHelper.isTorrentSearchInstalled();
-		menu.findItem(R.id.action_search).setVisible(searchInstalled);
-		menu.findItem(R.id.action_refresh).setVisible(searchInstalled);
-		menu.findItem(R.id.action_downloadsearch).setVisible(!searchInstalled);
+		searchToolbar.getMenu().findItem(R.id.action_search).setVisible(searchInstalled);
+		searchToolbar.getMenu().findItem(R.id.action_refresh).setVisible(searchInstalled);
+		searchToolbar.getMenu().findItem(R.id.action_downloadsearch).setVisible(!searchInstalled);
 		if (searchsitesList != null) {
 			searchsitesList.setVisibility(searchInstalled ? View.VISIBLE : View.GONE);
 		}
@@ -222,18 +223,25 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.OnNav
 		return true;
 	}
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	@OptionsItem(android.R.id.home)
-	protected void navigateUp() {
-		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-	}
+	private OnItemClickListener onSearchSiteClicked = new OnItemClickListener() {
 
-	@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		lastUsedSite = searchSites.get(itemPosition);
-		refreshSearch();
-		return true;
-	}
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			lastUsedSite = searchSites.get(position);
+			refreshSearch();
+		}
+	};
+	private AdapterView.OnItemSelectedListener onSearchSiteSelected = new AdapterView.OnItemSelectedListener() {
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+			lastUsedSite = searchSites.get(position);
+			refreshSearch();
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> parent) {
+		}
+	};
 
 	/**
 	 * Extracts the query string from the search {@link Intent}
@@ -278,8 +286,9 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.OnNav
 			// Save the search site currently used to search for future usage
 			applicationSettings.setLastUsedSearchSite(lastUsedSite);
 			// Update the activity title (only shown on large devices)
-			getSupportActionBar().setTitle(
-					NavigationHelper.buildCondensedFontString(getString(R.string.search_queryonsite, lastUsedQuery, lastUsedSite.getName())));
+			if (sitesSpinner.getVisibility() == View.GONE)
+				searchToolbar.setTitle(
+						NavigationHelper.buildCondensedFontString(getString(R.string.search_queryonsite, lastUsedQuery, lastUsedSite.getName())));
 			// Ask the results fragment to start a search for the specified query
 			fragmentResults.startSearch(lastUsedQuery, (SearchSite) lastUsedSite);
 

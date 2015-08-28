@@ -24,6 +24,7 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
+import org.transdroid.core.app.settings.SystemSettings_;
 
 public class SetStorageLocationDialog {
 
@@ -44,11 +45,11 @@ public class SetStorageLocationDialog {
 				// User is done editing and requested to update given the text input
 				onStorageLocationUpdatedListener.onStorageLocationUpdated(locationText.getText().toString());
 			}
-		}).show();
+		}).theme(SystemSettings_.getInstance_(context).getMaterialDialogtheme()).show();
 	}
 
 	public interface OnStorageLocationUpdatedListener {
-		public void onStorageLocationUpdated(String newLocation);
+		void onStorageLocationUpdated(String newLocation);
 	}
 
 }
