@@ -17,6 +17,9 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.5.3\n
+- Fixes in UI for dialogs and dark theme\n
+\n
 Transdroid 2.5.2\n
 - Native Dediseedbox support\n
 - Prevent widget from crashing\n
@@ -30,6 +33,7 @@ Transdroid 2.5.0-beta2\n
 - Fixed qBittorrent 3.2+ ratio bug\n
 - Fixes in UI\n
 - Updated translations\n
+\n
 Transdroid 2.5.0-beta1\n
 - Graphical refresh with Material design in Android 5.x Lollipop style\n
 - Support rTorrent 0.9.7+ versions\n
