@@ -16,9 +16,11 @@
  */
 package org.transdroid.core.gui.search;
 
+import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.MenuItemCompat;
@@ -128,7 +130,6 @@ public class SearchActivity extends AppCompatActivity {
 		// Allow site selection via list (on large screens) or action bar spinner
 		if (searchsitesList != null) {
 			// The current layout has a dedicated list view to select the search site
-			sitesSpinner.setVisibility(View.GONE);
 			SearchSitesAdapter searchSitesAdapter = SearchSitesAdapter_.getInstance_(this);
 			searchSitesAdapter.update(searchSites);
 			searchsitesList.setAdapter(searchSitesAdapter);
@@ -162,7 +163,7 @@ public class SearchActivity extends AppCompatActivity {
 		searchToolbar.inflateMenu(R.menu.activity_search);
 		// Add an expandable SearchView to the action bar
 		MenuItem item = menu.findItem(R.id.action_search);
-		final SearchView searchView = new SearchView(searchToolbar.getContext());
+		final SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 		searchView.setQueryRefinementEnabled(true);
 		searchView.setIconified(false);
@@ -266,6 +267,12 @@ public class SearchActivity extends AppCompatActivity {
 
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	@OptionsItem(android.R.id.home)
+	protected void navigateUp() {
+		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+	}
+
 	@OptionsItem(R.id.action_refresh)
 	protected void refreshSearch() {
 
@@ -286,7 +293,7 @@ public class SearchActivity extends AppCompatActivity {
 			// Save the search site currently used to search for future usage
 			applicationSettings.setLastUsedSearchSite(lastUsedSite);
 			// Update the activity title (only shown on large devices)
-			if (sitesSpinner.getVisibility() == View.GONE)
+			if (sitesSpinner != null)
 				searchToolbar.setTitle(
 						NavigationHelper.buildCondensedFontString(getString(R.string.search_queryonsite, lastUsedQuery, lastUsedSite.getName())));
 			// Ask the results fragment to start a search for the specified query
