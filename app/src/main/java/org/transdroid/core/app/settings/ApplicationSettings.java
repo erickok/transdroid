@@ -165,8 +165,8 @@ public class ApplicationSettings {
 		return new ServerSetting(order, 
 				prefs.getString("server_name_" + order, null), 
 				type, 
-				prefs.getString("server_address_" + order, null), 
-				prefs.getString("server_localaddress_" + order, null),
+				trim(prefs.getString("server_address_" + order, null)),
+				trim(prefs.getString("server_localaddress_" + order, null)),
 				Integer.parseInt(localPort),
 				prefs.getString("server_localnetwork_" + order, null), 
 				Integer.parseInt(port), 
@@ -717,6 +717,16 @@ public class ApplicationSettings {
 		edit.remove("widget_showstatus_" + appWidgetId);
 		edit.remove("widget_darktheme_" + appWidgetId);
 		edit.apply();
+	}
+
+	/**
+	 * Trims away whitespace around a string, or returns null if str is null
+	 * @param str The string to trim, or null
+	 * @return The trimmed string, or null if str is null
+	 */
+	private String trim(String str) {
+		if (str == null) return null;
+		return str.trim();
 	}
 
 }
