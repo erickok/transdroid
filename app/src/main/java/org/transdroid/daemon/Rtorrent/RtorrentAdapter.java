@@ -141,28 +141,28 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				case GetTorrentDetails:
 
 					// @formatter:off
-				Object dresult = makeRtorrentCall(log,"t.multicall", new String[] {
-						task.getTargetTorrent().getUniqueID(),
-						"", 
-						"t.url=" });
-				// @formatter:on
+					Object dresult = makeRtorrentCall(log,"t.multicall", new String[] {
+							task.getTargetTorrent().getUniqueID(),
+							"",
+							"t.url=" });
+					// @formatter:on
 					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
 							onTorrentDetailsRetrieved(log, dresult));
 
 				case GetFileList:
 
 					// @formatter:off
-				Object fresult = makeRtorrentCall(log,"f.multicall", new String[] {
-						task.getTargetTorrent().getUniqueID(),
-						"", 
-						"f.path=",
-						"f.size_bytes=",
-						"f.priority=",
-						"f.completed_chunks=",
-						"f.size_chunks=",
-						"f.priority=",
-						"f.frozen_path=" });
-				// @formatter:on
+					Object fresult = makeRtorrentCall(log,"f.multicall", new String[] {
+							task.getTargetTorrent().getUniqueID(),
+							"",
+							"f.path=",
+							"f.size_bytes=",
+							"f.priority=",
+							"f.completed_chunks=",
+							"f.size_chunks=",
+							"f.priority=",
+							"f.frozen_path=" });
+					// @formatter:on
 					return new GetFileListTaskSuccessResult((GetFileListTask) task,
 							onTorrentFilesRetrieved(fresult, task.getTargetTorrent()));
 
@@ -179,7 +179,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					}
 					byte[] bytes = baos.toByteArray();
 					int size = Math.max(((int) file.length() * 2) + XMLRPC_EXTRA_PADDING, XMLRPC_MINIMUM_SIZE);
-					if (version >= 907) {
+					if (version >= 904) {
 						makeRtorrentCall(log, "network.xmlrpc.size_limit.set", new Object[]{size + XMLRPC_EXTRA_PADDING});
 						makeRtorrentCall(log, "load.raw_start", new Object[]{bytes});
 					} else {
@@ -192,7 +192,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 					// Request to add a torrent by URL
 					String url = ((AddByUrlTask) task).getUrl();
-					if (version >= 907) {
+					if (version >= 904) {
 						makeRtorrentCall(log, "load.start", new String[]{"", url});
 					} else {
 						makeRtorrentCall(log, "load_start", new String[]{url});
@@ -203,7 +203,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 					// Request to add a magnet link by URL
 					String magnet = ((AddByMagnetUrlTask) task).getUrl();
-					if (version >= 907) {
+					if (version >= 904) {
 						makeRtorrentCall(log, "load.start", new String[]{"", magnet});
 					} else {
 						makeRtorrentCall(log, "load_start", new String[]{magnet});
