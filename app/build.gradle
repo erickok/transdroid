@@ -3,7 +3,7 @@ apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.0'
+    buildToolsVersion '23.0.1'
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
@@ -34,16 +34,18 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'org.androidannotations:androidannotations-api:3.2'
+    compile 'org.androidannotations:androidannotations-api:3.3.2'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:support-annotations:23.0.1'
-    compile 'com.getbase:floatingactionbutton:1.8.0'
-    compile 'com.afollestad:material-dialogs:0.6.3.3'
-    compile 'com.nispok:snackbar:2.10.6'
-    apt 'org.androidannotations:androidannotations:3.2'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:support-annotations:23.1.0'
+    compile 'com.getbase:floatingactionbutton:1.10.1'
+    compile 'com.nispok:snackbar:2.11.0'
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.0@aar') {
+        transitive = true
+    }
+    apt 'org.androidannotations:androidannotations:3.3.2'
 }
 
 apt {

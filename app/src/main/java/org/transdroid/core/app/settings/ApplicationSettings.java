@@ -129,7 +129,7 @@ public class ApplicationSettings {
 	 */
 	public int getMaxNormalServer() {
 		for (int i = 0; true; i++) {
-			if (prefs.getString("server_type_" + i, null) == null)
+			if (prefs.getString("server_type_" + i, null) == null || prefs.getString("server_address_" + i, null) == null)
 				return i - 1;
 		}
 	}
