@@ -16,12 +16,6 @@
  */
 package org.transdroid.core.gui.settings;
 
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
-import org.transdroid.R;
-import org.transdroid.core.app.settings.*;
-
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -31,9 +25,15 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
+import org.transdroid.R;
+import org.transdroid.core.app.settings.ApplicationSettings_;
+
 /**
- * Activity that allows for a configuration of some RSS feed. The key can be supplied to update an existing RSS feed
- * setting instead of creating a new one.
+ * Activity that allows for a configuration of some RSS feed. The key can be supplied to update an existing RSS feed setting instead of creating a new
+ * one.
  * @author Eric Kok
  */
 @EActivity
@@ -53,8 +53,10 @@ public class RssfeedSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("rssfeed_name");
 		initTextPreference("rssfeed_url");
 		initBooleanPreference("rssfeed_alarmnew");
-		initBooleanPreference("rssfeed_reqauth");
+		initTextPreference("rssfeed_exclude");
+		initTextPreference("rssfeed_include");
 		// TODO: Replace this for cookies support like web searches
+		initBooleanPreference("rssfeed_reqauth");
 
 	}
 
@@ -73,15 +75,15 @@ public class RssfeedSettingsActivity extends KeyBoundPreferencesActivity {
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
-		case DIALOG_CONFIRMREMOVE:
-			return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
-					.setPositiveButton(android.R.string.ok, new OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							ApplicationSettings_.getInstance_(RssfeedSettingsActivity.this).removeRssfeedSettings(key);
-							finish();
-						}
-					}).setNegativeButton(android.R.string.cancel, null).create();
+			case DIALOG_CONFIRMREMOVE:
+				return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
+						.setPositiveButton(android.R.string.ok, new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								ApplicationSettings_.getInstance_(RssfeedSettingsActivity.this).removeRssfeedSettings(key);
+								finish();
+							}
+						}).setNegativeButton(android.R.string.cancel, null).create();
 		}
 		return null;
 	}

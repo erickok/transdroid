@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
 
 /**
@@ -38,6 +39,8 @@ import android.preference.PreferenceManager;
 @OptionsMenu(resName = "activity_deleteableprefs")
 public class XirvikDediSettingsActivity extends KeyBoundPreferencesActivity {
 
+	private EditTextPreference excludeFilter, includeFilter;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,6 +56,10 @@ public class XirvikDediSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("seedbox_xirvikdedi_server");
 		initTextPreference("seedbox_xirvikdedi_user");
 		initTextPreference("seedbox_xirvikdedi_pass");
+		initBooleanPreference("seedbox_xirvikdedi_alarmfinished", true);
+		initBooleanPreference("seedbox_xirvikdedi_alarmnew", true);
+		excludeFilter = initTextPreference("seedbox_xirvikdedi_alarmexclude");
+		includeFilter = initTextPreference("seedbox_xirvikdedi_alarminclude");
 
 	}
 
@@ -67,6 +74,18 @@ public class XirvikDediSettingsActivity extends KeyBoundPreferencesActivity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		SeedboxProvider.XirvikDedi.getSettings().removeServerSetting(prefs, key);
 		finish();
+	}
+
+	@Override
+	protected void onPreferencesChanged() {
+
+		// Show the exclude and the include filters if notifying
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean alarmFinished = prefs.getBoolean("seedbox_xirvikdedi_alarmfinished_" + key, true);
+		boolean alarmNew = prefs.getBoolean("seedbox_xirvikdedi_alarmnew_" + key, true);
+		excludeFilter.setEnabled(alarmNew || alarmFinished);
+		includeFilter.setEnabled(alarmNew || alarmFinished);
+
 	}
 
 }

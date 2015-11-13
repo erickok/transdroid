@@ -16,13 +16,6 @@
  */
 package org.transdroid.core.gui.settings;
 
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
-import org.transdroid.R;
-import org.transdroid.core.app.settings.*;
-import org.transdroid.daemon.Daemon;
-
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,10 +27,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
+
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
+import org.transdroid.R;
+import org.transdroid.core.app.settings.ApplicationSettings_;
+import org.transdroid.daemon.Daemon;
 
 /**
- * Activity that allows for a configuration of a server. The key can be supplied to update an existing server setting
- * instead of creating a new one.
+ * Activity that allows for a configuration of a server. The key can be supplied to update an existing server setting instead of creating a new one.
  * @author Eric Kok
  */
 @EActivity
@@ -46,7 +46,7 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 
 	private static final int DIALOG_CONFIRMREMOVE = 0;
 
-	private EditTextPreference extraPass, folder, downloadDir;
+	private EditTextPreference extraPass, folder, downloadDir, excludeFilter, includeFilter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,8 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("server_timeout");
 		initBooleanPreference("server_alarmfinished", true);
 		initBooleanPreference("server_alarmnew");
+		excludeFilter = initTextPreference("server_exclude");
+		includeFilter = initTextPreference("server_include");
 		initListPreference("server_os", "type_linux");
 		downloadDir = initTextPreference("server_downloaddir");
 		initTextPreference("server_ftpurl");
@@ -97,16 +99,15 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
-		case DIALOG_CONFIRMREMOVE:
-			return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
-					.setPositiveButton(android.R.string.ok, new OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							ApplicationSettings_.getInstance_(ServerSettingsActivity.this).removeNormalServerSettings(
-									key);
-							finish();
-						}
-					}).setNegativeButton(android.R.string.cancel, null).create();
+			case DIALOG_CONFIRMREMOVE:
+				return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
+						.setPositiveButton(android.R.string.ok, new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								ApplicationSettings_.getInstance_(ServerSettingsActivity.this).removeNormalServerSettings(key);
+								finish();
+							}
+						}).setNegativeButton(android.R.string.cancel, null).create();
 		}
 		return null;
 	}
@@ -126,6 +127,12 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 
 		// Adjust title texts accordingly
 		folder.setTitle(daemonType == Daemon.rTorrent ? R.string.pref_scgifolder : R.string.pref_folder);
+
+		// Show the exclude and the include filters if notifying
+		boolean alarmFinished = prefs.getBoolean("server_alarmfinished_" + key, true);
+		boolean alarmNew = prefs.getBoolean("server_alarmnew_" + key, true);
+		excludeFilter.setEnabled(alarmNew || alarmFinished);
+		includeFilter.setEnabled(alarmNew || alarmFinished);
 
 	}
 

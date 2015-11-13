@@ -161,7 +161,7 @@ public class Item implements Parcelable {
 		enclosureUrl = in.readString();
 		enclosureType = in.readString();
 		enclosureLength = in.readLong();
-		isNew = in.readInt() == 1 ? true : false;
+		isNew = in.readInt() == 1;
 	}
 
 }

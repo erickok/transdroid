@@ -53,6 +53,8 @@ import java.io.InputStream;
 @OptionsMenu(resName = "activity_deleteableprefs")
 public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 
+	private EditTextPreference excludeFilter, includeFilter;
+
 	@Bean
 	protected Log log;
 
@@ -70,11 +72,22 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("seedbox_xirvikshared_user");
 		initTextPreference("seedbox_xirvikshared_pass");
 		initTextPreference("seedbox_xirvikshared_rpc");
+		initBooleanPreference("seedbox_xirvikshared_alarmfinished", true);
+		initBooleanPreference("seedbox_xirvikshared_alarmnew", true);
+		excludeFilter = initTextPreference("seedbox_xirvikshared_alarmexclude");
+		includeFilter = initTextPreference("seedbox_xirvikshared_alarminclude");
 
 	}
 
 	@Override
 	protected void onPreferencesChanged() {
+
+		// Show the exclude and the include filters if notifying
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean alarmFinished = prefs.getBoolean("seedbox_xirvikshared_alarmfinished_" + key, true);
+		boolean alarmNew = prefs.getBoolean("seedbox_xirvikshared_alarmnew_" + key, true);
+		excludeFilter.setEnabled(alarmNew || alarmFinished);
+		includeFilter.setEnabled(alarmNew || alarmFinished);
 
 		new AsyncTask<Void, Void, String>() {
 			@Override

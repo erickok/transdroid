@@ -184,7 +184,9 @@ public class ApplicationSettings {
 				prefs.getString("server_ftppass_" + order, null), 
 				Integer.parseInt(prefs.getString("server_timeout_" + order, "8")), 
 				prefs.getBoolean("server_alarmfinished_" + order, true), 
-				prefs.getBoolean("server_alarmnew_" + order, false), 
+				prefs.getBoolean("server_alarmnew_" + order, false),
+				prefs.getString("server_alarmexclude_" + order, null),
+				prefs.getString("server_alarminclude_" + order, null),
 				false);
 		// @formatter:on
 	}
@@ -472,6 +474,8 @@ public class ApplicationSettings {
 				prefs.getString("rssfeed_url_" + order, null), 
 				prefs.getBoolean("rssfeed_reqauth_" + order, false),
 				prefs.getBoolean("rssfeed_alarmnew_" + order, true),
+				prefs.getString("rssfeed_exclude_" + order, null),
+				prefs.getString("rssfeed_include_" + order, null),
 				lastViewed == -1L ? null : new Date(lastViewed),
 				prefs.getString("rssfeed_lastvieweditemurl_" + order, null));
 		// @formatter:on

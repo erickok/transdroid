@@ -40,4 +40,16 @@
 		android:summary="@string/pref_alarmrssnew_info"
 		android:defaultValue="true" />
 
+	<EditTextPreference
+		android:key="rssfeed_exclude"
+		android:title="@string/pref_alarmrssexclude"
+		android:summary="@string/pref_alarmrssexclude_info"
+		android:inputType="textFilter" />
+
+	<EditTextPreference
+		android:key="rssfeed_include"
+		android:title="@string/pref_alarmrssinclude"
+		android:summary="@string/pref_alarmrssinclude_info"
+		android:inputType="textFilter" />
+
 </PreferenceScreen>

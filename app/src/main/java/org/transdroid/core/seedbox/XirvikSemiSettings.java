@@ -66,8 +66,10 @@ public class XirvikSemiSettings extends SeedboxSettingsImpl implements SeedboxSe
 				"ftp://" + user + "@" + server + "/downloads", 
 				pass, 
 				6, 
-				true, 
-				true,
+				prefs.getBoolean("seedbox_xirviksemi_alarmfinished_" + order, true),
+				prefs.getBoolean("seedbox_xirviksemi_alarmnew_" + order, false),
+				prefs.getString("seedbox_xirviksemi_alarmexclude_" + order, null),
+				prefs.getString("seedbox_xirviksemi_alarminclude_" + order, null),
 				true);
 		// @formatter:on
 	}

@@ -36,16 +36,20 @@ public class RssfeedSetting implements SimpleListItem {
 	private final String url;
 	private final boolean requiresAuth;
 	private final boolean alarm;
+	private final String excludeFilter;
+	private final String includeFilter;
 	private Date lastViewed;
 	private final String lastViewedItemUrl;
 
-	public RssfeedSetting(int order, String name, String baseUrl, boolean needsAuth, boolean alarm, Date lastViewed,
+	public RssfeedSetting(int order, String name, String baseUrl, boolean needsAuth, boolean alarm, String excludeFilter, String includeFilter, Date lastViewed,
 			String lastViewedItemUrl) {
 		this.order = order;
 		this.name = name;
 		this.url = baseUrl;
 		this.requiresAuth = needsAuth;
 		this.alarm = alarm;
+		this.excludeFilter = excludeFilter;
+		this.includeFilter = includeFilter;
 		this.lastViewed = lastViewed;
 		this.lastViewedItemUrl = lastViewedItemUrl;
 	}
@@ -75,6 +79,14 @@ public class RssfeedSetting implements SimpleListItem {
 
 	public boolean shouldAlarmOnNewItems() {
 		return alarm;
+	}
+
+	public String getExcludeFilter() {
+		return excludeFilter;
+	}
+
+	public String getIncludeFilter() {
+		return includeFilter;
 	}
 
 	/**

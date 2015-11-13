@@ -246,6 +246,10 @@
 	<string name="pref_reqauth_info">Opens links in the webbrowser for user login</string>
 	<string name="pref_alarmrssnew">New item notification</string>
 	<string name="pref_alarmrssnew_info">Nofity when new torrents are released</string>
+	<string name="pref_alarmrssexclude">Exclude filter</string>
+	<string name="pref_alarmrssexclude_info">Don\'t show torrents whose name matches these |-separated words</string>
+	<string name="pref_alarmrssinclude">Include filter</string>
+	<string name="pref_alarmrssinclude_info">Only show torrents whose name matches these |-separated words</string>
 	
 	<string name="pref_servertype">Server type</string>
 	<string name="pref_address">IP or host name</string>
@@ -268,6 +272,10 @@
 	<string name="pref_alarmdone_info">Notify when a torrent finishes</string>
 	<string name="pref_alarmnew">New torrent notification</string>
 	<string name="pref_alarmnew_info">Nofity when a torrent was added</string>
+	<string name="pref_alarmexclude">Exclude filter</string>
+	<string name="pref_alarmexclude_info">Notify only if torrent name matches these |-separated words</string>
+	<string name="pref_alarminclude">Include filter</string>
+	<string name="pref_alarminclude_info">Notify never if torrent name matches these |-separated words</string>
 	<string name="pref_os">Server OS</string>
 	<string name="pref_downdir">Download directory</string>
 	<string name="pref_downdir_info">Manually set absolute path for remote connections</string>

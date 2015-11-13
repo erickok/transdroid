@@ -46,6 +46,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
+import android.text.TextUtils;
 
 /**
  * A background service that checks all user-configured servers (if so desired) for new and finished torrents.
@@ -102,10 +103,26 @@ public class ServerCheckerService extends IntentService {
 			List<Torrent> retrieved = ((RetrieveTaskSuccessResult) result).getTorrents();
 			log.d(this, server.getName() + ": Retrieved torrent listing");
 
+			// Preload filters to match torrent names
+			String[] excludeFilters = null;
+			String[] includeFilters = null;
+			if (!TextUtils.isEmpty(server.getExcludeFilter())) {
+				excludeFilters = server.getExcludeFilter().split("\\|");
+				for (int i = 0; i < excludeFilters.length; i++) {
+					excludeFilters[i] = excludeFilters[i].toUpperCase();
+				}
+			}
+			if (!TextUtils.isEmpty(server.getIncludeFilter())) {
+				includeFilters = server.getIncludeFilter().split("\\|");
+				for (int i = 0; i < includeFilters.length; i++) {
+					includeFilters[i] = includeFilters[i].toUpperCase();
+				}
+			}
+
 			// Check for differences between the last and the current stats
 			JSONArray currentStats = new JSONArray();
-			List<Torrent> newTorrents = new ArrayList<Torrent>();
-			List<Torrent> doneTorrents = new ArrayList<Torrent>();
+			List<Torrent> newTorrents = new ArrayList<>();
+			List<Torrent> doneTorrents = new ArrayList<>();
 			for (Torrent torrent : retrieved) {
 
 				// Remember this torrent for the next time
@@ -119,12 +136,13 @@ public class ServerCheckerService extends IntentService {
 				// See if this torrent was done the last time we checked
 				if (lastStats != null) {
 					Boolean wasDone = findLastDoneStat(lastStats, torrent);
-					if (server.shouldAlarmOnNewTorrent() && wasDone == null) {
+					boolean shouldNotify = matchFilters(torrent.getName(), excludeFilters, includeFilters);
+					if (server.shouldAlarmOnNewTorrent() && shouldNotify && wasDone == null) {
 						// This torrent wasn't present earlier
 						newTorrents.add(torrent);
 						continue;
 					}
-					if (server.shouldAlarmOnFinishedDownload() && torrent.getPartDone() == 1F && wasDone != null && !wasDone)
+					if (server.shouldAlarmOnFinishedDownload() && shouldNotify && torrent.getPartDone() == 1F && wasDone != null && !wasDone)
 						// This torrent is now done, but wasn't before
 						doneTorrents.add(torrent);
 				}
@@ -142,7 +160,7 @@ public class ServerCheckerService extends IntentService {
 			// Should start the main activity directly into this server
 			PendingIntent pi = PendingIntent.getActivity(this, notifyBase + server.getOrder(), i,
 					Intent.FLAG_ACTIVITY_NEW_TASK);
-			ArrayList<Torrent> affectedTorrents = new ArrayList<Torrent>(newTorrents.size() + doneTorrents.size());
+			ArrayList<Torrent> affectedTorrents = new ArrayList<>(newTorrents.size() + doneTorrents.size());
 			affectedTorrents.addAll(newTorrents);
 			affectedTorrents.addAll(doneTorrents);
 			
@@ -211,6 +229,28 @@ public class ServerCheckerService extends IntentService {
 			}
 		}
 		return null;
+	}
+
+	private boolean matchFilters(String name, String[] excludeFilters, String[] includeFilters) {
+		String upperName = name.toUpperCase();
+		if (includeFilters != null) {
+			boolean include = false;
+			for (String includeWord : includeFilters) {
+				if (includeWord.equals("") || upperName.contains(includeWord)) {
+					include = true;
+					break;
+				}
+			}
+			if (!include)
+				return false;
+		}
+		if (excludeFilters != null) {
+			for (String excludeWord : excludeFilters) {
+				if (!excludeWord.equals("") && upperName.contains(excludeWord))
+					return false;
+			}
+		}
+		return true;
 	}
 
 }

@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
 
 import org.androidannotations.annotations.EActivity;
@@ -29,6 +30,7 @@ import org.androidannotations.annotations.OptionsMenu;
 import org.transdroid.R;
 import org.transdroid.core.gui.settings.KeyBoundPreferencesActivity;
 import org.transdroid.core.gui.settings.MainSettingsActivity_;
+import org.transdroid.daemon.Daemon;
 
 /**
  * Activity that allows for the configuration of a Dediseedbox seedbox. The key can be supplied to update an
@@ -38,6 +40,8 @@ import org.transdroid.core.gui.settings.MainSettingsActivity_;
 @EActivity
 @OptionsMenu(resName = "activity_deleteableprefs")
 public class DediseedboxSettingsActivity extends KeyBoundPreferencesActivity {
+
+	private EditTextPreference excludeFilter, includeFilter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,10 @@ public class DediseedboxSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("seedbox_dediseedbox_server");
 		initTextPreference("seedbox_dediseedbox_user");
 		initTextPreference("seedbox_dediseedbox_pass");
+		initBooleanPreference("seedbox_dediseedbox_alarmfinished", true);
+		initBooleanPreference("seedbox_dediseedbox_alarmnew", true);
+		excludeFilter = initTextPreference("seedbox_dediseedbox_alarmexclude");
+		includeFilter = initTextPreference("seedbox_dediseedbox_alarminclude");
 
 	}
 
@@ -67,6 +75,18 @@ public class DediseedboxSettingsActivity extends KeyBoundPreferencesActivity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		SeedboxProvider.Dediseedbox.getSettings().removeServerSetting(prefs, key);
 		finish();
+	}
+
+	@Override
+	protected void onPreferencesChanged() {
+
+		// Show the exclude and the include filters if notifying
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean alarmFinished = prefs.getBoolean("seedbox_dediseedbox_alarmfinished_" + key, true);
+		boolean alarmNew = prefs.getBoolean("seedbox_dediseedbox_alarmnew_" + key, true);
+		excludeFilter.setEnabled(alarmNew || alarmFinished);
+		includeFilter.setEnabled(alarmNew || alarmFinished);
+
 	}
 
 }

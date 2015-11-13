@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
 
 /**
@@ -37,6 +38,8 @@ import android.preference.PreferenceManager;
 @EActivity
 @OptionsMenu(resName = "activity_deleteableprefs")
 public class SeedstuffSettingsActivity extends KeyBoundPreferencesActivity {
+
+	private EditTextPreference excludeFilter, includeFilter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,10 @@ public class SeedstuffSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("seedbox_seedstuff_server");
 		initTextPreference("seedbox_seedstuff_user");
 		initTextPreference("seedbox_seedstuff_pass");
+		initBooleanPreference("seedbox_seedstuff_alarmfinished", true);
+		initBooleanPreference("seedbox_seedstuff_alarmnew", true);
+		excludeFilter = initTextPreference("seedbox_seedstuff_alarmexclude");
+		includeFilter = initTextPreference("seedbox_seedstuff_alarminclude");
 
 	}
 
@@ -66,6 +73,18 @@ public class SeedstuffSettingsActivity extends KeyBoundPreferencesActivity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		SeedboxProvider.Seedstuff.getSettings().removeServerSetting(prefs, key);
 		finish();
+	}
+
+	@Override
+	protected void onPreferencesChanged() {
+
+		// Show the exclude and the include filters if notifying
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean alarmFinished = prefs.getBoolean("seedbox_seedstuff_alarmfinished_" + key, true);
+		boolean alarmNew = prefs.getBoolean("seedbox_seedstuff_alarmnew_" + key, true);
+		excludeFilter.setEnabled(alarmNew || alarmFinished);
+		includeFilter.setEnabled(alarmNew || alarmFinished);
+
 	}
 
 }

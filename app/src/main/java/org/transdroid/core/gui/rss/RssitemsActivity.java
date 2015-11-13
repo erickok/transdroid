@@ -42,6 +42,8 @@ public class RssitemsActivity extends AppCompatActivity {
 	protected Channel rssfeed = null;
 	@Extra
 	protected String rssfeedName;
+	@Extra
+	protected boolean requiresExternalAuthentication;
 
 	@FragmentById(R.id.rssitems_fragment)
 	protected RssitemsFragment fragmentItems;
@@ -71,7 +73,7 @@ public class RssitemsActivity extends AppCompatActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Get the intent extras and show them to the already loaded fragment
-		fragmentItems.update(rssfeed, false);
+		fragmentItems.update(rssfeed, false, requiresExternalAuthentication);
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

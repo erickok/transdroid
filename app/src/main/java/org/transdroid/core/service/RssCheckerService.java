@@ -83,7 +83,7 @@ public class RssCheckerService extends IntentService {
 				}
 
 				log.d(this, "Try to parse " + feed.getName() + " (" + feed.getUrl() + ")");
-				RssParser parser = new RssParser(feed.getUrl());
+				RssParser parser = new RssParser(feed.getUrl(), feed.getExcludeFilter(), feed.getIncludeFilter());
 				parser.parse();
 				if (parser.getChannel() == null) {
 					continue;

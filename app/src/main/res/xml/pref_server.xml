@@ -109,6 +109,16 @@
 			android:title="@string/pref_alarmnew"
 			android:summary="@string/pref_alarmnew_info"
 			android:defaultValue="false" />
+		<EditTextPreference
+			android:key="server_exclude"
+			android:title="@string/pref_alarmexclude"
+			android:summary="@string/pref_alarmexclude_info"
+			android:inputType="textFilter" />
+		<EditTextPreference
+			android:key="server_include"
+			android:title="@string/pref_alarminclude"
+			android:summary="@string/pref_alarminclude_info"
+			android:inputType="textFilter" />
 		<ListPreference
 			android:key="server_os"
 			android:title="@string/pref_os"

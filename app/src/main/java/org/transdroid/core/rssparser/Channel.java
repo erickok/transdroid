@@ -24,8 +24,8 @@ public class Channel implements Parcelable {
 	private String image;
 
 	public Channel() {
-		this.categories = new ArrayList<String>();
-		this.items = new ArrayList<Item>();
+		this.categories = new ArrayList<>();
+		this.items = new ArrayList<>();
 	}
 
 	public void setId(int id) {
@@ -145,7 +145,7 @@ public class Channel implements Parcelable {
 		long pubDateIn = in.readLong();
 		pubDate = pubDateIn == -1 ? null : new Date(pubDateIn);
 		lastBuildDate = in.readLong();
-		categories = new ArrayList<String>();
+		categories = new ArrayList<>();
 		in.readTypedList(items, Item.CREATOR);
 		in.readStringList(categories);
 		image = in.readString();

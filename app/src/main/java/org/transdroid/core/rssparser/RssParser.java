@@ -4,12 +4,7 @@
  */
 package org.transdroid.core.rssparser;
 
-import java.io.IOException;
-import java.util.Date;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import android.text.TextUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -27,9 +22,21 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+@SuppressWarnings("deprecation")
 public class RssParser extends DefaultHandler {
 
-	private String urlString;
+	private final String urlString;
+	private final String[] excludeFilters;
+	private final String[] includeFilters;
 	private Channel channel;
 	private StringBuilder text;
 	private Item item;
@@ -38,16 +45,34 @@ public class RssParser extends DefaultHandler {
 	/**
 	 * The constructor for the RSS parser; call {@link #parse()} to synchronously create an HTTP connection and parse
 	 * the RSS feed contents. The results can be retrieved with {@link #getChannel()}.
-	 * @param url
+	 * @param url The url of the feed to retrieve
+	 * @param excludeFilter A |-separated list of words that may not be included in the item title or they are excluded
+	 * @param includeFilter A |-separated list of words that need to be included in the item title or they are excluded
 	 */
-	public RssParser(String url) {
+	public RssParser(String url, String excludeFilter, String includeFilter) {
 		this.urlString = url;
+		if (!TextUtils.isEmpty(excludeFilter)) {
+			this.excludeFilters = excludeFilter.split("\\|");
+			for (int i = 0; i < excludeFilters.length; i++) {
+				excludeFilters[i] = excludeFilters[i].toUpperCase(Locale.getDefault());
+			}
+		} else {
+			this.excludeFilters = null;
+		}
+		if (!TextUtils.isEmpty(includeFilter)) {
+			this.includeFilters = includeFilter.split("\\|");
+			for (int i = 0; i < includeFilters.length; i++) {
+				includeFilters[i] = includeFilters[i].toUpperCase(Locale.getDefault());
+			}
+		} else {
+			this.includeFilters = null;
+		}
 		this.text = new StringBuilder();
 	}
 
 	/**
 	 * Returns the loaded RSS feed as channel which contains the individual {@link Item}s
-	 * @return A channel object that ocntains the feed details and individual items
+	 * @return A channel object that contains the feed details and individual items
 	 */
 	public Channel getChannel() {
 		return this.channel;
@@ -69,6 +94,37 @@ public class RssParser extends DefaultHandler {
 			sp.parse(result.getEntity().getContent(), this);
 		}
 
+		// Apply filters
+		if (channel != null && (includeFilters != null || excludeFilters != null)) {
+			Iterator<Item> i = channel.getItems().iterator();
+			while (i.hasNext()) {
+				if (!matchesFilters(i.next()))
+					i.remove();
+			}
+		}
+
+	}
+
+	private boolean matchesFilters(Item next) {
+		String title = next.getTitle().toUpperCase();
+		if (includeFilters != null) {
+			boolean include = false;
+			for (String includeWord : includeFilters) {
+				if (includeWord.equals("") || title.contains(includeWord)) {
+					include = true;
+					break;
+				}
+			}
+			if (!include)
+				return false;
+		}
+		if (excludeFilters != null) {
+			for (String excludeWord : excludeFilters) {
+				if (!excludeWord.equals("") && title.contains(excludeWord))
+					return false;
+			}
+		}
+		return true;
 	}
 
 	private DefaultHttpClient initialise() {

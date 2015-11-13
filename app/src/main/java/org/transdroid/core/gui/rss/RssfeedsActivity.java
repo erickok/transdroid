@@ -119,7 +119,8 @@ public class RssfeedsActivity extends AppCompatActivity {
 	protected void loadRssfeed(RssfeedLoader loader) {
 		try {
 			// Load and parse the feed
-			RssParser parser = new RssParser(loader.getSetting().getUrl());
+			RssParser parser =
+					new RssParser(loader.getSetting().getUrl(), loader.getSetting().getExcludeFilter(), loader.getSetting().getIncludeFilter());
 			parser.parse();
 			handleRssfeedResult(loader, parser.getChannel(), false);
 		} catch (Exception e) {
@@ -162,7 +163,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 				}
 				applicationSettings.setRssfeedLastViewer(loader.getSetting().getOrder(), new Date(), lastViewedItemUrl);
 			}
-			fragmentItems.update(loader.getChannel(), loader.hasError());
+			fragmentItems.update(loader.getChannel(), loader.hasError(), loader.getSetting().requiresExternalAuthentication());
 
 		} else {
 
@@ -193,7 +194,8 @@ public class RssfeedsActivity extends AppCompatActivity {
 			if (TextUtils.isEmpty(name) && !TextUtils.isEmpty(loader.getSetting().getUrl())) {
 				name = Uri.parse(loader.getSetting().getUrl()).getHost();
 			}
-			RssitemsActivity_.intent(this).rssfeed(loader.getChannel()).rssfeedName(name).start();
+			RssitemsActivity_.intent(this).rssfeed(loader.getChannel()).rssfeedName(name)
+					.requiresExternalAuthentication(loader.getSetting().requiresExternalAuthentication()).start();
 
 		}
 

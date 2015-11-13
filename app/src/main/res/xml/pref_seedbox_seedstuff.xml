@@ -36,4 +36,27 @@
 		android:title="@string/pref_pass"
 		android:inputType="textPassword" />
 
+	<PreferenceScreen android:title="@string/pref_optional" >
+		<CheckBoxPreference
+			android:key="seedbox_seedstuff_alarmfinished"
+			android:title="@string/pref_alarmdone"
+			android:summary="@string/pref_alarmdone_info"
+			android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="seedbox_seedstuff_alarmnew"
+			android:title="@string/pref_alarmnew"
+			android:summary="@string/pref_alarmnew_info"
+			android:defaultValue="false" />
+		<EditTextPreference
+			android:key="seedbox_seedstuff_alarmexclude"
+			android:title="@string/pref_alarmexclude"
+			android:summary="@string/pref_alarmexclude_info"
+			android:inputType="textFilter" />
+		<EditTextPreference
+			android:key="seedbox_seedstuff_alarminclude"
+			android:title="@string/pref_alarminclude"
+			android:summary="@string/pref_alarminclude_info"
+			android:inputType="textFilter" />
+	</PreferenceScreen>
+
 </PreferenceScreen>

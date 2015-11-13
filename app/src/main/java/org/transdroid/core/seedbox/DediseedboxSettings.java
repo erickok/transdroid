@@ -19,6 +19,7 @@ package org.transdroid.core.seedbox;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.EditTextPreference;
 
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.daemon.Daemon;
@@ -29,6 +30,8 @@ import org.transdroid.daemon.OS;
  * @author Eric Kok
  */
 public class DediseedboxSettings extends SeedboxSettingsImpl implements SeedboxSettings {
+
+	private EditTextPreference excludeFilter, includeFilter;
 
 	@Override
 	public String getName() {
@@ -66,8 +69,10 @@ public class DediseedboxSettings extends SeedboxSettingsImpl implements SeedboxS
 				"ftp://" + user + "@" + server + "/",
 				pass, 
 				6, 
-				true, 
-				true,
+				prefs.getBoolean("seedbox_dediseedbox_alarmfinished_" + order, true),
+				prefs.getBoolean("seedbox_dediseedbox_alarmnew_" + order, false),
+				prefs.getString("seedbox_dediseedbox_alarmexclude_" + order, null),
+				prefs.getString("seedbox_dediseedbox_alarminclude_" + order, null),
 				true);
 		// @formatter:on
 	}

@@ -30,6 +30,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 
 /**
@@ -220,6 +221,7 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivi
 		Preference pref = findPreference(prefKey);
 		if (sharedPrefs.contains(prefKey)
 				&& pref instanceof EditTextPreference
+				&& !TextUtils.isEmpty(sharedPrefs.getString(prefKey, ""))
 				&& !(((EditTextPreference) pref).getEditText().getTransformationMethod() instanceof PasswordTransformationMethod)) {
 			// Non-password edit preferences show the user-entered value
 			pref.setSummary(sharedPrefs.getString(prefKey, ""));

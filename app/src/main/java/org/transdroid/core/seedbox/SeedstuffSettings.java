@@ -23,12 +23,15 @@ import org.transdroid.daemon.OS;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.EditTextPreference;
 
 /**
  * Implementation of {@link SeedboxSettings} for Seedstuff seedboxes.
  * @author Eric Kok
  */
 public class SeedstuffSettings extends SeedboxSettingsImpl implements SeedboxSettings {
+
+	private EditTextPreference excludeFilter, includeFilter;
 
 	@Override
 	public String getName() {
@@ -66,8 +69,10 @@ public class SeedstuffSettings extends SeedboxSettingsImpl implements SeedboxSet
 				"ftp://" + user + "@" + server + ":32001/rtorrent/downloads", 
 				pass, 
 				6, 
-				true, 
-				true,
+				prefs.getBoolean("seedbox_seedstuff_alarmfinished_" + order, true),
+				prefs.getBoolean("seedbox_seedstuff_alarmnew_" + order, false),
+				prefs.getString("seedbox_seedstuff_alarmexclude_" + order, null),
+				prefs.getString("seedbox_seedstuff_alarminclude_" + order, null),
 				true);
 		// @formatter:on
 	}

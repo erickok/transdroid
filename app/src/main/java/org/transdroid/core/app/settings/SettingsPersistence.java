@@ -133,6 +133,10 @@ public class SettingsPersistence {
 					editor.putBoolean("server_alarmfinished_" + postfix, server.getBoolean("download_alarm"));
 				if (server.has("new_torrent_alarm"))
 					editor.putBoolean("server_alarmnew_" + postfix, server.getBoolean("new_torrent_alarm"));
+				if (server.has("alarm_filter_exclude"))
+					editor.putBoolean("server_alarmexclude_" + postfix, server.getBoolean("alarm_filter_exclude"));
+				if (server.has("alarm_filter_include"))
+					editor.putBoolean("server_alarminclude_" + postfix, server.getBoolean("alarm_filter_include"));
 
 			}
 		}
@@ -169,6 +173,10 @@ public class SettingsPersistence {
 					editor.putBoolean("rssfeed_reqauth_" + postfix, feed.getBoolean("needs_auth"));
 				if (feed.has("new_item_alarm"))
 					editor.putBoolean("rssfeed_alarmnew_" + postfix, feed.getBoolean("new_item_alarm"));
+				if (feed.has("alarm_filter_include"))
+					editor.putBoolean("rssfeed_alarminclude_" + postfix, feed.getBoolean("alarm_filter_include"));
+				if (feed.has("alarm_filter_exclude"))
+					editor.putBoolean("rssfeed_alarmexclude_" + postfix, feed.getBoolean("alarm_filter_exclude"));
 				if (feed.has("last_seen"))
 					editor.putString("rssfeed_lastnew_" + postfix, feed.getString("last_seen"));
 
@@ -176,7 +184,11 @@ public class SettingsPersistence {
 		}
 
 		// Import background service and system settings
-		if (json.has("alarm_enabled"))
+		if (json.has("alarm_enabled_rss"))
+			editor.putBoolean("notifications_enabledrss", json.getBoolean("alarm_enabled_rss"));
+		if (json.has("alarm_enabled_torrents"))
+			editor.putBoolean("notifications_enabled", json.getBoolean("alarm_enabled_torrents"));
+		else if (json.has("alarm_enabled")) // Compat
 			editor.putBoolean("notifications_enabled", json.getBoolean("alarm_enabled"));
 		if (json.has("alarm_interval"))
 			editor.putString("notifications_interval", json.getString("alarm_interval"));
@@ -268,6 +280,8 @@ public class SettingsPersistence {
 			server.put("server_timeout", prefs.getString("server_timeout_" + postfixi, null));
 			server.put("download_alarm", prefs.getBoolean("server_alarmfinished_" + postfixi, false));
 			server.put("new_torrent_alarm", prefs.getBoolean("server_alarmnew_" + postfixi, false));
+			server.put("alarm_filter_exclude", prefs.getBoolean("server_alarmexclude_" + postfixi, false));
+			server.put("alarm_filter_include", prefs.getBoolean("server_alarminclude_" + postfixi, false));
 
 			servers.put(server);
 			i++;
@@ -303,6 +317,8 @@ public class SettingsPersistence {
 			feed.put("url", prefs.getString("rssfeed_url_" + postfixk, null));
 			feed.put("needs_auth", prefs.getBoolean("rssfeed_reqauth_" + postfixk, false));
 			feed.put("new_item_alarm", prefs.getBoolean("rssfeed_alarmnew_" + postfixk, false));
+			feed.put("alarm_filter_exclude", prefs.getBoolean("server_alarmexclude_" + postfixk, false));
+			feed.put("alarm_filter_include", prefs.getBoolean("server_alarminclude_" + postfixk, false));
 			feed.put("last_seen", prefs.getString("rssfeed_lastnew_" + postfixk, null));
 
 			feeds.put(feed);
@@ -312,7 +328,8 @@ public class SettingsPersistence {
 		json.put("rssfeeds", feeds);
 
 		// Convert background service and system settings into JSON
-		json.put("alarm_enabled", prefs.getBoolean("notifications_enabled", true));
+		json.put("alarm_enabled_rss", prefs.getBoolean("notifications_enabledrss", true));
+		json.put("alarm_enabled_torrents", prefs.getBoolean("notifications_enabled", true));
 		json.put("alarm_interval", prefs.getString("notifications_interval", null));
 		json.put("alarm_sound_uri", prefs.getString("notifications_sound", null));
 		json.put("alarm_vibrate", prefs.getBoolean("notifications_vibrate", false));

@@ -18,6 +18,8 @@ package org.transdroid.core.gui.navigation;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -37,6 +39,7 @@ import org.transdroid.BuildConfig;
 import org.transdroid.R;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Helper for activities to make navigation-related decisions, such as when a device can display a larger, tablet style layout or how to display
@@ -141,6 +144,24 @@ public class NavigationHelper {
 			}
 		}
 		return imageCache;
+	}
+
+	public void forceOpenInBrowser(Uri link) {
+		Intent intent = new Intent(Intent.ACTION_VIEW).setData(link);
+		List<ResolveInfo> activities = context.getPackageManager().queryIntentActivities(intent, 0);
+		for (ResolveInfo resolveInfo : activities) {
+			if (activities.size() == 1 || (resolveInfo.isDefault && resolveInfo.activityInfo.packageName.equals(context.getPackageName()))) {
+				// There is a default browser; use this
+				intent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
+				return;
+			}
+		}
+		// No default browser found: open chooser
+		try {
+			context.startActivity(Intent.createChooser(intent, "Open..."));
+		} catch (Exception e) {
+			// No browser installed; consume and fail silently
+		}
 	}
 
 	/**

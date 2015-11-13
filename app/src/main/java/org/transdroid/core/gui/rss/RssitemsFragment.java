@@ -48,7 +48,9 @@ import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
+import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;
 import org.transdroid.core.gui.search.SearchActivity_;
 import org.transdroid.core.rssparser.Channel;
@@ -68,6 +70,11 @@ public class RssitemsFragment extends Fragment {
 	protected Channel rssfeed = null;
 	@InstanceState
 	protected boolean hasError = false;
+	@InstanceState
+	protected boolean requiresExternalAuthentication = false;
+
+	@Bean
+	protected NavigationHelper navigationHelper;
 
 	// Views
 	@ViewById(R.id.rssitems_list)
@@ -192,7 +199,7 @@ public class RssitemsFragment extends Fragment {
 		// Set up the list adapter, which allows multi-select
 		rssitemsList.setAdapter(rssitemsAdapter);
 		rssitemsList.setMultiChoiceModeListener(onItemsSelected);
-		update(rssfeed, hasError);
+		update(rssfeed, hasError, requiresExternalAuthentication);
 
 	}
 
@@ -200,8 +207,10 @@ public class RssitemsFragment extends Fragment {
 	 * Update the shown RSS items in the list.
 	 * @param channel The loaded RSS content channel object
 	 * @param hasError True if there were errors in loading the channel, in which case an error text is shown; false otherwise
+	 * @param requiresExternalAuthentication Whether this RSS feed requires external authentication and should thus be redirected to a browser
 	 */
-	public void update(Channel channel, boolean hasError) {
+	public void update(Channel channel, boolean hasError, boolean requiresExternalAuthentication) {
+		this.requiresExternalAuthentication = requiresExternalAuthentication;
 		rssitemsAdapter.update(channel);
 		rssitemsList.setVisibility(View.GONE);
 		emptyText.setVisibility(View.VISIBLE);
@@ -223,6 +232,12 @@ public class RssitemsFragment extends Fragment {
 
 	@ItemClick(resName = "rssitems_list")
 	protected void onItemClicked(Item item) {
+		if (requiresExternalAuthentication) {
+			// Redirect to the browser, as this feed requires cookie authentication which we piggy-back on using the browser cookies
+			navigationHelper.forceOpenInBrowser(item.getTheLinkUri());
+			return;
+		}
+
 		// Don't broadcast this intent; we can safely assume this is intended for Transdroid only
 		Intent i = TorrentsActivity_.intent(getActivity()).get();
 		i.setData(item.getTheLinkUri());
