@@ -179,9 +179,9 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					}
 					byte[] bytes = baos.toByteArray();
 					int size = Math.max(((int) file.length() * 2) + XMLRPC_EXTRA_PADDING, XMLRPC_MINIMUM_SIZE);
-					if (version >= 907) {
-						makeRtorrentCall(log, "network.xmlrpc.size_limit.set", new Object[]{size + XMLRPC_EXTRA_PADDING});
-						makeRtorrentCall(log, "load.raw_start", new Object[]{bytes});
+					if (version >= 904) {
+						makeRtorrentCall(log, "network.xmlrpc.size_limit.set", new Object[]{"", size + XMLRPC_EXTRA_PADDING});
+						makeRtorrentCall(log, "load.raw_start", new Object[]{"", bytes});
 					} else {
 						makeRtorrentCall(log, "set_xmlrpc_size_limit", new Object[]{size + XMLRPC_EXTRA_PADDING});
 						makeRtorrentCall(log, "load_raw_start", new Object[]{bytes});
