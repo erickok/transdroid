@@ -142,6 +142,8 @@ public class SearchActivity extends AppCompatActivity {
 			}
 		} else {
 			// Use the action bar spinner to select sites
+			if (getSupportActionBar() != null)
+				getSupportActionBar().setTitle("");
 			sitesSpinner.setVisibility(View.VISIBLE);
 			sitesSpinner.setAdapter(new SearchSettingsDropDownAdapter(searchToolbar.getContext(), searchSites));
 			sitesSpinner.setOnItemSelectedListener(onSearchSiteSelected);
@@ -293,9 +295,9 @@ public class SearchActivity extends AppCompatActivity {
 			// Save the search site currently used to search for future usage
 			applicationSettings.setLastUsedSearchSite(lastUsedSite);
 			// Update the activity title (only shown on large devices)
-			if (sitesSpinner != null)
-				searchToolbar.setTitle(
-						NavigationHelper.buildCondensedFontString(getString(R.string.search_queryonsite, lastUsedQuery, lastUsedSite.getName())));
+			if (sitesSpinner == null && getSupportActionBar() != null)
+				getSupportActionBar()
+						.setTitle(NavigationHelper.buildCondensedFontString(getString(R.string.search_queryonsite, lastUsedQuery, lastUsedSite.getName())));
 			// Ask the results fragment to start a search for the specified query
 			fragmentResults.startSearch(lastUsedQuery, (SearchSite) lastUsedSite);
 
