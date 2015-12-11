@@ -18,6 +18,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.transdroid.daemon.util.HttpHelper;
+import org.transdroid.daemon.util.TlsSniSocketFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -131,7 +132,7 @@ public class RssParser extends DefaultHandler {
 
 		SchemeRegistry registry = new SchemeRegistry();
 		registry.register(new Scheme("http", new PlainSocketFactory(), 80));
-		registry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+		registry.register(new Scheme("https", new TlsSniSocketFactory(), 443));
 
 		HttpParams httpparams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpparams, 5000);
