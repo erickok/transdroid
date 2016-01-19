@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -165,11 +166,11 @@ public class SearchActivity extends AppCompatActivity {
 		searchToolbar.inflateMenu(R.menu.activity_search);
 		// Add an expandable SearchView to the action bar
 		MenuItem item = menu.findItem(R.id.action_search);
-		final SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
+		final SearchView searchView = new SearchView(searchToolbar.getContext());
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 		searchView.setQueryRefinementEnabled(true);
-		searchView.setIconified(false);
-		searchView.setIconifiedByDefault(false);
+		//searchView.setIconified(false);
+		//searchView.setIconifiedByDefault(false);
 		MenuItemCompat.setActionView(item, searchView);
 		searchMenu = item;
 		return true;

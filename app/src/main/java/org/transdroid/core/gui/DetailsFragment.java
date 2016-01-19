@@ -182,8 +182,10 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		// Refresh the detailed statistics (errors) and list of files
 		torrentDetails = null;
 		torrentFiles = null;
-		getTasksExecutor().refreshTorrentDetails(torrent);
-		getTasksExecutor().refreshTorrentFiles(torrent);
+		if (getTasksExecutor() != null) {
+			getTasksExecutor().refreshTorrentDetails(torrent);
+			getTasksExecutor().refreshTorrentFiles(torrent);
+		}
 	}
 
 	/**
@@ -366,42 +368,50 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
 	@OptionsItem(R.id.action_resume)
 	protected void resumeTorrent() {
-		getTasksExecutor().resumeTorrent(torrent);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().resumeTorrent(torrent);
 	}
 
 	@OptionsItem(R.id.action_pause)
 	protected void pauseTorrent() {
-		getTasksExecutor().pauseTorrent(torrent);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().pauseTorrent(torrent);
 	}
 
 	@OptionsItem(R.id.action_start_direct)
 	protected void startTorrentDirect() {
-		getTasksExecutor().startTorrent(torrent, false);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().startTorrent(torrent, false);
 	}
 
 	@OptionsItem(R.id.action_start_default)
 	protected void startTorrentDefault() {
-		getTasksExecutor().startTorrent(torrent, false);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().startTorrent(torrent, false);
 	}
 
 	@OptionsItem(R.id.action_start_forced)
 	protected void startTorrentForced() {
-		getTasksExecutor().startTorrent(torrent, true);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().startTorrent(torrent, true);
 	}
 
 	@OptionsItem(R.id.action_stop)
 	protected void stopTorrent() {
-		getTasksExecutor().stopTorrent(torrent);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().stopTorrent(torrent);
 	}
 
 	@OptionsItem(R.id.action_remove_default)
 	protected void removeTorrentDefault() {
-		getTasksExecutor().removeTorrent(torrent, false);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().removeTorrent(torrent, false);
 	}
 
 	@OptionsItem(R.id.action_remove_withdata)
 	protected void removeTorrentWithData() {
-		getTasksExecutor().removeTorrent(torrent, true);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().removeTorrent(torrent, true);
 	}
 
 	@OptionsItem(R.id.action_setlabel)
@@ -413,7 +423,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
 	@OptionsItem(R.id.action_forcerecheck)
 	protected void setForceRecheck() {
-		getTasksExecutor().forceRecheckTorrent(torrent);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().forceRecheckTorrent(torrent);
 	}
 
 	@OptionsItem(R.id.action_updatetrackers)
@@ -435,7 +446,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		if (torrent == null) {
 			return;
 		}
-		getTasksExecutor().updateLabel(torrent, newLabel);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().updateLabel(torrent, newLabel);
 	}
 
 	@Override
@@ -443,7 +455,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		if (torrent == null) {
 			return;
 		}
-		getTasksExecutor().updateTrackers(torrent, updatedTrackers);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().updateTrackers(torrent, updatedTrackers);
 	}
 
 	@Override
@@ -451,7 +464,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		if (torrent == null) {
 			return;
 		}
-		getTasksExecutor().updateLocation(torrent, newLocation);
+		if (getTasksExecutor() != null)
+			getTasksExecutor().updateLocation(torrent, newLocation);
 	}
 
 	@Click
@@ -613,7 +627,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				if (itemId == R.id.action_priority_high) {
 					priority = Priority.High;
 				}
-				getTasksExecutor().updatePriority(torrent, checked, priority);
+				if (getTasksExecutor() != null)
+					getTasksExecutor().updatePriority(torrent, checked, priority);
 				mode.finish();
 				return true;
 			}

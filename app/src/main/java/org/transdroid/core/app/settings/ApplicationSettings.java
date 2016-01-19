@@ -43,6 +43,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 /**
  * Singleton object to access all application settings, including stored servers, web search sites and RSS feeds.
@@ -69,7 +70,7 @@ public class ApplicationSettings {
 	 * @return A list of all stored server settings objects
 	 */
 	public List<ServerSetting> getAllServerSettings() {
-		List<ServerSetting> all = new ArrayList<ServerSetting>();
+		List<ServerSetting> all = new ArrayList<>();
 		all.addAll(getNormalServerSettings());
 		for (SeedboxProvider provider : SeedboxProvider.values()) {
 			all.addAll(provider.getSettings().getAllServerSettings(prefs, all.size()));
@@ -116,7 +117,7 @@ public class ApplicationSettings {
 	 * @return A list of all stored server settings objects
 	 */
 	public List<ServerSetting> getNormalServerSettings() {
-		List<ServerSetting> servers = new ArrayList<ServerSetting>();
+		List<ServerSetting> servers = new ArrayList<>();
 		for (int i = 0; i <= getMaxNormalServer(); i++) {
 			servers.add(getNormalServerSetting(i));
 		}
@@ -145,19 +146,19 @@ public class ApplicationSettings {
 		Daemon type = Daemon.fromCode(prefs.getString("server_type_" + order, null));
 		boolean ssl = prefs.getBoolean("server_sslenabled_" + order, false);
 
-		String port = prefs.getString("server_port_" + order, "");
-		if (port.equals(""))
+		String port = prefs.getString("server_port_" + order, null);
+		if (TextUtils.isEmpty(port))
 			port = Integer.toString(Daemon.getDefaultPortNumber(type, ssl));
-		String localPort = prefs.getString("server_localport_" + order, "");
-		if (localPort.equals(""))
+		String localPort = prefs.getString("server_localport_" + order, null);
+		if (TextUtils.isEmpty(localPort))
 			localPort = port; // Default to the normal (non-local) port
 		try {
-			Integer.parseInt(port);
+			parseInt(port, Daemon.getDefaultPortNumber(type, ssl));
 		} catch (NumberFormatException e) {
 			port = Integer.toString(Daemon.getDefaultPortNumber(type, ssl));
 		}
 		try {
-			Integer.parseInt(localPort);
+			parseInt(localPort, parseInt(port, Daemon.getDefaultPortNumber(type, ssl)));
 		} catch (NumberFormatException e) {
 			localPort = port;
 		}
@@ -167,9 +168,9 @@ public class ApplicationSettings {
 				type, 
 				trim(prefs.getString("server_address_" + order, null)),
 				trim(prefs.getString("server_localaddress_" + order, null)),
-				Integer.parseInt(localPort),
+				parseInt(localPort, parseInt(port, Daemon.getDefaultPortNumber(type, ssl))),
 				prefs.getString("server_localnetwork_" + order, null), 
-				Integer.parseInt(port), 
+				parseInt(port, Daemon.getDefaultPortNumber(type, ssl)),
 				ssl, 
 				prefs.getBoolean("server_ssltrustall_" + order, false), 
 				prefs.getString("server_ssltrustkey_" + order, null),
@@ -182,7 +183,7 @@ public class ApplicationSettings {
 				prefs.getString("server_downloaddir_" + order, null), 
 				prefs.getString("server_ftpurl_" + order, null), 
 				prefs.getString("server_ftppass_" + order, null), 
-				Integer.parseInt(prefs.getString("server_timeout_" + order, "8")), 
+				parseInt(prefs.getString("server_timeout_" + order, "8"), 8),
 				prefs.getBoolean("server_alarmfinished_" + order, true), 
 				prefs.getBoolean("server_alarmnew_" + order, false),
 				prefs.getString("server_alarmexclude_" + order, null),
@@ -380,7 +381,7 @@ public class ApplicationSettings {
 	 * @return A list of all stored web search site settings objects
 	 */
 	public List<WebsearchSetting> getWebsearchSettings() {
-		List<WebsearchSetting> websearches = new ArrayList<WebsearchSetting>();
+		List<WebsearchSetting> websearches = new ArrayList<>();
 		for (int i = 0; i <= getMaxWebsearch(); i++) {
 			websearches.add(getWebsearchSetting(i));
 		}
@@ -443,7 +444,7 @@ public class ApplicationSettings {
 	 * @return A list of all stored RSS feed settings objects
 	 */
 	public List<RssfeedSetting> getRssfeedSettings() {
-		List<RssfeedSetting> rssfeeds = new ArrayList<RssfeedSetting>();
+		List<RssfeedSetting> rssfeeds = new ArrayList<>();
 		for (int i = 0; i <= getMaxRssfeed(); i++) {
 			rssfeeds.add(getRssfeedSetting(i));
 		}
@@ -566,7 +567,7 @@ public class ApplicationSettings {
 	 * @return A list of search settings, all of which are either a {@link SearchSite} or {@link WebsearchSetting}
 	 */
 	public List<SearchSetting> getSearchSettings() {
-		List<SearchSetting> all = new ArrayList<SearchSetting>();
+		List<SearchSetting> all = new ArrayList<>();
 		all.addAll(searchHelper.getAvailableSites());
 		all.addAll(getWebsearchSettings());
 		return Collections.unmodifiableList(all);
@@ -731,6 +732,14 @@ public class ApplicationSettings {
 	private String trim(String str) {
 		if (str == null) return null;
 		return str.trim();
+	}
+
+	private int parseInt(String string, int defaultValue) {
+		try {
+			return Integer.parseInt(string);
+		} catch (NumberFormatException e) {
+			return defaultValue;
+		}
 	}
 
 }
