@@ -303,7 +303,7 @@
 	<string name="pref_notifyvibrate">Vibrate</string>
 	<string name="pref_notifyled">LED colour</string>
 	<string name="pref_notifyled_info">If supported by your device</string>
-	<string name="pref_adw">Support AWD notifications</string>
+	<string name="pref_adw">Support ADW notifications</string>
 	<string name="pref_adw_info">Show torrent counter in ADW Launcher</string>
 	
 	<string name="pref_system">System</string>
