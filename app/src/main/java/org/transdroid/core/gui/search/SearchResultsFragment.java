@@ -129,6 +129,12 @@ public class SearchResultsFragment extends Fragment {
 		emptyText.setVisibility(View.GONE);
 	}
 
+	public void clearResults() {
+		loadingProgress.setVisibility(View.GONE);
+		resultsList.setVisibility(View.GONE);
+		emptyText.setVisibility(View.VISIBLE);
+	}
+
 	@ItemClick(R.id.searchresults_list)
 	protected void onItemClicked(SearchResult item) {
 		if (item.getTorrentUrl() == null) {

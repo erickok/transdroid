@@ -85,20 +85,18 @@ public class SearchHelper {
 			// The installed Torrent Search version is corrupt or incompatible
 			return null;
 		}
+		List<SearchSite> sites = new ArrayList<>();
 		if (cursor.moveToFirst()) {
-			List<SearchSite> sites = new ArrayList<SearchSite>();
 			do {
 				// Read the cursor fields into the SearchSite object
 				sites.add(new SearchSite(cursor.getInt(CURSOR_SITE_ID), cursor.getString(CURSOR_SITE_CODE), cursor
 						.getString(CURSOR_SITE_NAME), cursor.getString(CURSOR_SITE_RSSURL),
-						cursor.getColumnNames().length > 4 ? (cursor.getInt(CURSOR_SITE_ISPRIVATE) == 1 ? true : false)
-								: false));
+						cursor.getColumnNames().length > 4 && cursor.getInt(CURSOR_SITE_ISPRIVATE) == 1));
 			} while (cursor.moveToNext());
-			cursor.close();
-			return sites;
 		}
 
-		return null;
+		cursor.close();
+		return sites;
 
 	}
 
@@ -107,7 +105,7 @@ public class SearchHelper {
 	 * be called in a background thread.
 	 * @param query The search query to pass to the torrent site
 	 * @param site The site to search, as retrieved from the TorrentSitesProvider, or null if the Torrent Search package
-	 * @param sortBy.name() The sort order to request from the torrent site, if supported
+	 * @param sortBy The sort order to request from the torrent site, if supported
 	 * @return A list of torrent search results as POJOs, or null if the Torrent Search package is not installed or
 	 *         there is no internet connection
 	 */
@@ -128,7 +126,7 @@ public class SearchHelper {
 			return null;
 		}
 		if (cursor.moveToFirst()) {
-			ArrayList<SearchResult> results = new ArrayList<SearchResult>();
+			ArrayList<SearchResult> results = new ArrayList<>();
 			do {
 				// Read the cursor fields into the SearchResult object
 				results.add(new SearchResult(cursor.getInt(CURSOR_SEARCH_ID), cursor.getString(CURSOR_SEARCH_NAME),
@@ -141,6 +139,7 @@ public class SearchHelper {
 		}
 
 		// Torrent Search package is not yet installed
+		cursor.close();
 		return null;
 
 	}

@@ -140,6 +140,8 @@ public class SearchActivity extends AppCompatActivity {
 				searchsitesList.setItemChecked(lastUsedPosition, true);
 				lastUsedSite = searchSites.get(lastUsedPosition);
 				refreshSearch();
+			} else {
+				fragmentResults.clearResults();
 			}
 		} else {
 			// Use the action bar spinner to select sites
@@ -153,6 +155,8 @@ public class SearchActivity extends AppCompatActivity {
 				sitesSpinner.setSelection(lastUsedPosition);
 				lastUsedSite = searchSites.get(lastUsedPosition);
 				refreshSearch();
+			} else {
+				fragmentResults.clearResults();
 			}
 		}
 		invalidateOptionsMenu();
@@ -169,8 +173,8 @@ public class SearchActivity extends AppCompatActivity {
 		final SearchView searchView = new SearchView(searchToolbar.getContext());
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 		searchView.setQueryRefinementEnabled(true);
-		//searchView.setIconified(false);
-		//searchView.setIconifiedByDefault(false);
+		searchView.setIconified(false);
+		searchView.setIconifiedByDefault(false);
 		MenuItemCompat.setActionView(item, searchView);
 		searchMenu = item;
 		return true;
@@ -280,7 +284,7 @@ public class SearchActivity extends AppCompatActivity {
 	protected void refreshSearch() {
 
 		if (searchMenu != null) {
-			// Close the search view in the ation bar
+			// Close the search view in the action bar
 			searchMenu.collapseActionView();
 		}
 

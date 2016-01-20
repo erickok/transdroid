@@ -612,7 +612,7 @@ public class ApplicationSettings {
 		}
 
 		// Should be an in-app search key
-		if (allsites != null) {
+		if (allsites != null && !allsites.isEmpty()) {
 			for (SearchSite searchSite : allsites) {
 				if (searchSite.getKey().equals(lastKey)) {
 					return searchSite;
