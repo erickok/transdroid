@@ -134,9 +134,9 @@ public class SettingsPersistence {
 				if (server.has("new_torrent_alarm"))
 					editor.putBoolean("server_alarmnew_" + postfix, server.getBoolean("new_torrent_alarm"));
 				if (server.has("alarm_filter_exclude"))
-					editor.putBoolean("server_alarmexclude_" + postfix, server.getBoolean("alarm_filter_exclude"));
+					editor.putString("server_alarmexclude_" + postfix, server.getString("alarm_filter_exclude"));
 				if (server.has("alarm_filter_include"))
-					editor.putBoolean("server_alarminclude_" + postfix, server.getBoolean("alarm_filter_include"));
+					editor.putString("server_alarminclude_" + postfix, server.getString("alarm_filter_include"));
 
 			}
 		}
@@ -174,11 +174,13 @@ public class SettingsPersistence {
 				if (feed.has("new_item_alarm"))
 					editor.putBoolean("rssfeed_alarmnew_" + postfix, feed.getBoolean("new_item_alarm"));
 				if (feed.has("alarm_filter_include"))
-					editor.putBoolean("rssfeed_alarminclude_" + postfix, feed.getBoolean("alarm_filter_include"));
+					editor.putString("rssfeed_include_" + postfix, feed.getString("alarm_filter_include"));
 				if (feed.has("alarm_filter_exclude"))
-					editor.putBoolean("rssfeed_alarmexclude_" + postfix, feed.getBoolean("alarm_filter_exclude"));
-				if (feed.has("last_seen"))
-					editor.putString("rssfeed_lastnew_" + postfix, feed.getString("last_seen"));
+					editor.putString("rssfeed_exclude_" + postfix, feed.getString("alarm_filter_exclude"));
+				if (feed.has("last_seen_time"))
+					editor.putLong("rssfeed_lastviewed_" + postfix, feed.getLong("last_seen_time"));
+				if (feed.has("last_seen_item"))
+					editor.putString("rssfeed_lastvieweditemurl_" + postfix, feed.getString("last_seen_item"));
 
 			}
 		}
@@ -280,8 +282,8 @@ public class SettingsPersistence {
 			server.put("server_timeout", prefs.getString("server_timeout_" + postfixi, null));
 			server.put("download_alarm", prefs.getBoolean("server_alarmfinished_" + postfixi, false));
 			server.put("new_torrent_alarm", prefs.getBoolean("server_alarmnew_" + postfixi, false));
-			server.put("alarm_filter_exclude", prefs.getBoolean("server_alarmexclude_" + postfixi, false));
-			server.put("alarm_filter_include", prefs.getBoolean("server_alarminclude_" + postfixi, false));
+			server.put("alarm_filter_exclude", prefs.getString("server_alarmexclude_" + postfixi, null));
+			server.put("alarm_filter_include", prefs.getString("server_alarminclude_" + postfixi, null));
 
 			servers.put(server);
 			i++;
@@ -317,9 +319,10 @@ public class SettingsPersistence {
 			feed.put("url", prefs.getString("rssfeed_url_" + postfixk, null));
 			feed.put("needs_auth", prefs.getBoolean("rssfeed_reqauth_" + postfixk, false));
 			feed.put("new_item_alarm", prefs.getBoolean("rssfeed_alarmnew_" + postfixk, false));
-			feed.put("alarm_filter_exclude", prefs.getBoolean("server_alarmexclude_" + postfixk, false));
-			feed.put("alarm_filter_include", prefs.getBoolean("server_alarminclude_" + postfixk, false));
-			feed.put("last_seen", prefs.getString("rssfeed_lastnew_" + postfixk, null));
+			feed.put("alarm_filter_exclude", prefs.getString("server_alarmexclude_" + postfixk, null));
+			feed.put("alarm_filter_include", prefs.getString("server_alarminclude_" + postfixk, null));
+			feed.put("last_seen_time", prefs.getLong("rssfeed_lastviewed_" + postfixk, -1));
+			feed.put("last_seen_item", prefs.getString("rssfeed_lastvieweditemurl_" + postfixk, null));
 
 			feeds.put(feed);
 			k++;

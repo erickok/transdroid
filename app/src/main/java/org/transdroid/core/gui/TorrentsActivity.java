@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -214,6 +215,9 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
 	// Auto refresh task
 	private AsyncTask<Void, Void, Void> autoRefreshTask;
+
+	private String awaitingAddLocalFile;
+	private String awaitingAddTitle;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -739,6 +743,14 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		return true;
 	}
 
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (awaitingAddLocalFile != null && awaitingAddTitle != null &&
+				Boolean.TRUE.equals(navigationHelper.handleTorrentReadPermissionResult(requestCode, grantResults))) {
+			addTorrentByFile(awaitingAddLocalFile, awaitingAddTitle);
+		}
+	}
+
 	@Click(R.id.addmenu_link_button)
 	protected void startUrlEntryDialog() {
 		addmenuButton.collapse();
@@ -1043,6 +1055,12 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
 	@Background
 	protected void addTorrentByFile(String localFile, String title) {
+		if (!navigationHelper.checkTorrentReadPermission(this)) {
+			// No read permission yet (which we get the result of in onRequestPermissionsResult)
+			awaitingAddLocalFile = localFile;
+			awaitingAddTitle = title;
+			return;
+		}
 		DaemonTaskResult result = AddByFileTask.create(currentConnection, localFile).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));

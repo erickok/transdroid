@@ -28,7 +28,7 @@ android {
         }
     }
     lintOptions {
-        disable 'MissingTranslation', 'ExtraTranslation'
+        disable 'MissingTranslation', 'ExtraTranslation', 'StringFormatInvalid'
     }
 }
 

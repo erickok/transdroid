@@ -28,8 +28,8 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.nispok.snackbar.Snackbar;
@@ -81,6 +81,7 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 	protected ErrorLogSender errorLogSender;
 	@Bean
 	protected SettingsPersistence settingsPersistence;
+
 	private OnPreferenceClickListener onCheckUpdatesClick = new OnPreferenceClickListener() {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
@@ -103,19 +104,12 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 	private OnClickListener importSettingsFromFile = new OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
-			try {
-				settingsPersistence.importSettingsFromFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
-				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
-			} catch (FileNotFoundException e) {
-				SnackbarManager
-						.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.red));
-			} catch (JSONException e) {
-				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this)
-						.text(getString(R.string.error_no_valid_settings_file, getString(R.string.app_name))).colorResource(R.color.red));
-			}
+			if (!navigationHelper.checkSettingsReadPermission(SystemSettingsActivity.this))
+				return; // We are requesting permission to access file storage
+			importSettingsFromFile();
 		}
 	};
+
 	private OnClickListener importSettingsFromQr = new OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
@@ -125,16 +119,12 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 	private OnClickListener exportSettingsToFile = new OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
-			try {
-				settingsPersistence.exportSettingsToFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
-				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
-			} catch (JSONException | IOException e) {
-				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
-						.colorResource(R.color.red));
-			}
+			if (!navigationHelper.checkSettingsWritePermission(SystemSettingsActivity.this))
+				return; // We are requesting permission to access file storage
+			exportSettingsToFile();
 		}
 	};
+
 	private OnClickListener exportSettingsToQr = new OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
@@ -176,8 +166,42 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 		MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
 	}
 
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (Boolean.TRUE.equals(navigationHelper.handleSettingsReadPermissionResult(requestCode, grantResults))) {
+			importSettingsFromFile();
+		} else if (Boolean.TRUE.equals(navigationHelper.handleSettingsWritePermissionResult(requestCode, grantResults))) {
+			exportSettingsToFile();
+		}
+	}
+
+	private void importSettingsFromFile() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+		try {
+			settingsPersistence.importSettingsFromFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
+			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
+		} catch (FileNotFoundException e) {
+			SnackbarManager
+					.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.red));
+		} catch (JSONException e) {
+			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this)
+					.text(getString(R.string.error_no_valid_settings_file, getString(R.string.app_name))).colorResource(R.color.red));
+		}
+	}
+
+	private void exportSettingsToFile() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+		try {
+			settingsPersistence.exportSettingsToFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
+			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
+		} catch (JSONException | IOException e) {
+			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
+					.colorResource(R.color.red));
+		}
+	}
+
 	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE_QRSETTINGS)
-	public void onQrCodeScanned(int resultCode, Intent data) {
+	public void onQrCodeScanned(@SuppressWarnings("UnusedParameters") int resultCode, Intent data) {
 		// We should have received Intent extras with the QR-decoded data representing Transdroid settings
 		if (data == null || !data.hasExtra("SCAN_RESULT"))
 			return; // Cancelled scan; ignore

@@ -16,15 +16,25 @@
  */
 package org.transdroid.core.gui.navigation;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.TypefaceSpan;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -50,9 +60,79 @@ import java.util.List;
 @EBean
 public class NavigationHelper {
 
+	private static final int REQUEST_TORRENT_READ_PERMISSION = 0;
+	private static final int REQUEST_SETTINGS_READ_PERMISSION = 1;
+	private static final int REQUEST_SETTINGS_WRITE_PERMISSION = 2;
+
 	private static ImageLoader imageCache;
 	@RootContext
 	protected Context context;
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	public boolean checkTorrentReadPermission(final Activity activity) {
+		return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ||
+				checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_TORRENT_READ_PERMISSION);
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	public boolean checkSettingsReadPermission(final Activity activity) {
+		return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ||
+				checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_SETTINGS_READ_PERMISSION);
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	public boolean checkSettingsWritePermission(final Activity activity) {
+		return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ||
+				checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_SETTINGS_WRITE_PERMISSION);
+	}
+
+	private boolean checkPermission(final Activity activity, final String permission, final int requestCode) {
+		if (hasPermission(permission))
+			// Permission already granted
+			return true;
+		if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+			// Never asked again: show a dialog with an explanation
+			new MaterialDialog.Builder(context).content(R.string.permission_readtorrent).positiveText(android.R.string.ok)
+					.onPositive(new MaterialDialog.SingleButtonCallback() {
+						@Override
+						public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+							ActivityCompat.requestPermissions(activity, new String[]{permission}, requestCode);
+						}
+					}).show();
+			return false;
+		}
+		// Permission not granted (and we asked for it already before)
+		ActivityCompat.requestPermissions(activity, new String[]{permission}, REQUEST_TORRENT_READ_PERMISSION);
+		return false;
+	}
+
+	private boolean hasPermission(String requiredPermission) {
+		return ContextCompat.checkSelfPermission(context, requiredPermission) == PackageManager.PERMISSION_GRANTED;
+	}
+
+	public Boolean handleTorrentReadPermissionResult(int requestCode, int[] grantResults) {
+		if (requestCode == REQUEST_TORRENT_READ_PERMISSION) {
+			// Return permission granting result
+			return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+		}
+		return null;
+	}
+
+	public Boolean handleSettingsReadPermissionResult(int requestCode, int[] grantResults) {
+		if (requestCode == REQUEST_SETTINGS_READ_PERMISSION) {
+			// Return permission granting result
+			return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+		}
+		return null;
+	}
+
+	public Boolean handleSettingsWritePermissionResult(int requestCode, int[] grantResults) {
+		if (requestCode == REQUEST_SETTINGS_WRITE_PERMISSION) {
+			// Return permission granting result
+			return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+		}
+		return null;
+	}
 
 	/**
 	 * Converts a string into a {@link Spannable} that displays the string in the Roboto Condensed font
