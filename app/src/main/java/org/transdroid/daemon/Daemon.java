@@ -364,7 +364,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsForceRecheck(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Deluge || type == rTorrent || type == Transmission || type == Dummy;
+		return type == uTorrent || type == BitTorrent || type == Deluge || type == rTorrent || type == Transmission || type == Dummy || type == qBittorrent;
 	}
 
 	public static boolean supportsExtraPassword(Daemon type) {
