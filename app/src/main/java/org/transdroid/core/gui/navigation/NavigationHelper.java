@@ -92,13 +92,17 @@ public class NavigationHelper {
 			return true;
 		if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
 			// Never asked again: show a dialog with an explanation
-			new MaterialDialog.Builder(context).content(R.string.permission_readtorrent).positiveText(android.R.string.ok)
-					.onPositive(new MaterialDialog.SingleButtonCallback() {
-						@Override
-						public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-							ActivityCompat.requestPermissions(activity, new String[]{permission}, requestCode);
-						}
-					}).show();
+			activity.runOnUiThread(new Runnable() {
+				public void run() {
+					new MaterialDialog.Builder(context).content(R.string.permission_readtorrent).positiveText(android.R.string.ok)
+						.onPositive(new MaterialDialog.SingleButtonCallback() {
+							@Override
+							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+								ActivityCompat.requestPermissions(activity, new String[]{permission}, requestCode);
+							}
+						}).show();
+				}
+			});
 			return false;
 		}
 		// Permission not granted (and we asked for it already before)
