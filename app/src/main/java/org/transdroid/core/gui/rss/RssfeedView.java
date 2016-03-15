@@ -38,7 +38,7 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 @EViewGroup(R.layout.list_item_rssfeed)
 public class RssfeedView extends LinearLayout {
 
-	private static final String GRABICON_URL = "http://grabicon.com/icon?origin=www.transdroid.org&domain=%1$s";
+	private static final String GRABICON_URL = "http://icons.better-idea.org/icon?url=%1$s&size=72";
 
 	@Bean
 	protected NavigationHelper navigationHelper;
