@@ -499,7 +499,10 @@ public class ApplicationSettings {
 			edit.putString("rssfeed_url_" + i, prefs.getString("rssfeed_url_" + (i + 1), null));
 			edit.putBoolean("rssfeed_reqauth_" + i, prefs.getBoolean("rssfeed_reqauth_" + (i + 1), false));
 			edit.putBoolean("rssfeed_alarmnew_" + i, prefs.getBoolean("rssfeed_alarmnew_" + (i + 1), true));
+			edit.putString("rssfeed_exclude_" + i, prefs.getString("rssfeed_exclude_" + (i + 1), null));
+			edit.putString("rssfeed_include_" + i, prefs.getString("rssfeed_include_" + (i + 1), null));
 			edit.putLong("rssfeed_lastviewed_" + i, prefs.getLong("rssfeed_lastviewed_" + (i + 1), -1));
+			edit.putLong("rssfeed_lastvieweditemurl_" + i, prefs.getLong("rssfeed_lastvieweditemurl_" + (i + 1), -1));
 		}
 
 		// Remove the last settings, of which we are now sure are no longer required
@@ -507,7 +510,10 @@ public class ApplicationSettings {
 		edit.remove("rssfeed_url_" + max);
 		edit.remove("rssfeed_reqauth_" + max);
 		edit.remove("rssfeed_alarmnew_" + max);
+		edit.remove("rssfeed_exclude_" + max);
+		edit.remove("rssfeed_include_" + max);
 		edit.remove("rssfeed_lastviewed_" + max);
+		edit.remove("rssfeed_lastvieweditemurl_" + max);
 		edit.apply();
 
 	}
