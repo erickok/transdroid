@@ -298,6 +298,11 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					}
 					return new DaemonTaskSuccessResult(task);
 
+                case ForceRecheck:
+                    // Force recheck a torrent
+                    makeRequest(log, "/command/recheck", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
+                    return new DaemonTaskSuccessResult(task);
+
 				case SetTransferRates:
 
 					// TODO: This doesn't seem to work yet
