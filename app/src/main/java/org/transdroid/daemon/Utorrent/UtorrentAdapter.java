@@ -437,8 +437,16 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	 * @return The URL of the RPC API
 	 */
 	private String buildWebUIUrl() {
-		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() +
-				"/gui/";
+		String folder = settings.getFolder() == null ? "" : settings.getFolder().trim();
+		if (!folder.startsWith("/")) {
+			// Add leading slash
+			folder = "/" + folder;
+		}
+		if (folder.endsWith("/")) {
+			// Strip trailing slash
+			folder = folder.substring(0, folder.length() - 1);
+		}
+		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress().trim() + ":" + settings.getPort() + folder + "/gui/";
 	}
 
 	private TorrentStatus convertUtorrentStatus(int uStatus, boolean finished) {
