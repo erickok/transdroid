@@ -24,6 +24,7 @@
   <string name="action_scanbarcode">Scannaa viivakoodi</string>
   <string name="action_search">Etsi</string>
   <string name="action_refresh">Päivitä</string>
+  <string name="action_rss">RSS</string>
   <string name="action_enableturtle">Aktivoi kilpikonna tila</string>
   <string name="action_disableturtle">Poista kilpikonna tila</string>
   <string name="action_sort">Järjestä</string>
@@ -57,6 +58,14 @@
   <string name="action_showdetails">Näytä yksityiskohdat</string>
   <string name="action_removesettings">Poista asetukset</string>
   <string name="action_visitwebsite">Vieraile transdroid.org</string>
+  <string name="action_close">Sulje</string>
+  <string name="navigation_status_showall">Kaikki</string>
+  <string name="navigation_selectall">Valitse kaikki</string>
+  <string name="navigation_selectfinished">Valitse valmis</string>
+  <string name="status_error">Virhe&#8230;</string>
+  <string name="status_paused">Pysäytetty</string>
+  <string name="status_queued">Jonossa</string>
+  <string name="status_stopped">Lopettanut</string>
   <string name="result_maxspeedsset">Maksimi siirtonopeus asetus</string>
   <string name="search_torrentsearch">Torrentien etsitä</string>
   <string name="search_hint">Etsi torrentteja</string>
@@ -75,11 +84,13 @@
   <string name="widget_done">TEHTY</string>
   <string name="pref_servers">Palvelimet</string>
   <string name="pref_addserver">Lisää uusi palvelin</string>
+  <string name="pref_defaultserver_lastused">Viimeksi käytetty</string>
   <string name="pref_searchsites">Hakusivustot</string>
   <string name="pref_setsearchsite">Aseta oletus sivusto</string>
   <string name="pref_addwebsearch">Lisää web hakusivusto</string>
   <string name="pref_rssfeeds">RSS syöte</string>
   <string name="pref_addrssfeed">Lisää RSS syöte</string>
+  <string name="pref_name">Nimi</string>
   <string name="pref_feedurl">Yötä URL</string>
   <string name="pref_reqauth">Vaati tunnistautumisen</string>
   <string name="pref_servertype">Palvelimen tyyppi</string>
@@ -114,6 +125,13 @@
   <string name="pref_notifyled_info">Jos tuettu laitteessasi</string>
   <string name="pref_adw">Tuki AWD ilmoituksille</string>
   <string name="pref_system">Järjestelmä</string>
+  <string-array name="pref_autorefresh_intervals">
+    <item>Disabled</item>
+    <item>2 sekuntia</item>
+    <item>5 sekuntia</item>
+    <item>10 sekuntia</item>
+    <item>30 sekuntia</item>
+  </string-array>
   <string name="pref_checkupdates">Tarkista päivitykset</string>
   <string name="pref_usedarktheme">Käytä tummaa UI teemaa</string>
   <string name="pref_usedarktheme_info">Vaatii uudelleen käynnistyksen toimiakseen</string>
@@ -121,4 +139,17 @@
   <string name="pref_sendlog">Lähetä virheloki</string>
   <string name="pref_sendlog_info">Hanki tukea tai raportoit viasta</string>
   <string name="pref_installhelp">Katso asennusohjeita</string>
+  <string name="pref_seedbox_xirvikhint">Kuten eplus001.xirvik.com</string>
+  <string name="pref_seedbox_xirvikhint2">Kuten semixl001a.xirvik.com</string>
+  <string name="pref_seedbox_xirvikhint3">Kuten desharedgbit001.xirvik.com</string>
+  <string name="pref_seedbox_seedstuffhint">Kuten 001.seedstuff.ca</string>
+  <string-array name="pref_notifyinterval_types">
+    <item>1 minuutti</item>
+    <item>10 minuuttia</item>
+    <item>30 minuuttia</item>
+    <item>1 tunti</item>
+    <item>3 tuntia</item>
+    <item>12 tuntia</item>
+    <item>1 päivä</item>
+  </string-array>
 </resources>

@@ -24,6 +24,7 @@
   <string name="action_scanbarcode">바코드 스캔</string>
   <string name="action_search">검색</string>
   <string name="action_refresh">새로고침</string>
+  <string name="action_rss">RSS</string>
   <string name="action_enableturtle">속도 제한 켜기</string>
   <string name="action_disableturtle">속도 제한 끄기</string>
   <string name="action_sort">목록 정렬</string>
@@ -31,9 +32,11 @@
   <string name="action_sort_status">상태</string>
   <string name="action_sort_done">완료 날짜</string>
   <string name="action_sort_added">추가 날짜</string>
+  <string name="action_sort_percent">다운로드 완료율 (%)</string>
   <string name="action_sort_downspeed">다운로드 속도</string>
   <string name="action_sort_upspeed">업로드 속도</string>
   <string name="action_sort_ratio">비율</string>
+  <string name="action_sort_size">크기</string>
   <string name="action_filter">목록 필터</string>
   <string name="action_settings">설정</string>
   <string name="action_help">도움말</string>
@@ -60,12 +63,14 @@
   <string name="action_priority_high">높게</string>
   <string name="action_remoteplay">VLC로 원격 재생</string>
   <string name="action_download">FTP(S)로 다운로드</string>
+  <string name="action_copytoclipboard">클립보드로 복사</string>
   <string name="action_showdetails">세부 정보 보기</string>
   <string name="action_openwebsite">웹사이트 열기</string>
+  <string name="action_useassearch">새로운 검색으로 사용</string>
   <string name="action_removesettings">설정 지우기</string>
   <string name="action_visitwebsite">transdroid.org 방문</string>
   <string name="action_close">닫기</string>
-  <string name="navigation_nosettings">%1$s로 집의 토렌트 클라이언트 또는 시드박스를 감시하고 관리할 수 있습니다. 설정하는 일이 조금 어려울 수 있지만, 단계별 안내서가 마련되어 있으며 도전할 만한 가치가 있다는 것을 약속드릴 수 있습니다!</string>
+  <string name="navigation_nosettings">%1$s로 여러분의 가정 또는 시드박스의 토렌트 클라이언트를 감시하고 관리할 수 있습니다. 설정이 조금 까다로울 수 있지만, 단계별 안내서가 마련되어 있으며 도전할 만한 가치가 있음을 약속드립니다!</string>
   <string name="navigation_emptytorrents">연결되었지만, 현재 필터에 해당하는 토렌트 항목이 없습니다</string>
   <string name="navigation_emptydetails">세부 정보를 보려면 토렌트 항목을 선택하세요</string>
   <string name="navigation_servers">서버</string>
@@ -76,9 +81,16 @@
   <string name="navigation_status_onlyup">업로드</string>
   <string name="navigation_status_onlyactive">활성</string>
   <string name="navigation_status_onlyinactive">비활성</string>
+  <plurals name="navigation_torrentsselected">
+    <item quantity="other">%1$d개 토렌트 선택</item>
+  </plurals>
+  <plurals name="navigation_filesselected">
+    <item quantity="other">%1$d개 파일 선택</item>
+  </plurals>
   <string name="navigation_selectall">모두 선택</string>
   <string name="navigation_selectfinished">완료 항목 선택</string>
   <string name="navigation_invertselection">선택 영역 반전</string>
+  <string name="navigation_pickserver">토렌트 추가&#8230;</string>
   <string name="status_status">상태: %1$s</string>
   <string name="status_waiting">검사 준비 중&#8230;</string>
   <string name="status_checking">로컬 데이터 검사 중&#8230;</string>
@@ -87,11 +99,12 @@
   <string name="status_size1">%1$s / %2$s (%3$s)</string>
   <string name="status_size2">%1$s, %2$s 업로드</string>
   <string name="status_sincedate">추가: %1$s</string>
+  <string name="status_eta">~ %1$s</string>
   <string name="status_etalong">예상: %1$s</string>
   <string name="status_ofsize">%1$s</string>
   <string name="status_unknowneta">예상 시간 알 수 없음</string>
   <string name="status_ratio">비율: %1$s</string>
-  <string name="status_seeders">%1$s / %2$s 시드</string>
+  <string name="status_seeders">%1$s / %2$s 시더</string>
   <string name="status_leechers">%1$s / %2$s 피어</string>
   <string name="status_downloading">다운로드 중</string>
   <string name="status_seeding">배포 중</string>
@@ -109,8 +122,18 @@
   <string name="status_maxspeed">최대 전송 속도</string>
   <string name="status_maxspeed_down">최대 다운로드 속도</string>
   <string name="status_maxspeed_up">최대 업로드 속도</string>
+  <string name="status_maxspeed_unit">KB/S</string>
   <string name="status_maxspeed_reset">초기화</string>
   <string name="status_update">업데이트</string>
+  <plurals name="status_service_added">
+    <item quantity="other">%1$s 새 토렌트 추가</item>
+  </plurals>
+  <plurals name="status_service_finished">
+    <item quantity="other">%1$s 토렌트 완료</item>
+  </plurals>
+  <plurals name="status_service_addedfinished">
+    <item quantity="other">%1$s 추가, %2$s 완료</item>
+  </plurals>
   <string name="status_service_andothers">%1$s 등</string>
   <string name="labels_showall">모든 라벨</string>
   <string name="labels_unlabeled">라벨 없음</string>
@@ -142,16 +165,28 @@
   <string name="search_queryonsite">\'%1$s\' (%2$s)</string>
   <string name="search_hint">토렌트 검색</string>
   <string name="search_noresults">입력한 검색어에 대한 결과가 없습니다</string>
-  <string name="search_installsearch">이 기능을 사용하려면 토렌트 검색 모듈의 설치가 필요합니다. 다운로드를 터치하여 transdroid.org에서 패키지(apk)를 받아 설치한 후 다시 검색해보세요.</string>
+  <string name="search_seeders">S: %1$s</string>
+  <string name="search_leechers">L: %1$s</string>
+  <string name="search_installsearch">이 기능을 사용하려면 토렌트 검색 모듈을 설치해야 합니다. 다운로드를 클릭하여 transdroid.org에서 설치 패키지를(apk) 받아 설치한 후 다시 검색해보세요.</string>
   <string name="search_download">모듈 다운로드</string>
   <string name="search_openingdetails">%1$s 세부 정보 여는 중</string>
   <string name="search_barcodescannernotfound">바코드 스캐너 앱을 찾을 수 없습니다. Play 스토어에서 설치하시겠습니까?</string>
   <string name="search_filemanagernotfound">호환되는 파일 관리자를 찾을 수 없습니다. Play 스토어에서 IO File Manager를 설치하시겠습니까?</string>
+  <plurals name="search_resutlsselected">
+    <item quantity="other">%1$d개 결과 선택</item>
+  </plurals>
   <string name="rss_feeds">RSS 피드</string>
+  <string name="rss_nosettings">모니터링할 RSS 피드를 설정하지 않았습니다. Torrent에 특화된 RSS 피드는 새로운 항목에 대해서 알림을 주고 업데이트를 유지하게 해줍니다.</string>
   <string name="rss_noselection">새 항목을 보려면 RSS 피드를 선택하세요</string>
   <string name="rss_empty">RSS 피드를 사용할 수 없거나, 피드에 포함된 항목이 없습니다</string>
   <string name="rss_notloaded">RSS 피드가 준비될 때까지 기다려주세요</string>
   <string name="rss_error">지금은 RSS 피드를 불러올 수 없습니다</string>
+  <plurals name="rss_itemsselected">
+    <item quantity="other">%1$d 항목 선택</item>
+  </plurals>
+  <plurals name="rss_service_new">
+    <item quantity="other">%1$s 새 RSS 피드 토렌트 이용 가능</item>
+  </plurals>
   <string name="rss_service_newfor">새 토렌트: %1$s</string>
   <string name="widget_loading">불러오는 중&#8230;</string>
   <string name="widget_opentransdroid">Transdroid 열기</string>
@@ -165,6 +200,9 @@
   <string name="pref_servers">서버</string>
   <string name="pref_addserver">새 서버 추가</string>
   <string name="pref_addseedbox">시드박스 추가</string>
+  <string name="pref_defaultserver">기본 서버</string>
+  <string name="pref_defaultserver_lastused">최근 사용</string>
+  <string name="pref_defaultserver_askonadd">토렌트 추가 시 묻기</string>
   <string name="pref_searchsites">검색 사이트</string>
   <string name="pref_setsearchsite">기본 사이트 설정</string>
   <string name="pref_addwebsearch">웹 검색 사이트 추가</string>
@@ -181,13 +219,18 @@
   <string name="pref_feedurl">피드 URL</string>
   <string name="pref_reqauth">인증 필요</string>
   <string name="pref_reqauth_info">사용자 로그인을 위해 링크를 웹 브라우저로 엽니다</string>
+  <string name="pref_alarmrssnew">새 항목 알림</string>
+  <string name="pref_alarmrssnew_info">새 토렌트 게시 알림</string>
   <string name="pref_servertype">서버 종류</string>
   <string name="pref_address">IP 또는 호스트 이름</string>
   <string name="pref_port">포트 번호</string>
   <string name="pref_user">사용자 계정</string>
   <string name="pref_pass">암호</string>
+  <string name="pref_extrapassword">Deluge 웹 암호</string>
+  <string name="pref_secret">보안 토큰</string>
   <string name="pref_advanced">고급 설정</string>
-  <string name="pref_localaddress">로컬 IP 또는 호스트 이름</string>
+  <string name="pref_localaddress">로컬 IP 또는 호스트</string>
+  <string name="pref_localaddress_info">특정 로컬 네트워크에 연결할 때</string>
   <string name="pref_localport">로컬 포트 번호</string>
   <string name="pref_localnetwork">로컬 네트워크</string>
   <string name="pref_localnetwork_info">서버의 로컬 네트워크 SSID</string>
@@ -203,7 +246,7 @@
   <string name="pref_downdir">다운로드 경로</string>
   <string name="pref_downdir_info">원격 연결에서 사용할 절대 경로를 직접 지정하세요</string>
   <string name="pref_timeout">연결 제한 시간</string>
-  <string name="pref_timeout_info">연결 시도를 중단할 때까지의 시간 (초)</string>
+  <string name="pref_timeout_info">연결 시도를 지속할 시간 (초)</string>
   <string name="pref_ftpurl">FTP(S) 기본 주소</string>
   <string name="pref_ftpurl_into">예) ftp://me@server/downloads/</string>
   <string name="pref_ftppass">FTP(S) 암호</string>
@@ -212,14 +255,14 @@
   <string name="pref_sslenable">SSL 사용</string>
   <string name="pref_sslenable_info">https 프로토콜로 연결합니다</string>
   <string name="pref_sslkey">사용자 SSL 손도장 (SHA-1)</string>
-  <string name="pref_sslkey_info">특정한 인증서의 연결만 허용합니다</string>
+  <string name="pref_sslkey_info">특정 인증서로의 연결만 허용합니다</string>
   <string name="pref_sslacceptall">모든 SSL 인증서 허용</string>
   <string name="pref_sslacceptall_info">손도장에 관계없이 모든 연결을 허용합니다</string>
   <string name="pref_background">백그라운드 알림</string>
   <string name="pref_notifications_rss">RSS 알림 활성화</string>
   <string name="pref_notifications_torrent">토렌트 알림 활성화</string>
-  <string name="pref_notifications_info">서비스를 사용합니다</string>
-  <string name="pref_notifyinterval">간격</string>
+  <string name="pref_notifications_info">백그라운드 서비스를 사용합니다</string>
+  <string name="pref_notifyinterval">시간 간격</string>
   <string name="pref_notifyinterval_info">RSS 또는 토렌트를 얼마나 자주 검사할 지 설정합니다</string>
   <string name="pref_notifysound">소리</string>
   <string name="pref_notifyvibrate">진동</string>
@@ -229,7 +272,7 @@
   <string name="pref_adw_info">ADW Launcher에 토렌트 배지를 보여줍니다</string>
   <string name="pref_system">시스템</string>
   <string name="pref_autorefresh">자동 새로고침</string>
-  <string name="pref_autorefresh_info">메인 화면을 새로 고치는 주기</string>
+  <string name="pref_autorefresh_info">메인 화면을 새로 고칠 주기</string>
   <string-array name="pref_autorefresh_intervals">
     <item>끄기</item>
     <item>2초</item>
@@ -237,8 +280,8 @@
     <item>10초</item>
     <item>30초</item>
   </string-array>
-  <string name="pref_dormantasinactive">전송 없는 토렌트를 비활성화된 것으로 취급</string>
-  <string name="pref_dormantasinactive_info">업/다운 속도가 0KB/s인 (데이터 전송 없음) 토렌트를 비활성화된 것으로 필터링합니다</string>
+  <string name="pref_dormantasinactive">송수신 없는 토렌트를 비활성화된 것으로 취급</string>
+  <string name="pref_dormantasinactive_info">업/다운 속도가 0KB/s인 (데이터 송수신 없음) 토렌트를 비활성화된 것으로 필터링합니다</string>
   <string name="pref_checkupdates">업데이트 확인</string>
   <string name="pref_checkupdates_info">transdroid.org에서 최신 앱 버전을 확인합니다</string>
   <string name="pref_usedarktheme">어두운 UI 테마 사용</string>
@@ -256,7 +299,7 @@
   <string name="pref_sendlog_info">지원을 받거나 버그를 알려주세요</string>
   <string name="pref_installhelp">설치 안내서 보기</string>
   <string name="pref_installhelp_info">transdroid.org/download 에서 찾을 수 있습니다</string>
-  <string name="pref_changelog">변경된 점</string>
+  <string name="pref_changelog">최근 변경 사항</string>
   <string name="pref_about">%1$s 정보</string>
   <string name="pref_seedbox_addseedbox">%1$s 시드박스 추가</string>
   <string name="pref_seedbox_client">토렌트 클라이언트</string>
@@ -279,7 +322,7 @@
   <string name="error_httperror">통신 중 오류가 발생했습니다; 네트워크 연결이 올바른지 확인해보세요</string>
   <string name="error_jsonrequesterror">요청을 생성하는 중 내부 오류가 발생했습니다</string>
   <string name="error_jsonresponseerror">서버 응답을 해석하는 중 오류가 발생했습니다 (설정을 확인해주세요)</string>
-  <string name="error_daemonnotconnected">웹 인터페이스가 실행중인 대몬에 연결되어 있지 않습니다</string>
+  <string name="error_daemonnotconnected">웹 인터페이스가 실행 중인 데몬에 연결되어 있지 않습니다</string>
   <string name="error_401">접근이 거부되었습니다 (설정을 확인해주세요)</string>
   <string name="error_torrentfile">.torrent 파일을 읽지 못했습니다</string>
   <string name="error_parsingrss">RSS 피드를 해석하는 중 오류가 발생했습니다</string>
@@ -293,7 +336,7 @@
   <string name="error_no_url_enclosure">RSS 피드 항목이 .torrent 파일을 가리키는 URL이나 링크 태그를 제공하지 않습니다</string>
   <string name="error_no_link">RSS 피드 항목이 탐색 가능한 링크를 제공하지 않습니다</string>
   <string name="error_norssfeed">URL이 (올바른) RSS 피드가 아닙니다</string>
-  <string name="error_media_not_available">SD 카드에 읽기/쓰기로 접근할 수 없습니다</string>
+  <string name="error_media_not_available">SD 카드에 읽기/쓰기를 위해 접근할 수 없습니다</string>
   <string name="error_no_valid_settings_file">파일이 %1$s 설정을 담고 있지 않은 것 같습니다</string>
   <string name="error_file_not_found">설정 파일을 찾을 수 없습니다</string>
   <string name="error_cant_write_settings_file">설정 파일을 기록하지 못했습니다</string>
@@ -303,7 +346,7 @@
   <string name="error_noftpapp">%1$s 다운로드를 위한 앱을 찾지 못했습니다</string>
   <string name="update_app_newversion">새 Transdroid 버전을 사용할 수 있습니다</string>
   <string name="update_search_newversion">새 Transdroid 검색 모듈을 사용할 수 있습니다</string>
-  <string name="update_updateto">%1$s로 업데이트할 수 있습니다</string>
+  <string name="update_updateto">버전 %1$s로 업데이트할 수 있습니다</string>
   <string name="system_librarieslabel">이 프로젝트에 쓰인 코드/라이브러리:</string>
   <string name="system_description">안드로이드 기기에서 여러분의 토렌트를 관리하세요</string>
 </resources>

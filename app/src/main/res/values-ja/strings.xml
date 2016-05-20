@@ -24,6 +24,7 @@
   <string name="action_scanbarcode">ﾊﾞｰｺｰﾄﾞをスキャン</string>
   <string name="action_search">検索</string>
   <string name="action_refresh">更新</string>
+  <string name="action_rss">RSS</string>
   <string name="action_enableturtle">タートル･モードを有効</string>
   <string name="action_disableturtle">タートル･モードを無効</string>
   <string name="action_sort">リストをｿｰﾄ</string>
@@ -31,9 +32,11 @@
   <string name="action_sort_status">ステータス</string>
   <string name="action_sort_done">完了日</string>
   <string name="action_sort_added">追加日</string>
+  <string name="action_sort_percent">% ダウンロード</string>
   <string name="action_sort_downspeed">ダウンロード・スピード</string>
   <string name="action_sort_upspeed">アップロード･スピード</string>
   <string name="action_sort_ratio">割合</string>
+  <string name="action_sort_size">サイズ</string>
   <string name="action_filter">リストをフィルター</string>
   <string name="action_settings">設定</string>
   <string name="action_help">ヘルプ</string>
@@ -60,6 +63,7 @@
   <string name="action_priority_high">高</string>
   <string name="action_remoteplay">VLC でリモート再生</string>
   <string name="action_download">FTP でダウンロード</string>
+  <string name="action_copytoclipboard">クリップボードにコピー</string>
   <string name="action_showdetails">詳細を表示</string>
   <string name="action_openwebsite">Web サイトを開く</string>
   <string name="action_useassearch">新規検索として使用</string>
@@ -77,9 +81,16 @@
   <string name="navigation_status_onlyup">アップロード中</string>
   <string name="navigation_status_onlyactive">アクティブ</string>
   <string name="navigation_status_onlyinactive">非アクティブ</string>
+  <plurals name="navigation_torrentsselected">
+    <item quantity="other">%1$d torrent を選択</item>
+  </plurals>
+  <plurals name="navigation_filesselected">
+    <item quantity="other">%1$d ファイルを選択</item>
+  </plurals>
   <string name="navigation_selectall">すべて選択</string>
   <string name="navigation_selectfinished">完了を選択</string>
   <string name="navigation_invertselection">選択を反転</string>
+  <string name="navigation_pickserver">Torrent を追加&#8230;</string>
   <string name="status_status">ステータス: %1$s</string>
   <string name="status_waiting">チェック待機中#8230</string>
   <string name="status_checking">ローカルデータ・ベリファイ中&#8230;</string>
@@ -111,8 +122,18 @@
   <string name="status_maxspeed">最大転送速度</string>
   <string name="status_maxspeed_down">最大ダウンロード</string>
   <string name="status_maxspeed_up">最大アップロード</string>
+  <string name="status_maxspeed_unit">KB/秒</string>
   <string name="status_maxspeed_reset">リセット</string>
   <string name="status_update">更新</string>
+  <plurals name="status_service_added">
+    <item quantity="other">%1$s の新しい Torrent を追加</item>
+  </plurals>
+  <plurals name="status_service_finished">
+    <item quantity="other">%1$s Torrent が終了</item>
+  </plurals>
+  <plurals name="status_service_addedfinished">
+    <item quantity="other">%1$s 追加, %2$s 完了 Torrent</item>
+  </plurals>
   <string name="status_service_andothers">%1$s およびその他</string>
   <string name="labels_showall">すべてのラベル</string>
   <string name="labels_unlabeled">ラベルなし</string>
@@ -144,17 +165,28 @@
   <string name="search_queryonsite">%2$s の \'%1$s\'</string>
   <string name="search_hint">Torrent の検索</string>
   <string name="search_noresults">検索結果はありません</string>
+  <string name="search_seeders">S: %1$s</string>
+  <string name="search_leechers">L: %1$s</string>
   <string name="search_installsearch">この機能は一度だけ Torrent 検索モジュールをインストールする必要があります。transdroid.org からパッケージ (apk) を取得してインストールするには、ダウンロードをクリックしてから、検索を再度行ってください。</string>
   <string name="search_download">モジュールをダウンロード</string>
   <string name="search_openingdetails">%1$s の詳細を開いています</string>
   <string name="search_barcodescannernotfound">ﾊﾞｰｺｰﾄﾞスキャナーが見つかりません。Play Store からインストールしてもよろしいですか?</string>
   <string name="search_filemanagernotfound">互換性のあるファイルマネージャーが見つかりません。Play Store から IO File Manager をインストールしてもよろしいですか?</string>
+  <plurals name="search_resutlsselected">
+    <item quantity="other">%1$d の結果を選択</item>
+  </plurals>
   <string name="rss_feeds">RSS フィード</string>
   <string name="rss_nosettings">RSS フィードがまだ定義されていません。Torrent 固有の RSS フィードは新しいリリースや新しいアイテムが通知されます。</string>
   <string name="rss_noselection">新しいアイテムを表示するには RSS フィードを 1 つ選択してください</string>
   <string name="rss_empty">RSS フィードは有効ではないか、アイテムが含まれていません</string>
   <string name="rss_notloaded">RSS フィードがロードされるまでしばらくお待ちください</string>
   <string name="rss_error">この RSS フィードはまだロードされていません</string>
+  <plurals name="rss_itemsselected">
+    <item quantity="other">%1$d のアイテムを選択</item>
+  </plurals>
+  <plurals name="rss_service_new">
+    <item quantity="other">%1$s の新しい RSS フィード Torrent</item>
+  </plurals>
   <string name="rss_service_newfor">%1$s の新しい Torrent</string>
   <string name="widget_loading">ロード中&#8230;</string>
   <string name="widget_opentransdroid">Transdroid を開く</string>
@@ -168,6 +200,9 @@
   <string name="pref_servers">サーバー</string>
   <string name="pref_addserver">新しいサーバーを追加</string>
   <string name="pref_addseedbox">シードボックスを追加</string>
+  <string name="pref_defaultserver">デフォルト・サーバー</string>
+  <string name="pref_defaultserver_lastused">最後に使用</string>
+  <string name="pref_defaultserver_askonadd">Torrent を追加する時に確認する</string>
   <string name="pref_searchsites">サイトを検索</string>
   <string name="pref_setsearchsite">デフォルト・サイトを設定</string>
   <string name="pref_addwebsearch">Web 検索サイトを追加</string>
@@ -184,11 +219,15 @@
   <string name="pref_feedurl">フィード URL</string>
   <string name="pref_reqauth">認証が必要</string>
   <string name="pref_reqauth_info">ユーザーログインしてブラウザーでリンクを開きます</string>
+  <string name="pref_alarmrssnew">新しいアイテムの通知</string>
+  <string name="pref_alarmrssnew_info">新しい Torrent がリリースされた時に通知</string>
   <string name="pref_servertype">サーバー種類</string>
   <string name="pref_address">IP またはホスト名</string>
   <string name="pref_port">ポート番号</string>
   <string name="pref_user">ユーザー名</string>
   <string name="pref_pass">パスワード</string>
+  <string name="pref_extrapassword">web パスワードを覆う</string>
+  <string name="pref_secret">秘密のトークン</string>
   <string name="pref_advanced">拡張設定</string>
   <string name="pref_localaddress">ローカル IP またはホスト名</string>
   <string name="pref_localaddress_info">指定したローカル･ネットワークに接続した時</string>

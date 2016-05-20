@@ -21,62 +21,180 @@
   <string name="action_addall">Lisa kõik</string>
   <string name="action_addfromfile">Failist</string>
   <string name="action_addfromurl">URL-ist</string>
-  <string name="action_scanbarcode">Skaneeri ribakoodi</string>
-  <string name="action_search">Otsi</string>
-  <string name="action_refresh">Uuenda</string>
-  <string name="action_sort">Sordi</string>
+  <string name="action_scanbarcode">Skaneeri triipkoodi</string>
+  <string name="action_search">Otsing</string>
+  <string name="action_refresh">Värskenda</string>
+  <string name="action_rss">RSS</string>
+  <string name="action_enableturtle">Kilpkonn režiimi</string>
+  <string name="action_sort">Loendi sorteerimine</string>
   <string name="action_sort_alpha">Nimi</string>
   <string name="action_sort_status">Staatus</string>
   <string name="action_sort_done">Lõpetamise kuupäev</string>
   <string name="action_sort_added">Lisamise kuupäev</string>
+  <string name="action_sort_percent">Protsent alla laetud</string>
   <string name="action_sort_downspeed">Allalaadimise kiirus</string>
   <string name="action_sort_upspeed">Üleslaadimise kiirus</string>
+  <string name="action_sort_ratio">Suhe</string>
+  <string name="action_sort_size">Suurus</string>
   <string name="action_filter">Filtreeri</string>
   <string name="action_settings">Sätted</string>
   <string name="action_help">Abi</string>
   <string name="action_start">Alusta</string>
+  <string name="action_start_default">Tavaline start</string>
   <string name="action_stop">Peata</string>
   <string name="action_stopall">Peata kõik</string>
   <string name="action_resume">Jätka</string>
-  <string name="action_resumeall">Jätka kõik</string>
-  <string name="action_pause">Peata</string>
-  <string name="action_pauseall">Peata kõik</string>
+  <string name="action_resumeall">Jätka kõiki</string>
+  <string name="action_pause">Paus</string>
+  <string name="action_pauseall">Pausi kõik</string>
   <string name="action_remove">Eemalda</string>
   <string name="action_remove_default">Eemalda torrent</string>
   <string name="action_remove_withdata">Eemalda torrent ja andmed</string>
+  <string name="action_setlabel">Määra silt</string>
+  <string name="action_priority_off">Välja</string>
   <string name="action_priority_low">Madal</string>
   <string name="action_priority_normal">Normaalne</string>
   <string name="action_priority_high">Kõrge</string>
+  <string name="action_copytoclipboard">Kopeeri lõikelauale</string>
+  <string name="action_showdetails">Kuva üksikasju</string>
+  <string name="action_openwebsite">Ava lehekülg</string>
+  <string name="action_useassearch">Kasuta uue otsinguna</string>
+  <string name="action_removesettings">Eemalda sätted</string>
+  <string name="action_visitwebsite">Külasta transdroid.org</string>
   <string name="action_close">Sulge</string>
+  <string name="navigation_emptytorrents">Ühendatud, kuid ükski torrent ei ole aktiivne praegune filtriga</string>
+  <string name="navigation_emptydetails">Valige torrent üksikasjade kuvamiseks</string>
+  <string name="navigation_servers">SERVERID</string>
+  <string name="navigation_status">OLEK</string>
+  <string name="navigation_labels">SILDID</string>
   <string name="navigation_status_showall">Kõik</string>
+  <string name="navigation_status_onlydown">Allalaadimine</string>
+  <string name="navigation_status_onlyup">Üleslaadimine</string>
   <string name="navigation_status_onlyactive">Aktiivsed</string>
   <string name="navigation_status_onlyinactive">Inaktiivsed</string>
+  <plurals name="navigation_torrentsselected">
+    <item quantity="one">%1$d valitud torrent</item>
+    <item quantity="other">%1$d valitud torrentit</item>
+  </plurals>
+  <plurals name="navigation_filesselected">
+    <item quantity="one">%1$d valitud fail</item>
+    <item quantity="other">%1$d valitud faili</item>
+  </plurals>
   <string name="navigation_selectall">Vali kõik</string>
+  <string name="navigation_invertselection">Pööra valik</string>
+  <string name="status_status">OLEK: %1$s</string>
+  <string name="status_checking">Kohalike andmete kontrollimine&#8230;</string>
+  <string name="status_waitingtodl">%s allalaadimise ootel</string>
+  <string name="status_error">Viga&#8230;</string>
+  <string name="status_sincedate">ALATES %1$s</string>
+  <string name="status_eta">~ %1$s</string>
+  <string name="status_ratio">SUHE %1$s</string>
+  <string name="status_paused">Peatatud</string>
+  <string name="status_queued">Ootele</string>
+  <string name="status_stopped">Lõpetatud</string>
+  <string name="status_unknown">Tundmatu olek</string>
+  <string name="status_priority_low">Madal prioriteet</string>
+  <string name="status_priority_normal">Tavaline prioriteet</string>
+  <string name="status_priority_high">Kõrge prioriteet</string>
   <string name="status_errors">VEAD</string>
   <string name="status_files">FAILID</string>
+  <string name="status_maxspeed">Maksimaalne ülekande kiirus</string>
+  <string name="status_maxspeed_reset">Nulli</string>
   <string name="status_update">Uuenda</string>
+  <string name="labels_showall">Kõik sildid</string>
+  <string name="labels_unlabeled">Sildita</string>
+  <string name="labels_newlabel">Uus silt</string>
+  <string name="status_label_pick">VALI SILT</string>
+  <string name="status_label_new">UUS SILT</string>
+  <string name="status_label_remove">Eemalda silt</string>
+  <string name="status_label_hint">Nt. filmid või linux</string>
+  <string name="result_added">%1$s lisatud (uuendan)</string>
+  <string name="result_removed">%1$s eemaldatud</string>
+  <string name="result_removed_with_data">%1$s eemaldatud ja andmed kustutatud</string>
+  <string name="result_resumed">%1$s jätkatud (uuendan)</string>
+  <string name="result_stopped">%1$s peatunud (uuendan)</string>
+  <string name="result_started">%1$s alustatud (uuendan)</string>
+  <string name="result_paused">%1$s peatatud (uuendan)</string>
+  <string name="result_paused_all">Torrentid on peatatud (uuendan)</string>
+  <string name="result_stopped_all">Torrentid peatunud (uuendan)</string>
+  <string name="result_labelremoved">Silt eemaldatud</string>
+  <string name="result_recheckedstarted">%1$s andmeid kontrollitud</string>
+  <string name="search_torrentsearch">Torrenti otsing</string>
+  <string name="search_hint">Otsi torrenteid</string>
+  <string name="search_download">Lae moodul</string>
   <string name="rss_feeds">RSS voog</string>
+  <string name="widget_loading">Laadimine&#8230;</string>
+  <string name="widget_opentransdroid">Ava Transdroid</string>
+  <string name="widget_filter">SERVERI VAADE</string>
+  <string name="widget_lookfeel">Välimus</string>
+  <string name="widget_sortby">SORTIMISJÄRJESTUS</string>
+  <string name="widget_reversesortorder">Ümberpööratud järjestuses</string>
+  <string name="widget_showstatusview">Serveri olek pealkirja asemel</string>
   <string name="widget_done">TEHTUD</string>
   <string name="pref_servers">Serverid</string>
+  <string name="pref_addserver">Uue serveri lisamine</string>
+  <string name="pref_addseedbox">Lisa külvikast</string>
+  <string name="pref_defaultserver_lastused">Viimati kasutatud</string>
+  <string name="pref_defaultserver_askonadd">Küsi kui lisad torrentit</string>
   <string name="pref_rssfeeds">RSS vood</string>
   <string name="pref_addrssfeed">Lisa RSS voog</string>
   <string name="pref_others">Teised sätted</string>
   <string name="pref_name">Nimi</string>
+  <string name="pref_searchurl">Otsene otsingu URL</string>
   <string name="pref_cookies">Küpsised</string>
   <string name="pref_feedurl">RSS voo URL</string>
+  <string name="pref_reqauth">Nõuab autentimist</string>
+  <string name="pref_servertype">Serveri tüüp</string>
   <string name="pref_address">IP või hostinimi</string>
   <string name="pref_port">Pordi number</string>
   <string name="pref_user">Kasutajatunnus</string>
   <string name="pref_pass">Parool</string>
+  <string name="pref_extrapassword">Deluge veebi parool</string>
+  <string name="pref_advanced">Täpsemad sätted</string>
   <string name="pref_localaddress">Lokaalne IP või host</string>
+  <string name="pref_localport">Kohaliku pordi number</string>
   <string name="pref_localnetwork">Loksaalne võrk</string>
   <string name="pref_folder">Kaust</string>
+  <string name="pref_folder_info">Tavaliselt tühi</string>
+  <string name="pref_optional">Vabatahtlikud sätted</string>
   <string name="pref_os">Serveri OS</string>
   <string name="pref_sslenable">Kasuta SSL-i</string>
   <string name="pref_notifysound">Heli</string>
   <string name="pref_system">Süsteem</string>
   <string name="pref_autorefresh">Automaatne uuendus</string>
+  <string-array name="pref_autorefresh_intervals">
+    <item>Keelatud</item>
+    <item>2 sekundit</item>
+    <item>5 sekundit</item>
+    <item>10 sekundit</item>
+    <item>30 sekundit</item>
+  </string-array>
+  <string name="pref_checkupdates">Kontrolli uuendusi</string>
+  <string name="pref_usedarktheme">Kasuta tumedat UI teemat</string>
+  <string name="pref_clearsearch">Kustuta otsingu ajalugu</string>
+  <string name="pref_clearsearch_success">Otsingu ajalugu on kustutatud</string>
   <string name="pref_import">Impordi sätted</string>
   <string name="pref_export">Ekspordi sätted</string>
+  <string name="pref_export_success">Sätted edukalt eksporditud</string>
   <string name="pref_help">Transdroidi abi</string>
+  <string name="pref_sendlog">Saada tõrkelogi</string>
+  <string name="pref_seedbox_addseedbox">Lisa %1$s külvikast</string>
+  <string name="pref_seedbox_client">Torrenti klient</string>
+  <string name="pref_seedbox_server">Serveri aadress</string>
+  <string name="pref_seedbox_xirvikhint">Nagu eplus001.xirvik.com</string>
+  <string name="pref_seedbox_xirvikhint2">Nagu semixl001a.xirvik.com</string>
+  <string name="pref_seedbox_xirvikhint3">Nagu desharedgbit001.xirvik.com</string>
+  <string name="pref_seedbox_seedstuffhint">Nagu 001.seedstuff.ca</string>
+  <string-array name="pref_notifyinterval_types">
+    <item>1 minut</item>
+    <item>10 minutit</item>
+    <item>30 minutit</item>
+    <item>1 tund</item>
+    <item>3 tundi</item>
+    <item>12 tundi</item>
+    <item>1 päev</item>
+  </string-array>
+  <string name="error_torrentfile">Ei saa lugeda .torrent faili</string>
+  <string name="error_parsingrss">RSS voo sõelumisel ilmnes tõrge</string>
+  <string name="error_file_not_found">Sätete faili ei leitud</string>
 </resources>

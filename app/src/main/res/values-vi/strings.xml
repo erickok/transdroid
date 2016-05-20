@@ -24,6 +24,7 @@
   <string name="action_scanbarcode">Quét mã vạch</string>
   <string name="action_search">Tìm kiếm</string>
   <string name="action_refresh">Nạp lại</string>
+  <string name="action_rss">RSS</string>
   <string name="action_enableturtle">Bật tốc độ rùa</string>
   <string name="action_disableturtle">Tắt tốc độ rùa</string>
   <string name="action_sort">Sắp xếp danh mục</string>
@@ -31,9 +32,11 @@
   <string name="action_sort_status">Trạng thái</string>
   <string name="action_sort_done">Ngày hoàn thành</string>
   <string name="action_sort_added">Ngày thêm</string>
+  <string name="action_sort_percent">% Tải về</string>
   <string name="action_sort_downspeed">Tốc độ tải về</string>
   <string name="action_sort_upspeed">Tốc độ tải lên</string>
   <string name="action_sort_ratio">Tỷ lệ </string>
+  <string name="action_sort_size">Dung lượng</string>
   <string name="action_filter">Lọc danh mục</string>
   <string name="action_settings">Thiết lập</string>
   <string name="action_help">Trợ giúp</string>
@@ -60,6 +63,7 @@
   <string name="action_priority_high">Cao</string>
   <string name="action_remoteplay">Xem trực tiếp bằng VLC</string>
   <string name="action_download">Tải về bằng FTP(S)</string>
+  <string name="action_copytoclipboard">Chép vào bảng nháp</string>
   <string name="action_showdetails">Xem chi tiết</string>
   <string name="action_openwebsite">Mở website</string>
   <string name="action_useassearch">Dùng làm tìm kiếm mới</string>
@@ -79,6 +83,7 @@
   <string name="navigation_selectall">Chọn tất cả</string>
   <string name="navigation_selectfinished">Chọn cái đã xong</string>
   <string name="navigation_invertselection">Chọn ngược lại</string>
+  <string name="navigation_pickserver">Thêm torrent vào&#8230;</string>
   <string name="status_status">TRẠNG THÁI: %1$s</string>
   <string name="status_waiting">Đang chờ để kiểm tra&#8230;</string>
   <string name="status_checking">Đang xác nhận dữ liệu&#8230;</string>

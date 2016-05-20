@@ -24,17 +24,24 @@
   <string name="action_scanbarcode">Scanna streckkod</string>
   <string name="action_search">Sök</string>
   <string name="action_refresh">Uppdatera</string>
+  <string name="action_rss">RSS</string>
   <string name="action_enableturtle">Aktivera turtle mode</string>
   <string name="action_disableturtle">Inaktivera turtle mode</string>
   <string name="action_sort">Sortera lista</string>
   <string name="action_sort_alpha">Namn</string>
+  <string name="action_sort_status">Status</string>
   <string name="action_sort_done">Datum klar</string>
   <string name="action_sort_added">Datum tillagd</string>
+  <string name="action_sort_percent">Procent hämtat</string>
   <string name="action_sort_downspeed">Nedladdningshastighet</string>
   <string name="action_sort_upspeed">Uppladdningshastighet</string>
+  <string name="action_sort_ratio">Förhållande</string>
+  <string name="action_sort_size">Storlek</string>
   <string name="action_filter">Filtrera lista</string>
   <string name="action_settings">Inställningar</string>
   <string name="action_help">Hjälp</string>
+  <string name="action_start">Starta</string>
+  <string name="action_start_default">Starta normalt</string>
   <string name="action_start_forced">Tvingad start</string>
   <string name="action_startall">Starta alla</string>
   <string name="action_stop">Stopp</string>
@@ -52,9 +59,11 @@
   <string name="action_forcerecheck">Tvingad omkontroll av data</string>
   <string name="action_priority_off">Av</string>
   <string name="action_priority_low">Låg</string>
+  <string name="action_priority_normal">Normal</string>
   <string name="action_priority_high">Hög</string>
   <string name="action_remoteplay">Spela upp i VLC</string>
   <string name="action_download">Ladda ned via FTP(S)</string>
+  <string name="action_copytoclipboard">Kopiera till urklipp</string>
   <string name="action_showdetails">Visa detaljer</string>
   <string name="action_openwebsite">Öppna webbsida</string>
   <string name="action_useassearch">Använd som ny sökning</string>
@@ -65,15 +74,26 @@
   <string name="navigation_emptytorrents">Ansluten men inga torrents är aktiva med aktuellt filter</string>
   <string name="navigation_emptydetails">Välj en torrent för att se detaljer om den</string>
   <string name="navigation_servers"> SERVRAR</string>
+  <string name="navigation_status">STATUS</string>
   <string name="navigation_labels">ETIKETT</string>
   <string name="navigation_status_showall">Alla</string>
   <string name="navigation_status_onlydown">Laddar ned</string>
   <string name="navigation_status_onlyup">Laddar upp</string>
   <string name="navigation_status_onlyactive">Aktiva</string>
   <string name="navigation_status_onlyinactive">Inaktiva</string>
+  <plurals name="navigation_torrentsselected">
+    <item quantity="one">%1$d torrent vald</item>
+    <item quantity="other">%1$d torrents valda</item>
+  </plurals>
+  <plurals name="navigation_filesselected">
+    <item quantity="one">%1$d fil vald</item>
+    <item quantity="other">%1$d filer valda</item>
+  </plurals>
   <string name="navigation_selectall">Välj all</string>
   <string name="navigation_selectfinished">Välj klara</string>
   <string name="navigation_invertselection">Invertera val</string>
+  <string name="navigation_pickserver">Lägg till torrent till&#8230;</string>
+  <string name="status_status">STATUS: %1$s</string>
   <string name="status_waiting">Inväntar kontroll#8230;</string>
   <string name="status_checking">Kontrollerar lokal data&#8230;</string>
   <string name="status_waitingtodl">Väntar på nedladdning %s</string>
@@ -81,6 +101,8 @@
   <string name="status_size1">%1$s AV %2$s (%3$s)</string>
   <string name="status_size2">%1$s,UPPLADDAT %2$s</string>
   <string name="status_sincedate">SEDAN %1$s</string>
+  <string name="status_eta">~ %1$s</string>
+  <string name="status_etalong">Om ca %1$s</string>
   <string name="status_ofsize">AV %1$s</string>
   <string name="status_unknowneta">Okänd ETA</string>
   <string name="status_ratio">KVOT %1$s</string>
@@ -96,6 +118,7 @@
   <string name="status_priority_low">Låg prioritet</string>
   <string name="status_priority_normal">Normal prioritet</string>
   <string name="status_priority_high">Hög prioritet</string>
+  <string name="status_trackers">TRACKERS</string>
   <string name="status_errors">FEL</string>
   <string name="status_files">FILER</string>
   <string name="status_maxspeed">Maximal överföringshastighet</string>
@@ -104,6 +127,18 @@
   <string name="status_maxspeed_unit">Kb/s</string>
   <string name="status_maxspeed_reset">Återställ</string>
   <string name="status_update">Uppdatera</string>
+  <plurals name="status_service_added">
+    <item quantity="one">Ny torrent tillagd</item>
+    <item quantity="other">%1$s nya torrents tillagda</item>
+  </plurals>
+  <plurals name="status_service_finished">
+    <item quantity="one">Torrenten är klar</item>
+    <item quantity="other">%1$s torrents är klara</item>
+  </plurals>
+  <plurals name="status_service_addedfinished">
+    <item quantity="one">%1$s tillagda, %2$s färdig torrent</item>
+    <item quantity="other">%1$s tillagda, %2$s färdiga torrents</item>
+  </plurals>
   <string name="status_service_andothers">%1$s och annat</string>
   <string name="labels_showall">Alla etiketter</string>
   <string name="labels_unlabeled">Omärkta</string>
@@ -131,35 +166,76 @@
   <string name="result_locationset">Torrent flyttad till \'%1$s\'</string>
   <string name="result_priotitiesset">Filprioritering uppdaterad</string>
   <string name="result_maxspeedsset">Sätt maximal överföringshastighet</string>
+  <string name="search_torrentsearch">Torrentsökning</string>
   <string name="search_queryonsite">\'%1$s\' på %2$s</string>
   <string name="search_hint">Sök efter torrents</string>
   <string name="search_noresults">Sökningen gav inga träffar</string>
+  <string name="search_seeders">S: %1$s</string>
+  <string name="search_leechers">L: %1$s</string>
+  <string name="search_installsearch">Den här funktionen kräver en engånginstallation av modulen Torrent Search. Klicka på Hämta för att hämta installationspaketet (apk) från transdroid.org och starta om din sökning.</string>
   <string name="search_download">Ladda ned modul</string>
   <string name="search_openingdetails">Öppnar detaljer för %1$s</string>
+  <string name="search_barcodescannernotfound">Streckkodsläsare kunde inte hittas. Vill du installera från Play Store?</string>
   <string name="search_filemanagernotfound">Kan inte hitta någon kompatibel filhanterare. Vill du installera IO File Manager från Play Store?</string>
+  <plurals name="search_resutlsselected">
+    <item quantity="one">%1$d resultat valt</item>
+    <item quantity="other">%1$d resultat valda</item>
+  </plurals>
   <string name="rss_feeds">RSS strömmar</string>
+  <string name="rss_nosettings">Du har inte definierat några RSS-flöden att övervaka ännu. Torrentspecifika RSS-flöden håller dig uppdaterad med nya släpp och du notifieras om nya torrents.</string>
+  <string name="rss_noselection">Välj ett RSS-flöde för att visa de nya objekten</string>
+  <string name="rss_empty">RSS-flödet är inte tillgängligt eller innehåller inga objekt</string>
+  <string name="rss_notloaded">Tyvärr, vänta tills RSS-flödet är hämtat</string>
+  <string name="rss_error">Tyvärr, RSS-flödet kunde inte läsas just nu</string>
+  <plurals name="rss_itemsselected">
+    <item quantity="one">%1$d objekt valt</item>
+    <item quantity="other">%1$d objekt valda</item>
+  </plurals>
+  <plurals name="rss_service_new">
+    <item quantity="one">Ny torrent från RSS-flöde tillgänglig</item>
+    <item quantity="other">%1$s nya torrents från RSS-flöden</item>
+  </plurals>
+  <string name="rss_service_newfor">Nya torrents för %1$s</string>
+  <string name="widget_loading">Laddar&#8230;</string>
   <string name="widget_opentransdroid">Öppna transdroid</string>
   <string name="widget_filter">SERVER VY</string>
+  <string name="widget_lookfeel">UTSEENDE &amp; KÄNSLA</string>
   <string name="widget_sortby">SÖKORDNING</string>
   <string name="widget_reversesortorder">Omvänd sökordning</string>
   <string name="widget_showstatusview">Serverstatus iställer för titel</string>
   <string name="widget_usedarktheme">Använd mörkt tema (ingen förhandsvisning)</string>
   <string name="widget_done">FÄRDIG</string>
+  <string name="pref_servers">Servrar</string>
   <string name="pref_addserver">Lägg til ny server</string>
   <string name="pref_addseedbox">Lägg till seebox</string>
+  <string name="pref_defaultserver">Standardserver</string>
+  <string name="pref_defaultserver_lastused">Senast använd</string>
+  <string name="pref_defaultserver_askonadd">Fråga när torrent läggs till</string>
   <string name="pref_searchsites">Söksidor</string>
+  <string name="pref_setsearchsite">Ange standardwebbplats</string>
+  <string name="pref_addwebsearch">Lägg till sökwebbplats</string>
   <string name="pref_rssfeeds">RSS ström</string>
   <string name="pref_addrssfeed">Lägg till RSS ström</string>
   <string name="pref_others">Andra inställningar</string>
   <string name="pref_confirmremove">Är du säker på att du vill radera dessa inställningar?</string>
   <string name="pref_name">Namn</string>
+  <string name="pref_name_optional">Valfritt personligt namn</string>
+  <string name="pref_searchurl">Direktsöknings-URL</string>
+  <string name="pref_searchurl_info">%s kommer att ersättas av sökfrågan</string>
   <string name="pref_cookies">Kakor</string>
+  <string name="pref_cookies_info">Valfritt: använd formatet key1=value1; key2=value2</string>
+  <string name="pref_feedurl">URL till RSS-flöde</string>
   <string name="pref_reqauth">Kräver autentisering</string>
+  <string name="pref_reqauth_info">Öppnar länkar i webbläsaren för inloggning</string>
+  <string name="pref_alarmrssnew">Notifikation för nya objekt</string>
+  <string name="pref_alarmrssnew_info">Notifiera när nya torrents är tillgängliga</string>
   <string name="pref_servertype">Servertyp</string>
   <string name="pref_address">IP eller värdnamn</string>
   <string name="pref_port">Portnummer</string>
   <string name="pref_user">Användarnamn</string>
   <string name="pref_pass">Lösenord</string>
+  <string name="pref_extrapassword">Deluge webblösenord</string>
+  <string name="pref_secret">Hemlig token</string>
   <string name="pref_advanced">Avancerade inställningar</string>
   <string name="pref_localaddress">Lokal IP eller värd</string>
   <string name="pref_localaddress_info">Vid anslutning till det valda lokala nätverket</string>
@@ -176,17 +252,72 @@
   <string name="pref_alarmnew_info">Meddelande när ny torrent är tillagd</string>
   <string name="pref_os">SERVER Operativsystem</string>
   <string name="pref_downdir">Nedladdningskatalog</string>
+  <string name="pref_downdir_info">Ställ manuellt in absolutsökväg för fjärranslutningar</string>
   <string name="pref_timeout">Timeout vid anslutning</string>
+  <string name="pref_timeout_info">Antalet sekunder innan ett anslutningsförsök avbryts</string>
+  <string name="pref_ftpurl">FTP(S)-basadress</string>
+  <string name="pref_ftpurl_into">Till exempel ftp://me@server/downloads/</string>
+  <string name="pref_ftppass">FTP(S) lösenord</string>
+  <string name="pref_disableauth">Inaktivera autentisering</string>
   <string name="pref_disableauth_info">Sänd inte användarnamn och lösenord</string>
   <string name="pref_sslenable">Använd SSL</string>
   <string name="pref_sslenable_info">Anslut via https</string>
+  <string name="pref_sslkey">Anpassat SSL thumbprint (SHA-1)</string>
+  <string name="pref_sslkey_info">Tillåt endast anslutningar till detta särskilda certifikat</string>
+  <string name="pref_sslacceptall">Acceptera alla SSL-certifikat</string>
+  <string name="pref_sslacceptall_info">Tillåt alla anslutningar från alla thumbprints</string>
+  <string name="pref_background">Bakgrundsnotifikationer</string>
+  <string name="pref_notifications_rss">Aktivera RSS-notifikationer</string>
+  <string name="pref_notifications_torrent">Aktivera torrent-notifikationer</string>
+  <string name="pref_notifications_info">Aktiverar bakgrundstjänsten</string>
   <string name="pref_notifyinterval">Intervall</string>
+  <string name="pref_notifyinterval_info">Hur ofta RSS eller torrents kontrolleras</string>
   <string name="pref_notifysound">Ljud</string>
   <string name="pref_notifyvibrate">Vibrera</string>
+  <string name="pref_notifyled">LED färg</string>
+  <string name="pref_notifyled_info">Om det stöds av din enhet</string>
+  <string name="pref_adw">Stöd AWD-notifikationer</string>
+  <string name="pref_adw_info">Visa torrenträknare i ADW Launcher</string>
+  <string name="pref_system">System</string>
   <string name="pref_autorefresh">Automatisk uppdatering</string>
+  <string name="pref_autorefresh_info">Intervall-baserad uppdatering av skärmen</string>
+  <string-array name="pref_autorefresh_intervals">
+    <item>Inaktiverad</item>
+    <item>2 sekunder</item>
+    <item>5 sekunder</item>
+    <item>10 sekunder</item>
+    <item>30 sekunder</item>
+  </string-array>
+  <string name="pref_dormantasinactive">Behandla vilande torrents som inaktiva</string>
+  <string name="pref_dormantasinactive_info">Torrents på 0KB/s (ingen dataöverföring) kommer att filtreras som inaktiva</string>
+  <string name="pref_checkupdates">Sök efter uppdateringar</string>
+  <string name="pref_checkupdates_info">Kontrollera transdroid.org för senaste appversionen</string>
+  <string name="pref_usedarktheme">Använd mörkt UI-tema</string>
+  <string name="pref_usedarktheme_info">Kräver en omstart för att gälla</string>
+  <string name="pref_clearsearch">Rensa sökhistorik</string>
+  <string name="pref_clearsearch_success">Sökhistorik rensad</string>
+  <string name="pref_import">Importera inställningar</string>
+  <string name="pref_import_dialog">%1$s försöker importera servrar, webbsökning, RSS och systeminställningar från: %2$s</string>
+  <string name="pref_import_success">Inställningar har importerats</string>
+  <string name="pref_export">Exportera inställningar</string>
+  <string name="pref_export_dialog">%1$s kommer att exportera servrar (inklusive lösenord), webbsökning, RSS och systeminställningar till följande oformaterad JSON textfil: %2$s</string>
+  <string name="pref_export_success">Inställningar har exporterats</string>
+  <string name="pref_help">Transdroid hjälp</string>
   <string name="pref_sendlog">Skicka fel-logg</string>
   <string name="pref_sendlog_info">Få hjälp eller rapportera en bugg</string>
+  <string name="pref_installhelp">Öppna installationsguider</string>
+  <string name="pref_installhelp_info">Tillgänglig på transdroid.org/download</string>
+  <string name="pref_changelog">Senaste ändringar</string>
+  <string name="pref_about">Cirka %1$s</string>
+  <string name="pref_seedbox_addseedbox">Lägg till %1$s seedbox</string>
   <string name="pref_seedbox_client">Torrentklient</string>
+  <string name="pref_seedbox_client_info">Klient att ansluta till</string>
+  <string name="pref_seedbox_server">Serveradress</string>
+  <string name="pref_seedbox_xirvikhint">Som eplus001.xirvik.com</string>
+  <string name="pref_seedbox_xirvikhint2">Som semixl001a.xirvik.com</string>
+  <string name="pref_seedbox_xirvikhint3">Som desharedgbit001.xirvik.com</string>
+  <string name="pref_seedbox_xirviknofolder">Går inte att hämta Xirvik SCGI mappinställningen. Försök igen senare eller korrigera din serveradress</string>
+  <string name="pref_seedbox_seedstuffhint">Som 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
     <item>1 minut</item>
     <item>10 minuter</item>
@@ -196,6 +327,24 @@
     <item>12 timmar</item>
     <item>1 dag</item>
   </string-array>
+  <string name="error_httperror">Fel vid kommunikation. Kontrollera din anslutning</string>
+  <string name="error_jsonrequesterror">Internt fel vid begäran</string>
+  <string name="error_jsonresponseerror">Fel vid läsning av serversvar (kontrollera inställningarna)</string>
+  <string name="error_daemonnotconnected">Webbgränssnitt inte anslutet till aktiv process</string>
+  <string name="error_401">Åtkomst nekad (kontrollera inställningarna)</string>
+  <string name="error_torrentfile">Kan inte läsa .torrent-fil</string>
+  <string name="error_parsingrss">Fel vid läsning av RSS-flöde</string>
+  <string name="error_invalid_url_form">Adressen är inte giltig</string>
+  <string name="error_invalid_search_url">Din sökadress är ogiltig:</string>
+  <string name="error_invalid_ip_or_hostname">Indata är inte en giltig IP-adress eller domännamn</string>
+  <string name="error_invalid_port_number">Portnumret är alltid numeriskt</string>
+  <string name="error_invalid_directory">Katalogsökvägar avslutas med ett / eller \</string>
+  <string name="error_invalid_timeout">Timeout kan inte vara tom och är ett positivt tal</string>
+  <string name="error_notorrentfile">Sökresultatet länkar inte till en .torrent-fil</string>
+  <string name="error_no_url_enclosure">RSS-flödets objekt gav inte en länk till en .torrent-fil</string>
+  <string name="error_no_link">RSS-flödets objekt har ingen länk att öppna</string>
+  <string name="error_norssfeed">Adressen är inte ett (giltigt) RSS-flöde</string>
+  <string name="error_media_not_available">SD-kort inte tillgängligt för läsning/skrivning</string>
   <string name="error_no_valid_settings_file">Filen verkar inte innehålla %1$s inställningar</string>
   <string name="error_file_not_found">Kan inte hitta unställningsfilen</string>
   <string name="error_cant_write_settings_file">Kan inte skriva till inställningsfilen</string>

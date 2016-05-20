@@ -24,6 +24,7 @@
   <string name="action_scanbarcode">Скан. штрих-коду</string>
   <string name="action_search">Пошук</string>
   <string name="action_refresh">Обновити</string>
+  <string name="action_rss">RSS</string>
   <string name="action_enableturtle">Увімкнути повільний режим</string>
   <string name="action_disableturtle">Вимкнути повільний режим</string>
   <string name="action_sort">Сортувати список</string>
@@ -31,6 +32,7 @@
   <string name="action_sort_status">За статусом</string>
   <string name="action_sort_done">По даті закінчення</string>
   <string name="action_sort_added">По даті додавання</string>
+  <string name="action_sort_downspeed">Швидкість завантаження</string>
   <string name="action_sort_upspeed">По швидкості завантеження</string>
   <string name="action_sort_ratio">По співвідношенню</string>
   <string name="action_filter">Фільтры</string>
@@ -39,24 +41,32 @@
   <string name="action_start">Запуск</string>
   <string name="action_start_default">Норм запуск</string>
   <string name="action_start_forced">Принуд запуск</string>
+  <string name="action_startall">Розпочати всі</string>
   <string name="action_stop">Стоп</string>
+  <string name="action_stopall">Зупинити всі</string>
   <string name="action_resume">Відновити</string>
+  <string name="action_resumeall">Відновити всі</string>
   <string name="action_pause">Пауза</string>
+  <string name="action_pauseall">Призупинити всі</string>
   <string name="action_remove">Видалити</string>
   <string name="action_remove_default">Видалити торрент</string>
   <string name="action_remove_withdata">Видалити торрент разом з данними</string>
   <string name="action_setlabel">Встановити мітку</string>
   <string name="action_updatetrackers">Оновити трекери</string>
   <string name="action_changelocation">Зберегти в...</string>
+  <string name="action_forcerecheck">Ініціювати перевірку даних</string>
   <string name="action_priority_off">Вимк</string>
   <string name="action_priority_low">Низьк</string>
   <string name="action_priority_normal">Норм</string>
   <string name="action_priority_high">Висок</string>
   <string name="action_remoteplay">Запустити в VLC</string>
   <string name="action_download">Скачати через (S)FTP</string>
+  <string name="action_copytoclipboard">Копіювати до буферу обміну</string>
   <string name="action_showdetails">Показати деталі</string>
+  <string name="action_openwebsite">Відкрити сайт</string>
   <string name="action_removesettings">Видалити налаштування</string>
   <string name="action_visitwebsite">Відвідати transdroid.org</string>
+  <string name="action_close">Закрити</string>
   <string name="navigation_nosettings">%1$s дозволяє керувати торрент-клієнтами для скачування файлів</string>
   <string name="navigation_emptytorrents">Нема активних торрентів в цьому фільтрі</string>
   <string name="navigation_emptydetails">Вибрати торрент для перегляду деталей</string>
@@ -78,6 +88,7 @@
   <string name="status_size1">%1$s з %2$s (%3$s)</string>
   <string name="status_size2">%1$s, Роздано %2$s</string>
   <string name="status_sincedate">з %1$s</string>
+  <string name="status_eta">~ %1$s</string>
   <string name="status_etalong">Залишилося %1$s</string>
   <string name="status_ofsize">з %1$s</string>
   <string name="status_unknowneta">Залишилося невід.</string>
@@ -110,6 +121,51 @@
   <string name="status_label_new">Нова мітка</string>
   <string name="status_label_remove">Видалити мітку</string>
   <string name="status_label_hint">Напр. фільми чи лінукс</string>
+  <string name="widget_done">Готово</string>
+  <string name="pref_servers">Сервери</string>
+  <string name="pref_addserver">Додати новий сервер</string>
+  <string name="pref_defaultserver">Типовий сервер</string>
+  <string name="pref_rssfeeds">RSS стрічки</string>
+  <string name="pref_addrssfeed">Додати RSS стрічку</string>
+  <string name="pref_others">Інші параметри</string>
+  <string name="pref_name">Назва</string>
+  <string name="pref_servertype">Тип серверу</string>
+  <string name="pref_address">IP або назва хосту</string>
+  <string name="pref_port">Номер порту</string>
+  <string name="pref_user">Ім\'я користувача</string>
+  <string name="pref_pass">Пароль</string>
+  <string name="pref_advanced">Розширені параметри</string>
+  <string name="pref_disableauth">Вимкнути авторизацію</string>
+  <string name="pref_disableauth_info">Не надсилати ім\'я користувача та пароль</string>
+  <string name="pref_sslenable">Використовувати SSL</string>
+  <string name="pref_sslenable_info">З\'єднуватись через https</string>
+  <string name="pref_sslacceptall">Приймати всі SSL сертифікати</string>
+  <string name="pref_notifysound">Звук</string>
+  <string name="pref_notifyvibrate">Вібрація</string>
+  <string-array name="pref_autorefresh_intervals">
+    <item>Disabled</item>
+    <item>2 секунди</item>
+    <item>5 секунд</item>
+    <item>10 секунд</item>
+    <item>30 секунд</item>
+  </string-array>
+  <string name="pref_checkupdates">Перевірка наявності оновлень</string>
+  <string name="pref_usedarktheme">Використовувати темну тему</string>
+  <string name="pref_clearsearch">Очистити історію пошуку</string>
+  <string name="pref_clearsearch_success">Історію пошуку очищено</string>
+  <string name="pref_import">Імпортувати налаштування</string>
+  <string name="pref_import_success">Налаштування вдало імпортовано</string>
+  <string name="pref_export">Експортувати налаштування</string>
+  <string name="pref_export_success">Налаштування вдало експортовано</string>
+  <string-array name="pref_notifyinterval_types">
+    <item>1 minute</item>
+    <item>10 minutes</item>
+    <item>30 minutes</item>
+    <item>1 hour</item>
+    <item>3 hours</item>
+    <item>12 годин</item>
+    <item>1 день</item>
+  </string-array>
   <string name="error_invalid_timeout">Таймаут має бути не порожнім та білше нуля</string>
   <string name="error_no_url_enclosure">RSS канал не дав URL чи посилання, що вказує на  .torrent-файл</string>
   <string name="error_no_link">RSS канал не дав посилання, для переходу до</string>

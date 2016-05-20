@@ -22,48 +22,55 @@
   <string name="action_addfromfile">Depuis fichier</string>
   <string name="action_addfromurl">Depuis URL</string>
   <string name="action_scanbarcode">Scanner le code-barre</string>
-  <string name="action_search">Chercher</string>
+  <string name="action_search">Rechercher</string>
   <string name="action_refresh">Rafraîchir</string>
+  <string name="action_rss">RSS</string>
   <string name="action_enableturtle">Activer le mode tortue</string>
   <string name="action_disableturtle">Désactiver le mode tortue</string>
   <string name="action_sort">Trier la liste</string>
   <string name="action_sort_alpha">Nom</string>
   <string name="action_sort_status">Statut</string>
-  <string name="action_sort_done">Date finie</string>
+  <string name="action_sort_done">Date de fin</string>
   <string name="action_sort_added">Date d\'ajout</string>
-  <string name="action_sort_downspeed">Vitesse de Téléchargement</string>
+  <string name="action_sort_percent">Pourcentage téléchargé</string>
+  <string name="action_sort_downspeed">Vitesse de téléchargement</string>
   <string name="action_sort_upspeed">Vitesse d\'envoi</string>
-  <string name="action_filter">Liste de filtres</string>
+  <string name="action_sort_ratio">Ratio</string>
+  <string name="action_sort_size">Taille</string>
+  <string name="action_filter">Liste des filtres</string>
   <string name="action_settings">Réglages</string>
   <string name="action_help">Aide</string>
   <string name="action_start">Démarrer</string>
   <string name="action_start_default">Démarrage normal</string>
   <string name="action_start_forced">Démarrage forcé</string>
-  <string name="action_startall">Démarrer tout</string>
+  <string name="action_startall">Tout démarrer</string>
   <string name="action_stop">Arrêter</string>
-  <string name="action_stopall">Arrêter tout</string>
+  <string name="action_stopall">Tout arrêter</string>
   <string name="action_resume">Reprendre</string>
-  <string name="action_resumeall">Reprendre tout</string>
+  <string name="action_resumeall">Tout reprendre</string>
   <string name="action_pause">Mettre en pause</string>
-  <string name="action_pauseall">Tout mettre en mause</string>
+  <string name="action_pauseall">Tout mettre en pause</string>
   <string name="action_remove">Supprimer</string>
   <string name="action_remove_default">Retirer torrent</string>
   <string name="action_remove_withdata">Retirer et supprimer les données</string>
   <string name="action_setlabel">Définir étiquette</string>
   <string name="action_updatetrackers">Mise à jour des trackers</string>
-  <string name="action_changelocation">Changer le lieu de stockage</string>
+  <string name="action_changelocation">Changer le répertoire de stockage</string>
   <string name="action_forcerecheck">Forcer le re-vérification des données</string>
+  <string name="action_priority_off">Désactiver</string>
   <string name="action_priority_low">Faible</string>
+  <string name="action_priority_normal">Normal</string>
   <string name="action_priority_high">Elevé</string>
   <string name="action_remoteplay">Lecture à distance dans VLC</string>
   <string name="action_download">Télécharger en utilisant (S)FTP</string>
+  <string name="action_copytoclipboard">Copier dans le presse-papier</string>
   <string name="action_showdetails">Voir les détails</string>
-  <string name="action_openwebsite">Ouvrir le site</string>
+  <string name="action_openwebsite">Ouvrir le site web</string>
   <string name="action_useassearch">Utiliser comme nouvelle recherche</string>
-  <string name="action_removesettings">Suppression des paramètres</string>
+  <string name="action_removesettings">Supprimer les paramètres</string>
   <string name="action_visitwebsite">Visiter transdroid.org</string>
   <string name="action_close">Fermer</string>
-  <string name="navigation_nosettings">%1$s Vous permet de surveiller et de gérer le client torrent que vous exécutez à la maison ou sur votre seedbox. Les réglages peuvent être un peu difficile, mais nous offrons des guides étape par étape et promettons que ça en vaut la peine !</string>
+  <string name="navigation_nosettings">%1$s vous permet de surveiller et de gérer le client torrent que vous exécutez à la maison ou sur votre seedbox. Les réglages peuvent être un peu difficile, mais nous offrons des guides étape par étape et promettons que ça en vaut la peine !</string>
   <string name="navigation_emptytorrents">Connecté, mais pas de torrent actif dans le filtre actuel</string>
   <string name="navigation_emptydetails">Sélectionner un torrent pour afficher ses détails</string>
   <string name="navigation_servers">SERVEURS</string>
@@ -74,9 +81,18 @@
   <string name="navigation_status_onlyup">Envoi</string>
   <string name="navigation_status_onlyactive">Actif</string>
   <string name="navigation_status_onlyinactive">Inactif</string>
+  <plurals name="navigation_torrentsselected">
+    <item quantity="one">%1$d torrent sélectionné</item>
+    <item quantity="other">%1$d torrents sélectionnés</item>
+  </plurals>
+  <plurals name="navigation_filesselected">
+    <item quantity="one">%1$d fichiers sélectionnés</item>
+    <item quantity="other">%1$d fichiers sélectionnés</item>
+  </plurals>
   <string name="navigation_selectall">Sélectionner tout</string>
   <string name="navigation_selectfinished">Sélectionner les terminés</string>
   <string name="navigation_invertselection">Inverser la sélection</string>
+  <string name="navigation_pickserver">Ajouter torrent à...</string>
   <string name="status_status">STATUT: %1$s</string>
   <string name="status_waiting">Attente de vérification&#8230;</string>
   <string name="status_checking">Vérification des données locales&#8230;</string>
@@ -85,11 +101,16 @@
   <string name="status_size1">%1$s DE %2$s (%3$s)</string>
   <string name="status_size2">%1$s, ENVOYÉ %2$s</string>
   <string name="status_sincedate">DEPUIS %1$s</string>
+  <string name="status_eta">~ %1$s</string>
+  <string name="status_etalong">ETA %1$s</string>
   <string name="status_ofsize">DE %1$s</string>
   <string name="status_unknowneta">ETA INCONNUE</string>
-  <string name="status_downloading">Réception</string>
+  <string name="status_ratio">RATIO %1$s</string>
+  <string name="status_seeders">%1$s SUR %2$s SEEDERS</string>
+  <string name="status_leechers">%1$s SUR %2$s LEECHERS</string>
+  <string name="status_downloading">Téléchargement</string>
   <string name="status_seeding">Envoi</string>
-  <string name="status_paused">En Pause</string>
+  <string name="status_paused">En pause</string>
   <string name="status_queued">A la queue</string>
   <string name="status_stopped">Stoppé</string>
   <string name="status_unknown">Statut inconnu</string>
@@ -97,13 +118,23 @@
   <string name="status_priority_low">Priorité basse</string>
   <string name="status_priority_normal">Priorité normale</string>
   <string name="status_priority_high">Priorité haute</string>
+  <string name="status_trackers">TRACKERS</string>
   <string name="status_errors">ERREURS</string>
   <string name="status_files">FICHIERS</string>
   <string name="status_maxspeed">Vitesses de transfert maximales</string>
   <string name="status_maxspeed_down">RÉCEPTION MAX</string>
   <string name="status_maxspeed_up">ENVOI MAX</string>
+  <string name="status_maxspeed_unit">Ko/S</string>
   <string name="status_maxspeed_reset">Réinitialiser</string>
   <string name="status_update">Mise à jour</string>
+  <plurals name="status_service_added">
+    <item quantity="one">%1$s nouveaux torrents ajoutés</item>
+    <item quantity="other">%1$s nouveau torrent ajouté</item>
+  </plurals>
+  <plurals name="status_service_addedfinished">
+    <item quantity="one">%1$s ajoutés, %2$s torrents terminés</item>
+    <item quantity="other">%1$s ajoutés, %2$s torrents terminés</item>
+  </plurals>
   <string name="status_service_andothers">%1$s et autres</string>
   <string name="labels_showall">Toutes les étiquettes</string>
   <string name="labels_unlabeled">Sans étiquette</string>
@@ -135,6 +166,7 @@
   <string name="search_queryonsite">\'%1$s\' sur %2$s</string>
   <string name="search_hint">Recherche de torrents</string>
   <string name="search_noresults">Aucun résultat pour votre recherche</string>
+  <string name="search_seeders">S: %1$s</string>
   <string name="search_leechers">C: %1$s</string>
   <string name="search_installsearch">Cette fonction nécessite une installation unique du module de recherche de Torrent. Cliquez sur télécharger pour obtenir le package d\'installation (APK) de transdroid.org et redémarrez votre recherche.</string>
   <string name="search_download">Télécharger le module</string>
@@ -160,25 +192,34 @@
   <string name="pref_servers">Serveurs</string>
   <string name="pref_addserver">Ajouter un nouveau serveur</string>
   <string name="pref_addseedbox">Ajouter seedbox</string>
+  <string name="pref_defaultserver">Serveur par défaut</string>
+  <string name="pref_defaultserver_lastused">Dernier utilisé</string>
+  <string name="pref_defaultserver_askonadd">Demander lors de l\'ajout de torrent</string>
   <string name="pref_searchsites">Sites de recherche</string>
   <string name="pref_setsearchsite">Régler site par défaut</string>
   <string name="pref_addwebsearch">Ajouter site de recherche web</string>
   <string name="pref_rssfeeds">Flux RSS</string>
   <string name="pref_addrssfeed">Ajouter flux RSS</string>
   <string name="pref_others">Autres paramètres</string>
+  <string name="pref_confirmremove">Êtes-vous sûr de que vouloir supprimer ces paramètres ?</string>
   <string name="pref_name">Nom</string>
   <string name="pref_name_optional">Nom personnel facultatif</string>
   <string name="pref_searchurl">URL de recherche directe</string>
   <string name="pref_searchurl_info">%s sera remplacé par la requête de recherche</string>
-  <string name="pref_cookies_info">En option, utiliser le format clé1=valeur1; clé2=valeur2</string>
+  <string name="pref_cookies">Cookies</string>
+  <string name="pref_cookies_info">Facultatif ; utiliser le format clé1=valeur1; clé2=valeur2</string>
   <string name="pref_feedurl">Flux RSS</string>
   <string name="pref_reqauth">Requiert une authentification</string>
   <string name="pref_reqauth_info">Ouvre les liens dans le navigateur Web pour la connexion de l\'utilisateur</string>
+  <string name="pref_alarmrssnew">Nouvelle notification de l\'objet</string>
+  <string name="pref_alarmrssnew_info">Avertir lorsque de nouveaux torrents sont libérés</string>
   <string name="pref_servertype">Type de serveur</string>
   <string name="pref_address">IP ou nom d\'hôte</string>
   <string name="pref_port">Numéro de port</string>
   <string name="pref_user">Nom d\'utilisateur</string>
   <string name="pref_pass">Mot de passe</string>
+  <string name="pref_extrapassword">Mot de passe web Deluge</string>
+  <string name="pref_secret">Jeton secret</string>
   <string name="pref_advanced">Paramètres avancés</string>
   <string name="pref_localaddress">IP locale ou hôte</string>
   <string name="pref_localaddress_info">Quand connecté au réseau local spécifié</string>
@@ -193,9 +234,9 @@
   <string name="pref_alarmdone_info">Notifier quand un torrent est terminé</string>
   <string name="pref_alarmnew">Notification d\'un nouveau torrent</string>
   <string name="pref_alarmnew_info">Notifier quand un torrent a été ajouté</string>
-  <string name="pref_os">OS du Serveur</string>
+  <string name="pref_os">OS du serveur</string>
   <string name="pref_downdir">Répertoire de téléchargement</string>
-  <string name="pref_downdir_info">Régler manuellement le chemin absolu pour les connexions distantes</string>
+  <string name="pref_downdir_info">Définir manuellement le chemin d\'accès absolu pour les connexions distantes</string>
   <string name="pref_timeout">Délai de connexion expiré</string>
   <string name="pref_timeout_info">Nombre de secondes avant qu\'une tentative de connexion soit interrompue</string>
   <string name="pref_ftpurl">Url de base (S)FTP</string>
@@ -256,13 +297,14 @@
   <string name="pref_seedbox_client">Client Torrent</string>
   <string name="pref_seedbox_client_info">Client connecté à</string>
   <string name="pref_seedbox_server">Adresse du serveur</string>
-  <string name="pref_seedbox_xirvikhint">Aimer eplus001.xirvik.com</string>
-  <string name="pref_seedbox_xirvikhint2">Aimer semixl001a.xirvik.com</string>
-  <string name="pref_seedbox_xirvikhint3">Aimer desharedgbit001.xirvik.com</string>
-  <string name="pref_seedbox_seedstuffhint">Aimer 001.seedstuff.ca</string>
+  <string name="pref_seedbox_xirvikhint">Comme eplus001.xirvik.com</string>
+  <string name="pref_seedbox_xirvikhint2">Comme semixl001a.xirvik.com</string>
+  <string name="pref_seedbox_xirvikhint3">Comme desharedgbit001.xirvik.com</string>
+  <string name="pref_seedbox_xirviknofolder">Impossible de récupérer le paramètre dossier de Xirvik SCGI ; Veuillez réessayer ultérieurement ou corriger le réglage d\'adresse de votre serveur</string>
+  <string name="pref_seedbox_seedstuffhint">Comme 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 minute</item>
-    <item>10 minutes</item>
+    <item>1 minute</item>
+    <item>10 minutes</item>
     <item>30 minutes</item>
     <item>1 heure</item>
     <item>3 heures</item>
@@ -285,15 +327,15 @@
   <string name="error_notorrentfile">Le résultat de recherche n\'est pas lié à un fichier torrent.</string>
   <string name="error_no_url_enclosure">L\'élément du flux RSS n\'a pas fourni une URL annexe ou une balise de lien pointant vers le fichier .torrent</string>
   <string name="error_no_link">L\'élément du flux RSS ne fournit pas de lien pour accéder à</string>
-  <string name="error_norssfeed">l\'URL n\'est pas un flux RSS (valide)</string>
+  <string name="error_norssfeed">L\'URL n\'est pas un flux RSS (valide)</string>
   <string name="error_media_not_available">Carte SD non disponible en lecture/écriture</string>
-  <string name="error_no_valid_settings_file">Le fichier ne semble pas contenir %1$s réglages</string>
+  <string name="error_no_valid_settings_file">Le fichier ne semble pas contenir réglages %1$s</string>
   <string name="error_file_not_found">Le fichier de configuration est introuvable</string>
   <string name="error_cant_write_settings_file">Impossible d\'écrire dans le fichier de configuration</string>
   <string name="error_notanumber">Veuillez enter un nombre positif</string>
   <string name="error_notalabel">Veuillez entrer une étiquette valide ou choisir dans la liste</string>
   <string name="error_stillloadingdetails">Veuillez patienter jusqu\'à ce que les détails du torrent soit chargés</string>
-  <string name="error_noftpapp">Aucune application pouvant télécharger disponible %1$s</string>
+  <string name="error_noftpapp">Aucune application capable de télécharger %1$s n\'a été trouvée</string>
   <string name="update_app_newversion">Nouvelle version de Transdroid disponible</string>
   <string name="update_search_newversion">Nouveau module de recherche de Transdroid disponible</string>
   <string name="update_updateto">Vous pouvez maintenant mettre à jour vers %1$s</string>
