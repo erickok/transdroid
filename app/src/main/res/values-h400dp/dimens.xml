@@ -16,7 +16,7 @@
 -->
 <resources>
 
-	<dimen name="ui_bignumber_size">35sp</dimen>
+	<dimen name="ui_bignumber_size">32sp</dimen>
 	<dimen name="ui_bignumber_padding">3dp</dimen>
 	
 </resources>
