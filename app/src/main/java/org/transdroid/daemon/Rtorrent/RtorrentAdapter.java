@@ -17,6 +17,8 @@
  */
 package org.transdroid.daemon.Rtorrent;
 
+import android.text.TextUtils;
+
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
@@ -367,9 +369,10 @@ public class RtorrentAdapter implements IDaemonAdapter {
 	 * @return The URL of the RPC API
 	 */
 	private String buildWebUIUrl() {
-		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() +
-				(settings.getFolder() == null || settings.getFolder().equals("") ? DEFAULT_RPC_URL :
-						settings.getFolder());
+		String address = settings.getAddress() == null ? "" : settings.getAddress().trim();
+		String folder = settings.getFolder() == null ? "" : settings.getFolder().trim();
+		return (settings.getSsl() ? "https://" : "http://") + address + ":" + settings.getPort() +
+				(TextUtils.isEmpty(folder) ? DEFAULT_RPC_URL : folder);
 	}
 
 	private List<Torrent> onTorrentsRetrieved(Object response) throws DaemonException {
