@@ -6,7 +6,7 @@ Transdroid
 
 "Manage your torrents from your Android device"
 
-![Screen shot of the main torretnts listing screen](http://2312.nl/img/portfolio-transdroid/240x400-transdroid-main.png)
+![Screen shot of the main torretnts listing screen](http://2312.nl/images/screenshot_transdroid_main.png)
 
 Manage your torrents from your Android device with Transdroid. All popular clients are supported: µTorrent, Transmission, rTorrent, Vuze, Deluge, BitTorrent 6, qBittorrent and many more. You can view and manage the running torrents and individual files. Adding is easy via the integrated search, RSS feeds or the barcode scanner (full version required). Monitor progress using the home screen widget or background alarm service.
 
