@@ -37,4 +37,9 @@
 		android:title="@string/action_settings"
 		app:showAsAction="always" />
 
+	<item
+		android:id="@+id/action_testing"
+		android:title="testing"
+		app:showAsAction="always" />
+
 </menu>

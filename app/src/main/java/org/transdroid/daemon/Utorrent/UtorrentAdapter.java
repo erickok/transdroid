@@ -40,6 +40,7 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
+import org.transdroid.daemon.Utorrent.data.UTorrentRssFeed;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -113,6 +114,10 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 
+	private static ArrayList<UTorrentRssFeed> rssFeedItems;
+
+
+
 	/**
 	 * Initialises an adapter that provides operations to the uTorrent web daemon
 	 */
@@ -129,6 +134,11 @@ public class UtorrentAdapter implements IDaemonAdapter {
 
 					// Request all torrents from server
 					JSONObject result = makeUtorrentRequest(log, "&list=1");
+
+					if (result.has("rssfeeds")) {
+						parseJsonRemoteRssLists(result.getJSONArray("rssfeeds"));
+					}
+
 					return new RetrieveTaskSuccessResult((RetrieveTask) task,
 							parseJsonRetrieveTorrents(result.getJSONArray("torrents")),
 							parseJsonRetrieveGetLabels(result.getJSONArray("label")));
@@ -307,6 +317,20 @@ public class UtorrentAdapter implements IDaemonAdapter {
 					new DaemonException(ExceptionType.MethodUnsupported, e.toString()));
 		} catch (IOException e) {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ConnectionError, e.toString()));
+		}
+	}
+
+	private void parseJsonRemoteRssLists(JSONArray results) {
+		rssFeedItems = new ArrayList<>();
+		UTorrentRssFeed item;
+
+		for (int i = 0; i < results.length(); i++) {
+			try {
+				item = new UTorrentRssFeed(results.getJSONArray(i));
+				rssFeedItems.add(item);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -620,4 +644,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		return this.settings;
 	}
 
+	public ArrayList<UTorrentRssFeed> getRemoteRssFeeds() {
+		return rssFeedItems;
+	}
 }

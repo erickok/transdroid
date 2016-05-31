@@ -83,6 +83,7 @@ import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.navigation.StatusType;
+import org.transdroid.core.gui.remoterss.RemoteRssActivity_;
 import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
@@ -99,6 +100,8 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentsSortBy;
+import org.transdroid.daemon.Utorrent.UtorrentAdapter;
+import org.transdroid.daemon.Utorrent.data.UTorrentRssFeed;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -845,6 +848,18 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	@OptionsItem(R.id.action_settings)
 	protected void openSettings() {
 		MainSettingsActivity_.intent(this).start();
+	}
+
+	@OptionsItem(R.id.action_testing)
+	protected void openTesting() {
+		if (currentConnection instanceof UtorrentAdapter) {
+			ArrayList<UTorrentRssFeed> rssFeedItems = ((UtorrentAdapter) (currentConnection)).getRemoteRssFeeds();
+
+			RemoteRssActivity_.intent(this)
+							  .feeds(rssFeedItems)
+							  .start()
+			;
+		}
 	}
 
 	@OptionsItem(R.id.action_help)
