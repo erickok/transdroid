@@ -29,6 +29,11 @@
 		android:title="@string/action_rss"
 		app:showAsAction="ifRoom" />
 	<item
+		android:id="@+id/action_remoterss"
+		android:icon="@drawable/ic_action_rss"
+		android:title="@string/action_remoterss"
+		app:showAsAction="ifRoom" />
+	<item
 		android:id="@+id/action_help"
 		android:title="@string/action_help"
 		app:showAsAction="always" />
@@ -36,10 +41,4 @@
 		android:id="@+id/action_settings"
 		android:title="@string/action_settings"
 		app:showAsAction="always" />
-
-	<item
-		android:id="@+id/action_testing"
-		android:title="testing"
-		app:showAsAction="always" />
-
 </menu>

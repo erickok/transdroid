@@ -494,10 +494,12 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			filtersList.setVisibility(View.VISIBLE);
 		filterSearch.setVisibility(View.VISIBLE);
 		boolean addByFile = Daemon.supportsAddByFile(currentConnection.getType());
+		boolean hasRemoteRss = Daemon.supportsRemoteRssManagement(currentConnection.getType());
 		addmenuFileButton.setVisibility(addByFile ? View.VISIBLE : View.GONE);
 		// Primary toolbar menu
 		torrentsToolbar.getMenu().findItem(R.id.action_search).setVisible(navigationHelper.enableSearchUi());
 		torrentsToolbar.getMenu().findItem(R.id.action_rss).setVisible(navigationHelper.enableRssUi());
+		torrentsToolbar.getMenu().findItem(R.id.action_remoterss).setVisible(navigationHelper.enableRssUi() && hasRemoteRss);
 		torrentsToolbar.getMenu().findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 		torrentsToolbar.getMenu().findItem(R.id.action_help).setVisible(false);
 		// Secondary toolbar menu
@@ -850,9 +852,9 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		MainSettingsActivity_.intent(this).start();
 	}
 
-	@OptionsItem(R.id.action_testing)
-	protected void openTesting() {
-		if (currentConnection instanceof UtorrentAdapter) {
+	@OptionsItem(R.id.action_remoterss)
+	protected void openRemoteRss() {
+		if (Daemon.supportsRemoteRssManagement(currentConnection.getType())) {
 			ArrayList<UTorrentRssFeed> rssFeedItems = ((UtorrentAdapter) (currentConnection)).getRemoteRssFeeds();
 
 			RemoteRssActivity_.intent(this)

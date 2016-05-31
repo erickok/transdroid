@@ -25,6 +25,7 @@
 	<string name="action_search">Search</string>
 	<string name="action_refresh">Refresh</string>
 	<string name="action_rss">RSS</string>
+	<string name="action_remoterss">Server RSS</string>
 	<string name="action_enableturtle">Enable turtle mode</string>
 	<string name="action_disableturtle">Disable turtle mode</string>
 	<string name="action_sort">Sort list</string>

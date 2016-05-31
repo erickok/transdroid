@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.transdroid.core.gui.lists.SimpleListItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by twig on 29/05/2016.
  */
-public class UTorrentRssFeed implements Parcelable {
+public class UTorrentRssFeed implements Parcelable, SimpleListItem {
     /**
      * [
      *  1, // id?
@@ -166,4 +167,9 @@ public class UTorrentRssFeed implements Parcelable {
    			return new UTorrentRssFeed[size];
    		}
    	};
+
+    @Override
+    public String getName() {
+        return feedAlias;
+    }
 }

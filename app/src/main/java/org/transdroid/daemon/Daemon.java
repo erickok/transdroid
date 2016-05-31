@@ -375,4 +375,7 @@ public enum Daemon {
 		return type == Deluge || type == Aria2;
 	}
 
+	public static boolean supportsRemoteRssManagement(Daemon type) {
+		return type == uTorrent;
+	}
 }

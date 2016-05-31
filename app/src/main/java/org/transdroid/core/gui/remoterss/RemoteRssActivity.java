@@ -22,12 +22,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.ListView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.InstanceState;
+import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
@@ -35,6 +37,7 @@ import org.transdroid.R;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.TorrentsActivity;
 import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.daemon.Utorrent.data.UTorrentRssFeed;
 
 import java.util.ArrayList;
@@ -58,6 +61,9 @@ public class RemoteRssActivity extends AppCompatActivity {
 	// Details view components
 	@ViewById
 	protected Toolbar torrentsToolbar;
+
+	@ViewById
+	protected ListView drawerList;
 
 	@FragmentById(R.id.remoterss_fragment)
 	protected RemoteRssFragment fragmentRemoteRss;
@@ -96,6 +102,8 @@ public class RemoteRssActivity extends AppCompatActivity {
 
 		// TODO: show all items
 		fragmentRemoteRss.updateTorrentFiles(feeds.get(0).files);
+
+		drawerList.setAdapter(new SimpleListItemAdapter(this, feeds));
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -314,4 +322,9 @@ public class RemoteRssActivity extends AppCompatActivity {
 //		fragmentDetails.perhapsUpdateTorrent(torrents);
 //		fragmentDetails.updateLabels(Label.convertToNavigationLabels(labels, getResources().getString(R.string.labels_unlabeled)));
 //	}
+
+	@ItemClick(R.id.drawer_list)
+	protected void onFeedSelected(int position) {
+		fragmentRemoteRss.updateTorrentFiles(feeds.get(position).files);
+	}
 }
