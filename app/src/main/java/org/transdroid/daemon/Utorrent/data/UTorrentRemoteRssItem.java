@@ -11,13 +11,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class UTorrentRemoteRssItem extends RemoteRssItem {
-    public String name;
+//    public String name;
 //    public int season;
 //    public int episode;
 
     public UTorrentRemoteRssItem(JSONArray json) throws JSONException {
-        name = json.getString(0);
-        title = json.getString(1);
+//        name = json.getString(0); // clean name
+        title = json.getString(1); // filename
         link = json.getString(2);
 
         Calendar calendar = Calendar.getInstance();
@@ -40,7 +40,7 @@ public class UTorrentRemoteRssItem extends RemoteRssItem {
    	};
 
     public UTorrentRemoteRssItem(Parcel in) {
-        name = in.readString();
+//        name = in.readString();
         title = in.readString();
         link = in.readString();
         sourceName = in.readString();
@@ -51,7 +51,7 @@ public class UTorrentRemoteRssItem extends RemoteRssItem {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
+//        dest.writeString(name);
         dest.writeString(title);
         dest.writeString(link);
         dest.writeString(sourceName);

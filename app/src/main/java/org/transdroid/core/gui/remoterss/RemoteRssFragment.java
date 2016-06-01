@@ -23,13 +23,25 @@ import android.support.v7.widget.ActionMenuView;
 import android.view.View;
 import android.widget.ListView;
 
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
+import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.task.AddByMagnetUrlTask;
+import org.transdroid.daemon.task.AddByUrlTask;
+import org.transdroid.daemon.task.DaemonTaskResult;
+import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +54,8 @@ import java.util.List;
  */
 @EFragment(R.layout.fragment_remoterss)
 public class RemoteRssFragment extends Fragment {
+	@Bean
+	protected Log log;
 
 	// Local data
 	@InstanceState
@@ -75,16 +89,6 @@ public class RemoteRssFragment extends Fragment {
 //			}
 //		}
 
-//		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
-//			swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//				@Override
-//				public void onRefresh() {
-//					((RefreshableActivity) getActivity()).refreshScreen();
-//					swipeRefreshLayout.setRefreshing(false); // Use our custom indicator
-//				}
-//			});
-//		}
-
 		// Set up details adapter (itself containing the actual lists to show), which allows multi-select and fast
 		// scrolling
 		adapter = new RemoteRssFilesAdapter(getActivity());
@@ -109,30 +113,34 @@ public class RemoteRssFragment extends Fragment {
 
 	@ItemClick(resName = "torrents_list")
 	protected void detailsListClicked(int position) {
-		torrentsList.setItemChecked(position, false);
+		RemoteRssActivity activity = (RemoteRssActivity) getActivity();
+		RemoteRssItem item = (RemoteRssItem) adapter.getItem(position);
+		IDaemonAdapter currentConnection = activity.getCurrentConnection();
+		DaemonTaskResult result;
+
+		if (item.isMagnetLink()) {
+			// Check if it's supported
+			if (!Daemon.supportsAddByMagnetUrl(currentConnection.getType())) {
+				// TODO:
+				return;
+			}
+
+			AddByMagnetUrlTask addByMagnetUrlTask = AddByMagnetUrlTask.create(currentConnection, item.getLink());
+			result = addByMagnetUrlTask.execute(log);
+		}
+		else {
+			result = AddByUrlTask.create(currentConnection, item.getLink(), item.getTitle()).execute(log);
+		}
+
+		if (result instanceof DaemonTaskSuccessResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, item.getTitle()));
+		} else {
+//				onCommunicationError((DaemonTaskFailureResult) result, false);
+		}
 	}
 
-//	@Override
-//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//		super.onCreateOptionsMenu(menu, inflater);
-//
-//		inflater.inflate(R.menu.fragment_details, menu);
-//	}
-//
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		switch (item.getItemId()) {
-//			case R.id.action_start_default:
-////				startTorrentDefault();
-//				return true;
-//		}
-//
-//		return super.onOptionsItemSelected(item);
-//	}
-
-//	@OptionsItem(R.id.action_start_default)
-//	protected void startTorrentDefault() {
-//		if (getTasksExecutor() != null)
-//			getTasksExecutor().startTorrent(torrent, false);
-//	}
+	@UiThread
+	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
+		SnackbarManager.show(Snackbar.with(getActivity()).text(successMessage));
+	}
 }

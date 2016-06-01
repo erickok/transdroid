@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.FragmentById;
@@ -34,12 +35,16 @@ import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
+import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.TorrentsActivity;
 import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
+import org.transdroid.core.service.ConnectivityHelper;
+import org.transdroid.daemon.IDaemonAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,12 +69,12 @@ public class RemoteRssActivity extends AppCompatActivity {
 	@InstanceState
 	protected ArrayList<RemoteRssItem> recentItems;
 
-//	// Settings
-//	@Bean
-//	protected ApplicationSettings applicationSettings;
-//	@Bean
-//	protected ConnectivityHelper connectivityHelper;
-//	private IDaemonAdapter currentConnection;
+	// Server connection
+	@Bean
+	protected ApplicationSettings applicationSettings;
+	@Bean
+	protected ConnectivityHelper connectivityHelper;
+	private IDaemonAdapter currentConnection;
 
 	// Details view components
 	@ViewById
@@ -104,9 +109,9 @@ public class RemoteRssActivity extends AppCompatActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
 
-//		// Connect to the last used server
-//		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
-//		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+		// Connect to the last used server
+		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
+		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 
 		// Show all items
 		showRecentItems();
@@ -384,5 +389,9 @@ public class RemoteRssActivity extends AppCompatActivity {
 		else {
 			fragmentRemoteRss.updateTorrentFiles(feeds.get(position -1).getItems());
 		}
+	}
+
+	public IDaemonAdapter getCurrentConnection() {
+		return currentConnection;
 	}
 }

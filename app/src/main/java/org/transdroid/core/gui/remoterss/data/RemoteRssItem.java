@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public abstract class RemoteRssItem implements Parcelable, SimpleListItem {
     protected String title;
-    protected String link;
+    protected String link; // May be magnet or http(s)
     protected String sourceName; // Name of RSS feed channel
     protected Date timestamp;
 
@@ -38,6 +38,10 @@ public abstract class RemoteRssItem implements Parcelable, SimpleListItem {
 
     public Date getTimestamp() {
         return timestamp;
+    }
+
+    public boolean isMagnetLink() {
+        return link.startsWith("magnet:?");
     }
 
     @Override

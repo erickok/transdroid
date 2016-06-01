@@ -858,6 +858,10 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (Daemon.supportsRemoteRssManagement(currentConnection.getType())) {
 			ArrayList<RemoteRssChannel> rssFeedItems = ((UtorrentAdapter) (currentConnection)).getRemoteRssChannels();
 
+			if (rssFeedItems.size() == 0) {
+				return;
+			}
+
 			RemoteRssActivity_.intent(this)
 							  .feeds(rssFeedItems)
 							  .start()
