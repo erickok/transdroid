@@ -31,7 +31,6 @@ import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.SystemSettings_;
@@ -49,7 +48,7 @@ import java.util.ArrayList;
  * @author Eric Kok
  */
 @EActivity(R.layout.activity_remoterss)
-@OptionsMenu(R.menu.activity_details)
+//@OptionsMenu(R.menu.activity_details)
 public class RemoteRssActivity extends AppCompatActivity {
 	@Extra
 	@InstanceState

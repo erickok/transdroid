@@ -15,7 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<org.transdroid.core.gui.rss.RssitemStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
@@ -26,6 +26,15 @@
 	android:paddingTop="@dimen/margin_default">
 
 	<TextView
+			android:id="@+id/label_text"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="4dip"
+			android:textIsSelectable="false"
+			android:textSize="@dimen/text_small"
+			tools:text="Source channel name"/>
+
+	<TextView
 		android:id="@+id/name_text"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -33,26 +42,18 @@
 		android:textColor="?attr/text_bright"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_enlarged"
-		tools:text="Test RSS Item Text Here"/>
+		tools:text="Title for torrent"
+		android:layout_below="@+id/label_text"/>
 
 	<TextView
 		android:id="@+id/date_text"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/name_text"
+		android:layout_below="@+id/name_text"
 		android:layout_marginTop="4dip"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small"
-		tools:text="25-12-2015"/>
+		tools:text="25-12-2015"
+		/>
 
-	<TextView
-			android:id="@+id/label_text"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_below="@id/date_text"
-			android:layout_marginTop="4dip"
-			android:textIsSelectable="false"
-			android:textSize="@dimen/text_small"
-			tools:text="Label of torrent"/>
-
-</org.transdroid.core.gui.rss.RssitemStatusLayout>
+</RelativeLayout>

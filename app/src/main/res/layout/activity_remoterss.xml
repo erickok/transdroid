@@ -38,32 +38,11 @@
 			android:layout_height="wrap_content"
 			android:minHeight="?attr/actionBarSize" />
 
-		<android.support.v7.widget.Toolbar
-			android:id="@+id/actions_toolbar"
-			style="@style/SplitToolbar"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_alignParentBottom="true"
-			android:minHeight="?attr/actionBarSize"
-			android:paddingEnd="@dimen/ui_actions_padding"
-			android:paddingRight="@dimen/ui_actions_padding" />
-
-		<android.support.v7.widget.ActionMenuView
-			android:id="@+id/contextual_menu"
-			style="@style/SplitToolbar"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_alignParentBottom="true"
-			android:minHeight="?attr/actionBarSize"
-			android:visibility="gone"
-			tools:visibility="visible"/>
-
 		<fragment
 			android:id="@+id/remoterss_fragment"
 			class="org.transdroid.core.gui.remoterss.RemoteRssFragment_"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:layout_above="@id/actions_toolbar"
 			android:layout_below="@id/torrents_toolbar"
 			tools:layout="@layout/fragment_torrents" />
 
@@ -73,19 +52,7 @@
 
 		<View
 			style="@style/SplitToolbarShadow"
-			android:layout_above="@id/actions_toolbar" />
-
-		<include
-			layout="@layout/actionbar_addbutton"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentBottom="true"
-			android:layout_alignParentEnd="true"
-			android:layout_alignParentRight="true"
-			android:layout_gravity="bottom|end"
-			android:layout_marginBottom="16dp"
-			android:layout_marginEnd="10dp"
-			android:layout_marginRight="10dp" />
+			/>
 
 	</RelativeLayout>
 
