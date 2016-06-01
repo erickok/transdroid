@@ -20,6 +20,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
@@ -38,8 +39,14 @@ import org.transdroid.core.gui.TorrentsActivity;
 import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
+import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * An activity that holds a single torrents details fragment. It is used on devices (i.e. phones) where there is no room to show details in the {@link
@@ -54,8 +61,15 @@ public class RemoteRssActivity extends AppCompatActivity {
 	@InstanceState
 	protected ArrayList<RemoteRssChannel> feeds;
 
-	// Settings
-//	private IDaemonAdapter currentConnection = null;
+	@InstanceState
+	protected ArrayList<RemoteRssItem> recentItems;
+
+//	// Settings
+//	@Bean
+//	protected ApplicationSettings applicationSettings;
+//	@Bean
+//	protected ConnectivityHelper connectivityHelper;
+//	private IDaemonAdapter currentConnection;
 
 	// Details view components
 	@ViewById
@@ -92,17 +106,13 @@ public class RemoteRssActivity extends AppCompatActivity {
 
 //		// Connect to the last used server
 //		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
-//		fragmentDetails.setCurrentServerSettings(lastUsed);
 //		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 
-//		// Show details and load fine stats and torrent files
-//		fragmentDetails.updateTorrent(torrent);
-//		fragmentDetails.updateLabels(currentLabels);
+		// Show all items
+		showRecentItems();
 
-		// TODO: show all items
-		fragmentRemoteRss.updateTorrentFiles(feeds.get(0).getFiles());
-
-		drawerList.setAdapter(new SimpleListItemAdapter(this, feeds));
+		// Fill in the filter list
+		showChannelFilters();
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -322,8 +332,57 @@ public class RemoteRssActivity extends AppCompatActivity {
 //		fragmentDetails.updateLabels(Label.convertToNavigationLabels(labels, getResources().getString(R.string.labels_unlabeled)));
 //	}
 
+	protected void showRecentItems() {
+		if (recentItems == null) {
+			recentItems = new ArrayList<>();
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.MONTH, -1);
+			Date oneMonthAgo = calendar.getTime();
+
+			for (RemoteRssChannel feed : feeds) {
+				for (RemoteRssItem item : feed.getItems()) {
+					if (item.getTimestamp().after(oneMonthAgo)) {
+						recentItems.add(item);
+					}
+				}
+			}
+
+			// Sort by -newest
+			Collections.sort(recentItems, new Comparator<RemoteRssItem>() {
+				@Override
+				public int compare(RemoteRssItem lhs, RemoteRssItem rhs) {
+					return rhs.getTimestamp().compareTo(lhs.getTimestamp());
+				}
+			});
+		}
+
+		fragmentRemoteRss.updateTorrentFiles(recentItems);
+	}
+
+	protected void showChannelFilters() {
+		List<RemoteRssChannel> feedLabels = new ArrayList<>(feeds.size() +1);
+		feedLabels.add(new RemoteRssChannel() {
+			@Override
+			public String getName() {
+				return "(All recent)";
+			}
+
+			@Override
+			public void writeToParcel(Parcel dest, int flags) {
+			}
+		});
+		feedLabels.addAll(feeds);
+
+		drawerList.setAdapter(new SimpleListItemAdapter(this, feedLabels));
+	}
+
 	@ItemClick(R.id.drawer_list)
 	protected void onFeedSelected(int position) {
-		fragmentRemoteRss.updateTorrentFiles(feeds.get(position).getFiles());
+		if (position == 0) {
+			showRecentItems();
+		}
+		else {
+			fragmentRemoteRss.updateTorrentFiles(feeds.get(position -1).getItems());
+		}
 	}
 }

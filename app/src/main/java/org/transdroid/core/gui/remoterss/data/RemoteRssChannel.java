@@ -34,7 +34,7 @@ public abstract class RemoteRssChannel implements Parcelable, SimpleListItem {
         return new Date(lastUpdated);
     }
 
-    public List<RemoteRssItem> getFiles() {
+    public List<RemoteRssItem> getItems() {
         return files;
     }
 

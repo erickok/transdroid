@@ -13,7 +13,7 @@ public abstract class RemoteRssItem implements Parcelable, SimpleListItem {
     protected String title;
     protected String link;
     protected String sourceName; // Name of RSS feed channel
-    protected long timestamp;
+    protected Date timestamp;
 
     @Override
     public String getName() {
@@ -37,7 +37,7 @@ public abstract class RemoteRssItem implements Parcelable, SimpleListItem {
     }
 
     public Date getTimestamp() {
-        return new Date(timestamp);
+        return timestamp;
     }
 
     @Override

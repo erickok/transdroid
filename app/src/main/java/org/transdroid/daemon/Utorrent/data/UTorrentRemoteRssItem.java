@@ -7,6 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class UTorrentRemoteRssItem extends RemoteRssItem {
     public String name;
 //    public int season;
@@ -16,7 +19,11 @@ public class UTorrentRemoteRssItem extends RemoteRssItem {
         name = json.getString(0);
         title = json.getString(1);
         link = json.getString(2);
-        timestamp = json.getLong(5);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(json.getLong(5) * 1000);
+        timestamp = calendar.getTime();
+
 //        season = json.getInt(6);
 //        episode = json.getInt(7);
     }
@@ -37,7 +44,7 @@ public class UTorrentRemoteRssItem extends RemoteRssItem {
         title = in.readString();
         link = in.readString();
         sourceName = in.readString();
-        timestamp = in.readLong();
+        timestamp = (Date) in.readSerializable();
 //        season = in.readInt();
 //        episode = in.readInt();
     }
@@ -48,7 +55,7 @@ public class UTorrentRemoteRssItem extends RemoteRssItem {
         dest.writeString(title);
         dest.writeString(link);
         dest.writeString(sourceName);
-        dest.writeLong(timestamp);
+        dest.writeSerializable(timestamp);
 //        dest.writeInt(season);
 //        dest.writeInt(episode);
     }

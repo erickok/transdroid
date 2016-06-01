@@ -471,6 +471,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			filterSearch.setVisibility(View.GONE);
 			torrentsToolbar.getMenu().findItem(R.id.action_search).setVisible(false);
 			torrentsToolbar.getMenu().findItem(R.id.action_rss).setVisible(false);
+			torrentsToolbar.getMenu().findItem(R.id.action_remoterss).setVisible(false);
 			torrentsToolbar.getMenu().findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 			torrentsToolbar.getMenu().findItem(R.id.action_help).setVisible(true);
 			actionsToolbar.getMenu().findItem(R.id.action_enableturtle).setVisible(false);
@@ -499,7 +500,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		// Primary toolbar menu
 		torrentsToolbar.getMenu().findItem(R.id.action_search).setVisible(navigationHelper.enableSearchUi());
 		torrentsToolbar.getMenu().findItem(R.id.action_rss).setVisible(navigationHelper.enableRssUi());
-		torrentsToolbar.getMenu().findItem(R.id.action_remoterss).setVisible(navigationHelper.enableRssUi() && hasRemoteRss);
+		torrentsToolbar.getMenu().findItem(R.id.action_remoterss).setVisible(hasRemoteRss);
 		torrentsToolbar.getMenu().findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 		torrentsToolbar.getMenu().findItem(R.id.action_help).setVisible(false);
 		// Secondary toolbar menu
