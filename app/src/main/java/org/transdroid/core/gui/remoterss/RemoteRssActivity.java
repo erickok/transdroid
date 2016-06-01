@@ -38,7 +38,7 @@ import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.TorrentsActivity;
 import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
-import org.transdroid.daemon.Utorrent.data.UTorrentRssFeed;
+import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 
 import java.util.ArrayList;
 
@@ -53,7 +53,7 @@ import java.util.ArrayList;
 public class RemoteRssActivity extends AppCompatActivity {
 	@Extra
 	@InstanceState
-	protected ArrayList<UTorrentRssFeed> feeds;
+	protected ArrayList<RemoteRssChannel> feeds;
 
 	// Settings
 //	private IDaemonAdapter currentConnection = null;
@@ -101,7 +101,7 @@ public class RemoteRssActivity extends AppCompatActivity {
 //		fragmentDetails.updateLabels(currentLabels);
 
 		// TODO: show all items
-		fragmentRemoteRss.updateTorrentFiles(feeds.get(0).files);
+		fragmentRemoteRss.updateTorrentFiles(feeds.get(0).getFiles());
 
 		drawerList.setAdapter(new SimpleListItemAdapter(this, feeds));
 	}
@@ -325,6 +325,6 @@ public class RemoteRssActivity extends AppCompatActivity {
 
 	@ItemClick(R.id.drawer_list)
 	protected void onFeedSelected(int position) {
-		fragmentRemoteRss.updateTorrentFiles(feeds.get(position).files);
+		fragmentRemoteRss.updateTorrentFiles(feeds.get(position).getFiles());
 	}
 }

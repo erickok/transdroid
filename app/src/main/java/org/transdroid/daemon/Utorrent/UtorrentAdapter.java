@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
@@ -40,7 +41,7 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.Utorrent.data.UTorrentRssFeed;
+import org.transdroid.daemon.Utorrent.data.UTorrentRemoteRssChannel;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -114,7 +115,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 
-	private static ArrayList<UTorrentRssFeed> rssFeedItems;
+	private static ArrayList<RemoteRssChannel> rssFeedItems;
 
 
 
@@ -322,11 +323,11 @@ public class UtorrentAdapter implements IDaemonAdapter {
 
 	private void parseJsonRemoteRssLists(JSONArray results) {
 		rssFeedItems = new ArrayList<>();
-		UTorrentRssFeed item;
+		RemoteRssChannel item;
 
 		for (int i = 0; i < results.length(); i++) {
 			try {
-				item = new UTorrentRssFeed(results.getJSONArray(i));
+				item = new UTorrentRemoteRssChannel(results.getJSONArray(i));
 				rssFeedItems.add(item);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -644,7 +645,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		return this.settings;
 	}
 
-	public ArrayList<UTorrentRssFeed> getRemoteRssFeeds() {
+	public ArrayList<RemoteRssChannel> getRemoteRssChannels() {
 		return rssFeedItems;
 	}
 }

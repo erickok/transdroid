@@ -24,7 +24,7 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.RssfeedSetting;
-import org.transdroid.daemon.Utorrent.data.RemoteRssFile;
+import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 
 /**
  * View that represents some {@link RssfeedSetting} object and displays name as well as loads a favicon for the feed's site and can load how many new
@@ -41,10 +41,10 @@ public class RemoteRssItemView extends LinearLayout {
 		super(context);
 	}
 
-	public void bind(RemoteRssFile file) {
+	public void bind(RemoteRssItem file) {
 		nameText.setText(file.getName());
-		dateText.setText(String.valueOf(file.timestamp));
-		labelText.setText(file.feedLabel);
+		dateText.setText(String.valueOf(file.getTimestamp()));
+		labelText.setText(file.getSourceName());
 	}
 
 }

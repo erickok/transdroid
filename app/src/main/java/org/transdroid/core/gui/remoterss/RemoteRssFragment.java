@@ -29,7 +29,7 @@ import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.daemon.Utorrent.data.RemoteRssFile;
+import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class RemoteRssFragment extends Fragment {
 
 	// Local data
 	@InstanceState
-	protected ArrayList<RemoteRssFile> torrentFiles;
+	protected ArrayList<RemoteRssItem> torrentFiles;
 
 	// Views
 	@ViewById
@@ -102,7 +102,7 @@ public class RemoteRssFragment extends Fragment {
 	 * @param checkTorrent The torrent for which the details were retrieved
 	 * @param newTorrentFiles The new, updated list of torrent file objects
 	 */
-	public void updateTorrentFiles(List<RemoteRssFile> remoteRssFiles) {
+	public void updateTorrentFiles(List<RemoteRssItem> remoteRssFiles) {
 		torrentFiles = new ArrayList<>(remoteRssFiles);
 		adapter.updateFiles(torrentFiles);
 	}

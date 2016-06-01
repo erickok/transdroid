@@ -2,19 +2,18 @@ package org.transdroid.daemon.Utorrent.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.transdroid.core.gui.lists.SimpleListItem;
+import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
+import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by twig on 29/05/2016.
  */
-public class UTorrentRssFeed implements Parcelable, SimpleListItem {
+public class UTorrentRemoteRssChannel extends RemoteRssChannel {
     /**
      * [
      *  1, // id?
@@ -93,83 +92,60 @@ public class UTorrentRssFeed implements Parcelable, SimpleListItem {
      */
 
 
-    public int feedID;
-    boolean enabled;
-    boolean isCustomAlias;
-    public String feedAlias;
-    public String feedURL;
-    public long lastUpdated;
-    public List<RemoteRssFile> files;
+    public UTorrentRemoteRssChannel(JSONArray json) throws JSONException {
+//        boolean enabled = json.getBoolean(1);
+        boolean isCustomAlias = !json.getBoolean(2);
 
-    public UTorrentRssFeed(JSONArray json) throws JSONException {
-        Log.e("UTorrentRssFeedItem", "input");
-
-        feedID = json.getInt(0);
-        enabled = json.getBoolean(1);
-        isCustomAlias = !json.getBoolean(2);
-        feedURL = json.getString(6);
+        id = json.getInt(0);
+        link = json.getString(6);
         lastUpdated = json.getLong(7);
 
         if (isCustomAlias) {
-            feedAlias = feedURL.split("\\|")[0];
-            feedURL = feedURL.split("\\|")[1];
+            name = link.split("\\|")[0];
+            link = link.split("\\|")[1];
         }
         else {
-            feedAlias = feedURL;
+            name = link;
         }
 
         files = new ArrayList<>();
 
         JSONArray filesJson = json.getJSONArray(8);
-        RemoteRssFile file;
+        RemoteRssItem file;
 
         for (int i = 0; i < filesJson.length(); i++) {
-            file = new RemoteRssFile(filesJson.getJSONArray(i));
-            file.feedLabel = feedAlias;
+            file = new UTorrentRemoteRssItem(filesJson.getJSONArray(i));
+            file.setSourceName(name);
             files.add(file);
         }
     }
 
-    public UTorrentRssFeed(Parcel in) {
-        feedID = in.readInt();
-        enabled = (in.readByte() == 1);
-        isCustomAlias = (in.readByte() == 1);
-        feedAlias = in.readString();
-        feedURL = in.readString();
+    public UTorrentRemoteRssChannel(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        link = in.readString();
         lastUpdated = in.readLong();
 
         files = new ArrayList<>();
-        in.readList(files, RemoteRssFile.class.getClassLoader());
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        in.readList(files, UTorrentRemoteRssItem.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(feedID);
-        dest.writeByte((byte) (enabled ? 1 : 0));
-        dest.writeByte((byte) (isCustomAlias ? 1 : 0));
-        dest.writeString(feedAlias);
-        dest.writeString(feedURL);
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(link);
         dest.writeLong(lastUpdated);
         dest.writeList(files);
     }
 
-    public static final Parcelable.Creator<UTorrentRssFeed> CREATOR = new Parcelable.Creator<UTorrentRssFeed>() {
-   		public UTorrentRssFeed createFromParcel(Parcel in) {
-            return new UTorrentRssFeed(in);
+    public static final Parcelable.Creator<UTorrentRemoteRssChannel> CREATOR = new Parcelable.Creator<UTorrentRemoteRssChannel>() {
+   		public UTorrentRemoteRssChannel createFromParcel(Parcel in) {
+            return new UTorrentRemoteRssChannel(in);
         }
 
-   		public UTorrentRssFeed[] newArray(int size) {
-   			return new UTorrentRssFeed[size];
+   		public UTorrentRemoteRssChannel[] newArray(int size) {
+   			return new UTorrentRemoteRssChannel[size];
    		}
    	};
-
-    @Override
-    public String getName() {
-        return feedAlias;
-    }
 }

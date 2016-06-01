@@ -5,14 +5,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import org.transdroid.daemon.Utorrent.data.RemoteRssFile;
+import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RemoteRssFilesAdapter extends BaseAdapter {
 	protected Context context;
-	protected List<RemoteRssFile> files;
+	protected List<RemoteRssItem> files;
 
 	public RemoteRssFilesAdapter(Context context) {
 		this.context = context;
@@ -45,12 +45,12 @@ public class RemoteRssFilesAdapter extends BaseAdapter {
 			itemView = (RemoteRssItemView) convertView;
 		}
 
-		itemView.bind((RemoteRssFile) getItem(position));
+		itemView.bind((RemoteRssItem) getItem(position));
 
 		return itemView;
 	}
 
-	public void updateFiles(List<RemoteRssFile> torrentFiles) {
+	public void updateFiles(List<RemoteRssItem> torrentFiles) {
 		files = torrentFiles;
 		notifyDataSetChanged();
 	}
