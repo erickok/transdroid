@@ -110,6 +110,7 @@ public class RemoteRssFragment extends Fragment {
 	public void updateTorrentFiles(List<RemoteRssItem> remoteRssFiles) {
 		torrentFiles = new ArrayList<>(remoteRssFiles);
 		adapter.updateFiles(torrentFiles);
+		torrentsList.smoothScrollToPosition(0);
 	}
 
 	@ItemClick(resName = "torrents_list")

@@ -119,11 +119,11 @@ public class RemoteRssActivity extends AppCompatActivity {
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 
-		// Show all items
-		showRecentItems();
-
 		// Fill in the filter list
 		showChannelFilters();
+
+		// Show all items
+		showRecentItems();
 	}
 
 
@@ -172,6 +172,8 @@ public class RemoteRssActivity extends AppCompatActivity {
 		}
 
 		fragmentRemoteRss.updateTorrentFiles(recentItems);
+		RemoteRssChannel channel = (RemoteRssChannel) drawerList.getAdapter().getItem(0);
+		getSupportActionBar().setSubtitle(channel.getName());
 	}
 
 	protected void showChannelFilters() {
@@ -199,6 +201,9 @@ public class RemoteRssActivity extends AppCompatActivity {
 		else {
 			fragmentRemoteRss.updateTorrentFiles(feeds.get(position -1).getItems());
 		}
+
+		RemoteRssChannel channel = (RemoteRssChannel) drawerList.getAdapter().getItem(position);
+		getSupportActionBar().setSubtitle(channel.getName());
 
 		drawerLayout.closeDrawers();
 	}

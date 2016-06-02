@@ -17,6 +17,7 @@
 package org.transdroid.core.gui.remoterss;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -41,10 +42,14 @@ public class RemoteRssItemView extends LinearLayout {
 		super(context);
 	}
 
-	public void bind(RemoteRssItem file) {
-		nameText.setText(file.getName());
-		dateText.setText(String.valueOf(file.getTimestamp()));
-		labelText.setText(file.getSourceName());
+	public void bind(RemoteRssItem item) {
+		labelText.setText(item.getSourceName());
+		nameText.setText(item.getName());
+		dateText.setText(
+			DateFormat.getDateFormat(getContext()).format(item.getTimestamp()) +
+			" " +
+			DateFormat.getTimeFormat(getContext()).format(item.getTimestamp())
+		);
 	}
 
 }
