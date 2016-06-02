@@ -27,6 +27,7 @@ import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
@@ -113,8 +114,13 @@ public class RemoteRssFragment extends Fragment {
 
 	@ItemClick(resName = "torrents_list")
 	protected void detailsListClicked(int position) {
-		RemoteRssActivity activity = (RemoteRssActivity) getActivity();
 		RemoteRssItem item = (RemoteRssItem) adapter.getItem(position);
+		downloadRemoteRssItem(item);
+	}
+
+	@Background
+	protected void downloadRemoteRssItem(RemoteRssItem item) {
+		RemoteRssActivity activity = (RemoteRssActivity) getActivity();
 		IDaemonAdapter currentConnection = activity.getCurrentConnection();
 		DaemonTaskResult result;
 
