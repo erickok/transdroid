@@ -17,12 +17,13 @@
 package org.transdroid.core.gui.remoterss;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -39,7 +40,6 @@ import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.TorrentsActivity;
-import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
@@ -78,6 +78,11 @@ public class RemoteRssActivity extends AppCompatActivity {
 
 	// Details view components
 	@ViewById
+	protected DrawerLayout drawerLayout;
+	@ViewById
+	protected LinearLayout drawerContainer;
+
+	@ViewById
 	protected Toolbar torrentsToolbar;
 
 	@ViewById
@@ -105,6 +110,7 @@ public class RemoteRssActivity extends AppCompatActivity {
 		}
 
 		// Simple action bar with up, torrent name as title and refresh button
+		torrentsToolbar.setNavigationIcon(R.drawable.ic_action_drawer);
 		setSupportActionBar(torrentsToolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
@@ -120,222 +126,26 @@ public class RemoteRssActivity extends AppCompatActivity {
 		showChannelFilters();
 	}
 
+
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@OptionsItem(android.R.id.home)
 	protected void navigateUp() {
-		TorrentsActivity_.intent(this)
-						 .flags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-						 .start();
+		if (drawerLayout.isDrawerOpen(drawerContainer)) {
+			drawerLayout.closeDrawers();
+		} else {
+			drawerLayout.openDrawer(drawerContainer);
+		}
 	}
 
-//	@OptionsItem(R.id.action_refresh)
-//	public void refreshScreen() {
-//		fragmentRemoteRss.updateIsLoading(true, null);
-//		refreshTorrent();
-//		refreshTorrentDetails(torrent);
-//		refreshTorrentFiles(torrent);
-//	}
-
-//	@Background
-//	protected void refreshTorrent() {
-//		DaemonTaskResult result = RetrieveTask.create(currentConnection).execute(log);
-//		if (result instanceof RetrieveTaskSuccessResult) {
-//			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(), ((RetrieveTaskSuccessResult) result).getLabels());
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, true);
-//		}
-//	}
-//
-//	@Background
-//	public void refreshTorrentDetails(Torrent torrent) {
-//		if (!Daemon.supportsFineDetails(torrent.getDaemon())) {
-//			return;
-//		}
-//		DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute(log);
-//		if (result instanceof GetTorrentDetailsTaskSuccessResult) {
-//			onTorrentDetailsRetrieved(torrent, ((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@Background
-//	public void refreshTorrentFiles(Torrent torrent) {
-//		if (!Daemon.supportsFileListing(torrent.getDaemon())) {
-//			return;
-//		}
-//		DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute(log);
-//		if (result instanceof GetFileListTaskSuccessResult) {
-//			onTorrentFilesRetrieved(torrent, ((GetFileListTaskSuccessResult) result).getFiles());
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@Background
-//	@Override
-//	public void resumeTorrent(Torrent torrent) {
-//		torrent.mimicResume();
-//		DaemonTaskResult result = ResumeTask.create(currentConnection, torrent).execute(log);
-//		if (result instanceof DaemonTaskSuccessResult) {
-//			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_resumed, torrent.getName()));
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@Background
-//	@Override
-//	public void pauseTorrent(Torrent torrent) {
-//		torrent.mimicPause();
-//		DaemonTaskResult result = PauseTask.create(currentConnection, torrent).execute(log);
-//		if (result instanceof DaemonTaskSuccessResult) {
-//			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_paused, torrent.getName()));
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@Background
-//	@Override
-//	public void startTorrent(Torrent torrent, boolean forced) {
-//		torrent.mimicStart();
-//		DaemonTaskResult result = StartTask.create(currentConnection, torrent, forced).execute(log);
-//		if (result instanceof DaemonTaskSuccessResult) {
-//			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_started, torrent.getName()));
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@Background
-//	@Override
-//	public void stopTorrent(Torrent torrent) {
-//		torrent.mimicStop();
-//		DaemonTaskResult result = StopTask.create(currentConnection, torrent).execute(log);
-//		if (result instanceof DaemonTaskSuccessResult) {
-//			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_stopped, torrent.getName()));
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@Background
-//	@Override
-//	public void removeTorrent(Torrent torrent, boolean withData) {
-//		DaemonTaskResult result = RemoveTask.create(currentConnection, torrent, withData).execute(log);
-//		if (result instanceof DaemonTaskSuccessResult) {
-//			// Close the details activity (as the torrent is now removed)
-//			closeActivity(getString(withData ? R.string.result_removed_with_data : R.string.result_removed, torrent.getName()));
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@UiThread
-//	protected void closeActivity(String closeText) {
-//		setResult(RESULT_OK, new Intent().putExtra("torrent_removed", true).putExtra("affected_torrent", torrent));
-//		finish();
-//		if (closeText != null) {
-//			SnackbarManager.show(Snackbar.with(this).text(closeText));
-//		}
-//	}
-//
-//	@Background
-//	@Override
-//	public void updateLabel(Torrent torrent, String newLabel) {
-//		torrent.mimicNewLabel(newLabel);
-//		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel).execute(log);
-//		if (result instanceof DaemonTaskSuccessResult) {
-//			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_labelset, newLabel));
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@Background
-//	@Override
-//	public void forceRecheckTorrent(Torrent torrent) {
-//		torrent.mimicCheckingStatus();
-//		DaemonTaskResult result = ForceRecheckTask.create(currentConnection, torrent).execute(log);
-//		if (result instanceof DaemonTaskSuccessResult) {
-//			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_recheckedstarted, torrent.getName()));
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@Background
-//	@Override
-//	public void updateTrackers(Torrent torrent, List<String> newTrackers) {
-//		DaemonTaskResult result = SetTrackersTask.create(currentConnection, torrent, newTrackers).execute(log);
-//		if (result instanceof DaemonTaskSuccessResult) {
-//			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_trackersupdated));
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@Background
-//	@Override
-//	public void updateLocation(Torrent torrent, String newLocation) {
-//		DaemonTaskResult result = SetDownloadLocationTask.create(currentConnection, torrent, newLocation).execute(log);
-//		if (result instanceof DaemonTaskSuccessResult) {
-//			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_locationset, newLocation));
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@Background
-//	@Override
-//	public void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority) {
-//		DaemonTaskResult result = SetFilePriorityTask.create(currentConnection, torrent, priority, new ArrayList<>(files)).execute(log);
-//		if (result instanceof DaemonTaskSuccessResult) {
-//			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
-//		} else {
-//			onCommunicationError((DaemonTaskFailureResult) result, false);
-//		}
-//	}
-//
-//	@UiThread
-//	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
-//		// Set the activity result so the calling activity knows it needs to update its view
-//		setResult(RESULT_OK, new Intent().putExtra("torrent_updated", true).putExtra("affected_torrent", torrent));
-//		// Refresh the screen as well
-//		refreshTorrent();
-//		refreshTorrentDetails(torrent);
-//		SnackbarManager.show(Snackbar.with(this).text(successMessage));
-//	}
-//
-//	@UiThread
-//	protected void onTorrentDetailsRetrieved(Torrent torrent, TorrentDetails torrentDetails) {
-//		// Update the details fragment with the new fine details for the shown torrent
-//		fragmentDetails.updateTorrentDetails(torrent, torrentDetails);
-//	}
-//
-//	@UiThread
-//	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
-//		// Update the details fragment with the newly retrieved list of files
-//		fragmentDetails.updateTorrentFiles(torrent, new ArrayList<>(torrentFiles));
-//	}
-//
-//	@UiThread
-//	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
-//		log.i(this, result.getException().toString());
-//		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
-//		fragmentDetails.updateIsLoading(false, isCritical ? error : null);
-//		SnackbarManager.show(Snackbar.with(this).text(getString(LocalTorrent.getResourceForDaemonException(result.getException())))
-//				.colorResource(R.color.red));
-//	}
-//
-//	@UiThread
-//	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
-//		// Update the details fragment accordingly
-//		fragmentDetails.updateIsLoading(false, null);
-//		fragmentDetails.perhapsUpdateTorrent(torrents);
-//		fragmentDetails.updateLabels(Label.convertToNavigationLabels(labels, getResources().getString(R.string.labels_unlabeled)));
-//	}
+	@Override
+	public void onBackPressed() {
+		if (drawerLayout.isDrawerOpen(drawerContainer)) {
+			drawerLayout.closeDrawers();
+		} else {
+			finish();
+		}
+	}
 
 	protected void showRecentItems() {
 		if (recentItems == null) {
@@ -389,6 +199,8 @@ public class RemoteRssActivity extends AppCompatActivity {
 		else {
 			fragmentRemoteRss.updateTorrentFiles(feeds.get(position -1).getItems());
 		}
+
+		drawerLayout.closeDrawers();
 	}
 
 	public IDaemonAdapter getCurrentConnection() {

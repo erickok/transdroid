@@ -117,7 +117,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 
-	private static ArrayList<RemoteRssChannel> rssFeedItems;
+	private static ArrayList<RemoteRssChannel> rssFeedItems = new ArrayList<>();
 
 
 

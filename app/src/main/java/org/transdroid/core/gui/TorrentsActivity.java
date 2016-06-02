@@ -855,18 +855,16 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
 	@OptionsItem(R.id.action_remoterss)
 	protected void openRemoteRss() {
-		if (Daemon.supportsRemoteRssManagement(currentConnection.getType())) {
-			ArrayList<RemoteRssChannel> rssFeedItems = ((UtorrentAdapter) (currentConnection)).getRemoteRssChannels();
+		ArrayList<RemoteRssChannel> rssFeedItems = ((UtorrentAdapter) (currentConnection)).getRemoteRssChannels();
 
-			if (rssFeedItems.size() == 0) {
-				return;
-			}
-
-			RemoteRssActivity_.intent(this)
-							  .feeds(rssFeedItems)
-							  .start()
-			;
+		if (rssFeedItems.size() == 0) {
+			return;
 		}
+
+		RemoteRssActivity_.intent(this)
+						  .feeds(rssFeedItems)
+						  .start()
+		;
 	}
 
 	@OptionsItem(R.id.action_help)
