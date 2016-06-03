@@ -60,7 +60,6 @@ import java.util.List;
  * @author Eric Kok
  */
 @EActivity(R.layout.activity_remoterss)
-//@OptionsMenu(R.menu.activity_details)
 public class RemoteRssActivity extends AppCompatActivity {
 	@Extra
 	@InstanceState
@@ -113,7 +112,6 @@ public class RemoteRssActivity extends AppCompatActivity {
 		torrentsToolbar.setNavigationIcon(R.drawable.ic_action_drawer);
 		setSupportActionBar(torrentsToolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
 
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
@@ -125,7 +123,6 @@ public class RemoteRssActivity extends AppCompatActivity {
 		// Show all items
 		showRecentItems();
 	}
-
 
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

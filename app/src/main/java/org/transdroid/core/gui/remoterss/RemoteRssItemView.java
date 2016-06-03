@@ -24,13 +24,11 @@ import android.widget.TextView;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 
 /**
- * View that represents some {@link RssfeedSetting} object and displays name as well as loads a favicon for the feed's site and can load how many new
- * items are available.
- * @author Eric Kok
+ * View that represents some {@link RemoteRssItem} object.
+ * @author Twig
  */
 @EViewGroup(R.layout.list_item_remoterssitem)
 public class RemoteRssItemView extends LinearLayout {

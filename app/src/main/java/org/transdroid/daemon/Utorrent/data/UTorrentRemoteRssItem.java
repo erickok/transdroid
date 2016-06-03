@@ -10,6 +10,11 @@ import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * uTorrent implementation of RemoteRssItem.
+ *
+ * @author Twig
+ */
 public class UTorrentRemoteRssItem extends RemoteRssItem {
 //    public String name;
 //    public int season;

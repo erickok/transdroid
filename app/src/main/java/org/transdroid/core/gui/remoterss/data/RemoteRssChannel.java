@@ -8,14 +8,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by twig on 1/06/2016.
+ * @author Twig
  */
 public abstract class RemoteRssChannel implements Parcelable, SimpleListItem {
     protected int id;
     protected String name;
     protected String link;
     protected long lastUpdated;
-    protected List<RemoteRssItem> files;
+    protected List<RemoteRssItem> items;
 
     @Override
     public int describeContents() {
@@ -35,7 +35,7 @@ public abstract class RemoteRssChannel implements Parcelable, SimpleListItem {
     }
 
     public List<RemoteRssItem> getItems() {
-        return files;
+        return items;
     }
 
     @Override

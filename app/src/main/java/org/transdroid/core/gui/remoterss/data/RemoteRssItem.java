@@ -7,7 +7,7 @@ import org.transdroid.core.gui.lists.SimpleListItem;
 import java.util.Date;
 
 /**
- * Created by twig on 1/06/2016.
+ * @author Twig
  */
 public abstract class RemoteRssItem implements Parcelable, SimpleListItem {
     protected String title;

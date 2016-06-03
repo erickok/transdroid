@@ -12,21 +12,21 @@ import java.util.List;
 
 public class RemoteRssFilesAdapter extends BaseAdapter {
 	protected Context context;
-	protected List<RemoteRssItem> files;
+	protected List<RemoteRssItem> items;
 
 	public RemoteRssFilesAdapter(Context context) {
 		this.context = context;
-		files = new ArrayList<>();
+		items = new ArrayList<>();
 	}
 
 	@Override
 	public int getCount() {
-		return files.size();
+		return items.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return files.get(position);
+		return items.get(position);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class RemoteRssFilesAdapter extends BaseAdapter {
 	}
 
 	public void updateFiles(List<RemoteRssItem> torrentFiles) {
-		files = torrentFiles;
+		items = torrentFiles;
 		notifyDataSetChanged();
 	}
 }

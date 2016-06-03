@@ -25,7 +25,7 @@
 	<string name="action_search">Search</string>
 	<string name="action_refresh">Refresh</string>
 	<string name="action_rss">RSS</string>
-	<string name="action_remoterss">Server RSS</string>
+	<string name="action_remoterss">Remote RSS</string>
 	<string name="action_enableturtle">Enable turtle mode</string>
 	<string name="action_disableturtle">Disable turtle mode</string>
 	<string name="action_sort">Sort list</string>
@@ -443,6 +443,7 @@
 
 	<string name="error_httperror">Error during communication; check your connection</string>
 	<string name="error_unsupported">Your torrent client does not support this operation</string>
+	<string name="error_magnet_links_unsupported">Your torrent client does not support magnet links</string>
 	<string name="error_jsonrequesterror">Internal error building request</string>
 	<string name="error_jsonresponseerror">Error parsing server response (please check your settings)</string>
 	<string name="error_daemonnotconnected">Web interface not connected to a running daemon</string>

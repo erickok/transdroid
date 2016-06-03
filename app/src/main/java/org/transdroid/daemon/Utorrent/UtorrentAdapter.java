@@ -117,7 +117,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 
-	private static ArrayList<RemoteRssChannel> rssFeedItems = new ArrayList<>();
+	private static ArrayList<RemoteRssChannel> remoteRssChannels = new ArrayList<>();
 
 
 
@@ -324,19 +324,19 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	}
 
 	private void parseJsonRemoteRssLists(JSONArray results) {
-		rssFeedItems = new ArrayList<>();
+		remoteRssChannels = new ArrayList<>();
 		RemoteRssChannel item;
 
 		for (int i = 0; i < results.length(); i++) {
 			try {
 				item = new UTorrentRemoteRssChannel(results.getJSONArray(i));
-				rssFeedItems.add(item);
+				remoteRssChannels.add(item);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 
-		Collections.sort(rssFeedItems, new Comparator<RemoteRssChannel>() {
+		Collections.sort(remoteRssChannels, new Comparator<RemoteRssChannel>() {
 			@Override
 			public int compare(RemoteRssChannel lhs, RemoteRssChannel rhs) {
 				return lhs.getName().compareToIgnoreCase(rhs.getName());
@@ -655,6 +655,6 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	}
 
 	public ArrayList<RemoteRssChannel> getRemoteRssChannels() {
-		return rssFeedItems;
+		return remoteRssChannels;
 	}
 }

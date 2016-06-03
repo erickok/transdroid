@@ -25,6 +25,7 @@ import android.widget.ListView;
 
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.enums.SnackbarType;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -35,12 +36,14 @@ import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
+import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
+import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 
@@ -48,10 +51,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fragment that shows detailed statistics about some torrent. These come from some already fetched {@link Torrent} object, but it also retrieves
- * further detailed statistics. The actual execution of tasks is performed by the activity that contains this fragment, as per the {@link
- * TorrentTasksExecutor} interface.
- * @author Eric Kok
+ * Fragment that shows a list of RSS items from the server and allows the user
+ * to download remotely, without having to set up RSS feeds on the Android device.
+ * @author Twig
  */
 @EFragment(R.layout.fragment_remoterss)
 public class RemoteRssFragment extends Fragment {
@@ -90,8 +92,7 @@ public class RemoteRssFragment extends Fragment {
 //			}
 //		}
 
-		// Set up details adapter (itself containing the actual lists to show), which allows multi-select and fast
-		// scrolling
+		// Set up details adapter
 		adapter = new RemoteRssFilesAdapter(getActivity());
 		torrentsList.setAdapter(adapter);
 		torrentsList.setFastScrollEnabled(true);
@@ -104,8 +105,6 @@ public class RemoteRssFragment extends Fragment {
 
 	/**
 	 * Updates the list adapter to show a new list of torrent files, replacing the old files list.
-	 * @param checkTorrent The torrent for which the details were retrieved
-	 * @param newTorrentFiles The new, updated list of torrent file objects
 	 */
 	public void updateTorrentFiles(List<RemoteRssItem> remoteRssFiles) {
 		torrentFiles = new ArrayList<>(remoteRssFiles);
@@ -113,12 +112,18 @@ public class RemoteRssFragment extends Fragment {
 		torrentsList.smoothScrollToPosition(0);
 	}
 
+	/**
+	 * When the user clicks on an item, prepare to download it.
+     */
 	@ItemClick(resName = "torrents_list")
 	protected void detailsListClicked(int position) {
 		RemoteRssItem item = (RemoteRssItem) adapter.getItem(position);
 		downloadRemoteRssItem(item);
 	}
 
+	/**
+	 * Download the item in a background thread and display success/fail accordingly.
+     */
 	@Background
 	protected void downloadRemoteRssItem(RemoteRssItem item) {
 		RemoteRssActivity activity = (RemoteRssActivity) getActivity();
@@ -128,7 +133,7 @@ public class RemoteRssFragment extends Fragment {
 		if (item.isMagnetLink()) {
 			// Check if it's supported
 			if (!Daemon.supportsAddByMagnetUrl(currentConnection.getType())) {
-				// TODO:
+				onTaskFailed(getString(R.string.error_magnet_links_unsupported));
 				return;
 			}
 
@@ -141,13 +146,24 @@ public class RemoteRssFragment extends Fragment {
 
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, item.getTitle()));
-		} else {
-//				onCommunicationError((DaemonTaskFailureResult) result, false);
+		} else if (result instanceof DaemonTaskFailureResult){
+			DaemonTaskFailureResult failure = ((DaemonTaskFailureResult) result);
+			String message = getString(LocalTorrent.getResourceForDaemonException(failure.getException()));
+			onTaskFailed(message);
 		}
 	}
 
 	@UiThread
 	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
 		SnackbarManager.show(Snackbar.with(getActivity()).text(successMessage));
+	}
+
+	@UiThread
+	protected void onTaskFailed(String message) {
+		SnackbarManager.show(Snackbar.with(getActivity())
+			 .text(message)
+			 .colorResource(R.color.red)
+			 .type(SnackbarType.MULTI_LINE)
+		);
 	}
 }
