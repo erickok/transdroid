@@ -107,7 +107,7 @@ public class RemoteRssFragment extends Fragment {
 	}
 
 	/**
-	 * Updates the list adapter to show a new list of torrent files, replacing the old files list.
+	 * Updates the UI with a new list of RSS items.
 	 */
 	public void updateRemoteItems(List<RemoteRssItem> remoteItems) {
 		remoteRssItems = new ArrayList<>(remoteItems);
