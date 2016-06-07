@@ -102,8 +102,6 @@ public class RemoteRssActivity extends AppCompatActivity {
 
 	@AfterViews
 	protected void init() {
-
-		// We require feeds to be specified; otherwise close the activity
 		if (feeds == null) {
 			feeds = new ArrayList<>();
 		}
