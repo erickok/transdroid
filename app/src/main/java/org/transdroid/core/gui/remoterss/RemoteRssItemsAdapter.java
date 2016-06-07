@@ -10,11 +10,11 @@ import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RemoteRssFilesAdapter extends BaseAdapter {
+public class RemoteRssItemsAdapter extends BaseAdapter {
 	protected Context context;
 	protected List<RemoteRssItem> items;
 
-	public RemoteRssFilesAdapter(Context context) {
+	public RemoteRssItemsAdapter(Context context) {
 		this.context = context;
 		items = new ArrayList<>();
 	}
@@ -50,8 +50,8 @@ public class RemoteRssFilesAdapter extends BaseAdapter {
 		return itemView;
 	}
 
-	public void updateFiles(List<RemoteRssItem> torrentFiles) {
-		items = torrentFiles;
+	public void updateItems(List<RemoteRssItem> remoteItems) {
+		items = remoteItems;
 		notifyDataSetChanged();
 	}
 }

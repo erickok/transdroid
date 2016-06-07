@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
+import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
@@ -81,7 +82,7 @@ import java.util.List;
  * HTTP GET requests and responses.
  * @author erickok
  */
-public class UtorrentAdapter implements IDaemonAdapter {
+public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 
 	private static final String LOG_NAME = "uTorrent daemon";
 	private static final String RPC_URL_HASH = "&hash=";
@@ -332,6 +333,8 @@ public class UtorrentAdapter implements IDaemonAdapter {
 				item = new UTorrentRemoteRssChannel(results.getJSONArray(i));
 				remoteRssChannels.add(item);
 			} catch (JSONException e) {
+				// Ignore unparseable items so app doesn't crash.
+				// Haven't run into a case where this fails, yet.
 				e.printStackTrace();
 			}
 		}

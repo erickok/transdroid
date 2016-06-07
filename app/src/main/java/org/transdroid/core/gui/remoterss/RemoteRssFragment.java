@@ -22,6 +22,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.ActionMenuView;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -62,7 +63,7 @@ public class RemoteRssFragment extends Fragment {
 
 	// Local data
 	@InstanceState
-	protected ArrayList<RemoteRssItem> torrentFiles;
+	protected ArrayList<RemoteRssItem> remoteRssItems;
 
 	// Views
 	@ViewById
@@ -73,8 +74,10 @@ public class RemoteRssFragment extends Fragment {
 	protected SwipeRefreshLayout swipeRefreshLayout;
 	@ViewById
 	protected ListView torrentsList;
+	@ViewById
+	protected TextView remoterssNoFilesMessage;
 
-	protected RemoteRssFilesAdapter adapter;
+	protected RemoteRssItemsAdapter adapter;
 
 	@AfterViews
 	protected void init() {
@@ -93,23 +96,26 @@ public class RemoteRssFragment extends Fragment {
 //		}
 
 		// Set up details adapter
-		adapter = new RemoteRssFilesAdapter(getActivity());
+		adapter = new RemoteRssItemsAdapter(getActivity());
 		torrentsList.setAdapter(adapter);
 		torrentsList.setFastScrollEnabled(true);
 
 		// Restore the fragment state (on orientation changes et al.)
-		if (torrentFiles != null) {
-			updateTorrentFiles(torrentFiles);
+		if (remoteRssItems != null) {
+			updateRemoteItems(remoteRssItems);
 		}
 	}
 
 	/**
 	 * Updates the list adapter to show a new list of torrent files, replacing the old files list.
 	 */
-	public void updateTorrentFiles(List<RemoteRssItem> remoteRssFiles) {
-		torrentFiles = new ArrayList<>(remoteRssFiles);
-		adapter.updateFiles(torrentFiles);
+	public void updateRemoteItems(List<RemoteRssItem> remoteItems) {
+		remoteRssItems = new ArrayList<>(remoteItems);
+		adapter.updateItems(remoteRssItems);
 		torrentsList.smoothScrollToPosition(0);
+
+		// Show/hide a nice message if there are no items to show
+		remoterssNoFilesMessage.setVisibility(remoteRssItems.size() > 0 ? View.GONE : View.VISIBLE);
 	}
 
 	/**

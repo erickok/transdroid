@@ -74,18 +74,6 @@
 			android:divider="@null"
 			tools:listitem="@layout/list_item_filter" />
 
-		<!--<android.support.v7.widget.SearchView-->
-			<!--android:id="@+id/filter_search"-->
-			<!--android:layout_width="@dimen/ui_filters_list"-->
-			<!--android:layout_height="wrap_content"-->
-			<!--android:layout_marginBottom="5dp"-->
-			<!--android:layout_marginEnd="5dp"-->
-			<!--android:layout_marginRight="10dp"-->
-			<!--android:layout_marginTop="5dp"-->
-			<!--app:iconifiedByDefault="false"-->
-			<!--app:queryHint="@string/action_filter"-->
-			<!--app:searchIcon="@drawable/ic_action_filter" />-->
-
 	</LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>

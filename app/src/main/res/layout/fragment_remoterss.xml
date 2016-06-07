@@ -20,6 +20,13 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/remoterss_no_files"
+            android:gravity="center"
+            android:id="@+id/remoterss_no_files_message"/>
+
         <ListView
             android:id="@+id/torrents_list"
             android:layout_width="match_parent"

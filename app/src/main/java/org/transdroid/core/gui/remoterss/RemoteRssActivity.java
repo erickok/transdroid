@@ -39,7 +39,6 @@ import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SystemSettings_;
-import org.transdroid.core.gui.TorrentsActivity;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
@@ -54,10 +53,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * An activity that holds a single torrents details fragment. It is used on devices (i.e. phones) where there is no room to show details in the {@link
- * TorrentsActivity} directly. Task execution, such as loading of more details and updating file priorities, is performed in this activity via
- * background methods.
- * @author Eric Kok
+ * An activity that displays a list of {@link RemoteRssItem}s via an instance of {@link RemoteRssFragment}.
+ * The activity manages the drawer to filter items by the feed they came through.
+ *
+ * By default it displays the latest items within the last month.
+ *
+ * @author Twig Nguyen
  */
 @EActivity(R.layout.activity_remoterss)
 public class RemoteRssActivity extends AppCompatActivity {
@@ -104,8 +105,7 @@ public class RemoteRssActivity extends AppCompatActivity {
 
 		// We require feeds to be specified; otherwise close the activity
 		if (feeds == null) {
-			finish();
-			return;
+			feeds = new ArrayList<>();
 		}
 
 		// Simple action bar with up, torrent name as title and refresh button
@@ -168,7 +168,7 @@ public class RemoteRssActivity extends AppCompatActivity {
 			});
 		}
 
-		fragmentRemoteRss.updateTorrentFiles(recentItems);
+		fragmentRemoteRss.updateRemoteItems(recentItems);
 		RemoteRssChannel channel = (RemoteRssChannel) drawerList.getAdapter().getItem(0);
 		getSupportActionBar().setSubtitle(channel.getName());
 	}
@@ -178,7 +178,7 @@ public class RemoteRssActivity extends AppCompatActivity {
 		feedLabels.add(new RemoteRssChannel() {
 			@Override
 			public String getName() {
-				return "(All recent)";
+				return getString(R.string.remoterss_filter_allrecent);
 			}
 
 			@Override
@@ -196,7 +196,7 @@ public class RemoteRssActivity extends AppCompatActivity {
 			showRecentItems();
 		}
 		else {
-			fragmentRemoteRss.updateTorrentFiles(feeds.get(position -1).getItems());
+			fragmentRemoteRss.updateRemoteItems(feeds.get(position -1).getItems());
 		}
 
 		RemoteRssChannel channel = (RemoteRssChannel) drawerList.getAdapter().getItem(position);
