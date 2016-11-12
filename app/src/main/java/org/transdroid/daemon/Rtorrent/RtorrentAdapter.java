@@ -226,49 +226,51 @@ public class RtorrentAdapter implements IDaemonAdapter {
 				case Pause:
 
 					// Pause a torrent
-					makeRtorrentCall(log, "d.pause", new String[]{task.getTargetTorrent().getUniqueID()});
+					makeRtorrentCall(log, "d.stop", new String[]{task.getTargetTorrent().getUniqueID()});
 					return new DaemonTaskSuccessResult(task);
 
 				case PauseAll:
 
 					// Resume all torrents
-					makeRtorrentCall(log, "d.multicall2", new String[]{"","main", "d.pause="});
+					makeRtorrentCall(log, "d.multicall2", new String[]{"","main", "d.stop="});
 					return new DaemonTaskSuccessResult(task);
 
 				case Resume:
 
 					// Resume a torrent
-					makeRtorrentCall(log, "d.resume", new String[]{task.getTargetTorrent().getUniqueID()});
+					makeRtorrentCall(log, "d.start", new String[]{task.getTargetTorrent().getUniqueID()});
 					return new DaemonTaskSuccessResult(task);
 
 				case ResumeAll:
 
 					// Resume all torrents
-					makeRtorrentCall(log, "d.multicall2", new String[]{"", "main", "d.resume="});
+					makeRtorrentCall(log, "d.multicall2", new String[]{"", "main", "d.start="});
 					return new DaemonTaskSuccessResult(task);
 
 				case Stop:
 
 					// Stop a torrent
 					makeRtorrentCall(log, "d.stop", new String[]{task.getTargetTorrent().getUniqueID()});
+					makeRtorrentCall(log, "d.close", new String[]{task.getTargetTorrent().getUniqueID()});
 					return new DaemonTaskSuccessResult(task);
 
 				case StopAll:
 
 					// Stop all torrents
-					makeRtorrentCall(log, "d.multicall2", new String[]{"", "main", "d.stop="});
+					makeRtorrentCall(log, "d.multicall2", new String[]{"", "main", "d.stop=", "d.close="});
 					return new DaemonTaskSuccessResult(task);
 
 				case Start:
 
 					// Start a torrent
+					makeRtorrentCall(log, "d.open", new String[]{task.getTargetTorrent().getUniqueID()});
 					makeRtorrentCall(log, "d.start", new String[]{task.getTargetTorrent().getUniqueID()});
 					return new DaemonTaskSuccessResult(task);
 
 				case StartAll:
 
 					// Start all torrents
-					makeRtorrentCall(log, "d.multicall2", new String[]{"", "main", "d.start="});
+					makeRtorrentCall(log, "d.multicall2", new String[]{"", "main", "d.open=", "d.start="});
 					return new DaemonTaskSuccessResult(task);
 
 				case SetFilePriorities:
