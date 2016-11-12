@@ -135,7 +135,8 @@ public class RtorrentAdapter implements IDaemonAdapter {
 							"d.custom=seedingtime",
 							"d.custom1=",
 							"d.peers_complete=",
-							"d.peers_accounted=" });
+							"d.peers_accounted=",
+							"d.is_open=" });
 					// @formatter:on
 					return new RetrieveTaskSuccessResult((RetrieveTask) task, onTorrentsRetrieved(result),
 							lastKnownLabels);
@@ -456,7 +457,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						i,
 						(String)info[0], // hash
 						(String)info[1], // name
-						convertTorrentStatus((Long)info[2], (Long)info[13], (Long)info[14], (Long)info[15]), // status
+						convertTorrentStatus((Long)info[2], (Long)info[24], (Long)info[13], (Long)info[14], (Long)info[15]), // status
 						basePath.substring(0, basePath.indexOf((String)info[17])), // locationDir
 						((Long)info[3]).intValue(), // rateDownload
 						((Long)info[4]).intValue(), // rateUpload
@@ -488,7 +489,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						i,
 						(String)info[0], // hash
 						(String)info[1], // name
-						convertTorrentStatus(((Integer)info[2]).longValue(), ((Integer)info[13]).longValue(), ((Integer)info[14]).longValue(), ((Integer)info[15]).longValue()), // status
+						convertTorrentStatus(((Integer)info[2]).longValue(), ((Integer)info[24]).longValue(), ((Integer)info[13]).longValue(), ((Integer)info[14]).longValue(), ((Integer)info[15]).longValue()), // status
 						basePath.substring(0, basePath.indexOf((String)info[17])), // locationDir
 						rateDownload, // rateDownload
 						(Integer)info[4], // rateUpload
@@ -609,19 +610,24 @@ public class RtorrentAdapter implements IDaemonAdapter {
 		}
 	}
 
-	private TorrentStatus convertTorrentStatus(Long state, Long complete, Long active, Long checking) {
-		if (state == 0) {
-			return TorrentStatus.Queued;
-		} else if (active == 1) {
-			if (complete == 1) {
-				return TorrentStatus.Seeding;
-			} else {
-				return TorrentStatus.Downloading;
-			}
-		} else if (checking == 1) {
+	private TorrentStatus convertTorrentStatus(Long state, Long open, Long complete, Long active, Long checking) {
+		if (checking == 1) {
 			return TorrentStatus.Checking;
-		} else {
+		}
+
+		if (open == 1) {
+			// links with tracker/peers are open: not stopped
+			if (state == 1 && active == 1) {
+				if (complete == 1) {
+					return TorrentStatus.Seeding;
+				} else {
+					return TorrentStatus.Downloading;
+				}
+			}
 			return TorrentStatus.Paused;
+		} else {
+			// maybe could be Stopped or Waiting
+			return TorrentStatus.Queued;
 		}
 	}
 
