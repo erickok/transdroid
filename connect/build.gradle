@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+dependencies {
+    compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+    compile 'com.github.erickok:retrofit-xmlrpc:master-SNAPSHOT'
+    compile 'com.burgstaller:okhttp-digest:1.10'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'com.google.truth:truth:0.31'
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
