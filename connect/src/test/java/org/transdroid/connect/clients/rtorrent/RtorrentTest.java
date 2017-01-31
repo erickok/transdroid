@@ -6,6 +6,7 @@ import org.transdroid.connect.Configuration;
 import org.transdroid.connect.clients.Client;
 import org.transdroid.connect.clients.ClientSpec;
 import org.transdroid.connect.clients.Feature;
+import org.transdroid.connect.clients.UnsupportedFeatureException;
 import org.transdroid.connect.model.Torrent;
 
 import java.io.IOException;
@@ -21,17 +22,19 @@ public final class RtorrentTest {
 
 	@Before
 	public void setUp() {
-		Configuration configuration = new Configuration(Client.RTORRENT, "http://localhost:8008/", "RPC2", null, null, true);
-		rtorrent = configuration.create();
+		rtorrent = new Configuration.Builder(Client.RTORRENT)
+				.baseUrl("http://localhost:8008/")
+				.endpoint("/RPC2")
+				.build()
+				.createClient();
 	}
 
 	@Test
 	public void features() {
 		assertThat(Client.RTORRENT.supports(Feature.VERSION)).isTrue();
-		assertThat(Client.RTORRENT.supports(Feature.STARTING)).isTrue();
-		assertThat(Client.RTORRENT.supports(Feature.STOPPING)).isTrue();
-		assertThat(Client.RTORRENT.supports(Feature.RESUMING)).isTrue();
-		assertThat(Client.RTORRENT.supports(Feature.PAUSING)).isTrue();
+		assertThat(Client.RTORRENT.supports(Feature.STARTING_STOPPING)).isTrue();
+		assertThat(Client.RTORRENT.supports(Feature.RESUMING_PAUSING)).isTrue();
+		assertThat(Client.RTORRENT.supports(Feature.FORCE_STARTING)).isFalse();
 	}
 
 	@Test
@@ -52,6 +55,12 @@ public final class RtorrentTest {
 						return torrents.size() > 0;
 					}
 				});
+	}
+
+	@Test(expected = UnsupportedFeatureException.class)
+	public void forceStart() throws IOException {
+		rtorrent.forceStartTorrent()
+				.test();
 	}
 
 }

@@ -4,22 +4,66 @@ import com.burgstaller.okhttp.digest.Credentials;
 
 import org.transdroid.connect.clients.Client;
 import org.transdroid.connect.clients.ClientSpec;
-import org.transdroid.connect.util.StringUtil;
 
+/**
+ * Configuration settings to connect to a torrent client.
+ */
 public final class Configuration {
 
 	private final Client client;
 	private final String baseUrl;
-	private final String endpoint;
-	private final Credentials credentials;
-	private final boolean loggingEnabled;
+	private String endpoint;
+	private Credentials credentials;
+	private boolean loggingEnabled;
 
-	public Configuration(Client client, String baseUrl, String endpoint, String user, String password, boolean loggingEnabled) {
+	public static class Builder {
+
+		private final Client client;
+		private String baseUrl;
+		private String endpoint;
+		private Credentials credentials;
+		private boolean loggingEnabled;
+
+		public Builder(Client client) {
+			this.client = client;
+		}
+
+		public Builder baseUrl(String baseUrl) {
+			this.baseUrl = baseUrl;
+			return this;
+		}
+
+		public Builder endpoint(String endpoint) {
+			this.endpoint = endpoint;
+			return this;
+		}
+
+		public Builder credentials(String user, String password) {
+			this.credentials = new Credentials(user, password);
+			return this;
+		}
+
+		public Builder loggingEnabled(boolean loggingEnabled) {
+			this.loggingEnabled = loggingEnabled;
+			return this;
+		}
+
+		public Configuration build() {
+			Configuration configuration = new Configuration(client, baseUrl);
+			configuration.endpoint = this.endpoint;
+			configuration.credentials = this.credentials;
+			return configuration;
+		}
+
+	}
+
+	private Configuration(Client client, String baseUrl) {
 		this.client = client;
 		this.baseUrl = baseUrl;
-		this.endpoint = endpoint;
-		this.credentials = (!StringUtil.isEmpty(user) && password != null) ? new Credentials(user, password) : null;
-		this.loggingEnabled = loggingEnabled;
+	}
+
+	public Client client() {
+		return client;
 	}
 
 	public String baseUrl() {
@@ -38,8 +82,8 @@ public final class Configuration {
 		return credentials;
 	}
 
-	public ClientSpec create() {
-		return client.create(this);
+	public ClientSpec createClient() {
+		return client.createClient(this);
 	}
 
 }

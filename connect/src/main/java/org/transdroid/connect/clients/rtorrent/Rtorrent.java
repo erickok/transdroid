@@ -3,7 +3,6 @@ package org.transdroid.connect.clients.rtorrent;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import org.transdroid.connect.Configuration;
-import org.transdroid.connect.clients.ClientSpec;
 import org.transdroid.connect.clients.Feature;
 import org.transdroid.connect.model.Torrent;
 import org.transdroid.connect.model.TorrentStatus;
@@ -11,8 +10,6 @@ import org.transdroid.connect.util.OkHttpBuilder;
 import org.transdroid.connect.util.RxUtil;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
@@ -20,17 +17,11 @@ import nl.nl2312.xmlrpc.Nothing;
 import nl.nl2312.xmlrpc.XmlRpcConverterFactory;
 import retrofit2.Retrofit;
 
-public final class Rtorrent implements ClientSpec {
-
-	public static final Set<Feature> FEATURES = new HashSet<>();
-
-	{
-		FEATURES.add(Feature.VERSION);
-		FEATURES.add(Feature.STARTING);
-		FEATURES.add(Feature.STOPPING);
-		FEATURES.add(Feature.RESUMING);
-		FEATURES.add(Feature.PAUSING);
-	}
+public final class Rtorrent implements
+		Feature.Version,
+		Feature.Listing,
+		Feature.StartingStopping,
+		Feature.ResumingPausing {
 
 	private final Configuration configuration;
 	private final Service service;
