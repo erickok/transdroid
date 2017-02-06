@@ -1,9 +1,12 @@
 package de.timroes.axmlrpc;
 
 import de.timroes.axmlrpc.serializer.SerializerHandler;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -18,6 +21,30 @@ class ResponseParser {
 	private static final String FAULT_CODE = "faultCode";
 	private static final String FAULT_STRING = "faultString";
 
+
+	/**
+	 * Deallocate Http Entity and close streams
+	 */
+	private static void consumeHttpEntity(InputStream response, HttpEntity entity) {
+		// Ideally we should use EntityUtils.consume(), introduced in apache http utils 4.1 - not available in
+		// Android yet
+		if (entity != null) {
+			try {
+				entity.consumeContent();
+			} catch (IOException e) {
+				// ignore exception (could happen if Content-Length is wrong)
+			}
+		}
+
+		if (response != null) {
+			try {
+				response.close();
+			} catch (Exception e) {
+				// ignore exception
+			}
+		}
+	}
+
 	/**
 	 * The given InputStream must contain the xml response from an xmlrpc server.
 	 * This method extract the content of it as an object.
@@ -27,7 +54,7 @@ class ResponseParser {
 	 * @throws XMLRPCException Will be thrown whenever something fails.
 	 * @throws XMLRPCServerException Will be thrown, if the server returns an error.
 	 */
-	public Object parse(InputStream response) throws XMLRPCException {
+	public Object parse(InputStream response, HttpEntity entity) throws XMLRPCException {
 		try {
 			XmlPullParser pullParser = XmlPullParserFactory.newInstance().newPullParser();
 			pullParser.setInput(response, "UTF-8");
@@ -45,11 +72,13 @@ class ResponseParser {
 				// no parser.require() here since its called in XMLRPCSerializer.deserialize() below
 				// deserialize result
 				Object obj = SerializerHandler.getDefault().deserialize(pullParser);
+				consumeHttpEntity(response, entity);
 				return obj;
 			} else if (tag.equals(XMLRPCClient.FAULT)) {
 				// fault response
 				pullParser.nextTag(); // TAG_VALUE (<value>)
 				Map<String, Object> map = (Map<String, Object>) SerializerHandler.getDefault().deserialize(pullParser);
+				consumeHttpEntity(response, entity);
 
 				//Check that required tags are in the response
 				if (!map.containsKey(FAULT_STRING) || !map.containsKey(FAULT_CODE)) {
@@ -61,8 +90,10 @@ class ResponseParser {
 			}
 
 		} catch (XmlPullParserException ex) {
+			consumeHttpEntity(response, entity);
 			throw new XMLRPCException("Error parsing response.", ex);
 		} catch (Exception ex) {
+			consumeHttpEntity(response, entity);
 			if(ex instanceof XMLRPCServerException)
 				throw (XMLRPCServerException)ex;
 			else

@@ -444,7 +444,7 @@ public class XMLRPCClient {
 					}
 				}
 
-				return responseParser.parse(istream);
+				return responseParser.parse(istream, entity);
 
 			} catch(SocketTimeoutException ex) {
 				throw new XMLRPCTimeoutException("The XMLRPC call timed out.");
