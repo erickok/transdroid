@@ -13,10 +13,6 @@ import org.w3c.dom.Element;
  */
 public class DoubleSerializer implements Serializer {
 
-	public Object deserialize(Element content) throws XMLRPCException {
-		return Double.valueOf(XMLUtil.getOnlyTextContent(content.getChildNodes()));
-	}
-
 	public XmlElement serialize(Object object) {
 		// Turn double value of object into a BigDecimal to get the
 		// right decimal point format.

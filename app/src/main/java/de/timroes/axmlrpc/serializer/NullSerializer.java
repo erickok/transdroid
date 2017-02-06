@@ -10,10 +10,6 @@ import org.w3c.dom.Element;
  */
 public class NullSerializer implements Serializer {
 
-	public Object deserialize(Element content) throws XMLRPCException {
-		return null;
-	}
-
 	public XmlElement serialize(Object object) {
 		return new XmlElement(SerializerHandler.TYPE_NULL);
 	}
