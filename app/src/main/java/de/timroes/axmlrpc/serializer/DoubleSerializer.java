@@ -1,10 +1,8 @@
 package de.timroes.axmlrpc.serializer;
 
-import de.timroes.axmlrpc.XMLRPCException;
 import de.timroes.axmlrpc.XMLUtil;
 import de.timroes.axmlrpc.xmlcreator.XmlElement;
 import java.math.BigDecimal;
-import org.w3c.dom.Element;
 
 /**
  * This serializer is responsible for floating point numbers.

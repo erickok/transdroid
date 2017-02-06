@@ -2,12 +2,8 @@ package de.timroes.axmlrpc.serializer;
 
 import de.timroes.axmlrpc.XMLRPCException;
 import de.timroes.axmlrpc.XMLRPCRuntimeException;
-import de.timroes.axmlrpc.XMLUtil;
 import de.timroes.axmlrpc.xmlcreator.XmlElement;
-import java.util.HashMap;
 import java.util.Map;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
