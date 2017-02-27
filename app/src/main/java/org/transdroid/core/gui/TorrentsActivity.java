@@ -861,8 +861,9 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			return;
 		}
 
+		// Passing the items over as a feed can overload the Intent size limit and crash without a stack trace!
 		RemoteRssActivity_.intent(this)
-						  .feeds(rssFeedItems)
+//						  .feeds(rssFeedItems)
 						  .start()
 		;
 	}

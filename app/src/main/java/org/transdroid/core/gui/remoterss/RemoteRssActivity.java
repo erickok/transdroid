@@ -29,7 +29,6 @@ import android.widget.ListView;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
@@ -42,6 +41,7 @@ import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
+import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.daemon.IDaemonAdapter;
 
@@ -62,7 +62,7 @@ import java.util.List;
  */
 @EActivity(R.layout.activity_remoterss)
 public class RemoteRssActivity extends AppCompatActivity {
-	@Extra
+//	@Extra
 	@InstanceState
 	protected ArrayList<RemoteRssChannel> feeds;
 
@@ -102,10 +102,6 @@ public class RemoteRssActivity extends AppCompatActivity {
 
 	@AfterViews
 	protected void init() {
-		if (feeds == null) {
-			feeds = new ArrayList<>();
-		}
-
 		// Simple action bar with up, torrent name as title and refresh button
 		torrentsToolbar.setNavigationIcon(R.drawable.ic_action_drawer);
 		setSupportActionBar(torrentsToolbar);
@@ -114,6 +110,7 @@ public class RemoteRssActivity extends AppCompatActivity {
 		// Connect to the last used server
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
 		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+		feeds = ((RemoteRssSupplier) (currentConnection)).getRemoteRssChannels();
 
 		// Fill in the filter list
 		showChannelFilters();
