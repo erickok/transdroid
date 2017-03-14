@@ -2,6 +2,8 @@ package org.transdroid.connect.clients;
 
 import org.transdroid.connect.model.Torrent;
 
+import java.io.InputStream;
+
 import io.reactivex.Flowable;
 
 /**
@@ -14,7 +16,10 @@ public enum Feature {
 	LISTING(Listing.class),
 	STARTING_STOPPING(StartingStopping.class),
 	RESUMING_PAUSING(ResumingPausing.class),
-	FORCE_STARTING(ForceStarting.class);
+	FORCE_STARTING(ForceStarting.class),
+	ADD_BY_FILE(AddByFile.class),
+	ADD_BY_URL(AddByUrl.class),
+	ADD_BY_MAGNET(AddByMagnet.class);
 
 	private final Class<?> type;
 
@@ -40,6 +45,10 @@ public enum Feature {
 
 	public interface StartingStopping {
 
+		Flowable<Torrent> start(Torrent torrent);
+
+		Flowable<Torrent> stop(Torrent torrent);
+
 	}
 
 	public interface ResumingPausing {
@@ -48,7 +57,25 @@ public enum Feature {
 
 	public interface ForceStarting {
 
-		Flowable<Torrent> forceStartTorrent();
+		Flowable<Torrent> forceStart(Torrent torrent);
+
+	}
+
+	public interface AddByFile {
+
+		Flowable<Void> addByFile(InputStream file);
+
+	}
+
+	public interface AddByUrl {
+
+		Flowable<Void> addByUrl(String url);
+
+	}
+
+	public interface AddByMagnet {
+
+		Flowable<Void> addByMagnet(String magnet);
 
 	}
 

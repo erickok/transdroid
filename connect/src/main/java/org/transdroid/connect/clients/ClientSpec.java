@@ -5,6 +5,9 @@ public interface ClientSpec extends
 		Feature.Listing,
 		Feature.StartingStopping,
 		Feature.ResumingPausing,
-		Feature.ForceStarting {
+		Feature.ForceStarting,
+		Feature.AddByFile,
+		Feature.AddByUrl,
+		Feature.AddByMagnet {
 
 }

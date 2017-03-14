@@ -52,6 +52,7 @@ public final class Configuration {
 			Configuration configuration = new Configuration(client, baseUrl);
 			configuration.endpoint = this.endpoint;
 			configuration.credentials = this.credentials;
+			configuration.loggingEnabled = this.loggingEnabled;
 			return configuration;
 		}
 

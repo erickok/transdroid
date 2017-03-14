@@ -2,6 +2,7 @@ package org.transdroid.connect.clients.rtorrent;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
+import org.reactivestreams.Publisher;
 import org.transdroid.connect.Configuration;
 import org.transdroid.connect.clients.Feature;
 import org.transdroid.connect.model.Torrent;
@@ -9,9 +10,11 @@ import org.transdroid.connect.model.TorrentStatus;
 import org.transdroid.connect.util.OkHttpBuilder;
 import org.transdroid.connect.util.RxUtil;
 
+import java.io.InputStream;
 import java.util.Date;
 
 import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import io.reactivex.functions.Function;
 import nl.nl2312.xmlrpc.Nothing;
 import nl.nl2312.xmlrpc.XmlRpcConverterFactory;
@@ -21,7 +24,10 @@ public final class Rtorrent implements
 		Feature.Version,
 		Feature.Listing,
 		Feature.StartingStopping,
-		Feature.ResumingPausing {
+		Feature.ResumingPausing,
+		Feature.AddByFile,
+		Feature.AddByUrl,
+		Feature.AddByMagnet {
 
 	private final Configuration configuration;
 	private final Service service;
@@ -39,7 +45,8 @@ public final class Rtorrent implements
 
 	@Override
 	public Flowable<String> clientVersion() {
-		return service.clientVersion(configuration.endpoint(), Nothing.NOTHING);
+		return service.clientVersion(configuration.endpoint(), Nothing.NOTHING)
+				.cache(); // Cached, as it is often used but 'never' changes
 	}
 
 	@Override
@@ -101,6 +108,104 @@ public final class Rtorrent implements
 					}
 				});
 	}
+
+	@Override
+	public Flowable<Torrent> start(final Torrent torrent) {
+		return service.start(
+				configuration.endpoint(),
+				torrent.hash()).map(new Function<Void, Torrent>() {
+			@Override
+			public Torrent apply(Void result) throws Exception {
+				return torrent.mimicStart();
+			}
+		});
+	}
+
+	@Override
+	public Flowable<Torrent> stop(final Torrent torrent) {
+		return service.stop(
+				configuration.endpoint(),
+				torrent.hash()).map(new Function<Void, Torrent>() {
+			@Override
+			public Torrent apply(Void result) throws Exception {
+				return torrent.mimicStart();
+			}
+		});
+	}
+
+	@Override
+	public Flowable<Void> addByFile(InputStream file) {
+		// TODO
+		return null;
+	}
+
+	@Override
+	public Flowable<Void> addByUrl(final String url) {
+		return clientVersion().compose(clientVersionAsInt).flatMap(new Function<Integer, Publisher<Integer>>() {
+			@Override
+			public Publisher<Integer> apply(Integer integer) throws Exception {
+				if (integer > 904) {
+					return service.loadStart(
+							configuration.endpoint(),
+							"",
+							url);
+				} else {
+					return service.loadStart(
+							configuration.endpoint(),
+							url);
+				}
+			}
+		}).map(new Function<Integer, Void>() {
+			@Override
+			public Void apply(Integer integer) throws Exception {
+				return null;
+			}
+		});
+	}
+
+	@Override
+	public Flowable<Void> addByMagnet(final String magnet) {
+		return clientVersion().compose(clientVersionAsInt).flatMap(new Function<Integer, Publisher<Integer>>() {
+			@Override
+			public Publisher<Integer> apply(Integer integer) throws Exception {
+				if (integer > 904) {
+					return service.loadStart(
+							configuration.endpoint(),
+							"",
+							magnet);
+				} else {
+					return service.loadStart(
+							configuration.endpoint(),
+							magnet);
+				}
+			}
+		}).map(new Function<Integer, Void>() {
+			@Override
+			public Void apply(Integer integer) throws Exception {
+				return null;
+			}
+		});
+	}
+
+	private FlowableTransformer<String, Integer> clientVersionAsInt = new FlowableTransformer<String, Integer>() {
+		@Override
+		public Publisher<Integer> apply(Flowable<String> version) {
+			return version.map(new Function<String, Integer>() {
+				@Override
+				public Integer apply(String version) throws Exception {
+					if (version == null)
+						return 10000;
+					try {
+						String[] versionParts = version.split("\\.");
+						return (Integer.parseInt(versionParts[0]) * 10000) + (Integer.parseInt(versionParts[1]) * 100) + Integer.parseInt
+								(versionParts[2]);
+					} catch (NumberFormatException e) {
+						return 10000;
+					}
+				}
+			});
+		}
+	};
 
 	private TorrentStatus torrentStatus(long state, long complete, long active, long checking) {
 		if (state == 0) {

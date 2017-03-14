@@ -15,6 +15,18 @@ interface Service {
 
 	@XmlRpc("d.multicall2")
 	@POST("{endpoint}")
-	Flowable<TorrentSpec[]> torrents(@Path("endpoint") String endpoint, @Body String... fields);
+	Flowable<TorrentSpec[]> torrents(@Path("endpoint") String endpoint, @Body String... args);
+
+	@XmlRpc("d.start")
+	@POST("{endpoint}")
+	Flowable<Void> start(@Path("endpoint") String endpoint, @Body String hash);
+
+	@XmlRpc("d.stop")
+	@POST("{endpoint}")
+	Flowable<Void> stop(@Path("endpoint") String endpoint, @Body String hash);
+
+	@XmlRpc("load.start")
+	@POST("{endpoint}")
+	Flowable<Integer> loadStart(@Path("endpoint") String endpoint, @Body String... args);
 
 }

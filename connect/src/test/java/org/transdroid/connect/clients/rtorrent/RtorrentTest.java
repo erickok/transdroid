@@ -24,7 +24,8 @@ public final class RtorrentTest {
 	public void setUp() {
 		rtorrent = new Configuration.Builder(Client.RTORRENT)
 				.baseUrl("http://localhost:8008/")
-				.endpoint("/RPC2")
+				.endpoint("RPC2")
+				.loggingEnabled(true)
 				.build()
 				.createClient();
 	}
@@ -32,9 +33,13 @@ public final class RtorrentTest {
 	@Test
 	public void features() {
 		assertThat(Client.RTORRENT.supports(Feature.VERSION)).isTrue();
+		assertThat(Client.RTORRENT.supports(Feature.LISTING)).isTrue();
 		assertThat(Client.RTORRENT.supports(Feature.STARTING_STOPPING)).isTrue();
 		assertThat(Client.RTORRENT.supports(Feature.RESUMING_PAUSING)).isTrue();
 		assertThat(Client.RTORRENT.supports(Feature.FORCE_STARTING)).isFalse();
+		assertThat(Client.RTORRENT.supports(Feature.ADD_BY_FILE)).isTrue();
+		assertThat(Client.RTORRENT.supports(Feature.ADD_BY_URL)).isTrue();
+		assertThat(Client.RTORRENT.supports(Feature.ADD_BY_MAGNET)).isTrue();
 	}
 
 	@Test
@@ -57,9 +62,15 @@ public final class RtorrentTest {
 				});
 	}
 
+	@Test
+	public void addByMagnet() throws IOException {
+		rtorrent.addByMagnet("http://torrent.ubuntu.com:6969/file?info_hash=%04%03%FBG%28%BDx%8F%BC%B6%7E%87%D6%FE%B2A%EF8%C7Z")
+				.test();
+	}
+
 	@Test(expected = UnsupportedFeatureException.class)
 	public void forceStart() throws IOException {
-		rtorrent.forceStartTorrent()
+		rtorrent.forceStart(null)
 				.test();
 	}
 
