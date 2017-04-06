@@ -40,8 +40,8 @@
 	<dimen name="ui_serverstatus_signmargin">3dp</dimen>
 	<dimen name="ui_serverstatus_bignumber">21sp</dimen>
 	<dimen name="ui_serverstatus_sign">17dp</dimen>
-	<dimen name="ui_serverstatus_smallnumber">13dp</dimen>
-	<dimen name="ui_serverstatus_width">56dp</dimen>
+	<dimen name="ui_serverstatus_smallnumber">13sp</dimen>
+	<dimen name="ui_serverstatus_width">60dp</dimen>
 	<dimen name="ui_bignumber_size">20sp</dimen>
 	<dimen name="ui_bignumber_padding">2dp</dimen>
 	

@@ -71,7 +71,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -523,6 +522,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 				// Set POST URL and data
 				HttpPost httppost = new HttpPost(buildWebUIUrl() + PATH_TO_RPC);
+				httppost.setHeader("content-type", "application/json");
 				StringEntity se = new StringEntity(loginRequest.toString());
 				httppost.setEntity(se);
 
@@ -554,6 +554,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 			// Set POST URL and data
 			HttpPost httppost = new HttpPost(buildWebUIUrl() + PATH_TO_RPC);
+			httppost.setHeader("content-type", "application/json");
 			StringEntity se = new StringEntity(data.toString());
 			httppost.setEntity(se);
 
