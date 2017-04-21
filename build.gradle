@@ -1,12 +1,15 @@
 buildscript {
+    ext.kotlin_version = '1.1.1'
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:2.3.1'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
+apply plugin: 'kotlin'
 
 allprojects {
     repositories {
@@ -14,4 +17,10 @@ allprojects {
         mavenLocal()
         maven { url "https://jitpack.io" }
     }
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 }

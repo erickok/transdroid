@@ -1,14 +1,24 @@
 apply plugin: 'java'
+apply plugin: 'kotlin'
 
 dependencies {
-    compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
-    compile 'com.github.erickok:retrofit-xmlrpc:master-SNAPSHOT'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile 'com.squareup.okhttp3:logging-interceptor:3.7.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
     compile 'com.burgstaller:okhttp-digest:1.10'
+    compile 'com.github.erickok:retrofit-xmlrpc:6e2c623763'
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.truth:truth:0.31'
+    testCompile 'com.squareup.okhttp3:mockwebserver:3.7.0'
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+buildscript {
+    ext.kotlin_version = '1.1.1'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}

@@ -1,0 +1,26 @@
+package org.transdroid.connect.clients.rtorrent
+
+data class TorrentSpec(
+        val hash: String,
+        var name: String,
+        var state: Long,
+        var downloadRate: Long,
+        var uploadRate: Long,
+        var peersConnected: Long,
+        var peersNotConnected: Long,
+        var bytesDone: Long,
+        var bytesUploaded: Long,
+        var bytesTotal: Long,
+        var bytesleft: Long,
+        var timeCreated: Long,
+        var isComplete: Long,
+        var isActive: Long,
+        var isHashChecking: Long,
+        var basePath: String?,
+        var baseFilename: String?,
+        var errorMessage: String?,
+        var timeAdded: String?,
+        var timeFinished: String?,
+        var label: String?,
+        var seedersConnected: Long,
+        var leechersConnected: Long)
