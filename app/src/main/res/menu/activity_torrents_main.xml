@@ -29,6 +29,11 @@
 		android:title="@string/action_rss"
 		app:showAsAction="ifRoom" />
 	<item
+		android:id="@+id/action_remoterss"
+		android:icon="@drawable/ic_cloud_download"
+		android:title="@string/action_remoterss"
+		app:showAsAction="ifRoom" />
+	<item
 		android:id="@+id/action_help"
 		android:title="@string/action_help"
 		app:showAsAction="always" />

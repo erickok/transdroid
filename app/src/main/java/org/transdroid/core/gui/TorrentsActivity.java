@@ -83,6 +83,9 @@ import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.navigation.StatusType;
+import org.transdroid.core.gui.remoterss.RemoteRssActivity_;
+import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
+import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
@@ -468,6 +471,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			filterSearch.setVisibility(View.GONE);
 			torrentsToolbar.getMenu().findItem(R.id.action_search).setVisible(false);
 			torrentsToolbar.getMenu().findItem(R.id.action_rss).setVisible(false);
+			torrentsToolbar.getMenu().findItem(R.id.action_remoterss).setVisible(false);
 			torrentsToolbar.getMenu().findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 			torrentsToolbar.getMenu().findItem(R.id.action_help).setVisible(true);
 			actionsToolbar.getMenu().findItem(R.id.action_enableturtle).setVisible(false);
@@ -491,10 +495,12 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			filtersList.setVisibility(View.VISIBLE);
 		filterSearch.setVisibility(View.VISIBLE);
 		boolean addByFile = Daemon.supportsAddByFile(currentConnection.getType());
+		boolean hasRemoteRss = Daemon.supportsRemoteRssManagement(currentConnection.getType());
 		addmenuFileButton.setVisibility(addByFile ? View.VISIBLE : View.GONE);
 		// Primary toolbar menu
 		torrentsToolbar.getMenu().findItem(R.id.action_search).setVisible(navigationHelper.enableSearchUi());
 		torrentsToolbar.getMenu().findItem(R.id.action_rss).setVisible(navigationHelper.enableRssUi());
+		torrentsToolbar.getMenu().findItem(R.id.action_remoterss).setVisible(hasRemoteRss);
 		torrentsToolbar.getMenu().findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 		torrentsToolbar.getMenu().findItem(R.id.action_help).setVisible(false);
 		// Secondary toolbar menu
@@ -845,6 +851,21 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	@OptionsItem(R.id.action_settings)
 	protected void openSettings() {
 		MainSettingsActivity_.intent(this).start();
+	}
+
+	@OptionsItem(R.id.action_remoterss)
+	protected void openRemoteRss() {
+		ArrayList<RemoteRssChannel> rssFeedItems = ((RemoteRssSupplier) (currentConnection)).getRemoteRssChannels();
+
+		if (rssFeedItems.size() == 0) {
+			return;
+		}
+
+		// Passing the items over as a feed can overload the Intent size limit and crash without a stack trace!
+		RemoteRssActivity_.intent(this)
+//						  .feeds(rssFeedItems)
+						  .start()
+		;
 	}
 
 	@OptionsItem(R.id.action_help)

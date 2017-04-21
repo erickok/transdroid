@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2010-2013 Eric Kok et al.
+
+  Transdroid is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Transdroid is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- This layout is for phones in portrait and shows the remote RSS items list with the filters as navigation drawer. -->
+<android.support.v4.widget.DrawerLayout
+	android:id="@+id/drawer_layout"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".core.gui.remoterss.RemoteRssActivity_">
+
+	<!-- The main content view -->
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical">
+
+		<android.support.v7.widget.Toolbar
+			android:id="@+id/torrents_toolbar"
+			style="@style/DefaultToolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:minHeight="?attr/actionBarSize" />
+
+		<fragment
+			android:id="@+id/remoterss_fragment"
+			class="org.transdroid.core.gui.remoterss.RemoteRssFragment_"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_below="@id/torrents_toolbar"
+			tools:layout="@layout/fragment_torrents" />
+
+		<View
+			style="@style/DefaultToolbarShadow"
+			android:layout_below="@id/torrents_toolbar" />
+
+		<View
+			style="@style/SplitToolbarShadow"
+			/>
+
+	</RelativeLayout>
+
+	<!-- The navigation drawer -->
+	<LinearLayout
+		android:id="@+id/drawer_container"
+		android:layout_width="@dimen/ui_filters_list"
+		android:layout_height="match_parent"
+		android:layout_gravity="start"
+		android:background="?attr/drawer_background"
+		android:orientation="vertical">
+
+		<ListView
+			android:id="@+id/drawer_list"
+			android:layout_width="@dimen/ui_filters_list"
+			android:layout_height="0dp"
+			android:layout_weight="1"
+			android:choiceMode="singleChoice"
+			android:divider="@null"
+			tools:listitem="@layout/list_item_filter" />
+
+	</LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

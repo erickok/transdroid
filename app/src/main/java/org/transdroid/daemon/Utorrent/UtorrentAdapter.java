@@ -29,6 +29,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
+import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
@@ -40,6 +42,7 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
+import org.transdroid.daemon.Utorrent.data.UTorrentRemoteRssChannel;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -69,6 +72,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -77,7 +82,7 @@ import java.util.List;
  * HTTP GET requests and responses.
  * @author erickok
  */
-public class UtorrentAdapter implements IDaemonAdapter {
+public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 
 	private static final String LOG_NAME = "uTorrent daemon";
 	private static final String RPC_URL_HASH = "&hash=";
@@ -113,6 +118,10 @@ public class UtorrentAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 
+	private static ArrayList<RemoteRssChannel> remoteRssChannels = new ArrayList<>();
+
+
+
 	/**
 	 * Initialises an adapter that provides operations to the uTorrent web daemon
 	 */
@@ -129,6 +138,11 @@ public class UtorrentAdapter implements IDaemonAdapter {
 
 					// Request all torrents from server
 					JSONObject result = makeUtorrentRequest(log, "&list=1");
+
+					if (result.has("rssfeeds")) {
+						parseJsonRemoteRssLists(result.getJSONArray("rssfeeds"));
+					}
+
 					return new RetrieveTaskSuccessResult((RetrieveTask) task,
 							parseJsonRetrieveTorrents(result.getJSONArray("torrents")),
 							parseJsonRetrieveGetLabels(result.getJSONArray("label")));
@@ -308,6 +322,29 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		} catch (IOException e) {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ConnectionError, e.toString()));
 		}
+	}
+
+	private void parseJsonRemoteRssLists(JSONArray results) {
+		remoteRssChannels = new ArrayList<>();
+		RemoteRssChannel item;
+
+		for (int i = 0; i < results.length(); i++) {
+			try {
+				item = new UTorrentRemoteRssChannel(results.getJSONArray(i));
+				remoteRssChannels.add(item);
+			} catch (JSONException e) {
+				// Ignore unparseable items so app doesn't crash.
+				// Haven't run into a case where this fails, yet.
+				e.printStackTrace();
+			}
+		}
+
+		Collections.sort(remoteRssChannels, new Comparator<RemoteRssChannel>() {
+			@Override
+			public int compare(RemoteRssChannel lhs, RemoteRssChannel rhs) {
+				return lhs.getName().compareToIgnoreCase(rhs.getName());
+			}
+		});
 	}
 
 	private ArrayList<Label> parseJsonRetrieveGetLabels(JSONArray lresults) throws JSONException {
@@ -620,4 +657,7 @@ public class UtorrentAdapter implements IDaemonAdapter {
 		return this.settings;
 	}
 
+	public ArrayList<RemoteRssChannel> getRemoteRssChannels() {
+		return remoteRssChannels;
+	}
 }

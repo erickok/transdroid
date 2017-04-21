@@ -239,6 +239,10 @@
 			android:name="org.transdroid.core.gui.rss.RssitemsActivity_"
 			android:label="@string/rss_feeds"
 			android:theme="@style/TransdroidTheme" />
+		<activity
+			android:name=".core.gui.remoterss.RemoteRssActivity_"
+			android:label="Remote RSS feeds"
+			android:theme="@style/TransdroidTheme" />
 
 		<!-- Background services -->
 		<service android:name="org.transdroid.core.service.ServerCheckerService_" />
