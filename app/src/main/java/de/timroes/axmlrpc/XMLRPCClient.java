@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
@@ -356,7 +357,7 @@ public class XMLRPCClient {
 		 * Read the README file delivered with the source code of this library for more
 		 * information.
 		 *
-		 * @param method A method name to call.
+		 * @param methodName A method name to call.
 		 * @param params An array of parameters for the method.
 		 * @return The result of the server.
 		 * @throws XMLRPCException Will be thrown if an error occurred during the call.
@@ -369,8 +370,9 @@ public class XMLRPCClient {
 				Call c = createCall(methodName, params);
 				
 				// Prepare POST request
+				// FIXME: where creating a new HttpPost so calling #cancel isn't going to do anything
 				HttpPost post = new HttpPost(url);
-				post.getParams().setParameter("http.protocol.handle-redirects",	false);
+				post.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, false);
 				post.setHeader(CONTENT_TYPE, TYPE_XML);
 				StringEntity entity = new StringEntity(c.getXML(), HTTP.UTF_8);
 				entity.setContentType(TYPE_XML);
@@ -444,7 +446,7 @@ public class XMLRPCClient {
 					}
 				}
 
-				return responseParser.parse(istream);
+				return responseParser.parse(istream, entity);
 
 			} catch(SocketTimeoutException ex) {
 				throw new XMLRPCTimeoutException("The XMLRPC call timed out.");

@@ -3,13 +3,27 @@ package de.timroes.axmlrpc.serializer;
 import de.timroes.axmlrpc.XMLRPCClient;
 import de.timroes.axmlrpc.XMLRPCException;
 import de.timroes.axmlrpc.XMLRPCRuntimeException;
-import de.timroes.axmlrpc.XMLUtil;
 import de.timroes.axmlrpc.xmlcreator.XmlElement;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import org.w3c.dom.Element;
+import java.util.SimpleTimeZone;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import android.util.Base64;
+import android.util.Log;
 
 /**
  * The serializer handler serializes and deserialized objects.
@@ -21,6 +35,18 @@ import org.w3c.dom.Element;
  * @author Tim Roes
  */
 public class SerializerHandler {
+	private static final String LOG_NAME = "SerializerHandler";
+
+	public static final String TAG_NAME = "name";
+	public static final String TAG_MEMBER = "member";
+	public static final String TAG_VALUE = "value";
+	public static final String TAG_DATA = "data";
+
+
+	public static final String TYPE_DATE_TIME_ISO8601 = "dateTime.iso8601";
+
+	static SimpleDateFormat dateFormat = DateTimeSerializer.DATE_FORMATER;
+	static Calendar cal = Calendar.getInstance(new SimpleTimeZone(0, "GMT"));
 
 	public static final String TYPE_STRING = "string";
 	public static final String TYPE_BOOLEAN = "boolean";
@@ -81,82 +107,119 @@ public class SerializerHandler {
 	 */
 	private SerializerHandler(int flags) {
 		this.flags = flags;
-		string = new StringSerializer(
-			(flags & XMLRPCClient.FLAGS_NO_STRING_ENCODE) == 0,
-			(flags & XMLRPCClient.FLAGS_NO_STRING_DECODE) == 0
-		);
+		string = new StringSerializer((flags & XMLRPCClient.FLAGS_NO_STRING_ENCODE) == 0);
 	}
 
 	/**
-	 * Deserializes an incoming xml element to an java object.
-	 * The xml element must be the value element around the type element.
+	 * Deserialize an incoming xml to a java object.
 	 * The type of the returning object depends on the type tag.
 	 *
-	 * @param element An type element from within a value tag.
+	 * @param parser Initialized parser.
 	 * @return The deserialized object.
-	 * @throws XMLRPCException Will be thrown whenever an error occurs.
+	 * @throws XmlPullParserException
+	 * @throws IOException
+	 * @throws NumberFormatException
 	 */
-	public Object deserialize(Element element) throws XMLRPCException {
+	public static Object deserialize(XmlPullParser parser) throws XmlPullParserException, IOException, NumberFormatException {
+		parser.require(XmlPullParser.START_TAG, null, TAG_VALUE);
 
-		if(!XMLRPCClient.VALUE.equals(element.getNodeName())) {
-			throw new XMLRPCException("Value tag is missing around value.");
-		}
-		
-		if(!XMLUtil.hasChildElement(element.getChildNodes())) {
-			// Value element doesn't contain a child element
-			if((flags & XMLRPCClient.FLAGS_DEFAULT_TYPE_STRING) != 0) {
-				return string.deserialize(element);
-			} else {
-				throw new XMLRPCException("Missing type element inside of value element.");
+		parser.nextTag();
+		String typeNodeName = parser.getName();
+
+		Object obj;
+		if (typeNodeName.equals(TYPE_INT) || typeNodeName.equals(TYPE_INT2)) {
+			String value = parser.nextText();
+			try {
+				obj = Integer.parseInt(value);
+			} catch (NumberFormatException nfe) {
+				Log.w(LOG_NAME, "Server replied with an invalid 4 bytes int value, trying to parse it as 8 bytes long.");
+				obj = Long.parseLong(value);
 			}
-		}
-			
-		// Grep type element from inside value element
-		element = XMLUtil.getOnlyChildElement(element.getChildNodes());
-
-		Serializer s = null;
-
-		String type;
-
-		// If FLAGS_IGNORE_NAMESPACE has been set, only use local name.
-		if((flags & XMLRPCClient.FLAGS_IGNORE_NAMESPACES) != 0) {
-			type = element.getLocalName() == null ? element.getNodeName() : element.getLocalName();
-		} else {
-			type = element.getNodeName();
-		}
-
-		if((flags & XMLRPCClient.FLAGS_NIL) != 0 && TYPE_NULL.equals(type)) {
-			s = nil;
-		} else if(TYPE_STRING.equals(type)) {
-			s = string;
-		} else if(TYPE_BOOLEAN.equals(type)) {
-			s = bool;
-		} else if(TYPE_DOUBLE.equals(type)) {
-			s = floating;
-		} else if (TYPE_INT.equals(type) || TYPE_INT2.equals(type)) {
-			s = integer;
-		} else if(TYPE_DATETIME.equals(type)) {
-			s = datetime;
-		} else if (TYPE_LONG.equals(type)) {
-			if((flags & XMLRPCClient.FLAGS_8BYTE_INT) != 0) {
-				s = long8;
-			} else {
-				throw new XMLRPCException("8 byte integer is not in the specification. "
-						+ "You must use FLAGS_8BYTE_INT to enable the i8 tag.");
+		} else
+		if (typeNodeName.equals(TYPE_LONG)) {
+			String value = parser.nextText();
+			obj = Long.parseLong(value);
+		} else
+		if (typeNodeName.equals(TYPE_DOUBLE)) {
+			String value = parser.nextText();
+			obj = Double.parseDouble(value);
+		} else
+		if (typeNodeName.equals(TYPE_BOOLEAN)) {
+			String value = parser.nextText();
+			obj = value.equals("1") ? Boolean.TRUE : Boolean.FALSE;
+		} else
+		if (typeNodeName.equals(TYPE_STRING)) {
+			obj = parser.nextText();
+		} else
+		if (typeNodeName.equals(TYPE_DATE_TIME_ISO8601)) {
+			dateFormat.setCalendar(cal);
+			String value = parser.nextText();
+			try {
+				obj = dateFormat.parseObject(value);
+			} catch (ParseException e) {
+				Log.e(LOG_NAME,  "Error parsing date, using non-parsed string.");
+				obj = value;
 			}
-		} else if(TYPE_STRUCT.equals(type)) {
-			s = struct;
-		} else if(TYPE_ARRAY.equals(type)) {
-			s = array;
-		} else if(TYPE_BASE64.equals(type)) {
-			s = base64;
+		} else
+		if (typeNodeName.equals(TYPE_BASE64)) {
+			String value = parser.nextText();
+			BufferedReader reader = new BufferedReader(new StringReader(value));
+			String line;
+			StringBuffer sb = new StringBuffer();
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+			obj = Base64.decode(sb.toString(), Base64.DEFAULT);
+		} else
+		if (typeNodeName.equals(TYPE_ARRAY)) {
+			parser.nextTag(); // TAG_DATA (<data>)
+			parser.require(XmlPullParser.START_TAG, null, TAG_DATA);
+
+			parser.nextTag();
+			List<Object> list = new ArrayList<Object>();
+			while (parser.getName().equals(TAG_VALUE)) {
+				list.add(deserialize(parser));
+				parser.nextTag();
+			}
+			parser.require(XmlPullParser.END_TAG, null, TAG_DATA);
+			parser.nextTag(); // TAG_ARRAY (</array>)
+			parser.require(XmlPullParser.END_TAG, null, TYPE_ARRAY);
+			obj = list.toArray();
+		} else
+		if (typeNodeName.equals(TYPE_STRUCT)) {
+			parser.nextTag();
+			Map<String, Object> map = new HashMap<String, Object>();
+			while (parser.getName().equals(TAG_MEMBER)) {
+				String memberName = null;
+				Object memberValue = null;
+				while (true) {
+					parser.nextTag();
+					String name = parser.getName();
+					if (name.equals(TAG_NAME)) {
+						memberName = parser.nextText();
+					} else
+					if (name.equals(TAG_VALUE)) {
+						memberValue = deserialize(parser);
+					} else {
+						break;
+					}
+				}
+				if (memberName != null && memberValue != null) {
+					map.put(memberName, memberValue);
+				}
+				parser.require(XmlPullParser.END_TAG, null, TAG_MEMBER);
+				parser.nextTag();
+			}
+			parser.require(XmlPullParser.END_TAG, null, TYPE_STRUCT);
+			obj = map;
 		} else {
-			throw new XMLRPCException("No deserializer found for type '" + type + "'.");
+			throw new IOException("Cannot deserialize " + parser.getName());
 		}
-
-		return s.deserialize(element);
-
+		parser.nextTag(); // TAG_VALUE (</value>)
+		parser.require(XmlPullParser.END_TAG, null, TAG_VALUE);
+		return obj;
 	}
+
 
 	/**
 	 * Serialize an object to its representation as an xml element.
