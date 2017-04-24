@@ -3,7 +3,6 @@ package org.transdroid.connect.clients.rtorrent
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import nl.nl2312.xmlrpc.Nothing
 import nl.nl2312.xmlrpc.XmlRpcConverterFactory
 import org.transdroid.connect.Configuration
 import org.transdroid.connect.clients.Feature
@@ -13,6 +12,7 @@ import org.transdroid.connect.util.OkHttpBuilder
 import org.transdroid.connect.util.flatten
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import java.io.InputStream
 import java.util.*
 
 class Rtorrent(private val configuration: Configuration) :
@@ -20,9 +20,12 @@ class Rtorrent(private val configuration: Configuration) :
         Feature.Listing,
         Feature.StartingStopping,
         Feature.ResumingPausing,
-        //Feature.AddByFile,
+        Feature.AddByFile,
         Feature.AddByUrl,
         Feature.AddByMagnet {
+
+    private val xmlrpcSizeMinimum = 2 * 1024 * 1024
+    private val xmlrpcSizePadding = 1280
 
     private val service: Service = Retrofit.Builder()
             .baseUrl(configuration.baseUrl)
@@ -61,7 +64,7 @@ class Rtorrent(private val configuration: Configuration) :
             .build().create(Service::class.java)
 
     override fun clientVersion(): Single<String> {
-        return service.clientVersion(configuration.endpoint, Nothing.NOTHING)
+        return service.clientVersion(configuration.endpoint)
                 .cache() // Cached, as it is often used but 'never' changes
     }
 
@@ -139,7 +142,7 @@ class Rtorrent(private val configuration: Configuration) :
 
     override fun addByUrl(url: String): Completable {
         return clientVersion().asVersionInt().flatMapCompletable { integer ->
-            if (integer > 904) {
+            if (integer >= 904) {
                 service.loadStart(configuration.endpoint, "", url)
             } else {
                 service.loadStart(configuration.endpoint, url)
@@ -149,10 +152,24 @@ class Rtorrent(private val configuration: Configuration) :
 
     override fun addByMagnet(magnet: String): Completable {
         return clientVersion().asVersionInt().flatMapCompletable { integer ->
-            if (integer > 904) {
+            if (integer >= 904) {
                 service.loadStart(configuration.endpoint, "", magnet)
             } else {
                 service.loadStart(configuration.endpoint, magnet)
+            }
+        }
+    }
+
+    override fun addByFile(file: InputStream): Completable {
+        return clientVersion().asVersionInt().flatMapCompletable { integer ->
+            val bytes = file.readBytes()
+            val size = Math.max(bytes.size, xmlrpcSizeMinimum) + xmlrpcSizePadding
+            if (integer >= 904) {
+                service.networkSizeLimitSet(configuration.endpoint, "", size)
+                        .flatMapCompletable { service.loadRawStart(configuration.endpoint, "", bytes) }
+            } else {
+                service.networkSizeLimitSet(configuration.endpoint, size)
+                        .flatMapCompletable { service.loadRawStart(configuration.endpoint, bytes) }
             }
         }
     }

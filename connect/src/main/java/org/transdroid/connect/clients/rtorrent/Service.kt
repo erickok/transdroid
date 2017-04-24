@@ -13,7 +13,7 @@ internal interface Service {
 
     @XmlRpc("system.client_version")
     @POST("{endpoint}")
-    fun clientVersion(@Path("endpoint") endpoint: String?, @Body nothing: Nothing): Single<String>
+    fun clientVersion(@Path("endpoint") endpoint: String?, @Body nothing: Nothing = Nothing.NOTHING): Single<String>
 
     @XmlRpc("d.multicall2")
     @POST("{endpoint}")
@@ -30,5 +30,13 @@ internal interface Service {
     @XmlRpc("load.start")
     @POST("{endpoint}")
     fun loadStart(@Path("endpoint") endpoint: String?, @Body vararg args: String): Completable
+
+    @XmlRpc("load.raw_start")
+    @POST("{endpoint}")
+    fun loadRawStart(@Path("endpoint") endpoint: String?, @Body vararg args: Any): Completable
+
+    @XmlRpc("network.xmlrpc.size_limit.set")
+    @POST("{endpoint}")
+    fun networkSizeLimitSet(@Path("endpoint") endpoint: String?, @Body vararg args: Any): Single<Int>
 
 }

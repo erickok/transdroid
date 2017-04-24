@@ -8,6 +8,7 @@ import org.transdroid.connect.clients.Client
 import org.transdroid.connect.clients.ClientSpec
 import org.transdroid.connect.clients.Feature
 import org.transdroid.connect.clients.UnsupportedFeatureException
+import org.transdroid.connect.mock.MockTorrent
 import org.transdroid.connect.model.Torrent
 
 class RtorrentLiveTest {
@@ -17,8 +18,7 @@ class RtorrentLiveTest {
     @Before
     fun setUp() {
         rtorrent = Configuration(Client.RTORRENT,
-                "http://localhost:8008/",
-                "RPC2",
+                "http://localhost:8008/", "RPC2",
                 loggingEnabled = true)
                 .createClient()
     }
@@ -60,6 +60,13 @@ class RtorrentLiveTest {
     @Test
     fun addByMagnet() {
         rtorrent.addByMagnet(MockTorrent.magnetUrl)
+                .test()
+                .assertNoErrors()
+    }
+
+    @Test
+    fun addByFile() {
+        rtorrent.addByFile(MockTorrent.torrentFile)
                 .test()
                 .assertNoErrors()
     }
