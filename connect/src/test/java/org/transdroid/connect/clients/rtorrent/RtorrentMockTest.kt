@@ -64,9 +64,11 @@ class RtorrentMockTest {
     fun addByFile() {
         server.enqueue(mock("<string>0.9.6</string>"))
         server.enqueue(mock("<i4>0</i4>"))
+        server.enqueue(mock("<i4>0</i4>"))
         rtorrent.addByFile(MockTorrent.torrentFile)
                 .test()
                 .assertNoErrors()
+        server.takeRequest()
         server.takeRequest()
         server.takeRequest()
     }
@@ -74,18 +76,40 @@ class RtorrentMockTest {
     @Test
     fun start() {
         server.enqueue(mock("<i4>0</i4>"))
+        server.enqueue(mock("<i4>0</i4>"))
         rtorrent.start(MockTorrent.downloading)
                 .test()
                 .assertValue { it.canStop }
-        server.takeRequest()
+        //server.takeRequest()
+        //server.takeRequest()
     }
 
     @Test
     fun stop() {
         server.enqueue(mock("<i4>0</i4>"))
+        server.enqueue(mock("<i4>0</i4>"))
         rtorrent.stop(MockTorrent.seeding)
                 .test()
                 .assertValue { it.canStart }
+        //server.takeRequest()
+        //server.takeRequest()
+    }
+
+    @Test
+    fun resume() {
+        server.enqueue(mock("<i4>0</i4>"))
+        rtorrent.resume(MockTorrent.downloading)
+                .test()
+                .assertValue { it.canPause }
+        server.takeRequest()
+    }
+
+    @Test
+    fun pause() {
+        server.enqueue(mock("<i4>0</i4>"))
+        rtorrent.pause(MockTorrent.seeding)
+                .test()
+                .assertValue { it.canResume }
         server.takeRequest()
     }
 

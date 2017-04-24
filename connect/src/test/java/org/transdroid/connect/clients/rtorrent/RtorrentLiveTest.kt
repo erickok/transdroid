@@ -1,5 +1,6 @@
 package org.transdroid.connect.clients.rtorrent
 
+import com.burgstaller.okhttp.digest.Credentials
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -83,6 +84,20 @@ class RtorrentLiveTest {
         rtorrent.stop(firstLiveTorrent())
                 .test()
                 .assertValue({ it.canStart })
+    }
+
+    @Test
+    fun resume() {
+        rtorrent.resume(firstLiveTorrent())
+                .test()
+                .assertValue({ it.canPause })
+    }
+
+    @Test
+    fun pause() {
+        rtorrent.pause(firstLiveTorrent())
+                .test()
+                .assertValue({ it.canResume })
     }
 
     @Test(expected = UnsupportedFeatureException::class)

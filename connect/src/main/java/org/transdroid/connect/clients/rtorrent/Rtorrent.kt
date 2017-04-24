@@ -129,49 +129,59 @@ class Rtorrent(private val configuration: Configuration) :
     }
 
     override fun start(torrent: Torrent): Single<Torrent> {
-        return service.start(
-                configuration.endpoint,
-                torrent.uniqueId).toSingle { torrent.mimicStart() }
+        return service.open(configuration.endpoint, torrent.uniqueId)
+                .flatMap { service.start(configuration.endpoint, torrent.uniqueId) }
+                .map { torrent.mimicStart() }
     }
 
     override fun stop(torrent: Torrent): Single<Torrent> {
-        return service.stop(
-                configuration.endpoint,
-                torrent.uniqueId).toSingle { torrent.mimicStop() }
+        return service.stop(configuration.endpoint, torrent.uniqueId)
+                .flatMap { service.close(configuration.endpoint, torrent.uniqueId) }
+                .map { torrent.mimicStop() }
+    }
+
+    override fun resume(torrent: Torrent): Single<Torrent> {
+        return service.start(configuration.endpoint, torrent.uniqueId)
+                .map { torrent.mimicResume() }
+    }
+
+    override fun pause(torrent: Torrent): Single<Torrent> {
+        return service.stop(configuration.endpoint, torrent.uniqueId)
+                .map { torrent.mimicPause() }
     }
 
     override fun addByUrl(url: String): Completable {
-        return clientVersion().asVersionInt().flatMapCompletable { integer ->
+        return clientVersion().asVersionInt().flatMap { integer ->
             if (integer >= 904) {
                 service.loadStart(configuration.endpoint, "", url)
             } else {
                 service.loadStart(configuration.endpoint, url)
             }
-        }
+        }.toCompletable()
     }
 
     override fun addByMagnet(magnet: String): Completable {
-        return clientVersion().asVersionInt().flatMapCompletable { integer ->
+        return clientVersion().asVersionInt().flatMap { integer ->
             if (integer >= 904) {
                 service.loadStart(configuration.endpoint, "", magnet)
             } else {
                 service.loadStart(configuration.endpoint, magnet)
             }
-        }
+        }.toCompletable()
     }
 
     override fun addByFile(file: InputStream): Completable {
-        return clientVersion().asVersionInt().flatMapCompletable { integer ->
+        return clientVersion().asVersionInt().flatMap { integer ->
             val bytes = file.readBytes()
             val size = Math.max(bytes.size, xmlrpcSizeMinimum) + xmlrpcSizePadding
             if (integer >= 904) {
                 service.networkSizeLimitSet(configuration.endpoint, "", size)
-                        .flatMapCompletable { service.loadRawStart(configuration.endpoint, "", bytes) }
+                        .flatMap { service.loadRawStart(configuration.endpoint, "", bytes) }
             } else {
                 service.networkSizeLimitSet(configuration.endpoint, size)
-                        .flatMapCompletable { service.loadRawStart(configuration.endpoint, bytes) }
+                        .flatMap { service.loadRawStart(configuration.endpoint, bytes) }
             }
-        }
+        }.toCompletable()
     }
 
     private fun torrentStatus(state: Long, complete: Long, active: Long, checking: Long): TorrentStatus {

@@ -24,6 +24,18 @@ internal class ClientDelegate(private val client: Client, private val actual: An
         throw UnsupportedFeatureException(client, Feature.VERSION)
     }
 
+    override fun resume(torrent: Torrent): Single<Torrent> {
+        if (client.supports(Feature.RESUMING_PAUSING))
+            return (actual as Feature.ResumingPausing).resume(torrent)
+        throw UnsupportedFeatureException(client, Feature.RESUMING_PAUSING)
+    }
+
+    override fun pause(torrent: Torrent): Single<Torrent> {
+        if (client.supports(Feature.RESUMING_PAUSING))
+            return (actual as Feature.ResumingPausing).pause(torrent)
+        throw UnsupportedFeatureException(client, Feature.RESUMING_PAUSING)
+    }
+
     override fun start(torrent: Torrent): Single<Torrent> {
         if (client.supports(Feature.STARTING_STOPPING))
             return (actual as Feature.StartingStopping).start(torrent)

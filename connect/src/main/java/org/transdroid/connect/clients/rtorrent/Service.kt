@@ -21,19 +21,27 @@ internal interface Service {
 
     @XmlRpc("d.start")
     @POST("{endpoint}")
-    fun start(@Path("endpoint") endpoint: String?, @Body hash: String): Completable
+    fun start(@Path("endpoint") endpoint: String?, @Body hash: String): Single<Int>
 
     @XmlRpc("d.stop")
     @POST("{endpoint}")
-    fun stop(@Path("endpoint") endpoint: String?, @Body hash: String): Completable
+    fun stop(@Path("endpoint") endpoint: String?, @Body hash: String): Single<Int>
+
+    @XmlRpc("d.open")
+    @POST("{endpoint}")
+    fun open(@Path("endpoint") endpoint: String?, @Body hash: String): Single<Int>
+
+    @XmlRpc("d.close")
+    @POST("{endpoint}")
+    fun close(@Path("endpoint") endpoint: String?, @Body hash: String): Single<Int>
 
     @XmlRpc("load.start")
     @POST("{endpoint}")
-    fun loadStart(@Path("endpoint") endpoint: String?, @Body vararg args: String): Completable
+    fun loadStart(@Path("endpoint") endpoint: String?, @Body vararg args: String): Single<Int>
 
     @XmlRpc("load.raw_start")
     @POST("{endpoint}")
-    fun loadRawStart(@Path("endpoint") endpoint: String?, @Body vararg args: Any): Completable
+    fun loadRawStart(@Path("endpoint") endpoint: String?, @Body vararg args: Any): Single<Int>
 
     @XmlRpc("network.xmlrpc.size_limit.set")
     @POST("{endpoint}")

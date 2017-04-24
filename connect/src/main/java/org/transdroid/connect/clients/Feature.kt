@@ -41,7 +41,13 @@ enum class Feature constructor(val type: KClass<*>) {
 
     }
 
-    interface ResumingPausing
+    interface ResumingPausing {
+
+        fun resume(torrent: Torrent): Single<Torrent>
+
+        fun pause(torrent: Torrent): Single<Torrent>
+
+    }
 
     interface ForceStarting {
 
