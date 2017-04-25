@@ -5,6 +5,7 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import org.transdroid.connect.model.Torrent
 import org.transdroid.connect.model.TorrentDetails
+import org.transdroid.connect.model.TorrentFile
 import java.io.InputStream
 
 /**
@@ -22,6 +23,12 @@ internal class ClientDelegate(private val client: Client, private val actual: An
     override fun torrents(): Flowable<Torrent> {
         if (client.supports(Feature.LISTING))
             return (actual as Feature.Listing).torrents()
+        throw UnsupportedFeatureException(client, Feature.LISTING)
+    }
+
+    override fun files(torrent: Torrent): Flowable<TorrentFile> {
+        if (client.supports(Feature.LISTING))
+            return (actual as Feature.Listing).files(torrent)
         throw UnsupportedFeatureException(client, Feature.LISTING)
     }
 

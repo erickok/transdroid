@@ -3,12 +3,11 @@ package org.transdroid.connect.clients.rtorrent
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import nl.nl2312.xmlrpc.XmlRpcConverterFactory
 import org.transdroid.connect.Configuration
 import org.transdroid.connect.clients.Feature
-import org.transdroid.connect.model.Torrent
-import org.transdroid.connect.model.TorrentDetails
-import org.transdroid.connect.model.TorrentStatus
+import org.transdroid.connect.model.*
 import org.transdroid.connect.util.OkHttpBuilder
 import org.transdroid.connect.util.flatten
 import retrofit2.Retrofit
@@ -64,6 +63,16 @@ class Rtorrent(private val configuration: Configuration) :
                     }
                     .addArrayDeserializer(TrackerSpec::class.java) { arrayValues ->
                         TrackerSpec(arrayValues.asString(0))
+                    }
+                    .addArrayDeserializer(FileSpec::class.java) { arrayValues ->
+                        FileSpec(
+                                arrayValues.asString(0),
+                                arrayValues.asLong(1),
+                                arrayValues.asLong(2),
+                                arrayValues.asLong(3),
+                                arrayValues.asLong(4),
+                                arrayValues.asString(5)
+                        )
                     }
                     .create())
             .build().create(Service::class.java)
@@ -131,6 +140,30 @@ class Rtorrent(private val configuration: Configuration) :
                             torrentTimeFinished(timeFinished),
                             errorMessage
                     )
+                }
+    }
+
+    override fun files(torrent: Torrent): Flowable<TorrentFile> {
+        return service.files(configuration.endpoint,
+                torrent.uniqueId,
+                "",
+                "f.path=",
+                "f.size_bytes=",
+                "f.completed_chunks=",
+                "f.size_chunks=",
+                "f.priority=",
+                "f.frozen_path=")
+                .flatten()
+                .zipWith(Flowable.range(0, Int.MAX_VALUE), BiFunction<FileSpec, Int, Pair<Int, FileSpec>> { file, index -> Pair(index, file) })
+                .map { (index, file) ->
+                    TorrentFile(
+                            index.toString(),
+                            file.pathName,
+                            file.pathFull.substring(torrent.locationDir.orEmpty().length),
+                            file.pathName,
+                            file.size,
+                            file.size * (file.chunksDone / file.chunksTotal),
+                            fileStatus(file.priority))
                 }
     }
 
@@ -213,6 +246,13 @@ class Rtorrent(private val configuration: Configuration) :
             return TorrentStatus.PAUSED
         }
     }
+
+    private fun fileStatus(state: Long): Priority =
+            when (state) {
+                0L -> Priority.OFF
+                2L -> Priority.HIGH
+                else -> Priority.NORMAL
+            }
 
     private fun torrentTimeAdded(timeAdded: String?, timeCreated: Long): Date =
             if (timeAdded.isNullOrBlank()) Date(timeCreated * 1000L) else Date(timeAdded!!.trim().toLong() * 1000L)

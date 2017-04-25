@@ -17,6 +17,10 @@ internal interface Service {
     @POST("{endpoint}")
     fun torrents(@Path("endpoint") endpoint: String?, @Body vararg args: String): Single<Array<TorrentSpec>>
 
+    @XmlRpc("f.multicall")
+    @POST("{endpoint}")
+    fun files(@Path("endpoint") endpoint: String?, @Body vararg args: String): Single<Array<FileSpec>>
+
     @XmlRpc("t.multicall")
     @POST("{endpoint}")
     fun trackers(@Path("endpoint") endpoint: String?, @Body vararg args: String): Single<Array<TrackerSpec>>

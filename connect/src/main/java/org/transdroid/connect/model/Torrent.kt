@@ -87,22 +87,13 @@ data class Torrent(
 
     fun mimicStop(): Torrent = mimicStatus(TorrentStatus.QUEUED)
 
-    fun mimicNewLabel(newLabel: String): Torrent = Torrent(id, hash, name, statusCode, locationDir, rateDownload, rateUpload, seedersConnected,
-            seedersKnown, leechersConnected, leechersKnown, eta, downloadedEver, uploadedEver, totalSize, partDone, available, newLabel, dateAdded,
-            dateDone, error)
+    fun mimicChecking(): Torrent = mimicStatus(TorrentStatus.CHECKING)
 
-    fun mimicChecking(): Torrent {
-        return mimicStatus(TorrentStatus.CHECKING)
-    }
+    fun mimicNewLabel(newLabel: String): Torrent = this.copy(label = newLabel)
 
-    fun mimicNewLocation(newLocation: String): Torrent {
-        return Torrent(id, hash, name, statusCode, newLocation, rateDownload, rateUpload, seedersConnected, seedersKnown, leechersConnected,
-                leechersKnown, eta, downloadedEver, uploadedEver, totalSize, partDone, available, label, dateAdded, dateDone, error)
-    }
+    fun mimicNewLocation(newLocation: String): Torrent = this.copy(locationDir = newLocation)
 
-    private fun mimicStatus(newStatus: TorrentStatus): Torrent = Torrent(id, hash, name, newStatus, locationDir, rateDownload, rateUpload,
-            seedersConnected, seedersKnown, leechersConnected, leechersKnown, eta, downloadedEver, uploadedEver, totalSize, partDone, available,
-            label, dateAdded, dateDone, error)
+    private fun mimicStatus(newStatus: TorrentStatus): Torrent = this.copy(statusCode = newStatus)
 
     override fun toString(): String = "($uniqueId) $name"
 

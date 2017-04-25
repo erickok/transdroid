@@ -7,6 +7,7 @@ import org.junit.Test
 import org.transdroid.connect.Configuration
 import org.transdroid.connect.clients.Client
 import org.transdroid.connect.mock.MockTorrent
+import org.transdroid.connect.model.Priority
 
 class RtorrentMockTest {
 
@@ -34,6 +35,23 @@ class RtorrentMockTest {
         rtorrent.torrents()
                 .test()
                 .assertValue { it.hash == "59066769B9AD42DA2E508611C33D7C4480B3857B" }
+        server.takeRequest()
+    }
+
+    @Test
+    fun files() {
+        server.enqueue(mock("<array><data><value><array><data><value><string>ubuntu-17.04-desktop-amd64.iso</string></value><value><i8>1609039872</i8></value><value><i8>0</i8></value><value><i8>3069</i8></value><value><i8>1</i8></value><value><string>/downloads/ubuntu-17.04-desktop-amd64.iso</string></value></data></array></value></data></array>"))
+        rtorrent.files(MockTorrent.downloading)
+                .test()
+                .assertValue {
+                    it.key == "0" &&
+                            it.name == "ubuntu-17.04-desktop-amd64.iso" &&
+                            it.relativePath == "ubuntu-17.04-desktop-amd64.iso" &&
+                            it.fullPath == "ubuntu-17.04-desktop-amd64.iso" &&
+                            it.totalSize == 1609039872L &&
+                            it.downloaded == 0L &&
+                            it.priority == Priority.NORMAL
+                }
         server.takeRequest()
     }
 

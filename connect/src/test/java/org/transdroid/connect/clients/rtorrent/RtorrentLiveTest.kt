@@ -43,18 +43,26 @@ class RtorrentLiveTest {
     }
 
     @Test
-    fun details() {
-        rtorrent.details(firstLiveTorrent())
-                .test()
-                .assertValue { it.trackers.isNotEmpty() }
-    }
-
-    @Test
     fun torrents() {
         rtorrent.torrents()
                 .toList()
                 .test()
-                .assertValue { torrents -> torrents.size > 0 }
+                .assertValue { it.size > 0 }
+    }
+
+    @Test
+    fun files() {
+        rtorrent.files(firstLiveTorrent())
+                .toList()
+                .test()
+                .assertValue { it.size > 0 }
+    }
+
+    @Test
+    fun details() {
+        rtorrent.details(firstLiveTorrent())
+                .test()
+                .assertValue { it.trackers.isNotEmpty() }
     }
 
     @Test
