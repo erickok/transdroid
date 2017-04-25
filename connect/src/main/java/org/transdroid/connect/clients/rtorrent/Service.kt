@@ -1,7 +1,5 @@
 package org.transdroid.connect.clients.rtorrent
 
-import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Single
 import nl.nl2312.xmlrpc.Nothing
 import nl.nl2312.xmlrpc.XmlRpc
@@ -17,7 +15,11 @@ internal interface Service {
 
     @XmlRpc("d.multicall2")
     @POST("{endpoint}")
-    fun torrents(@Path("endpoint") endpoint: String?, @Body vararg args: String): Flowable<Array<TorrentSpec>>
+    fun torrents(@Path("endpoint") endpoint: String?, @Body vararg args: String): Single<Array<TorrentSpec>>
+
+    @XmlRpc("t.multicall")
+    @POST("{endpoint}")
+    fun trackers(@Path("endpoint") endpoint: String?, @Body vararg args: String): Single<Array<TrackerSpec>>
 
     @XmlRpc("d.start")
     @POST("{endpoint}")

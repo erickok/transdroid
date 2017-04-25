@@ -22,31 +22,18 @@ data class Torrent(
         val available: Float?,
         val label: String?,
         val dateAdded: Date,
-        val realDateDone: Date?,
+        private val realDateDone: Date?,
         val error: String?) {
 
-    val dateDone: Date
-
-    init {
-        if (realDateDone != null) {
-            this.dateDone = realDateDone
-        } else {
-            if (this.partDone == 1f) {
-                // Finished but no finished date: set so move to bottom of list
-                this.dateDone = Calendar.getInstance().apply {
-                    clear()
-                    set(1900, Calendar.DECEMBER, 31)
-                }.time
-            } else if (eta == null || eta == -1L || eta == -2L) {
-                // Unknown eta: move to the top of the list
-                this.dateDone = Date(java.lang.Long.MAX_VALUE)
-            } else {
-                this.dateDone = Calendar.getInstance().apply {
-                    add(Calendar.SECOND, eta.toInt())
-                }.time
-            }
-        }
-    }
+    val dateDone: Date = realDateDone ?:
+            if (this.partDone == 1f) Calendar.getInstance().apply {
+                clear()
+                set(1900, Calendar.DECEMBER, 31)
+            }.time
+            else if (eta == null || eta == -1L || eta == -2L) Date(java.lang.Long.MAX_VALUE)
+            else Calendar.getInstance().apply {
+                add(Calendar.SECOND, eta.toInt())
+            }.time
 
     /**
      * The unique torrent-specific id, which is the torrent's hash or (if not available) the local index number

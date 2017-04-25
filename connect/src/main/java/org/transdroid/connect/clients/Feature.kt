@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.transdroid.connect.model.Torrent
+import org.transdroid.connect.model.TorrentDetails
 import java.io.InputStream
 import kotlin.reflect.KClass
 
@@ -14,6 +15,7 @@ enum class Feature constructor(val type: KClass<*>) {
 
     VERSION(Version::class),
     LISTING(Listing::class),
+    DETAILS(Details::class),
     STARTING_STOPPING(StartingStopping::class),
     RESUMING_PAUSING(ResumingPausing::class),
     FORCE_STARTING(ForceStarting::class),
@@ -30,6 +32,12 @@ enum class Feature constructor(val type: KClass<*>) {
     interface Listing {
 
         fun torrents(): Flowable<Torrent>
+
+    }
+
+    interface Details {
+
+        fun details(torrent: Torrent): Single<TorrentDetails>
 
     }
 

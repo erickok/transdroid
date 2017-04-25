@@ -1,6 +1,5 @@
 package org.transdroid.connect.clients.rtorrent
 
-import com.burgstaller.okhttp.digest.Credentials
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -41,6 +40,13 @@ class RtorrentLiveTest {
         rtorrent.clientVersion()
                 .test()
                 .assertValue("0.9.6")
+    }
+
+    @Test
+    fun details() {
+        rtorrent.details(firstLiveTorrent())
+                .test()
+                .assertValue { it.trackers.isNotEmpty() }
     }
 
     @Test

@@ -7,6 +7,7 @@ import nl.nl2312.xmlrpc.XmlRpcConverterFactory
 import org.transdroid.connect.Configuration
 import org.transdroid.connect.clients.Feature
 import org.transdroid.connect.model.Torrent
+import org.transdroid.connect.model.TorrentDetails
 import org.transdroid.connect.model.TorrentStatus
 import org.transdroid.connect.util.OkHttpBuilder
 import org.transdroid.connect.util.flatten
@@ -18,6 +19,7 @@ import java.util.*
 class Rtorrent(private val configuration: Configuration) :
         Feature.Version,
         Feature.Listing,
+        Feature.Details,
         Feature.StartingStopping,
         Feature.ResumingPausing,
         Feature.AddByFile,
@@ -59,6 +61,9 @@ class Rtorrent(private val configuration: Configuration) :
                                 arrayValues.asLong(22)
 
                         )
+                    }
+                    .addArrayDeserializer(TrackerSpec::class.java) { arrayValues ->
+                        TrackerSpec(arrayValues.asString(0))
                     }
                     .create())
             .build().create(Service::class.java)
@@ -123,9 +128,18 @@ class Rtorrent(private val configuration: Configuration) :
                             null,
                             label,
                             torrentTimeAdded(timeAdded, timeCreated),
-                            torrentTimeFinished(timeFinished), errorMessage
+                            torrentTimeFinished(timeFinished),
+                            errorMessage
                     )
                 }
+    }
+
+    override fun details(torrent: Torrent): Single<TorrentDetails> {
+        return service.trackers(configuration.endpoint, torrent.uniqueId, "", "t.url=")
+                .flatten()
+                .map { (url) -> url }
+                .toList()
+                .map { trackers -> TorrentDetails(trackers, listOfNotNull(torrent.error)) }
     }
 
     override fun start(torrent: Torrent): Single<Torrent> {

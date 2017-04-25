@@ -7,7 +7,6 @@ import org.junit.Test
 import org.transdroid.connect.Configuration
 import org.transdroid.connect.clients.Client
 import org.transdroid.connect.mock.MockTorrent
-import java.io.File
 
 class RtorrentMockTest {
 
@@ -35,6 +34,21 @@ class RtorrentMockTest {
         rtorrent.torrents()
                 .test()
                 .assertValue { it.hash == "59066769B9AD42DA2E508611C33D7C4480B3857B" }
+        server.takeRequest()
+    }
+
+    @Test
+    fun details() {
+        server.enqueue(mock("<array><data><value><array><data><value><string>http://torrent.ubuntu.com:6969/announce</string></value></data></array></value><value><array><data><value><string>http://ipv6.torrent.ubuntu.com:6969/announce</string></value></data></array></value></data></array>"))
+        rtorrent.details(MockTorrent.error)
+                .test()
+                .assertValue {
+                    it.trackers.size == 2 &&
+                            it.trackers[0] == "http://torrent.ubuntu.com:6969/announce" &&
+                            it.trackers[1] == "http://ipv6.torrent.ubuntu.com:6969/announce" &&
+                            it.errors.size == 1 &&
+                            it.errors[0] == "tracker error"
+                }
         server.takeRequest()
     }
 

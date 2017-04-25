@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.transdroid.connect.model.Torrent
+import org.transdroid.connect.model.TorrentDetails
 import java.io.InputStream
 
 /**
@@ -12,16 +13,22 @@ import java.io.InputStream
  */
 internal class ClientDelegate(private val client: Client, private val actual: Any) : ClientSpec {
 
+    override fun clientVersion(): Single<String> {
+        if (client.supports(Feature.VERSION))
+            return (actual as Feature.Version).clientVersion()
+        throw UnsupportedFeatureException(client, Feature.VERSION)
+    }
+
     override fun torrents(): Flowable<Torrent> {
         if (client.supports(Feature.LISTING))
             return (actual as Feature.Listing).torrents()
         throw UnsupportedFeatureException(client, Feature.LISTING)
     }
 
-    override fun clientVersion(): Single<String> {
-        if (client.supports(Feature.VERSION))
-            return (actual as Feature.Version).clientVersion()
-        throw UnsupportedFeatureException(client, Feature.VERSION)
+    override fun details(torrent: Torrent): Single<TorrentDetails> {
+        if (client.supports(Feature.DETAILS))
+            return (actual as Feature.Details).details(torrent)
+        throw UnsupportedFeatureException(client, Feature.DETAILS)
     }
 
     override fun resume(torrent: Torrent): Single<Torrent> {
