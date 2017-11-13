@@ -128,7 +128,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 							"d.complete=",
 							"d.is_active=",
 							"d.is_hash_checking=",
-							"d.base_path=",
+							"d.is_multi_file=",
 							"d.base_filename=",
 							"d.message=",
 							"d.custom=addtime",
@@ -443,11 +443,12 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					// Can't decode label name; ignore it
 				}
 
+				String baseFilename = info[17] + "/";
+
 				if (info[3] instanceof Long) {
 
 					// rTorrent uses the i8 dialect which returns 64-bit integers
 					long rateDownload = (Long) info[3];
-					String basePath = (String) info[16];
 
 					// @formatter:off
 					torrents.add(new Torrent(
@@ -455,7 +456,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						(String)info[0], // hash
 						(String)info[1], // name
 						convertTorrentStatus((Long)info[2], (Long)info[13], (Long)info[14], (Long)info[15]), // status
-						basePath.substring(0, basePath.indexOf((String)info[17])), // locationDir
+						(((Long)info[16]) == 1)? baseFilename: "" , // multi file? base_filename else ""
 						((Long)info[3]).intValue(), // rateDownload
 						((Long)info[4]).intValue(), // rateUpload
 						((Long)info[22]).intValue(), // seedersConnected
@@ -479,7 +480,6 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 					// rTorrent uses the default dialect with 32-bit integers
 					int rateDownload = (Integer) info[3];
-					String basePath = (String) info[16];
 
 					// @formatter:off
 					torrents.add(new Torrent(
@@ -487,7 +487,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 						(String)info[0], // hash
 						(String)info[1], // name
 						convertTorrentStatus(((Integer)info[2]).longValue(), ((Integer)info[13]).longValue(), ((Integer)info[14]).longValue(), ((Integer)info[15]).longValue()), // status
-						basePath.substring(0, basePath.indexOf((String)info[17])), // locationDir
+						(((Integer)info[16]) == 1)? baseFilename: "" , // multi file? base_filename else ""
 						rateDownload, // rateDownload
 						(Integer)info[4], // rateUpload
 						(Integer)info[22], // seedersConnected
@@ -549,7 +549,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					files.add(new TorrentFile(
 						"" + i,
 						(String)info[0], // name
-						((String)info[6]).substring(torrent.getLocationDir().length()), // relativePath (= fullPath - torrent locationDir)
+						torrent.getLocationDir() + info[0], // torrent locationDir + file name
 						(String)info[6], // fullPath
 						size, // size
 						(long) (size * ((float)chunksDone / (float)chunksTotal)), // done
@@ -568,7 +568,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					files.add(new TorrentFile(
 						"" + i,
 						(String)info[0], // name
-						((String)info[6]).substring(torrent.getLocationDir().length()), // relativePath (= fullPath - torrent locationDir)
+						torrent.getLocationDir() + "/" + info[0], // torrent locationDir + file name
 						(String)info[0], // fullPath
 						size, // size
 						(int) (size * ((float)chunksDone / (float)chunksTotal)), // done

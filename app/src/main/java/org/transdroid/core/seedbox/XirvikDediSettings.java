@@ -64,7 +64,7 @@ public class XirvikDediSettings extends SeedboxSettingsImpl implements SeedboxSe
 				type == Daemon.Deluge? "deluge": null,
 				OS.Linux, 
 				type == Daemon.uTorrent? "/downloads": null, 
-				"ftp://" + user + "@" + server + "/downloads", 
+				"ftp://" + user + "@" + server + "/",
 				pass, 
 				6, 
 				prefs.getBoolean("seedbox_xirvikdedi_alarmfinished_" + order, true),

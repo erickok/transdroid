@@ -588,7 +588,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				}
 
 				// Try using a VIEW intent given an ftp:// scheme URI
-				String url = urlBase + checked.get(0).getFullPath();
+				String url = urlBase + checked.get(0).getRelativePath();
 				Intent simpleStart = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				if (simpleStart.resolveActivity(getActivity().getPackageManager()) != null) {
 					startActivity(simpleStart);
