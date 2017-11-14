@@ -60,7 +60,7 @@
   <string name="action_priority_off">Desligada</string>
   <string name="action_priority_low">Baixa</string>
   <string name="action_priority_normal">Normal</string>
-  <string name="action_priority_high">Alto</string>
+  <string name="action_priority_high">Alta</string>
   <string name="action_remoteplay">Reprodução remota no VLC</string>
   <string name="action_download">Transferir através de (S)FTP</string>
   <string name="action_copytoclipboard">Copiar para a área de transferência</string>
@@ -79,8 +79,8 @@
   <string name="navigation_status_showall">Tudo</string>
   <string name="navigation_status_onlydown">A transferir</string>
   <string name="navigation_status_onlyup">A enviar</string>
-  <string name="navigation_status_onlyactive">Atívo</string>
-  <string name="navigation_status_onlyinactive">Inatívo</string>
+  <string name="navigation_status_onlyactive">Ativo</string>
+  <string name="navigation_status_onlyinactive">Inativo</string>
   <plurals name="navigation_torrentsselected">
     <item quantity="one">%1$d torrent selecionado</item>
     <item quantity="other">%1$d torrents selecionados</item>
@@ -94,9 +94,9 @@
   <string name="navigation_invertselection">Inverter seleção</string>
   <string name="navigation_pickserver">Adicionar torrent a&#8230;</string>
   <string name="status_status">ESTADO: %1$s</string>
-  <string name="status_waiting">Á espera de verificação&#8230;</string>
+  <string name="status_waiting">À espera de verificação&#8230;</string>
   <string name="status_checking">A verificar arquivo local&#8230;</string>
-  <string name="status_waitingtodl">Á espera para transferir %s</string>
+  <string name="status_waitingtodl">À espera para transferir %s</string>
   <string name="status_error">Erro&#8230;</string>
   <string name="status_size1">%1$s DE %2$s (%3$s)</string>
   <string name="status_size2">%1$s, ENVIADO %2$s</string>
@@ -166,13 +166,13 @@
   <string name="result_locationset">Torrent recolocado para \'%1$s\'</string>
   <string name="result_priotitiesset">Prioridades do arquivo atualizadas</string>
   <string name="result_maxspeedsset">Estabelecidas velocidades máximas de transferência</string>
-  <string name="search_torrentsearch">Busca de torrents</string>
+  <string name="search_torrentsearch">Pesquisa de torrents</string>
   <string name="search_queryonsite">\'%1$s em %2$s</string>
-  <string name="search_hint">Busca por torrents</string>
-  <string name="search_noresults">Não há resultados para a sua pesqusa</string>
+  <string name="search_hint">Pesquisa por torrents</string>
+  <string name="search_noresults">Não há resultados para a sua pesquisa</string>
   <string name="search_seeders">S: %1$s</string>
   <string name="search_leechers">L: %1$s</string>
-  <string name="search_installsearch">Esta função requer a instalação do módulo de pesquisas de torrents. Clique em transferir para obter o pacote de instalação (apk) em transdroid.org e reinicie a sua pesquisa.</string>
+  <string name="search_installsearch">Esta função requer a instalação do módulo de Pesquisa de Torrents. Clique em transferir para obter o pacote de instalação (apk) em transdroid.org e reinicie a sua pesquisa.</string>
   <string name="search_download">Transferir módulo</string>
   <string name="search_openingdetails">A carregar detalhes para %1$s</string>
   <string name="search_barcodescannernotfound">O leitor de códigos de barras não foi encontrado. Deseja instalá-lo da Play Store?</string>
@@ -182,7 +182,7 @@
     <item quantity="other">%1$d resultados selecionados</item>
   </plurals>
   <string name="rss_feeds">Feeds RSS</string>
-  <string name="rss_nosettings">Não foram definidos quaisquer feeds RSS para monitorizar. Os Feeds RSS de torrents mantêem-no atualizado com novos lançamentos e geram notificações quando há novos itens.</string>
+  <string name="rss_nosettings">Não foram definidos quaisquer feeds RSS para monitorizar. Os Feeds RSS de torrents mantêm-no atualizado com novos lançamentos e geram notificações quando há novos itens.</string>
   <string name="rss_noselection">Seleccione um feed RSS para ver novos itens</string>
   <string name="rss_empty">O feed RSS não está disponível ou não contém itens</string>
   <string name="rss_notloaded">Desculpe, por favor espere até que o feed RSS seja carregado</string>
@@ -229,15 +229,15 @@
   <string name="pref_reqauth_info">Abre links no webbrowser para login de utilizador</string>
   <string name="pref_alarmrssnew">Notificação de novos itens</string>
   <string name="pref_alarmrssnew_info">Notificar quando são lançados novos torrents</string>
-  <string name="pref_servertype">Tipo servidor</string>
-  <string name="pref_address">IP ou nome anfitrião</string>
-  <string name="pref_port">Número porto</string>
-  <string name="pref_user">Nome utilizador</string>
+  <string name="pref_servertype">Tipo do servidor</string>
+  <string name="pref_address">IP ou nome do anfitrião</string>
+  <string name="pref_port">Número do porto</string>
+  <string name="pref_user">Nome de utilizador</string>
   <string name="pref_pass">Palavra-passe</string>
   <string name="pref_extrapassword">Senha web do Deluge</string>
-  <string name="pref_secret">Símbolo secreto</string>
+  <string name="pref_secret">Token secreto</string>
   <string name="pref_advanced">Definições avançadas</string>
-  <string name="pref_localaddress">IP local ou anfitrião</string>
+  <string name="pref_localaddress">IP local ou nome do anfitrião</string>
   <string name="pref_localaddress_info">Quando ligado à rede local especificada</string>
   <string name="pref_localport">Número da porta local</string>
   <string name="pref_localnetwork">Rede local</string>
@@ -247,10 +247,10 @@
   <string name="pref_scgifolder">Ponto de montagem SCGI</string>
   <string name="pref_optional">Configurações opcionais</string>
   <string name="pref_alarmdone">Notificações de conclusão</string>
-  <string name="pref_alarmdone_info">Notificar quando um torrent conclui</string>
+  <string name="pref_alarmdone_info">Notificar quando um torrent é concluído</string>
   <string name="pref_alarmnew">Notificação de novo torrent</string>
   <string name="pref_alarmnew_info">Notificar quando for adicionado um torrent</string>
-  <string name="pref_os">SO servidor</string>
+  <string name="pref_os">SO do servidor</string>
   <string name="pref_downdir">Pasta de download</string>
   <string name="pref_downdir_info">Definir manualmente o caminho absoluto para ligações remotas</string>
   <string name="pref_timeout">Ligação expirada</string>
@@ -259,7 +259,7 @@
   <string name="pref_ftpurl_into">Por exemplo, ftp://me@server/downloads/</string>
   <string name="pref_ftppass">Senha FTP(S)</string>
   <string name="pref_disableauth">Desativar autenticação</string>
-  <string name="pref_disableauth_info">Não enviar nome de usuário e senha</string>
+  <string name="pref_disableauth_info">Não enviar nome de utilizador e senha</string>
   <string name="pref_sslenable">Utilizar SSL</string>
   <string name="pref_sslenable_info">Ligar através de https</string>
   <string name="pref_sslkey">Impressão digital SSL personalizada (SHA-1)</string>
@@ -267,22 +267,22 @@
   <string name="pref_sslacceptall">Aceitar todos os certificados SSL</string>
   <string name="pref_sslacceptall_info">Permitir todas as ligações de qualquer impressão digital</string>
   <string name="pref_background">Notificações fundo</string>
-  <string name="pref_notifications_rss">Activar notificações de RSS</string>
-  <string name="pref_notifications_torrent">Activar notificações de torrent</string>
+  <string name="pref_notifications_rss">Ativar notificações de RSS</string>
+  <string name="pref_notifications_torrent">Ativar notificações de torrent</string>
   <string name="pref_notifications_info">Activa o serviço de pano de fundo</string>
   <string name="pref_notifyinterval">Intervalo</string>
   <string name="pref_notifyinterval_info">Frequência de verificação de RSS ou torrents</string>
   <string name="pref_notifysound">Som</string>
   <string name="pref_notifyvibrate">Vibrar</string>
-  <string name="pref_notifyled">Cor LED</string>
-  <string name="pref_notifyled_info">Se for suportado pelo seu aparelho</string>
-  <string name="pref_adw">Suportar a notificações de AWD</string>
+  <string name="pref_notifyled">Cor do LED</string>
+  <string name="pref_notifyled_info">Se for suportado pelo seu dispositivo</string>
+  <string name="pref_adw">Suportar notificações do AWD</string>
   <string name="pref_adw_info">Contador de torrents no ADW Launcher</string>
   <string name="pref_system">Sistema</string>
-  <string name="pref_autorefresh">Actualização automática</string>
-  <string name="pref_autorefresh_info">Actualização intervalada da tela principal</string>
+  <string name="pref_autorefresh">Atualização automática</string>
+  <string name="pref_autorefresh_info">Atualização intervalada do ecrã principal</string>
   <string-array name="pref_autorefresh_intervals">
-    <item>Desativada</item>
+    <item>Desativado</item>
     <item>2 segundos</item>
     <item>5 segundos</item>
     <item>10 segundos</item>
@@ -291,16 +291,16 @@
   <string name="pref_dormantasinactive">Tratar torrents dormentes como inativos</string>
   <string name="pref_dormantasinactive_info">Torrents a 0KB/s (sem transferência de dados) serão considerados inativos</string>
   <string name="pref_checkupdates">Verificar atualizações</string>
-  <string name="pref_checkupdates_info">Visite transdroid.org para a obter a versão mais recente da app</string>
+  <string name="pref_checkupdates_info">Visite transdroid.org para obter a versão mais recente da app</string>
   <string name="pref_usedarktheme">Usar tema de interface escuro</string>
   <string name="pref_usedarktheme_info">Requer uma reinicialização para tomar efeito</string>
   <string name="pref_clearsearch">Limpar histórico de pesquisa</string>
   <string name="pref_clearsearch_success">Histórico de pesquisa apagado</string>
   <string name="pref_import">Importar definições</string>
-  <string name="pref_import_dialog">%1$s vai tentar importar definições de servidor, pesquisa web, RSS e sistema de: %2$s</string>
+  <string name="pref_import_dialog">%1$s vai tentar importar definições de servidor, pesquisa web, RSS e definições do sistema de: %2$s</string>
   <string name="pref_import_success">Configurações importadas com sucesso</string>
   <string name="pref_export">Exportar configurações</string>
-  <string name="pref_export_dialog">%1$s irá exportar definições de servidor (incluindo senhas), busca, RSS e de sistema para o seguinte arquivo de texto JSON: %2$s</string>
+  <string name="pref_export_dialog">%1$s irá exportar definições de servidor (incluindo palavras-passe), pesquisa web, RSS e definições do sistema para o seguinte ficheiro de texto JSON: %2$s</string>
   <string name="pref_export_success">Definições exportadas com êxito</string>
   <string name="pref_help">Ajuda do Transdroid</string>
   <string name="pref_sendlog">Enviar o relatório de erros</string>
@@ -316,7 +316,7 @@
   <string name="pref_seedbox_xirvikhint">Como eplus001.xirvik.com</string>
   <string name="pref_seedbox_xirvikhint2">Como semixl001a.xirvik.com</string>
   <string name="pref_seedbox_xirvikhint3">Como desharedgbit001.xirvik.com</string>
-  <string name="pref_seedbox_xirviknofolder">Não é possível recuperar a configuração de pasta Xirvik SCGI; por favor, tente novamente mais tarde ou corrija a sua configuração de endereço do servidor</string>
+  <string name="pref_seedbox_xirviknofolder">Não é possível obter a configuração de pasta Xirvik SCGI; por favor, tente novamente mais tarde ou corrija a sua configuração de endereço do servidor</string>
   <string name="pref_seedbox_seedstuffhint">Por ex. 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
     <item>1 minuto</item>
@@ -332,29 +332,29 @@
   <string name="error_jsonresponseerror">Erro ao analisar a resposta do servidor (por favor verificar configurações)</string>
   <string name="error_daemonnotconnected">A interface web não se encontra ligada a um serviço de execução</string>
   <string name="error_401">Acesso recusado (por favor verificar as configurações)</string>
-  <string name="error_torrentfile">Não foi possível ler o arquivo .torrent</string>
+  <string name="error_torrentfile">Não foi possível ler o ficheiro .torrent</string>
   <string name="error_parsingrss">Erro ao analisar o feed RSS</string>
   <string name="error_invalid_url_form">Este URL não está bem formatado</string>
-  <string name="error_invalid_search_url">O endereço pesquisa é inválido:</string>
-  <string name="error_invalid_ip_or_hostname">Entrada não é um domínio ou endereço de IP válidos</string>
-  <string name="error_invalid_port_number">O número da porto é sempre numérico</string>
+  <string name="error_invalid_search_url">O endereço de pesquisa é inválido:</string>
+  <string name="error_invalid_ip_or_hostname">Entrada não é um domínio ou endereço de IP válido</string>
+  <string name="error_invalid_port_number">O número do porto é sempre numérico</string>
   <string name="error_invalid_directory">Caminhos de diretório terminam com um / ou \</string>
-  <string name="error_invalid_timeout">O tempo de expiração não pode ser vazio e é um número positivo</string>
-  <string name="error_notorrentfile">O resultado da pesquisa não aponta para um arquivo .torrent</string>
-  <string name="error_no_url_enclosure">O item do feed RSS não contém ligações para o arquivo .torrent</string>
+  <string name="error_invalid_timeout">O tempo de expiração não pode estar vazio e é um número positivo</string>
+  <string name="error_notorrentfile">O resultado da pesquisa não aponta para um ficheiro .torrent</string>
+  <string name="error_no_url_enclosure">O item do feed RSS não contém ligações para o ficheiro .torrent</string>
   <string name="error_no_link">O feed RSS item não contém um link para ser aberto</string>
-  <string name="error_norssfeed">O URL não é um feed  RSS válido</string>
+  <string name="error_norssfeed">O URL não é um feed RSS válido</string>
   <string name="error_media_not_available">Cartão SD não disponível para leitura/escrita</string>
-  <string name="error_no_valid_settings_file">Arquivo parece não conter configurações para %1$s</string>
+  <string name="error_no_valid_settings_file">Ficheiro não parece conter configurações para %1$s</string>
   <string name="error_file_not_found">Não foi encontrado o ficheiro de configurações</string>
-  <string name="error_cant_write_settings_file">Não foi possível gravar o arquivo de configurações</string>
+  <string name="error_cant_write_settings_file">Não foi possível gravar o ficheiro de configurações</string>
   <string name="error_notanumber">Introduza um número positivo</string>
   <string name="error_notalabel">Por favor, insira uma etiqueta válida ou escolha uma da lista</string>
   <string name="error_stillloadingdetails">Por favor, aguarde até serem carregados os detalhes do torrent</string>
   <string name="error_noftpapp">Não foi encontrada nenhuma app para transferir %1$s</string>
-  <string name="update_app_newversion">Disponível nova versão do Transdroid </string>
+  <string name="update_app_newversion">Disponível nova versão do Transdroid</string>
   <string name="update_search_newversion">Disponível novo módulo de pesquisa do Transdroid</string>
-  <string name="update_updateto">Já pode actualizar para %1$s</string>
+  <string name="update_updateto">Já pode atualizar para %1$s</string>
   <string name="system_librarieslabel">Algum código/bibliotecas são usadas no projeto:</string>
-  <string name="system_description">Faça a gestão dos seus torrents a partir do Android</string>
+  <string name="system_description">Faça a gestão dos seus torrents a partir do seu dispositivo Android</string>
 </resources>
