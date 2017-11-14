@@ -17,6 +17,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.transdroid.daemon.util.HttpHelper;
 import org.transdroid.daemon.util.TlsSniSocketFactory;
 import org.xml.sax.Attributes;
@@ -137,6 +138,7 @@ public class RssParser extends DefaultHandler {
 		HttpParams httpparams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpparams, 5000);
 		HttpConnectionParams.setSoTimeout(httpparams, 5000);
+		HttpProtocolParams.setUserAgent(httpparams, HttpHelper.userAgent);
 		DefaultHttpClient httpclient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpparams, registry),
 				httpparams);
 
