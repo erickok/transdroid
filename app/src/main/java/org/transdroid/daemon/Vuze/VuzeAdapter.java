@@ -105,6 +105,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 					String file = ((AddByFileTask)task).getFile();
 					in = new FileInputStream(new File(URI.create(file)));
 					bytes = new byte[in.available()];
+					//noinspection ResultOfMethodCallIgnored All bytes read at once, so no need to check result
 					in.read(bytes, 0, in.available());
 					in.close();
 				} catch (FileNotFoundException e) {

@@ -16,6 +16,7 @@
  */
 package org.transdroid.core.widget;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -178,6 +179,7 @@ public class ListWidgetConfigActivity extends AppCompatActivity {
 		if (getSupportActionBar() != null) {
 			getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 					ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+			@SuppressLint("InflateParams") // Uses local activity theme correctly, so missing the inflation parent is okay
 			View doneButtonFrame = getLayoutInflater().inflate(R.layout.actionbar_donebutton, null);
 			doneButtonFrame.findViewById(R.id.actionbar_done).setOnClickListener(doneClicked);
 			getSupportActionBar().setCustomView(doneButtonFrame);
