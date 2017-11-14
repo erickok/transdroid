@@ -69,6 +69,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -457,6 +458,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			long size;
 			int dlspeed;
 			int upspeed;
+			Date addedOn = null;
+			Date completionOn = null;
 
 			if (apiVersion >= 2) {
 				leechers = new int[2];
@@ -469,6 +472,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				ratio = tor.getDouble("ratio");
 				dlspeed = tor.getInt("dlspeed");
 				upspeed = tor.getInt("upspeed");
+				addedOn = new Date(tor.getLong("added_on") * 1000L);
+				completionOn = new Date(tor.getLong("completion_on") * 1000L);
 			} else {
 				leechers = parsePeers(tor.getString("num_leechs"));
 				seeders = parsePeers(tor.getString("num_seeds"));
@@ -481,7 +486,6 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			long eta = -1L;
 			if (dlspeed > 0)
 				eta = (long) (size - (size * progress)) / dlspeed;
-			// Date added is only available in /json/propertiesGeneral on a per-torrent basis, unfortunately
 			// Add the parsed torrent to the list
 			// @formatter:off
 			torrents.add(new Torrent(
@@ -503,8 +507,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					(float) progress,
 					0f,
 					null,
-					null,
-					null,
+					addedOn,
+					completionOn,
 					null,
 					settings.getType()));
 			// @formatter:on
@@ -594,7 +598,9 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 	private TorrentStatus parseStatus(String state) {
 		// Status is given as a descriptive string
-		if (state.equals("downloading")) {
+		if (state.equals("error")) {
+			return TorrentStatus.Error;
+		} else if (state.equals("downloading")) {
 			return TorrentStatus.Downloading;
 		} else if (state.equals("uploading")) {
 			return TorrentStatus.Seeding;

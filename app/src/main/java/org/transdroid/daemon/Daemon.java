@@ -340,7 +340,7 @@ public enum Daemon {
 	}
 	
 	public static boolean supportsDateAdded(Daemon type) {
-		return type == Vuze || type == Transmission || type == rTorrent || type == Bitflu || type == BitComet || type == uTorrent || type == BitTorrent || type == Deluge || type == Dummy;
+		return type == Vuze || type == Transmission || type == rTorrent || type == Bitflu || type == BitComet || type == uTorrent || type == BitTorrent || type == Deluge || type == qBittorrent || type == Dummy;
 	}
 
 	public static boolean supportsLabels(Daemon type) {
