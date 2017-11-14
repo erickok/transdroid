@@ -548,7 +548,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				}
 				String urlBase = currentServerSettings.getFtpUrl();
 				if (urlBase == null || urlBase.equals("")) {
-					urlBase = "ftp://" + currentServerSettings.getAddress();
+					urlBase = "ftp://" + currentServerSettings.getAddress() + "/";
 				}
 
 				// Try using AndFTP intents
