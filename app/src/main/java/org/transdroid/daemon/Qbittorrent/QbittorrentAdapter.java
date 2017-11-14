@@ -53,6 +53,8 @@ import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
+import org.transdroid.daemon.task.GetStatsTask;
+import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
@@ -300,6 +302,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					return new DaemonTaskSuccessResult(task);
 
                 case ForceRecheck:
+
                     // Force recheck a torrent
                     makeRequest(log, "/command/recheck", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
                     return new DaemonTaskSuccessResult(task);
@@ -317,6 +320,23 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					prefs.put("dl_limit", dl);
 					prefs.put("up_limit", ul);
 					makeRequest(log, "/command/setPreferences", new BasicNameValuePair("json", URLEncoder.encode(prefs.toString(), HTTP.UTF_8)));
+					return new DaemonTaskSuccessResult(task);
+
+				case GetStats:
+
+					// Refresh alternative download speeds setting
+					JSONObject stats = new JSONObject(makeRequest(log, "/sync/maindata?rid=0"));
+					JSONObject serverStats = stats.optJSONObject("server_state");
+					boolean alternativeSpeeds = false;
+					if (serverStats != null) {
+						alternativeSpeeds = serverStats.optBoolean("use_alt_speed_limits");
+					}
+					return new GetStatsTaskSuccessResult((GetStatsTask) task, !alternativeSpeeds, -1);
+
+				case SetAlternativeMode:
+
+					// Flip alternative speed mode
+					makeRequest(log, "/command/toggleAlternativeSpeedLimits");
 					return new DaemonTaskSuccessResult(task);
 
 				default:

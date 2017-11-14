@@ -283,7 +283,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsStats(Daemon type) {
-		return type == Transmission || type == Bitflu || type == Dummy;
+		return type == Transmission || type == qBittorrent || type == Dummy;
 	}
 
 	public static boolean supportsAvailability(Daemon type) {
@@ -356,7 +356,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsSetAlternativeMode(Daemon type) {
-		return type == Transmission || type == Dummy;
+		return type == Transmission || type == qBittorrent || type == Dummy;
 	}
 
 	public static boolean supportsSetTrackers(Daemon type) {

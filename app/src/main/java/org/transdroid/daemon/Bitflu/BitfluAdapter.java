@@ -41,8 +41,6 @@ import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
-import org.transdroid.daemon.task.GetStatsTask;
-import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
@@ -93,8 +91,6 @@ public class BitfluAdapter implements IDaemonAdapter {
 					JSONObject result = makeBitfluRequest(log, RPC_TORRENT_LIST);
 					return new RetrieveTaskSuccessResult((RetrieveTask) task,
 							parseJsonRetrieveTorrents(result.getJSONArray(JSON_ROOT)), null);
-				case GetStats:
-					return new GetStatsTaskSuccessResult((GetStatsTask) task, false, -1);
 				case Pause:
 					makeBitfluRequest(log, RPC_PAUSE_TORRENT + task.getTargetTorrent().getUniqueID());
 					return new DaemonTaskSuccessResult(task);
