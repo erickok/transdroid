@@ -28,6 +28,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -555,7 +556,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 			// Set POST URL and data
 			HttpPost httppost = new HttpPost(buildWebUIUrl() + PATH_TO_RPC);
 			httppost.setHeader("content-type", "application/json");
-			StringEntity se = new StringEntity(data.toString());
+			StringEntity se = new StringEntity(data.toString(), HTTP.UTF_8);
 			httppost.setEntity(se);
 
 			// Set session cookie, if it was not in the httpclient object yet
