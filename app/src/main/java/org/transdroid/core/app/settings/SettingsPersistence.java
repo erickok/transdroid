@@ -319,8 +319,8 @@ public class SettingsPersistence {
 			feed.put("url", prefs.getString("rssfeed_url_" + postfixk, null));
 			feed.put("needs_auth", prefs.getBoolean("rssfeed_reqauth_" + postfixk, false));
 			feed.put("new_item_alarm", prefs.getBoolean("rssfeed_alarmnew_" + postfixk, false));
-			feed.put("alarm_filter_exclude", prefs.getString("server_alarmexclude_" + postfixk, null));
-			feed.put("alarm_filter_include", prefs.getString("server_alarminclude_" + postfixk, null));
+			feed.put("alarm_filter_exclude", prefs.getString("rssfeed_exclude_" + postfixk, null));
+			feed.put("alarm_filter_include", prefs.getString("rssfeed_include_" + postfixk, null));
 			feed.put("last_seen_time", prefs.getLong("rssfeed_lastviewed_" + postfixk, -1));
 			feed.put("last_seen_item", prefs.getString("rssfeed_lastvieweditemurl_" + postfixk, null));
 
