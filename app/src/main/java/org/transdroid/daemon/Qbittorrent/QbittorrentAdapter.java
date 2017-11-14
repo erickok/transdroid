@@ -415,7 +415,12 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	 * @return The URL to request
 	 */
 	private String buildWebUIUrl(String path) {
-		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + path;
+		String proxyFolder = settings.getFolder();
+		if (proxyFolder == null)
+			proxyFolder = "";
+		else if (proxyFolder.endsWith("/"))
+			proxyFolder = proxyFolder.substring(0, proxyFolder.length() - 1);
+		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + proxyFolder + path;
 	}
 
 	private TorrentDetails parseJsonTorrentDetails(JSONArray messages) throws JSONException {
