@@ -1054,6 +1054,11 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			url = URLDecoder.decode(url, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// Ignore: UTF-8 is always available on Android devices
+		} catch (IllegalArgumentException e) {
+			// Illegal character or escape sequence; fail task to show error
+			onCommunicationError(new DaemonTaskFailureResult(AddByMagnetUrlTask.create(currentConnection, url),
+					new DaemonException(DaemonException.ExceptionType.FileAccessError, "Invalid characters in magnet link")), false);
+			return;
 		}
 
 		AddByMagnetUrlTask addByMagnetUrlTask = AddByMagnetUrlTask.create(currentConnection, url);
