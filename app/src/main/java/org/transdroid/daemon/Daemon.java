@@ -344,7 +344,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsLabels(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == Deluge || type == BitComet || type == rTorrent || type == Dummy;
+		return type == uTorrent || type == BitTorrent || type == Deluge || type == BitComet || type == rTorrent || type == qBittorrent || type == Dummy;
 	}
 
 	public static boolean supportsSetLabel(Daemon type) {

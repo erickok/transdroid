@@ -39,6 +39,7 @@ import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.Label;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
@@ -61,6 +62,7 @@ import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetFilePriorityTask;
+import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.HttpHelper;
 
@@ -72,7 +74,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The daemon adapter for the qBittorrent torrent client.
@@ -211,7 +215,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 					// Request all torrents from server
 					JSONArray result = new JSONArray(makeRequest(log, path));
-					return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result), null);
+					return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result), parseJsonLabels(result));
 
 				case GetTorrentDetails:
 
@@ -306,6 +310,15 @@ public class QbittorrentAdapter implements IDaemonAdapter {
                     // Force recheck a torrent
                     makeRequest(log, "/command/recheck", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
                     return new DaemonTaskSuccessResult(task);
+
+				case SetLabel:
+
+					// TODO: This doesn't seem to work yet
+					SetLabelTask labelTask = (SetLabelTask) task;
+					makeRequest(log, "/command/setCategory",
+							new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()),
+							new BasicNameValuePair("category", labelTask.getNewLabel()));
+					return new DaemonTaskSuccessResult(task);
 
 				case SetTransferRates:
 
@@ -465,6 +478,24 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 	}
 
+	private List<Label> parseJsonLabels(JSONArray response) throws JSONException {
+
+		// Collect used labels from response
+		Map<String, Label> labels = new HashMap<>();
+		for (int i = 0; i < response.length(); i++) {
+			JSONObject tor = response.getJSONObject(i);
+			if (apiVersion >= 2) {
+				String label = tor.optString("category");
+				if (label != null && label.length() > 0) {
+					final Label labelObject = labels.get(label);
+					labels.put(label, new Label(label, (labelObject != null) ? labelObject.getCount() + 1 : 1));
+				}
+			}
+		}
+		return new ArrayList<>(labels.values());
+
+	}
+
 	private ArrayList<Torrent> parseJsonTorrents(JSONArray response) throws JSONException {
 
 		// Parse response
@@ -480,6 +511,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			int upspeed;
 			Date addedOn = null;
 			Date completionOn = null;
+			String label = null;
 
 			if (apiVersion >= 2) {
 				leechers = new int[2];
@@ -492,8 +524,14 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				ratio = tor.getDouble("ratio");
 				dlspeed = tor.getInt("dlspeed");
 				upspeed = tor.getInt("upspeed");
-				addedOn = new Date(tor.getLong("added_on") * 1000L);
-				completionOn = new Date(tor.getLong("completion_on") * 1000L);
+				final long addedOnTime = tor.optLong("added_on");
+				addedOn = (addedOnTime > 0) ? new Date(addedOnTime * 1000L) : null;
+				final long completionOnTime = tor.optLong("completion_on");
+				completionOn = (completionOnTime > 0) ? new Date(completionOnTime * 1000L) : null;
+				label = tor.optString("category");
+				if (label.length() == 0) {
+					label = null;
+				}
 			} else {
 				leechers = parsePeers(tor.getString("num_leechs"));
 				seeders = parsePeers(tor.getString("num_seeds"));
@@ -526,7 +564,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					size,
 					(float) progress,
 					0f,
-					null,
+					label,
 					addedOn,
 					completionOn,
 					null,
