@@ -319,7 +319,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsSetTransferRates(Daemon type) {
-		return type == Deluge || type == Transmission || type == uTorrent || type == BitTorrent || type == rTorrent || type == Vuze || type == BuffaloNas || type == BitComet || type == Aria2 || type == Dummy;
+		return type == Deluge || type == Transmission || type == uTorrent || type == BitTorrent || type == rTorrent || type == Vuze || type == BuffaloNas || type == BitComet || type == Aria2 || type == qBittorrent || type == Dummy;
 	}
 
 	public static boolean supportsAddByFile(Daemon type) {

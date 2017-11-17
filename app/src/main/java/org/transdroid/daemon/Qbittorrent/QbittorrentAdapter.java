@@ -70,7 +70,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -321,17 +320,13 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 				case SetTransferRates:
 
-					// TODO: This doesn't seem to work yet
 					// Request to set the maximum transfer rates
 					SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
-					int dl = (ratesTask.getDownloadRate() == null ? -1 : ratesTask.getDownloadRate());
-					int ul = (ratesTask.getUploadRate() == null ? -1 : ratesTask.getUploadRate());
+					String dl = (ratesTask.getDownloadRate() == null ? "NaN" : Long.toString(ratesTask.getDownloadRate() * 1024));
+					String ul = (ratesTask.getUploadRate() == null ? "NaN" : Long.toString(ratesTask.getUploadRate() * 1024));
 
-					// First get the preferences
-					JSONObject prefs = new JSONObject(makeRequest(log, "/json/preferences"));
-					prefs.put("dl_limit", dl);
-					prefs.put("up_limit", ul);
-					makeRequest(log, "/command/setPreferences", new BasicNameValuePair("json", URLEncoder.encode(prefs.toString(), HTTP.UTF_8)));
+					makeRequest(log, "/command/setGlobalDlLimit", new BasicNameValuePair("limit", dl));
+					makeRequest(log, "/command/setGlobalUpLimit", new BasicNameValuePair("limit", ul));
 					return new DaemonTaskSuccessResult(task);
 
 				case GetStats:
@@ -359,8 +354,6 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
-		} catch (UnsupportedEncodingException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
 		}
 	}
 
@@ -684,7 +677,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	private ArrayList<TorrentFile> parseJsonFiles(JSONArray response) throws JSONException {
 
 		// Parse response
-		ArrayList<TorrentFile> torrentfiles = new ArrayList<TorrentFile>();
+		ArrayList<TorrentFile> torrentfiles = new ArrayList<>();
 		for (int i = 0; i < response.length(); i++) {
 			JSONObject file = response.getJSONObject(i);
 
