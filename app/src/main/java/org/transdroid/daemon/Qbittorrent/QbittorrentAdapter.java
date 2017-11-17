@@ -650,13 +650,13 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		// Status is given as a descriptive string
 		if (state.equals("error")) {
 			return TorrentStatus.Error;
-		} else if (state.equals("downloading")) {
+		} else if (state.equals("downloading") || state.equals("metaDL")) {
 			return TorrentStatus.Downloading;
 		} else if (state.equals("uploading")) {
 			return TorrentStatus.Seeding;
 		} else if (state.equals("pausedDL")) {
 			return TorrentStatus.Paused;
-		} else if (state.equals("pausedUL")) {
+		} else if (state.equals("pausedUP")) {
 			return TorrentStatus.Paused;
 		} else if (state.equals("stalledUP")) {
 			return TorrentStatus.Seeding;
@@ -668,7 +668,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			return TorrentStatus.Checking;
 		} else if (state.equals("queuedDL")) {
 			return TorrentStatus.Queued;
-		} else if (state.equals("queuedUL")) {
+		} else if (state.equals("queuedUP")) {
 			return TorrentStatus.Queued;
 		}
 		return TorrentStatus.Unknown;
