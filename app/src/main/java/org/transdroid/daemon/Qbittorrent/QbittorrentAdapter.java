@@ -313,10 +313,9 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 				case SetLabel:
 
-					// TODO: This doesn't seem to work yet
 					SetLabelTask labelTask = (SetLabelTask) task;
 					makeRequest(log, "/command/setCategory",
-							new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()),
+							new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()),
 							new BasicNameValuePair("category", labelTask.getNewLabel()));
 					return new DaemonTaskSuccessResult(task);
 
@@ -344,7 +343,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					if (serverStats != null) {
 						alternativeSpeeds = serverStats.optBoolean("use_alt_speed_limits");
 					}
-					return new GetStatsTaskSuccessResult((GetStatsTask) task, !alternativeSpeeds, -1);
+					return new GetStatsTaskSuccessResult((GetStatsTask) task, alternativeSpeeds, -1);
 
 				case SetAlternativeMode:
 
