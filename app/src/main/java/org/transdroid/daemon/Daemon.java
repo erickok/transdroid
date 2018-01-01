@@ -275,7 +275,7 @@ public enum Daemon {
         	return 8112;
 
         case DelugeDirect:
-        	return 8112;
+        	return DelugeDirectAdapter.DEFAULT_PORT;
 
         case Synology:
         	if (ssl) {

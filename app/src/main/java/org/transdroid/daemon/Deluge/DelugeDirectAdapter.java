@@ -17,21 +17,28 @@
  */
 package org.transdroid.daemon.Deluge;
 
-import com.android.internalcopy.http.multipart.FilePart;
-import com.android.internalcopy.http.multipart.MultipartEntity;
-import com.android.internalcopy.http.multipart.Part;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import deluge.impl.net.AcceptAllTrustManager;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterInputStream;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
@@ -44,833 +51,519 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.task.AddByFileTask;
-import org.transdroid.daemon.task.AddByMagnetUrlTask;
-import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
-import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
-import org.transdroid.daemon.task.PauseTask;
-import org.transdroid.daemon.task.RemoveTask;
-import org.transdroid.daemon.task.ResumeTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
-import org.transdroid.daemon.task.SetDownloadLocationTask;
-import org.transdroid.daemon.task.SetFilePriorityTask;
-import org.transdroid.daemon.task.SetLabelTask;
-import org.transdroid.daemon.task.SetTrackersTask;
-import org.transdroid.daemon.task.SetTransferRatesTask;
-import org.transdroid.daemon.util.HttpHelper;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import deluge.api.DelugeFuture;
-import deluge.api.response.TorrentsStatusResponse;
-import deluge.impl.DelugeClient;
-import deluge.impl.DelugeSession;
-import deluge.impl.net.TorrentField;
+import se.dimovski.rencode.Rencode;
 
 /**
  * The daemon adapter from the Deluge torrent client using deluged API directly.
+ *
  * @author alon.albert
  */
 public class DelugeDirectAdapter implements IDaemonAdapter {
 
-	private static final String LOG_NAME = "Deluge daemon";
-
-	private static final String PATH_TO_RPC = "/json";
-	private static final String PATH_TO_UPLOAD = "/upload";
-
-	private static final String RPC_ID = "id";
-	private static final String RPC_METHOD = "method";
-	private static final String RPC_PARAMS = "params";
-	private static final String RPC_RESULT = "result";
-	private static final String RPC_TORRENTS = "torrents";
-	private static final String RPC_FILE = "file";
-	private static final String RPC_FILES = "files";
-	private static final String RPC_SESSION_ID = "_session_id";
-
-	private static final String RPC_METHOD_LOGIN = "auth.login";
-	private static final String RPC_METHOD_GET = "web.update_ui";
-	private static final String RPC_METHOD_STATUS = "core.get_torrent_status";
-	private static final String RPC_METHOD_ADD = "core.add_torrent_url";
-	private static final String RPC_METHOD_ADD_MAGNET = "core.add_torrent_magnet";
-	private static final String RPC_METHOD_ADD_FILE = "web.add_torrents";
-	private static final String RPC_METHOD_REMOVE = "core.remove_torrent";
-	private static final String RPC_METHOD_PAUSE = "core.pause_torrent";
-	private static final String RPC_METHOD_PAUSE_ALL = "core.pause_all_torrents";
-	private static final String RPC_METHOD_RESUME = "core.resume_torrent";
-	private static final String RPC_METHOD_RESUME_ALL = "core.resume_all_torrents";
-	private static final String RPC_METHOD_SETCONFIG = "core.set_config";
-	private static final String RPC_METHOD_SETFILE = "core.set_torrent_file_priorities";
-	//private static final String RPC_METHOD_SETOPTIONS = "core.set_torrent_options";
-	private static final String RPC_METHOD_MOVESTORAGE = "core.move_storage";
-	private static final String RPC_METHOD_SETTRACKERS = "core.set_torrent_trackers";
-	private static final String RPC_METHOD_FORCERECHECK = "core.force_recheck";
-	private static final String RPC_METHOD_SETLABEL = "label.set_torrent";
-
-	private static final String RPC_NAME = "name";
-	private static final String RPC_STATUS = "state";
-	private static final String RPC_MESSAGE = "message";
-	private static final String RPC_SAVEPATH = "save_path";
-	private static final String RPC_MAXDOWNLOAD = "max_download_speed";
-	private static final String RPC_MAXUPLOAD = "max_upload_speed";
-
-	private static final String RPC_RATEDOWNLOAD = "download_payload_rate";
-	private static final String RPC_RATEUPLOAD = "upload_payload_rate";
-	private static final String RPC_NUMSEEDS = "num_seeds";
-	private static final String RPC_TOTALSEEDS = "total_seeds";
-	private static final String RPC_NUMPEERS = "num_peers";
-	private static final String RPC_TOTALPEERS = "total_peers";
-	private static final String RPC_ETA = "eta";
-	private static final String RPC_TIMEADDED = "time_added";
-
-	private static final String RPC_DOWNLOADEDEVER = "total_done";
-	private static final String RPC_UPLOADEDEVER = "total_uploaded";
-	private static final String RPC_TOTALSIZE = "total_size";
-	private static final String RPC_PARTDONE = "progress";
-	private static final String RPC_LABEL = "label";
-	private static final String RPC_TRACKERS = "trackers";
-	private static final String RPC_TRACKER_STATUS = "tracker_status";
-	private static final TorrentField[] RETREIVE_FIELDS = new TorrentField[] {
-		TorrentField.NAME,
-		TorrentField.STATE,
-		TorrentField.SAVE_PATH,
-		TorrentField.DOWNLOAD_PAYLOAD_RATE,
-		TorrentField.UPLOAD_PAYLOAD_RATE,
-		TorrentField.NUM_PEERS,
-		TorrentField.NUM_SEEDS,
-		TorrentField.TOTAL_PEERS,
-		TorrentField.TOTAL_SEEDS,
-		TorrentField.ETA,
-		TorrentField.TOTAL_DONE,
-		TorrentField.TOTAL_UPLOADED,
-		TorrentField.TOTAL_SIZE,
-		TorrentField.PROGRESS,
-		TorrentField.LABEL,
-		TorrentField.MESSAGE,
-		TorrentField.TIME_ADDED,
-		TorrentField.TRACKER_STATUS,
-	};
-	private static final String[] RPC_FIELDS_ARRAY =
-			new String[]{RPC_NAME, RPC_STATUS, RPC_SAVEPATH, RPC_RATEDOWNLOAD, RPC_RATEUPLOAD, RPC_NUMPEERS,
-					RPC_NUMSEEDS, RPC_TOTALPEERS, RPC_TOTALSEEDS, RPC_ETA, RPC_DOWNLOADEDEVER, RPC_UPLOADEDEVER,
-					RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL, RPC_MESSAGE, RPC_TIMEADDED, RPC_TRACKER_STATUS};
-	private static final String RPC_DETAILS = "files";
-	private static final String RPC_INDEX = "index";
-	private static final String RPC_PATH = "path";
-	private static final String RPC_SIZE = "size";
-	private static final String RPC_FILEPROGRESS = "file_progress";
-	private static final String RPC_FILEPRIORITIES = "file_priorities";
-	private DaemonSettings settings;
-	private DefaultHttpClient httpclient;
-	private DelugeSession delugeSession;
-	private Cookie sessionCookie;
-	private int version = -1;
-
-	public DelugeDirectAdapter(DaemonSettings settings) {
-		this.settings = settings;
-	}
-
-	public JSONArray addTorrentByFile(String file, Log log) throws JSONException, IOException, DaemonException {
-
-		String url = buildWebUIUrl() + PATH_TO_UPLOAD;
-
-		log.d(LOG_NAME, "Uploading a file to the Deluge daemon: " + url);
-
-		// Initialise the HTTP client
-		if (httpclient == null) {
-			initialise();
-		}
-
-		// Setup client using POST
-		HttpPost httppost = new HttpPost(url);
-		File upload = new File(URI.create(file));
-		Part[] parts = {new FilePart(RPC_FILE, upload)};
-		httppost.setEntity(new MultipartEntity(parts, httppost.getParams()));
-
-		// Make request
-		HttpResponse response = httpclient.execute(httppost);
-
-		// Read JSON response
-		InputStream instream = response.getEntity().getContent();
-		String result = HttpHelper.convertStreamToString(instream);
-
-		// If the upload succeeded, add the torrent file on the server
-		// For this we need the file name, which is now send as a JSON object like:
-		// {"files": ["/tmp/delugeweb/tmp00000.torrent"], "success": true}
-		String remoteFile = (new JSONObject(result)).getJSONArray(RPC_FILES).getString(0);
-		JSONArray params = new JSONArray();
-		JSONArray files = new JSONArray();
-		JSONObject fileu = new JSONObject();
-		fileu.put("path", remoteFile);
-		fileu.put("options", new JSONArray());
-		files.put(fileu);
-		params.put(files);
-
-		return params;
-
-	}
-
-	@Override
-	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
-
-		try {
-			ensureVersion(log);
-
-			JSONArray params = new JSONArray();
-
-			// Array of the fields needed for files listing calls
-			JSONArray ffields = new JSONArray();
-			ffields.put(RPC_DETAILS);
-			ffields.put(RPC_FILEPROGRESS);
-			ffields.put(RPC_FILEPRIORITIES);
-
-			switch (task.getMethod()) {
-				case Retrieve:
-					final TorrentsStatusResponse torrents = delugeSession.getTorrentsStatus(null, RETREIVE_FIELDS).get();
-					int id = 0;
-					for (Map.Entry<String, Map<String, Object>> entry : torrents.getReturnValue().entrySet()) {
-						final String hash = entry.getKey();
-						final Map<String, Object> values = entry.getValue();
-						new Torrent(
-							id,
-							hash,
-							(String) values.get(TorrentField.NAME.toString()),
-
-
-
-
-
-						)
-					}
-					torrents.get().getReturnValue()
-					return new RetrieveTaskSuccessResult((RetrieveTask) task,
-							parseJsonRetrieveTorrents(result.getJSONObject(RPC_RESULT)),
-							parseJsonRetrieveLabels(result.getJSONObject(RPC_RESULT)));
-
-				case GetTorrentDetails:
-
-					// Array of the fields needed for files listing calls
-					JSONArray dfields = new JSONArray();
-					dfields.put(RPC_TRACKERS);
-					dfields.put(RPC_TRACKER_STATUS);
-
-					// Request file listing of a torrent
-					params.put(task.getTargetTorrent().getUniqueID()); // torrent_id
-					params.put(dfields); // keys
-
-					JSONObject dinfo = makeRequest(buildRequest(RPC_METHOD_STATUS, params), log);
-					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
-							parseJsonTorrentDetails(dinfo.getJSONObject(RPC_RESULT)));
-
-				case GetFileList:
-
-					// Request file listing of a torrent
-					params.put(task.getTargetTorrent().getUniqueID()); // torrent_id
-					params.put(ffields); // keys
-
-					JSONObject finfo = makeRequest(buildRequest(RPC_METHOD_STATUS, params), log);
-					return new GetFileListTaskSuccessResult((GetFileListTask) task,
-							parseJsonFileListing(finfo.getJSONObject(RPC_RESULT), task.getTargetTorrent()));
-
-				case AddByFile:
-
-					// Request to add a torrent by local .torrent file
-					String file = ((AddByFileTask) task).getFile();
-					makeRequest(buildRequest(RPC_METHOD_ADD_FILE, addTorrentByFile(file, log)), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case AddByUrl:
-
-					// Request to add a torrent by URL
-					String url = ((AddByUrlTask) task).getUrl();
-					params.put(url);
-					params.put(new JSONArray());
-
-					makeRequest(buildRequest(RPC_METHOD_ADD, params), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case AddByMagnetUrl:
-
-					// Request to add a magnet link by URL
-					String magnet = ((AddByMagnetUrlTask) task).getUrl();
-					params.put(magnet);
-					params.put(new JSONArray());
-
-					makeRequest(buildRequest(RPC_METHOD_ADD_MAGNET, params), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case Remove:
-
-					// Remove a torrent
-					RemoveTask removeTask = (RemoveTask) task;
-					params.put(removeTask.getTargetTorrent().getUniqueID());
-					params.put(removeTask.includingData());
-					makeRequest(buildRequest(RPC_METHOD_REMOVE, params), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case Pause:
-
-					// Pause a torrent
-					PauseTask pauseTask = (PauseTask) task;
-					makeRequest(buildRequest(RPC_METHOD_PAUSE, ((new JSONArray())
-									.put((new JSONArray()).put(pauseTask.getTargetTorrent().getUniqueID())))), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case PauseAll:
-
-					// Resume all torrents
-					makeRequest(buildRequest(RPC_METHOD_PAUSE_ALL, null), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case Resume:
-
-					// Resume a torrent
-					ResumeTask resumeTask = (ResumeTask) task;
-					makeRequest(buildRequest(RPC_METHOD_RESUME, ((new JSONArray())
-									.put((new JSONArray()).put(resumeTask.getTargetTorrent().getUniqueID())))), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case ResumeAll:
-
-					// Resume all torrents
-					makeRequest(buildRequest(RPC_METHOD_RESUME_ALL, null), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case SetFilePriorities:
-
-					// Set the priorities of files in a specific torrent
-					SetFilePriorityTask prioTask = (SetFilePriorityTask) task;
-
-					// We first need a listing of all the files (because we can only set the priorities all at once)
-					params.put(task.getTargetTorrent().getUniqueID()); // torrent_id
-					params.put(ffields); // keys
-					JSONObject pinfo = makeRequest(buildRequest(RPC_METHOD_STATUS, params), log);
-					ArrayList<TorrentFile> pfiles =
-							parseJsonFileListing(pinfo.getJSONObject(RPC_RESULT), prioTask.getTargetTorrent());
-
-					// Now prepare the new list of priorities
-					params = new JSONArray();
-					params.put(task.getTargetTorrent().getUniqueID()); // torrent_id
-					JSONArray pfields = new JSONArray();
-					// Override the priorities in the just retrieved list of all files
-					for (TorrentFile pfile : pfiles) {
-						Priority newPriority = pfile.getPriority();
-						for (TorrentFile forFile : prioTask.getForFiles()) {
-							if (forFile.getKey().equals(pfile.getKey())) {
-								// This is a file that we want to assign a new priority to
-								newPriority = prioTask.getNewPriority();
-								break;
-							}
-						}
-						pfields.put(convertPriority(newPriority));
-					}
-					params.put(pfields); // keys
-
-					// Make a single call to set the priorities on all files at once
-					makeRequest(buildRequest(RPC_METHOD_SETFILE, params), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case SetDownloadLocation:
-
-					// Set the download location of some torrent
-					SetDownloadLocationTask sdlTask = (SetDownloadLocationTask) task;
-					// This works, but does not move the torrent
-					//makeRequest(buildRequest(RPC_METHOD_SETOPTIONS, buildSetTorrentOptions(
-					//		sdlTask.getTargetTorrent().getUniqueID(), RPC_DOWNLOADLOCATION, sdlTask.getNewLocation())));
-					params.put(new JSONArray().put(task.getTargetTorrent().getUniqueID()));
-					params.put(sdlTask.getNewLocation());
-					makeRequest(buildRequest(RPC_METHOD_MOVESTORAGE, params), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case SetTransferRates:
-
-					// Request to set the maximum transfer rates
-					SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
-					JSONObject map = new JSONObject();
-					map.put(RPC_MAXUPLOAD, (ratesTask.getUploadRate() == null ? -1 : ratesTask.getUploadRate()));
-					map.put(RPC_MAXDOWNLOAD, (ratesTask.getDownloadRate() == null ? -1 : ratesTask.getDownloadRate()));
-
-					makeRequest(buildRequest(RPC_METHOD_SETCONFIG, (new JSONArray()).put(map)), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case SetLabel:
-
-					// Request to set the label
-					SetLabelTask labelTask = (SetLabelTask) task;
-					params.put(task.getTargetTorrent().getUniqueID());
-					params.put(labelTask.getNewLabel() == null ? "" : labelTask.getNewLabel());
-					makeRequest(buildRequest(RPC_METHOD_SETLABEL, params), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case SetTrackers:
-
-					// Set the trackers of some torrent
-					SetTrackersTask trackersTask = (SetTrackersTask) task;
-					JSONArray trackers = new JSONArray();
-					// Build an JSON arrays of objcts that each have a tier (order) number and an url
-					for (int i = 0; i < trackersTask.getNewTrackers().size(); i++) {
-						JSONObject trackerObj = new JSONObject();
-						trackerObj.put("tier", i);
-						trackerObj.put("url", trackersTask.getNewTrackers().get(i));
-						trackers.put(trackerObj);
-					}
-					params.put(new JSONArray().put(task.getTargetTorrent().getUniqueID()));
-					params.put(trackers);
-					makeRequest(buildRequest(RPC_METHOD_SETTRACKERS, params), log);
-					return new DaemonTaskSuccessResult(task);
-
-				case ForceRecheck:
-
-					// Pause a torrent
-					makeRequest(buildRequest(RPC_METHOD_FORCERECHECK,
-							((new JSONArray()).put((new JSONArray()).put(task.getTargetTorrent().getUniqueID())))),
-							log);
-					return new DaemonTaskSuccessResult(task);
-
-				default:
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
-							task.getMethod() + " is not supported by " + getType()));
-			}
-		} catch (JSONException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
-		} catch (DaemonException e) {
-			return new DaemonTaskFailureResult(task, e);
-		} catch (FileNotFoundException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
-		} catch (IOException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
-		} catch (InterruptedException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/*private JSONArray buildSetTorrentOptions(String torrent, String key, String value) throws JSONException {
-		JSONArray params = new JSONArray();
-		params.put(new JSONArray().put(torrent)); // torrent_id
-		JSONObject sdlmap = new JSONObject();
-		// Set the option setting to the torrent
-		sdlmap.put(key, value);
-		params.put(sdlmap); // options
-		return params;
-	}*/
-
-	private void ensureVersion(Log log) throws DaemonException {
-		if (version > 0) {
-			return;
-		}
-		// We still need to retrieve the version number from the server
-		// Do this by getting the web interface main html page and trying to parse the version number
-		// Format is something like '<title>Deluge: Web UI 1.3.6</title>'
-		if (httpclient == null) {
-			initialise();
-		}
-		try {
-			HttpResponse response = httpclient.execute(new HttpGet(buildWebUIUrl() + "/"));
-			String main = HttpHelper.convertStreamToString(response.getEntity().getContent());
-			String titleStartText = "<title>Deluge: Web UI ";
-			String titleEndText = "</title>";
-			int titleStart = main.indexOf(titleStartText);
-			int titleEnd = main.indexOf(titleEndText, titleStart);
-			if (titleStart >= 0 && titleEnd > titleStart) {
-				// String found: now parse a version like 2.9.7 as a number like 20907 (allowing 10 places for each .)
-				String[] parts = main.substring(titleStart + titleStartText.length(), titleEnd).split("\\.");
-				if (parts.length > 0) {
-					version = Integer.parseInt(parts[0]) * 100 * 100;
-					if (parts.length > 1) {
-						version += Integer.parseInt(parts[1]) * 100;
-						if (parts.length > 2) {
-							// For the last part only read until a non-numeric character is read
-							// For example version 3.0.0-alpha5 is read as version code 30000
-							String numbers = "";
-							for (char c : parts[2].toCharArray()) {
-								if (Character.isDigit(c))
-								// Still a number; add it to the numbers string
-								{
-									numbers += Character.toString(c);
-								} else {
-									// No longer reading numbers; stop reading
-									break;
-								}
-							}
-							version += Integer.parseInt(numbers);
-							return;
-						}
-					}
-				}
-			}
-		} catch (NumberFormatException e) {
-			log.d(LOG_NAME, "Error parsing the Deluge version code as number: " + e.toString());
-			// Continue though, ignoring the version number
-		} catch (Exception e) {
-			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
-		}
-		// Unable to establish version number; assume an old version by setting it to version 1
-		version = 10000;
-	}
-
-	private JSONObject buildRequest(String sendMethod, JSONArray params) throws JSONException {
-
-		// Build request for method
-		JSONObject request = new JSONObject();
-		request.put(RPC_METHOD, sendMethod);
-		request.put(RPC_PARAMS, (params == null) ? new JSONArray() : params);
-		request.put(RPC_ID, 2);
-		return request;
-
-	}
-
-	private synchronized JSONObject makeRequest(JSONObject data, Log log) throws DaemonException {
-
-		try {
-
-			// Initialise the HTTP client
-			if (httpclient == null) {
-				initialise();
-			}
-
-			// Login first?
-			if (sessionCookie == null) {
-
-				// Build login object
-				String extraPass = settings.getExtraPassword();
-				if (extraPass == null) {
-					extraPass = "";
-				}
-				JSONObject loginRequest = new JSONObject();
-				loginRequest.put(RPC_METHOD, RPC_METHOD_LOGIN);
-				loginRequest.put(RPC_PARAMS, (new JSONArray()).put(extraPass));
-				loginRequest.put(RPC_ID, 1);
-
-				// Set POST URL and data
-				HttpPost httppost = new HttpPost(buildWebUIUrl() + PATH_TO_RPC);
-				httppost.setHeader("content-type", "application/json");
-				StringEntity se = new StringEntity(loginRequest.toString());
-				httppost.setEntity(se);
-
-				// Execute
-				HttpResponse response = httpclient.execute(httppost);
-				InputStream instream = response.getEntity().getContent();
-
-				// Retrieve session ID
-				if (!httpclient.getCookieStore().getCookies().isEmpty()) {
-					for (Cookie cookie : httpclient.getCookieStore().getCookies()) {
-						if (cookie.getName().equals(RPC_SESSION_ID)) {
-							sessionCookie = cookie;
-							break;
-						}
-					}
-				}
-
-				// Still no session cookie?
-				if (sessionCookie == null) {
-					// Set error message and cancel the action that was requested
-					throw new DaemonException(ExceptionType.AuthenticationFailure,
-							"Password error? Server time difference? No (valid) cookie in response and JSON was: " +
-									HttpHelper.convertStreamToString(instream));
-				}
-
-			}
-
-			// Regular action
-
-			// Set POST URL and data
-			HttpPost httppost = new HttpPost(buildWebUIUrl() + PATH_TO_RPC);
-			httppost.setHeader("content-type", "application/json");
-			StringEntity se = new StringEntity(data.toString(), HTTP.UTF_8);
-			httppost.setEntity(se);
-
-			// Set session cookie, if it was not in the httpclient object yet
-			boolean cookiePresent = false;
-			for (Cookie cookie : httpclient.getCookieStore().getCookies()) {
-				if (cookie.getName().equals(RPC_SESSION_ID)) {
-					cookiePresent = true;
-					break;
-				}
-			}
-			if (!cookiePresent) {
-				httpclient.getCookieStore().addCookie(sessionCookie);
-			}
-
-			// Execute
-			HttpResponse response = httpclient.execute(httppost);
-
-			HttpEntity entity = response.getEntity();
-			if (entity != null) {
-
-				// Read JSON response
-				InputStream instream = entity.getContent();
-				String result = HttpHelper.convertStreamToString(instream);
-				JSONObject json = new JSONObject(result);
-				instream.close();
-
-				log.d(LOG_NAME, "Success: " +
-						(result.length() > 300 ? result.substring(0, 300) + "... (" + result.length() + " chars)" :
-								result));
-
-				// Return JSON object
-				return json;
-
-			}
-
-			// No result?
-			throw new DaemonException(ExceptionType.UnexpectedResponse, "No HTTP entity in response object.");
-
-		} catch (JSONException e) {
-			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
-		} catch (Exception e) {
-			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
-		}
-
-	}
-
-	/**
-	 * Instantiates an HTTP client with proper credentials that can be used for all Transmission requests.
-	 * @throws DaemonException On missing settings
-	 */
-	private void initialise() throws DaemonException {
-
-		httpclient = HttpHelper.createStandardHttpClient(settings,
-				settings.getUsername() != null && !settings.getUsername().equals(""));
-		httpclient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
-		httpclient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
-
-	}
-
-	/**
-	 * Build the URL of the Transmission web UI from the user settings.
-	 * @return The URL of the RPC API
-	 */
-	private String buildWebUIUrl() {
-		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() +
-				(settings.getFolder() == null ? "" : settings.getFolder());
-	}
-
-	private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONObject response) throws JSONException, DaemonException {
-
-		// Parse response
-		ArrayList<Torrent> torrents = new ArrayList<Torrent>();
-		if (response.isNull(RPC_TORRENTS)) {
-			throw new DaemonException(ExceptionType.NotConnected,
-					"Web interface probably not connected to a daemon yet, because 'torrents' is null: " +
-							response.toString());
-		}
-		JSONObject objects = response.getJSONObject(RPC_TORRENTS);
-		JSONArray names = objects.names();
-		if (names != null) {
-			for (int j = 0; j < names.length(); j++) {
-
-				JSONObject tor = objects.getJSONObject(names.getString(j));
-				// Add the parsed torrent to the list
-				TorrentStatus status = convertDelugeState(tor.getString(RPC_STATUS));
-				String error = tor.getString(RPC_MESSAGE);
-				if (tor.getString(RPC_TRACKER_STATUS).indexOf("Error") > 0) {
-					error += (error.length() > 0 ? "\n" : "") + tor.getString(RPC_TRACKER_STATUS);
-					//status = TorrentStatus.Error; // Don't report this as blocking error
-				}
-				// @formatter:off
-				torrents.add(new Torrent(j,
-						names.getString(j),
-						tor.getString(RPC_NAME),
-						status,
-						tor.getString(RPC_SAVEPATH) + settings.getOS().getPathSeperator(),
-						tor.getInt(RPC_RATEDOWNLOAD),
-						tor.getInt(RPC_RATEUPLOAD),
-						tor.getInt(RPC_NUMSEEDS),
-						tor.getInt(RPC_TOTALSEEDS),
-						tor.getInt(RPC_NUMPEERS),
-						tor.getInt(RPC_TOTALPEERS),
-						tor.getInt(RPC_ETA),
-						tor.getLong(RPC_DOWNLOADEDEVER),
-						tor.getLong(RPC_UPLOADEDEVER),
-						tor.getLong(RPC_TOTALSIZE),
-						((float) tor.getDouble(RPC_PARTDONE)) / 100f, // Percentage to [0..1]
-						0f, // Not available
-						tor.has(RPC_LABEL)? tor.getString(RPC_LABEL): null,
-						tor.has(RPC_TIMEADDED)? new Date((long) (tor.getDouble(RPC_TIMEADDED) * 1000L)): null,
-						null, // Not available
-						error,
-						settings.getType()));
-				// @formatter:on
-			}
-		}
-
-		// Return the list
-		return torrents;
-
-	}
-
-	private ArrayList<Label> parseJsonRetrieveLabels(JSONObject response) throws JSONException {
-
-		// Get the labels, of they exist (which is dependent on the plugin)
-		if (!response.has("filters")) {
-			return null;
-		}
-		JSONObject filters = response.getJSONObject("filters");
-		if (!filters.has("label")) {
-			return null;
-		}
-		JSONArray labels = filters.getJSONArray("label");
-
-		// Parse response
-		ArrayList<Label> allLabels = new ArrayList<Label>();
-		for (int i = 0; i < labels.length(); i++) {
-			JSONArray labelAndCount = labels.getJSONArray(i);
-			if (labelAndCount.getString(0).equals("All")) {
-				continue; // Ignore the 'All' filter, which is not an actual label
-			}
-			allLabels.add(new Label(labelAndCount.getString(0), labelAndCount.getInt(1)));
-		}
-		return allLabels;
-
-	}
-
-	private ArrayList<TorrentFile> parseJsonFileListing(JSONObject response, Torrent torrent) throws JSONException {
-
-		// Parse response
-		ArrayList<TorrentFile> files = new ArrayList<TorrentFile>();
-		JSONArray objects = response.getJSONArray(RPC_DETAILS);
-		JSONArray progress = response.getJSONArray(RPC_FILEPROGRESS);
-		JSONArray priorities = response.getJSONArray(RPC_FILEPRIORITIES);
-		if (objects != null) {
-			for (int j = 0; j < objects.length(); j++) {
-
-				JSONObject file = objects.getJSONObject(j);
-				// Add the parsed torrent to the list
-				// @formatter:off
-				files.add(new TorrentFile(
-						"" + file.getInt(RPC_INDEX),
-						file.getString(RPC_PATH),
-						file.getString(RPC_PATH),
-						torrent.getLocationDir() + file.getString(RPC_PATH),
-						file.getLong(RPC_SIZE),
-						(long) (progress.getDouble(j) * file.getLong(RPC_SIZE)),
-						convertDelugePriority(priorities.getInt(j))));
-				// @formatter:on
-			}
-		}
-
-		// Return the list
-		return files;
-
-	}
-
-	private Priority convertDelugePriority(int priority) {
-		if (version >= 10303) {
-			// Priority codes changes from Deluge 1.3.3 onwards
-			switch (priority) {
-				case 0:
-					return Priority.Off;
-				case 1:
-					return Priority.Low;
-				case 7:
-					return Priority.High;
-				default:
-					return Priority.Normal;
-			}
-		} else {
-			switch (priority) {
-				case 0:
-					return Priority.Off;
-				case 2:
-					return Priority.Normal;
-				case 5:
-					return Priority.High;
-				default:
-					return Priority.Low;
-			}
-		}
-	}
-
-	private int convertPriority(Priority priority) {
-		if (version >= 10303) {
-			// Priority codes changes from Deluge 1.3.3 onwards
-			switch (priority) {
-				case Off:
-					return 0;
-				case Low:
-					return 1;
-				case High:
-					return 7;
-				default:
-					return 5;
-			}
-		} else {
-			switch (priority) {
-				case Off:
-					return 0;
-				case Normal:
-					return 2;
-				case High:
-					return 5;
-				default:
-					return 1;
-			}
-		}
-	}
-
-	private TorrentStatus convertDelugeState(String state) {
-		// Deluge sends a string with status code
-		if (state.compareTo("Paused") == 0) {
-			return TorrentStatus.Paused;
-		} else if (state.compareTo("Seeding") == 0) {
-			return TorrentStatus.Seeding;
-		} else if (state.compareTo("Downloading") == 0 || state.compareTo("Active") == 0) {
-			return TorrentStatus.Downloading;
-		} else if (state.compareTo("Checking") == 0) {
-			return TorrentStatus.Checking;
-		} else if (state.compareTo("Queued") == 0) {
-			return TorrentStatus.Queued;
-		}
-		return TorrentStatus.Unknown;
-	}
-
-	private TorrentDetails parseJsonTorrentDetails(JSONObject response) throws JSONException {
-
-		// Parse response
-		List<String> trackers = new ArrayList<String>();
-		JSONArray trackerObjects = response.getJSONArray(RPC_TRACKERS);
-		if (trackerObjects != null && trackerObjects.length() > 0) {
-			for (int i = 0; i < trackerObjects.length(); i++) {
-				trackers.add(trackerObjects.getJSONObject(i).getString("url"));
-			}
-		}
-		List<String> errors = new ArrayList<String>();
-		String trackerStatus = response.getString(RPC_TRACKER_STATUS);
-		errors.add(trackerStatus);
-
-		return new TorrentDetails(trackers, errors);
-
-	}
-
-	@Override
-	public Daemon getType() {
-		return settings.getType();
-	}
-
-	@Override
-	public DaemonSettings getSettings() {
-		return this.settings;
-	}
-
+  public static final int DEFAULT_PORT = 58846;
+
+  private static final String METHOD_LOGIN = "daemon.login";
+  private static final String METHOD_GET_TORRENTS_STATUS = "core.get_torrents_status";
+  private static final String METHOD_GET_TORRENT_STATUS = "core.get_torrent_status";
+  private static final String METHOD_GET_LABELS = "label.get_labels";
+
+  private static final int RPC_ERROR = 2;
+
+  private static final String TORRENT_FIELD_HASH = "hash";
+  private static final String TORRENT_FIELD_NAME = "name";
+  private static final String TORRENT_FIELD_STATUS = "state";
+  private static final String TORRENT_FIELD_MESSAGE = "message";
+  private static final String TORRENT_FIELD_SAVEPATH = "save_path";
+  private static final String TORRENT_FIELD_RATEDOWNLOAD = "download_payload_rate";
+  private static final String TORRENT_FIELD_RATEUPLOAD = "upload_payload_rate";
+  private static final String TORRENT_FIELD_NUMSEEDS = "num_seeds";
+  private static final String TORRENT_FIELD_TOTALSEEDS = "total_seeds";
+  private static final String TORRENT_FIELD_NUMPEERS = "num_peers";
+  private static final String TORRENT_FIELD_TOTALPEERS = "total_peers";
+  private static final String TORRENT_FIELD_ETA = "eta";
+  private static final String TORRENT_FIELD_TIMEADDED = "time_added";
+  private static final String TORRENT_FIELD_DOWNLOADEDEVER = "total_done";
+  private static final String TORRENT_FIELD_UPLOADEDEVER = "total_uploaded";
+  private static final String TORRENT_FIELD_TOTALSIZE = "total_size";
+  private static final String TORRENT_FIELD_PARTDONE = "progress";
+  private static final String TORRENT_FIELD_LABEL = "label";
+  private static final String TORRENT_FIELD_TRACKERS = "trackers";
+  private static final String TORRENT_FIELD_TRACKER_STATUS = "tracker_status";
+
+  private static final String TORRENT_FIELD_FILES = "files";
+  private static final String TORRENT_FIELD_FILE_PROGRESS = "file_progress";
+  private static final String TORRENT_FIELD_FILE_PRIORITIES = "file_priorities";
+
+  private static final String FILE_INDEX = "index";
+  private static final String FILE_PATH = "path";
+  private static final String FILE_SIZE = "size";
+
+  private static final String TRACKER_URL = "url";
+
+  private static final String MAX_DOWNLOAD = "max_download_speed";
+  private static final String MAX_UPLOAD = "max_upload_speed";
+
+  private static final String[] TORRENT_FIELDS = {
+      TORRENT_FIELD_HASH,
+      TORRENT_FIELD_NAME,
+      TORRENT_FIELD_STATUS,
+      TORRENT_FIELD_SAVEPATH,
+      TORRENT_FIELD_RATEDOWNLOAD,
+      TORRENT_FIELD_RATEUPLOAD,
+      TORRENT_FIELD_NUMPEERS,
+      TORRENT_FIELD_NUMSEEDS,
+      TORRENT_FIELD_TOTALPEERS,
+      TORRENT_FIELD_TOTALSEEDS,
+      TORRENT_FIELD_ETA,
+      TORRENT_FIELD_DOWNLOADEDEVER,
+      TORRENT_FIELD_UPLOADEDEVER,
+      TORRENT_FIELD_TOTALSIZE,
+      TORRENT_FIELD_PARTDONE,
+      TORRENT_FIELD_LABEL,
+      TORRENT_FIELD_MESSAGE,
+      TORRENT_FIELD_TIMEADDED,
+      TORRENT_FIELD_TRACKER_STATUS,
+  };
+
+  private static final String[] TORRENT_FILE_FIELDS = {
+      TORRENT_FIELD_FILES,
+      TORRENT_FIELD_FILE_PROGRESS,
+      TORRENT_FIELD_FILE_PRIORITIES,
+  };
+
+  private static final String[] TORRENT_TRACKER_FIELDS = {
+      TORRENT_FIELD_TRACKERS,
+      TORRENT_FIELD_TRACKER_STATUS,
+  };
+
+  private static AtomicInteger requestIdCounter = new AtomicInteger();
+  private final DaemonSettings settings;
+
+  public DelugeDirectAdapter(DaemonSettings settings) {
+    this.settings = settings;
+  }
+
+  @Override
+  public DaemonTaskResult executeTask(Log log, DaemonTask task) {
+    try {
+      switch (task.getMethod()) {
+        case Retrieve:
+          return doRetrieve((RetrieveTask) task);
+        case AddByUrl:
+          return notSupported(task);
+        case AddByMagnetUrl:
+          return notSupported(task);
+        case AddByFile:
+          return notSupported(task);
+        case Remove:
+          return notSupported(task);
+        case Pause:
+          return notSupported(task);
+        case PauseAll:
+          return notSupported(task);
+        case Resume:
+          return notSupported(task);
+        case ResumeAll:
+          return notSupported(task);
+        case Stop:
+          return notSupported(task);
+        case StopAll:
+          return notSupported(task);
+        case Start:
+          return notSupported(task);
+        case StartAll:
+          return notSupported(task);
+        case GetFileList:
+          return doGetFileList((GetFileListTask) task);
+        case SetFilePriorities:
+          return notSupported(task);
+        case SetTransferRates:
+          return notSupported(task);
+        case SetLabel:
+          return notSupported(task);
+        case SetDownloadLocation:
+          return notSupported(task);
+        case GetTorrentDetails:
+          return doGetTorrentDetails((GetTorrentDetailsTask) task);
+        case SetTrackers:
+          return notSupported(task);
+        case SetAlternativeMode:
+          return notSupported(task);
+        case GetStats:
+          return notSupported(task);
+        case ForceRecheck:
+          return notSupported(task);
+        default:
+          return notSupported(task);
+      }
+    } catch (DaemonException e) {
+      return new DaemonTaskFailureResult(task, e);
+    }
+  }
+
+  @Override
+  public Daemon getType() {
+    return settings.getType();
+  }
+
+  @Override
+  public DaemonSettings getSettings() {
+    return settings;
+  }
+
+  @NonNull
+  private RetrieveTaskSuccessResult doRetrieve(RetrieveTask task) throws DaemonException {
+
+    final List<Torrent> torrents = getTorrents();
+    return new RetrieveTaskSuccessResult(task, torrents, getLabels(torrents));
+  }
+
+
+  private GetTorrentDetailsTaskSuccessResult doGetTorrentDetails(GetTorrentDetailsTask task)
+      throws DaemonException {
+    //noinspection unchecked
+    final Map<String, Object> response = (Map<String, Object>) sendRequest(
+        METHOD_GET_TORRENT_STATUS,
+        new Object[]{task.getTargetTorrent().getUniqueID(), TORRENT_TRACKER_FIELDS});
+
+    //noinspection unchecked
+    final List<Map<String, Object>> trackerResponses = (List<Map<String, Object>>) response
+        .get(TORRENT_FIELD_TRACKERS);
+    final List<String> trackers = new ArrayList<>();
+    for (Map<String, Object> trackerResponse : trackerResponses) {
+      trackers.add((String) trackerResponse.get(TRACKER_URL));
+    }
+
+    return new GetTorrentDetailsTaskSuccessResult(task, new TorrentDetails(
+        trackers,
+        Collections.singletonList((String) response.get(TORRENT_FIELD_TRACKER_STATUS))));
+  }
+
+  private GetFileListTaskSuccessResult doGetFileList(GetFileListTask task) throws DaemonException {
+    final ArrayList<TorrentFile> files = new ArrayList<>();
+    //noinspection unchecked
+    final Torrent torrent = task.getTargetTorrent();
+    //noinspection unchecked
+    final Map<String, Object> response = (Map<String, Object>) sendRequest(
+        METHOD_GET_TORRENT_STATUS,
+        new Object[]{torrent.getUniqueID(), TORRENT_FILE_FIELDS});
+
+    //noinspection unchecked
+    final List<Map<String, Object>> fileMaps = (List<Map<String, Object>>) response
+        .get(TORRENT_FIELD_FILES);
+    //noinspection unchecked
+    final List<Integer> priorities = (List<Integer>) response.get(TORRENT_FIELD_FILE_PRIORITIES);
+    //noinspection unchecked
+    final List<Float> progresses = (List<Float>) response.get(TORRENT_FIELD_FILE_PROGRESS);
+
+    for (int i = 0, n = fileMaps.size(); i < n; i++) {
+      final Map<String, Object> fileMap = fileMaps.get(i);
+      final int priority = priorities.get(i);
+      final float progress = progresses.get(i);
+
+      final String path = (String) fileMap.get(FILE_PATH);
+      final long size = getLong(fileMap.get(FILE_SIZE));
+      files.add(new TorrentFile(
+          fileMap.get(FILE_INDEX).toString(),
+          path,
+          path,
+          torrent.getLocationDir() + path,
+          size,
+          (long) (size * progress),
+          convertDelugePriority(priority)));
+    }
+    return new GetFileListTaskSuccessResult(task, files);
+  }
+
+
+  @NonNull
+  private List<Torrent> getTorrents() throws DaemonException {
+    final Map response = (Map) sendRequest(
+        METHOD_GET_TORRENTS_STATUS,
+        new Object[]{new HashMap<>(), TORRENT_FIELDS});
+
+    final List<Torrent> torrents = new ArrayList<>();
+    int id = 0;
+    for (Object o : response.values()) {
+      //noinspection unchecked
+      final Map<String, Object> values = (Map<String, Object>) o;
+
+      final Object timeAdded = values.get(TORRENT_FIELD_TIMEADDED);
+      final Date timeAddedDate;
+      if (timeAdded != null) {
+        final long seconds = (long) (float) timeAdded;
+        timeAddedDate = new Date(seconds * 1000L);
+      } else {
+        timeAddedDate = null;
+      }
+
+      final String message = (String) values.get(TORRENT_FIELD_MESSAGE);
+      final String trackerStatus = (String) values.get(TORRENT_FIELD_TRACKER_STATUS);
+      final String error;
+      if (trackerStatus.indexOf("Error") > 0) {
+        error = message + (message.length() > 0 ? "\n" : "") + trackerStatus;
+      } else {
+        error = message;
+      }
+
+      torrents.add(new Torrent(
+          id++,
+          (String) values.get(TORRENT_FIELD_HASH),
+          (String) values.get(TORRENT_FIELD_NAME),
+          convertDelugeState((String) values.get(TORRENT_FIELD_STATUS)),
+          values.get(TORRENT_FIELD_SAVEPATH) + settings.getOS().getPathSeperator(),
+          (int) values.get(TORRENT_FIELD_RATEDOWNLOAD),
+          (int) values.get(TORRENT_FIELD_RATEUPLOAD),
+          (int) values.get(TORRENT_FIELD_NUMSEEDS),
+          (int) values.get(TORRENT_FIELD_TOTALSEEDS),
+          (int) values.get(TORRENT_FIELD_NUMPEERS),
+          (int) values.get(TORRENT_FIELD_TOTALPEERS),
+          getInt(values.get(TORRENT_FIELD_ETA)),
+          getLong(values.get(TORRENT_FIELD_DOWNLOADEDEVER)),
+          getLong(values.get(TORRENT_FIELD_UPLOADEDEVER)),
+          getLong(values.get(TORRENT_FIELD_TOTALSIZE)),
+          ((float) values.get(TORRENT_FIELD_PARTDONE)) / 100f,
+          0f, // Not available
+          (String) values.get(TORRENT_FIELD_LABEL),
+          timeAddedDate,
+          null, // Not available
+          error,
+          getType()));
+    }
+    return torrents;
+  }
+
+  @NonNull
+  private List<Label> getLabels(List<Torrent> torrents) throws DaemonException {
+    // First get all labels that torrents and count them
+    final Map<String, MutableInt> labelCounters = new HashMap<>();
+    for (Torrent torrent : torrents) {
+      final String label = torrent.getLabelName();
+      if (label != null) {
+        final MutableInt count = labelCounters.get(label);
+        if (count == null) {
+          labelCounters.put(label, new MutableInt(1));
+        } else {
+          count.increment();
+        }
+      }
+    }
+    final List<Label> labels = new ArrayList<>();
+    for (Entry<String, MutableInt> entry : labelCounters.entrySet()) {
+      labels.add(new Label(entry.getKey(), entry.getValue().get()));
+    }
+
+    // Now get all labels and add labels that have no torrents.
+    //noinspection unchecked
+    final List<String> response = (List<String>) sendRequest(METHOD_GET_LABELS);
+    for (String label : response) {
+      if (!labelCounters.containsKey(label)) {
+        labels.add(new Label(label, 0));
+      }
+    }
+    return labels;
+  }
+
+  private Object sendRequest(String method) throws DaemonException {
+    return sendRequest(method, new Object[]{}, new HashMap<String, Object>());
+  }
+
+  private Object sendRequest(String method, Object[] args) throws DaemonException {
+    return sendRequest(method, args, new HashMap<String, Object>());
+  }
+
+  private Object sendRequest(String method, Object[] args, Map<String, Object> kwargs)
+      throws DaemonException {
+    final List<Object> requests = new ArrayList<>();
+    final String username = settings.getUsername();
+    if (!TextUtils.isEmpty(username)) {
+      final String password = settings.getPassword();
+
+      requests.add(new Object[]{
+          requestIdCounter.getAndIncrement(),
+          METHOD_LOGIN,
+          new Object[]{username, password},
+          new HashMap<>()});
+    }
+    requests.add(new Object[]{requestIdCounter.getAndIncrement(), method, args, kwargs});
+
+    final byte[] request;
+    try {
+      request = compress(Rencode.encode(requests.toArray()));
+    } catch (IOException e) {
+      throw new DaemonException(ExceptionType.ConnectionError,
+          "Failed to encode request: " + e.getMessage());
+    }
+
+    final Socket socket = openSocket();
+    try {
+      socket.getOutputStream().write(request);
+      if (username != null) {
+        // consume response to login request
+        try {
+          readResponse(socket.getInputStream());
+        } catch (DaemonException e) {
+          throw new DaemonException(ExceptionType.AuthenticationFailure, e.getMessage());
+        }
+      }
+      return readResponse(socket.getInputStream());
+    } catch (IOException e) {
+      throw new DaemonException(ExceptionType.ConnectionError, e.getMessage());
+    } finally {
+      try {
+        socket.close();
+      } catch (IOException e) {
+        // ignore
+      }
+    }
+  }
+
+  private Object readResponse(InputStream in) throws DaemonException, IOException {
+    final InflaterInputStream inflater = new InflaterInputStream(in);
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final byte[] buffer = new byte[1024];
+    while (inflater.available() > 0) {
+      final int n = inflater.read(buffer);
+      if (n > 0) {
+        out.write(buffer, 0, n);
+      }
+    }
+    final byte[] bytes = out.toByteArray();
+    final List response = (List) Rencode.decode(bytes);
+    final int responseType = (int) response.get(0);
+    if (responseType == RPC_ERROR) {
+      final List errorResponse = (List) response.get(2);
+      throw new DaemonException(ExceptionType.UnexpectedResponse,
+          String.format("%s: %s", errorResponse.get(0), errorResponse.get(1)));
+    }
+
+    return response.get(2);
+  }
+
+  private byte[] compress(byte[] bytes) throws IOException {
+    ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+    try {
+      DeflaterOutputStream deltaterOut = new DeflaterOutputStream(byteOut);
+      try {
+        deltaterOut.write(bytes);
+        deltaterOut.finish();
+        return byteOut.toByteArray();
+      } finally {
+        deltaterOut.close();
+      }
+    } finally {
+      byteOut.close();
+    }
+  }
+
+  private Socket openSocket() throws DaemonException {
+    try {
+      final TrustManager[] trustAllCerts = new TrustManager[]{new AcceptAllTrustManager()};
+      final SSLContext sslContext = SSLContext.getInstance("TLSv1");
+      sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+      return sslContext.getSocketFactory().createSocket(settings.getAddress(), settings.getPort());
+    } catch (NoSuchAlgorithmException e) {
+      throw new DaemonException(ExceptionType.ConnectionError,
+          "Failed to open socket: " + e.getMessage());
+    } catch (UnknownHostException e) {
+      throw new DaemonException(ExceptionType.ConnectionError,
+          "Failed to open socket: " + e.getMessage());
+    } catch (IOException e) {
+      throw new DaemonException(ExceptionType.ConnectionError,
+          "Failed to open socket: " + e.getMessage());
+    } catch (KeyManagementException e) {
+      throw new DaemonException(ExceptionType.ConnectionError,
+          "Failed to open socket: " + e.getMessage());
+    }
+  }
+
+  @NonNull
+  private DaemonTaskFailureResult notSupported(DaemonTask task) {
+    return new DaemonTaskFailureResult(task,
+        new DaemonException(ExceptionType.MethodUnsupported,
+            task.getMethod() + " is not supported by " + getType()));
+  }
+
+  private static TorrentStatus convertDelugeState(String state) {
+    // Deluge sends a string with status code
+    if (state.compareTo("Paused") == 0) {
+      return TorrentStatus.Paused;
+    } else if (state.compareTo("Seeding") == 0) {
+      return TorrentStatus.Seeding;
+    } else if (state.compareTo("Downloading") == 0 || state.compareTo("Active") == 0) {
+      return TorrentStatus.Downloading;
+    } else if (state.compareTo("Checking") == 0) {
+      return TorrentStatus.Checking;
+    } else if (state.compareTo("Queued") == 0) {
+      return TorrentStatus.Queued;
+    }
+    return TorrentStatus.Unknown;
+  }
+
+  private Priority convertDelugePriority(int priority) {
+    switch (priority) {
+      case 0:
+        return Priority.Off;
+      case 1:
+        return Priority.Low;
+      case 7:
+        return Priority.High;
+      default:
+        return Priority.Normal;
+    }
+  }
+
+  private static long getLong(Object o) {
+    if (o instanceof Integer) {
+      return (long) (int) o;
+    }
+    if (o instanceof Float) {
+      return (long) (float) o;
+    }
+    if (o instanceof Double) {
+      return (long) (float) o;
+    }
+    return (long) o;
+  }
+
+  private static int getInt(Object o) {
+    if (o instanceof Long) {
+      return (int) (long) o;
+    }
+    if (o instanceof Float) {
+      return (int) (float) o;
+    }
+    if (o instanceof Double) {
+      return (int) (float) o;
+    }
+    return (int) o;
+  }
+
+
+  private static class MutableInt {
+
+    int value = 1;
+
+    MutableInt(int value) {
+      this.value = value;
+    }
+
+    void increment() {
+      ++value;
+    }
+
+    int get() {
+      return value;
+    }
+  }
 }
