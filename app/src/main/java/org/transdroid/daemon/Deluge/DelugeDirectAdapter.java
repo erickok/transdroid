@@ -54,10 +54,13 @@ import org.transdroid.daemon.TorrentStatus;
 import org.transdroid.daemon.task.DaemonTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
+import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
+import org.transdroid.daemon.task.PauseTask;
+import org.transdroid.daemon.task.ResumeTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import se.dimovski.rencode.Rencode;
@@ -75,6 +78,20 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   private static final String METHOD_GET_TORRENTS_STATUS = "core.get_torrents_status";
   private static final String METHOD_GET_TORRENT_STATUS = "core.get_torrent_status";
   private static final String METHOD_GET_LABELS = "label.get_labels";
+  private static final String METHOD_ADD = "core.add_torrent_url";
+  private static final String METHOD_ADD_MAGNET = "core.add_torrent_magnet";
+  private static final String METHOD_ADD_FILE = "web.add_torrents";
+  private static final String METHOD_REMOVE = "core.remove_torrent";
+  private static final String METHOD_PAUSE = "core.pause_torrent";
+  private static final String METHOD_PAUSE_ALL = "core.pause_all_torrents";
+  private static final String METHOD_RESUME = "core.resume_torrent";
+  private static final String METHOD_RESUME_ALL = "core.resume_all_torrents";
+  private static final String METHOD_SETCONFIG = "core.set_config";
+  private static final String METHOD_SETFILE = "core.set_torrent_file_priorities";
+  private static final String METHOD_MOVESTORAGE = "core.move_storage";
+  private static final String METHOD_SETTRACKERS = "core.set_torrent_trackers";
+  private static final String METHOD_FORCERECHECK = "core.force_recheck";
+  private static final String METHOD_SETLABEL = "label.set_torrent";
 
   private static final int RPC_ERROR = 2;
 
@@ -167,11 +184,11 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
         case Remove:
           return notSupported(task);
         case Pause:
-          return notSupported(task);
+          return doPause((PauseTask) task);
         case PauseAll:
           return notSupported(task);
         case Resume:
-          return notSupported(task);
+          return doResume((ResumeTask) task);
         case ResumeAll:
           return notSupported(task);
         case Stop:
@@ -284,6 +301,15 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     return new GetFileListTaskSuccessResult(task, files);
   }
 
+  private DaemonTaskResult doResume(ResumeTask task) throws DaemonException {
+    sendRequest(METHOD_RESUME, new Object[]{ new String[] { task.getTargetTorrent().getUniqueID()}});
+    return new DaemonTaskSuccessResult(task);
+  }
+
+  private DaemonTaskResult doPause(PauseTask task) throws DaemonException {
+    sendRequest(METHOD_PAUSE, new Object[]{ new String[] { task.getTargetTorrent().getUniqueID()}});
+    return new DaemonTaskSuccessResult(task);
+  }
 
   @NonNull
   private List<Torrent> getTorrents() throws DaemonException {
