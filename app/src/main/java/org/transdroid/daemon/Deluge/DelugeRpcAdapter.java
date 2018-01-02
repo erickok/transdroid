@@ -47,7 +47,6 @@ import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
-import org.transdroid.daemon.TorrentStatus;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -69,6 +68,58 @@ import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DOWNLOADEDEVER;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_ETA;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPRIORITIES;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPROGRESS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_HASH;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_INDEX;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_LABEL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXDOWNLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXUPLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MESSAGE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_FILE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_MAGNET;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_FORCERECHECK;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_GET_LABELS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_GET_TORRENTS_STATUS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_INFO;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_MOVESTORAGE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE_ALL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_REMOVE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME_ALL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETCONFIG;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETLABEL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETTRACKERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SET_TORRENT_OPTIONS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_STATUS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NAME;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMPEERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMSEEDS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PARTDONE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PATH;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEDOWNLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEUPLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SAVEPATH;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SIZE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_STATUS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIMEADDED;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALPEERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSEEDS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSIZE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_STATUS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_TIER;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_URL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_UPLOADEDEVER;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FIELDS_ARRAY;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILE_FIELDS_ARRAY;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_STATUS_FIELDS_ARRAY;
+
 /**
  * The daemon adapter from the Deluge torrent client using deluged API directly.
  *
@@ -77,94 +128,6 @@ import org.transdroid.daemon.task.SetTransferRatesTask;
 public class DelugeRpcAdapter implements IDaemonAdapter {
 
   public static final int DEFAULT_PORT = 58846;
-
-  // TODO: Extract constants to a common file used by both Adapters.
-  private static final String RPC_METHOD_INFO = "daemon.info";
-  private static final String RPC_METHOD_GET_TORRENTS_STATUS = "core.get_torrents_status";
-  private static final String RPC_METHOD_STATUS = "core.get_torrent_status";
-  private static final String RPC_METHOD_GET_LABELS = "label.get_labels";
-  private static final String RPC_METHOD_ADD = "core.add_torrent_url";
-  private static final String RPC_METHOD_ADD_MAGNET = "core.add_torrent_magnet";
-  private static final String RPC_METHOD_ADD_FILE = "core.add_torrent_file";
-  private static final String RPC_METHOD_REMOVE = "core.remove_torrent";
-  private static final String RPC_METHOD_PAUSE = "core.pause_torrent";
-  private static final String RPC_METHOD_PAUSE_ALL = "core.pause_all_torrents";
-  private static final String RPC_METHOD_RESUME = "core.resume_torrent";
-  private static final String RPC_METHOD_RESUME_ALL = "core.resume_all_torrents";
-  private static final String RPC_METHOD_SETCONFIG = "core.set_config";
-  private static final String RPC_METHOD_SET_TORRENT_OPTIONS = "core.set_torrent_options";
-  private static final String RPC_METHOD_MOVESTORAGE = "core.move_storage";
-  private static final String RPC_METHOD_SETTRACKERS = "core.set_torrent_trackers";
-  private static final String RPC_METHOD_FORCERECHECK = "core.force_recheck";
-  private static final String RPC_METHOD_SETLABEL = "label.set_torrent";
-
-  private static final String RPC_HASH = "hash";
-  private static final String RPC_NAME = "name";
-  private static final String RPC_STATUS = "state";
-  private static final String RPC_MESSAGE = "message";
-  private static final String RPC_SAVEPATH = "save_path";
-  private static final String RPC_RATEDOWNLOAD = "download_payload_rate";
-  private static final String RPC_RATEUPLOAD = "upload_payload_rate";
-  private static final String RPC_NUMSEEDS = "num_seeds";
-  private static final String RPC_TOTALSEEDS = "total_seeds";
-  private static final String RPC_NUMPEERS = "num_peers";
-  private static final String RPC_TOTALPEERS = "total_peers";
-  private static final String RPC_ETA = "eta";
-  private static final String RPC_TIMEADDED = "time_added";
-  private static final String RPC_DOWNLOADEDEVER = "total_done";
-  private static final String RPC_UPLOADEDEVER = "total_uploaded";
-  private static final String RPC_TOTALSIZE = "total_size";
-  private static final String RPC_PARTDONE = "progress";
-  private static final String RPC_LABEL = "label";
-  private static final String RPC_TRACKERS = "trackers";
-  private static final String RPC_TRACKER_STATUS = "tracker_status";
-
-  private static final String RPC_FILES = "files";
-  private static final String RPC_FILE_PROGRESS = "file_progress";
-  private static final String RPC_FILE_PRIORITIES = "file_priorities";
-
-  private static final String RPC_INDEX = "index";
-  private static final String RPC_PATH = "path";
-  private static final String RPC_SIZE = "size";
-
-  private static final String RPC_TRACKER_TIER = "tier";
-  private static final String RPC_TRACKER_URL = "url";
-
-  private static final String RPC_MAX_DOWNLOAD = "max_download_speed";
-  private static final String RPC_MAX_UPLOAD = "max_upload_speed";
-
-  private static final String[] TORRENT_FIELDS = {
-      RPC_HASH,
-      RPC_NAME,
-      RPC_STATUS,
-      RPC_SAVEPATH,
-      RPC_RATEDOWNLOAD,
-      RPC_RATEUPLOAD,
-      RPC_NUMPEERS,
-      RPC_NUMSEEDS,
-      RPC_TOTALPEERS,
-      RPC_TOTALSEEDS,
-      RPC_ETA,
-      RPC_DOWNLOADEDEVER,
-      RPC_UPLOADEDEVER,
-      RPC_TOTALSIZE,
-      RPC_PARTDONE,
-      RPC_LABEL,
-      RPC_MESSAGE,
-      RPC_TIMEADDED,
-      RPC_TRACKER_STATUS,
-  };
-
-  private static final String[] TORRENT_FILE_FIELDS = {
-      RPC_FILES,
-      RPC_FILE_PROGRESS,
-      RPC_FILE_PRIORITIES,
-  };
-
-  private static final String[] TORRENT_TRACKER_FIELDS = {
-      RPC_TRACKERS,
-      RPC_TRACKER_STATUS,
-  };
 
   private final DaemonSettings settings;
   private final DelugeRpcClient client;
@@ -239,9 +202,9 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
 
     final List<Object> results = client.sendRequests(
         new Request(RPC_METHOD_INFO),
-        new Request(RPC_METHOD_GET_TORRENTS_STATUS, new HashMap<>(), TORRENT_FIELDS),
+        new Request(RPC_METHOD_GET_TORRENTS_STATUS, new HashMap<>(), RPC_FIELDS_ARRAY),
         new Request(RPC_METHOD_GET_LABELS));
-    setVersion((String) results.get(0));
+    version = DelugeCommon.getVersionString((String) results.get(0));
     //noinspection unchecked
     final Map<String, Map<String, Object>> torrentsStatus = (Map<String, Map<String, Object>>) results
         .get(1);
@@ -258,7 +221,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
     final Map<String, Object> response = (Map<String, Object>) client.sendRequest(
         RPC_METHOD_STATUS,
         task.getTargetTorrent().getUniqueID(),
-        TORRENT_TRACKER_FIELDS);
+        RPC_STATUS_FIELDS_ARRAY);
 
     //noinspection unchecked
     final List<Map<String, Object>> trackerResponses = (List<Map<String, Object>>) response
@@ -345,7 +308,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
           convertPriority(changedFiles.contains(file.getKey()) ? newPriority : file.getPriority()));
     }
 
-    optionsArgs.put(RPC_FILE_PRIORITIES, priorities);
+    optionsArgs.put(RPC_FILEPRIORITIES, priorities);
     client.sendRequest(RPC_METHOD_SET_TORRENT_OPTIONS, getTorrentIdsArg(task), optionsArgs);
     return new DaemonTaskSuccessResult(task);
   }
@@ -353,8 +316,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   @NonNull
   private DaemonTaskResult doSetTransferRates(SetTransferRatesTask task) throws DaemonException {
     final Map<String, Object> config = new HashMap<>();
-    config.put(RPC_MAX_DOWNLOAD, task.getDownloadRate() == null ? -1 : task.getDownloadRate());
-    config.put(RPC_MAX_UPLOAD, task.getUploadRate() == null ? -1 : task.getUploadRate());
+    config.put(RPC_MAXDOWNLOAD, task.getDownloadRate() == null ? -1 : task.getDownloadRate());
+    config.put(RPC_MAXUPLOAD, task.getUploadRate() == null ? -1 : task.getUploadRate());
     client.sendRequest(RPC_METHOD_SETCONFIG, config);
     return new DaemonTaskSuccessResult(task);
   }
@@ -412,7 +375,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
           id++,
           (String) torrentMap.get(RPC_HASH),
           (String) torrentMap.get(RPC_NAME),
-          convertDelugeState((String) torrentMap.get(RPC_STATUS)),
+          DelugeCommon.convertDelugeState((String) torrentMap.get(RPC_STATUS)),
           torrentMap.get(RPC_SAVEPATH) + settings.getOS().getPathSeperator(),
           ((Number) torrentMap.get(RPC_RATEDOWNLOAD)).intValue(),
           ((Number) torrentMap.get(RPC_RATEUPLOAD)).intValue(),
@@ -471,15 +434,15 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
     final Map<String, Object> response = (Map<String, Object>) client.sendRequest(
         RPC_METHOD_STATUS,
         torrent.getUniqueID(),
-        TORRENT_FILE_FIELDS);
+        RPC_FILE_FIELDS_ARRAY);
 
     //noinspection unchecked
     final List<Map<String, Object>> fileMaps = (List<Map<String, Object>>) response
-        .get(RPC_FILES);
+        .get(RPC_DETAILS);
     //noinspection unchecked
-    final List<Integer> priorities = (List<Integer>) response.get(RPC_FILE_PRIORITIES);
+    final List<Integer> priorities = (List<Integer>) response.get(RPC_FILEPRIORITIES);
     //noinspection unchecked
-    final List<Float> progresses = (List<Float>) response.get(RPC_FILE_PROGRESS);
+    final List<Float> progresses = (List<Float>) response.get(RPC_FILEPROGRESS);
 
     for (int i = 0, n = fileMaps.size(); i < n; i++) {
       final Map<String, Object> fileMap = fileMaps.get(i);
@@ -533,116 +496,23 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
     }
   }
 
-  // TODO: Move method to a common file used by both Adapters.
-  private static TorrentStatus convertDelugeState(String state) {
-    // Deluge sends a string with status code
-    if (state.compareTo("Paused") == 0) {
-      return TorrentStatus.Paused;
-    } else if (state.compareTo("Seeding") == 0) {
-      return TorrentStatus.Seeding;
-    } else if (state.compareTo("Downloading") == 0 || state.compareTo("Active") == 0) {
-      return TorrentStatus.Downloading;
-    } else if (state.compareTo("Checking") == 0) {
-      return TorrentStatus.Checking;
-    } else if (state.compareTo("Queued") == 0) {
-      return TorrentStatus.Queued;
-    }
-    return TorrentStatus.Unknown;
-  }
-
-  // TODO: Move method to a common file used by both Adapters.
   @NonNull
   private Priority convertDelugePriority(int priority)
       throws DaemonException {
     ensureVersion();
-    if (version >= 10303) {
-      // Priority codes changes from Deluge 1.3.3 onwards
-      switch (priority) {
-        case 0:
-          return Priority.Off;
-        case 1:
-          return Priority.Low;
-        case 7:
-          return Priority.High;
-        default:
-          return Priority.Normal;
-      }
-    } else {
-      switch (priority) {
-        case 0:
-          return Priority.Off;
-        case 2:
-          return Priority.Normal;
-        case 5:
-          return Priority.High;
-        default:
-          return Priority.Low;
-      }
-    }
+    return DelugeCommon.convertDelugePriority(priority, version);
   }
 
-  // TODO: Move method to a common file used by both Adapters.
   private int convertPriority(Priority priority) throws DaemonException {
     ensureVersion();
-    if (version >= 10303) {
-      // Priority codes changes from Deluge 1.3.3 onwards
-      switch (priority) {
-        case Off:
-          return 0;
-        case Low:
-          return 1;
-        case High:
-          return 7;
-        default:
-          return 5;
-      }
-    } else {
-      switch (priority) {
-        case Off:
-          return 0;
-        case Normal:
-          return 2;
-        case High:
-          return 5;
-        default:
-          return 1;
-      }
-    }
+    return DelugeCommon.convertPriority(priority, version);
   }
 
   private void ensureVersion() throws DaemonException {
     if (version > 0) {
       return;
     }
-    setVersion((String) client.sendRequest(RPC_METHOD_INFO));
-  }
-
-  // TODO: Move to a common class
-  private void setVersion(String versionString) {
-    final String[] parts = versionString.split("\\.");
-
-    if (parts.length > 0) {
-      version = Integer.parseInt(parts[0]) * 100 * 100;
-      if (parts.length > 1) {
-        version += Integer.parseInt(parts[1]) * 100;
-        if (parts.length > 2) {
-          // For the last part only read until a non-numeric character is read
-          // For example version 3.0.0-alpha5 is read as version code 30000
-          String numbers = "";
-          for (char c : parts[2].toCharArray()) {
-            if (Character.isDigit(c))
-            // Still a number; add it to the numbers string
-            {
-              numbers += Character.toString(c);
-            } else {
-              // No longer reading numbers; stop reading
-              break;
-            }
-          }
-          version += Integer.parseInt(numbers);
-        }
-      }
-    }
+    version = DelugeCommon.getVersionString((String) client.sendRequest(RPC_METHOD_INFO));
   }
 
   // Return an Object so it doesn't confuse our varargs sendRequest methods.

@@ -23,12 +23,12 @@ import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.util.IgnoreSSLTrustManager;
 import se.dimovski.rencode.Rencode;
 
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_DAEMON_LOGIN;
+
 /**
  * A Deluge RPC API Client.
  */
 class DelugeRpcClient {
-  // TODO: Extract constants to a common file used by both Adapters.
-  private static final String RPC_METHOD_LOGIN = "daemon.login";
   private static final int RPC_ERROR = 2;
 
   private final DaemonSettings settings;
@@ -50,7 +50,7 @@ class DelugeRpcClient {
     int loginRequestId = -1;
     final String username = settings.getUsername();
     if (!TextUtils.isEmpty(username)) {
-      final Request loginRequest = new Request(RPC_METHOD_LOGIN, username, settings.getPassword());
+      final Request loginRequest = new Request(RPC_METHOD_DAEMON_LOGIN, username, settings.getPassword());
       requestObjects.add(loginRequest.toObject());
       loginRequestId = loginRequest.getId();
     }
