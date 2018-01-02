@@ -66,6 +66,7 @@ import org.transdroid.daemon.task.DaemonTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
+import org.transdroid.daemon.task.ForceRecheckTask;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
@@ -221,12 +222,8 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
           return doGetTorrentDetails((GetTorrentDetailsTask) task);
         case SetTrackers:
           return doSetTrackers((SetTrackersTask) task);
-        case SetAlternativeMode:
-          return notSupported(task);
-        case GetStats:
-          return notSupported(task);
         case ForceRecheck:
-          return notSupported(task);
+          return doForceRecheck((ForceRecheckTask) task);
         default:
           return notSupported(task);
       }
@@ -371,6 +368,12 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
       trackers.add(tracker);
     }
     sendRequest(RPC_METHOD_SETTRACKERS, task.getTargetTorrent().getUniqueID(), trackers);
+    return new DaemonTaskSuccessResult(task);
+  }
+
+  @NonNull
+  private DaemonTaskResult doForceRecheck(ForceRecheckTask task) throws DaemonException {
+    sendRequest(RPC_METHOD_FORCERECHECK, getTorrentIdsArg(task));
     return new DaemonTaskSuccessResult(task);
   }
 
@@ -734,8 +737,9 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     return (int) o;
   }
 
+  // Return an Object so it doesn't confuse our varargs sendRequest methods.
   @NonNull
-  private String[] getTorrentIdsArg(DaemonTask task) {
+  private Object getTorrentIdsArg(DaemonTask task) {
     return new String[]{task.getTargetTorrent().getUniqueID()};
   }
 
