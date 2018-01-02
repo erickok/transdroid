@@ -19,11 +19,18 @@ package org.transdroid.daemon.Deluge;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
 import deluge.impl.net.AcceptAllTrustManager;
+
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -39,6 +46,8 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+
+import org.base64.android.Base64;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
@@ -51,6 +60,7 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
+import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.DaemonTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
@@ -59,8 +69,7 @@ import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
-import org.transdroid.daemon.task.PauseTask;
-import org.transdroid.daemon.task.ResumeTask;
+import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import se.dimovski.rencode.Rencode;
@@ -180,25 +189,19 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
         case AddByMagnetUrl:
           return notSupported(task);
         case AddByFile:
-          return notSupported(task);
+          return doAddByFile((AddByFileTask) task);
         case Remove:
-          return notSupported(task);
+          return doRemove((RemoveTask)task);
         case Pause:
-          return doPause((PauseTask) task);
+          return doControl(task, METHOD_PAUSE);
         case PauseAll:
-          return notSupported(task);
+          sendRequest(METHOD_PAUSE_ALL);
+          return new DaemonTaskSuccessResult(task);
         case Resume:
-          return doResume((ResumeTask) task);
+          return doControl(task, METHOD_RESUME);
         case ResumeAll:
-          return notSupported(task);
-        case Stop:
-          return notSupported(task);
-        case StopAll:
-          return notSupported(task);
-        case Start:
-          return notSupported(task);
-        case StartAll:
-          return notSupported(task);
+          sendRequest(METHOD_RESUME_ALL);
+          return new DaemonTaskSuccessResult(task);
         case GetFileList:
           return doGetFileList((GetFileListTask) task);
         case SetFilePriorities:
@@ -224,6 +227,45 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
       }
     } catch (DaemonException e) {
       return new DaemonTaskFailureResult(task, e);
+    }
+  }
+
+  private DaemonTaskResult doAddByFile(AddByFileTask task) throws DaemonException {
+    final String file = task.getFile();
+    final byte[] bytes = loadFile(file);
+    final String fileContent = Base64.encodeBytes(bytes);
+
+    sendRequest(METHOD_ADD_FILE, new Object[]{ file, fileContent, new HashMap<>() });
+    return new DaemonTaskSuccessResult(task);
+  }
+
+  private byte[] loadFile(String url) throws DaemonException {
+    final File file = new File(URI.create(url));
+    final BufferedInputStream in;
+    try {
+      in = new BufferedInputStream(new FileInputStream(file));
+    } catch (FileNotFoundException e) {
+      throw new DaemonException(ExceptionType.FileAccessError, "File not found: " + file.getAbsolutePath());
+    }
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    try {
+      final byte[] buffer = new byte[1024];
+      while (true) {
+        final int n = in.read(buffer);
+        if (n < 0) {
+          break;
+        }
+        out.write(buffer, 0, n);
+      }
+      return out.toByteArray();
+    } catch (IOException e) {
+      throw new DaemonException(ExceptionType.FileAccessError, "Error reading file: " + file.getAbsolutePath());
+    } finally {
+      try {
+        in.close();
+      } catch (IOException e) {
+        // ignore
+      }
     }
   }
 
@@ -301,13 +343,13 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     return new GetFileListTaskSuccessResult(task, files);
   }
 
-  private DaemonTaskResult doResume(ResumeTask task) throws DaemonException {
-    sendRequest(METHOD_RESUME, new Object[]{ new String[] { task.getTargetTorrent().getUniqueID()}});
+  private DaemonTaskResult doControl(DaemonTask task, String method) throws DaemonException {
+    sendRequest(method, new Object[]{ new String[] { task.getTargetTorrent().getUniqueID()}});
     return new DaemonTaskSuccessResult(task);
   }
 
-  private DaemonTaskResult doPause(PauseTask task) throws DaemonException {
-    sendRequest(METHOD_PAUSE, new Object[]{ new String[] { task.getTargetTorrent().getUniqueID()}});
+  private DaemonTaskResult doRemove(RemoveTask task) throws DaemonException {
+    sendRequest(METHOD_REMOVE, new Object[]{ task.getTargetTorrent().getUniqueID(), task.includingData()});
     return new DaemonTaskSuccessResult(task);
   }
 
