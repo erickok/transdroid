@@ -19,9 +19,7 @@ package org.transdroid.daemon.Deluge;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-
 import deluge.impl.net.AcceptAllTrustManager;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,15 +36,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
-
 import org.base64.android.Base64;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
@@ -61,6 +60,8 @@ import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
 import org.transdroid.daemon.task.AddByFileTask;
+import org.transdroid.daemon.task.AddByMagnetUrlTask;
+import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
@@ -72,6 +73,8 @@ import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
+import org.transdroid.daemon.task.SetFilePriorityTask;
+import org.transdroid.daemon.task.SetLabelTask;
 import se.dimovski.rencode.Rencode;
 
 /**
@@ -86,7 +89,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   // TODO: Extract constants to a common file used by both Adapters.
   private static final String RPC_METHOD_LOGIN = "daemon.login";
   private static final String RPC_METHOD_GET_TORRENTS_STATUS = "core.get_torrents_status";
-  private static final String RPC_METHOD_GET_TORRENT_STATUS = "core.get_torrent_status";
+  private static final String RPC_METHOD_STATUS = "core.get_torrent_status";
   private static final String RPC_METHOD_GET_LABELS = "label.get_labels";
   private static final String RPC_METHOD_ADD = "core.add_torrent_url";
   private static final String RPC_METHOD_ADD_MAGNET = "core.add_torrent_magnet";
@@ -97,7 +100,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   private static final String RPC_METHOD_RESUME = "core.resume_torrent";
   private static final String RPC_METHOD_RESUME_ALL = "core.resume_all_torrents";
   private static final String RPC_METHOD_SETCONFIG = "core.set_config";
-  private static final String RPC_METHOD_SETFILE = "core.set_torrent_file_priorities";
+  private static final String RPC_METHOD_SET_TORRENT_OPTIONS = "core.set_torrent_options";
   private static final String RPC_METHOD_MOVESTORAGE = "core.move_storage";
   private static final String RPC_METHOD_SETTRACKERS = "core.set_torrent_trackers";
   private static final String RPC_METHOD_FORCERECHECK = "core.force_recheck";
@@ -186,31 +189,29 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
         case Retrieve:
           return doRetrieve((RetrieveTask) task);
         case AddByUrl:
-          return notSupported(task);
+          return doAddByUrl((AddByUrlTask) task);
         case AddByMagnetUrl:
-          return notSupported(task);
+          return doAddByMagnetUrl((AddByMagnetUrlTask) task);
         case AddByFile:
           return doAddByFile((AddByFileTask) task);
         case Remove:
-          return doRemove((RemoveTask)task);
+          return doRemove((RemoveTask) task);
         case Pause:
           return doControl(task, RPC_METHOD_PAUSE);
         case PauseAll:
-          sendRequest(RPC_METHOD_PAUSE_ALL);
-          return new DaemonTaskSuccessResult(task);
+          return doControlAll(task, RPC_METHOD_PAUSE_ALL);
         case Resume:
           return doControl(task, RPC_METHOD_RESUME);
         case ResumeAll:
-          sendRequest(RPC_METHOD_RESUME_ALL);
-          return new DaemonTaskSuccessResult(task);
+          return doControlAll(task, RPC_METHOD_RESUME_ALL);
         case GetFileList:
           return doGetFileList((GetFileListTask) task);
         case SetFilePriorities:
-          return notSupported(task);
+          return doSetFilePriorities((SetFilePriorityTask) task);
         case SetTransferRates:
           return notSupported(task);
         case SetLabel:
-          return notSupported(task);
+          return doSetLabel((SetLabelTask) task);
         case SetDownloadLocation:
           return notSupported(task);
         case GetTorrentDetails:
@@ -231,43 +232,31 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     }
   }
 
-  private DaemonTaskResult doAddByFile(AddByFileTask task) throws DaemonException {
-    final String file = task.getFile();
-    final byte[] bytes = loadFile(file);
-    final String fileContent = Base64.encodeBytes(bytes);
+  private DaemonTaskResult doSetFilePriorities(SetFilePriorityTask task) throws DaemonException {
+    // We first need a listing of all the files (because we can only set the priorities all at once)
+    final ArrayList<TorrentFile> files = getTorrentFiles(task.getTargetTorrent());
 
-    sendRequest(RPC_METHOD_ADD_FILE, new Object[]{ file, fileContent, new HashMap<>() });
+    // prepare args
+    final String[] torrentIds = {task.getTargetTorrent().getUniqueID()};
+    final Map<String, Object> optionsArgs = new HashMap<>();
+
+    // Build a fast access set of file to change
+    final Set<String> changedFiles = new HashSet<>();
+    for (TorrentFile file : task.getForFiles()) {
+      changedFiles.add(file.getKey());
+    }
+
+    // Build array of converted priorities
+    final ArrayList<Integer> priorities = new ArrayList<>();
+    final Priority newPriority = task.getNewPriority();
+    for (TorrentFile file : files) {
+      priorities.add(
+          convertPriority(changedFiles.contains(file.getKey()) ? newPriority : file.getPriority()));
+    }
+
+    optionsArgs.put(RPC_FILE_PRIORITIES, priorities);
+    sendRequest(RPC_METHOD_SET_TORRENT_OPTIONS, torrentIds, optionsArgs);
     return new DaemonTaskSuccessResult(task);
-  }
-
-  private byte[] loadFile(String url) throws DaemonException {
-    final File file = new File(URI.create(url));
-    final BufferedInputStream in;
-    try {
-      in = new BufferedInputStream(new FileInputStream(file));
-    } catch (FileNotFoundException e) {
-      throw new DaemonException(ExceptionType.FileAccessError, "File not found: " + file.getAbsolutePath());
-    }
-    final ByteArrayOutputStream out = new ByteArrayOutputStream();
-    try {
-      final byte[] buffer = new byte[1024];
-      while (true) {
-        final int n = in.read(buffer);
-        if (n < 0) {
-          break;
-        }
-        out.write(buffer, 0, n);
-      }
-      return out.toByteArray();
-    } catch (IOException e) {
-      throw new DaemonException(ExceptionType.FileAccessError, "Error reading file: " + file.getAbsolutePath());
-    } finally {
-      try {
-        in.close();
-      } catch (IOException e) {
-        // ignore
-      }
-    }
   }
 
   @Override
@@ -292,8 +281,9 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
       throws DaemonException {
     //noinspection unchecked
     final Map<String, Object> response = (Map<String, Object>) sendRequest(
-        RPC_METHOD_GET_TORRENT_STATUS,
-        new Object[]{task.getTargetTorrent().getUniqueID(), TORRENT_TRACKER_FIELDS});
+        RPC_METHOD_STATUS,
+        task.getTargetTorrent().getUniqueID(),
+        TORRENT_TRACKER_FIELDS);
 
     //noinspection unchecked
     final List<Map<String, Object>> trackerResponses = (List<Map<String, Object>>) response
@@ -309,48 +299,53 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   }
 
   private GetFileListTaskSuccessResult doGetFileList(GetFileListTask task) throws DaemonException {
-    final ArrayList<TorrentFile> files = new ArrayList<>();
-    //noinspection unchecked
-    final Torrent torrent = task.getTargetTorrent();
-    //noinspection unchecked
-    final Map<String, Object> response = (Map<String, Object>) sendRequest(
-        RPC_METHOD_GET_TORRENT_STATUS,
-        new Object[]{torrent.getUniqueID(), TORRENT_FILE_FIELDS});
-
-    //noinspection unchecked
-    final List<Map<String, Object>> fileMaps = (List<Map<String, Object>>) response
-        .get(RPC_FILES);
-    //noinspection unchecked
-    final List<Integer> priorities = (List<Integer>) response.get(RPC_FILE_PRIORITIES);
-    //noinspection unchecked
-    final List<Float> progresses = (List<Float>) response.get(RPC_FILE_PROGRESS);
-
-    for (int i = 0, n = fileMaps.size(); i < n; i++) {
-      final Map<String, Object> fileMap = fileMaps.get(i);
-      final int priority = priorities.get(i);
-      final float progress = progresses.get(i);
-
-      final String path = (String) fileMap.get(RPC_PATH);
-      final long size = getLong(fileMap.get(RPC_SIZE));
-      files.add(new TorrentFile(
-          fileMap.get(RPC_INDEX).toString(),
-          path,
-          path,
-          torrent.getLocationDir() + path,
-          size,
-          (long) (size * progress),
-          convertDelugePriority(priority)));
-    }
+    final ArrayList<TorrentFile> files = getTorrentFiles(task.getTargetTorrent());
     return new GetFileListTaskSuccessResult(task, files);
   }
 
   private DaemonTaskResult doControl(DaemonTask task, String method) throws DaemonException {
-    sendRequest(method, new Object[]{ new String[] { task.getTargetTorrent().getUniqueID()}});
+    final Object torrentIds = new String[]{task.getTargetTorrent().getUniqueID()};
+    sendRequest(method, torrentIds);
     return new DaemonTaskSuccessResult(task);
   }
 
   private DaemonTaskResult doRemove(RemoveTask task) throws DaemonException {
-    sendRequest(RPC_METHOD_REMOVE, new Object[]{ task.getTargetTorrent().getUniqueID(), task.includingData()});
+    sendRequest(RPC_METHOD_REMOVE, task.getTargetTorrent().getUniqueID(), task.includingData());
+    return new DaemonTaskSuccessResult(task);
+  }
+
+  @NonNull
+  private DaemonTaskResult doControlAll(DaemonTask task, String method)
+      throws DaemonException {
+    sendRequest(method);
+    return new DaemonTaskSuccessResult(task);
+  }
+
+  @NonNull
+  private DaemonTaskResult doAddByFile(AddByFileTask task) throws DaemonException {
+    final String file = task.getFile();
+    final String fileContent = Base64.encodeBytes(loadFile(file));
+    sendRequest(RPC_METHOD_ADD_FILE, file, fileContent, new HashMap<>());
+    return new DaemonTaskSuccessResult(task);
+  }
+
+  @NonNull
+  private DaemonTaskResult doAddByUrl(AddByUrlTask task) throws DaemonException {
+    sendRequest(RPC_METHOD_ADD, task.getUrl(), new HashMap<>());
+    return new DaemonTaskSuccessResult(task);
+  }
+
+  @NonNull
+  private DaemonTaskResult doAddByMagnetUrl(AddByMagnetUrlTask task) throws DaemonException {
+    sendRequest(RPC_METHOD_ADD_MAGNET, task.getUrl(), new HashMap<>());
+    return new DaemonTaskSuccessResult(task);
+  }
+
+  @NonNull
+  private DaemonTaskResult doSetLabel(SetLabelTask task) throws DaemonException {
+    final String torrentId = task.getTargetTorrent().getUniqueID();
+    final String label = task.getNewLabel() == null ? "" : task.getNewLabel();
+    sendRequest(RPC_METHOD_SETLABEL, torrentId, label);
     return new DaemonTaskSuccessResult(task);
   }
 
@@ -358,7 +353,8 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   private List<Torrent> getTorrents() throws DaemonException {
     final Map response = (Map) sendRequest(
         RPC_METHOD_GET_TORRENTS_STATUS,
-        new Object[]{new HashMap<>(), TORRENT_FIELDS});
+        new HashMap<>(),
+        TORRENT_FIELDS);
 
     final List<Torrent> torrents = new ArrayList<>();
     int id = 0;
@@ -442,15 +438,47 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     return labels;
   }
 
-  private Object sendRequest(String method) throws DaemonException {
-    return sendRequest(method, new Object[]{}, new HashMap<String, Object>());
+  @NonNull
+  private ArrayList<TorrentFile> getTorrentFiles(Torrent torrent) throws DaemonException {
+    final ArrayList<TorrentFile> files = new ArrayList<>();
+    //noinspection unchecked
+    final Map<String, Object> response = (Map<String, Object>) sendRequest(
+        RPC_METHOD_STATUS,
+        torrent.getUniqueID(),
+        TORRENT_FILE_FIELDS);
+
+    //noinspection unchecked
+    final List<Map<String, Object>> fileMaps = (List<Map<String, Object>>) response
+        .get(RPC_FILES);
+    //noinspection unchecked
+    final List<Integer> priorities = (List<Integer>) response.get(RPC_FILE_PRIORITIES);
+    //noinspection unchecked
+    final List<Float> progresses = (List<Float>) response.get(RPC_FILE_PROGRESS);
+
+    for (int i = 0, n = fileMaps.size(); i < n; i++) {
+      final Map<String, Object> fileMap = fileMaps.get(i);
+      final int priority = priorities.get(i);
+      final float progress = progresses.get(i);
+
+      final String path = (String) fileMap.get(RPC_PATH);
+      final long size = getLong(fileMap.get(RPC_SIZE));
+      files.add(new TorrentFile(
+          fileMap.get(RPC_INDEX).toString(),
+          path,
+          path,
+          torrent.getLocationDir() + path,
+          size,
+          (long) (size * progress),
+          convertDelugePriority(priority)));
+    }
+    return files;
   }
 
-  private Object sendRequest(String method, Object[] args) throws DaemonException {
-    return sendRequest(method, args, new HashMap<String, Object>());
+  private Object sendRequest(String method, Object... args) throws DaemonException {
+    return sendRequest(method, new HashMap<String, Object>(), args);
   }
 
-  private Object sendRequest(String method, Object[] args, Map<String, Object> kwargs)
+  private Object sendRequest(String method, Map<String, Object> kwargs, Object... args)
       throws DaemonException {
     final List<Object> requests = new ArrayList<>();
     final String username = settings.getUsername();
@@ -556,6 +584,38 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     }
   }
 
+  private byte[] loadFile(String url) throws DaemonException {
+    final File file = new File(URI.create(url));
+    final BufferedInputStream in;
+    try {
+      in = new BufferedInputStream(new FileInputStream(file));
+    } catch (FileNotFoundException e) {
+      throw new DaemonException(ExceptionType.FileAccessError,
+          "File not found: " + file.getAbsolutePath());
+    }
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    try {
+      final byte[] buffer = new byte[1024];
+      while (true) {
+        final int n = in.read(buffer);
+        if (n < 0) {
+          break;
+        }
+        out.write(buffer, 0, n);
+      }
+      return out.toByteArray();
+    } catch (IOException e) {
+      throw new DaemonException(ExceptionType.FileAccessError,
+          "Error reading file: " + file.getAbsolutePath());
+    } finally {
+      try {
+        in.close();
+      } catch (IOException e) {
+        // ignore
+      }
+    }
+  }
+
   @NonNull
   private DaemonTaskFailureResult notSupported(DaemonTask task) {
     return new DaemonTaskFailureResult(task,
@@ -582,6 +642,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
 
   // TODO: Move method to a common file used by both Adapters.
   private Priority convertDelugePriority(int priority) {
+    // TODO: Handle version
     switch (priority) {
       case 0:
         return Priority.Off;
@@ -591,6 +652,21 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
         return Priority.High;
       default:
         return Priority.Normal;
+    }
+  }
+
+  // TODO: Move method to a common file used by both Adapters.
+  private int convertPriority(Priority priority) {
+    // TODO: Handle version
+    switch (priority) {
+      case Off:
+        return 0;
+      case Low:
+        return 1;
+      case High:
+        return 7;
+      default:
+        return 5;
     }
   }
 
