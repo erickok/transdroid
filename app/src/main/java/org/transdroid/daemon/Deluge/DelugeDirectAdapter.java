@@ -83,92 +83,93 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
 
   public static final int DEFAULT_PORT = 58846;
 
-  private static final String METHOD_LOGIN = "daemon.login";
-  private static final String METHOD_GET_TORRENTS_STATUS = "core.get_torrents_status";
-  private static final String METHOD_GET_TORRENT_STATUS = "core.get_torrent_status";
-  private static final String METHOD_GET_LABELS = "label.get_labels";
-  private static final String METHOD_ADD = "core.add_torrent_url";
-  private static final String METHOD_ADD_MAGNET = "core.add_torrent_magnet";
-  private static final String METHOD_ADD_FILE = "core.add_torrent_file";
-  private static final String METHOD_REMOVE = "core.remove_torrent";
-  private static final String METHOD_PAUSE = "core.pause_torrent";
-  private static final String METHOD_PAUSE_ALL = "core.pause_all_torrents";
-  private static final String METHOD_RESUME = "core.resume_torrent";
-  private static final String METHOD_RESUME_ALL = "core.resume_all_torrents";
-  private static final String METHOD_SETCONFIG = "core.set_config";
-  private static final String METHOD_SETFILE = "core.set_torrent_file_priorities";
-  private static final String METHOD_MOVESTORAGE = "core.move_storage";
-  private static final String METHOD_SETTRACKERS = "core.set_torrent_trackers";
-  private static final String METHOD_FORCERECHECK = "core.force_recheck";
-  private static final String METHOD_SETLABEL = "label.set_torrent";
+  // TODO: Extract constants to a common file used by both Adapters.
+  private static final String RPC_METHOD_LOGIN = "daemon.login";
+  private static final String RPC_METHOD_GET_TORRENTS_STATUS = "core.get_torrents_status";
+  private static final String RPC_METHOD_GET_TORRENT_STATUS = "core.get_torrent_status";
+  private static final String RPC_METHOD_GET_LABELS = "label.get_labels";
+  private static final String RPC_METHOD_ADD = "core.add_torrent_url";
+  private static final String RPC_METHOD_ADD_MAGNET = "core.add_torrent_magnet";
+  private static final String RPC_METHOD_ADD_FILE = "core.add_torrent_file";
+  private static final String RPC_METHOD_REMOVE = "core.remove_torrent";
+  private static final String RPC_METHOD_PAUSE = "core.pause_torrent";
+  private static final String RPC_METHOD_PAUSE_ALL = "core.pause_all_torrents";
+  private static final String RPC_METHOD_RESUME = "core.resume_torrent";
+  private static final String RPC_METHOD_RESUME_ALL = "core.resume_all_torrents";
+  private static final String RPC_METHOD_SETCONFIG = "core.set_config";
+  private static final String RPC_METHOD_SETFILE = "core.set_torrent_file_priorities";
+  private static final String RPC_METHOD_MOVESTORAGE = "core.move_storage";
+  private static final String RPC_METHOD_SETTRACKERS = "core.set_torrent_trackers";
+  private static final String RPC_METHOD_FORCERECHECK = "core.force_recheck";
+  private static final String RPC_METHOD_SETLABEL = "label.set_torrent";
 
   private static final int RPC_ERROR = 2;
 
-  private static final String TORRENT_FIELD_HASH = "hash";
-  private static final String TORRENT_FIELD_NAME = "name";
-  private static final String TORRENT_FIELD_STATUS = "state";
-  private static final String TORRENT_FIELD_MESSAGE = "message";
-  private static final String TORRENT_FIELD_SAVEPATH = "save_path";
-  private static final String TORRENT_FIELD_RATEDOWNLOAD = "download_payload_rate";
-  private static final String TORRENT_FIELD_RATEUPLOAD = "upload_payload_rate";
-  private static final String TORRENT_FIELD_NUMSEEDS = "num_seeds";
-  private static final String TORRENT_FIELD_TOTALSEEDS = "total_seeds";
-  private static final String TORRENT_FIELD_NUMPEERS = "num_peers";
-  private static final String TORRENT_FIELD_TOTALPEERS = "total_peers";
-  private static final String TORRENT_FIELD_ETA = "eta";
-  private static final String TORRENT_FIELD_TIMEADDED = "time_added";
-  private static final String TORRENT_FIELD_DOWNLOADEDEVER = "total_done";
-  private static final String TORRENT_FIELD_UPLOADEDEVER = "total_uploaded";
-  private static final String TORRENT_FIELD_TOTALSIZE = "total_size";
-  private static final String TORRENT_FIELD_PARTDONE = "progress";
-  private static final String TORRENT_FIELD_LABEL = "label";
-  private static final String TORRENT_FIELD_TRACKERS = "trackers";
-  private static final String TORRENT_FIELD_TRACKER_STATUS = "tracker_status";
+  private static final String RPC_HASH = "hash";
+  private static final String RPC_NAME = "name";
+  private static final String RPC_STATUS = "state";
+  private static final String RPC_MESSAGE = "message";
+  private static final String RPC_SAVEPATH = "save_path";
+  private static final String RPC_RATEDOWNLOAD = "download_payload_rate";
+  private static final String RPC_RATEUPLOAD = "upload_payload_rate";
+  private static final String RPC_NUMSEEDS = "num_seeds";
+  private static final String RPC_TOTALSEEDS = "total_seeds";
+  private static final String RPC_NUMPEERS = "num_peers";
+  private static final String RPC_TOTALPEERS = "total_peers";
+  private static final String RPC_ETA = "eta";
+  private static final String RPC_TIMEADDED = "time_added";
+  private static final String RPC_DOWNLOADEDEVER = "total_done";
+  private static final String RPC_UPLOADEDEVER = "total_uploaded";
+  private static final String RPC_TOTALSIZE = "total_size";
+  private static final String RPC_PARTDONE = "progress";
+  private static final String RPC_LABEL = "label";
+  private static final String RPC_TRACKERS = "trackers";
+  private static final String RPC_TRACKER_STATUS = "tracker_status";
 
-  private static final String TORRENT_FIELD_FILES = "files";
-  private static final String TORRENT_FIELD_FILE_PROGRESS = "file_progress";
-  private static final String TORRENT_FIELD_FILE_PRIORITIES = "file_priorities";
+  private static final String RPC_FILES = "files";
+  private static final String RPC_FILE_PROGRESS = "file_progress";
+  private static final String RPC_FILE_PRIORITIES = "file_priorities";
 
-  private static final String FILE_INDEX = "index";
-  private static final String FILE_PATH = "path";
-  private static final String FILE_SIZE = "size";
+  private static final String RPC_INDEX = "index";
+  private static final String RPC_PATH = "path";
+  private static final String RPC_SIZE = "size";
 
-  private static final String TRACKER_URL = "url";
+  private static final String RPC_TRACKER_URL = "url";
 
-  private static final String MAX_DOWNLOAD = "max_download_speed";
-  private static final String MAX_UPLOAD = "max_upload_speed";
+  private static final String RPC_MAX_DOWNLOAD = "max_download_speed";
+  private static final String RPC_MAX_UPLOAD = "max_upload_speed";
 
   private static final String[] TORRENT_FIELDS = {
-      TORRENT_FIELD_HASH,
-      TORRENT_FIELD_NAME,
-      TORRENT_FIELD_STATUS,
-      TORRENT_FIELD_SAVEPATH,
-      TORRENT_FIELD_RATEDOWNLOAD,
-      TORRENT_FIELD_RATEUPLOAD,
-      TORRENT_FIELD_NUMPEERS,
-      TORRENT_FIELD_NUMSEEDS,
-      TORRENT_FIELD_TOTALPEERS,
-      TORRENT_FIELD_TOTALSEEDS,
-      TORRENT_FIELD_ETA,
-      TORRENT_FIELD_DOWNLOADEDEVER,
-      TORRENT_FIELD_UPLOADEDEVER,
-      TORRENT_FIELD_TOTALSIZE,
-      TORRENT_FIELD_PARTDONE,
-      TORRENT_FIELD_LABEL,
-      TORRENT_FIELD_MESSAGE,
-      TORRENT_FIELD_TIMEADDED,
-      TORRENT_FIELD_TRACKER_STATUS,
+      RPC_HASH,
+      RPC_NAME,
+      RPC_STATUS,
+      RPC_SAVEPATH,
+      RPC_RATEDOWNLOAD,
+      RPC_RATEUPLOAD,
+      RPC_NUMPEERS,
+      RPC_NUMSEEDS,
+      RPC_TOTALPEERS,
+      RPC_TOTALSEEDS,
+      RPC_ETA,
+      RPC_DOWNLOADEDEVER,
+      RPC_UPLOADEDEVER,
+      RPC_TOTALSIZE,
+      RPC_PARTDONE,
+      RPC_LABEL,
+      RPC_MESSAGE,
+      RPC_TIMEADDED,
+      RPC_TRACKER_STATUS,
   };
 
   private static final String[] TORRENT_FILE_FIELDS = {
-      TORRENT_FIELD_FILES,
-      TORRENT_FIELD_FILE_PROGRESS,
-      TORRENT_FIELD_FILE_PRIORITIES,
+      RPC_FILES,
+      RPC_FILE_PROGRESS,
+      RPC_FILE_PRIORITIES,
   };
 
   private static final String[] TORRENT_TRACKER_FIELDS = {
-      TORRENT_FIELD_TRACKERS,
-      TORRENT_FIELD_TRACKER_STATUS,
+      RPC_TRACKERS,
+      RPC_TRACKER_STATUS,
   };
 
   private static AtomicInteger requestIdCounter = new AtomicInteger();
@@ -193,14 +194,14 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
         case Remove:
           return doRemove((RemoveTask)task);
         case Pause:
-          return doControl(task, METHOD_PAUSE);
+          return doControl(task, RPC_METHOD_PAUSE);
         case PauseAll:
-          sendRequest(METHOD_PAUSE_ALL);
+          sendRequest(RPC_METHOD_PAUSE_ALL);
           return new DaemonTaskSuccessResult(task);
         case Resume:
-          return doControl(task, METHOD_RESUME);
+          return doControl(task, RPC_METHOD_RESUME);
         case ResumeAll:
-          sendRequest(METHOD_RESUME_ALL);
+          sendRequest(RPC_METHOD_RESUME_ALL);
           return new DaemonTaskSuccessResult(task);
         case GetFileList:
           return doGetFileList((GetFileListTask) task);
@@ -235,7 +236,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     final byte[] bytes = loadFile(file);
     final String fileContent = Base64.encodeBytes(bytes);
 
-    sendRequest(METHOD_ADD_FILE, new Object[]{ file, fileContent, new HashMap<>() });
+    sendRequest(RPC_METHOD_ADD_FILE, new Object[]{ file, fileContent, new HashMap<>() });
     return new DaemonTaskSuccessResult(task);
   }
 
@@ -291,20 +292,20 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
       throws DaemonException {
     //noinspection unchecked
     final Map<String, Object> response = (Map<String, Object>) sendRequest(
-        METHOD_GET_TORRENT_STATUS,
+        RPC_METHOD_GET_TORRENT_STATUS,
         new Object[]{task.getTargetTorrent().getUniqueID(), TORRENT_TRACKER_FIELDS});
 
     //noinspection unchecked
     final List<Map<String, Object>> trackerResponses = (List<Map<String, Object>>) response
-        .get(TORRENT_FIELD_TRACKERS);
+        .get(RPC_TRACKERS);
     final List<String> trackers = new ArrayList<>();
     for (Map<String, Object> trackerResponse : trackerResponses) {
-      trackers.add((String) trackerResponse.get(TRACKER_URL));
+      trackers.add((String) trackerResponse.get(RPC_TRACKER_URL));
     }
 
     return new GetTorrentDetailsTaskSuccessResult(task, new TorrentDetails(
         trackers,
-        Collections.singletonList((String) response.get(TORRENT_FIELD_TRACKER_STATUS))));
+        Collections.singletonList((String) response.get(RPC_TRACKER_STATUS))));
   }
 
   private GetFileListTaskSuccessResult doGetFileList(GetFileListTask task) throws DaemonException {
@@ -313,26 +314,26 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     final Torrent torrent = task.getTargetTorrent();
     //noinspection unchecked
     final Map<String, Object> response = (Map<String, Object>) sendRequest(
-        METHOD_GET_TORRENT_STATUS,
+        RPC_METHOD_GET_TORRENT_STATUS,
         new Object[]{torrent.getUniqueID(), TORRENT_FILE_FIELDS});
 
     //noinspection unchecked
     final List<Map<String, Object>> fileMaps = (List<Map<String, Object>>) response
-        .get(TORRENT_FIELD_FILES);
+        .get(RPC_FILES);
     //noinspection unchecked
-    final List<Integer> priorities = (List<Integer>) response.get(TORRENT_FIELD_FILE_PRIORITIES);
+    final List<Integer> priorities = (List<Integer>) response.get(RPC_FILE_PRIORITIES);
     //noinspection unchecked
-    final List<Float> progresses = (List<Float>) response.get(TORRENT_FIELD_FILE_PROGRESS);
+    final List<Float> progresses = (List<Float>) response.get(RPC_FILE_PROGRESS);
 
     for (int i = 0, n = fileMaps.size(); i < n; i++) {
       final Map<String, Object> fileMap = fileMaps.get(i);
       final int priority = priorities.get(i);
       final float progress = progresses.get(i);
 
-      final String path = (String) fileMap.get(FILE_PATH);
-      final long size = getLong(fileMap.get(FILE_SIZE));
+      final String path = (String) fileMap.get(RPC_PATH);
+      final long size = getLong(fileMap.get(RPC_SIZE));
       files.add(new TorrentFile(
-          fileMap.get(FILE_INDEX).toString(),
+          fileMap.get(RPC_INDEX).toString(),
           path,
           path,
           torrent.getLocationDir() + path,
@@ -349,14 +350,14 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   }
 
   private DaemonTaskResult doRemove(RemoveTask task) throws DaemonException {
-    sendRequest(METHOD_REMOVE, new Object[]{ task.getTargetTorrent().getUniqueID(), task.includingData()});
+    sendRequest(RPC_METHOD_REMOVE, new Object[]{ task.getTargetTorrent().getUniqueID(), task.includingData()});
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
   private List<Torrent> getTorrents() throws DaemonException {
     final Map response = (Map) sendRequest(
-        METHOD_GET_TORRENTS_STATUS,
+        RPC_METHOD_GET_TORRENTS_STATUS,
         new Object[]{new HashMap<>(), TORRENT_FIELDS});
 
     final List<Torrent> torrents = new ArrayList<>();
@@ -365,7 +366,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
       //noinspection unchecked
       final Map<String, Object> values = (Map<String, Object>) o;
 
-      final Object timeAdded = values.get(TORRENT_FIELD_TIMEADDED);
+      final Object timeAdded = values.get(RPC_TIMEADDED);
       final Date timeAddedDate;
       if (timeAdded != null) {
         final long seconds = (long) (float) timeAdded;
@@ -374,8 +375,8 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
         timeAddedDate = null;
       }
 
-      final String message = (String) values.get(TORRENT_FIELD_MESSAGE);
-      final String trackerStatus = (String) values.get(TORRENT_FIELD_TRACKER_STATUS);
+      final String message = (String) values.get(RPC_MESSAGE);
+      final String trackerStatus = (String) values.get(RPC_TRACKER_STATUS);
       final String error;
       if (trackerStatus.indexOf("Error") > 0) {
         error = message + (message.length() > 0 ? "\n" : "") + trackerStatus;
@@ -385,23 +386,23 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
 
       torrents.add(new Torrent(
           id++,
-          (String) values.get(TORRENT_FIELD_HASH),
-          (String) values.get(TORRENT_FIELD_NAME),
-          convertDelugeState((String) values.get(TORRENT_FIELD_STATUS)),
-          values.get(TORRENT_FIELD_SAVEPATH) + settings.getOS().getPathSeperator(),
-          (int) values.get(TORRENT_FIELD_RATEDOWNLOAD),
-          (int) values.get(TORRENT_FIELD_RATEUPLOAD),
-          (int) values.get(TORRENT_FIELD_NUMSEEDS),
-          (int) values.get(TORRENT_FIELD_TOTALSEEDS),
-          (int) values.get(TORRENT_FIELD_NUMPEERS),
-          (int) values.get(TORRENT_FIELD_TOTALPEERS),
-          getInt(values.get(TORRENT_FIELD_ETA)),
-          getLong(values.get(TORRENT_FIELD_DOWNLOADEDEVER)),
-          getLong(values.get(TORRENT_FIELD_UPLOADEDEVER)),
-          getLong(values.get(TORRENT_FIELD_TOTALSIZE)),
-          ((float) values.get(TORRENT_FIELD_PARTDONE)) / 100f,
+          (String) values.get(RPC_HASH),
+          (String) values.get(RPC_NAME),
+          convertDelugeState((String) values.get(RPC_STATUS)),
+          values.get(RPC_SAVEPATH) + settings.getOS().getPathSeperator(),
+          (int) values.get(RPC_RATEDOWNLOAD),
+          (int) values.get(RPC_RATEUPLOAD),
+          (int) values.get(RPC_NUMSEEDS),
+          (int) values.get(RPC_TOTALSEEDS),
+          (int) values.get(RPC_NUMPEERS),
+          (int) values.get(RPC_TOTALPEERS),
+          getInt(values.get(RPC_ETA)),
+          getLong(values.get(RPC_DOWNLOADEDEVER)),
+          getLong(values.get(RPC_UPLOADEDEVER)),
+          getLong(values.get(RPC_TOTALSIZE)),
+          ((float) values.get(RPC_PARTDONE)) / 100f,
           0f, // Not available
-          (String) values.get(TORRENT_FIELD_LABEL),
+          (String) values.get(RPC_LABEL),
           timeAddedDate,
           null, // Not available
           error,
@@ -432,7 +433,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
 
     // Now get all labels and add labels that have no torrents.
     //noinspection unchecked
-    final List<String> response = (List<String>) sendRequest(METHOD_GET_LABELS);
+    final List<String> response = (List<String>) sendRequest(RPC_METHOD_GET_LABELS);
     for (String label : response) {
       if (!labelCounters.containsKey(label)) {
         labels.add(new Label(label, 0));
@@ -458,7 +459,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
 
       requests.add(new Object[]{
           requestIdCounter.getAndIncrement(),
-          METHOD_LOGIN,
+          RPC_METHOD_LOGIN,
           new Object[]{username, password},
           new HashMap<>()});
     }
@@ -562,6 +563,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
             task.getMethod() + " is not supported by " + getType()));
   }
 
+  // TODO: Move method to a common file used by both Adapters.
   private static TorrentStatus convertDelugeState(String state) {
     // Deluge sends a string with status code
     if (state.compareTo("Paused") == 0) {
@@ -578,6 +580,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     return TorrentStatus.Unknown;
   }
 
+  // TODO: Move method to a common file used by both Adapters.
   private Priority convertDelugePriority(int priority) {
     switch (priority) {
       case 0:
@@ -591,7 +594,17 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     }
   }
 
+  // The API seems to change the type it uses for numbers depending on their value so the same field
+  // can be sent as an int if it's small but will be sent as a long if it's larger than an int.
+  // Similarly, a float can be sent as an int for example, if it's zero.
+  // Because of this, we need these methods to safely unbox numbers.
   private static long getLong(Object o) {
+    if (o instanceof Byte) {
+      return (long) (byte) o;
+    }
+    if (o instanceof Short) {
+      return (long) (short) o;
+    }
     if (o instanceof Integer) {
       return (long) (int) o;
     }
@@ -605,6 +618,12 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   }
 
   private static int getInt(Object o) {
+    if (o instanceof Byte) {
+      return (int) (byte) o;
+    }
+    if (o instanceof Short) {
+      return (int) (short) o;
+    }
     if (o instanceof Long) {
       return (int) (long) o;
     }
@@ -616,7 +635,6 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     }
     return (int) o;
   }
-
 
   private static class MutableInt {
 
