@@ -382,7 +382,7 @@
         <item>BitTorrent 6+</item>
         <item>Buffalo NAS -1.31</item>
         <item>Deluge 1.2+</item>
-        <item>Deluge Direct API</item>
+        <item>Deluge RPC</item>
 		<item>DLink Router BT</item>
         <item>Ktorrent</item>
         <item>qBittorrent</item>

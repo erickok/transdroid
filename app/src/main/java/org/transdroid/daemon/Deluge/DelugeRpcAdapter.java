@@ -86,7 +86,7 @@ import se.dimovski.rencode.Rencode;
  *
  * @author alon.albert
  */
-public class DelugeDirectAdapter implements IDaemonAdapter {
+public class DelugeRpcAdapter implements IDaemonAdapter {
 
   public static final int DEFAULT_PORT = 58846;
 
@@ -183,7 +183,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   private static AtomicInteger requestIdCounter = new AtomicInteger();
   private final DaemonSettings settings;
 
-  public DelugeDirectAdapter(DaemonSettings settings) {
+  public DelugeRpcAdapter(DaemonSettings settings) {
     this.settings = settings;
   }
 
