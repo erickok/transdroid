@@ -74,6 +74,7 @@ import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
+import org.transdroid.daemon.task.SetDownloadLocationTask;
 import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
@@ -217,7 +218,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
         case SetLabel:
           return doSetLabel((SetLabelTask) task);
         case SetDownloadLocation:
-          return notSupported(task);
+          return doSetDownloadLocation((SetDownloadLocationTask) task);
         case GetTorrentDetails:
           return doGetTorrentDetails((GetTorrentDetailsTask) task);
         case SetTrackers:
@@ -378,6 +379,13 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   }
 
   @NonNull
+  private DaemonTaskResult doSetDownloadLocation(SetDownloadLocationTask task)
+      throws DaemonException {
+    sendRequest(RPC_METHOD_MOVESTORAGE, getTorrentIdsArg(task), task.getNewLocation());
+    return new DaemonTaskSuccessResult(task);
+  }
+
+  @NonNull
   private List<Torrent> getTorrents() throws DaemonException {
     final Map response = (Map) sendRequest(
         RPC_METHOD_GET_TORRENTS_STATUS,
@@ -502,6 +510,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     return files;
   }
 
+  @NonNull
   private Object sendRequest(String method, Object... args)
       throws DaemonException {
     final List<Object> requests = new ArrayList<>();
@@ -549,6 +558,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     }
   }
 
+  @NonNull
   private Object readResponse(InputStream in) throws DaemonException, IOException {
     final InflaterInputStream inflater = new InflaterInputStream(in);
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -571,6 +581,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     return response.get(2);
   }
 
+  @NonNull
   private byte[] compress(byte[] bytes) throws IOException {
     ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
     try {
@@ -587,6 +598,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     }
   }
 
+  @NonNull
   private Socket openSocket() throws DaemonException {
     try {
       final TrustManager[] trustAllCerts = new TrustManager[]{new AcceptAllTrustManager()};
@@ -609,6 +621,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     }
   }
 
+  @NonNull
   private byte[] loadFile(String url) throws DaemonException {
     final File file = new File(URI.create(url));
     final BufferedInputStream in;
@@ -666,6 +679,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   }
 
   // TODO: Move method to a common file used by both Adapters.
+  @NonNull
   private Priority convertDelugePriority(int priority) {
     // TODO: Handle version
     switch (priority) {
@@ -743,14 +757,21 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     return new String[]{task.getTargetTorrent().getUniqueID()};
   }
 
+  /**
+   * Used to count torrents in labels.
+   */
   private static class MutableInt {
+
     int value = 1;
+
     MutableInt(int value) {
       this.value = value;
     }
+
     void increment() {
       ++value;
     }
+
     int get() {
       return value;
     }
