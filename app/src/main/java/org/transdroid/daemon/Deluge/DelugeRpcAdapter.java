@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -78,7 +79,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   public static final int DEFAULT_PORT = 58846;
 
   // TODO: Extract constants to a common file used by both Adapters.
-  // private static final String RPC_METHOD_INFO = "daemon.info";
+  private static final String RPC_METHOD_INFO = "daemon.info";
   private static final String RPC_METHOD_GET_TORRENTS_STATUS = "core.get_torrents_status";
   private static final String RPC_METHOD_STATUS = "core.get_torrent_status";
   private static final String RPC_METHOD_GET_LABELS = "label.get_labels";
@@ -167,6 +168,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
 
   private final DaemonSettings settings;
 
+  private int version = -1;
+
   public DelugeRpcAdapter(DaemonSettings settings) {
     this.settings = settings;
   }
@@ -235,13 +238,23 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private RetrieveTaskSuccessResult doRetrieve(DelugeRpcClient client,
-      RetrieveTask task) throws DaemonException {
+  private RetrieveTaskSuccessResult doRetrieve(DelugeRpcClient client, RetrieveTask task)
+      throws DaemonException {
 
-    final List<Torrent> torrents = getTorrents(client);
-    return new RetrieveTaskSuccessResult(task, torrents, getLabels(client, torrents));
+    final List<Object> results = client.sendRequests(
+        new Request(RPC_METHOD_INFO),
+        new Request(RPC_METHOD_GET_TORRENTS_STATUS, new HashMap<>(), TORRENT_FIELDS),
+        new Request(RPC_METHOD_GET_LABELS));
+    setVersion((String) results.get(0));
+    //noinspection unchecked
+    final Map<String, Map<String, Object>> torrentsStatus = (Map<String, Map<String, Object>>) results
+        .get(1);
+    final List<Torrent> torrents = getTorrents(torrentsStatus.values());
+    //noinspection unchecked
+    final List<Label> labels = getLabels((List<String>) results.get(2), torrents);
+
+    return new RetrieveTaskSuccessResult(task, torrents, labels);
   }
-
 
   private GetTorrentDetailsTaskSuccessResult doGetTorrentDetails(
       DelugeRpcClient client, GetTorrentDetailsTask task)
@@ -292,7 +305,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private DaemonTaskResult doAddByFile(DelugeRpcClient client, AddByFileTask task) throws DaemonException {
+  private DaemonTaskResult doAddByFile(DelugeRpcClient client, AddByFileTask task)
+      throws DaemonException {
     final String file = task.getFile();
     final String fileContent = Base64.encodeBytes(loadFile(file));
     client.sendRequest(RPC_METHOD_ADD_FILE, file, fileContent, new HashMap<>());
@@ -300,19 +314,22 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private DaemonTaskResult doAddByUrl(DelugeRpcClient client, AddByUrlTask task) throws DaemonException {
+  private DaemonTaskResult doAddByUrl(DelugeRpcClient client, AddByUrlTask task)
+      throws DaemonException {
     client.sendRequest(RPC_METHOD_ADD, task.getUrl(), new HashMap<>());
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
-  private DaemonTaskResult doAddByMagnetUrl(DelugeRpcClient client, AddByMagnetUrlTask task) throws DaemonException {
+  private DaemonTaskResult doAddByMagnetUrl(DelugeRpcClient client, AddByMagnetUrlTask task)
+      throws DaemonException {
     client.sendRequest(RPC_METHOD_ADD_MAGNET, task.getUrl(), new HashMap<>());
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
-  private DaemonTaskResult doSetLabel(DelugeRpcClient client, SetLabelTask task) throws DaemonException {
+  private DaemonTaskResult doSetLabel(DelugeRpcClient client, SetLabelTask task)
+      throws DaemonException {
     final String torrentId = task.getTargetTorrent().getUniqueID();
     final String label = task.getNewLabel() == null ? "" : task.getNewLabel();
     client.sendRequest(RPC_METHOD_SETLABEL, torrentId, label);
@@ -339,7 +356,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
     final Priority newPriority = task.getNewPriority();
     for (TorrentFile file : files) {
       priorities.add(
-          convertPriority(changedFiles.contains(file.getKey()) ? newPriority : file.getPriority()));
+          convertPriority(client,
+              changedFiles.contains(file.getKey()) ? newPriority : file.getPriority()));
     }
 
     optionsArgs.put(RPC_FILE_PRIORITIES, priorities);
@@ -348,7 +366,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private DaemonTaskResult doSetTransferRates(DelugeRpcClient client, SetTransferRatesTask task) throws DaemonException {
+  private DaemonTaskResult doSetTransferRates(DelugeRpcClient client, SetTransferRatesTask task)
+      throws DaemonException {
     final Map<String, Object> config = new HashMap<>();
     config.put(RPC_MAX_DOWNLOAD, task.getDownloadRate() == null ? -1 : task.getDownloadRate());
     config.put(RPC_MAX_UPLOAD, task.getUploadRate() == null ? -1 : task.getUploadRate());
@@ -357,7 +376,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private DaemonTaskResult doSetTrackers(DelugeRpcClient client, SetTrackersTask task) throws DaemonException {
+  private DaemonTaskResult doSetTrackers(DelugeRpcClient client, SetTrackersTask task)
+      throws DaemonException {
     final List<Map<String, Object>> trackers = new ArrayList<>();
     final ArrayList<String> newTrackers = task.getNewTrackers();
     for (int i = 0, n = newTrackers.size(); i < n; i++) {
@@ -371,32 +391,27 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private DaemonTaskResult doForceRecheck(DelugeRpcClient client, ForceRecheckTask task) throws DaemonException {
+  private DaemonTaskResult doForceRecheck(DelugeRpcClient client, ForceRecheckTask task)
+      throws DaemonException {
     client.sendRequest(RPC_METHOD_FORCERECHECK, getTorrentIdsArg(task));
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
-  private DaemonTaskResult doSetDownloadLocation(DelugeRpcClient client, SetDownloadLocationTask task)
+  private DaemonTaskResult doSetDownloadLocation(DelugeRpcClient client,
+      SetDownloadLocationTask task)
       throws DaemonException {
     client.sendRequest(RPC_METHOD_MOVESTORAGE, getTorrentIdsArg(task), task.getNewLocation());
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
-  private List<Torrent> getTorrents(DelugeRpcClient client) throws DaemonException {
-    final Map response = (Map) client.sendRequest(
-        RPC_METHOD_GET_TORRENTS_STATUS,
-        new HashMap<>(),
-        TORRENT_FIELDS);
-
+  private List<Torrent> getTorrents(Collection<Map<String, Object>> torrentMaps)
+      throws DaemonException {
     final List<Torrent> torrents = new ArrayList<>();
     int id = 0;
-    for (Object o : response.values()) {
-      //noinspection unchecked
-      final Map<String, Object> values = (Map<String, Object>) o;
-
-      final Object timeAdded = values.get(RPC_TIMEADDED);
+    for (Map<String, Object> torrentMap : torrentMaps) {
+      final Object timeAdded = torrentMap.get(RPC_TIMEADDED);
       final Date timeAddedDate;
       if (timeAdded != null) {
         final long seconds = (long) (float) timeAdded;
@@ -405,8 +420,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
         timeAddedDate = null;
       }
 
-      final String message = (String) values.get(RPC_MESSAGE);
-      final String trackerStatus = (String) values.get(RPC_TRACKER_STATUS);
+      final String message = (String) torrentMap.get(RPC_MESSAGE);
+      final String trackerStatus = (String) torrentMap.get(RPC_TRACKER_STATUS);
       final String error;
       if (trackerStatus.indexOf("Error") > 0) {
         error = message + (message.length() > 0 ? "\n" : "") + trackerStatus;
@@ -416,23 +431,23 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
 
       torrents.add(new Torrent(
           id++,
-          (String) values.get(RPC_HASH),
-          (String) values.get(RPC_NAME),
-          convertDelugeState((String) values.get(RPC_STATUS)),
-          values.get(RPC_SAVEPATH) + settings.getOS().getPathSeperator(),
-          (int) values.get(RPC_RATEDOWNLOAD),
-          (int) values.get(RPC_RATEUPLOAD),
-          (int) values.get(RPC_NUMSEEDS),
-          (int) values.get(RPC_TOTALSEEDS),
-          (int) values.get(RPC_NUMPEERS),
-          (int) values.get(RPC_TOTALPEERS),
-          getInt(values.get(RPC_ETA)),
-          getLong(values.get(RPC_DOWNLOADEDEVER)),
-          getLong(values.get(RPC_UPLOADEDEVER)),
-          getLong(values.get(RPC_TOTALSIZE)),
-          ((float) values.get(RPC_PARTDONE)) / 100f,
+          (String) torrentMap.get(RPC_HASH),
+          (String) torrentMap.get(RPC_NAME),
+          convertDelugeState((String) torrentMap.get(RPC_STATUS)),
+          torrentMap.get(RPC_SAVEPATH) + settings.getOS().getPathSeperator(),
+          ((Number) torrentMap.get(RPC_RATEDOWNLOAD)).intValue(),
+          ((Number) torrentMap.get(RPC_RATEUPLOAD)).intValue(),
+          ((Number) torrentMap.get(RPC_NUMSEEDS)).intValue(),
+          ((Number) torrentMap.get(RPC_TOTALSEEDS)).intValue(),
+          ((Number) torrentMap.get(RPC_NUMPEERS)).intValue(),
+          ((Number) torrentMap.get(RPC_TOTALPEERS)).intValue(),
+          ((Number) torrentMap.get(RPC_ETA)).intValue(),
+          ((Number) torrentMap.get(RPC_DOWNLOADEDEVER)).longValue(),
+          ((Number) torrentMap.get(RPC_UPLOADEDEVER)).longValue(),
+          ((Number) torrentMap.get(RPC_TOTALSIZE)).longValue(),
+          ((Number) torrentMap.get(RPC_PARTDONE)).floatValue() / 100f,
           0f, // Not available
-          (String) values.get(RPC_LABEL),
+          (String) torrentMap.get(RPC_LABEL),
           timeAddedDate,
           null, // Not available
           error,
@@ -442,7 +457,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private List<Label> getLabels(DelugeRpcClient client, List<Torrent> torrents) throws DaemonException {
+  private List<Label> getLabels(List<String> labelsResponse, List<Torrent> torrents)
+      throws DaemonException {
     // First get all labels that torrents and count them
     final Map<String, MutableInt> labelCounters = new HashMap<>();
     for (Torrent torrent : torrents) {
@@ -462,9 +478,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
     }
 
     // Now get all labels and add labels that have no torrents.
-    //noinspection unchecked
-    final List<String> response = (List<String>) client.sendRequest(RPC_METHOD_GET_LABELS);
-    for (String label : response) {
+    for (String label : labelsResponse) {
       if (!labelCounters.containsKey(label)) {
         labels.add(new Label(label, 0));
       }
@@ -473,7 +487,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private ArrayList<TorrentFile> getTorrentFiles(DelugeRpcClient client, Torrent torrent) throws DaemonException {
+  private ArrayList<TorrentFile> getTorrentFiles(DelugeRpcClient client, Torrent torrent)
+      throws DaemonException {
     final ArrayList<TorrentFile> files = new ArrayList<>();
     //noinspection unchecked
     final Map<String, Object> response = (Map<String, Object>) client.sendRequest(
@@ -495,7 +510,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
       final float progress = progresses.get(i);
 
       final String path = (String) fileMap.get(RPC_PATH);
-      final long size = getLong(fileMap.get(RPC_SIZE));
+      final long size = ((Number) fileMap.get(RPC_SIZE)).longValue();
       files.add(new TorrentFile(
           fileMap.get(RPC_INDEX).toString(),
           path,
@@ -503,7 +518,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
           torrent.getLocationDir() + path,
           size,
           (long) (size * progress),
-          convertDelugePriority(priority)));
+          convertDelugePriority(client, priority)));
     }
     return files;
   }
@@ -560,75 +575,97 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
 
   // TODO: Move method to a common file used by both Adapters.
   @NonNull
-  private Priority convertDelugePriority(int priority) {
-    // TODO: Handle version
-    switch (priority) {
-      case 0:
-        return Priority.Off;
-      case 1:
-        return Priority.Low;
-      case 7:
-        return Priority.High;
-      default:
-        return Priority.Normal;
+  private Priority convertDelugePriority(DelugeRpcClient client, int priority)
+      throws DaemonException {
+    ensureVersion(client);
+    if (version >= 10303) {
+      // Priority codes changes from Deluge 1.3.3 onwards
+      switch (priority) {
+        case 0:
+          return Priority.Off;
+        case 1:
+          return Priority.Low;
+        case 7:
+          return Priority.High;
+        default:
+          return Priority.Normal;
+      }
+    } else {
+      switch (priority) {
+        case 0:
+          return Priority.Off;
+        case 2:
+          return Priority.Normal;
+        case 5:
+          return Priority.High;
+        default:
+          return Priority.Low;
+      }
     }
   }
 
   // TODO: Move method to a common file used by both Adapters.
-  private int convertPriority(Priority priority) {
-    // TODO: Handle version
-    switch (priority) {
-      case Off:
-        return 0;
-      case Low:
-        return 1;
-      case High:
-        return 7;
-      default:
-        return 5;
+  private int convertPriority(DelugeRpcClient client, Priority priority) throws DaemonException {
+    ensureVersion(client);
+    if (version >= 10303) {
+      // Priority codes changes from Deluge 1.3.3 onwards
+      switch (priority) {
+        case Off:
+          return 0;
+        case Low:
+          return 1;
+        case High:
+          return 7;
+        default:
+          return 5;
+      }
+    } else {
+      switch (priority) {
+        case Off:
+          return 0;
+        case Normal:
+          return 2;
+        case High:
+          return 5;
+        default:
+          return 1;
+      }
     }
   }
 
-  // The API seems to change the type it uses for numbers depending on their value so the same field
-  // can be sent as an int if it's small but will be sent as a long if it's larger than an int.
-  // Similarly, a float can be sent as an int for example, if it's zero.
-  // Because of this, we need these methods to safely unbox numbers.
-  private static long getLong(Object o) {
-    if (o instanceof Byte) {
-      return (long) (byte) o;
+  private void ensureVersion(DelugeRpcClient client) throws DaemonException {
+    if (version > 0) {
+      return;
     }
-    if (o instanceof Short) {
-      return (long) (short) o;
-    }
-    if (o instanceof Integer) {
-      return (long) (int) o;
-    }
-    if (o instanceof Float) {
-      return (long) (float) o;
-    }
-    if (o instanceof Double) {
-      return (long) (float) o;
-    }
-    return (long) o;
+    setVersion((String) client.sendRequest(RPC_METHOD_INFO));
   }
 
-  private static int getInt(Object o) {
-    if (o instanceof Byte) {
-      return (int) (byte) o;
+  // TODO: Move to a common class
+  private void setVersion(String versionString) {
+    final String[] parts = versionString.split("\\.");
+
+    if (parts.length > 0) {
+      version = Integer.parseInt(parts[0]) * 100 * 100;
+      if (parts.length > 1) {
+        version += Integer.parseInt(parts[1]) * 100;
+        if (parts.length > 2) {
+          // For the last part only read until a non-numeric character is read
+          // For example version 3.0.0-alpha5 is read as version code 30000
+          String numbers = "";
+          for (char c : parts[2].toCharArray()) {
+            if (Character.isDigit(c))
+            // Still a number; add it to the numbers string
+            {
+              numbers += Character.toString(c);
+            } else {
+              // No longer reading numbers; stop reading
+              break;
+            }
+          }
+          version += Integer.parseInt(numbers);
+        }
+      }
     }
-    if (o instanceof Short) {
-      return (int) (short) o;
-    }
-    if (o instanceof Long) {
-      return (int) (long) o;
-    }
-    if (o instanceof Float) {
-      return (int) (float) o;
-    }
-    if (o instanceof Double) {
-      return (int) (float) o;
-    }
-    return (int) o;
   }
 
   // Return an Object so it doesn't confuse our varargs sendRequest methods.

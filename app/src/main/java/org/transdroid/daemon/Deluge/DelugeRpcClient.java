@@ -25,7 +25,7 @@ import se.dimovski.rencode.Rencode;
 /**
  * A Deluge RPC API Client.
  */
-public class DelugeRpcClient {
+class DelugeRpcClient {
   // TODO: Extract constants to a common file used by both Adapters.
   private static final String RPC_METHOD_LOGIN = "daemon.login";
   private static final int RPC_ERROR = 2;
@@ -49,7 +49,7 @@ public class DelugeRpcClient {
   }
 
   @NonNull
-  private List<Object> sendRequests(Request... requests) throws DaemonException {
+  List<Object> sendRequests(Request... requests) throws DaemonException {
     final List<Object> requestObjects = new ArrayList<>();
 
     int loginRequestId = -1;
@@ -93,11 +93,10 @@ public class DelugeRpcClient {
       final List<Object> returnValues = new ArrayList<>();
       for (Request request : requests) {
         final int requestId = request.getId();
-        final Object returnValue = returnValuesMap.get(requestId);
-        if (returnValue == null) {
+        if (!returnValuesMap.containsKey(requestId)) {
           throw new DaemonException(ExceptionType.UnexpectedResponse, "No result for request id " + requestId);
         }
-        returnValues.add(returnValue);
+        returnValues.add(returnValuesMap.get(requestId));
       }
       return returnValues;
     } catch (IOException e) {
