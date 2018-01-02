@@ -156,7 +156,7 @@ public enum Daemon {
 		case Deluge:
 			return "daemon_deluge";
 			case DelugeRpc:
-			return "daemon_deluge_direct";
+			return "daemon_deluge_rpc";
 		case DLinkRouterBT:
 			return "daemon_dlinkrouterbt";
 		case Dummy:
@@ -211,7 +211,7 @@ public enum Daemon {
 		if (daemonCode.equals("daemon_deluge")) {
 			return Deluge;
 		}
-		if (daemonCode.equals("daemon_deluge_direct")) {
+		if (daemonCode.equals("daemon_deluge_rpc")) {
 			return DelugeRpc;
 		}
 		if (daemonCode.equals("daemon_dlinkrouterbt")) {

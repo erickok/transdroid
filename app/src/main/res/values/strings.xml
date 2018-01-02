@@ -401,7 +401,7 @@
         <item>daemon_bittorrent</item>
         <item>daemon_buffalonas</item>
         <item>daemon_deluge</item>
-        <item>daemon_deluge_direct</item>
+        <item>daemon_deluge_rpc</item>
 		<item>daemon_dlinkrouterbt</item>
         <item>daemon_ktorrent</item>
         <item>daemon_qbittorrent</item>
