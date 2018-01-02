@@ -89,7 +89,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   private static final String METHOD_GET_LABELS = "label.get_labels";
   private static final String METHOD_ADD = "core.add_torrent_url";
   private static final String METHOD_ADD_MAGNET = "core.add_torrent_magnet";
-  private static final String METHOD_ADD_FILE = "web.add_torrents";
+  private static final String METHOD_ADD_FILE = "core.add_torrent_file";
   private static final String METHOD_REMOVE = "core.remove_torrent";
   private static final String METHOD_PAUSE = "core.pause_torrent";
   private static final String METHOD_PAUSE_ALL = "core.pause_all_torrents";
