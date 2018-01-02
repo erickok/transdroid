@@ -75,6 +75,7 @@ import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
+import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import se.dimovski.rencode.Rencode;
 
@@ -138,6 +139,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   private static final String RPC_PATH = "path";
   private static final String RPC_SIZE = "size";
 
+  private static final String RPC_TRACKER_TIER = "tier";
   private static final String RPC_TRACKER_URL = "url";
 
   private static final String RPC_MAX_DOWNLOAD = "max_download_speed";
@@ -218,7 +220,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
         case GetTorrentDetails:
           return doGetTorrentDetails((GetTorrentDetailsTask) task);
         case SetTrackers:
-          return notSupported(task);
+          return doSetTrackers((SetTrackersTask) task);
         case SetAlternativeMode:
           return notSupported(task);
         case GetStats:
@@ -278,8 +280,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
   }
 
   private DaemonTaskResult doControl(DaemonTask task, String method) throws DaemonException {
-    final Object torrentIds = new String[]{task.getTargetTorrent().getUniqueID()};
-    sendRequest(method, torrentIds);
+    sendRequest(method, (Object) getTorrentIdsArg(task));
     return new DaemonTaskSuccessResult(task);
   }
 
@@ -328,8 +329,7 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     // We first need a listing of all the files (because we can only set the priorities all at once)
     final ArrayList<TorrentFile> files = getTorrentFiles(task.getTargetTorrent());
 
-    // prepare args
-    final String[] torrentIds = {task.getTargetTorrent().getUniqueID()};
+    // prepare options arg
     final Map<String, Object> optionsArgs = new HashMap<>();
 
     // Build a fast access set of file to change
@@ -347,15 +347,30 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     }
 
     optionsArgs.put(RPC_FILE_PRIORITIES, priorities);
-    sendRequest(RPC_METHOD_SET_TORRENT_OPTIONS, torrentIds, optionsArgs);
+    sendRequest(RPC_METHOD_SET_TORRENT_OPTIONS, getTorrentIdsArg(task), optionsArgs);
     return new DaemonTaskSuccessResult(task);
   }
 
+  @NonNull
   private DaemonTaskResult doSetTransferRates(SetTransferRatesTask task) throws DaemonException {
     final Map<String, Object> config = new HashMap<>();
     config.put(RPC_MAX_DOWNLOAD, task.getDownloadRate() == null ? -1 : task.getDownloadRate());
     config.put(RPC_MAX_UPLOAD, task.getUploadRate() == null ? -1 : task.getUploadRate());
     sendRequest(RPC_METHOD_SETCONFIG, config);
+    return new DaemonTaskSuccessResult(task);
+  }
+
+  @NonNull
+  private DaemonTaskResult doSetTrackers(SetTrackersTask task) throws DaemonException {
+    final List<Map<String, Object>> trackers = new ArrayList<>();
+    final ArrayList<String> newTrackers = task.getNewTrackers();
+    for (int i = 0, n = newTrackers.size(); i < n; i++) {
+      final Map<String, Object> tracker = new HashMap<>();
+      tracker.put(RPC_TRACKER_TIER, i);
+      tracker.put(RPC_TRACKER_URL, newTrackers.get(i));
+      trackers.add(tracker);
+    }
+    sendRequest(RPC_METHOD_SETTRACKERS, task.getTargetTorrent().getUniqueID(), trackers);
     return new DaemonTaskSuccessResult(task);
   }
 
@@ -719,18 +734,19 @@ public class DelugeDirectAdapter implements IDaemonAdapter {
     return (int) o;
   }
 
+  @NonNull
+  private String[] getTorrentIdsArg(DaemonTask task) {
+    return new String[]{task.getTargetTorrent().getUniqueID()};
+  }
+
   private static class MutableInt {
-
     int value = 1;
-
     MutableInt(int value) {
       this.value = value;
     }
-
     void increment() {
       ++value;
     }
-
     int get() {
       return value;
     }
