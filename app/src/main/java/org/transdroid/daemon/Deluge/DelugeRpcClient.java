@@ -2,7 +2,6 @@ package org.transdroid.daemon.Deluge;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import deluge.impl.net.AcceptAllTrustManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +20,7 @@ import javax.net.ssl.TrustManager;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
+import org.transdroid.daemon.util.IgnoreSSLTrustManager;
 import se.dimovski.rencode.Rencode;
 
 /**
@@ -141,7 +141,7 @@ class DelugeRpcClient {
   @NonNull
   private Socket openSocket() throws DaemonException {
     try {
-      final TrustManager[] trustAllCerts = new TrustManager[]{new AcceptAllTrustManager()};
+      final TrustManager[] trustAllCerts = new TrustManager[]{new IgnoreSSLTrustManager()};
       final SSLContext sslContext = SSLContext.getInstance("TLSv1");
       sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
 
