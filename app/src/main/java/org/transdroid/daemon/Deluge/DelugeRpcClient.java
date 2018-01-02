@@ -20,6 +20,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
+import org.transdroid.daemon.DaemonSettings;
 import se.dimovski.rencode.Rencode;
 
 /**
@@ -30,16 +31,10 @@ class DelugeRpcClient {
   private static final String RPC_METHOD_LOGIN = "daemon.login";
   private static final int RPC_ERROR = 2;
 
-  private final String address;
-  private final int port;
-  private final String username;
-  private final String password;
+  private final DaemonSettings settings;
 
-  public DelugeRpcClient(String address, int port, String username, String password) {
-    this.address = address;
-    this.port = port;
-    this.username = username;
-    this.password = password;
+  public DelugeRpcClient(DaemonSettings settings) {
+    this.settings = settings;
   }
 
   @NonNull
@@ -53,8 +48,9 @@ class DelugeRpcClient {
     final List<Object> requestObjects = new ArrayList<>();
 
     int loginRequestId = -1;
+    final String username = settings.getUsername();
     if (!TextUtils.isEmpty(username)) {
-      final Request loginRequest = new Request(RPC_METHOD_LOGIN, username, password);
+      final Request loginRequest = new Request(RPC_METHOD_LOGIN, username, settings.getPassword());
       requestObjects.add(loginRequest.toObject());
       loginRequestId = loginRequest.getId();
     }
@@ -149,7 +145,7 @@ class DelugeRpcClient {
       final SSLContext sslContext = SSLContext.getInstance("TLSv1");
       sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
 
-      return sslContext.getSocketFactory().createSocket(address, port);
+      return sslContext.getSocketFactory().createSocket(settings.getAddress(), settings.getPort());
     } catch (NoSuchAlgorithmException e) {
       throw new DaemonException(ExceptionType.ConnectionError,
           "Failed to open socket: " + e.getMessage());

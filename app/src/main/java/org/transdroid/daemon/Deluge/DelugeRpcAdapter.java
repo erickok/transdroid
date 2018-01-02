@@ -167,56 +167,53 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   };
 
   private final DaemonSettings settings;
+  private final DelugeRpcClient client;
 
   private int version = -1;
 
   public DelugeRpcAdapter(DaemonSettings settings) {
     this.settings = settings;
+    client = new DelugeRpcClient(settings);
   }
 
   @Override
   public DaemonTaskResult executeTask(Log log, DaemonTask task) {
     try {
-      final DelugeRpcClient client = new DelugeRpcClient(
-          settings.getAddress(),
-          settings.getPort(),
-          settings.getUsername(),
-          settings.getPassword());
       switch (task.getMethod()) {
         case Retrieve:
-          return doRetrieve(client, (RetrieveTask) task);
+          return doRetrieve((RetrieveTask) task);
         case AddByUrl:
-          return doAddByUrl(client, (AddByUrlTask) task);
+          return doAddByUrl((AddByUrlTask) task);
         case AddByMagnetUrl:
-          return doAddByMagnetUrl(client, (AddByMagnetUrlTask) task);
+          return doAddByMagnetUrl((AddByMagnetUrlTask) task);
         case AddByFile:
-          return doAddByFile(client, (AddByFileTask) task);
+          return doAddByFile((AddByFileTask) task);
         case Remove:
-          return doRemove(client, (RemoveTask) task);
+          return doRemove((RemoveTask) task);
         case Pause:
-          return doControl(client, task, RPC_METHOD_PAUSE);
+          return doControl(task, RPC_METHOD_PAUSE);
         case PauseAll:
-          return doControlAll(client, task, RPC_METHOD_PAUSE_ALL);
+          return doControlAll(task, RPC_METHOD_PAUSE_ALL);
         case Resume:
-          return doControl(client, task, RPC_METHOD_RESUME);
+          return doControl(task, RPC_METHOD_RESUME);
         case ResumeAll:
-          return doControlAll(client, task, RPC_METHOD_RESUME_ALL);
+          return doControlAll(task, RPC_METHOD_RESUME_ALL);
         case GetFileList:
-          return doGetFileList(client, (GetFileListTask) task);
+          return doGetFileList((GetFileListTask) task);
         case SetFilePriorities:
-          return doSetFilePriorities(client, (SetFilePriorityTask) task);
+          return doSetFilePriorities((SetFilePriorityTask) task);
         case SetTransferRates:
-          return doSetTransferRates(client, (SetTransferRatesTask) task);
+          return doSetTransferRates((SetTransferRatesTask) task);
         case SetLabel:
-          return doSetLabel(client, (SetLabelTask) task);
+          return doSetLabel((SetLabelTask) task);
         case SetDownloadLocation:
-          return doSetDownloadLocation(client, (SetDownloadLocationTask) task);
+          return doSetDownloadLocation((SetDownloadLocationTask) task);
         case GetTorrentDetails:
-          return doGetTorrentDetails(client, (GetTorrentDetailsTask) task);
+          return doGetTorrentDetails((GetTorrentDetailsTask) task);
         case SetTrackers:
-          return doSetTrackers(client, (SetTrackersTask) task);
+          return doSetTrackers((SetTrackersTask) task);
         case ForceRecheck:
-          return doForceRecheck(client, (ForceRecheckTask) task);
+          return doForceRecheck((ForceRecheckTask) task);
         default:
           return new DaemonTaskFailureResult(task,
               new DaemonException(ExceptionType.MethodUnsupported,
@@ -229,7 +226,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
 
   @Override
   public Daemon getType() {
-    return settings.getType();
+    return Daemon.DelugeRpc;
   }
 
   @Override
@@ -238,8 +235,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private RetrieveTaskSuccessResult doRetrieve(DelugeRpcClient client, RetrieveTask task)
-      throws DaemonException {
+  private RetrieveTaskSuccessResult doRetrieve(RetrieveTask task) throws DaemonException {
 
     final List<Object> results = client.sendRequests(
         new Request(RPC_METHOD_INFO),
@@ -256,8 +252,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
     return new RetrieveTaskSuccessResult(task, torrents, labels);
   }
 
-  private GetTorrentDetailsTaskSuccessResult doGetTorrentDetails(
-      DelugeRpcClient client, GetTorrentDetailsTask task)
+  private GetTorrentDetailsTaskSuccessResult doGetTorrentDetails(GetTorrentDetailsTask task)
       throws DaemonException {
     //noinspection unchecked
     final Map<String, Object> response = (Map<String, Object>) client.sendRequest(
@@ -278,35 +273,30 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
         Collections.singletonList((String) response.get(RPC_TRACKER_STATUS))));
   }
 
-  private GetFileListTaskSuccessResult doGetFileList(
-      DelugeRpcClient client, GetFileListTask task) throws DaemonException {
-    final ArrayList<TorrentFile> files = getTorrentFiles(client, task.getTargetTorrent());
+  private GetFileListTaskSuccessResult doGetFileList(GetFileListTask task) throws DaemonException {
+    final ArrayList<TorrentFile> files = getTorrentFiles(task.getTargetTorrent());
     return new GetFileListTaskSuccessResult(task, files);
   }
 
-  private DaemonTaskResult doControl(DelugeRpcClient client, DaemonTask task, String method)
-      throws DaemonException {
+  private DaemonTaskResult doControl(DaemonTask task, String method) throws DaemonException {
     client.sendRequest(method, (Object) getTorrentIdsArg(task));
     return new DaemonTaskSuccessResult(task);
   }
 
-  private DaemonTaskResult doRemove(DelugeRpcClient client, RemoveTask task)
-      throws DaemonException {
+  private DaemonTaskResult doRemove(RemoveTask task) throws DaemonException {
     client.sendRequest(RPC_METHOD_REMOVE, task.getTargetTorrent().getUniqueID(),
         task.includingData());
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
-  private DaemonTaskResult doControlAll(DelugeRpcClient client, DaemonTask task, String method)
-      throws DaemonException {
+  private DaemonTaskResult doControlAll(DaemonTask task, String method) throws DaemonException {
     client.sendRequest(method);
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
-  private DaemonTaskResult doAddByFile(DelugeRpcClient client, AddByFileTask task)
-      throws DaemonException {
+  private DaemonTaskResult doAddByFile(AddByFileTask task) throws DaemonException {
     final String file = task.getFile();
     final String fileContent = Base64.encodeBytes(loadFile(file));
     client.sendRequest(RPC_METHOD_ADD_FILE, file, fileContent, new HashMap<>());
@@ -314,22 +304,19 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private DaemonTaskResult doAddByUrl(DelugeRpcClient client, AddByUrlTask task)
-      throws DaemonException {
+  private DaemonTaskResult doAddByUrl(AddByUrlTask task) throws DaemonException {
     client.sendRequest(RPC_METHOD_ADD, task.getUrl(), new HashMap<>());
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
-  private DaemonTaskResult doAddByMagnetUrl(DelugeRpcClient client, AddByMagnetUrlTask task)
-      throws DaemonException {
+  private DaemonTaskResult doAddByMagnetUrl(AddByMagnetUrlTask task) throws DaemonException {
     client.sendRequest(RPC_METHOD_ADD_MAGNET, task.getUrl(), new HashMap<>());
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
-  private DaemonTaskResult doSetLabel(DelugeRpcClient client, SetLabelTask task)
-      throws DaemonException {
+  private DaemonTaskResult doSetLabel(SetLabelTask task) throws DaemonException {
     final String torrentId = task.getTargetTorrent().getUniqueID();
     final String label = task.getNewLabel() == null ? "" : task.getNewLabel();
     client.sendRequest(RPC_METHOD_SETLABEL, torrentId, label);
@@ -337,10 +324,9 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private DaemonTaskResult doSetFilePriorities(DelugeRpcClient client,
-      SetFilePriorityTask task) throws DaemonException {
+  private DaemonTaskResult doSetFilePriorities(SetFilePriorityTask task) throws DaemonException {
     // We first need a listing of all the files (because we can only set the priorities all at once)
-    final ArrayList<TorrentFile> files = getTorrentFiles(client, task.getTargetTorrent());
+    final ArrayList<TorrentFile> files = getTorrentFiles(task.getTargetTorrent());
 
     // prepare options arg
     final Map<String, Object> optionsArgs = new HashMap<>();
@@ -356,8 +342,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
     final Priority newPriority = task.getNewPriority();
     for (TorrentFile file : files) {
       priorities.add(
-          convertPriority(client,
-              changedFiles.contains(file.getKey()) ? newPriority : file.getPriority()));
+          convertPriority(changedFiles.contains(file.getKey()) ? newPriority : file.getPriority()));
     }
 
     optionsArgs.put(RPC_FILE_PRIORITIES, priorities);
@@ -366,8 +351,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private DaemonTaskResult doSetTransferRates(DelugeRpcClient client, SetTransferRatesTask task)
-      throws DaemonException {
+  private DaemonTaskResult doSetTransferRates(SetTransferRatesTask task) throws DaemonException {
     final Map<String, Object> config = new HashMap<>();
     config.put(RPC_MAX_DOWNLOAD, task.getDownloadRate() == null ? -1 : task.getDownloadRate());
     config.put(RPC_MAX_UPLOAD, task.getUploadRate() == null ? -1 : task.getUploadRate());
@@ -376,8 +360,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private DaemonTaskResult doSetTrackers(DelugeRpcClient client, SetTrackersTask task)
-      throws DaemonException {
+  private DaemonTaskResult doSetTrackers(SetTrackersTask task) throws DaemonException {
     final List<Map<String, Object>> trackers = new ArrayList<>();
     final ArrayList<String> newTrackers = task.getNewTrackers();
     for (int i = 0, n = newTrackers.size(); i < n; i++) {
@@ -391,23 +374,19 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private DaemonTaskResult doForceRecheck(DelugeRpcClient client, ForceRecheckTask task)
-      throws DaemonException {
+  private DaemonTaskResult doForceRecheck(ForceRecheckTask task) throws DaemonException {
     client.sendRequest(RPC_METHOD_FORCERECHECK, getTorrentIdsArg(task));
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
-  private DaemonTaskResult doSetDownloadLocation(DelugeRpcClient client,
-      SetDownloadLocationTask task)
-      throws DaemonException {
+  private DaemonTaskResult doSetDownloadLocation(SetDownloadLocationTask task) throws DaemonException {
     client.sendRequest(RPC_METHOD_MOVESTORAGE, getTorrentIdsArg(task), task.getNewLocation());
     return new DaemonTaskSuccessResult(task);
   }
 
   @NonNull
-  private List<Torrent> getTorrents(Collection<Map<String, Object>> torrentMaps)
-      throws DaemonException {
+  private List<Torrent> getTorrents(Collection<Map<String, Object>> torrentMaps) throws DaemonException {
     final List<Torrent> torrents = new ArrayList<>();
     int id = 0;
     for (Map<String, Object> torrentMap : torrentMaps) {
@@ -457,8 +436,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private List<Label> getLabels(List<String> labelsResponse, List<Torrent> torrents)
-      throws DaemonException {
+  private List<Label> getLabels(List<String> labelsResponse, List<Torrent> torrents) throws DaemonException {
     // First get all labels that torrents and count them
     final Map<String, MutableInt> labelCounters = new HashMap<>();
     for (Torrent torrent : torrents) {
@@ -487,8 +465,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   @NonNull
-  private ArrayList<TorrentFile> getTorrentFiles(DelugeRpcClient client, Torrent torrent)
-      throws DaemonException {
+  private ArrayList<TorrentFile> getTorrentFiles(Torrent torrent) throws DaemonException {
     final ArrayList<TorrentFile> files = new ArrayList<>();
     //noinspection unchecked
     final Map<String, Object> response = (Map<String, Object>) client.sendRequest(
@@ -518,7 +495,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
           torrent.getLocationDir() + path,
           size,
           (long) (size * progress),
-          convertDelugePriority(client, priority)));
+          convertDelugePriority(priority)));
     }
     return files;
   }
@@ -575,9 +552,9 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
 
   // TODO: Move method to a common file used by both Adapters.
   @NonNull
-  private Priority convertDelugePriority(DelugeRpcClient client, int priority)
+  private Priority convertDelugePriority(int priority)
       throws DaemonException {
-    ensureVersion(client);
+    ensureVersion();
     if (version >= 10303) {
       // Priority codes changes from Deluge 1.3.3 onwards
       switch (priority) {
@@ -605,8 +582,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   }
 
   // TODO: Move method to a common file used by both Adapters.
-  private int convertPriority(DelugeRpcClient client, Priority priority) throws DaemonException {
-    ensureVersion(client);
+  private int convertPriority(Priority priority) throws DaemonException {
+    ensureVersion();
     if (version >= 10303) {
       // Priority codes changes from Deluge 1.3.3 onwards
       switch (priority) {
@@ -633,7 +610,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
     }
   }
 
-  private void ensureVersion(DelugeRpcClient client) throws DaemonException {
+  private void ensureVersion() throws DaemonException {
     if (version > 0) {
       return;
     }
@@ -673,5 +650,4 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
   private Object getTorrentIdsArg(DaemonTask task) {
     return new String[]{task.getTargetTorrent().getUniqueID()};
   }
-
 }
