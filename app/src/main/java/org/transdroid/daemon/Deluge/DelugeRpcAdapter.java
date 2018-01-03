@@ -59,7 +59,7 @@ import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEUPLOAD;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SAVEPATH;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SIZE;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_STATUS_FIELDS_ARRAY;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS_FIELDS_ARRAY;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIMEADDED;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALPEERS;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSEEDS;
@@ -232,7 +232,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter {
     final Map<String, Object> response = (Map<String, Object>) client.sendRequest(
         RPC_METHOD_STATUS,
         task.getTargetTorrent().getUniqueID(),
-        RPC_STATUS_FIELDS_ARRAY);
+        RPC_DETAILS_FIELDS_ARRAY);
 
     //noinspection unchecked
     final List<Map<String, Object>> trackerResponses = (List<Map<String, Object>>) response

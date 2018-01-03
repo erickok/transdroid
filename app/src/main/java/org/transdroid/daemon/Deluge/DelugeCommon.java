@@ -88,7 +88,7 @@ class DelugeCommon {
     static final String RPC_TRACKER_URL = "url";
     static final String RPC_UPLOADEDEVER = "total_uploaded";
 
-    static final String[] RPC_STATUS_FIELDS_ARRAY = {
+    static final String[] RPC_DETAILS_FIELDS_ARRAY = {
         RPC_TRACKERS,
         RPC_TRACKER_STATUS,
     };

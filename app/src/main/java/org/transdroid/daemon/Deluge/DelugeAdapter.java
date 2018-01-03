@@ -17,10 +17,73 @@
  */
 package org.transdroid.daemon.Deluge;
 
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DOWNLOADEDEVER;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_ETA;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FIELDS_ARRAY;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPRIORITIES;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPROGRESS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILE_FIELDS_ARRAY;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_INDEX;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_LABEL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXDOWNLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXUPLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MESSAGE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_FILE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_MAGNET;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_AUTH_LOGIN;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_FORCERECHECK;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_GET;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_MOVESTORAGE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE_ALL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_REMOVE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME_ALL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETCONFIG;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETFILE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETLABEL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETTRACKERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_STATUS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NAME;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMPEERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMSEEDS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PARAMS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PARTDONE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PATH;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEDOWNLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEUPLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RESULT;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SAVEPATH;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SESSION_ID;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SIZE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_STATUS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS_FIELDS_ARRAY;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIMEADDED;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TORRENTS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALPEERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSEEDS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSIZE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_STATUS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_TIER;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_URL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_UPLOADEDEVER;
+
 import com.android.internalcopy.http.multipart.FilePart;
 import com.android.internalcopy.http.multipart.MultipartEntity;
 import com.android.internalcopy.http.multipart.Part;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -66,69 +129,6 @@ import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.HttpHelper;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DOWNLOADEDEVER;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_ETA;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FIELDS_ARRAY;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPRIORITIES;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPROGRESS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_INDEX;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_LABEL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXDOWNLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXUPLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MESSAGE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_FILE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_MAGNET;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_FORCERECHECK;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_GET;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_AUTH_LOGIN;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_MOVESTORAGE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE_ALL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_REMOVE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME_ALL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETCONFIG;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETFILE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETLABEL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETTRACKERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NAME;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMPEERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMSEEDS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PARAMS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PARTDONE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PATH;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEDOWNLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEUPLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RESULT;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SAVEPATH;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SESSION_ID;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SIZE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIMEADDED;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TORRENTS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALPEERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSEEDS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSIZE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_TIER;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_URL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_UPLOADEDEVER;
 
 
 /**
@@ -203,9 +203,9 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 			// Array of the fields needed for files listing calls
 			JSONArray ffields = new JSONArray();
-			ffields.put(RPC_DETAILS);
-			ffields.put(RPC_FILEPROGRESS);
-			ffields.put(RPC_FILEPRIORITIES);
+			for (String field : RPC_FILE_FIELDS_ARRAY) {
+				ffields.put(field);
+			}
 
 			switch (task.getMethod()) {
 				case Retrieve:
@@ -228,8 +228,9 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 					// Array of the fields needed for files listing calls
 					JSONArray dfields = new JSONArray();
-					dfields.put(RPC_TRACKERS);
-					dfields.put(RPC_TRACKER_STATUS);
+					for (String field : RPC_DETAILS_FIELDS_ARRAY) {
+						dfields.put(field);
+					}
 
 					// Request file listing of a torrent
 					params.put(task.getTargetTorrent().getUniqueID()); // torrent_id
