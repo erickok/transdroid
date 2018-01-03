@@ -42,7 +42,7 @@ public class FilePickerHelper {
 	public static void startFilePicker(final Activity activity) {
 		try {
 			// Start a file manager that can handle the file/* file/* intents
-			activity.startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("application/x-bittorrent"),
+			activity.startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("file/*"),
 					ACTIVITY_FILEPICKER);
 		} catch (Exception e1) {
 			try {
