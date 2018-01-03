@@ -20,7 +20,6 @@ package org.transdroid.daemon.Deluge;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_DAEMON_LOGIN;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -90,7 +89,6 @@ class DelugeRpcClient implements Closeable {
       socket.getOutputStream().write(requestBytes);
       return readResponse();
     } catch (IOException e) {
-      Log.e("Alon", "Error", e);
       throw new DaemonException(ExceptionType.ConnectionError, e.getMessage());
     }
   }
