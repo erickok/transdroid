@@ -69,8 +69,8 @@ import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSEEDS;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSIZE;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKERS;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_TIER;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_URL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIER;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_URL;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_UPLOADEDEVER;
 
 import com.android.internalcopy.http.multipart.FilePart;
@@ -388,8 +388,8 @@ public class DelugeAdapter implements IDaemonAdapter {
 					// Build an JSON arrays of objcts that each have a tier (order) number and an url
 					for (int i = 0; i < trackersTask.getNewTrackers().size(); i++) {
 						JSONObject trackerObj = new JSONObject();
-						trackerObj.put(RPC_TRACKER_TIER, i);
-						trackerObj.put(RPC_TRACKER_URL, trackersTask.getNewTrackers().get(i));
+						trackerObj.put(RPC_TIER, i);
+						trackerObj.put(RPC_URL, trackersTask.getNewTrackers().get(i));
 						trackers.put(trackerObj);
 					}
 					params.put(new JSONArray().put(task.getTargetTorrent().getUniqueID()));
