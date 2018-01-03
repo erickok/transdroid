@@ -1,3 +1,20 @@
+/*
+ *	This file is part of Transdroid <http://www.transdroid.org>
+ *
+ *	Transdroid is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	Transdroid is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package org.transdroid.daemon.Deluge;
 
 import android.support.annotation.NonNull;
@@ -32,6 +49,7 @@ class DelugeCommon {
     static final String RPC_METHOD_FORCERECHECK = "core.force_recheck";
     static final String RPC_METHOD_GET = "web.update_ui";
     static final String RPC_METHOD_GET_LABELS = "label.get_labels";
+    static final String RPC_METHOD_GET_METHOD_LIST = "daemon.get_method_list";
     static final String RPC_METHOD_GET_TORRENTS_STATUS = "core.get_torrents_status";
     static final String RPC_METHOD_INFO = "daemon.info";
     static final String RPC_METHOD_MOVESTORAGE = "core.move_storage";

@@ -1,108 +1,97 @@
+/*
+ *	This file is part of Transdroid <http://www.transdroid.org>
+ *
+ *	Transdroid is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	Transdroid is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package org.transdroid.daemon.Deluge;
 
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_DAEMON_LOGIN;
+
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
+import android.util.Log;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
-import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.util.IgnoreSSLTrustManager;
 import se.dimovski.rencode.Rencode;
-
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_DAEMON_LOGIN;
 
 /**
  * A Deluge RPC API Client.
  */
-class DelugeRpcClient {
+class DelugeRpcClient implements Closeable {
+
+  private static final int RESPONSE_TYPE_INDEX = 0;
+  private static final int RESPONSE_RETURN_VALUE_INDEX = 2;
   private static final int RPC_ERROR = 2;
 
-  private final DaemonSettings settings;
+  private Socket socket;
+  private static AtomicInteger requestId = new AtomicInteger();
 
-  public DelugeRpcClient(DaemonSettings settings) {
-    this.settings = settings;
+  void connect(String address, int port, String username, String paswword) throws DaemonException {
+    try {
+      socket = openSocket(address, port);
+      if (username != null) {
+        sendRequest(RPC_METHOD_DAEMON_LOGIN, username, paswword);
+      }
+    } catch (NoSuchAlgorithmException e) {
+      throw new DaemonException(ExceptionType.ConnectionError, "Failed to open socket: " + e.getMessage());
+    } catch (UnknownHostException e) {
+      throw new DaemonException(ExceptionType.AuthenticationFailure, "Failed to sign in: " + e.getMessage());
+    } catch (IOException e) {
+      throw new DaemonException(ExceptionType.ConnectionError, "Failed to open socket: " + e.getMessage());
+    } catch (KeyManagementException e) {
+      throw new DaemonException(ExceptionType.ConnectionError, "Failed to open socket: " + e.getMessage());
+    }
+  }
+
+  public void close() {
+    try {
+      socket.close();
+    } catch (IOException e) {
+      // ignore
+    }
   }
 
   @NonNull
   Object sendRequest(String method, Object... args) throws DaemonException {
-    final List<Object> results = sendRequests(new Request(method, args));
-    return results.get(0);
-  }
-
-  @NonNull
-  List<Object> sendRequests(Request... requests) throws DaemonException {
-    final List<Object> requestObjects = new ArrayList<>();
-
-    int loginRequestId = -1;
-    final String username = settings.getUsername();
-    if (!TextUtils.isEmpty(username)) {
-      final Request loginRequest = new Request(RPC_METHOD_DAEMON_LOGIN, username, settings.getPassword());
-      requestObjects.add(loginRequest.toObject());
-      loginRequestId = loginRequest.getId();
-    }
-    for (Request request : requests) {
-      requestObjects.add(request.toObject());
-    }
     final byte[] requestBytes;
     try {
-      requestBytes = compress(Rencode.encode(requestObjects));
+      requestBytes = compress(
+          Rencode.encode(new Object[]{new Object[]{requestId.getAndIncrement(), method, args, new HashMap<>()}}));
     } catch (IOException e) {
-      throw new DaemonException(ExceptionType.ConnectionError,
-          "Failed to encode request: " + e.getMessage());
+      throw new DaemonException(ExceptionType.ConnectionError, "Failed to encode request: " + e.getMessage());
     }
-
-    final Socket socket = openSocket();
     try {
       socket.getOutputStream().write(requestBytes);
-      final SortedMap<Integer, Object> returnValuesMap = new TreeMap<>();
-      for (int i = 0, n = requestObjects.size(); i < n; i++) {
-        final Response response = readResponse(socket.getInputStream());
-        final int responseId = response.getId();
-        if (response.getType() == RPC_ERROR) {
-          if (responseId == loginRequestId) {
-            throw new DaemonException(ExceptionType.AuthenticationFailure, response.getReturnValue()
-                .toString());
-          } else {
-            throw new DaemonException(ExceptionType.UnexpectedResponse, response.getReturnValue().toString());
-          }
-        }
-        returnValuesMap.put(response.getId(), response.getReturnValue());
-      }
-      if (returnValuesMap.size() != requestObjects.size()) {
-        throw new DaemonException(ExceptionType.UnexpectedResponse, returnValuesMap.toString());
-
-      }
-      final List<Object> returnValues = new ArrayList<>();
-      for (Request request : requests) {
-        final int requestId = request.getId();
-        if (!returnValuesMap.containsKey(requestId)) {
-          throw new DaemonException(ExceptionType.UnexpectedResponse, "No result for request id " + requestId);
-        }
-        returnValues.add(returnValuesMap.get(requestId));
-      }
-      return returnValues;
+      return readResponse();
     } catch (IOException e) {
+      Log.e("Alon", "Error", e);
       throw new DaemonException(ExceptionType.ConnectionError, e.getMessage());
-    } finally {
-      try {
-        socket.close();
-      } catch (IOException e) {
-        // ignore
-      }
     }
   }
 
@@ -124,8 +113,8 @@ class DelugeRpcClient {
   }
 
   @NonNull
-  private Response readResponse(InputStream in) throws DaemonException, IOException {
-    final InflaterInputStream inflater = new InflaterInputStream(in);
+  private Object readResponse() throws DaemonException, IOException {
+    final InflaterInputStream inflater = new InflaterInputStream(socket.getInputStream());
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     final byte[] buffer = new byte[1024];
     while (inflater.available() > 0) {
@@ -135,30 +124,36 @@ class DelugeRpcClient {
       }
     }
     final byte[] bytes = out.toByteArray();
-    return new Response(Rencode.decode(bytes));
+    final Object responseObject = Rencode.decode(bytes);
+
+    if (!(responseObject instanceof List)) {
+      throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
+    }
+    final List response = (List) responseObject;
+
+    if (response.size() < RESPONSE_RETURN_VALUE_INDEX + 1) {
+      throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
+    }
+
+    if (!(response.get(RESPONSE_TYPE_INDEX) instanceof Number)) {
+      throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
+    }
+    final int type = ((Number) (response.get(RESPONSE_TYPE_INDEX))).intValue();
+
+    if (type == RPC_ERROR) {
+      throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
+    }
+
+    return response.get(2);
   }
 
   @NonNull
-  private Socket openSocket() throws DaemonException {
-    try {
-      final TrustManager[] trustAllCerts = new TrustManager[]{new IgnoreSSLTrustManager()};
-      final SSLContext sslContext = SSLContext.getInstance("TLSv1");
-      sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-
-      return sslContext.getSocketFactory().createSocket(settings.getAddress(), settings.getPort());
-    } catch (NoSuchAlgorithmException e) {
-      throw new DaemonException(ExceptionType.ConnectionError,
-          "Failed to open socket: " + e.getMessage());
-    } catch (UnknownHostException e) {
-      throw new DaemonException(ExceptionType.ConnectionError,
-          "Failed to open socket: " + e.getMessage());
-    } catch (IOException e) {
-      throw new DaemonException(ExceptionType.ConnectionError,
-          "Failed to open socket: " + e.getMessage());
-    } catch (KeyManagementException e) {
-      throw new DaemonException(ExceptionType.ConnectionError,
-          "Failed to open socket: " + e.getMessage());
-    }
+  private Socket openSocket(String address, int port)
+      throws NoSuchAlgorithmException, KeyManagementException, IOException {
+    final TrustManager[] trustAllCerts = new TrustManager[]{new IgnoreSSLTrustManager()};
+    final SSLContext sslContext = SSLContext.getInstance("TLSv1");
+    sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+    return sslContext.getSocketFactory().createSocket(address, port);
   }
 
 }
