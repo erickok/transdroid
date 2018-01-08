@@ -17,9 +17,15 @@
  */
 package org.transdroid.daemon.Synology;
 
+import com.android.internalcopy.http.multipart.FilePart;
+import com.android.internalcopy.http.multipart.MultipartEntity;
+import com.android.internalcopy.http.multipart.Part;
+import com.android.internalcopy.http.multipart.Utf8StringPart;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +41,7 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
+import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTask;
@@ -51,8 +58,11 @@ import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.Collections2;
 import org.transdroid.daemon.util.HttpHelper;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,7 +101,8 @@ public class SynologyAdapter implements IDaemonAdapter {
 					tid = task.getTargetTorrent().getUniqueID();
 					return new GetFileListTaskSuccessResult((GetFileListTask) task, fileList(log, tid));
 				case AddByFile:
-					return null;
+					createTask(log, new File(URI.create(((AddByFileTask) task).getFile())));
+					return new DaemonTaskSuccessResult(task);
 				case AddByUrl:
 					String url = ((AddByUrlTask) task).getUrl();
 					createTask(log, url);
@@ -173,6 +184,17 @@ public class SynologyAdapter implements IDaemonAdapter {
 		} catch (UnsupportedEncodingException e) {
 			// Never happens
 			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
+		}
+	}
+
+	private void createTask(Log log, File file) throws DaemonException {
+		try {
+			authPost(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
+          new Utf8StringPart("method", "create"),
+          new FilePart("file", file))
+					.ensureSuccess(log);
+		} catch (FileNotFoundException e) {
+			throw new DaemonException(ExceptionType.FileAccessError, e.getMessage());
 		}
 	}
 
@@ -394,6 +416,18 @@ public class SynologyAdapter implements IDaemonAdapter {
 		return new SynoRequest(path, api, version).get(params + "&_sid=" + sid);
 	}
 
+	/**
+	 * Authenticated POST. If no session open, a login authGet will be done before-hand. Params are
+	 * sent as {@link Part}s,
+	 */
+	private SynoResponse authPost(Log log, String api, String version, String path, Part... params)
+			throws DaemonException {
+		if (sid == null) {
+			sid = login(log);
+		}
+		return new SynoRequest(path, api, version).post(sid, params);
+	}
+
 	private DefaultHttpClient getHttpClient() throws DaemonException {
 		if (httpClient == null) {
 			httpClient = HttpHelper.createStandardHttpClient(settings, true);
@@ -477,9 +511,34 @@ public class SynologyAdapter implements IDaemonAdapter {
 			}
 		}
 
+		// Synolgy POST API seems to work only if all params are sent as POST data despite the docs
+		// saying otherwise.
+		public SynoResponse post(String sid, Part... params) throws DaemonException {
+			try {
+				final HttpPost request = new HttpPost(buildUrl());
+				final Part[] baseParams = {
+						new Utf8StringPart("_sid", sid),
+						new Utf8StringPart("version", version),
+						new Utf8StringPart("api", api),
+				};
+				final Part[] allParams = new Part[params.length + baseParams.length];
+				System.arraycopy(baseParams, 0, allParams, 0, baseParams.length);
+				System.arraycopy(params, 0, allParams, baseParams.length, params.length);
+
+				request.setEntity(new MultipartEntity(allParams));
+				return new SynoResponse(getHttpClient().execute(request));
+			} catch (IOException e) {
+				throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			}
+		}
+
 		private String buildURL(String params) {
+			return buildUrl() + "?api=" + api + "&version=" + version + params;
+		}
+
+		private String buildUrl() {
 			return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() +
-					"/webapi/" + path + "?api=" + api + "&version=" + version + params;
+					"/webapi/" + path;
 		}
 
 	}
