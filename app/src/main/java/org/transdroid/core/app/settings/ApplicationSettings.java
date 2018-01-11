@@ -16,11 +16,11 @@
  */
 package org.transdroid.core.app.settings;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -29,6 +29,7 @@ import org.androidannotations.annotations.RootContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.transdroid.core.app.search.SearchHelper;
+import org.transdroid.core.app.search.SearchHelper.SearchSortOrder;
 import org.transdroid.core.app.search.SearchSite;
 import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.StatusType;
@@ -39,11 +40,11 @@ import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.OS;
 import org.transdroid.daemon.TorrentsSortBy;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Singleton object to access all application settings, including stored servers, web search sites and RSS feeds.
@@ -556,6 +557,24 @@ public class ApplicationSettings {
 	public TorrentsSortBy getLastUsedSortOrder() {
 		return TorrentsSortBy
 				.getStatus(prefs.getInt("system_lastusedsortorder", TorrentsSortBy.Alphanumeric.getCode()));
+	}
+
+	/**
+	 * Registers the search list sort order as being last used by the user
+	 * @param currentSortOrder The sort order property the user selected last
+	 */
+	public void setLastUsedSearchSortOrder(SearchSortOrder currentSortOrder) {
+		Editor edit = prefs.edit();
+		edit.putInt("system_lastusedsearchsortorder", currentSortOrder.ordinal());
+		edit.apply();
+	}
+
+	/**
+	 * Returns the search sort order property that the user last used.
+	 * @return The last used sort order enumeration value
+	 */
+	public SearchSortOrder getLastUsedSearchSortOrder() {
+		return SearchSortOrder.values()[(prefs.getInt("system_lastusedsearchsortorder", SearchSortOrder.BySeeders.ordinal()))];
 	}
 
 	/**

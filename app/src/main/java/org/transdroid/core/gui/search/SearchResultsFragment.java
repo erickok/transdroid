@@ -102,16 +102,16 @@ public class SearchResultsFragment extends Fragment {
 
 	}
 
-	public void startSearch(String query, SearchSite site) {
+	public void startSearch(String query, SearchSite site, SearchSortOrder sortBy) {
 		loadingProgress.setVisibility(View.VISIBLE);
 		resultsList.setVisibility(View.GONE);
 		emptyText.setVisibility(View.GONE);
-		performSearch(query, site);
+		performSearch(query, site, sortBy);
 	}
 
 	@Background
-	protected void performSearch(String query, SearchSite site) {
-		results = searchHelper.search(query, site, SearchSortOrder.BySeeders);
+	protected void performSearch(String query, SearchSite site, SearchSortOrder sortBy) {
+		results = searchHelper.search(query, site, sortBy);
 		resultsSource = site.isPrivate() ? site.getKey() : null;
 		showResults();
 	}

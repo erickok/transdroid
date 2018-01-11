@@ -29,6 +29,24 @@
 		android:title="@string/action_refresh"
 		app:showAsAction="ifRoom" />
 	<item
+		android:id="@+id/action_sort"
+		android:icon="@drawable/ic_action_sort"
+		android:title="@string/action_sort"
+		app:showAsAction="ifRoom">
+		<menu>
+			<group
+				android:checkableBehavior="single">
+				<item
+					android:id="@+id/action_sort_seeders"
+					android:title="@string/action_sort_seeders" />
+				<item
+					android:id="@+id/action_sort_added"
+					android:title="@string/action_sort_added" />
+			</group>
+		</menu>
+
+	</item>
+	<item
 		android:id="@+id/action_downloadsearch"
 		android:title="@string/search_download"
 		app:showAsAction="always" />
