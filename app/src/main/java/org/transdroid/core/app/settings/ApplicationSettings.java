@@ -258,7 +258,7 @@ public class ApplicationSettings {
 			edit.remove("header_defaultserver");
 		} else if (defaultServer > order) {
 			// Move 'up' one place to account for the removed server setting
-			edit.putInt("header_defaultserver", --order);
+			edit.putString("header_defaultserver", String.valueOf(--order));
 		}
 
 		edit.apply();
