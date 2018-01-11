@@ -85,8 +85,6 @@ public class SearchActivity extends AppCompatActivity {
 	private List<SearchSetting> searchSites;
 	private SearchSetting lastUsedSite;
 	private String lastUsedQuery;
-	private MenuItem sortByAdded;
-	private MenuItem sortBySeeders;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -179,8 +177,8 @@ public class SearchActivity extends AppCompatActivity {
 		searchView.setIconifiedByDefault(false);
 		MenuItemCompat.setActionView(item, searchView);
 		searchMenu = item;
-		sortBySeeders = menu.findItem(R.id.action_sort_seeders);
-		sortByAdded = menu.findItem(R.id.action_sort_added);
+		final MenuItem sortBySeeders = menu.findItem(R.id.action_sort_seeders);
+		final MenuItem  sortByAdded = menu.findItem(R.id.action_sort_added);
 		final SearchSortOrder sortOrder = applicationSettings.getLastUsedSearchSortOrder();
 		if (sortOrder == SearchSortOrder.BySeeders) {
 			sortBySeeders.setChecked(true);
@@ -326,20 +324,20 @@ public class SearchActivity extends AppCompatActivity {
 
 	@OptionsItem(R.id.action_sort_added)
 	protected void sortByDateAdded() {
-		if (sortByAdded.isChecked()) {
+		if (applicationSettings.getLastUsedSearchSortOrder() == SearchSortOrder.Combined) {
 			return;
 		}
-		sortByAdded.setChecked(true);
+		invalidateOptionsMenu();
 		applicationSettings.setLastUsedSearchSortOrder(SearchSortOrder.Combined);
 		refreshSearch();
 	}
 
 	@OptionsItem(R.id.action_sort_seeders)
 	protected void sortBySeeders() {
-		if (sortBySeeders.isChecked()) {
+		if (applicationSettings.getLastUsedSearchSortOrder() == SearchSortOrder.BySeeders) {
 			return;
 		}
-		sortBySeeders.setChecked(true);
+		invalidateOptionsMenu();
 		applicationSettings.setLastUsedSearchSortOrder(SearchSortOrder.BySeeders);
 		refreshSearch();
 	}
