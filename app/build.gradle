@@ -42,6 +42,7 @@ dependencies {
     compile 'com.android.support:support-annotations:23.4.0'
     compile 'com.getbase:floatingactionbutton:1.10.1'
     compile 'com.nispok:snackbar:2.11.0'
+    compile 'com.github.aegnor:rencode-java:-SNAPSHOT'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.5@aar') {
         transitive = true
     }
