@@ -106,7 +106,7 @@ public class Aria2Adapter implements IDaemonAdapter {
 							buildRequest("aria2.tellStopped", new JSONArray().put(0).put(9999).put(fields));
 					params.put(active).put(waiting).put(stopped);
 
-					List<Torrent> torrents = new ArrayList<Torrent>();
+					List<Torrent> torrents = new ArrayList<>();
 					JSONArray lists = makeRequestForArray(log, params.toString());
 					for (int i = 0; i < lists.length(); i++) {
 						torrents.addAll(parseJsonRetrieveTorrents(lists.getJSONObject(i).getJSONArray("result")));
@@ -322,10 +322,10 @@ public class Aria2Adapter implements IDaemonAdapter {
 
 	}
 
-	private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONArray response) throws JSONException, DaemonException {
+	private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONArray response) throws JSONException {
 
 		// Parse response
-		ArrayList<Torrent> torrents = new ArrayList<Torrent>();
+		ArrayList<Torrent> torrents = new ArrayList<>();
 		for (int j = 0; j < response.length(); j++) {
 
 			// Add the parsed torrent to the list
@@ -392,7 +392,7 @@ public class Aria2Adapter implements IDaemonAdapter {
 	private ArrayList<TorrentFile> parseJsonFileListing(JSONArray response, Torrent torrent) throws JSONException {
 
 		// Parse response
-		ArrayList<TorrentFile> files = new ArrayList<TorrentFile>();
+		ArrayList<TorrentFile> files = new ArrayList<>();
 		for (int j = 0; j < response.length(); j++) {
 
 			JSONObject file = response.getJSONObject(j);
@@ -420,8 +420,8 @@ public class Aria2Adapter implements IDaemonAdapter {
 	private TorrentDetails parseJsonTorrentDetails(JSONObject response) throws JSONException {
 
 		// Parse response
-		List<String> trackers = new ArrayList<String>();
-		List<String> errors = new ArrayList<String>();
+		List<String> trackers = new ArrayList<>();
+		List<String> errors = new ArrayList<>();
 
 		int error = response.optInt("errorCode", 0);
 		if (error > 0) {

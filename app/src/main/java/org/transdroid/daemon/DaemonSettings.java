@@ -122,7 +122,7 @@ public final class DaemonSettings {
 		return sslTrustKey;
 	}
 	public String getFolder() {
-		return folder == null? null: (folder.startsWith("/")? folder: folder + "/");
+		return folder == null ? null : (folder.startsWith("/") ? folder : folder + "/");
 	}
 	public boolean shouldUseAuthentication() {
 		return useAuthentication;

@@ -333,7 +333,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsCustomFolder(Daemon type) {
-		return type == rTorrent || type == Tfb4rt || type == Bitflu || type == Deluge || type == DelugeRpc
+		return type == rTorrent || type == Tfb4rt || type == Bitflu || type == Deluge || type == DelugeRpc || type == Aria2
 				|| type == Transmission || type == BitTorrent || type == uTorrent || type == qBittorrent || type == Dummy;
 	}
 
