@@ -83,7 +83,7 @@
 	<string name="navigation_labels">Labels</string>
 	<string name="navigation_status_showall">All</string>
 	<string name="navigation_status_onlydown">Downloading</string>
-	<string name="navigation_status_onlyup">Uploading</string>
+	<string name="navigation_status_onlyup">Seeding</string>
 	<string name="navigation_status_onlyactive">Active</string>
 	<string name="navigation_status_onlyinactive">Inactive</string>
 	<plurals name="navigation_torrentsselected">
