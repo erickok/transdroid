@@ -101,6 +101,8 @@ public class SettingsPersistence {
 					editor.putString("server_localnetwork_" + postfix, server.getString("local_network"));
 				if (server.has("local_host"))
 					editor.putString("server_localaddress_" + postfix, server.getString("local_host"));
+				if (server.has("local_port"))
+					editor.putString("server_localport_" + postfix, server.getString("local_port"));
 				if (server.has("port"))
 					editor.putString("server_port_" + postfix, server.getString("port"));
 				if (server.has("ssl"))
@@ -266,6 +268,7 @@ public class SettingsPersistence {
 			server.put("host", prefs.getString("server_address_" + postfixi, null));
 			server.put("local_network", prefs.getString("server_localnetwork_" + postfixi, null));
 			server.put("local_host", prefs.getString("server_localaddress_" + postfixi, null));
+			server.put("local_port", prefs.getString("server_localport_" + postfixi, null));
 			server.put("port", prefs.getString("server_port_" + postfixi, null));
 			server.put("ssl", prefs.getBoolean("server_sslenabled_" + postfixi, false));
 			server.put("ssl_accept_all", prefs.getBoolean("server_ssltrustall_" + postfixi, false));
