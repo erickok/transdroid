@@ -354,7 +354,7 @@
 	<string name="pref_installhelp_info">Available at transdroid.org/download</string>
 	<string name="pref_changelog">Recent changes</string>
 	<string name="pref_about">About %1$s</string>
-	
+
 	<string name="pref_seedbox_addseedbox">Add %1$s seedbox</string>
 	<string name="pref_seedbox_client">Torrent client</string>
 	<string name="pref_seedbox_client_info">Client to connect to</string>

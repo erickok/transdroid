@@ -72,6 +72,10 @@
 			android:key="header_help"
 			android:title="@string/pref_help"
 			android:order="303" />
+		<Preference
+			android:key="header_donate"
+			android:title="@string/donate_text"
+			android:order="304" />
 	</PreferenceCategory>
 	
 </PreferenceScreen>

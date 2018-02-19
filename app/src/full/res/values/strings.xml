@@ -18,4 +18,7 @@
 
 	<string name="app_name" translatable="false">Transdroid</string>
 
+	<string name="donate_text">Donate with PayPal</string>
+	<string name="donate_url">https://paypal.me/erickoknl</string>
+
 </resources>

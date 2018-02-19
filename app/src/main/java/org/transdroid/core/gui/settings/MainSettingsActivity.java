@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -113,6 +114,13 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
 			return true;
 		}
 	};
+	private OnPreferenceClickListener onDonate = new OnPreferenceClickListener() {
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.donate_url))));
+			return true;
+		}
+	};
 	private OnServerClickedListener onServerClicked = new OnServerClickedListener() {
 		@Override
 		public void onServerClicked(ServerSetting serverSetting) {
@@ -183,6 +191,7 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
 		findPreference("header_background").setOnPreferenceClickListener(onBackgroundSettings);
 		findPreference("header_system").setOnPreferenceClickListener(onSystemSettings);
 		findPreference("header_help").setOnPreferenceClickListener(onHelpSettings);
+		findPreference("header_donate").setOnPreferenceClickListener(onDonate);
 
 		// Keep a list of the server codes and names (for default server selection)
 		List<String> serverCodes = new ArrayList<>();
