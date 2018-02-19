@@ -1,89 +1,26 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon.Deluge;
-
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DOWNLOADEDEVER;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_ETA;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FIELDS_ARRAY;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPRIORITIES;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPROGRESS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILE_FIELDS_ARRAY;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_INDEX;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_LABEL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXDOWNLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXUPLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MESSAGE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_FILE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_MAGNET;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_AUTH_LOGIN;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_FORCERECHECK;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_GET;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_MOVESTORAGE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE_ALL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_REMOVE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME_ALL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETCONFIG;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETFILE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETLABEL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETTRACKERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NAME;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMPEERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMSEEDS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PARAMS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PARTDONE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PATH;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEDOWNLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEUPLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RESULT;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SAVEPATH;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SESSION_ID;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SIZE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS_FIELDS_ARRAY;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIMEADDED;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TORRENTS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALPEERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSEEDS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSIZE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIER;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_URL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_UPLOADEDEVER;
 
 import com.android.internalcopy.http.multipart.FilePart;
 import com.android.internalcopy.http.multipart.MultipartEntity;
 import com.android.internalcopy.http.multipart.Part;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -129,6 +66,71 @@ import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.HttpHelper;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS_FIELDS_ARRAY;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DOWNLOADEDEVER;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_ETA;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FIELDS_ARRAY;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPRIORITIES;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPROGRESS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILE_FIELDS_ARRAY;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_INDEX;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_LABEL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXDOWNLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXUPLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MESSAGE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_FILE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_MAGNET;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_AUTH_LOGIN;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_FORCERECHECK;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_GET;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_MOVESTORAGE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE_ALL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_REMOVE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME_ALL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETCONFIG;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETFILE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETLABEL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETTRACKERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_STATUS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NAME;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMPEERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMSEEDS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PARAMS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PARTDONE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PATH;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEDOWNLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEUPLOAD;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RESULT;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SAVEPATH;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SESSION_ID;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SIZE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_STATUS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIER;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIMEADDED;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TORRENTS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALPEERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSEEDS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSIZE;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKERS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_STATUS;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_UPLOADEDEVER;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_URL;
 
 
 /**
@@ -220,8 +222,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 					// params.put(-1); // cache_id
 
 					JSONObject result = makeRequest(buildRequest(RPC_METHOD_GET, params), log);
-					return new RetrieveTaskSuccessResult((RetrieveTask) task,
-							parseJsonRetrieveTorrents(result.getJSONObject(RPC_RESULT)),
+					return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonRetrieveTorrents(result.getJSONObject(RPC_RESULT)),
 							parseJsonRetrieveLabels(result.getJSONObject(RPC_RESULT)));
 
 				case GetTorrentDetails:
@@ -237,8 +238,8 @@ public class DelugeAdapter implements IDaemonAdapter {
 					params.put(dfields); // keys
 
 					JSONObject dinfo = makeRequest(buildRequest(RPC_METHOD_STATUS, params), log);
-					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
-							parseJsonTorrentDetails(dinfo.getJSONObject(RPC_RESULT)));
+					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, parseJsonTorrentDetails(dinfo.getJSONObject
+							(RPC_RESULT)));
 
 				case GetFileList:
 
@@ -247,8 +248,8 @@ public class DelugeAdapter implements IDaemonAdapter {
 					params.put(ffields); // keys
 
 					JSONObject finfo = makeRequest(buildRequest(RPC_METHOD_STATUS, params), log);
-					return new GetFileListTaskSuccessResult((GetFileListTask) task,
-							parseJsonFileListing(finfo.getJSONObject(RPC_RESULT), task.getTargetTorrent()));
+					return new GetFileListTaskSuccessResult((GetFileListTask) task, parseJsonFileListing(finfo.getJSONObject(RPC_RESULT), task
+							.getTargetTorrent()));
 
 				case AddByFile:
 
@@ -290,8 +291,8 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 					// Pause a torrent
 					PauseTask pauseTask = (PauseTask) task;
-					makeRequest(buildRequest(RPC_METHOD_PAUSE, ((new JSONArray())
-									.put((new JSONArray()).put(pauseTask.getTargetTorrent().getUniqueID())))), log);
+					makeRequest(buildRequest(RPC_METHOD_PAUSE, ((new JSONArray()).put((new JSONArray()).put(pauseTask.getTargetTorrent().getUniqueID
+							())))), log);
 					return new DaemonTaskSuccessResult(task);
 
 				case PauseAll:
@@ -304,8 +305,8 @@ public class DelugeAdapter implements IDaemonAdapter {
 
 					// Resume a torrent
 					ResumeTask resumeTask = (ResumeTask) task;
-					makeRequest(buildRequest(RPC_METHOD_RESUME, ((new JSONArray())
-									.put((new JSONArray()).put(resumeTask.getTargetTorrent().getUniqueID())))), log);
+					makeRequest(buildRequest(RPC_METHOD_RESUME, ((new JSONArray()).put((new JSONArray()).put(resumeTask.getTargetTorrent()
+							.getUniqueID())))), log);
 					return new DaemonTaskSuccessResult(task);
 
 				case ResumeAll:
@@ -323,8 +324,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 					params.put(task.getTargetTorrent().getUniqueID()); // torrent_id
 					params.put(ffields); // keys
 					JSONObject pinfo = makeRequest(buildRequest(RPC_METHOD_STATUS, params), log);
-					ArrayList<TorrentFile> pfiles =
-							parseJsonFileListing(pinfo.getJSONObject(RPC_RESULT), prioTask.getTargetTorrent());
+					ArrayList<TorrentFile> pfiles = parseJsonFileListing(pinfo.getJSONObject(RPC_RESULT), prioTask.getTargetTorrent());
 
 					// Now prepare the new list of priorities
 					params = new JSONArray();
@@ -400,14 +400,13 @@ public class DelugeAdapter implements IDaemonAdapter {
 				case ForceRecheck:
 
 					// Pause a torrent
-					makeRequest(buildRequest(RPC_METHOD_FORCERECHECK,
-							((new JSONArray()).put((new JSONArray()).put(task.getTargetTorrent().getUniqueID())))),
-							log);
+					makeRequest(buildRequest(RPC_METHOD_FORCERECHECK, ((new JSONArray()).put((new JSONArray()).put(task.getTargetTorrent()
+							.getUniqueID())))), log);
 					return new DaemonTaskSuccessResult(task);
 
 				default:
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
-							task.getMethod() + " is not supported by " + getType()));
+					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not " +
+							"supported by " + getType()));
 			}
 		} catch (JSONException e) {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
@@ -518,9 +517,8 @@ public class DelugeAdapter implements IDaemonAdapter {
 				// Still no session cookie?
 				if (sessionCookie == null) {
 					// Set error message and cancel the action that was requested
-					throw new DaemonException(ExceptionType.AuthenticationFailure,
-							"Password error? Server time difference? No (valid) cookie in response and JSON was: " +
-									HttpHelper.convertStreamToString(instream));
+					throw new DaemonException(ExceptionType.AuthenticationFailure, "Password error? Server time difference? No (valid) cookie in " +
+							"response and JSON was: " + HttpHelper.convertStreamToString(instream));
 				}
 
 			}
@@ -557,9 +555,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 				JSONObject json = new JSONObject(result);
 				instream.close();
 
-				log.d(LOG_NAME, "Success: " +
-						(result.length() > 300 ? result.substring(0, 300) + "... (" + result.length() + " chars)" :
-								result));
+				log.d(LOG_NAME, "Success: " + (result.length() > 300 ? result.substring(0, 300) + "... (" + result.length() + " chars)" : result));
 
 				// Return JSON object
 				return json;
@@ -585,8 +581,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	 */
 	private void initialise() throws DaemonException {
 
-		httpclient = HttpHelper.createStandardHttpClient(settings,
-				settings.getUsername() != null && !settings.getUsername().equals(""));
+		httpclient = HttpHelper.createStandardHttpClient(settings, settings.getUsername() != null && !settings.getUsername().equals(""));
 		httpclient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
 		httpclient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
 
@@ -597,18 +592,17 @@ public class DelugeAdapter implements IDaemonAdapter {
 	 * @return The URL of the RPC API
 	 */
 	private String buildWebUIUrl() {
-		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() +
-				(settings.getFolder() == null ? "" : settings.getFolder());
+		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + (settings.getFolder() == null ? ""
+				: settings.getFolder());
 	}
 
 	private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONObject response) throws JSONException, DaemonException {
 
 		// Parse response
-		ArrayList<Torrent> torrents = new ArrayList<Torrent>();
+		ArrayList<Torrent> torrents = new ArrayList<>();
 		if (response.isNull(RPC_TORRENTS)) {
-			throw new DaemonException(ExceptionType.NotConnected,
-					"Web interface probably not connected to a daemon yet, because 'torrents' is null: " +
-							response.toString());
+			throw new DaemonException(ExceptionType.NotConnected, "Web interface probably not connected to a daemon yet, because 'torrents' is null:" +
+					" " + response.toString());
 		}
 		JSONObject objects = response.getJSONObject(RPC_TORRENTS);
 		JSONArray names = objects.names();
@@ -668,7 +662,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 		JSONArray labels = filters.getJSONArray("label");
 
 		// Parse response
-		ArrayList<Label> allLabels = new ArrayList<Label>();
+		ArrayList<Label> allLabels = new ArrayList<>();
 		for (int i = 0; i < labels.length(); i++) {
 			JSONArray labelAndCount = labels.getJSONArray(i);
 			if (labelAndCount.getString(0).equals("All")) {
@@ -683,7 +677,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	private ArrayList<TorrentFile> parseJsonFileListing(JSONObject response, Torrent torrent) throws JSONException {
 
 		// Parse response
-		ArrayList<TorrentFile> files = new ArrayList<TorrentFile>();
+		ArrayList<TorrentFile> files = new ArrayList<>();
 		JSONArray objects = response.getJSONArray(RPC_DETAILS);
 		JSONArray progress = response.getJSONArray(RPC_FILEPROGRESS);
 		JSONArray priorities = response.getJSONArray(RPC_FILEPRIORITIES);
@@ -713,14 +707,14 @@ public class DelugeAdapter implements IDaemonAdapter {
 	private TorrentDetails parseJsonTorrentDetails(JSONObject response) throws JSONException {
 
 		// Parse response
-		List<String> trackers = new ArrayList<String>();
+		List<String> trackers = new ArrayList<>();
 		JSONArray trackerObjects = response.getJSONArray(RPC_TRACKERS);
 		if (trackerObjects != null && trackerObjects.length() > 0) {
 			for (int i = 0; i < trackerObjects.length(); i++) {
 				trackers.add(trackerObjects.getJSONObject(i).getString("url"));
 			}
 		}
-		List<String> errors = new ArrayList<String>();
+		List<String> errors = new ArrayList<>();
 		String trackerStatus = response.getString(RPC_TRACKER_STATUS);
 		errors.add(trackerStatus);
 
