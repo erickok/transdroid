@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +45,7 @@ import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.search.SearchHelper;
+import org.transdroid.core.app.search.SearchHelper.SearchSortOrder;
 import org.transdroid.core.app.search.SearchSite;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.SystemSettings_;
@@ -177,6 +177,14 @@ public class SearchActivity extends AppCompatActivity {
 		searchView.setIconifiedByDefault(false);
 		MenuItemCompat.setActionView(item, searchView);
 		searchMenu = item;
+		final MenuItem sortBySeeders = menu.findItem(R.id.action_sort_seeders);
+		final MenuItem  sortByAdded = menu.findItem(R.id.action_sort_added);
+		final SearchSortOrder sortOrder = applicationSettings.getLastUsedSearchSortOrder();
+		if (sortOrder == SearchSortOrder.BySeeders) {
+			sortBySeeders.setChecked(true);
+		} else {
+			sortByAdded.setChecked(true);
+		}
 		return true;
 	}
 
@@ -304,7 +312,7 @@ public class SearchActivity extends AppCompatActivity {
 				getSupportActionBar()
 						.setTitle(NavigationHelper.buildCondensedFontString(getString(R.string.search_queryonsite, lastUsedQuery, lastUsedSite.getName())));
 			// Ask the results fragment to start a search for the specified query
-			fragmentResults.startSearch(lastUsedQuery, (SearchSite) lastUsedSite);
+			fragmentResults.startSearch(lastUsedQuery, (SearchSite) lastUsedSite, applicationSettings.getLastUsedSearchSortOrder());
 
 		}
 	}
@@ -314,4 +322,23 @@ public class SearchActivity extends AppCompatActivity {
 		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.transdroid.org/latest-search")));
 	}
 
+	@OptionsItem(R.id.action_sort_added)
+	protected void sortByDateAdded() {
+		if (applicationSettings.getLastUsedSearchSortOrder() == SearchSortOrder.Combined) {
+			return;
+		}
+		invalidateOptionsMenu();
+		applicationSettings.setLastUsedSearchSortOrder(SearchSortOrder.Combined);
+		refreshSearch();
+	}
+
+	@OptionsItem(R.id.action_sort_seeders)
+	protected void sortBySeeders() {
+		if (applicationSettings.getLastUsedSearchSortOrder() == SearchSortOrder.BySeeders) {
+			return;
+		}
+		invalidateOptionsMenu();
+		applicationSettings.setLastUsedSearchSortOrder(SearchSortOrder.BySeeders);
+		refreshSearch();
+	}
 }

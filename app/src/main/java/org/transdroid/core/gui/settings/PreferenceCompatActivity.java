@@ -33,12 +33,6 @@ public class PreferenceCompatActivity extends PreferenceActivity implements AppC
 	}
 
 	@Override
-	public void setTitle(CharSequence title) {
-		super.setTitle(title);
-		acd.setTitle(title);
-	}
-
-	@Override
 	protected void onStop() {
 		super.onStop();
 		acd.onStop();

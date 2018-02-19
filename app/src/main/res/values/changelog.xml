@@ -17,6 +17,12 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.5.10\n
+Many thanks to alonalbert for his contributions!\n
+- Added Deluge via RPC adapter\n
+- Fixed issues with adding by file on newer Android versions\n
+- Small crash fixes here and there\n
+\n
 Transdroid 2.5.9\n
 - rTorrent improved parsing speed\n
 - qBittorrent label support\n
@@ -27,7 +33,6 @@ Transdroid 2.5.9\n
 - Explicit leanback (Android TV) support\n
 - FTP url link construction fix\n
 \n
-Transdroid 2.5.7\n
 Transdroid 2.5.8\n
 - Deluge 1.3.14+ fix\n
 \n
