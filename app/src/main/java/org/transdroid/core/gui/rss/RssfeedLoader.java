@@ -76,6 +76,7 @@ public class RssfeedLoader {
 			}
 		} else {
 			// Use the url of the last RSS item the last time the feed was viewed by the user to count new items
+			newCount = 0;
 			boolean isNew = true;
 			for (Item item : channel.getItems()) {
 				if (item.getTheLink() != null && setting.getLastViewedItemUrl() != null && item.getTheLink().equals(setting.getLastViewedItemUrl())) {
