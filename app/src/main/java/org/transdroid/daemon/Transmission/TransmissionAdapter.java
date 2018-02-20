@@ -1,21 +1,23 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon.Transmission;
+
+import android.text.TextUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -416,6 +418,13 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				httppost.addHeader(sessionHeader, sessionToken);
 			}
 
+			// Force preemptive authentication. This makes sure there is an 'Authentication: ' header being send before trying and failing and
+			// retrying by the basic authentication mechanism of DefaultHttpClient
+			if (settings.shouldUseAuthentication() && !TextUtils.isEmpty(settings.getUsername())) {
+				httppost.addHeader("Authorization", "Basic " +
+						Base64.encodeBytes((settings.getUsername() + ":" + settings.getPassword()).getBytes()));
+			}
+
 			// Execute
 			log.d(LOG_NAME, "Execute " + data.getString("method") + " request to " + httppost.getURI().toString());
 			HttpResponse response = httpclient.execute(httppost);
@@ -447,7 +456,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				java.io.InputStream instream = entity.getContent();
 				String result = HttpHelper.convertStreamToString(instream);
 				log.d(LOG_NAME, "Received content response starting with " +
-								(result.length() > 100 ? result.substring(0, 100) + "..." : result));
+						(result.length() > 100 ? result.substring(0, 100) + "..." : result));
 				JSONObject json = new JSONObject(result);
 				instream.close();
 
@@ -499,7 +508,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONObject response) throws JSONException {
 
 		// Parse response
-		ArrayList<Torrent> torrents = new ArrayList<Torrent>();
+		ArrayList<Torrent> torrents = new ArrayList<>();
 		JSONArray rarray = response.getJSONArray("torrents");
 		for (int i = 0; i < rarray.length(); i++) {
 			JSONObject tor = rarray.getJSONObject(i);
@@ -580,7 +589,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 	private ArrayList<TorrentFile> parseJsonFileList(JSONObject response, Torrent torrent) throws JSONException {
 
 		// Parse response
-		ArrayList<TorrentFile> torrentfiles = new ArrayList<TorrentFile>();
+		ArrayList<TorrentFile> torrentfiles = new ArrayList<>();
 		JSONArray rarray = response.getJSONArray("torrents");
 		if (rarray.length() > 0) {
 			JSONArray files = rarray.getJSONObject(0).getJSONArray("files");
@@ -628,12 +637,12 @@ public class TransmissionAdapter implements IDaemonAdapter {
 		JSONArray rarray = response.getJSONArray("torrents");
 		if (rarray.length() > 0) {
 			JSONArray trackersList = rarray.getJSONObject(0).getJSONArray("trackers");
-			List<String> trackers = new ArrayList<String>();
+			List<String> trackers = new ArrayList<>();
 			for (int i = 0; i < trackersList.length(); i++) {
 				trackers.add(trackersList.getJSONObject(i).getString("announce"));
 			}
 			JSONArray trackerStatsList = rarray.getJSONObject(0).getJSONArray("trackerStats");
-			List<String> errors = new ArrayList<String>();
+			List<String> errors = new ArrayList<>();
 			for (int i = 0; i < trackerStatsList.length(); i++) {
 				// Get the tracker response and if it was an error then add it
 				String lar = trackerStatsList.getJSONObject(i).getString("lastAnnounceResult");
