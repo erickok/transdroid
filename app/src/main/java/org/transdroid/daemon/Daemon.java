@@ -401,6 +401,6 @@ public enum Daemon {
 	}
 
 	public static boolean supportsRemoteRssManagement(Daemon type) {
-		return type == uTorrent;
+		return type == uTorrent || type == DelugeRpc;
 	}
 }

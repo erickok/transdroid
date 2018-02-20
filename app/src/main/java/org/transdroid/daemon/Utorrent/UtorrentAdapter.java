@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
+import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
@@ -657,7 +658,18 @@ public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 		return this.settings;
 	}
 
-	public ArrayList<RemoteRssChannel> getRemoteRssChannels() {
+	public ArrayList<RemoteRssChannel> getRemoteRssChannels(Log log) {
 		return remoteRssChannels;
 	}
+
+	@Override
+	public void downloadRemoteRssItem(Log log, RemoteRssItem rssItem, RemoteRssChannel rssChannel) throws DaemonException {
+		final String link = rssItem.getLink();
+		try {
+			makeUtorrentRequest(log, "&action=add-url&s=" + URLEncoder.encode(link, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new DaemonException(ExceptionType.ParsingFailed, "Invalid URL: " + link);
+		}
+	}
+
 }

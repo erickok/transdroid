@@ -1,5 +1,8 @@
 package org.transdroid.core.gui.remoterss.data;
 
+import org.transdroid.core.gui.log.Log;
+import org.transdroid.daemon.DaemonException;
+
 import java.util.ArrayList;
 
 /**
@@ -8,5 +11,7 @@ import java.util.ArrayList;
  * @author Twig
  */
 public interface RemoteRssSupplier {
-    ArrayList<RemoteRssChannel> getRemoteRssChannels();
+    ArrayList<RemoteRssChannel> getRemoteRssChannels(Log log) throws DaemonException;
+
+    void downloadRemoteRssItem(Log log, RemoteRssItem rssItem, RemoteRssChannel rssChannel) throws DaemonException;
 }

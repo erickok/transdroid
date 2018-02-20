@@ -23,17 +23,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/remoterss_no_files"
+            android:text="@string/remoterss_loading"
             android:gravity="center"
-            android:id="@+id/remoterss_no_files_message"/>
+            android:id="@+id/remoterss_status_message"/>
 
-        <ListView
-            android:id="@+id/torrents_list"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:choiceMode="multipleChoiceModal"
-            android:clipToPadding="false"
-            tools:listitem="@layout/list_item_remoterssitem"
-            tools:visibility="visible"/>
-
+            android:layout_height="match_parent">
+                <ListView
+                    android:id="@+id/torrents_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    tools:listitem="@layout/list_item_remoterssitem"
+                    tools:visibility="visible"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

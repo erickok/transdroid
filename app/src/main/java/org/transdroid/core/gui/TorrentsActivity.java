@@ -84,8 +84,6 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.remoterss.RemoteRssActivity_;
-import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
-import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
@@ -854,18 +852,11 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	}
 
 	@OptionsItem(R.id.action_remoterss)
+	@Background
 	protected void openRemoteRss() {
-		ArrayList<RemoteRssChannel> rssFeedItems = ((RemoteRssSupplier) (currentConnection)).getRemoteRssChannels();
-
-		if (rssFeedItems.size() == 0) {
-			return;
-		}
-
-		// Passing the items over as a feed can overload the Intent size limit and crash without a stack trace!
-		RemoteRssActivity_.intent(this)
-//						  .feeds(rssFeedItems)
-						  .start()
-		;
+		// Passing the items over as a feed can overload the Intent size limit and crash without a stack trace.
+		// Loading the items can take a while so we don't want to load them here and again in the RemoteRssActivity.
+		RemoteRssActivity_.intent(this).start();
 	}
 
 	@OptionsItem(R.id.action_help)
