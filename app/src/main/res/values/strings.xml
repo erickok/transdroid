@@ -214,6 +214,7 @@
 
 	<string name="remoterss_filter_allrecent">(All recent)</string>
 	<string name="remoterss_no_files">No torrent files found.\n\nAre your RSS feeds configured correctly?</string>
+	<string name="remoterss_loading">Loading RSS feeds…</string>
 
 	<string name="widget_loading">Loading&#8230;</string>
 	<string name="widget_opentransdroid">Open Transdroid</string>

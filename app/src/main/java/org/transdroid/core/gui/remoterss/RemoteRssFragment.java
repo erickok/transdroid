@@ -32,20 +32,16 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
+import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
-import org.transdroid.daemon.Daemon;
-import org.transdroid.daemon.IDaemonAdapter;
-import org.transdroid.daemon.task.AddByMagnetUrlTask;
-import org.transdroid.daemon.task.AddByUrlTask;
-import org.transdroid.daemon.task.DaemonTaskFailureResult;
-import org.transdroid.daemon.task.DaemonTaskResult;
+import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
+import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 
 import java.util.ArrayList;
@@ -62,7 +58,6 @@ public class RemoteRssFragment extends Fragment {
 	protected Log log;
 
 	// Local data
-	@InstanceState
 	protected ArrayList<RemoteRssItem> remoteRssItems;
 
 	// Views
@@ -75,7 +70,7 @@ public class RemoteRssFragment extends Fragment {
 	@ViewById
 	protected ListView torrentsList;
 	@ViewById
-	protected TextView remoterssNoFilesMessage;
+	protected TextView remoterssStatusMessage;
 
 	protected RemoteRssItemsAdapter adapter;
 
@@ -100,27 +95,45 @@ public class RemoteRssFragment extends Fragment {
 		torrentsList.setAdapter(adapter);
 		torrentsList.setFastScrollEnabled(true);
 
-		// Restore the fragment state (on orientation changes et al.)
-		if (remoteRssItems != null) {
-			updateRemoteItems(remoteRssItems);
+		// Allow pulls on the list view to refresh the torrents
+		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
+			swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+				@Override
+				public void onRefresh() {
+					((RefreshableActivity) getActivity()).refreshScreen();
+				}
+			});
 		}
 	}
 
 	/**
 	 * Updates the UI with a new list of RSS items.
 	 */
-	public void updateRemoteItems(List<RemoteRssItem> remoteItems) {
+	public void updateRemoteItems(List<RemoteRssItem> remoteItems, boolean scrollToTop) {
 		remoteRssItems = new ArrayList<>(remoteItems);
 		adapter.updateItems(remoteRssItems);
-		torrentsList.smoothScrollToPosition(0);
-
+		if (scrollToTop) {
+			torrentsList.smoothScrollToPosition(0);
+		}
 		// Show/hide a nice message if there are no items to show
-		remoterssNoFilesMessage.setVisibility(remoteRssItems.size() > 0 ? View.GONE : View.VISIBLE);
+		if (remoteRssItems.size() > 0) {
+			remoterssStatusMessage.setVisibility(View.GONE);
+		}
+		else {
+			remoterssStatusMessage.setVisibility(View.VISIBLE);
+			remoterssStatusMessage.setText(R.string.remoterss_no_files);
+		}
+		swipeRefreshLayout.setRefreshing(false);
+	}
+
+	@UiThread
+	public void setRefreshing(boolean refreshing) {
+		swipeRefreshLayout.setRefreshing(refreshing);
 	}
 
 	/**
 	 * When the user clicks on an item, prepare to download it.
-     */
+	 */
 	@ItemClick(resName = "torrents_list")
 	protected void detailsListClicked(int position) {
 		RemoteRssItem item = (RemoteRssItem) adapter.getItem(position);
@@ -129,33 +142,17 @@ public class RemoteRssFragment extends Fragment {
 
 	/**
 	 * Download the item in a background thread and display success/fail accordingly.
-     */
+	 */
 	@Background
 	protected void downloadRemoteRssItem(RemoteRssItem item) {
-		RemoteRssActivity activity = (RemoteRssActivity) getActivity();
-		IDaemonAdapter currentConnection = activity.getCurrentConnection();
-		DaemonTaskResult result;
+		final RemoteRssActivity activity = (RemoteRssActivity) getActivity();
+		final RemoteRssSupplier supplier = (RemoteRssSupplier) activity.getCurrentConnection();
 
-		if (item.isMagnetLink()) {
-			// Check if it's supported
-			if (!Daemon.supportsAddByMagnetUrl(currentConnection.getType())) {
-				onTaskFailed(getString(R.string.error_magnet_links_unsupported));
-				return;
-			}
-
-			AddByMagnetUrlTask addByMagnetUrlTask = AddByMagnetUrlTask.create(currentConnection, item.getLink());
-			result = addByMagnetUrlTask.execute(log);
-		}
-		else {
-			result = AddByUrlTask.create(currentConnection, item.getLink(), item.getTitle()).execute(log);
-		}
-
-		if (result instanceof DaemonTaskSuccessResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, item.getTitle()));
-		} else if (result instanceof DaemonTaskFailureResult){
-			DaemonTaskFailureResult failure = ((DaemonTaskFailureResult) result);
-			String message = getString(LocalTorrent.getResourceForDaemonException(failure.getException()));
-			onTaskFailed(message);
+		try {
+			supplier.downloadRemoteRssItem(log, item, activity.getChannel(item.getSourceName()));
+			onTaskSucceeded(null, getString(R.string.result_added, item.getTitle()));
+		} catch (DaemonException e) {
+			onTaskFailed(getString(LocalTorrent.getResourceForDaemonException(e)));
 		}
 	}
 
@@ -167,9 +164,9 @@ public class RemoteRssFragment extends Fragment {
 	@UiThread
 	protected void onTaskFailed(String message) {
 		SnackbarManager.show(Snackbar.with(getActivity())
-			 .text(message)
-			 .colorResource(R.color.red)
-			 .type(SnackbarType.MULTI_LINE)
+				.text(message)
+				.colorResource(R.color.red)
+				.type(SnackbarType.MULTI_LINE)
 		);
 	}
 }

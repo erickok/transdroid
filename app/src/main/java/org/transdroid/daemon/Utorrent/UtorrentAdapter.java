@@ -17,6 +17,19 @@
  */
 package org.transdroid.daemon.Utorrent;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
 import com.android.internalcopy.http.multipart.FilePart;
 import com.android.internalcopy.http.multipart.MultipartEntity;
 import com.android.internalcopy.http.multipart.Part;
@@ -30,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
+import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
@@ -63,19 +77,6 @@ import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.util.HttpHelper;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 
 /**
  * An adapter that allows for easy access to uTorrent torrent data. Communication is handled via authenticated JSON-RPC
@@ -657,7 +658,18 @@ public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 		return this.settings;
 	}
 
-	public ArrayList<RemoteRssChannel> getRemoteRssChannels() {
+	public ArrayList<RemoteRssChannel> getRemoteRssChannels(Log log) {
 		return remoteRssChannels;
 	}
+
+	@Override
+	public void downloadRemoteRssItem(Log log, RemoteRssItem rssItem, RemoteRssChannel rssChannel) throws DaemonException {
+		final String link = rssItem.getLink();
+		try {
+			makeUtorrentRequest(log, "&action=add-url&s=" + URLEncoder.encode(link, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new DaemonException(ExceptionType.ParsingFailed, "Invalid URL: " + link);
+		}
+	}
+
 }

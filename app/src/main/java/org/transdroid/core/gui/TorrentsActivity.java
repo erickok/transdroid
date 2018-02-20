@@ -16,31 +16,17 @@
  */
 package org.transdroid.core.gui;
 
-import android.annotation.TargetApi;
-import android.app.SearchManager;
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ActionMenuView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -84,8 +70,6 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.remoterss.RemoteRssActivity_;
-import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
-import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
@@ -130,17 +114,31 @@ import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
 import org.transdroid.daemon.util.HttpHelper;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import android.annotation.TargetApi;
+import android.app.SearchManager;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 /**
  * Main activity that holds the fragment that shows the torrents list, presents a way to filter the list (via an action bar spinner or list side list)
@@ -854,18 +852,11 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	}
 
 	@OptionsItem(R.id.action_remoterss)
+	@Background
 	protected void openRemoteRss() {
-		ArrayList<RemoteRssChannel> rssFeedItems = ((RemoteRssSupplier) (currentConnection)).getRemoteRssChannels();
-
-		if (rssFeedItems.size() == 0) {
-			return;
-		}
-
-		// Passing the items over as a feed can overload the Intent size limit and crash without a stack trace!
-		RemoteRssActivity_.intent(this)
-//						  .feeds(rssFeedItems)
-						  .start()
-		;
+		// Passing the items over as a feed can overload the Intent size limit and crash without a stack trace.
+		// Loading the items can take a while so we don't want to load them here and again in the RemoteRssActivity.
+		RemoteRssActivity_.intent(this).start();
 	}
 
 	@OptionsItem(R.id.action_help)
@@ -964,7 +955,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof RetrieveTaskSuccessResult) {
 			onTorrentsRetrieved(((RetrieveTaskSuccessResult) result).getTorrents(), ((RetrieveTaskSuccessResult) result).getLabels());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, true);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), true);
 		}
 	}
 
@@ -982,7 +973,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof GetTorrentDetailsTaskSuccessResult) {
 			onTorrentDetailsRetrieved(torrent, ((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1000,7 +991,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof GetFileListTaskSuccessResult) {
 			onTorrentFilesRetrieved(torrent, ((GetFileListTaskSuccessResult) result).getFiles());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1015,7 +1006,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof GetStatsTaskSuccessResult) {
 			onTurtleModeRetrieved(((GetStatsTaskSuccessResult) result).isAlternativeModeEnabled());
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1031,7 +1022,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			// Success; no need to retrieve it again - just update the visual indicator
 			onTurtleModeRetrieved(enable);
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1042,7 +1033,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
 			refreshTorrents();
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1056,16 +1047,16 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			// Ignore: UTF-8 is always available on Android devices
 		} catch (IllegalArgumentException e) {
 			// Illegal character or escape sequence; fail task to show error
-			onCommunicationError(new DaemonTaskFailureResult(AddByMagnetUrlTask.create(currentConnection, url),
-					new DaemonException(DaemonException.ExceptionType.FileAccessError, "Invalid characters in magnet link")), false);
+			onCommunicationError(new DaemonException(DaemonException.ExceptionType.FileAccessError,
+					"Invalid characters in magnet link"), false);
 			return;
 		}
 
 		AddByMagnetUrlTask addByMagnetUrlTask = AddByMagnetUrlTask.create(currentConnection, url);
 		if (!Daemon.supportsAddByMagnetUrl(currentConnection.getType())) {
 			// No support for magnet links: forcefully let the task fail to report the error
-			onCommunicationError(new DaemonTaskFailureResult(addByMagnetUrlTask, new DaemonException(DaemonException.ExceptionType.MethodUnsupported,
-					currentConnection.getType().name() + " does not support magnet links")), false);
+			onCommunicationError(new DaemonException(DaemonException.ExceptionType.MethodUnsupported,
+					currentConnection.getType().name() + " does not support magnet links"), false);
 			return;
 		}
 
@@ -1074,7 +1065,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
 			refreshTorrents();
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 
 	}
@@ -1092,7 +1083,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
 			refreshTorrents();
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1201,7 +1192,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_resumed, torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1213,7 +1204,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_paused, torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1225,7 +1216,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_started, torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1237,7 +1228,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_stopped, torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1249,7 +1240,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			onTaskSucceeded((DaemonTaskSuccessResult) result,
 					getString(withData ? R.string.result_removed_with_data : R.string.result_removed, torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1262,7 +1253,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			onTaskSucceeded((DaemonTaskSuccessResult) result,
 					newLabel == null ? getString(R.string.result_labelremoved) : getString(R.string.result_labelset, newLabel));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1274,7 +1265,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_recheckedstarted, torrent.getName()));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1285,7 +1276,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_trackersupdated));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1296,7 +1287,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_locationset, newLocation));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1307,7 +1298,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_priotitiesset));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1317,7 +1308,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_maxspeedsset));
 		} else {
-			onCommunicationError((DaemonTaskFailureResult) result, false);
+			onCommunicationError(((DaemonTaskFailureResult) result).getException(), false);
 		}
 	}
 
@@ -1329,10 +1320,10 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	}
 
 	@UiThread
-	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
+	protected void onCommunicationError(DaemonException daemonException, boolean isCritical) {
 		//noinspection ThrowableResultOfMethodCallIgnored
-		log.i(this, result.getException().toString());
-		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
+		log.i(this, daemonException.toString());
+		String error = getString(LocalTorrent.getResourceForDaemonException(daemonException));
 		SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
 		fragmentTorrents.updateIsLoading(false);
 		if (isCritical) {
