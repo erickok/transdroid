@@ -21,7 +21,7 @@ Transdroid 2.5.10\n
 Many thanks to alonalbert for his contributions!\n
 - Added Deluge via RPC adapter\n
 - Fixed issues with adding by file on newer Android versions\n
-- Small crash fixes here and there\n
+- Many small fixes here and there\n
 \n
 Transdroid 2.5.9\n
 - rTorrent improved parsing speed\n

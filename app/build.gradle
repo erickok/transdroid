@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 229
-        versionName '2.5.9'
+        versionCode 230
+        versionName '2.5.10'
     }
     buildTypes {
         release {
@@ -33,7 +33,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'org.androidannotations:androidannotations-api:3.3.2'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
