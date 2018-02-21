@@ -31,30 +31,14 @@ public class DaemonException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 	
-	private ExceptionType internalException;
+	private int errorResourceId;
 
-	public enum ExceptionType {
-		MethodUnsupported,
-		ConnectionError,
-		UnexpectedResponse,
-		ParsingFailed,
-		AuthenticationFailure,
-		NotConnected,
-		FileAccessError;
-	}
-	
-	public DaemonException(ExceptionType internalException, String message) {
+	public DaemonException(int errorResourceId, String message) {
 		super(message);
-		this.internalException = internalException;
+		this.errorResourceId = errorResourceId;
 	}
 
-	public ExceptionType getType() {
-		return internalException;
+	public int getErrorResourceId() {
+		return errorResourceId;
 	}
-	
-	@Override
-	public String toString() {
-		return internalException.toString() + " exception: " + getMessage();
-	}
-
 }

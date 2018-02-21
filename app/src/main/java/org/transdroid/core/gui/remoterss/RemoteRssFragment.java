@@ -36,7 +36,6 @@ import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
@@ -152,7 +151,7 @@ public class RemoteRssFragment extends Fragment {
 			supplier.downloadRemoteRssItem(log, item, activity.getChannel(item.getSourceName()));
 			onTaskSucceeded(null, getString(R.string.result_added, item.getTitle()));
 		} catch (DaemonException e) {
-			onTaskFailed(getString(LocalTorrent.getResourceForDaemonException(e)));
+			onTaskFailed(getString(e.getErrorResourceId()));
 		}
 	}
 

@@ -23,10 +23,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -121,16 +121,16 @@ public class BitfluAdapter implements IDaemonAdapter {
 					makeBitfluRequest(log, RPC_START_DOWNLOAD + magnet);
 					return new DaemonTaskSuccessResult(task);
 				default:
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_unsupported,
 							task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (JSONException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_jsonrequesterror, e.toString()));
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
 		} catch (UnsupportedEncodingException e) {
 			return new DaemonTaskFailureResult(task,
-					new DaemonException(ExceptionType.MethodUnsupported, e.toString()));
+					new DaemonException(R.string.error_unsupported, e.toString()));
 		}
 	}
 
@@ -155,7 +155,7 @@ public class BitfluAdapter implements IDaemonAdapter {
 			int httpstatus = response.getStatusLine().getStatusCode();
 
 			if (httpstatus != 200) {
-				throw new DaemonException(ExceptionType.UnexpectedResponse,
+				throw new DaemonException(R.string.error_jsonresponseerror,
 						"Invalid reply from server, http status code: " + httpstatus);
 			}
 
@@ -172,10 +172,10 @@ public class BitfluAdapter implements IDaemonAdapter {
 			throw e;
 		} catch (JSONException e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}

@@ -17,22 +17,11 @@
  */
 package org.transdroid.daemon.Vuze;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.openjpa.lib.util.Base16Encoder;
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonMethod;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
@@ -53,6 +42,17 @@ import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An adapter that allows for easy access to Vuze torrent data. Communication
@@ -109,11 +109,11 @@ public class VuzeAdapter implements IDaemonAdapter {
 					in.read(bytes, 0, in.available());
 					in.close();
 				} catch (FileNotFoundException e) {
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_torrentfile, e.toString()));
 				} catch (IllegalArgumentException e) {
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, "Invalid local URI"));
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_torrentfile, "Invalid local URI"));
 				} catch (Exception e) {
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_torrentfile, e.toString()));
 				} finally {
 					try {
 						if (in != null)
@@ -197,12 +197,12 @@ public class VuzeAdapter implements IDaemonAdapter {
 				return new DaemonTaskSuccessResult(task);
 				
 			default:
-				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
+				return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_unsupported, task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
 		} catch (IOException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ConnectionError, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_httperror, e.toString()));
 		}
 	}
 
@@ -231,14 +231,14 @@ public class VuzeAdapter implements IDaemonAdapter {
 			initialise();
 		}
 		if (settings.getAddress() == null || settings.getAddress().equals("")) {
-			throw new DaemonException(DaemonException.ExceptionType.AuthenticationFailure, "No host name specified.");
+			throw new DaemonException(R.string.error_401, "No host name specified.");
 		}
 
 		if (savedConnectionID == null || savedPluginID == null) {
 			// Get plug-in interface (for connection and plug-in object IDs)
 			Map<String, Object> plugin = rpcclient.callXMLRPC(null, "getSingleton", null, null, false);
 			if (!plugin.containsKey("_connection_id")) {
-				throw new DaemonException(ExceptionType.UnexpectedResponse, "No connection ID returned on getSingleton request.");
+				throw new DaemonException(R.string.error_jsonresponseerror, "No connection ID returned on getSingleton request.");
 			}				
 			savedConnectionID = (Long) plugin.get("_connection_id");
 			savedPluginID = (Long) plugin.get("_object_id");
@@ -254,7 +254,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 					// Plugin config needed, but we don't know it's ID yet
 					Map<String, Object> config = rpcclient.callXMLRPC(savedPluginID, "getPluginconfig", null, savedConnectionID, false);
 					if (!config.containsKey("_object_id")) {
-						throw new DaemonException(ExceptionType.UnexpectedResponse, "No plugin config ID returned on getPluginconfig");
+						throw new DaemonException(R.string.error_jsonresponseerror, "No plugin config ID returned on getPluginconfig");
 					}				
 					savedPluginConfigID = (Long) config.get("_object_id");
 					vuzeObjectID = savedPluginConfigID;
@@ -270,7 +270,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 						// Download manager needed, but we don't know it's ID yet
 						Map<String, Object> manager = rpcclient.callXMLRPC(savedPluginID, "getTorrentManager", null, savedConnectionID, false);
 						if (!manager.containsKey("_object_id")) {
-							throw new DaemonException(ExceptionType.UnexpectedResponse, "No torrent manager ID returned on getTorrentManager");
+							throw new DaemonException(R.string.error_jsonresponseerror, "No torrent manager ID returned on getTorrentManager");
 						}				
 						savedTorrentManagerID = (Long) manager.get("_object_id");
 						vuzeObjectID = savedTorrentManagerID;
@@ -283,7 +283,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 						// Download manager needed, but we don't know it's ID yet
 						Map<String, Object> manager = rpcclient.callXMLRPC(savedPluginID, "getDownloadManager", null, savedConnectionID, false);
 						if (!manager.containsKey("_object_id")) {
-							throw new DaemonException(ExceptionType.UnexpectedResponse, "No download manager ID returned on getDownloadManager");
+							throw new DaemonException(R.string.error_jsonresponseerror, "No download manager ID returned on getDownloadManager");
 						}
 						savedDownloadManagerID = (Long) manager.get("_object_id");
 					}
@@ -295,7 +295,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 					// Download manager needed, but we don't know it's ID yet
 					Map<String, Object> manager = rpcclient.callXMLRPC(savedPluginID, "getDownloadManager", null, savedConnectionID, false);
 					if (!manager.containsKey("_object_id")) {
-						throw new DaemonException(ExceptionType.UnexpectedResponse, "No download manager ID returned on getDownloadManager");
+						throw new DaemonException(R.string.error_jsonresponseerror, "No download manager ID returned on getDownloadManager");
 					}
 					savedDownloadManagerID = (Long) manager.get("_object_id");
 					vuzeObjectID = savedDownloadManagerID;
@@ -381,7 +381,7 @@ public class VuzeAdapter implements IDaemonAdapter {
 			Map<String, Object> info = (Map<String, Object>) response.get(key);
 			if (info == null || !info.containsKey("_object_id") || info.get("_object_id") == null) {
 				// No valid XML data object returned
-				throw new DaemonException(DaemonException.ExceptionType.UnexpectedResponse, "Map of objects returned by Vuze, but these object do not have some <info> attached or no <_object_id> is available");
+				throw new DaemonException(R.string.error_jsonresponseerror, "Map of objects returned by Vuze, but these object do not have some <info> attached or no <_object_id> is available");
 			}
 			Map<String, Object> torrentinfo = (Map<String, Object>) info.get("torrent");
 			Map<String, Object> statsinfo = (Map<String, Object>) info.get("stats");

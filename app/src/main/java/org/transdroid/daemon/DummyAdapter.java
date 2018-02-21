@@ -17,16 +17,10 @@
  */
 package org.transdroid.daemon;
 
-import java.io.File;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import android.net.Uri;
 
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -49,7 +43,13 @@ import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
 
-import android.net.Uri;
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 /**
  * A dummy adapter that does not communicate with some server, but maintains a local list of dummy data (reset every
@@ -176,7 +176,7 @@ public class DummyAdapter implements IDaemonAdapter {
 				String url = ((AddByUrlTask) task).getUrl();
 				log.d(LOG_NAME, "Adding torrent " + url);
 				if (url == null || url.equals(""))
-					throw new DaemonException(DaemonException.ExceptionType.ParsingFailed, "No url specified");
+					throw new DaemonException(R.string.error_jsonrequesterror, "No url specified");
 				Uri uri = Uri.parse(url);
 				dummyTorrents.add(new Torrent(0, "torrent_byurl", uri.getLastPathSegment(), TorrentStatus.Queued,
 						"/downloads/" + uri.getLastPathSegment(), 0, 0, 0, 0, 0, 0, -1, 0, 0, 1024 * 1024 * 1000, 0,
@@ -292,7 +292,7 @@ public class DummyAdapter implements IDaemonAdapter {
 				return new DaemonTaskSuccessResult(task);
 				
 			default:
-				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+				return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_unsupported,
 						task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (DaemonException e) {

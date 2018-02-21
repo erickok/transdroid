@@ -45,7 +45,6 @@ import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SystemSettings_;
-import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
@@ -184,7 +183,7 @@ public class RemoteRssActivity extends AppCompatActivity implements RefreshableA
 	protected void onCommunicationError(DaemonException daemonException) {
 		//noinspection ThrowableResultOfMethodCallIgnored
 		log.i(this, daemonException.toString());
-		String error = getString(LocalTorrent.getResourceForDaemonException(daemonException));
+		String error = getString(daemonException.getErrorResourceId());
 		SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
 	}
 

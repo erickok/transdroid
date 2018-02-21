@@ -26,17 +26,16 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -59,14 +58,12 @@ import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetFilePriorityTask;
-import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.HttpHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -187,10 +184,10 @@ public class TtorrentAdapter implements IDaemonAdapter {
 
 				default:
 					return new DaemonTaskFailureResult(task,
-							new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not supported by " + getType()));
+							new DaemonException(R.string.error_unsupported, task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (JSONException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_jsonrequesterror, e.toString()));
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
 		}
@@ -208,7 +205,7 @@ public class TtorrentAdapter implements IDaemonAdapter {
 			return makeWebRequest(httppost, log);
 
 		} catch (UnsupportedEncodingException e) {
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}
@@ -225,7 +222,7 @@ public class TtorrentAdapter implements IDaemonAdapter {
 			return makeWebRequest(httppost, log);
 
 		} catch (FileNotFoundException e) {
-			throw new DaemonException(ExceptionType.FileAccessError, e.toString());
+			throw new DaemonException(R.string.error_torrentfile, e.toString());
 		}
 
 	}
@@ -255,11 +252,11 @@ public class TtorrentAdapter implements IDaemonAdapter {
 			}
 
 			log.d(LOG_NAME, "Error: No entity in HTTP response");
-			throw new DaemonException(ExceptionType.UnexpectedResponse, "No HTTP entity object in response.");
+			throw new DaemonException(R.string.error_jsonresponseerror, "No HTTP entity object in response.");
 
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}

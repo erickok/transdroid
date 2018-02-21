@@ -28,13 +28,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Label;
@@ -176,7 +176,7 @@ public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 					// Request to add a torrent by URL
 					String url = ((AddByUrlTask) task).getUrl();
 					if (url == null || url.equals("")) {
-						throw new DaemonException(DaemonException.ExceptionType.ParsingFailed, "No url specified");
+						throw new DaemonException(R.string.error_jsonrequesterror, "No url specified");
 					}
 					makeUtorrentRequest(log, "&action=add-url&s=" + URLEncoder.encode(url, "UTF-8"));
 					return new DaemonTaskSuccessResult(task);
@@ -308,20 +308,20 @@ public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 					return new DaemonTaskSuccessResult(task);
 
 				default:
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_unsupported,
 							task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (JSONException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_jsonrequesterror, e.toString()));
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
 		} catch (FileNotFoundException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_torrentfile, e.toString()));
 		} catch (UnsupportedEncodingException e) {
 			return new DaemonTaskFailureResult(task,
-					new DaemonException(ExceptionType.MethodUnsupported, e.toString()));
+					new DaemonException(R.string.error_unsupported, e.toString()));
 		} catch (IOException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ConnectionError, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_httperror, e.toString()));
 		}
 	}
 
@@ -390,7 +390,7 @@ public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 				if (retried < 2) {
 					return makeUtorrentRequest(log, addToUrl, ++retried);
 				}
-				throw new DaemonException(ExceptionType.AuthenticationFailure,
+				throw new DaemonException(R.string.error_401,
 						"Response was '" + result.replace("\n", "") +
 								"' instead of a proper JSON object (and we used auth token '" + authtoken + "')");
 			}
@@ -402,10 +402,10 @@ public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 			throw e;
 		} catch (JSONException e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}
@@ -422,11 +422,11 @@ public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 			// Parse the response HTML
 			HttpResponse response = httpclient.execute(httpget);
 			if (response.getStatusLine().getStatusCode() == 401) {
-				throw new DaemonException(ExceptionType.AuthenticationFailure,
+				throw new DaemonException(R.string.error_401,
 						"Auth denied (401) on token.html retrieval");
 			}
 			if (response.getStatusLine().getStatusCode() == 404) {
-				throw new DaemonException(ExceptionType.ConnectionError,
+				throw new DaemonException(R.string.error_httperror,
 						"Not found (404); server doesn't exist or is inaccessible");
 			}
 			InputStream instream = response.getEntity().getContent();
@@ -668,7 +668,7 @@ public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 		try {
 			makeUtorrentRequest(log, "&action=add-url&s=" + URLEncoder.encode(link, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
-			throw new DaemonException(ExceptionType.ParsingFailed, "Invalid URL: " + link);
+			throw new DaemonException(R.string.error_jsonrequesterror, "Invalid URL: " + link);
 		}
 	}
 

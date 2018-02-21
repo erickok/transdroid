@@ -1,17 +1,17 @@
 package org.transdroid.daemon.Ktorrent;
 
+import org.transdroid.R;
+import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.Priority;
+import org.transdroid.daemon.TorrentFile;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.Priority;
-import org.transdroid.daemon.TorrentFile;
-import org.transdroid.daemon.DaemonException.ExceptionType;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * A Ktorrent-specific parser for it's /data/torrent/files.xml output.
@@ -98,9 +98,9 @@ public class FileListParser {
 			return torrents;
 			
 		} catch (XmlPullParserException e) {
-			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 		} catch (IOException e) {
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 		
 	}
