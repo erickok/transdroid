@@ -25,9 +25,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
@@ -45,8 +47,12 @@ import org.transdroid.daemon.Daemon;
 public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 
 	private static final int DIALOG_CONFIRMREMOVE = 0;
+	private static final int DIALOG_DELUGE_RPC_SSL = 1;
 
 	private EditTextPreference extraPass, folder, downloadDir, excludeFilter, includeFilter;
+	private ListPreference serverType;
+	private CheckBoxPreference serverSslEnabled;
+	private CheckBoxPreference serverSslTrustAll;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +63,7 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		// Load the raw preferences to show in this screen
 		init(R.xml.pref_server, ApplicationSettings_.getInstance_(this).getMaxNormalServer());
 		initTextPreference("server_name");
-		initListPreference("server_type");
+		serverType = initListPreference("server_type");
 		initTextPreference("server_address");
 		initTextPreference("server_port");
 		initTextPreference("server_user");
@@ -77,9 +83,24 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("server_ftpurl");
 		initTextPreference("server_ftppass");
 		initBooleanPreference("server_disableauth");
-		initBooleanPreference("server_sslenabled");
-		initBooleanPreference("server_ssltrustall", false, "server_sslenabled");
+		serverSslEnabled = initBooleanPreference("server_sslenabled");
+		serverSslTrustAll = initBooleanPreference("server_ssltrustall", false, "server_sslenabled");
 		initTextPreference("server_ssltrustkey", null, "server_sslenabled");
+
+		serverType.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object o) {
+				if (Daemon.fromCode(o.toString()) == Daemon.DelugeRpc) {
+					serverSslEnabled.setChecked(true);
+					serverSslTrustAll.setChecked(true);
+					showDialog(DIALOG_DELUGE_RPC_SSL);
+				} else {
+					serverSslEnabled.setChecked(false);
+					serverSslTrustAll.setChecked(false);
+				}
+				return true;
+			}
+		});
 		onPreferencesChanged();
 
 	}
@@ -108,6 +129,10 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 								finish();
 							}
 						}).setNegativeButton(android.R.string.cancel, null).create();
+			case DIALOG_DELUGE_RPC_SSL:
+				return new AlertDialog.Builder(this).setMessage(R.string.pref_deluge_rpc_ssl)
+						.setNeutralButton(android.R.string.ok, null)
+						.create();
 		}
 		return null;
 	}
