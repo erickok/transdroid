@@ -293,6 +293,8 @@
 	<string name="pref_disableauth_info">Don\'t send username and password</string>
 	<string name="pref_sslenable">Use SSL</string>
 	<string name="pref_sslenable_info">Connect using https</string>
+	<string name="pref_local_sslenable">Use SSL on local network</string>
+	<string name="pref_local_sslenable_info">Connect using https</string>
 	<string name="pref_sslkey">Custom SSL thumbprint (SHA-1)</string>
 	<string name="pref_sslkey_info">Permit only connections to this specific certificate</string>
 	<string name="pref_sslacceptall">Accept all SSL certificates</string>
