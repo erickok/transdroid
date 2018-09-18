@@ -145,6 +145,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	private static final String PATH_TO_UPLOAD = "/upload";
 
 	private static final String RPC_ID = "id";
+	private final String RPC_METHOD_ADD_FILE = "web.add_torrents";
 
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
