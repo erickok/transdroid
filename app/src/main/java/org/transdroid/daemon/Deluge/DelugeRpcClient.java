@@ -18,26 +18,22 @@
 package org.transdroid.daemon.Deluge;
 
 import android.support.annotation.NonNull;
-
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.util.TlsSniSocketFactory;
+import se.dimovski.rencode.Rencode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-
-import se.dimovski.rencode.Rencode;
 
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_DAEMON_LOGIN;
 
@@ -59,13 +55,9 @@ class DelugeRpcClient implements Closeable {
 			if (settings.shouldUseAuthentication()) {
 				sendRequest(RPC_METHOD_DAEMON_LOGIN, settings.getUsername(), settings.getPassword());
 			}
-		} catch (NoSuchAlgorithmException e) {
-			throw new DaemonException(ExceptionType.ConnectionError, "Failed to open socket: " + e.getMessage());
 		} catch (UnknownHostException e) {
 			throw new DaemonException(ExceptionType.AuthenticationFailure, "Failed to sign in: " + e.getMessage());
 		} catch (IOException e) {
-			throw new DaemonException(ExceptionType.ConnectionError, "Failed to open socket: " + e.getMessage());
-		} catch (KeyManagementException e) {
 			throw new DaemonException(ExceptionType.ConnectionError, "Failed to open socket: " + e.getMessage());
 		}
 	}
@@ -148,10 +140,10 @@ class DelugeRpcClient implements Closeable {
 	}
 
 	@NonNull
-	private Socket openSocket(DaemonSettings settings) throws NoSuchAlgorithmException, KeyManagementException, IOException {
+	private Socket openSocket(DaemonSettings settings) throws IOException, DaemonException {
 		if (!settings.getSsl()) {
 			// Non-ssl connections
-			return new Socket(settings.getAddress(), settings.getPort());
+			throw new DaemonException(ExceptionType.ConnectionError, "Deluge RPC Adapter must have SSL enabled");
 		}
 		final TlsSniSocketFactory socketFactory;
 		if (settings.getSslTrustKey() != null && settings.getSslTrustKey().length() != 0) {
@@ -162,11 +154,6 @@ class DelugeRpcClient implements Closeable {
 			socketFactory = new TlsSniSocketFactory();
 		}
 		return socketFactory.createSocket(null, settings.getAddress(), settings.getPort(), false);
-
-		//		final TrustManager[] trustAllCerts = new TrustManager[]{new IgnoreSSLTrustManager()};
-		//		final SSLContext sslContext = SSLContext.getInstance("TLSv1");
-		//		sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-		//		return sslContext.getSocketFactory().createSocket(address, port);
 	}
 
 }

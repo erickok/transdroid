@@ -18,18 +18,18 @@
 package org.transdroid.daemon.Deluge;
 
 import android.support.annotation.NonNull;
-
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.TorrentStatus;
 
 /**
  * Common constants and methods used by both adapters.
+ *
  * @author alon.albert
  */
 class DelugeCommon {
 
 	static final String RPC_DETAILS = "files";
-  static final String RPC_DOWNLOAD_LOCATION = "download_location";
+	static final String RPC_DOWNLOAD_LOCATION = "download_location";
 	static final String RPC_DOWNLOADEDEVER = "total_done";
 	static final String RPC_ETA = "eta";
 	static final String RPC_FILE = "file";
@@ -38,7 +38,7 @@ class DelugeCommon {
 	static final String RPC_HASH = "hash";
 	static final String RPC_INDEX = "index";
 	static final String RPC_LABEL = "label";
-  static final String RPC_KEY = "key";
+	static final String RPC_KEY = "key";
 	static final String RPC_MAXDOWNLOAD = "max_download_speed";
 	static final String RPC_MAXUPLOAD = "max_upload_speed";
 	static final String RPC_MESSAGE = "message";
@@ -66,9 +66,9 @@ class DelugeCommon {
 	static final String RPC_METHOD_SETTRACKERS = "core.set_torrent_trackers";
 	static final String RPC_METHOD_SET_TORRENT_OPTIONS = "core.set_torrent_options";
 	static final String RPC_METHOD_STATUS = "core.get_torrent_status";
-  static final String RPC_METHOD_GET_RSS_CONFIG = "yarss2.get_config";
-  static final String RPC_MOVE_COMPLETED = "move_completed";
-  static final String RPC_MOVE_COMPLETED_PATH = "move_completed_path";
+	static final String RPC_METHOD_GET_RSS_CONFIG = "yarss2.get_config";
+	static final String RPC_MOVE_COMPLETED = "move_completed";
+	static final String RPC_MOVE_COMPLETED_PATH = "move_completed_path";
 	static final String RPC_NAME = "name";
 	static final String RPC_NUMPEERS = "num_peers";
 	static final String RPC_NUMSEEDS = "num_seeds";
@@ -78,13 +78,13 @@ class DelugeCommon {
 	static final String RPC_RATEDOWNLOAD = "download_payload_rate";
 	static final String RPC_RATEUPLOAD = "upload_payload_rate";
 	static final String RPC_RESULT = "result";
-  static final String RPC_RSSFEED_KEY = "rssfeed_key";
-  static final String RPC_RSSFEEDS = "rssfeeds";
+	static final String RPC_RSSFEED_KEY = "rssfeed_key";
+	static final String RPC_RSSFEEDS = "rssfeeds";
 	static final String RPC_SAVEPATH = "save_path";
 	static final String RPC_SESSION_ID = "_session_id";
 	static final String RPC_SIZE = "size";
 	static final String RPC_STATUS = "state";
-  static final String RPC_SUBSCRIPTIONS = "subscriptions";
+	static final String RPC_SUBSCRIPTIONS = "subscriptions";
 	static final String RPC_TIMEADDED = "time_added";
 	static final String RPC_TORRENTS = "torrents";
 	static final String RPC_TOTALPEERS = "total_peers";
@@ -98,8 +98,8 @@ class DelugeCommon {
 
 	static final String[] RPC_DETAILS_FIELDS_ARRAY = {RPC_TRACKERS, RPC_TRACKER_STATUS,};
 	static final String[] RPC_FIELDS_ARRAY = {RPC_HASH, RPC_NAME, RPC_STATUS, RPC_SAVEPATH, RPC_RATEDOWNLOAD, RPC_RATEUPLOAD, RPC_NUMPEERS,
-            RPC_NUMSEEDS, RPC_TOTALPEERS, RPC_TOTALSEEDS, RPC_ETA, RPC_DOWNLOADEDEVER, RPC_UPLOADEDEVER, RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL,
-            RPC_MESSAGE, RPC_TIMEADDED, RPC_TRACKER_STATUS,};
+			RPC_NUMSEEDS, RPC_TOTALPEERS, RPC_TOTALSEEDS, RPC_ETA, RPC_DOWNLOADEDEVER, RPC_UPLOADEDEVER, RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL,
+			RPC_MESSAGE, RPC_TIMEADDED, RPC_TRACKER_STATUS,};
 	static final String[] RPC_FILE_FIELDS_ARRAY = {RPC_DETAILS, RPC_FILEPROGRESS, RPC_FILEPRIORITIES,};
 
 	static TorrentStatus convertDelugeState(String state) {
