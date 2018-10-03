@@ -28,10 +28,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -206,11 +206,11 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 				// return new DaemonTaskSuccessResult(task);
 
 				default:
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_unsupported,
 							task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (JSONException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_jsonrequesterror, e.toString()));
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
 		}
@@ -284,16 +284,16 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
 			}
 
 			log.d(LOG_NAME, "Error: No entity in HTTP response");
-			throw new DaemonException(ExceptionType.UnexpectedResponse, "No HTTP entity object in response.");
+			throw new DaemonException(R.string.error_jsonresponseerror, "No HTTP entity object in response.");
 
 		} catch (DaemonException e) {
 			throw e;
 		} catch (JSONException e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
+			throw new DaemonException(R.string.error_jsonresponseerror, e.toString());
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}

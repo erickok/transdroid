@@ -41,8 +41,8 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
+import org.transdroid.R;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 
 import java.io.BufferedReader;
@@ -154,7 +154,7 @@ public class HttpHelper {
 		// Authentication credentials
 		if (userBasicAuth) {
 			if (username == null || password == null) {
-				throw new DaemonException(ExceptionType.AuthenticationFailure,
+				throw new DaemonException(R.string.error_401,
 						"No username or password was provided while we had authentication enabled");
 			}
 			httpclient.getCredentialsProvider()

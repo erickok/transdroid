@@ -1,18 +1,18 @@
 package org.transdroid.daemon.Tfb4rt;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-
+import org.transdroid.R;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A Torrentflux-b4rt-specific parser for it's stats.xml output.
@@ -48,11 +48,11 @@ public class StatsParser {
 			String name = xpp.getName();
 			if (name.equals("html")) {
 				// We are given an html page instead of xml data; probably an authentication error
-				throw new DaemonException(DaemonException.ExceptionType.AuthenticationFailure, "HTML tag found instead of XML data; authentication error?");
+				throw new DaemonException(R.string.error_401, "HTML tag found instead of XML data; authentication error?");
 			}
 			if (name.equals("rss")) {
 				// We are given an html page instead of xml data; probably an authentication error
-				throw new DaemonException(DaemonException.ExceptionType.UnexpectedResponse, "RSS feed found instead of XML data; configuration error?");
+				throw new DaemonException(R.string.error_jsonresponseerror, "RSS feed found instead of XML data; configuration error?");
 			}
 			
 			while (next != XmlPullParser.END_DOCUMENT) {
@@ -122,7 +122,7 @@ public class StatsParser {
 								upSize = convertSize(xpp.getText());
 							}
 						} catch (Exception e) {
-							throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+							throw new DaemonException(R.string.error_httperror, e.toString());
 						}
 					}
 				}
@@ -137,9 +137,9 @@ public class StatsParser {
 			return torrents;
 			
 		} catch (XmlPullParserException e) {
-			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 		} catch (IOException e) {
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 		
 	}

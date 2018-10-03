@@ -29,10 +29,10 @@ import org.base64.android.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -220,17 +220,17 @@ public class Aria2Adapter implements IDaemonAdapter {
 					return new DaemonTaskSuccessResult(task);
 
 				default:
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_unsupported,
 							task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (JSONException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_jsonrequesterror, e.toString()));
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
 		} catch (FileNotFoundException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_torrentfile, e.toString()));
 		} catch (IOException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_torrentfile, e.toString()));
 		}
 	}
 
@@ -263,7 +263,7 @@ public class Aria2Adapter implements IDaemonAdapter {
 			return new JSONObject(raw);
 		} catch (JSONException e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
+			throw new DaemonException(R.string.error_jsonresponseerror, e.toString());
 		}
 	}
 
@@ -273,7 +273,7 @@ public class Aria2Adapter implements IDaemonAdapter {
 			return new JSONArray(raw);
 		} catch (JSONException e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
+			throw new DaemonException(R.string.error_jsonresponseerror, e.toString());
 		}
 	}
 
@@ -302,7 +302,7 @@ public class Aria2Adapter implements IDaemonAdapter {
 
 			HttpEntity entity = response.getEntity();
 			if (entity == null) {
-				throw new DaemonException(ExceptionType.UnexpectedResponse, "No HTTP entity in response object.");
+				throw new DaemonException(R.string.error_jsonresponseerror, "No HTTP entity in response object.");
 			}
 
 			// Read JSON response
@@ -317,7 +317,7 @@ public class Aria2Adapter implements IDaemonAdapter {
 
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}

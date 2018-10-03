@@ -31,10 +31,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -212,7 +212,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 					return null;
 
 				default:
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_unsupported,
 							task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (LoggedOutException e) {
@@ -226,7 +226,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 				return executeTask(log, task);
 			} else {
 				// Never retry more than twice; in this case just return a task failure
-				return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ConnectionError,
+				return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_httperror,
 						"Retried " + retries + " already, so we stopped now"));
 			}
 
@@ -266,7 +266,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			throw e;
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}
@@ -303,7 +303,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			throw e;
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}
@@ -320,7 +320,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			instream.close();
 			// Challenge string should be something like TncpX3TB8uZ0h8eqztZ6
 			if (challengeString.length() != 20) {
-				throw new DaemonException(ExceptionType.UnexpectedResponse, "No (valid) challenge string received");
+				throw new DaemonException(R.string.error_jsonresponseerror, "No (valid) challenge string received");
 			}
 
 			// Make login request
@@ -346,7 +346,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			throw e;
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error during login: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}
@@ -374,7 +374,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 				// This happens in particular when we were logged out (because somebody else logged into KTorrent's web interface)
 				throw new LoggedOutException();
 			} else {
-				throw new DaemonException(ExceptionType.UnexpectedResponse, "Action response was not OK but " + result);
+				throw new DaemonException(R.string.error_jsonresponseerror, "Action response was not OK but " + result);
 			}
 
 		} catch (LoggedOutException e) {
@@ -384,7 +384,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			throw e;
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}
@@ -428,7 +428,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 				// This happens in particular when we were logged out (because somebody else logged into KTorrent's web interface)
 				throw new LoggedOutException();
 			} else {
-				throw new DaemonException(ExceptionType.UnexpectedResponse, "Action response was not 1 but " + result);
+				throw new DaemonException(R.string.error_jsonresponseerror, "Action response was not 1 but " + result);
 			}
 
 		} catch (LoggedOutException e) {
@@ -438,7 +438,7 @@ public class KtorrentAdapter implements IDaemonAdapter {
 			throw e;
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}

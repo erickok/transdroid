@@ -476,7 +476,9 @@
 	<string name="error_notalabel">Please enter a valid label or pick from the list</string>
 	<string name="error_stillloadingdetails">Please wait until the torrent details have been loaded</string>
 	<string name="error_noftpapp">No app found that can download %1$s</string>
-	
+	<string name="error_ssl_must_be_enabled">This server type only supports SSL connections. Please enable SSL in Advanced Server Settings.</string>
+	<string name="error_certificate_error">Please enable "Accept all SSL certificates" or provide a SHA-1 thumbprint in Advanced Server Settings.</string>
+
 	<string name="update_app_newversion">New Transdroid version available</string>
 	<string name="update_search_newversion">New Transdroid search module available</string>
 	<string name="update_updateto">You can now update to %1$s</string>

@@ -20,6 +20,7 @@ package org.transdroid.daemon.Deluge;
 import android.support.annotation.NonNull;
 
 import org.base64.android.Base64;
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
@@ -29,7 +30,6 @@ import org.transdroid.core.rssparser.Item;
 import org.transdroid.core.rssparser.RssParser;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Label;
@@ -197,7 +197,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 				case ForceRecheck:
 					return doForceRecheck(client, (ForceRecheckTask) task);
 				default:
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not " +
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_unsupported, task.getMethod() + " is not " +
                             "supported by " + getType()));
 			}
 		} catch (DaemonException e) {
@@ -225,7 +225,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 			client.connect(settings);
 
 			if (!hasMethod(client, RPC_METHOD_GET_RSS_CONFIG)) {
-				throw new DaemonException(ExceptionType.MethodUnsupported, "YaRRS2 plugin not installed");
+				throw new DaemonException(R.string.error_unsupported, "YaRRS2 plugin not installed");
 			}
 			//noinspection unchecked
 			final Map<String, Object> rssConfig = (Map<String, Object>) client.sendRequest(RPC_METHOD_GET_RSS_CONFIG);
@@ -385,7 +385,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 	@NonNull
 	private DaemonTaskResult doSetLabel(DelugeRpcClient client, SetLabelTask task) throws DaemonException {
 		if (!hasMethod(client, RPC_METHOD_SETLABEL)) {
-			throw new DaemonException(ExceptionType.MethodUnsupported, "Label plugin not installed");
+			throw new DaemonException(R.string.error_unsupported, "Label plugin not installed");
 		}
 		final String torrentId = task.getTargetTorrent().getUniqueID();
 		final String label = task.getNewLabel() == null ? "" : task.getNewLabel();
@@ -554,7 +554,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 		try {
 			in = new BufferedInputStream(new FileInputStream(file));
 		} catch (FileNotFoundException e) {
-			throw new DaemonException(ExceptionType.FileAccessError, "File not found: " + file.getAbsolutePath());
+			throw new DaemonException(R.string.error_torrentfile, "File not found: " + file.getAbsolutePath());
 		}
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
@@ -568,7 +568,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 			}
 			return out.toByteArray();
 		} catch (IOException e) {
-			throw new DaemonException(ExceptionType.FileAccessError, "Error reading file: " + file.getAbsolutePath());
+			throw new DaemonException(R.string.error_torrentfile, "Error reading file: " + file.getAbsolutePath());
 		} finally {
 			try {
 				in.close();

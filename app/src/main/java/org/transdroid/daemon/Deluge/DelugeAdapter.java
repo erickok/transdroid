@@ -32,10 +32,10 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Label;
@@ -405,17 +405,17 @@ public class DelugeAdapter implements IDaemonAdapter {
 					return new DaemonTaskSuccessResult(task);
 
 				default:
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not " +
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_unsupported, task.getMethod() + " is not " +
 							"supported by " + getType()));
 			}
 		} catch (JSONException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_jsonrequesterror, e.toString()));
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
 		} catch (FileNotFoundException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_torrentfile, e.toString()));
 		} catch (IOException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_torrentfile, e.toString()));
 		}
 	}
 	
@@ -455,7 +455,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 			// Continue though, ignoring the version number
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 		// Unable to establish version number; assume an old version by setting it to version 1
 		version = 10000;
@@ -517,7 +517,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 				// Still no session cookie?
 				if (sessionCookie == null) {
 					// Set error message and cancel the action that was requested
-					throw new DaemonException(ExceptionType.AuthenticationFailure, "Password error? Server time difference? No (valid) cookie in " +
+					throw new DaemonException(R.string.error_401, "Password error? Server time difference? No (valid) cookie in " +
 							"response and JSON was: " + HttpHelper.convertStreamToString(instream));
 				}
 
@@ -563,14 +563,14 @@ public class DelugeAdapter implements IDaemonAdapter {
 			}
 
 			// No result?
-			throw new DaemonException(ExceptionType.UnexpectedResponse, "No HTTP entity in response object.");
+			throw new DaemonException(R.string.error_jsonresponseerror, "No HTTP entity in response object.");
 
 		} catch (JSONException e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
+			throw new DaemonException(R.string.error_jsonresponseerror, e.toString());
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		}
 
 	}
@@ -601,7 +601,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 		// Parse response
 		ArrayList<Torrent> torrents = new ArrayList<>();
 		if (response.isNull(RPC_TORRENTS)) {
-			throw new DaemonException(ExceptionType.NotConnected, "Web interface probably not connected to a daemon yet, because 'torrents' is null:" +
+			throw new DaemonException(R.string.error_daemonnotconnected, "Web interface probably not connected to a daemon yet, because 'torrents' is null:" +
 					" " + response.toString());
 		}
 		JSONObject objects = response.getJSONObject(RPC_TORRENTS);

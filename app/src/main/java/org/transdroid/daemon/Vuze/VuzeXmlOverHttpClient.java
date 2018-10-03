@@ -17,14 +17,7 @@
  */
  package org.transdroid.daemon.Vuze;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import android.util.Xml;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -36,7 +29,6 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.scheme.SocketFactory;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -44,16 +36,23 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.base64.android.Base64;
+import org.transdroid.R;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonSettings;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.util.TlsSniSocketFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
-import android.util.Xml;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Implements an XML-RPC-like client that build and parses XML following 
@@ -128,7 +127,7 @@ public class VuzeXmlOverHttpClient {
         client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, registry), httpParams);
         if (settings.shouldUseAuthentication()) {
             if (settings.getUsername() == null || settings.getPassword() == null) {
-                    throw new DaemonException(DaemonException.ExceptionType.AuthenticationFailure, "No username or password set, while authentication was enabled.");
+                    throw new DaemonException(R.string.error_401, "No username or password set, while authentication was enabled.");
             } else {
             	username = settings.getUsername();
             	password = settings.getPassword();
@@ -215,9 +214,9 @@ public class VuzeXmlOverHttpClient {
 			// check status code
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
-				throw new DaemonException(ExceptionType.AuthenticationFailure, "HTTP " + HttpStatus.SC_UNAUTHORIZED + " response (so no user or password or incorrect ones)");
+				throw new DaemonException(R.string.error_401, "HTTP " + HttpStatus.SC_UNAUTHORIZED + " response (so no user or password or incorrect ones)");
 			} else if (statusCode != HttpStatus.SC_OK) {
-				throw new DaemonException(ExceptionType.ConnectionError, "HTTP status code: " + statusCode + " != " + HttpStatus.SC_OK);
+				throw new DaemonException(R.string.error_httperror, "HTTP status code: " + statusCode + " != " + HttpStatus.SC_OK);
 			}
 
 			// parse response stuff
@@ -248,7 +247,7 @@ public class VuzeXmlOverHttpClient {
 				// Error
 				String errorText = pullParser.nextText(); // the value of the ERROR
 				entity.consumeContent();
-				throw new DaemonException(ExceptionType.ConnectionError, errorText);
+				throw new DaemonException(R.string.error_httperror, errorText);
 				
 			} else {
 				
@@ -272,9 +271,9 @@ public class VuzeXmlOverHttpClient {
 			}
 			
 		} catch (IOException e) {
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+			throw new DaemonException(R.string.error_httperror, e.toString());
 		} catch (XmlPullParserException e) {
-			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 		}
 	}
 

@@ -72,7 +72,6 @@ import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.app.settings.WebsearchSetting;
-import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.log.LogUncaughtExceptionHandler;
@@ -1048,14 +1047,14 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		} catch (IllegalArgumentException e) {
 			// Illegal character or escape sequence; fail task to show error
 			onCommunicationError(new DaemonTaskFailureResult(AddByMagnetUrlTask.create(currentConnection, url),
-					new DaemonException(DaemonException.ExceptionType.FileAccessError, "Invalid characters in magnet link")), false);
+					new DaemonException(R.string.error_torrentfile, "Invalid characters in magnet link")), false);
 			return;
 		}
 
 		AddByMagnetUrlTask addByMagnetUrlTask = AddByMagnetUrlTask.create(currentConnection, url);
 		if (!Daemon.supportsAddByMagnetUrl(currentConnection.getType())) {
 			// No support for magnet links: forcefully let the task fail to report the error
-			onCommunicationError(new DaemonTaskFailureResult(addByMagnetUrlTask, new DaemonException(DaemonException.ExceptionType.MethodUnsupported,
+			onCommunicationError(new DaemonTaskFailureResult(addByMagnetUrlTask, new DaemonException(R.string.error_unsupported,
 					currentConnection.getType().name() + " does not support magnet links")), false);
 			return;
 		}
@@ -1323,7 +1322,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
 		//noinspection ThrowableResultOfMethodCallIgnored
 		log.i(this, result.getException().toString());
-		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
+		String error = getString(result.getException().getErrorResourceId());
 		SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
 		fragmentTorrents.updateIsLoading(false);
 		if (isCritical) {

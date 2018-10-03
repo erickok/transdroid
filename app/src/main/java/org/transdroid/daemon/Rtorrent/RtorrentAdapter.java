@@ -19,10 +19,10 @@ package org.transdroid.daemon.Rtorrent;
 
 import android.text.TextUtils;
 
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Label;
@@ -311,15 +311,15 @@ public class RtorrentAdapter implements IDaemonAdapter {
 					return new DaemonTaskSuccessResult(task);
 
 				default:
-					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported,
+					return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_unsupported,
 							task.getMethod() + " is not supported by " + getType()));
 			}
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
 		} catch (FileNotFoundException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_torrentfile, e.toString()));
 		} catch (IOException e) {
-			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ConnectionError, e.toString()));
+			return new DaemonTaskFailureResult(task, new DaemonException(R.string.error_httperror, e.toString()));
 		}
 	}
 
@@ -342,12 +342,12 @@ public class RtorrentAdapter implements IDaemonAdapter {
 		} catch (XMLRPCException e) {
 			log.d(LOG_NAME, e.toString());
 			if (e.getCause() instanceof UnauthorizdException) {
-				throw new DaemonException(ExceptionType.AuthenticationFailure, e.toString());
+				throw new DaemonException(R.string.error_401, e.toString());
 			}
 			if (e.getCause() instanceof DaemonException) {
 				throw (DaemonException) e.getCause();
 			}
-			throw new DaemonException(ExceptionType.ConnectionError,
+			throw new DaemonException(R.string.error_httperror,
 					"Error making call to " + serverMethod + " with params [" +
 							(params.length() > 100 ? params.substring(0, 100) + "..." : params) + " ]: " +
 							e.toString());
@@ -382,7 +382,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 		if (response == null || !(response instanceof Object[])) {
 
-			throw new DaemonException(ExceptionType.ParsingFailed,
+			throw new DaemonException(R.string.error_jsonrequesterror,
 					"Response on retrieveing torrents did not return a list of objects");
 
 		} else {
@@ -528,7 +528,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 		if (response == null || !(response instanceof Object[])) {
 
-			throw new DaemonException(ExceptionType.ParsingFailed,
+			throw new DaemonException(R.string.error_jsonrequesterror,
 					"Response on retrieveing torrent files did not return a list of objects");
 
 		} else {
@@ -635,7 +635,7 @@ public class RtorrentAdapter implements IDaemonAdapter {
 
 		if (response == null || !(response instanceof Object[])) {
 
-			throw new DaemonException(ExceptionType.ParsingFailed,
+			throw new DaemonException(R.string.error_jsonrequesterror,
 					"Response on retrieveing trackers did not return a list of objects");
 
 		} else {

@@ -41,7 +41,6 @@ import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SystemSettings_;
-import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper;
@@ -345,9 +344,9 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
 		log.i(this, result.getException().toString());
-		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
+		String error = getString(result.getException().getErrorResourceId());
 		fragmentDetails.updateIsLoading(false, isCritical ? error : null);
-		SnackbarManager.show(Snackbar.with(this).text(getString(LocalTorrent.getResourceForDaemonException(result.getException())))
+		SnackbarManager.show(Snackbar.with(this).text(getString(result.getException().getErrorResourceId()))
 				.colorResource(R.color.red));
 	}
 

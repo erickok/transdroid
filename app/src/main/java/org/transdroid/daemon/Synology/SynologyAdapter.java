@@ -30,10 +30,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Priority;
@@ -167,7 +167,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 					.get("&method=login&account=" + settings.getUsername() + "&passwd=" + settings.getPassword() +
 							"&session=DownloadStation&format=sid").getData(log).getString("sid");
 		} catch (JSONException e) {
-			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 		}
 	}
 
@@ -183,7 +183,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 					"&method=create&uri=" + URLEncoder.encode(uri, "UTF-8")).ensureSuccess(log);
 		} catch (UnsupportedEncodingException e) {
 			// Never happens
-			throw new DaemonException(ExceptionType.UnexpectedResponse, e.toString());
+			throw new DaemonException(R.string.error_jsonresponseerror, e.toString());
 		}
 	}
 
@@ -194,7 +194,7 @@ public class SynologyAdapter implements IDaemonAdapter {
           new FilePart("file", file))
 					.ensureSuccess(log);
 		} catch (FileNotFoundException e) {
-			throw new DaemonException(ExceptionType.FileAccessError, e.getMessage());
+			throw new DaemonException(R.string.error_torrentfile, e.getMessage());
 		}
 	}
 
@@ -258,7 +258,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 			}
 			return result;
 		} catch (JSONException e) {
-			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 		}
 	}
 
@@ -290,7 +290,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 			}
 			return result;
 		} catch (JSONException e) {
-			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 		}
 	}
 
@@ -315,7 +315,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 			}
 			return new TorrentDetails(trackers, errors);
 		} catch (JSONException e) {
-			throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+			throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 		}
 	}
 
@@ -450,10 +450,10 @@ public class SynologyAdapter implements IDaemonAdapter {
 					return json.getJSONObject("data");
 				} else {
 					log.e(LOG_NAME, "not a success: " + json.toString());
-					throw new DaemonException(ExceptionType.AuthenticationFailure, json.getString("error"));
+					throw new DaemonException(R.string.error_401, json.getString("error"));
 				}
 			} catch (JSONException e) {
-				throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+				throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 			}
 		}
 
@@ -462,7 +462,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 				HttpEntity entity = response.getEntity();
 				if (entity == null) {
 					log.e(LOG_NAME, "Error: No entity in HTTP response");
-					throw new DaemonException(ExceptionType.UnexpectedResponse, "No HTTP entity object in response.");
+					throw new DaemonException(R.string.error_jsonresponseerror, "No HTTP entity object in response.");
 				}
 				// Read JSON response
 				java.io.InputStream instream = entity.getContent();
@@ -472,10 +472,10 @@ public class SynologyAdapter implements IDaemonAdapter {
 				instream.close();
 				return json;
 			} catch (JSONException e) {
-				throw new DaemonException(ExceptionType.UnexpectedResponse, "Bad JSON");
+				throw new DaemonException(R.string.error_jsonresponseerror, "Bad JSON");
 			} catch (IOException e) {
 				log.e(LOG_NAME, "getJson error: " + e.toString());
-				throw new DaemonException(ExceptionType.AuthenticationFailure, e.toString());
+				throw new DaemonException(R.string.error_401, e.toString());
 			}
 		}
 
@@ -483,10 +483,10 @@ public class SynologyAdapter implements IDaemonAdapter {
 			JSONObject json = getJson(log);
 			try {
 				if (!json.getBoolean("success")) {
-					throw new DaemonException(ExceptionType.UnexpectedResponse, json.getString("error"));
+					throw new DaemonException(R.string.error_jsonresponseerror, json.getString("error"));
 				}
 			} catch (JSONException e) {
-				throw new DaemonException(ExceptionType.ParsingFailed, e.toString());
+				throw new DaemonException(R.string.error_jsonrequesterror, e.toString());
 			}
 		}
 
@@ -507,7 +507,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 			try {
 				return new SynoResponse(getHttpClient().execute(new HttpGet(buildURL(params))));
 			} catch (IOException e) {
-				throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+				throw new DaemonException(R.string.error_httperror, e.toString());
 			}
 		}
 
@@ -528,7 +528,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 				request.setEntity(new MultipartEntity(allParams));
 				return new SynoResponse(getHttpClient().execute(request));
 			} catch (IOException e) {
-				throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+				throw new DaemonException(R.string.error_httperror, e.toString());
 			}
 		}
 
