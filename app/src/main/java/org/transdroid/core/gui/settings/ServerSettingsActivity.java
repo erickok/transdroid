@@ -78,6 +78,7 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("server_ftppass");
 		initBooleanPreference("server_disableauth");
 		initBooleanPreference("server_sslenabled");
+		initBooleanPreference("server_localsslenabled");
 		initBooleanPreference("server_ssltrustall", false, "server_sslenabled");
 		initTextPreference("server_ssltrustkey", null, "server_sslenabled");
 		onPreferencesChanged();

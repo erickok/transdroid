@@ -146,6 +146,7 @@ public class ApplicationSettings {
 		// @formatter:off
 		Daemon type = Daemon.fromCode(prefs.getString("server_type_" + order, null));
 		boolean ssl = prefs.getBoolean("server_sslenabled_" + order, false);
+		boolean localSsl = prefs.getBoolean("server_localsslenabled_" + order, false);
 
 		String port = prefs.getString("server_port_" + order, null);
 		if (TextUtils.isEmpty(port))
@@ -172,7 +173,7 @@ public class ApplicationSettings {
 				parseInt(localPort, parseInt(port, Daemon.getDefaultPortNumber(type, ssl))),
 				prefs.getString("server_localnetwork_" + order, null), 
 				parseInt(port, Daemon.getDefaultPortNumber(type, ssl)),
-				ssl, 
+				ssl, localSsl,
 				prefs.getBoolean("server_ssltrustall_" + order, false), 
 				prefs.getString("server_ssltrustkey_" + order, null),
 				prefs.getString("server_folder_" + order, null),
@@ -213,6 +214,7 @@ public class ApplicationSettings {
 			edit.putString("server_localnetwork_" + i, prefs.getString("server_localnetwork_" + (i + 1), null));
 			edit.putString("server_port_" + i, prefs.getString("server_port_" + (i + 1), null));
 			edit.putBoolean("server_sslenabled_" + i, prefs.getBoolean("server_sslenabled_" + (i + 1), false));
+			edit.putBoolean("server_localsslenabled_" + i, prefs.getBoolean("server_localsslenabled_" + (i + 1), false));
 			edit.putBoolean("server_ssltrustall_" + i, prefs.getBoolean("server_ssltrustall_" + (i + 1), false));
 			edit.putString("server_ssltrustkey_" + i, prefs.getString("server_ssltrustkey_" + (i + 1), null));
 			edit.putString("server_folder_" + i, prefs.getString("server_folder_" + (i + 1), null));
@@ -237,6 +239,7 @@ public class ApplicationSettings {
 		edit.remove("server_localnetwork_" + max);
 		edit.remove("server_port_" + max);
 		edit.remove("server_sslenabled_" + max);
+		edit.remove("server_localsslenabled_" + max);
 		edit.remove("server_ssltrustall_" + max);
 		edit.remove("server_ssltrustkey_" + max);
 		edit.remove("server_folder_" + max);

@@ -85,6 +85,11 @@
 			android:summary="@string/pref_sslenable_info"
 			android:defaultValue="false" />
 		<CheckBoxPreference
+			android:key="server_localsslenabled"
+			android:title="@string/pref_local_sslenable"
+			android:summary="@string/pref_local_sslenable_info"
+			android:defaultValue="false" />
+		<CheckBoxPreference
 			android:key="server_ssltrustall"
 			android:title="@string/pref_sslacceptall"
 			android:summary="@string/pref_sslacceptall_info"
