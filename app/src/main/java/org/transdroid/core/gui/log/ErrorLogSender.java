@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.OrmLiteDao;
+import org.androidannotations.ormlite.annotations.OrmLiteDao;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.navigation.NavigationHelper;
@@ -39,7 +39,7 @@ public class ErrorLogSender {
 	protected Log log;
 	@Bean
 	protected NavigationHelper navigationHelper;
-	@OrmLiteDao(helper = DatabaseHelper.class, model = ErrorLogEntry.class)
+	@OrmLiteDao(helper = DatabaseHelper.class)
 	protected Dao<ErrorLogEntry, Integer> errorLogDao;
 
 	public void collectAndSendLog(final Activity callingActivity, final ServerSetting serverSetting) {

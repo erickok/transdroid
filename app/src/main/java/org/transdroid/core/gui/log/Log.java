@@ -21,7 +21,7 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EBean.Scope;
-import org.androidannotations.annotations.OrmLiteDao;
+import org.androidannotations.ormlite.annotations.OrmLiteDao;
 import org.transdroid.BuildConfig;
 
 import java.util.Date;
@@ -35,7 +35,7 @@ public class Log {
 
 	public static final String LOG_NAME = "Transdroid";
 	private static final long MAX_LOG_AGE = 15 * 60 * 1000; // 15 minutes
-	@OrmLiteDao(helper = DatabaseHelper.class, model = ErrorLogEntry.class)
+	@OrmLiteDao(helper = DatabaseHelper.class)
 	Dao<ErrorLogEntry, Integer> errorLogDao;
 
 	protected void log(Object object, int priority, String message) {

@@ -1,28 +1,36 @@
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode 230
         versionName '2.5.10'
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["resourcePackageName": "org.transdroid"]
+            }
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
         }
     }
+    flavorDimensions "version"
     productFlavors {
         full {
+            dimension "version"
             applicationId 'org.transdroid.full'
             resValue "string", "search_history_authority", applicationId + ".search.SearchHistoryProvider"
         }
         lite {
+            dimension "version"
             applicationId 'org.transdroid.lite'
             resValue "string", "search_history_authority", applicationId + ".search.SearchHistoryProvider"
         }
@@ -33,26 +41,20 @@ android {
 }
 
 dependencies {
-    compile 'org.androidannotations:androidannotations-api:3.3.2'
-    compile 'com.j256.ormlite:ormlite-core:4.48'
-    compile 'com.j256.ormlite:ormlite-android:4.48'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:support-annotations:23.4.0'
-    compile 'com.getbase:floatingactionbutton:1.10.1'
-    compile 'com.nispok:snackbar:2.11.0'
-    compile 'com.github.aegnor:rencode-java:cb628e824e'
-    compile('com.github.afollestad.material-dialogs:core:0.8.5.5@aar') {
+    implementation 'org.androidannotations:androidannotations-api:4.4.0'
+    implementation 'org.androidannotations:ormlite-api:4.4.0'
+    implementation 'com.j256.ormlite:ormlite-core:4.48'
+    implementation 'com.j256.ormlite:ormlite-android:4.48'
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'com.getbase:floatingactionbutton:1.10.1'
+    implementation 'com.nispok:snackbar:2.11.0'
+    implementation 'com.github.aegnor:rencode-java:cb628e824e'
+    implementation('com.github.afollestad.material-dialogs:core:0.9.6.0@aar') {
         transitive = true
     }
-    apt 'org.androidannotations:androidannotations:3.3.2'
+    annotationProcessor 'org.androidannotations:androidannotations:4.4.0'
+    annotationProcessor 'org.androidannotations:ormlite:4.4.0'
 }
 
-apt {
-    arguments {
-        androidManifestFile variant.outputs[0].processResources.manifestFile
-        resourcePackageName 'org.transdroid'
-        //logLevel 'INFO'
-        //logFile '/Users/erickok/Dev/transdroid/transdroid/app/build/aa-log.txt'
-    }
-}

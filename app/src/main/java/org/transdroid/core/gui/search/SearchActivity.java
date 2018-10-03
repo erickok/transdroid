@@ -98,7 +98,7 @@ public class SearchActivity extends AppCompatActivity {
 	@AfterViews
 	protected void init() {
 
-		searchToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+		searchToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
 		searchToolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
