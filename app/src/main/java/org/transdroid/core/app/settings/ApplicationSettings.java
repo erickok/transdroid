@@ -146,7 +146,7 @@ public class ApplicationSettings {
 		// @formatter:off
 		Daemon type = Daemon.fromCode(prefs.getString("server_type_" + order, null));
 		boolean ssl = prefs.getBoolean("server_sslenabled_" + order, false);
-		boolean localSsl = prefs.getBoolean("server_localsslenabled_" + order, false);
+		boolean localSsl = prefs.getBoolean("server_localsslenabled_" + order, ssl);
 
 		String port = prefs.getString("server_port_" + order, null);
 		if (TextUtils.isEmpty(port))
