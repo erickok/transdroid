@@ -8,17 +8,29 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 230
-        versionName '2.5.10'
+        versionCode 231
+        versionName '2.5.11'
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["resourcePackageName": "org.transdroid"]
+                arguments = [
+                        "resourcePackageName": "org.transdroid",
+                        "androidManifestFile": "/Users/erickok/Android/2312/transdroid/app/src/main/AndroidManifest.xml"
+                ]
             }
+        }
+    }
+    signingConfigs {
+        releaseConfig {
+            keyAlias 'transdroid'
+            keyPassword ''
+            storeFile file('../../erickok.keystore')
+            storePassword ''
         }
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.releaseConfig
             minifyEnabled false
         }
     }
