@@ -32,7 +32,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -85,7 +84,6 @@ import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.navigation.StatusType;
 import org.transdroid.core.gui.remoterss.RemoteRssActivity_;
 import org.transdroid.core.gui.rss.RssfeedsActivity_;
-import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
 import org.transdroid.core.gui.settings.MainSettingsActivity_;
@@ -788,37 +786,6 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 				addTorrentByFile(data.getDataString(), title);
 			}
 
-		}
-	}
-
-	@Click(R.id.addmenu_barcode_button)
-	protected void startBarcodeScanner() {
-		addmenuButton.collapse();
-		BarcodeHelper.startBarcodeScanner(this, BarcodeHelper.ACTIVITY_BARCODE_ADDTORRENT);
-	}
-
-	@Background
-	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE_ADDTORRENT)
-	public void onBarcodeScanned(int resultCode, Intent data) {
-		if (data != null) {
-			// We receive from the helper either a URL (as string) or a query we can start a search for
-			String query = BarcodeHelper.handleScanResult(resultCode, data, navigationHelper.enableSearchUi());
-			onBarcodeScanHandled(data.getStringExtra("SCAN_RESULT"), query);
-		}
-	}
-
-	@UiThread
-	protected void onBarcodeScanHandled(String barcode, String result) {
-		log.d(this, "Scanned barcode " + barcode + " and got " + result);
-		if (TextUtils.isEmpty(result)) {
-			SnackbarManager.show(Snackbar.with(this).text(R.string.error_noproductforcode).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
-		} else if (result.startsWith("http") || result.startsWith("https")) {
-			addTorrentByUrl(result, "QR code result"); // No torrent title known
-		} else if (result.startsWith("magnet")) {
-			String title = NavigationHelper.extractNameFromUri(Uri.parse(result));
-			addTorrentByMagnetUrl(result, title);
-		} else if (navigationHelper.enableSearchUi()) {
-			startSearch(result, false, null, false);
 		}
 	}
 

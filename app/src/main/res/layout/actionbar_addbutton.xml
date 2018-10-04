@@ -26,14 +26,5 @@
 		app:fab_colorPressed="@color/green_dark"
 		app:fab_icon="@drawable/ic_action_link" />
 
-	<com.getbase.floatingactionbutton.FloatingActionButton
-		android:id="@+id/addmenu_barcode_button"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:fab_colorNormal="@color/green"
-		app:fab_colorPressed="@color/green_dark"
-		app:fab_icon="@drawable/ic_action_barcode" />
-
 </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
-	

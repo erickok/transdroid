@@ -15,7 +15,8 @@ Transdroid
 
 <img src="http://2312.nl/images/screenshot_transdroid_main.png" alt="Screen shot of the main torrents listing screen" width="280" />
 
-Manage your torrents from your Android device with Transdroid. All popular clients are supported: µTorrent, Transmission, rTorrent, Vuze, Deluge, BitTorrent 6, qBittorrent and many more. You can view and manage the running torrents and individual files. Adding is easy via the integrated search, RSS feeds or the barcode scanner (full version required). Monitor progress using the home screen widget or background alarm service.
+
+Manage your torrents from your Android device with Transdroid. All popular clients are supported: µTorrent, Transmission, rTorrent, Vuze, Deluge, BitTorrent 6, qBittorrent and many more. You can view and manage the running torrents and individual files. Adding is easy via the integrated search or RSS feeds (full version required). Monitor progress using the home screen widget or background alarm service.
 
 Contributions
 =============
@@ -27,7 +28,7 @@ Please respect the coding standards for easier merging. master contains the curr
 Code structure
 ==============
 
-Starting with version 2.3.0, Transdroid is developed in Android Studio, fully integrating with the Gradle build system. It is (since version 2.5.0) compiled against Android 5.1 (API level 22) and (since version 2.2.0) supporting ICS (API level 15) and up only. To support lite (Transdrone, specially for the Play Store) and full (Transdroid) versions of the app, build flavours are defined in gradle, which contain version-specific resources. Dependencies are managed via JCentral in the app's build.gradle file.
+Starting with version 2.3.0, Transdroid is developed in Android Studio, fully integrating with the Gradle build system. It is (since version 2.5.0) compiled against Android 5.1 (API level 22) and (since version 2.2.0) supporting ICS (API level 15) and up only. To support lite (Transdrone, specially for the Play Store) and full (Transdroid) versions of the app, build flavours are defined in gradle, which contain version-specific resources. Dependencies are managed via JCentral et al. in the app's build.gradle file.
 
 Developed By
 ============
@@ -37,7 +38,7 @@ Designed and developed by [Eric Kok](eric@2312.nl) of [2312 development](http://
 License
 =======
     
-    Copyright 2010-2017 Eric Kok et al.
+    Copyright 2010-2018 Eric Kok et al.
     
     Transdroid is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

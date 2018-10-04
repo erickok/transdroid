@@ -24,27 +24,21 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import org.transdroid.R;
-import org.transdroid.core.app.search.GoogleWebSearchBarcodeResolver;
 
 public class BarcodeHelper {
 
-	public static final int ACTIVITY_BARCODE_ADDTORRENT = 0x0000c0de;
-	// A 'random' ID to identify torrent adding scan intents
-	public static final int ACTIVITY_BARCODE_QRSETTINGS = 0x0000c0df;
 	// A 'random' ID to identify QR-encoded settings scan intents
-	public static final Uri SCANNER_MARKET_URI = Uri.parse("market://search?q=pname:com.google.zxing.client.android");
+	public static final int ACTIVITY_BARCODE_QRSETTINGS = 0x0000c0df;
+	private static final Uri SCANNER_MARKET_URI = Uri.parse("market://search?q=pname:com.google.zxing.client.android");
 
 	/**
-	 * Call this to start a bar code scanner intent. The calling activity will receive an Intent result with ID {@link
-	 * #ACTIVITY_BARCODE_ADDTORRENT} or {@link #ACTIVITY_BARCODE_QRSETTINGS}. From there {@link #handleScanResult(int,
-	 * android.content.Intent, boolean)} can be called to parse the result into a search query, in case of {@link
-	 * #ACTIVITY_BARCODE_ADDTORRENT} scans.
+	 * Call this to start a bar code scanner intent. The calling activity will receive an Intent result with  the given
+	 * request code.
 	 * @param activity The calling activity, to which the result is returned or a dialog is bound that asks to install
 	 * the bar code scanner
-	 * @param requestCode {@link #ACTIVITY_BARCODE_ADDTORRENT} or {@link #ACTIVITY_BARCODE_QRSETTINGS
+	 * @param requestCode {@link #ACTIVITY_BARCODE_QRSETTINGS}
 	 */
 	public static void startBarcodeScanner(final Activity activity, int requestCode) {
 		// Start a bar code scanner that can handle the SCAN intent (specifically ZXing)
@@ -82,41 +76,11 @@ public class BarcodeHelper {
 							.setPositiveButton(android.R.string.yes, new OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									if (activity != null) {
-										activity.startActivity(new Intent(Intent.ACTION_VIEW, SCANNER_MARKET_URI));
-									}
+									activity.startActivity(new Intent(Intent.ACTION_VIEW, SCANNER_MARKET_URI));
 								}
 							}).setNegativeButton(android.R.string.no, null).create();
 				}
-
-				;
 			}.show(activity.getFragmentManager(), "installscanner");
-		}
-	}
-
-	/**
-	 * The activity that called {@link #startBarcodeScanner(android.app.Activity, int)} with {@link
-	 * #ACTIVITY_BARCODE_ADDTORRENT} should call this after the scan result was returned. This will parse the scan data
-	 * and return a query search query appropriate to the bar code.
-	 * @param resultCode The raw result code as returned by the bar code scanner
-	 * @param data The raw data as returned from the bar code scanner
-	 * @param supportsSearch Whether the application has the search UI enabled, such that it can use the scanned barcode
-	 * to find torrents
-	 * @return A String that can be used as new search query, or null if the bar code could not be scanned or no query
-	 * can be constructed for it
-	 */
-	public static String handleScanResult(int resultCode, Intent data, boolean supportsSearch) {
-		String contents = data != null ? data.getStringExtra("SCAN_RESULT") : null;
-		String formatName = data != null ? data.getStringExtra("SCAN_RESULT_FORMAT") : null;
-		if (formatName != null && formatName.equals("QR_CODE")) {
-			// Scanned barcode was a QR code: return the contents directly
-			return contents;
-		} else {
-			if (TextUtils.isEmpty(contents) || !supportsSearch) {
-				return null;
-			}
-			// Get a meaningful search query based on a Google Search product lookup
-			return GoogleWebSearchBarcodeResolver.resolveBarcode(contents);
 		}
 	}
 
