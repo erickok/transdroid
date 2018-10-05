@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 231
-        versionName '2.5.11'
+        versionCode 232
+        versionName '2.5.12'
 
         javaCompileOptions {
             annotationProcessorOptions {
