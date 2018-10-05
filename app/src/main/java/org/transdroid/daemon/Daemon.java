@@ -377,7 +377,7 @@ public enum Daemon {
 	}
 
 	public static boolean supportsSetDownloadLocation(Daemon type) {
-		return type == Transmission || type == Deluge || type == DelugeRpc || type == Dummy;
+		return type == Transmission || type == Deluge || type == DelugeRpc || type == qBittorrent || type == Dummy;
 	}
 
 	public static boolean supportsSetAlternativeMode(Daemon type) {

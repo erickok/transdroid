@@ -45,25 +45,7 @@ import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.task.AddByFileTask;
-import org.transdroid.daemon.task.AddByMagnetUrlTask;
-import org.transdroid.daemon.task.AddByUrlTask;
-import org.transdroid.daemon.task.DaemonTask;
-import org.transdroid.daemon.task.DaemonTaskFailureResult;
-import org.transdroid.daemon.task.DaemonTaskResult;
-import org.transdroid.daemon.task.DaemonTaskSuccessResult;
-import org.transdroid.daemon.task.GetFileListTask;
-import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
-import org.transdroid.daemon.task.GetStatsTask;
-import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
-import org.transdroid.daemon.task.GetTorrentDetailsTask;
-import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
-import org.transdroid.daemon.task.RemoveTask;
-import org.transdroid.daemon.task.RetrieveTask;
-import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
-import org.transdroid.daemon.task.SetFilePriorityTask;
-import org.transdroid.daemon.task.SetLabelTask;
-import org.transdroid.daemon.task.SetTransferRatesTask;
+import org.transdroid.daemon.task.*;
 import org.transdroid.daemon.util.HttpHelper;
 
 import java.io.File;
@@ -316,6 +298,14 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					makeRequest(log, "/command/setCategory",
 							new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()),
 							new BasicNameValuePair("category", labelTask.getNewLabel()));
+					return new DaemonTaskSuccessResult(task);
+
+				case SetDownloadLocation:
+
+					SetDownloadLocationTask setLocationTask = (SetDownloadLocationTask) task;
+					makeRequest(log, "/command/setLocation",
+							new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()),
+							new BasicNameValuePair("location", setLocationTask.getNewLocation()));
 					return new DaemonTaskSuccessResult(task);
 
 				case SetTransferRates:
