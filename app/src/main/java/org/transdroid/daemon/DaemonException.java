@@ -18,6 +18,8 @@
  package org.transdroid.daemon;
 
 
+import android.support.annotation.NonNull;
+
 /**
  * An exception thrown when an error occurs inside a server daemon adapter.
  * The error message is from a resource string ID, since this can be 
@@ -40,7 +42,7 @@ public class DaemonException extends Exception {
 		ParsingFailed,
 		AuthenticationFailure,
 		NotConnected,
-		FileAccessError;
+		FileAccessError
 	}
 	
 	public DaemonException(ExceptionType internalException, String message) {
@@ -52,6 +54,7 @@ public class DaemonException extends Exception {
 		return internalException;
 	}
 	
+	@NonNull
 	@Override
 	public String toString() {
 		return internalException.toString() + " exception: " + getMessage();
