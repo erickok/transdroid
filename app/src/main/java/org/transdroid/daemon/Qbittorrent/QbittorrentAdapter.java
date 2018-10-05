@@ -499,6 +499,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			int seeders[];
 			double ratio;
 			long size;
+			long uploaded;
 			int dlspeed;
 			int upspeed;
 			Date addedOn = null;
@@ -516,6 +517,11 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				ratio = tor.getDouble("ratio");
 				dlspeed = tor.getInt("dlspeed");
 				upspeed = tor.getInt("upspeed");
+				if (tor.has("uploaded")) {
+					uploaded = tor.getLong("uploaded");
+				} else {
+					uploaded = (long) (size * ratio);
+				}
 				final long addedOnTime = tor.optLong("added_on");
 				addedOn = (addedOnTime > 0) ? new Date(addedOnTime * 1000L) : null;
 				final long completionOnTime = tor.optLong("completion_on");
@@ -529,6 +535,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				seeders = parsePeers(tor.getString("num_seeds"));
 				size = parseSize(tor.getString("size"));
 				ratio = parseRatio(tor.getString("ratio"));
+				uploaded = (long) (size * ratio);
 				dlspeed = parseSpeed(tor.getString("dlspeed"));
 				upspeed = parseSpeed(tor.getString("upspeed"));
 			}
@@ -552,7 +559,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					leechers[1],
 					(int) eta,
 					(long) (size * progress),
-					(long) (size * ratio),
+					uploaded,
 					size,
 					(float) progress,
 					0f,
