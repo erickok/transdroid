@@ -3,6 +3,7 @@
 build/
 
 # local configuration file (sdk path, etc)
+keystore.properties
 local.properties
 signing.gradle
 

@@ -22,10 +22,17 @@ android {
     }
     signingConfigs {
         releaseConfig {
-            keyAlias 'transdroid'
-            keyPassword ''
-            storeFile file('../../erickok.keystore')
-            storePassword ''
+            def propsFile = rootProject.file('keystore.properties')
+            def configName = 'releaseConfig'
+
+            if (propsFile.exists() && android.signingConfigs.hasProperty(configName)) {
+                def props = new Properties()
+                props.load(new FileInputStream(propsFile))
+                keyAlias = props['keyAlias']
+                storeFile = file(props['storeFile'])
+                keyPassword = props['keyPassword']
+                storePassword = props['storePassword']
+            }
         }
     }
     buildTypes {
