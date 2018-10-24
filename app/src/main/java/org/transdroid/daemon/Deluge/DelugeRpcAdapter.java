@@ -18,7 +18,6 @@
 package org.transdroid.daemon.Deluge;
 
 import android.support.annotation.NonNull;
-
 import org.base64.android.Base64;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
@@ -27,121 +26,22 @@ import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.core.rssparser.Channel;
 import org.transdroid.core.rssparser.Item;
 import org.transdroid.core.rssparser.RssParser;
-import org.transdroid.daemon.Daemon;
-import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.*;
 import org.transdroid.daemon.DaemonException.ExceptionType;
-import org.transdroid.daemon.DaemonSettings;
-import org.transdroid.daemon.IDaemonAdapter;
-import org.transdroid.daemon.Label;
-import org.transdroid.daemon.Priority;
-import org.transdroid.daemon.Torrent;
-import org.transdroid.daemon.TorrentDetails;
-import org.transdroid.daemon.TorrentFile;
-import org.transdroid.daemon.task.AddByFileTask;
-import org.transdroid.daemon.task.AddByMagnetUrlTask;
-import org.transdroid.daemon.task.AddByUrlTask;
-import org.transdroid.daemon.task.DaemonTask;
-import org.transdroid.daemon.task.DaemonTaskFailureResult;
-import org.transdroid.daemon.task.DaemonTaskResult;
-import org.transdroid.daemon.task.DaemonTaskSuccessResult;
-import org.transdroid.daemon.task.ForceRecheckTask;
-import org.transdroid.daemon.task.GetFileListTask;
-import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
-import org.transdroid.daemon.task.GetTorrentDetailsTask;
-import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
-import org.transdroid.daemon.task.RemoveTask;
-import org.transdroid.daemon.task.RetrieveTask;
-import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
-import org.transdroid.daemon.task.SetDownloadLocationTask;
-import org.transdroid.daemon.task.SetFilePriorityTask;
-import org.transdroid.daemon.task.SetLabelTask;
-import org.transdroid.daemon.task.SetTrackersTask;
-import org.transdroid.daemon.task.SetTransferRatesTask;
+import org.transdroid.daemon.task.*;
 import org.xml.sax.SAXException;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.*;
+import java.net.URI;
+import java.util.*;
+import java.util.Map.Entry;
 
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DETAILS_FIELDS_ARRAY;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DOWNLOADEDEVER;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_DOWNLOAD_LOCATION;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_ETA;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FIELDS_ARRAY;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPRIORITIES;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILEPROGRESS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_FILE_FIELDS_ARRAY;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_HASH;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_INDEX;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_KEY;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_LABEL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXDOWNLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXUPLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MESSAGE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_FILE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_MAGNET;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_FORCERECHECK;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_GET_LABELS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_GET_METHOD_LIST;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_GET_RSS_CONFIG;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_GET_TORRENTS_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_INFO;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_MOVESTORAGE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_PAUSE_ALL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_REMOVE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_RESUME_ALL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETCONFIG;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETLABEL;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SETTRACKERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_SET_TORRENT_OPTIONS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MOVE_COMPLETED;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MOVE_COMPLETED_PATH;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NAME;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMPEERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_NUMSEEDS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PARTDONE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_PATH;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEDOWNLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RATEUPLOAD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RSSFEEDS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_RSSFEED_KEY;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SAVEPATH;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SIZE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_SUBSCRIPTIONS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIER;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TIMEADDED;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALPEERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSEEDS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TOTALSIZE;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKERS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_TRACKER_STATUS;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_UPLOADEDEVER;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_URL;
+import static org.transdroid.daemon.Deluge.DelugeCommon.*;
 
 /**
  * The daemon adapter from the Deluge torrent client using deluged API directly.
+ *
  * @author alon.albert
  */
 public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
@@ -198,7 +98,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 					return doForceRecheck(client, (ForceRecheckTask) task);
 				default:
 					return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.MethodUnsupported, task.getMethod() + " is not " +
-                            "supported by " + getType()));
+							"supported by " + getType()));
 			}
 		} catch (DaemonException e) {
 			return new DaemonTaskFailureResult(task, e);
@@ -235,32 +135,39 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 
 			final Map<Object, String> feedUrlMap = new HashMap<>();
 			final Map<Object, List<Item>> feedItemMap = new HashMap<>();
-			for (Map<String, Object> feed : rssFeeds.values()) {
-				final String feedUrl = (String) feed.get(RPC_URL);
-				final Object key = feed.get(RPC_KEY);
-				feedUrlMap.put(key, feedUrl);
-				final List<Item> items = getRssFeedItems(feedUrl, log);
-				feedItemMap.put(key, items);
+			if (rssFeeds != null) {
+				for (Map<String, Object> feed : rssFeeds.values()) {
+					final String feedUrl = (String) feed.get(RPC_URL);
+					final Object key = feed.get(RPC_KEY);
+					feedUrlMap.put(key, feedUrl);
+					final List<Item> items = getRssFeedItems(feedUrl, log);
+					feedItemMap.put(key, items);
+				}
 			}
 
 			//noinspection unchecked
 			final Map<String, Map<String, Object>> subscriptions = (Map<String, Map<String, Object>>) rssConfig.get(RPC_SUBSCRIPTIONS);
 			final ArrayList<RemoteRssChannel> channels = new ArrayList<>();
-			for (Map<String, Object> subscription : subscriptions.values()) {
-				final Integer key = Integer.valueOf(subscription.get(RPC_KEY).toString());
-				final String name = (String) subscription.get(RPC_NAME);
-				final String label = (String) subscription.get(RPC_LABEL);
-				final String downloadLocation = (String) subscription.get(RPC_DOWNLOAD_LOCATION);
-				final String moveCompleted = (String) subscription.get(RPC_MOVE_COMPLETED);
-				final Object feedKey = subscription.get(RPC_RSSFEED_KEY);
-				final String feedUrl = feedUrlMap.get(feedKey);
+			if (subscriptions != null) {
+				for (Map<String, Object> subscription : subscriptions.values()) {
+					final Integer key = Integer.valueOf(subscription.get(RPC_KEY).toString());
+					final String name = (String) subscription.get(RPC_NAME);
+					final String label = (String) subscription.get(RPC_LABEL);
+					final String downloadLocation = (String) subscription.get(RPC_DOWNLOAD_LOCATION);
+					final String moveCompleted = (String) subscription.get(RPC_MOVE_COMPLETED);
+					final Object feedKey = subscription.get(RPC_RSSFEED_KEY);
+					final String feedUrl = feedUrlMap.get(feedKey);
 
-				final List<RemoteRssItem> items = new ArrayList<>();
-				for (Item item : feedItemMap.get(feedKey)) {
-					items.add(new DelugeRemoteRssItem(item.getTitle(), item.getLink(), name, item.getPubdate()));
+					final List<RemoteRssItem> items = new ArrayList<>();
+					final List<Item> feedItems = feedItemMap.get(feedKey);
+					if (feedItems != null) {
+						for (Item item : feedItems) {
+							items.add(new DelugeRemoteRssItem(item.getTitle(), item.getLink(), name, item.getPubdate()));
+						}
+					}
+
+					channels.add(new DelugeRemoteRssChannel(key, name, feedUrl, now, label, downloadLocation, moveCompleted, items));
 				}
-
-				channels.add(new DelugeRemoteRssChannel(key, name, feedUrl, now, label, downloadLocation, moveCompleted, items));
 			}
 			return channels;
 		} finally {
@@ -309,7 +216,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 		// Get torrents
 		//noinspection unchecked
 		final Map<String, Map<String, Object>> torrentsStatus = (Map<String, Map<String, Object>>) client.sendRequest
-                (RPC_METHOD_GET_TORRENTS_STATUS, new HashMap<>(), RPC_FIELDS_ARRAY);
+				(RPC_METHOD_GET_TORRENTS_STATUS, new HashMap<>(), RPC_FIELDS_ARRAY);
 		final List<Torrent> torrents = getTorrents(torrentsStatus.values());
 
 		// Check if Label plugin is enabled
@@ -328,17 +235,19 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 	private GetTorrentDetailsTaskSuccessResult doGetTorrentDetails(DelugeRpcClient client, GetTorrentDetailsTask task) throws DaemonException {
 		//noinspection unchecked
 		final Map<String, Object> response = (Map<String, Object>) client.sendRequest(RPC_METHOD_STATUS, task.getTargetTorrent().getUniqueID(),
-                RPC_DETAILS_FIELDS_ARRAY);
+				RPC_DETAILS_FIELDS_ARRAY);
 
 		//noinspection unchecked
 		final List<Map<String, Object>> trackerResponses = (List<Map<String, Object>>) response.get(RPC_TRACKERS);
 		final List<String> trackers = new ArrayList<>();
-		for (Map<String, Object> trackerResponse : trackerResponses) {
-			trackers.add((String) trackerResponse.get(RPC_URL));
+		if (trackerResponses != null) {
+			for (Map<String, Object> trackerResponse : trackerResponses) {
+				trackers.add((String) trackerResponse.get(RPC_URL));
+			}
 		}
 
 		return new GetTorrentDetailsTaskSuccessResult(task, new TorrentDetails(trackers, Collections.singletonList((String) response.get
-                (RPC_TRACKER_STATUS))));
+				(RPC_TRACKER_STATUS))));
 	}
 
 	private GetFileListTaskSuccessResult doGetFileList(DelugeRpcClient client, GetFileListTask task) throws DaemonException {
@@ -479,12 +388,12 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 			}
 
 			torrents.add(new Torrent(id++, (String) torrentMap.get(RPC_HASH), (String) torrentMap.get(RPC_NAME), DelugeCommon.convertDelugeState(
-			        (String) torrentMap.get(RPC_STATUS)), torrentMap.get(RPC_SAVEPATH) + settings.getOS().getPathSeperator(), ((Number) torrentMap
-                    .get(RPC_RATEDOWNLOAD)).intValue(), ((Number) torrentMap.get(RPC_RATEUPLOAD)).intValue(), ((Number) torrentMap.get
-                    (RPC_NUMSEEDS)).intValue(), ((Number) torrentMap.get(RPC_TOTALSEEDS)).intValue(), ((Number) torrentMap.get(RPC_NUMPEERS))
-                    .intValue(), ((Number) torrentMap.get(RPC_TOTALPEERS)).intValue(), ((Number) torrentMap.get(RPC_ETA)).intValue(), ((Number)
-                    torrentMap.get(RPC_DOWNLOADEDEVER)).longValue(), ((Number) torrentMap.get(RPC_UPLOADEDEVER)).longValue(), ((Number) torrentMap
-                    .get(RPC_TOTALSIZE)).longValue(), ((Number) torrentMap.get(RPC_PARTDONE)).floatValue() / 100f, 0f, // Not available
+					(String) torrentMap.get(RPC_STATUS)), torrentMap.get(RPC_SAVEPATH) + settings.getOS().getPathSeperator(), ((Number) torrentMap
+					.get(RPC_RATEDOWNLOAD)).intValue(), ((Number) torrentMap.get(RPC_RATEUPLOAD)).intValue(), ((Number) torrentMap.get
+					(RPC_NUMSEEDS)).intValue(), ((Number) torrentMap.get(RPC_TOTALSEEDS)).intValue(), ((Number) torrentMap.get(RPC_NUMPEERS))
+					.intValue(), ((Number) torrentMap.get(RPC_TOTALPEERS)).intValue(), ((Number) torrentMap.get(RPC_ETA)).intValue(), ((Number)
+					torrentMap.get(RPC_DOWNLOADEDEVER)).longValue(), ((Number) torrentMap.get(RPC_UPLOADEDEVER)).longValue(), ((Number) torrentMap
+					.get(RPC_TOTALSIZE)).longValue(), ((Number) torrentMap.get(RPC_PARTDONE)).floatValue() / 100f, 0f, // Not available
 					(String) torrentMap.get(RPC_LABEL), timeAddedDate, null, // Not available
 					error, getType()));
 		}
@@ -525,7 +434,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 		final ArrayList<TorrentFile> files = new ArrayList<>();
 		//noinspection unchecked
 		final Map<String, Object> response = (Map<String, Object>) client.sendRequest(RPC_METHOD_STATUS, torrent.getUniqueID(),
-                RPC_FILE_FIELDS_ARRAY);
+				RPC_FILE_FIELDS_ARRAY);
 
 		//noinspection unchecked
 		final List<Map<String, Object>> fileMaps = (List<Map<String, Object>>) response.get(RPC_DETAILS);
@@ -534,15 +443,17 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 		//noinspection unchecked
 		final List<Float> progresses = (List<Float>) response.get(RPC_FILEPROGRESS);
 
-		for (int i = 0, n = fileMaps.size(); i < n; i++) {
-			final Map<String, Object> fileMap = fileMaps.get(i);
-			final int priority = priorities.get(i);
-			final float progress = progresses.get(i);
+		if (fileMaps != null) {
+			for (int i = 0, n = fileMaps.size(); i < n; i++) {
+				final Map<String, Object> fileMap = fileMaps.get(i);
+				final int priority = priorities.get(i);
+				final float progress = progresses.get(i);
 
-			final String path = (String) fileMap.get(RPC_PATH);
-			final long size = ((Number) fileMap.get(RPC_SIZE)).longValue();
-			files.add(new TorrentFile(fileMap.get(RPC_INDEX).toString(), path, path, torrent.getLocationDir() + path, size, (long) (size * progress)
-                    , convertDelugePriority(client, priority)));
+				final String path = (String) fileMap.get(RPC_PATH);
+				final long size = ((Number) fileMap.get(RPC_SIZE)).longValue();
+				files.add(new TorrentFile(fileMap.get(RPC_INDEX).toString(), path, path, torrent.getLocationDir() + path, size,
+						(long) (size * progress), convertDelugePriority(client, priority)));
+			}
 		}
 		return files;
 	}
@@ -630,7 +541,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 	 */
 	private static class MutableInt {
 
-		int value = 1;
+		int value;
 
 		MutableInt(int value) {
 			this.value = value;
@@ -643,5 +554,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 		int get() {
 			return value;
 		}
+
 	}
+
 }

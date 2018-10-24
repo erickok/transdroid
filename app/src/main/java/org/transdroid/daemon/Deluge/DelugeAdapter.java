@@ -92,7 +92,6 @@ import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MAXUPLOAD;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_MESSAGE;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD;
-import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_FILE;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_ADD_MAGNET;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_AUTH_LOGIN;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_FORCERECHECK;
@@ -145,7 +144,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 	private static final String PATH_TO_UPLOAD = "/upload";
 
 	private static final String RPC_ID = "id";
-	private final String RPC_METHOD_ADD_FILE = "web.add_torrents";
+	private static final String RPC_METHOD_ADD_FILE = "web.add_torrents";
 
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
@@ -156,7 +155,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 		this.settings = settings;
 	}
 
-	public JSONArray addTorrentByFile(String file, Log log) throws JSONException, IOException, DaemonException {
+	private JSONArray addTorrentByFile(String file, Log log) throws JSONException, IOException, DaemonException {
 
 		String url = buildWebUIUrl() + PATH_TO_UPLOAD;
 

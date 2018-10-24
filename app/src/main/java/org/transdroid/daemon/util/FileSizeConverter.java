@@ -17,6 +17,8 @@
  */
 package org.transdroid.daemon.util;
 
+import java.util.Locale;
+
 /**
  * Quick and dirty file size formatter.
  * @author erickok
@@ -24,6 +26,7 @@ package org.transdroid.daemon.util;
 public class FileSizeConverter {
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
+	private static final String DECIMAL_FORMATTER_GB = "%.2f";
 
 	/**
 	 * A quantity in which to express a file size.
@@ -48,13 +51,13 @@ public class FileSizeConverter {
 			out = String.valueOf(from);
 			break;
 		case KB:
-			out = String.format(DECIMAL_FORMATTER, ((double) from) / INC_SIZE);
+			out = String.format(Locale.getDefault(), DECIMAL_FORMATTER, ((double) from) / INC_SIZE);
 			break;
 		case MB:
-			out = String.format(DECIMAL_FORMATTER, ((double) from) / INC_SIZE / INC_SIZE);
+			out = String.format(Locale.getDefault(), DECIMAL_FORMATTER, ((double) from) / INC_SIZE / INC_SIZE);
 			break;
 		default:
-			out = String.format(DECIMAL_FORMATTER, ((double) from) / INC_SIZE / INC_SIZE / INC_SIZE);
+			out = String.format(Locale.getDefault(), DECIMAL_FORMATTER_GB, ((double) from) / INC_SIZE / INC_SIZE / INC_SIZE);
 			break;
 		}
 
@@ -70,7 +73,6 @@ public class FileSizeConverter {
 		return getSize(from, true);
 	}
 
-	// Returns a file size in bytes in a nice readable formatted string
 	/**
 	 * Returns a file size as nice readable string, e.g. 1234567890 (bytes) returns 1,15 or 1,15GB
 	 * @param from The file size in bytes
@@ -81,13 +83,13 @@ public class FileSizeConverter {
 		if (from < INC_SIZE) {
 			return String.valueOf(from) + (withUnit ? SizeUnit.B.toString() : "");
 		} else if (from < (INC_SIZE * INC_SIZE)) {
-			return String.format(DECIMAL_FORMATTER, ((double) from) / INC_SIZE)
+			return String.format(Locale.getDefault(), DECIMAL_FORMATTER, ((double) from) / INC_SIZE)
 					+ (withUnit ? SizeUnit.KB.toString() : "");
 		} else if (from < (INC_SIZE * INC_SIZE * INC_SIZE)) {
-			return String.format(DECIMAL_FORMATTER, ((double) from) / INC_SIZE / INC_SIZE)
+			return String.format(Locale.getDefault(), DECIMAL_FORMATTER, ((double) from) / INC_SIZE / INC_SIZE)
 					+ (withUnit ? SizeUnit.MB.toString() : "");
 		} else {
-			return String.format(DECIMAL_FORMATTER, ((double) from) / INC_SIZE / INC_SIZE / INC_SIZE)
+			return String.format(Locale.getDefault(), DECIMAL_FORMATTER_GB, ((double) from) / INC_SIZE / INC_SIZE / INC_SIZE)
 					+ (withUnit ? SizeUnit.GB.toString() : "");
 		}
 	}

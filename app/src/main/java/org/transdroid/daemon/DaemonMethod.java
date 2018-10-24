@@ -47,7 +47,7 @@ public enum DaemonMethod {
 	ForceRecheck (22);
 
 	private int code;
-    private static final Map<Integer,DaemonMethod> lookup  = new HashMap<Integer,DaemonMethod>();
+    private static final Map<Integer,DaemonMethod> lookup  = new HashMap<>();
 
 	static {
 	    for(DaemonMethod s : EnumSet.allOf(DaemonMethod.class))
