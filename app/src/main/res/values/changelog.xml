@@ -17,6 +17,21 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.5.13\n
+- Background (RSS, torrents, new version) service (crash) fixed\n
+- Fixes for F-Droid builds\n
+\n
+Transdroid 2.5.12\n
+- Android 9 plaintext (non-ssl) support\n
+- qBittorrent set location support and better upload size\n
+- Sizes in GB shown with 2 decimal places\n
+- Fixes several edge case crashes\n
+\n
+Transdroid 2.5.11\n
+- Fixes Deluge (non-RPC) adapter file uploads\n
+- Removed defuct barcode scanner\n
+- Updated to target Android 9 (back service still broken)\n
+\n
 Transdroid 2.5.10\n
 Many thanks to alonalbert for his contributions!\n
 - Added Deluge via RPC adapter\n
