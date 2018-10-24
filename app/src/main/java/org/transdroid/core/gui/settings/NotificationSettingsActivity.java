@@ -29,6 +29,8 @@ import org.androidannotations.annotations.OptionsItem;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.NotificationSettings;
 import org.transdroid.core.service.BootReceiver;
+import org.transdroid.core.service.RssCheckerJob;
+import org.transdroid.core.service.ServerCheckerJob;
 
 @EActivity
 public class NotificationSettingsActivity extends PreferenceCompatActivity implements OnSharedPreferenceChangeListener {
@@ -73,18 +75,8 @@ public class NotificationSettingsActivity extends PreferenceCompatActivity imple
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-		boolean disabled = !notificationSettings.isEnabledForRss() && !notificationSettings.isEnabledForTorrents();
-		updatePrefsEnabled(disabled);
-
-		if (disabled) {
-			// Disabled all background notifications; disable the alarms that start the service
-			BootReceiver.cancelBackgroundServices(getApplicationContext());
-		}
-
-		// (Re-)enable the alarms for the background services
-		// Note that this still respects the user preference
-		BootReceiver.startBackgroundServices(getApplicationContext(), true);
+		ServerCheckerJob.schedule(getApplicationContext());
+		RssCheckerJob.schedule(getApplicationContext());
 	}
 
 	@SuppressWarnings("deprecation")

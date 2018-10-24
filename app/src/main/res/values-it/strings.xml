@@ -319,8 +319,7 @@
   <string name="pref_seedbox_xirviknofolder">Impossibile recuperare la cartella Xirvik SCGI; riprovare più tardi o correggere l\'indirizzo del server</string>
   <string name="pref_seedbox_seedstuffhint">Esempio: 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 minuto</item>
-    <item>10 minuto</item>
+    <item>15 minuto</item>
     <item>30 minuto</item>
     <item>1 ora</item>
     <item>3 ore</item>

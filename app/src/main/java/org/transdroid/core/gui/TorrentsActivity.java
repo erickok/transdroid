@@ -87,8 +87,7 @@ import org.transdroid.core.gui.rss.RssfeedsActivity_;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
 import org.transdroid.core.gui.settings.MainSettingsActivity_;
-import org.transdroid.core.service.BootReceiver;
-import org.transdroid.core.service.ConnectivityHelper;
+import org.transdroid.core.service.*;
 import org.transdroid.core.widget.ListWidgetProvider;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
@@ -320,9 +319,10 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		}
 		firstStart = false;
 
-		// Start the alarms for the background services, if needed
-		BootReceiver.startBackgroundServices(getApplicationContext(), false);
-		BootReceiver.startAppUpdatesService(getApplicationContext());
+		// Start the jobs for the background services, if needed
+		ServerCheckerJob.schedule(getApplicationContext());
+		RssCheckerJob.schedule(getApplicationContext());
+		AppUpdateJob.schedule(getApplicationContext());
 
 	}
 

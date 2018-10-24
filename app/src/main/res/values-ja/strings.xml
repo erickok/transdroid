@@ -311,8 +311,7 @@
   <string name="pref_seedbox_xirviknofolder">Xirvik SCGI フォルダー設定を読み取りできません。後で再度実行するか、サーバー･アドレス設定を確認してください</string>
   <string name="pref_seedbox_seedstuffhint">001.seedstuff.ca のように</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 分</item>
-    <item>10 分</item>
+    <item>15 分</item>
     <item>30 分</item>
     <item>1 時間</item>
     <item>3 時間</item>

@@ -315,8 +315,7 @@
   <string name="pref_seedbox_xirviknofolder">Kan de Xirvik SCGI mount instelling niet laden; probeer later nog eens en controleer je serveradres</string>
   <string name="pref_seedbox_seedstuffhint">Zoals 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 minuut</item>
-    <item>10 minuten</item>
+    <item>15 minuten</item>
     <item>30 minuten</item>
     <item>1 uur</item>
     <item>3 uur</item>

@@ -284,8 +284,7 @@
   <string name="pref_seedbox_xirvikhint3">Jak desharedgbit001.xirvik.com</string>
   <string name="pref_seedbox_seedstuffhint">Jak 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 minuta</item>
-    <item>10 minut</item>
+    <item>15 minut</item>
     <item>30 minut</item>
     <item>1 godzina</item>
     <item>3 godziny</item>

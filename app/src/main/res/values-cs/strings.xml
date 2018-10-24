@@ -287,8 +287,7 @@
   <string name="pref_seedbox_xirviknofolder">Nelze načíst nastavení složky Xirvik SCGI; opakujte akci později nebo zkontrolujte nastavení adresy vašeho serveru</string>
   <string name="pref_seedbox_seedstuffhint">Např.: Like 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 minuta</item>
-    <item>10 minut</item>
+    <item>15 minut</item>
     <item>30 minut</item>
     <item>1 hodina</item>
     <item>3 hodiny</item>

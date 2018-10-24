@@ -144,8 +144,7 @@
   <string name="pref_seedbox_xirvikhint3">Kuten desharedgbit001.xirvik.com</string>
   <string name="pref_seedbox_seedstuffhint">Kuten 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 minuutti</item>
-    <item>10 minuuttia</item>
+    <item>15 minuuttia</item>
     <item>30 minuuttia</item>
     <item>1 tunti</item>
     <item>3 tuntia</item>

@@ -303,8 +303,7 @@
   <string name="pref_seedbox_xirviknofolder">Kan ikke hente indstillingen for Xirvik SCGI; Prøv igen senere, eller ret din server adresseindstilling</string>
   <string name="pref_seedbox_seedstuffhint">Eks. 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 minut</item>
-    <item>10 minutter</item>
+    <item>15 minutter</item>
     <item>30 minutter</item>
     <item>1 time</item>
     <item>3 timer</item>

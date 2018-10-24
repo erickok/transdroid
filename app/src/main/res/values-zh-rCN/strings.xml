@@ -295,8 +295,7 @@
   <string name="pref_seedbox_xirviknofolder">无法检索Xirvik SCGI的文件夹设置，请稍后再试或更正您的服务器地址</string>
   <string name="pref_seedbox_seedstuffhint">例如：001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>每分钟</item>
-    <item>每10分钟</item>
+    <item>每15分钟</item>
     <item>每30分钟</item>
     <item>每小时</item>
     <item>每3小时</item>

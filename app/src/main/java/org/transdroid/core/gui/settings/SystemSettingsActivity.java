@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
@@ -47,7 +46,7 @@ import org.transdroid.core.gui.log.ErrorLogSender;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.SearchHistoryProvider;
-import org.transdroid.core.service.BootReceiver;
+import org.transdroid.core.service.AppUpdateJob;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -85,11 +84,7 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 	private OnPreferenceClickListener onCheckUpdatesClick = new OnPreferenceClickListener() {
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
-			if (((CheckBoxPreference) preference).isChecked()) {
-				BootReceiver.startAppUpdatesService(getApplicationContext());
-			} else {
-				BootReceiver.cancelAppUpdates(getApplicationContext());
-			}
+			AppUpdateJob.schedule(getApplicationContext());
 			return true;
 		}
 	};

@@ -53,8 +53,8 @@ android {
 }
 
 dependencies {
-    implementation 'org.androidannotations:androidannotations-api:4.4.0'
-    implementation 'org.androidannotations:ormlite-api:4.4.0'
+    implementation 'org.androidannotations:androidannotations-api:4.5.2'
+    implementation 'org.androidannotations:ormlite-api:4.5.2'
     implementation 'com.j256.ormlite:ormlite-core:4.48'
     implementation 'com.j256.ormlite:ormlite-android:4.48'
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
@@ -66,7 +66,8 @@ dependencies {
     implementation('com.github.afollestad.material-dialogs:core:0.9.6.0@aar') {
         transitive = true
     }
-    annotationProcessor 'org.androidannotations:androidannotations:4.4.0'
-    annotationProcessor 'org.androidannotations:ormlite:4.4.0'
+    implementation 'com.evernote:android-job:1.2.6'
+    annotationProcessor 'org.androidannotations:androidannotations:4.5.2'
+    annotationProcessor 'org.androidannotations:ormlite:4.5.2'
 }
 

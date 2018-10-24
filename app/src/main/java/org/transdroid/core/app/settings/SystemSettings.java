@@ -21,7 +21,6 @@ import java.util.Date;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.EBean.Scope;
-import org.transdroid.core.service.AppUpdateService;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -70,7 +69,7 @@ public class SystemSettings {
 
 	/**
 	 * Returns the date when we last checked transdroid.org for the latest app version.
-	 * @return The date/time when the {@link AppUpdateService} checked on the server for updates
+	 * @return The date/time when the {@link org.transdroid.core.service.AppUpdateJob} checked on the server for updates
 	 */
 	public Date getLastCheckedForAppUpdates() {
 		long lastChecked = prefs.getLong("system_lastappupdatecheck", -1L);
@@ -79,7 +78,7 @@ public class SystemSettings {
 
 	/**
 	 * Stores the date at which was last successfully, fully checked for new updates to the app.
-	 * @param lastChecked The date/time at which the {@link AppUpdateService} last checked the server for updates
+	 * @param lastChecked The date/time at which the {@link org.transdroid.core.service.AppUpdateJob} last checked the server for updates
 	 */
 	public void setLastCheckedForAppUpdates(Date lastChecked) {
 		prefs.edit().putLong("system_lastappupdatecheck", lastChecked == null ? -1L : lastChecked.getTime()).apply();

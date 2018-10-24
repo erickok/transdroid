@@ -308,8 +308,7 @@
   <string name="pref_seedbox_xirviknofolder">نمی‌توان تنظیمات پوشه‌ی SCGIی Xirvik را دریافت کرد؛ لطفا ً بعدا ً دوباره امتحان کنید یا تنظیمات نشانی کارگزار را درست کنید</string>
   <string name="pref_seedbox_seedstuffhint">مانند 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 دقیقه </item>
-    <item> 10 دقیقه </item>
+    <item> 15 دقیقه </item>
     <item> 30 دقیقه </item>
     <item> 1 ساعت </item>
     <item> 3 ساعت </item>

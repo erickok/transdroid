@@ -303,8 +303,7 @@
   <string name="pref_seedbox_xirviknofolder">Impossible de récupérer le paramètre dossier de Xirvik SCGI ; Veuillez réessayer ultérieurement ou corriger le réglage d\'adresse de votre serveur</string>
   <string name="pref_seedbox_seedstuffhint">Comme 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 minute</item>
-    <item>10 minutes</item>
+    <item>15 minutes</item>
     <item>30 minutes</item>
     <item>1 heure</item>
     <item>3 heures</item>

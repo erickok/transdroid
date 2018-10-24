@@ -257,8 +257,7 @@
   <string name="pref_seedbox_xirvikhint3">לדוגמא: desharedgbit001.xirvik.com</string>
   <string name="pref_seedbox_seedstuffhint">לדוגמא: 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>דקה</item>
-    <item>10 דקות</item>
+    <item>15 דקות</item>
     <item>חצי שעה</item>
     <item>שעה</item>
     <item>3 שעות</item>

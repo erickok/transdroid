@@ -311,8 +311,7 @@
   <string name="pref_seedbox_xirviknofolder">Xirvik SCGI 폴더 설정을 받아오지 못했습니다; 다음에 다시 시도해 보시거나 서버 주소 설정을 고쳐보세요</string>
   <string name="pref_seedbox_seedstuffhint">예) 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1분</item>
-    <item>10분</item>
+    <item>15분</item>
     <item>30분</item>
     <item>1시간</item>
     <item>3시간</item>

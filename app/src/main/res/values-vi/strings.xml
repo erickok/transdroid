@@ -247,8 +247,7 @@
   <string name="pref_seedbox_client">Trình điều khiển torrent</string>
   <string name="pref_seedbox_server">Địa chỉ máy chủ</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 phút</item>
-    <item>10 phút</item>
+    <item>15 phút</item>
     <item>30 phút</item>
     <item>1 giờ</item>
     <item>3 giờ</item>

@@ -319,8 +319,7 @@
   <string name="pref_seedbox_xirviknofolder">Die Xirvik SCGI-Ordner-Einstellung kann nicht abgerufen werden; Bitte versuchen Sie es später erneut, oder korrigieren Sie ihre Serveradresse</string>
   <string name="pref_seedbox_seedstuffhint">Like 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 Minute</item>
-    <item>10 Minuten</item>
+    <item>15 Minuten</item>
     <item>30 Minuten</item>
     <item>1 Stunde</item>
     <item>3 Stunden</item>

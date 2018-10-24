@@ -153,8 +153,7 @@
     <item>30 秒</item>
   </string-array>
   <string-array name="pref_notifyinterval_types">
-    <item>1 分鐘</item>
-    <item>10 分鐘</item>
+    <item>15 分鐘</item>
     <item>30 分鐘</item>
     <item>1 小時</item>
     <item>3 小時</item>

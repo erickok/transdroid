@@ -319,8 +319,7 @@
   <string name="pref_seedbox_xirviknofolder">Nem lehet letölteni a Xirvik SCGI mappa beállításait;  próbálja meg újra később, vagy javítsa ki a szerver címének beállításait</string>
   <string name="pref_seedbox_seedstuffhint">Például 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 perc</item>
-    <item>10 perc</item>
+    <item>15 perc</item>
     <item>30 perc</item>
     <item>1 óra</item>
     <item>3 óra</item>

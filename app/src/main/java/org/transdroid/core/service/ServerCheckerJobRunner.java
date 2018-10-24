@@ -1,26 +1,31 @@
-/* 
+/*
  * Copyright 2010-2013 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.transdroid.core.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
+import com.evernote.android.job.Job;
 import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.EService;
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.SystemService;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +34,7 @@ import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.NotificationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.gui.*;
+import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
@@ -37,24 +42,14 @@ import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 
-import android.annotation.TargetApi;
-import android.app.IntentService;
-import android.app.Notification;
-import android.app.Notification.Builder;
-import android.app.Notification.InboxStyle;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.os.Build;
-import android.text.TextUtils;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * A background service that checks all user-configured servers (if so desired) for new and finished torrents.
- * @author Eric Kok
- */
-@EService
-public class ServerCheckerService extends IntentService {
+@EBean
+public class ServerCheckerJobRunner {
 
+	@RootContext
+	protected Context context;
 	@Bean
 	protected Log log;
 	@Bean
@@ -66,19 +61,12 @@ public class ServerCheckerService extends IntentService {
 	@SystemService
 	protected NotificationManager notificationManager;
 
-	public ServerCheckerService() {
-		super("ServerCheckerService");
-	}
-
-	@SuppressWarnings("deprecation")
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	@Override
-	protected void onHandleIntent(Intent intent) {
+	Job.Result run() {
 
 		if (!connectivityHelper.shouldPerformBackgroundActions() || !notificationSettings.isEnabledForTorrents()) {
 			log.d(this,
 					"Skip the server checker service, as background data is disabled, the service is disabled or we are not connected.");
-			return;
+			return Job.Result.RESCHEDULE;
 		}
 
 		int notifyBase = 10000;
@@ -94,7 +82,7 @@ public class ServerCheckerService extends IntentService {
 			JSONArray lastStats = applicationSettings.getServerLastStats(server);
 
 			// Synchronously retrieve torrents listing
-			IDaemonAdapter adapter = server.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+			IDaemonAdapter adapter = server.createServerAdapter(connectivityHelper.getConnectedNetworkName(), context);
 			DaemonTaskResult result = RetrieveTask.create(adapter).execute(log);
 			if (!(result instanceof RetrieveTaskSuccessResult)) {
 				// Cannot retrieve torrents at this time
@@ -132,7 +120,7 @@ public class ServerCheckerService extends IntentService {
 				} catch (JSONException e) {
 					// Can't build the JSON object; this should not happen and we can safely ignore it
 				}
-				
+
 				// See if this torrent was done the last time we checked
 				if (lastStats != null) {
 					Boolean wasDone = findLastDoneStat(lastStats, torrent);
@@ -146,7 +134,7 @@ public class ServerCheckerService extends IntentService {
 						// This torrent is now done, but wasn't before
 						doneTorrents.add(torrent);
 				}
-				
+
 			}
 
 			// Store the now-current statistics on torrents for the next time we check this server
@@ -155,26 +143,26 @@ public class ServerCheckerService extends IntentService {
 			// Notify on new and now-done torrents for this server
 			log.d(this, server.getName() + ": " + newTorrents.size() + " new torrents, " + doneTorrents.size()
 					+ " newly finished torrents.");
-			Intent i = new Intent(this, TorrentsActivity_.class);
+			Intent i = new Intent(context, TorrentsActivity_.class);
 			i.putExtra("org.transdroid.START_SERVER", server.getOrder());
 			// Should start the main activity directly into this server
-			PendingIntent pi = PendingIntent.getActivity(this, notifyBase + server.getOrder(), i,
-					Intent.FLAG_ACTIVITY_NEW_TASK);
+			PendingIntent pi = PendingIntent.getActivity(context, notifyBase + server.getOrder(), i,
+					PendingIntent.FLAG_CANCEL_CURRENT);
 			ArrayList<Torrent> affectedTorrents = new ArrayList<>(newTorrents.size() + doneTorrents.size());
 			affectedTorrents.addAll(newTorrents);
 			affectedTorrents.addAll(doneTorrents);
-			
+
 			String title;
 			if (newTorrents.size() > 0 && doneTorrents.size() > 0) {
 				// Note: use the 'one' plural iif 1 new torrent was added and 1 was newly finished
-				title = getResources().getQuantityString(R.plurals.status_service_finished,
+				title = context.getResources().getQuantityString(R.plurals.status_service_finished,
 						newTorrents.size() + doneTorrents.size() == 2 ? 1 : 2, Integer.toString(newTorrents.size()),
 						Integer.toString(doneTorrents.size()));
 			} else if (newTorrents.size() > 0) {
-				title = getResources().getQuantityString(R.plurals.status_service_added, newTorrents.size(),
+				title = context.getResources().getQuantityString(R.plurals.status_service_added, newTorrents.size(),
 						Integer.toString(newTorrents.size()));
 			} else if (doneTorrents.size() > 0) {
-				title = getResources().getQuantityString(R.plurals.status_service_finished, doneTorrents.size(),
+				title = context.getResources().getQuantityString(R.plurals.status_service_finished, doneTorrents.size(),
 						Integer.toString(doneTorrents.size()));
 			} else {
 				// No notification to show
@@ -185,9 +173,9 @@ public class ServerCheckerService extends IntentService {
 				forString += affected.getName() + ", ";
 			}
 			forString = forString.substring(0, forString.length() - 2);
-			
+
 			// Build the basic notification
-			Builder builder = new Notification.Builder(this).setSmallIcon(R.drawable.ic_stat_notification)
+			Notification.Builder builder = new Notification.Builder(context).setSmallIcon(R.drawable.ic_stat_notification)
 					.setTicker(title).setContentTitle(title).setContentText(forString)
 					.setNumber(affectedTorrents.size())
 					.setLights(notificationSettings.getDesiredLedColour(), 600, 1000)
@@ -198,7 +186,7 @@ public class ServerCheckerService extends IntentService {
 			// Add at most 5 lines with the affected torrents
 			Notification notification;
 			if (android.os.Build.VERSION.SDK_INT >= 16) {
-				InboxStyle inbox = new Notification.InboxStyle(builder);
+				Notification.InboxStyle inbox = new Notification.InboxStyle(builder);
 				if (affectedTorrents.size() < 6) {
 					for (Torrent affectedTorrent : affectedTorrents) {
 						inbox.addLine(affectedTorrent.getName());
@@ -207,7 +195,7 @@ public class ServerCheckerService extends IntentService {
 					for (int j = 0; j < 4; j++) {
 						inbox.addLine(affectedTorrents.get(j).getName());
 					}
-					inbox.addLine(getString(R.string.status_service_andothers, affectedTorrents.get(5).getName()));
+					inbox.addLine(context.getString(R.string.status_service_andothers, affectedTorrents.get(5).getName()));
 				}
 				notification = inbox.build();
 			} else {
@@ -217,6 +205,7 @@ public class ServerCheckerService extends IntentService {
 
 		}
 
+		return Job.Result.SUCCESS;
 	}
 
 	private Boolean findLastDoneStat(JSONArray lastStats, Torrent torrent) {

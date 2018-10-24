@@ -16,25 +16,26 @@
  */
 package org.transdroid.core.service;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import org.androidannotations.annotations.EReceiver;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import com.evernote.android.job.Job;
+import com.evernote.android.job.JobCreator;
 
-/**
- * Receives the intent that the device has been started in order to set up proper alarms for all background services.
- *
- * @author Eric Kok
- */
-@EReceiver
-public class BootReceiver extends BroadcastReceiver {
+public class ScheduledJobCreator implements JobCreator {
 
+	@Nullable
 	@Override
-	public void onReceive(Context context, Intent intent) {
-		// Ensure user-requested background jobs are scheduled
-		ServerCheckerJob.schedule(context);
-		RssCheckerJob.schedule(context);
-		AppUpdateJob.schedule(context);
+	public Job create(@NonNull String tag) {
+		switch (tag) {
+			case AppUpdateJob.TAG:
+				return new AppUpdateJob();
+			case RssCheckerJob.TAG:
+				return new RssCheckerJob();
+			case ServerCheckerJob.TAG:
+				return new ServerCheckerJob();
+			default:
+				return null;
+		}
 	}
 
 }

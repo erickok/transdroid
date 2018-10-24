@@ -318,8 +318,7 @@
   <string name="pref_seedbox_xirviknofolder">Xirvik SCGI klasör ayarı alınamıyor; Lütfen daha sonra yeniden deneyin veya sunucu adresi ayarını doğrulayın</string>
   <string name="pref_seedbox_seedstuffhint">001.seedstuff.CA gibi</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 dakika</item>
-    <item>10 dakika</item>
+    <item>15 dakika</item>
     <item>30 dakika</item>
     <item>1 saat</item>
     <item>3 saat</item>

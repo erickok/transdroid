@@ -327,8 +327,7 @@
   <string name="pref_seedbox_xirviknofolder">Не удается получить настройки папок Xirvik SCGI. Пожалуйста, повторите попытку позже или измените адрес сервера.</string>
   <string name="pref_seedbox_seedstuffhint">Как 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 минута</item>
-    <item>10 минут</item>
+    <item>15 минут</item>
     <item>30 минут</item>
     <item>1 час</item>
     <item>3 часа</item>

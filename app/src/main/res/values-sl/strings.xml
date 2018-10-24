@@ -335,8 +335,7 @@
   <string name="pref_seedbox_xirviknofolder">Ne morem pridobiti Xirvik SCGI nastavitev map; poskusite pozneje ali popravite naslov strežnika</string>
   <string name="pref_seedbox_seedstuffhint">Npr. 001.seedstuff.ca</string>
   <string-array name="pref_notifyinterval_types">
-    <item>1 minuta</item>
-    <item>10 minut</item>
+    <item>15 minut</item>
     <item>30 minut</item>
     <item>1 ura</item>
     <item>3 ure</item>

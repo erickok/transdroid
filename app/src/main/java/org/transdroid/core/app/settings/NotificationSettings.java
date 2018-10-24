@@ -34,6 +34,8 @@ import android.provider.Settings;
 @EBean(scope = Scope.Singleton)
 public class NotificationSettings {
 
+	private static final long MINIMUM_BACKGROUND_INTERVAL = 900_000; // 15 minutes
+
 	@RootContext
 	protected Context context;
 	private SharedPreferences prefs;
@@ -67,7 +69,7 @@ public class NotificationSettings {
 	 * @return The interval, in milliseconds
 	 */
 	public Long getInvervalInMilliseconds() {
-		return Long.parseLong(getRawInverval()) * 1000L;
+		return Math.max(Long.parseLong(getRawInverval()) * 1000L, MINIMUM_BACKGROUND_INTERVAL);
 	}
 
 	private String getRawSound() {

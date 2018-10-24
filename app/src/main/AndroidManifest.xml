@@ -44,6 +44,7 @@
 		android:required="false" />
 
 	<application
+		android:name=".core.gui.TransdroidApp_"
 		android:allowBackup="true"
 		android:hardwareAccelerated="true"
 		android:icon="@drawable/ic_launcher"
@@ -254,12 +255,6 @@
 			android:label="Remote RSS feeds"
 			android:theme="@style/TransdroidTheme" />
 
-		<!-- Background services -->
-		<service android:name="org.transdroid.core.service.ServerCheckerService_" />
-		<service android:name="org.transdroid.core.service.RssCheckerService_" />
-		<service android:name="org.transdroid.core.service.AppUpdateService_" />
-
-		<receiver android:name="org.transdroid.core.service.AlarmReceiver_" />
 		<receiver android:name="org.transdroid.core.service.BootReceiver_" >
 			<intent-filter>
 				<action
