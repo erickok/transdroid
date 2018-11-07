@@ -102,6 +102,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	protected SwipeRefreshLayout swipeRefreshLayout;
 	@ViewById
 	protected ListView torrentsList;
+	protected ListView torrentsList;
 	@ViewById
 	protected TextView emptyText;
 	@ViewById
@@ -251,7 +252,9 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 		// Sort the list of filtered torrents
 		Collections.sort(filteredTorrents, new TorrentsComparator(daemonType, this.currentSortOrder, this.currentSortDescending));
 
-		((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);
+		if (torrentsList.getAdapter() != null) {
+			((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);
+		}
 		updateViewVisibility();
 	}
 
@@ -464,7 +467,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 		if (!hasAConnection) {
 			return;
 		}
-		boolean isEmpty = torrents == null || torrentsList.getAdapter().isEmpty();
+		boolean isEmpty = torrents == null || torrentsList.getAdapter() != null && torrentsList.getAdapter().isEmpty();
 		boolean hasError = connectionErrorMessage != null;
 		nosettingsText.setVisibility(View.GONE);
 		errorText.setVisibility(hasError ? View.VISIBLE : View.GONE);
