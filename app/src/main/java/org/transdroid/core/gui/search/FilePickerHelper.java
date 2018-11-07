@@ -21,11 +21,13 @@ import org.transdroid.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
+
+import java.lang.ref.WeakReference;
 
 public class FilePickerHelper {
 
@@ -49,22 +51,17 @@ public class FilePickerHelper {
 				// Start a file manager that can handle the PICK_FILE intent (specifically IO File Manager)
 				activity.startActivityForResult(new Intent("org.openintents.action.PICK_FILE"), ACTIVITY_FILEPICKER);
 			} catch (Exception e2) {
-				// Can't start the file manager, for example with a SecurityException or when IO File Manager is not
-				// present
-				new DialogFragment() {
-					public android.app.Dialog onCreateDialog(android.os.Bundle savedInstanceState) {
-						return new AlertDialog.Builder(activity).setIcon(android.R.drawable.ic_dialog_alert)
-								.setMessage(activity.getString(R.string.search_filemanagernotfound))
-								.setPositiveButton(android.R.string.yes, new OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog, int which) {
-										if (activity != null)
-											activity.startActivity(new Intent(Intent.ACTION_VIEW,
-													FILEMANAGER_MARKET_URI));
-									}
-								}).setNegativeButton(android.R.string.no, null).create();
-					};
-				}.show(activity.getFragmentManager(), "installfilemanager");
+				// Can't start the file manager, for example with a SecurityException or when IO File Manager is not present
+				final WeakReference<Context> intentStartContext = new WeakReference<Context>(activity);
+				new AlertDialog.Builder(activity).setIcon(android.R.drawable.ic_dialog_alert)
+						.setMessage(activity.getString(R.string.search_filemanagernotfound))
+						.setPositiveButton(android.R.string.yes, new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								if (intentStartContext.get() != null)
+									intentStartContext.get().startActivity(new Intent(Intent.ACTION_VIEW, FILEMANAGER_MARKET_URI));
+							}
+						}).setNegativeButton(android.R.string.no, null).show();
 			}
 		}
 	}

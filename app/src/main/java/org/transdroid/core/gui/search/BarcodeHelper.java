@@ -19,13 +19,15 @@ package org.transdroid.core.gui.search;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 
 import org.transdroid.R;
+
+import java.lang.ref.WeakReference;
 
 public class BarcodeHelper {
 
@@ -69,18 +71,16 @@ public class BarcodeHelper {
 			activity.startActivityForResult(intent, requestCode);
 		} catch (Exception e) {
 			// Can't start the bar code scanner, for example with a SecurityException or when ZXing is not present
-			new DialogFragment() {
-				public android.app.Dialog onCreateDialog(android.os.Bundle savedInstanceState) {
-					return new AlertDialog.Builder(activity).setIcon(android.R.drawable.ic_dialog_alert)
-							.setMessage(activity.getString(R.string.search_barcodescannernotfound))
-							.setPositiveButton(android.R.string.yes, new OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									activity.startActivity(new Intent(Intent.ACTION_VIEW, SCANNER_MARKET_URI));
-								}
-							}).setNegativeButton(android.R.string.no, null).create();
-				}
-			}.show(activity.getFragmentManager(), "installscanner");
+			final WeakReference<Context> intentStartContext = new WeakReference<Context>(activity);
+			new AlertDialog.Builder(activity).setIcon(android.R.drawable.ic_dialog_alert)
+					.setMessage(activity.getString(R.string.search_barcodescannernotfound))
+					.setPositiveButton(android.R.string.yes, new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							if (intentStartContext.get() != null)
+								intentStartContext.get().startActivity(new Intent(Intent.ACTION_VIEW, SCANNER_MARKET_URI));
+						}
+					}).setNegativeButton(android.R.string.no, null).show();
 		}
 	}
 
