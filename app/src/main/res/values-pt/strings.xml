@@ -256,7 +256,7 @@
   <string name="pref_timeout">Ligação expirada</string>
   <string name="pref_timeout_info">Número de segundos até uma tentativa de conexão ser cancelada</string>
   <string name="pref_ftpurl">Endereço base FTP(S)</string>
-  <string name="pref_ftpurl_into">Por exemplo, ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">Por exemplo, ftp://me@server/downloads/</string>
   <string name="pref_ftppass">Senha FTP(S)</string>
   <string name="pref_disableauth">Desativar autenticação</string>
   <string name="pref_disableauth_info">Não enviar nome de utilizador e senha</string>

@@ -171,7 +171,7 @@
   <string name="pref_downdir">Папка за торентите</string>
   <string name="pref_downdir_info">Въведете ръчно абсолютен път за отдалечените връзки</string>
   <string name="pref_ftpurl">Основен FTP(S) адрес</string>
-  <string name="pref_ftpurl_into">Например ftp://админ@сървър/downloads/</string>
+  <string name="pref_ftpurl_info">Например ftp://админ@сървър/downloads/</string>
   <string name="pref_ftppass">FTP(S) парола</string>
   <string name="pref_disableauth">Без удостоверяване</string>
   <string name="pref_disableauth_info">Няма да бъдат изпращани данни за потребител и парола</string>

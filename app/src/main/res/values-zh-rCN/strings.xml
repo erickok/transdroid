@@ -232,7 +232,7 @@
   <string name="pref_timeout">连接超时</string>
   <string name="pref_timeout_info">超时终止连接设定</string>
   <string name="pref_ftpurl">基础FTP(S)网址</string>
-  <string name="pref_ftpurl_into">例如：ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">例如：ftp://me@server/downloads/</string>
   <string name="pref_ftppass">FTP(S) 密码</string>
   <string name="pref_disableauth">禁止认证</string>
   <string name="pref_disableauth_info">不发送用户名和密码</string>

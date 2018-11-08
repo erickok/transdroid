@@ -255,7 +255,7 @@
   <string name="pref_timeout">Bağlantı zaman aşımı</string>
   <string name="pref_timeout_info">Bir bağlantı girişimi iptal edilmeden önce geçecek saniye</string>
   <string name="pref_ftpurl">Temel FTP(S) adresi</string>
-  <string name="pref_ftpurl_into">Örneğin ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">Örneğin ftp://me@server/downloads/</string>
   <string name="pref_ftppass">FTP şifresi</string>
   <string name="pref_disableauth">Kimlik doğrulamasını devre dışı bırak</string>
   <string name="pref_disableauth_info">Kullanıcı adını ve şifreyi gönderme</string>

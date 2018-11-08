@@ -248,7 +248,7 @@
   <string name="pref_timeout">연결 제한 시간</string>
   <string name="pref_timeout_info">연결 시도를 지속할 시간 (초)</string>
   <string name="pref_ftpurl">FTP(S) 기본 주소</string>
-  <string name="pref_ftpurl_into">예) ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">예) ftp://me@server/downloads/</string>
   <string name="pref_ftppass">FTP(S) 암호</string>
   <string name="pref_disableauth">인증 비활성화</string>
   <string name="pref_disableauth_info">계정 및 암호를 전송하지 않습니다</string>

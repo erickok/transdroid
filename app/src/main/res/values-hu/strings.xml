@@ -256,7 +256,7 @@
   <string name="pref_timeout">Kapcsolat időtúllépés</string>
   <string name="pref_timeout_info">Ennyi másodperc várakozás kapcsolódási kísérlet megszakítása előtt</string>
   <string name="pref_ftpurl">Alap FTP(S) url</string>
-  <string name="pref_ftpurl_into">Például ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">Például ftp://me@server/downloads/</string>
   <string name="pref_ftppass">FTP(S) jelszó</string>
   <string name="pref_disableauth">Tiltsa le a hitelesítést</string>
   <string name="pref_disableauth_info">Ne küldje el a felhasználónevet és a jelszót</string>

@@ -256,7 +256,7 @@
   <string name="pref_timeout">Timeout vid anslutning</string>
   <string name="pref_timeout_info">Antalet sekunder innan ett anslutningsförsök avbryts</string>
   <string name="pref_ftpurl">FTP(S)-basadress</string>
-  <string name="pref_ftpurl_into">Till exempel ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">Till exempel ftp://me@server/downloads/</string>
   <string name="pref_ftppass">FTP(S) lösenord</string>
   <string name="pref_disableauth">Inaktivera autentisering</string>
   <string name="pref_disableauth_info">Sänd inte användarnamn och lösenord</string>

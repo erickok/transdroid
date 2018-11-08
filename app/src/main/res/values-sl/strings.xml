@@ -272,7 +272,7 @@
   <string name="pref_timeout">Časovna omejitev je potekla</string>
   <string name="pref_timeout_info">Število sekund preden se poskus povezave prekine</string>
   <string name="pref_ftpurl">Osnovni FTP(S) url</string>
-  <string name="pref_ftpurl_into">Na primer ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">Na primer ftp://me@server/downloads/</string>
   <string name="pref_ftppass">Geslo za FTP(S)</string>
   <string name="pref_disableauth">Onemogoči avtentikacijo</string>
   <string name="pref_disableauth_info">Ne pošlji uporabniškega imena in gesla</string>
