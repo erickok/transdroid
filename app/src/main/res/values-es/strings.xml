@@ -200,7 +200,7 @@
   <string name="pref_timeout">Tiempo de espera de conexión</string>
   <string name="pref_timeout_info">Número de segundos antes de abortar un intento de conexión</string>
   <string name="pref_ftpurl">URL base en (S)FTP</string>
-  <string name="pref_ftpurl_into">Por ejemplo ftp://mi@servidor/descargas/</string>
+  <string name="pref_ftpurl_info">Por ejemplo ftp://mi@servidor/descargas/</string>
   <string name="pref_ftppass">Contraseña (S)FTP</string>
   <string name="pref_disableauth">Deshabilitar autenticación</string>
   <string name="pref_disableauth_info">No enviar nombre de usuario y contraseña</string>

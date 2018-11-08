@@ -222,7 +222,7 @@
   <string name="pref_timeout">Limit czasu połączenia</string>
   <string name="pref_timeout_info">Liczba sekund zanim próba połączenia zostanie przerwana</string>
   <string name="pref_ftpurl">Podstawowy adres FTP(S)</string>
-  <string name="pref_ftpurl_into">Na przykład ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">Na przykład ftp://me@server/downloads/</string>
   <string name="pref_ftppass">Hasło FTP(S)</string>
   <string name="pref_disableauth">Wyłącz uwierzytelnianie</string>
   <string name="pref_disableauth_info">Nie wysyłaj loginu i hasła</string>

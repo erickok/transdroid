@@ -252,7 +252,7 @@
   <string name="pref_timeout">Verbindingstimeout</string>
   <string name="pref_timeout_info">Aantal seconden voordat een poging wordt afgebroken</string>
   <string name="pref_ftpurl">Basis-URL voor (S)FTP</string>
-  <string name="pref_ftpurl_into">Bijvoorbeeld ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">Bijvoorbeeld ftp://me@server/downloads/</string>
   <string name="pref_ftppass">(S)FTP-wachtwoord</string>
   <string name="pref_disableauth">Geen authenticatie gebruiken</string>
   <string name="pref_disableauth_info">Negeer gebruikersnaam en wachtwoord</string>

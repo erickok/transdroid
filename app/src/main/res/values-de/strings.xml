@@ -256,7 +256,7 @@
   <string name="pref_timeout">Verbindungs-Timeout</string>
   <string name="pref_timeout_info">Anzahl der Sekunden, bevor ein Verbindungsversuch abgebrochen wird</string>
   <string name="pref_ftpurl">Basis FTP (S)-URL</string>
-  <string name="pref_ftpurl_into">Z. B. ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">Z. B. ftp://me@server/downloads/</string>
   <string name="pref_ftppass">(S) FTP-Passwort</string>
   <string name="pref_disableauth">Authentifizierung deaktivieren</string>
   <string name="pref_disableauth_info">Keinen Benutzernamen oder Passwort übertragen</string>

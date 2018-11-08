@@ -288,7 +288,7 @@
 	<string name="pref_timeout">Connection timeout</string>
 	<string name="pref_timeout_info">Number of seconds before a connection attempt is aborted</string>
 	<string name="pref_ftpurl">Base FTP(S) url</string>
-	<string name="pref_ftpurl_into">For example ftp://me@server/downloads/</string>
+	<string name="pref_ftpurl_info">For example ftp://me@server/downloads/</string>
 	<string name="pref_ftppass">FTP(S) password</string>
 	<string name="pref_disableauth">Disable authentication</string>
 	<string name="pref_disableauth_info">Don\'t send username and password</string>

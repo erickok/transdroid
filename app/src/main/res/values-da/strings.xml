@@ -240,7 +240,7 @@
   <string name="pref_timeout">Forbindelse timeout</string>
   <string name="pref_timeout_info">Antal sekunder før et forbindelsesforsøg afbydes</string>
   <string name="pref_ftpurl">Base FTP(S) url</string>
-  <string name="pref_ftpurl_into">For eksempel ftp://mig@server/downloads/</string>
+  <string name="pref_ftpurl_info">For eksempel ftp://mig@server/downloads/</string>
   <string name="pref_ftppass">FTP(S) adgangskode</string>
   <string name="pref_disableauth">Deaktiver godkendelse</string>
   <string name="pref_disableauth_info">Send ikke brugernavn og adgangskode</string>

@@ -264,7 +264,7 @@
   <string name="pref_timeout">Время ожидания соединения</string>
   <string name="pref_timeout_info">Количество секунд до отмены попытки подключения</string>
   <string name="pref_ftpurl">Базовый URL-адрес FTP(S)</string>
-  <string name="pref_ftpurl_into">Например, ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">Например, ftp://me@server/downloads/</string>
   <string name="pref_ftppass">Пароль FTP(S)</string>
   <string name="pref_disableauth">Отключить аутентификацию</string>
   <string name="pref_disableauth_info">Не отправлять имя пользователя и пароль</string>

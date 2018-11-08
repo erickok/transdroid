@@ -256,7 +256,7 @@
   <string name="pref_timeout">Timeout connessione</string>
   <string name="pref_timeout_info">Secondi prima di tentare una connessione dopo un aborto</string>
   <string name="pref_ftpurl">Indirizzo base (S)FTP</string>
-  <string name="pref_ftpurl_into">per esempio ftp://me@server/download/</string>
+  <string name="pref_ftpurl_info">per esempio ftp://me@server/download/</string>
   <string name="pref_ftppass">Password (S) FTP</string>
   <string name="pref_disableauth">Disabilita autenticazione</string>
   <string name="pref_disableauth_info">Non inviare username e password</string>

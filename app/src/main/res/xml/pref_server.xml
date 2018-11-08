@@ -138,7 +138,7 @@
 		<EditTextPreference
 			android:key="server_ftpurl"
 			android:title="@string/pref_ftpurl"
-			android:summary="@string/pref_ftpurl_into"
+			android:summary="@string/pref_ftpurl_info"
 			android:inputType="textUri" />
 		<EditTextPreference
 			android:key="server_ftppass"

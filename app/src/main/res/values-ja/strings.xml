@@ -248,7 +248,7 @@
   <string name="pref_timeout">接続タイムアウト</string>
   <string name="pref_timeout_info">接続されるまで待機し、接続できなければアボートする秒数</string>
   <string name="pref_ftpurl">ベースの FTP URL</string>
-  <string name="pref_ftpurl_into">例 ftp://me@server/downloads/</string>
+  <string name="pref_ftpurl_info">例 ftp://me@server/downloads/</string>
   <string name="pref_ftppass">FTP パスワード</string>
   <string name="pref_disableauth">認証を無効</string>
   <string name="pref_disableauth_info">ユーザー名とパスワードを送信しません</string>

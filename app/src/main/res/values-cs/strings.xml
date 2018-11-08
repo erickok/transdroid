@@ -224,7 +224,7 @@
   <string name="pref_timeout">Vypršel čas pro připojení</string>
   <string name="pref_timeout_info">Jak dlouho (vteřiny) se zkoušet připojit</string>
   <string name="pref_ftpurl">Základní FTP url</string>
-  <string name="pref_ftpurl_into">Například ftp://ja@server/downloads</string>
+  <string name="pref_ftpurl_info">Například ftp://ja@server/downloads</string>
   <string name="pref_ftppass">FTP heslo</string>
   <string name="pref_disableauth">Zakázat ověřování</string>
   <string name="pref_disableauth_info">Neposílat uživatelské jméno a heslo</string>
