@@ -102,7 +102,6 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	protected SwipeRefreshLayout swipeRefreshLayout;
 	@ViewById
 	protected ListView torrentsList;
-	protected ListView torrentsList;
 	@ViewById
 	protected TextView emptyText;
 	@ViewById
