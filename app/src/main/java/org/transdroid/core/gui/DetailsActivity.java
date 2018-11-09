@@ -333,20 +333,23 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 	@UiThread
 	protected void onTorrentDetailsRetrieved(Torrent torrent, TorrentDetails torrentDetails) {
 		// Update the details fragment with the new fine details for the shown torrent
-		fragmentDetails.updateTorrentDetails(torrent, torrentDetails);
+		if (fragmentDetails.isAdded())
+			fragmentDetails.updateTorrentDetails(torrent, torrentDetails);
 	}
 
 	@UiThread
 	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
 		// Update the details fragment with the newly retrieved list of files
-		fragmentDetails.updateTorrentFiles(torrent, new ArrayList<>(torrentFiles));
+		if (fragmentDetails.isAdded())
+			fragmentDetails.updateTorrentFiles(torrent, new ArrayList<>(torrentFiles));
 	}
 
 	@UiThread
 	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
 		log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
-		fragmentDetails.updateIsLoading(false, isCritical ? error : null);
+		if (fragmentDetails.isAdded())
+			fragmentDetails.updateIsLoading(false, isCritical ? error : null);
 		SnackbarManager.show(Snackbar.with(this).text(getString(LocalTorrent.getResourceForDaemonException(result.getException())))
 				.colorResource(R.color.red));
 	}
@@ -354,9 +357,11 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
 		// Update the details fragment accordingly
-		fragmentDetails.updateIsLoading(false, null);
-		fragmentDetails.perhapsUpdateTorrent(torrents);
-		fragmentDetails.updateLabels(Label.convertToNavigationLabels(labels, getResources().getString(R.string.labels_unlabeled)));
+		if (fragmentDetails.isAdded()) {
+			fragmentDetails.updateIsLoading(false, null);
+			fragmentDetails.perhapsUpdateTorrent(torrents);
+			fragmentDetails.updateLabels(Label.convertToNavigationLabels(labels, getResources().getString(R.string.labels_unlabeled)));
+		}
 	}
 
 }

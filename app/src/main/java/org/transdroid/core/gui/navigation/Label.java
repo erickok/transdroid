@@ -103,7 +103,7 @@ public class Label implements SimpleListItem, NavigationFilter, Comparable<Label
 		unnamedLabelText = unnamedLabel;
 		localLabels.add(new Label(unnamedLabel, -1, true));
 		for (org.transdroid.daemon.Label label : daemonLabels) {
-			if (!TextUtils.isEmpty(label.getName())) {
+			if (label != null && !TextUtils.isEmpty(label.getName())) {
 				localLabels.add(new Label(label));
 			}
 		}

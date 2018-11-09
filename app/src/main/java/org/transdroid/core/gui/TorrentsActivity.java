@@ -791,7 +791,8 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
 	@OptionsItem(R.id.action_refresh)
 	public void refreshScreen() {
-		fragmentTorrents.updateIsLoading(true);
+		if (fragmentTorrents.isAdded())
+			fragmentTorrents.updateIsLoading(true);
 		refreshTorrents();
 		if (Daemon.supportsStats(currentConnection.getType())) {
 			getAdditionalStats();
