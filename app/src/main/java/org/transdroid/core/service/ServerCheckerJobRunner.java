@@ -16,11 +16,11 @@
  */
 package org.transdroid.core.service;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import com.evernote.android.job.Job;
 import org.androidannotations.annotations.Bean;
@@ -175,18 +175,21 @@ public class ServerCheckerJobRunner {
 			forString = forString.substring(0, forString.length() - 2);
 
 			// Build the basic notification
-			Notification.Builder builder = new Notification.Builder(context).setSmallIcon(R.drawable.ic_stat_notification)
-					.setTicker(title).setContentTitle(title).setContentText(forString)
+			final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationChannels.CHANNEL_SERVER_CHECKER)
+					.setSmallIcon(R.drawable.ic_stat_notification)
+					.setTicker(title)
+					.setContentTitle(title).setContentText(forString)
 					.setNumber(affectedTorrents.size())
 					.setLights(notificationSettings.getDesiredLedColour(), 600, 1000)
-					.setSound(notificationSettings.getSound()).setAutoCancel(true).setContentIntent(pi);
+					.setSound(notificationSettings.getSound())
+					.setAutoCancel(true)
+					.setContentIntent(pi);
 			if (notificationSettings.shouldVibrate())
 				builder.setVibrate(notificationSettings.getDefaultVibratePattern());
 
 			// Add at most 5 lines with the affected torrents
-			Notification notification;
 			if (android.os.Build.VERSION.SDK_INT >= 16) {
-				Notification.InboxStyle inbox = new Notification.InboxStyle(builder);
+				final NotificationCompat.InboxStyle inbox = new NotificationCompat.InboxStyle(builder);
 				if (affectedTorrents.size() < 6) {
 					for (Torrent affectedTorrent : affectedTorrents) {
 						inbox.addLine(affectedTorrent.getName());
@@ -197,11 +200,9 @@ public class ServerCheckerJobRunner {
 					}
 					inbox.addLine(context.getString(R.string.status_service_andothers, affectedTorrents.get(5).getName()));
 				}
-				notification = inbox.build();
-			} else {
-				notification = builder.getNotification();
+				builder.setStyle(inbox);
 			}
-			notificationManager.notify(notifyBase + server.getOrder(), notification);
+			notificationManager.notify(notifyBase + server.getOrder(), builder.build());
 
 		}
 

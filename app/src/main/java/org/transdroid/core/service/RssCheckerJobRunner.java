@@ -16,12 +16,14 @@
  */
 package org.transdroid.core.service;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+
 import com.evernote.android.job.Job;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
@@ -122,14 +124,19 @@ public class RssCheckerJobRunner {
 				.getActivity(context, 80000, new Intent(context, RssfeedsActivity_.class), PendingIntent.FLAG_UPDATE_CURRENT);
 		String title = context.getResources().getQuantityString(R.plurals.rss_service_new, unread, Integer.toString(unread));
 		String forString = Collections2.joinString(hasUnread, ", ");
-		Notification.Builder builder = new Notification.Builder(context).setSmallIcon(R.drawable.ic_stat_notification).setTicker(title)
-				.setContentTitle(title).setContentText(context.getString(R.string.rss_service_newfor, forString))
+		final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationChannels.CHANNEL_RSS_CHECKER)
+				.setSmallIcon(R.drawable.ic_stat_notification)
+				.setTicker(title)
+				.setContentTitle(title)
+				.setContentText(context.getString(R.string.rss_service_newfor, forString))
 				.setNumber(unread).setLights(notificationSettings.getDesiredLedColour(), 600, 1000)
-				.setSound(notificationSettings.getSound()).setAutoCancel(true).setContentIntent(pi);
+				.setSound(notificationSettings.getSound())
+				.setAutoCancel(true)
+				.setContentIntent(pi);
 		if (notificationSettings.shouldVibrate()) {
 			builder.setVibrate(notificationSettings.getDefaultVibratePattern());
 		}
-		notificationManager.notify(80001, builder.getNotification());
+		notificationManager.notify(80001, builder.build());
 
 		return Job.Result.SUCCESS;
 	}

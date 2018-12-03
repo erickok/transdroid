@@ -39,6 +39,7 @@ public class AppUpdateJob extends Job {
 		NavigationHelper_ navigationHelper = NavigationHelper_.getInstance_(context);
 		if (systemSettings.checkForUpdates() && navigationHelper.enableUpdateChecker()) {
 			Log_.getInstance_(context).d(TAG, "Schedule app update checker job");
+			NotificationChannels.ensureAppUpdateChannel(context);
 			scheduledJobId = new JobRequest.Builder(AppUpdateJob.TAG)
 					.setPeriodic(TimeUnit.DAYS.toMillis(1))
 					.setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)

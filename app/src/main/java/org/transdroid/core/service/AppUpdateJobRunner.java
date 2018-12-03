@@ -16,7 +16,6 @@
  */
 package org.transdroid.core.service;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -24,7 +23,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
+
 import com.evernote.android.job.Job;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
@@ -170,11 +172,16 @@ public class AppUpdateJobRunner {
 	private void newNotification(String ticker, String title, String text, String downloadUrl, int notifyID) {
 		PendingIntent pi = PendingIntent.getActivity(context, notifyID,
 				new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)), PendingIntent.FLAG_UPDATE_CURRENT);
-		Notification.Builder builder = new Notification.Builder(context).setSmallIcon(R.drawable.ic_stat_notification)
-				.setTicker(ticker).setContentTitle(title).setContentText(text)
+		final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationChannels.CHANNEL_APP_UPDATE)
+				.setSmallIcon(R.drawable.ic_stat_notification)
+				.setTicker(ticker)
+				.setContentTitle(title)
+				.setContentText(text)
 				.setLights(notificationSettings.getDesiredLedColour(), 600, 1000)
-				.setSound(notificationSettings.getSound()).setAutoCancel(true).setContentIntent(pi);
-		notificationManager.notify(notifyID, builder.getNotification());
+				.setSound(notificationSettings.getSound())
+				.setAutoCancel(true)
+				.setContentIntent(pi);
+		notificationManager.notify(notifyID, builder.build());
 	}
 
 }
