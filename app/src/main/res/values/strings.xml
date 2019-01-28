@@ -251,7 +251,7 @@
 	<string name="pref_reqauth">Requires authentication</string>
 	<string name="pref_reqauth_info">Opens links in the webbrowser for user login</string>
 	<string name="pref_alarmrssnew">New item notification</string>
-	<string name="pref_alarmrssnew_info">Nofity when new torrents are released</string>
+	<string name="pref_alarmrssnew_info">Notify when new torrents are released</string>
 	<string name="pref_alarmrssexclude">Exclude filter</string>
 	<string name="pref_alarmrssexclude_info">Don\'t show torrents whose name matches these |-separated words</string>
 	<string name="pref_alarmrssinclude">Include filter</string>
