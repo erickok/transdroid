@@ -6,7 +6,7 @@ Transdroid
 
 "Manage your torrents from your Android device"
 
-<a href="https://transdroid.org/lastest" target="_blank">
+<a href="https://transdroid.org/latest" target="_blank">
 <img src="https://transdroid.org/images/getontransdroid.png" alt="Get it on transdroid.org" height="80"/></a>
 <a href="https://f-droid.org/repository/browse/?fdid=org.transdroid.full" target="_blank">
 <img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80"/></a>
