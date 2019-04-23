@@ -566,7 +566,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
 			// Clear the currently shown list of torrents and perhaps the details
 			fragmentTorrents.clear(true, true);
-			if (fragmentDetails != null && fragmentDetails.isAdded() && fragmentDetails.getActivity() != null) {
+			if (fragmentDetails != null && fragmentDetails.isResumed() && fragmentDetails.getActivity() != null) {
 				fragmentDetails.updateIsLoading(false, null);
 				fragmentDetails.clear();
 				fragmentDetails.setCurrentServerSettings(server);
@@ -586,7 +586,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 			// Remember that the user last selected this
 			applicationSettings.setLastUsedNavigationFilter(currentFilter);
 			// Clear the details view
-			if (fragmentDetails != null && fragmentDetails.isAdded()) {
+			if (fragmentDetails != null && fragmentDetails.isResumed()) {
 				fragmentDetails.updateIsLoading(false, null);
 				fragmentDetails.clear();
 			}
@@ -599,7 +599,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	 * @param hasServerSettings Whether there are server settings available, so we can continue to connect
 	 */
 	private void updateFragmentVisibility(boolean hasServerSettings) {
-		if (fragmentDetails != null && fragmentDetails.isAdded()) {
+		if (fragmentDetails != null && fragmentDetails.isResumed()) {
 			if (hasServerSettings) {
 				getFragmentManager().beginTransaction().show(fragmentDetails).commit();
 			} else {
@@ -905,7 +905,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	 * @param torrent The torrent to show detailed statistics for
 	 */
 	public void openDetails(Torrent torrent) {
-		if (fragmentDetails != null && fragmentDetails.isAdded()) {
+		if (fragmentDetails != null && fragmentDetails.isResumed()) {
 			fragmentDetails.updateTorrent(torrent);
 		} else {
 			DetailsActivity_.intent(this).torrent(torrent).currentLabels(lastNavigationLabels).startForResult(RESULT_DETAILS);
@@ -1296,7 +1296,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		fragmentTorrents.updateIsLoading(false);
 		if (isCritical) {
 			fragmentTorrents.updateError(error);
-			if (fragmentDetails != null && fragmentDetails.isAdded()) {
+			if (fragmentDetails != null && fragmentDetails.isResumed()) {
 				fragmentDetails.updateIsLoading(false, error);
 			}
 		}
@@ -1312,13 +1312,13 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		fragmentTorrents.updateTorrents(new ArrayList<>(torrents), lastNavigationLabels);
 
 		// Update the details fragment if the currently shown torrent is in the newly retrieved list
-		if (fragmentDetails != null && fragmentDetails.isAdded()) {
+		if (fragmentDetails != null && fragmentDetails.isResumed()) {
 			fragmentDetails.perhapsUpdateTorrent(torrents);
 		}
 
 		// Update local list of labels in the navigation
 		navigationListAdapter.updateLabels(lastNavigationLabels);
-		if (fragmentDetails != null && fragmentDetails.isAdded()) {
+		if (fragmentDetails != null && fragmentDetails.isResumed()) {
 			fragmentDetails.updateLabels(lastNavigationLabels);
 		}
 
@@ -1347,7 +1347,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	@UiThread
 	protected void onTorrentDetailsRetrieved(Torrent torrent, TorrentDetails torrentDetails) {
 		// Update the details fragment with the new fine details for the shown torrent
-		if (fragmentDetails != null && fragmentDetails.isAdded()) {
+		if (fragmentDetails != null && fragmentDetails.isResumed()) {
 			fragmentDetails.updateTorrentDetails(torrent, torrentDetails);
 		}
 	}
@@ -1355,7 +1355,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	@UiThread
 	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
 		// Update the details fragment with the newly retrieved list of files
-		if (fragmentDetails != null && fragmentDetails.isAdded()) {
+		if (fragmentDetails != null && fragmentDetails.isResumed()) {
 			fragmentDetails.updateTorrentFiles(torrent, new ArrayList<>(torrentFiles));
 		}
 	}

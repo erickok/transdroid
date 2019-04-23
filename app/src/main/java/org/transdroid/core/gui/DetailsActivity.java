@@ -170,6 +170,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 
 	@Background
 	public void refreshTorrentDetails(Torrent torrent) {
+		if (currentConnection == null) return;
 		if (!Daemon.supportsFineDetails(torrent.getDaemon())) {
 			return;
 		}
@@ -183,6 +184,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 
 	@Background
 	public void refreshTorrentFiles(Torrent torrent) {
+		if (currentConnection == null) return;
 		if (!Daemon.supportsFileListing(torrent.getDaemon())) {
 			return;
 		}
@@ -197,6 +199,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 	@Background
 	@Override
 	public void resumeTorrent(Torrent torrent) {
+		if (currentConnection == null) return;
 		torrent.mimicResume();
 		DaemonTaskResult result = ResumeTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
@@ -333,14 +336,14 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 	@UiThread
 	protected void onTorrentDetailsRetrieved(Torrent torrent, TorrentDetails torrentDetails) {
 		// Update the details fragment with the new fine details for the shown torrent
-		if (fragmentDetails.isAdded())
+		if (fragmentDetails.isResumed())
 			fragmentDetails.updateTorrentDetails(torrent, torrentDetails);
 	}
 
 	@UiThread
 	protected void onTorrentFilesRetrieved(Torrent torrent, List<TorrentFile> torrentFiles) {
 		// Update the details fragment with the newly retrieved list of files
-		if (fragmentDetails.isAdded())
+		if (fragmentDetails.isResumed())
 			fragmentDetails.updateTorrentFiles(torrent, new ArrayList<>(torrentFiles));
 	}
 
@@ -348,7 +351,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 	protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
 		log.i(this, result.getException().toString());
 		String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
-		if (fragmentDetails.isAdded())
+		if (fragmentDetails.isResumed())
 			fragmentDetails.updateIsLoading(false, isCritical ? error : null);
 		SnackbarManager.show(Snackbar.with(this).text(getString(LocalTorrent.getResourceForDaemonException(result.getException())))
 				.colorResource(R.color.red));
@@ -357,7 +360,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 	@UiThread
 	protected void onTorrentsRetrieved(List<Torrent> torrents, List<org.transdroid.daemon.Label> labels) {
 		// Update the details fragment accordingly
-		if (fragmentDetails.isAdded()) {
+		if (fragmentDetails.isResumed()) {
 			fragmentDetails.updateIsLoading(false, null);
 			fragmentDetails.perhapsUpdateTorrent(torrents);
 			fragmentDetails.updateLabels(Label.convertToNavigationLabels(labels, getResources().getString(R.string.labels_unlabeled)));
