@@ -270,6 +270,8 @@
 	<string name="pref_localport">Local port number</string>
 	<string name="pref_localnetwork">Local network</string>
 	<string name="pref_localnetwork_info">The server\'s local network SSID</string>
+	<string name="pref_local_permission_title">Location permission</string>
+	<string name="pref_local_permission_rationale">To known the connected Wifi network SSID name, %1$s requires the location permission</string>
 	<string name="pref_folder">Folder</string>
 	<string name="pref_folder_info">Usually empty</string>
 	<string name="pref_scgifolder">SCGI mount point</string>
