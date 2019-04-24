@@ -26,14 +26,16 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
-
+import android.support.annotation.NonNull;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings_;
+import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.daemon.Daemon;
 
 /**
@@ -44,9 +46,12 @@ import org.transdroid.daemon.Daemon;
 @OptionsMenu(R.menu.activity_deleteableprefs)
 public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 
+	@Bean
+	protected ConnectivityHelper connectivityHelper;
+
 	private static final int DIALOG_CONFIRMREMOVE = 0;
 
-	private EditTextPreference extraPass, folder, downloadDir, excludeFilter, includeFilter;
+	private EditTextPreference extraPass, folder, downloadDir, excludeFilter, includeFilter, localNetworkPreference;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +68,7 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("server_user");
 		initTextPreference("server_pass");
 		extraPass = initTextPreference("server_extrapass");
-		initTextPreference("server_localnetwork");
+		localNetworkPreference = initTextPreference("server_localnetwork");
 		initTextPreference("server_localaddress");
 		initTextPreference("server_localport");
 		folder = initTextPreference("server_folder");
@@ -83,6 +88,16 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 		initTextPreference("server_ssltrustkey", null, "server_sslenabled");
 		onPreferencesChanged();
 
+		localNetworkPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(final Preference preference) {
+				if (!connectivityHelper.hasNetworkNamePermission(ServerSettingsActivity.this)) {
+					connectivityHelper.askNetworkNamePermission(ServerSettingsActivity.this);
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -111,6 +126,13 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 						}).setNegativeButton(android.R.string.cancel, null).create();
 		}
 		return null;
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (connectivityHelper.requestedPermissionWasGranted(requestCode, permissions, grantResults)) {
+			localNetworkPreference.getOnPreferenceClickListener().onPreferenceClick(localNetworkPreference);
+		}
 	}
 
 	@Override

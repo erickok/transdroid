@@ -178,6 +178,7 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
 
 		boolean enableSearchUi = navigationHelper.enableSearchUi();
 		boolean enableRssUi = navigationHelper.enableRssUi();
+		boolean enableDonateLink = !getString(R.string.donate_url).isEmpty();
 
 		// Load the preference menu and attach actions
 		addPreferencesFromResource(R.xml.pref_main);
@@ -191,7 +192,11 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
 		findPreference("header_background").setOnPreferenceClickListener(onBackgroundSettings);
 		findPreference("header_system").setOnPreferenceClickListener(onSystemSettings);
 		findPreference("header_help").setOnPreferenceClickListener(onHelpSettings);
-		findPreference("header_donate").setOnPreferenceClickListener(onDonate);
+		if (enableDonateLink) {
+			findPreference("header_donate").setOnPreferenceClickListener(onDonate);
+		} else {
+			getPreferenceScreen().removePreference(findPreference("header_donate"));
+		}
 
 		// Keep a list of the server codes and names (for default server selection)
 		List<String> serverCodes = new ArrayList<>();

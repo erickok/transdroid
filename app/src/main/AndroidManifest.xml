@@ -29,10 +29,15 @@
 		android:xlargeScreens="true" />
 
 	<uses-permission android:name="android.permission.INTERNET" />
+	<!-- To check for an active connection -->
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<!-- To check currently connected wifi network name -->
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<!-- To start rss and torrents background check services -->
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-permission android:name="android.permission.VIBRATE" />
+	<!-- To export settings file to external storage -->
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 	<uses-feature

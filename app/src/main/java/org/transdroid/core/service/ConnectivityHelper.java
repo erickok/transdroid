@@ -16,16 +16,25 @@
  */
 package org.transdroid.core.service;
 
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.SystemService;
-import org.androidannotations.annotations.EBean.Scope;
-
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.EBean.Scope;
+import org.androidannotations.annotations.SystemService;
+import org.transdroid.R;
 
 @EBean(scope = Scope.Singleton)
 public class ConnectivityHelper {
+
+	private static final int REQUEST_LOCATION_PERMISSION = 0;
 
 	@SystemService
 	protected ConnectivityManager connectivityManager;
@@ -39,10 +48,39 @@ public class ConnectivityHelper {
 	}
 
 	public String getConnectedNetworkName() {
-		if (wifiManager.getConnectionInfo() != null && wifiManager.getConnectionInfo().getSSID() != null) {
+		if (wifiManager != null && wifiManager.getConnectionInfo() != null && wifiManager.getConnectionInfo().getSSID() != null) {
 			return wifiManager.getConnectionInfo().getSSID().replace("\"", "");
 		}
 		return null;
+	}
+
+	public boolean hasNetworkNamePermission(final Context activityContext) {
+		return ContextCompat.checkSelfPermission(activityContext, Manifest.permission.ACCESS_FINE_LOCATION) ==
+				PackageManager.PERMISSION_GRANTED;
+	}
+
+	public void askNetworkNamePermission(final Activity activity) {
+		new AlertDialog.Builder(activity)
+				.setTitle(R.string.pref_local_permission_title)
+				.setMessage(activity.getString(R.string.pref_local_permission_rationale,
+						activity.getString(R.string.app_name)))
+				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						ActivityCompat.requestPermissions(activity,
+								new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+					}
+				})
+				.setNegativeButton(android.R.string.cancel, null)
+				.show();
+	}
+
+	public boolean requestedPermissionWasGranted(int requestCode, String[] permissions, int[] grantResults) {
+		return (requestCode == REQUEST_LOCATION_PERMISSION
+				&& permissions != null
+				&& grantResults != null
+				&& permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION)
+				&& grantResults[0] == PackageManager.PERMISSION_GRANTED);
 	}
 
 }

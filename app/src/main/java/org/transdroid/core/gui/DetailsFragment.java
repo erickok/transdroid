@@ -150,10 +150,10 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		if (torrent != null) {
 			updateTorrent(torrent);
 		}
-		if (torrentDetails != null) {
+		if (torrent != null && torrentDetails != null) {
 			updateTorrentDetails(torrent, torrentDetails);
 		}
-		if (torrentFiles != null) {
+		if (torrent != null && torrentFiles != null) {
 			updateTorrentFiles(torrent, torrentFiles);
 		}
 

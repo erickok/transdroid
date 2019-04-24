@@ -50,6 +50,7 @@ public class LocalTorrent {
 	}
 
 	private static final String DECIMAL_FORMATTER = "%.1f";
+	private static final String DECIMAL_FORMATTER_2 = "%.2f";
 
 	/**
 	 * Builds a string showing the upload/download seed ratio. If not downloading, it will base the ratio on the total
@@ -63,11 +64,11 @@ public class LocalTorrent {
 			baseSize = t.getDownloadedEver();
 		}
 		if (baseSize <= 0) {
-			return String.format(Locale.getDefault(), DECIMAL_FORMATTER, 0d);
+			return String.format(Locale.getDefault(), DECIMAL_FORMATTER_2, 0d);
 		} else if (t.getRatio() == Double.POSITIVE_INFINITY) {
 			return "\u221E";
 		} else {
-			return String.format(Locale.getDefault(), DECIMAL_FORMATTER, t.getRatio());
+			return String.format(Locale.getDefault(), DECIMAL_FORMATTER_2, t.getRatio());
 		}
 	}
 

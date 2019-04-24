@@ -18,7 +18,7 @@
 
 	<string name="app_name" translatable="false">Transdrone</string>
 
-	<string name="donate_text">Donate via transdroid.org</string>
-	<string name="donate_url">https://transdroid.org</string>
+	<string name="donate_text"></string>
+	<string name="donate_url"></string>
 
 </resources>

@@ -80,7 +80,7 @@ public class DummyAdapter implements IDaemonAdapter {
 				TorrentStatus.Paused, TorrentStatus.Queued, TorrentStatus.Downloading, TorrentStatus.Seeding, 
 				TorrentStatus.Error };
 		Random random = new Random();
-		for (int i = 1; i < 26; i++) {
+		for (int i = 1; i < 2026; i++) {
 			String name = names[i % names.length] + Integer.toString(i);
 			TorrentStatus status = statuses[i % statuses.length];
 			int peersGetting = status == TorrentStatus.Downloading ? i * random.nextInt(16) : 0;

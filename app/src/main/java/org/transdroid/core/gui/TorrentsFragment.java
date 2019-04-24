@@ -74,8 +74,8 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	protected ApplicationSettings applicationSettings;
 	@Bean
 	protected SystemSettings systemSettings;
-	@InstanceState
-	protected ArrayList<Torrent> torrents = null;
+	// HACK Working around #391 while hopefully we rework the UI in the future to persist the list in db or something
+	protected static ArrayList<Torrent> torrents = null;
 	@InstanceState
 	protected ArrayList<Torrent> lastMultiSelectedTorrents;
 	@InstanceState
@@ -144,7 +144,8 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	 * @param newTorrents The new, updated list of torrents
 	 */
 	public void updateTorrents(ArrayList<Torrent> newTorrents, ArrayList<Label> currentLabels) {
-		this.torrents = newTorrents;
+		if (!isResumed()) return;
+		torrents = newTorrents;
 		this.currentLabels = currentLabels;
 		applyAllFilters();
 	}
@@ -155,8 +156,9 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	 * @param wasRemoved Whether the affected torrent was indeed removed; otherwise it was updated somehow
 	 */
 	public void quickUpdateTorrent(Torrent affected, boolean wasRemoved) {
+		if (!isResumed()) return;
 		// Remove the old torrent object first
-		Iterator<Torrent> iter = this.torrents.iterator();
+		Iterator<Torrent> iter = torrents.iterator();
 		while (iter.hasNext()) {
 			Torrent torrent = iter.next();
 			if (torrent.getUniqueID().equals(affected.getUniqueID())) {
@@ -166,7 +168,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 		}
 		// In case it was an update, add the updated torrent object
 		if (!wasRemoved) {
-			this.torrents.add(affected);
+			torrents.add(affected);
 		}
 		// Now refresh the screen
 		applyAllFilters();
@@ -178,7 +180,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	 * @param clearFilter Also clear any selected filter
 	 */
 	public void clear(boolean clearError, boolean clearFilter) {
-		this.torrents = null;
+		torrents = null;
 		if (clearError) {
 			this.connectionErrorMessage = null;
 		}
@@ -420,6 +422,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	 * @param hasAConnection True if the user has servers configured and therefore has a connection that can be used
 	 */
 	public void updateConnectionStatus(boolean hasAConnection, Daemon daemonType) {
+		if (!isResumed()) return;
 		this.hasAConnection = hasAConnection;
 		this.daemonType = daemonType;
 		if (!hasAConnection) {
@@ -440,6 +443,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	 * @param isLoading True if the list of torrents is (re)loading, false otherwise
 	 */
 	public void updateIsLoading(boolean isLoading) {
+		if (!isResumed()) return;
 		this.isLoading = isLoading;
 		if (isLoading) {
 			clear(true, false); // Indirectly also calls updateViewVisibility()
@@ -453,6 +457,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	 * @param connectionErrorMessage The error message from the last failed connection attempt, or null to clear the visible error text
 	 */
 	public void updateError(String connectionErrorMessage) {
+		if (!isResumed()) return;
 		this.connectionErrorMessage = connectionErrorMessage;
 		errorText.setText(connectionErrorMessage);
 		if (connectionErrorMessage != null) {

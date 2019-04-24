@@ -15,7 +15,8 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+				  xmlns:app="http://schemas.android.com/apk/res-auto" >
 
 	<EditTextPreference
 		android:key="server_name"
@@ -49,7 +50,7 @@
 			android:key="server_port"
 			android:title="@string/pref_port"
 			android:inputType="numberSigned" />
-		<EditTextPreference
+		<org.transdroid.core.gui.settings.InterceptableEditTextPreference
 			android:key="server_localnetwork"
 			android:title="@string/pref_localnetwork"
 			android:summary="@string/pref_localnetwork_info"

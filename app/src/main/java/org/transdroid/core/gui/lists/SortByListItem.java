@@ -16,10 +16,9 @@
  */
 package org.transdroid.core.gui.lists;
 
+import android.content.Context;
 import org.transdroid.R;
 import org.transdroid.daemon.TorrentsSortBy;
-
-import android.content.Context;
 
 /**
  * Represents a way in which a torrents list can be sorted.
@@ -33,24 +32,33 @@ public class SortByListItem implements SimpleListItem {
 	public SortByListItem(Context context, TorrentsSortBy sortBy) {
 		this.sortBy = sortBy;
 		switch (sortBy) {
-		case DateAdded:
-			this.name = context.getString(R.string.action_sort_added);
-			break;
-		case DateDone:
-			this.name = context.getString(R.string.action_sort_done);
-			break;
-		case Ratio:
-			this.name = context.getString(R.string.action_sort_ratio);
-			break;
-		case Status:
-			this.name = context.getString(R.string.action_sort_status);
-			break;
-		case UploadSpeed:
-			this.name = context.getString(R.string.action_sort_upspeed);
-			break;
-		default:
-			this.name = context.getString(R.string.action_sort_alpha);
-			break;
+			case DateAdded:
+				this.name = context.getString(R.string.action_sort_added);
+				break;
+			case DateDone:
+				this.name = context.getString(R.string.action_sort_done);
+				break;
+			case Ratio:
+				this.name = context.getString(R.string.action_sort_ratio);
+				break;
+			case Status:
+				this.name = context.getString(R.string.action_sort_status);
+				break;
+			case UploadSpeed:
+				this.name = context.getString(R.string.action_sort_upspeed);
+				break;
+			case DownloadSpeed:
+				this.name = context.getString(R.string.action_sort_downspeed);
+				break;
+			case Percent:
+				this.name = context.getString(R.string.action_sort_percent);
+				break;
+			case Size:
+				this.name = context.getString(R.string.action_sort_size);
+				break;
+			default:
+				this.name = context.getString(R.string.action_sort_alpha);
+				break;
 		}
 	}
 	
