@@ -418,13 +418,6 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				httppost.addHeader(sessionHeader, sessionToken);
 			}
 
-			// Force preemptive authentication. This makes sure there is an 'Authentication: ' header being send before trying and failing and
-			// retrying by the basic authentication mechanism of DefaultHttpClient
-			if (settings.shouldUseAuthentication() && !TextUtils.isEmpty(settings.getUsername())) {
-				httppost.addHeader("Authorization", "Basic " +
-						Base64.encodeBytes((settings.getUsername() + ":" + settings.getPassword()).getBytes()));
-			}
-
 			// Execute
 			log.d(LOG_NAME, "Execute " + data.getString("method") + " request to " + httppost.getURI().toString());
 			HttpResponse response = httpclient.execute(httppost);
