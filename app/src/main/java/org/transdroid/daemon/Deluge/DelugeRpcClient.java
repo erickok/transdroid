@@ -27,8 +27,10 @@ import se.dimovski.rencode.Rencode;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,6 +38,7 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_DAEMON_LOGIN;
+import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_INFO;
 
 /**
  * A Deluge RPC API Client.
@@ -45,13 +48,23 @@ class DelugeRpcClient implements Closeable {
 	private static final int RESPONSE_TYPE_INDEX = 0;
 	private static final int RESPONSE_RETURN_VALUE_INDEX = 2;
 	private static final int RPC_ERROR = 2;
+	private static final byte V2_PROTOCOL_VERSION = 1;
+	private static final int V2_HEADER_SIZE = 5;
 
 	private Socket socket;
+	private final boolean isVersion2;
 	private static AtomicInteger requestId = new AtomicInteger();
+
+	DelugeRpcClient(boolean isVersion2) {
+		this.isVersion2 = isVersion2;
+	}
 
 	void connect(DaemonSettings settings) throws DaemonException {
 		try {
 			socket = openSocket(settings);
+			if (isVersion2) {
+				sendRequest(RPC_METHOD_INFO);
+			}
 			if (settings.shouldUseAuthentication()) {
 				sendRequest(RPC_METHOD_DAEMON_LOGIN, settings.getUsername(), settings.getPassword());
 			}
@@ -75,12 +88,26 @@ class DelugeRpcClient implements Closeable {
 	Object sendRequest(String method, Object... args) throws DaemonException {
 		final byte[] requestBytes;
 		try {
-			requestBytes = compress(Rencode.encode(new Object[]{new Object[]{requestId.getAndIncrement(), method, args, new HashMap<>()}}));
+			HashMap<Object, Object> kwargs = new HashMap<>();
+			if (isVersion2 && RPC_METHOD_DAEMON_LOGIN.equals(method)) {
+				kwargs.put("client_version", "" + V2_PROTOCOL_VERSION);
+			}
+			requestBytes = compress(Rencode.encode(new Object[]{new Object[]{requestId.getAndIncrement(), method, args, kwargs}}));
 		} catch (IOException e) {
 			throw new DaemonException(ExceptionType.ConnectionError, "Failed to encode request: " + e.getMessage());
 		}
 		try {
-			socket.getOutputStream().write(requestBytes);
+			if (isVersion2) {
+				socket.getOutputStream().write(
+						ByteBuffer.allocate(V2_HEADER_SIZE + requestBytes.length)
+								.put(V2_PROTOCOL_VERSION)
+								.putInt(requestBytes.length)
+								.put(requestBytes)
+								.array()
+				);
+			} else {
+				socket.getOutputStream().write(requestBytes);
+			}
 			return readResponse();
 		} catch (IOException e) {
 			throw new DaemonException(ExceptionType.ConnectionError, e.getMessage());
@@ -106,9 +133,22 @@ class DelugeRpcClient implements Closeable {
 
 	@NonNull
 	private Object readResponse() throws DaemonException, IOException {
-		final InflaterInputStream inflater = new InflaterInputStream(socket.getInputStream());
+		final InputStream in = socket.getInputStream();
+		final InflaterInputStream inflater = new InflaterInputStream(in);
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
-		final byte[] buffer = new byte[1024];
+
+		final byte[] buffer;
+		if (isVersion2) {
+			final byte[] header = new byte[V2_HEADER_SIZE];
+			in.read(header, 0, V2_HEADER_SIZE);
+			if (header[0] != V2_PROTOCOL_VERSION) {
+				throw new DaemonException(ExceptionType.ConnectionError, "Unexpected protocol version: " + header[0]);
+			}
+			buffer = new byte[ByteBuffer.wrap(header).getInt(1)];
+		} else {
+			buffer = new byte[1024];
+		}
+
 		while (inflater.available() > 0) {
 			final int n = inflater.read(buffer);
 			if (n > 0) {

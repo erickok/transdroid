@@ -49,16 +49,18 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 	public static final int DEFAULT_PORT = 58846;
 
 	private final DaemonSettings settings;
+	private final boolean isVersion2;
 
 	private int version = -1;
 
-	public DelugeRpcAdapter(DaemonSettings settings) {
+	public DelugeRpcAdapter(DaemonSettings settings, boolean isVersion2) {
 		this.settings = settings;
+		this.isVersion2 = isVersion2;
 	}
 
 	@Override
 	public DaemonTaskResult executeTask(Log log, DaemonTask task) {
-		final DelugeRpcClient client = new DelugeRpcClient();
+		final DelugeRpcClient client = new DelugeRpcClient(isVersion2);
 		try {
 			client.connect(settings);
 			switch (task.getMethod()) {
@@ -109,7 +111,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 
 	@Override
 	public Daemon getType() {
-		return Daemon.DelugeRpc;
+		return isVersion2 ? Daemon.Deluge2Rpc : Daemon.DelugeRpc;
 	}
 
 	@Override
@@ -120,7 +122,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 	@Override
 	public ArrayList<RemoteRssChannel> getRemoteRssChannels(Log log) throws DaemonException {
 		final long now = System.currentTimeMillis();
-		final DelugeRpcClient client = new DelugeRpcClient();
+		final DelugeRpcClient client = new DelugeRpcClient(isVersion2);
 		try {
 			client.connect(settings);
 
@@ -197,7 +199,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 		} else {
 			label = null;
 		}
-		final DelugeRpcClient client = new DelugeRpcClient();
+		final DelugeRpcClient client = new DelugeRpcClient(isVersion2);
 
 		try {
 			client.connect(settings);
@@ -369,10 +371,10 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 		final List<Torrent> torrents = new ArrayList<>();
 		int id = 0;
 		for (Map<String, Object> torrentMap : torrentMaps) {
-			final Object timeAdded = torrentMap.get(RPC_TIMEADDED);
+			final Number timeAdded = (Number) torrentMap.get(RPC_TIMEADDED);
 			final Date timeAddedDate;
 			if (timeAdded != null) {
-				final long seconds = (long) (float) timeAdded;
+				final long seconds = timeAdded.longValue();
 				timeAddedDate = new Date(seconds * 1000L);
 			} else {
 				timeAddedDate = null;

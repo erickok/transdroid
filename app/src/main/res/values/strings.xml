@@ -389,6 +389,7 @@
         <item>Buffalo NAS -1.31</item>
         <item>Deluge 1.2+</item>
         <item>Deluge RPC</item>
+		<item>Deluge 2 RPC</item>
 		<item>DLink Router BT</item>
         <item>Ktorrent</item>
         <item>qBittorrent</item>
@@ -408,6 +409,7 @@
         <item>daemon_buffalonas</item>
         <item>daemon_deluge</item>
         <item>daemon_deluge_rpc</item>
+		<item>daemon_deluge2_rpc</item>
 		<item>daemon_dlinkrouterbt</item>
         <item>daemon_ktorrent</item>
         <item>daemon_qbittorrent</item>
