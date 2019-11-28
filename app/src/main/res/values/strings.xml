@@ -56,9 +56,9 @@
 	<string name="action_remove_default">Remove torrent</string>
 	<string name="action_remove_withdata">Remove and delete data</string>
 	<string name="action_setlabel">Set label</string>
-	<string name="action_download_mode">Set download mode</string>
+	<string name="action_download_mode">Download mode</string>
 	<string name="action_toggle_sequential">Download sequentially</string>
-	<string name="action_toggle_firstlastpiece">Download first and last pieces first</string>
+	<string name="action_toggle_firstlastpiece">Prioritize first and last piece</string>
 	<string name="action_updatetrackers">Update trackers</string>
 	<string name="action_changelocation">Change storage location</string>
 	<string name="action_forcerecheck">Force data recheck</string>
@@ -179,6 +179,7 @@
 	<string name="result_labelset">Label set to \'%1$s\'</string>
 	<string name="result_labelremoved">Label removed</string>
 	<string name="result_togglesequential">Toggled sequential download mode</string>
+	<string name="result_togglefirstlastpiece">Toggled first and last piece priority</string>
 	<string name="result_recheckedstarted">Checking %1$s data</string>
 	<string name="result_locationset">Torrent moved to \'%1$s\'</string>
 	<string name="result_priotitiesset">File priorities updated</string>

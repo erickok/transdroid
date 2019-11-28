@@ -298,7 +298,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 		torrent.mimicFirstLastPieceDownload(firstLastPieceState);
 		DaemonTaskResult result = ToggleFirstLastPieceDownloadTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.action_toggle_firstlastpiece));
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_togglefirstlastpiece));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
