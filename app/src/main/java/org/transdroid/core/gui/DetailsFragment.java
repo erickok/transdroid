@@ -373,7 +373,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		MenuItem flpMenuItem = detailsMenu.getMenu().findItem(R.id.action_toggle_firstlastpiece);
                 flpMenuItem.setVisible(firstlastpiecedl);
                 flpMenuItem.setChecked(torrent.isDownloadingFirstLastPieceFirst());
-                detailsMenu.getMenu().findItem(R.id.action_download_mode).setVisible(firstlastpiecedl || sequentialdl);
+                detailsMenu.getMenu().findItem(R.id.action_download_mode).setVisible(!torrent.isFinished() && (firstlastpiecedl || sequentialdl));
 		boolean setTrackers = Daemon.supportsSetTrackers(torrent.getDaemon());
 		detailsMenu.getMenu().findItem(R.id.action_updatetrackers).setVisible(setTrackers);
 		boolean setLocation = Daemon.supportsSetDownloadLocation(torrent.getDaemon());
