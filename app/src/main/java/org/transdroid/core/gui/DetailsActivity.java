@@ -356,7 +356,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 		// Refresh the screen as well
 		refreshTorrent();
 		refreshTorrentDetails(torrent);
-		SnackbarManager.show(Snackbar.with(this).text(successMessage));
+		SnackbarManager.show(Snackbar.with(this).text(successMessage).duration(Snackbar.SnackbarDuration.LENGTH_SHORT));
 	}
 
 	@UiThread
