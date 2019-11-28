@@ -40,6 +40,10 @@ public interface TorrentTasksExecutor {
 
 	void removeTorrent(Torrent torrent, boolean withData);
 
+	void toggleSequentialDownload(Torrent torrent, boolean sequentialState);
+
+	void toggleFirstLastPieceDownload(Torrent torrent, boolean sequentialState);
+
 	void forceRecheckTorrent(Torrent torrent);
 
 	void updateLabel(Torrent torrent, String newLabel);

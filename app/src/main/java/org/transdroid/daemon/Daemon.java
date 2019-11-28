@@ -412,6 +412,14 @@ public enum Daemon {
 				|| type == Transmission || type == Dummy || type == qBittorrent;
 	}
 
+	public static boolean supportsSequentialDownload(Daemon type) {
+		return type == qBittorrent;
+	}
+
+	public static boolean supportsFirstLastPiece(Daemon type) {
+		return type == qBittorrent;
+	}
+
 	public static boolean supportsExtraPassword(Daemon type) {
 		return type == Deluge || type == Aria2;
 	}

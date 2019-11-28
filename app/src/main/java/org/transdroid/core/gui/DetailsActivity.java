@@ -56,6 +56,8 @@ import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
+import org.transdroid.daemon.task.ToggleSequentialDownloadTask;
+import org.transdroid.daemon.task.ToggleFirstLastPieceDownloadTask;
 import org.transdroid.daemon.task.ForceRecheckTask;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
@@ -273,6 +275,30 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 		DaemonTaskResult result = SetLabelTask.create(currentConnection, torrent, newLabel == null ? "" : newLabel).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_labelset, newLabel));
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result, false);
+		}
+	}
+
+	@Background
+	@Override
+	public void toggleSequentialDownload(Torrent torrent, boolean sequentialState) {
+		torrent.mimicSequentialDownload(sequentialState);
+		DaemonTaskResult result = ToggleSequentialDownloadTask.create(currentConnection, torrent).execute(log);
+		if (result instanceof DaemonTaskSuccessResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_togglesequential));
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result, false);
+		}
+	}
+
+	@Background
+	@Override
+	public void toggleFirstLastPieceDownload(Torrent torrent, boolean firstLastPieceState) {
+		torrent.mimicFirstLastPieceDownload(firstLastPieceState);
+		DaemonTaskResult result = ToggleFirstLastPieceDownloadTask.create(currentConnection, torrent).execute(log);
+		if (result instanceof DaemonTaskSuccessResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.action_toggle_firstlastpiece));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
