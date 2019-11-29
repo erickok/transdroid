@@ -54,6 +54,9 @@
   <string name="action_remove_default">Удалить торрент-файл</string>
   <string name="action_remove_withdata">Удалить вместе с данными</string>
   <string name="action_setlabel">Установить метку</string>
+  <string name="action_download_mode">Режим скачивания</string>
+  <string name="action_toggle_sequential">Скачать последовательно</string>
+  <string name="action_toggle_firstlastpiece">Скачать начало и конец первыми</string>
   <string name="action_updatetrackers">Обновить трекеры</string>
   <string name="action_changelocation">Изменить место расположения</string>
   <string name="action_forcerecheck">Пересчитать хэш</string>
@@ -167,6 +170,8 @@
   <string name="result_trackersupdated">Трекеры обновлены</string>
   <string name="result_labelset">Метка установлена ​​в \'%1$s\'</string>
   <string name="result_labelremoved">Метка удалена</string>
+  <string name="result_togglesequential">Изменено последовательное скачивание торрента</string>
+  <string name="result_togglefirstlastpiece">Изменен приоритет скачивания начала и конца торрента</string>
   <string name="result_recheckedstarted">Проверка данных %1$s</string>
   <string name="result_locationset">Торрент перемещен в \'%1$s\'</string>
   <string name="result_priotitiesset">Приоритеты файлов обновлены</string>
