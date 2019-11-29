@@ -178,8 +178,12 @@
 	<string name="result_trackersupdated">Trackers updated</string>
 	<string name="result_labelset">Label set to \'%1$s\'</string>
 	<string name="result_labelremoved">Label removed</string>
-	<string name="result_togglesequential">Toggled sequential download mode</string>
-	<string name="result_togglefirstlastpiece">Toggled first and last piece priority</string>
+	<string name="result_togglesequential">%1$s is downloading %2$s</string>
+	<string name="result_togglesequential_offstate">normally</string>
+	<string name="result_togglesequential_onstate">sequentially</string>
+	<string name="result_togglefirstlastpiece">%1$s has %2$s</string>
+	<string name="result_togglefirstlastpiece_onstate">first and last piece priority</string>
+	<string name="result_togglefirstlastpiece_offstate">normal piece priority</string>
 	<string name="result_recheckedstarted">Checking %1$s data</string>
 	<string name="result_locationset">Torrent moved to \'%1$s\'</string>
 	<string name="result_priotitiesset">File priorities updated</string>

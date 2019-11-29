@@ -284,9 +284,12 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 	@Override
 	public void toggleSequentialDownload(Torrent torrent, boolean sequentialState) {
 		torrent.mimicSequentialDownload(sequentialState);
+                String onState = getString(R.string.result_togglesequential_onstate);
+                String offState = getString(R.string.result_togglesequential_offstate);
+                String stateString = sequentialState ? onState : offState;
 		DaemonTaskResult result = ToggleSequentialDownloadTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_togglesequential));
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_togglesequential, torrent.getName(), stateString));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}
@@ -296,9 +299,12 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 	@Override
 	public void toggleFirstLastPieceDownload(Torrent torrent, boolean firstLastPieceState) {
 		torrent.mimicFirstLastPieceDownload(firstLastPieceState);
+                String onState = getString(R.string.result_togglefirstlastpiece_onstate);
+                String offState = getString(R.string.result_togglefirstlastpiece_offstate);
+                String stateString = firstLastPieceState ? onState : offState;
 		DaemonTaskResult result = ToggleFirstLastPieceDownloadTask.create(currentConnection, torrent).execute(log);
 		if (result instanceof DaemonTaskSuccessResult) {
-			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_togglefirstlastpiece));
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_togglefirstlastpiece, torrent.getName(), stateString));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}

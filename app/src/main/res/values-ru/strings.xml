@@ -170,6 +170,12 @@
   <string name="result_trackersupdated">Трекеры обновлены</string>
   <string name="result_labelset">Метка установлена ​​в \'%1$s\'</string>
   <string name="result_labelremoved">Метка удалена</string>
+  <string name="result_togglesequential">%1$s скачивается %2$s</string>
+  <string name="result_togglesequential_offstate">последовательно</string>
+  <string name="result_togglesequential_onstate">обычным образом</string>
+  <string name="result_togglefirstlastpiece">%1$s имеет %2$s</string>
+  <string name="result_togglefirstlastpiece_onstate">приоритет первого и последнего куска</string>
+  <string name="result_togglefirstlastpiece_offstate">обычый приоритет кусков</string>
   <string name="result_togglesequential">Изменено последовательное скачивание торрента</string>
   <string name="result_togglefirstlastpiece">Изменен приоритет скачивания начала и конца торрента</string>
   <string name="result_recheckedstarted">Проверка данных %1$s</string>
