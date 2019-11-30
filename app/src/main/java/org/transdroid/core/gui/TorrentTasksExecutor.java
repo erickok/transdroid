@@ -42,7 +42,7 @@ public interface TorrentTasksExecutor {
 
 	void toggleSequentialDownload(Torrent torrent, boolean sequentialState);
 
-	void toggleFirstLastPieceDownload(Torrent torrent, boolean sequentialState);
+	void toggleFirstLastPieceDownload(Torrent torrent, boolean firstLastPieceState);
 
 	void forceRecheckTorrent(Torrent torrent);
 
