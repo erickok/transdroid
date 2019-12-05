@@ -29,6 +29,7 @@ import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 /**
  * List adapter that holds a header view showing torrent details and show the list list contained by the torrent.
@@ -38,6 +39,8 @@ public class DetailsAdapter extends MergeAdapter {
 
 	private ViewHolderAdapter torrentDetailsViewAdapter = null;
 	private TorrentDetailsView torrentDetailsView = null;
+	private ViewHolderAdapter piecesMapViewAdapter = null;
+        private TextView piecesMapView = null;
 	private ViewHolderAdapter trackersSeparatorAdapter = null;
 	private SimpleListItemAdapter trackersAdapter = null;
 	private ViewHolderAdapter errorsSeparatorAdapter = null;
@@ -55,6 +58,13 @@ public class DetailsAdapter extends MergeAdapter {
 		torrentDetailsViewAdapter.setViewEnabled(false);
 		torrentDetailsViewAdapter.setViewVisibility(View.GONE);
 		addAdapter(torrentDetailsViewAdapter);
+
+                // Pieces map
+                piecesMapView = new TextView(context);
+		piecesMapViewAdapter = new ViewHolderAdapter(piecesMapView);
+		piecesMapViewAdapter.setViewEnabled(true);
+		piecesMapViewAdapter.setViewVisibility(View.VISIBLE);
+		addAdapter(piecesMapViewAdapter);
 
 		// Tracker errors
 		errorsSeparatorAdapter = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(
@@ -134,6 +144,20 @@ public class DetailsAdapter extends MergeAdapter {
 		} else {
 			errorsAdapter.update(errors);
 			errorsSeparatorAdapter.setViewVisibility(View.VISIBLE);
+		}
+	}
+
+	public void updatePieces(List<Integer> pieces) {
+		if (pieces == null || pieces.isEmpty()) {
+			//errorsAdapter.update(new ArrayList<SimpleListItemAdapter.SimpleStringItem>());
+			//errorsSeparatorAdapter.setViewVisibility(View.GONE);
+		} else {
+                        String piecesText = "";
+                        for (int piece : pieces) {
+                            piecesText += piece;
+                        }
+			piecesMapView.setText(piecesText.substring(0,40));
+			//errorsSeparatorAdapter.setViewVisibility(View.VISIBLE);
 		}
 	}
 
