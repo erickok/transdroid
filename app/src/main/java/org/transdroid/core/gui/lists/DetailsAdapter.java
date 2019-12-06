@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.transdroid.R;
 import org.transdroid.core.gui.navigation.*;
+import org.transdroid.core.gui.lists.PiecesMapView;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentFile;
 
@@ -29,7 +30,6 @@ import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 /**
  * List adapter that holds a header view showing torrent details and show the list list contained by the torrent.
@@ -39,8 +39,9 @@ public class DetailsAdapter extends MergeAdapter {
 
 	private ViewHolderAdapter torrentDetailsViewAdapter = null;
 	private TorrentDetailsView torrentDetailsView = null;
+        private ViewHolderAdapter piecesSeparatorAdapter = null;
 	private ViewHolderAdapter piecesMapViewAdapter = null;
-        private TextView piecesMapView = null;
+        private PiecesMapView piecesMapView = null;
 	private ViewHolderAdapter trackersSeparatorAdapter = null;
 	private SimpleListItemAdapter trackersAdapter = null;
 	private ViewHolderAdapter errorsSeparatorAdapter = null;
@@ -60,10 +61,15 @@ public class DetailsAdapter extends MergeAdapter {
 		addAdapter(torrentDetailsViewAdapter);
 
                 // Pieces map
-                piecesMapView = new TextView(context);
+		piecesSeparatorAdapter = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(
+				context.getString(R.string.status_pieces)));
+		piecesSeparatorAdapter.setViewEnabled(false);
+		piecesSeparatorAdapter.setViewVisibility(View.GONE);
+		addAdapter(piecesSeparatorAdapter);
+                piecesMapView = new PiecesMapView(context);
 		piecesMapViewAdapter = new ViewHolderAdapter(piecesMapView);
-		piecesMapViewAdapter.setViewEnabled(true);
-		piecesMapViewAdapter.setViewVisibility(View.VISIBLE);
+		piecesMapViewAdapter.setViewEnabled(false);
+		piecesMapViewAdapter.setViewVisibility(View.GONE);
 		addAdapter(piecesMapViewAdapter);
 
 		// Tracker errors
@@ -149,15 +155,17 @@ public class DetailsAdapter extends MergeAdapter {
 
 	public void updatePieces(List<Integer> pieces) {
 		if (pieces == null || pieces.isEmpty()) {
-			//errorsAdapter.update(new ArrayList<SimpleListItemAdapter.SimpleStringItem>());
-			//errorsSeparatorAdapter.setViewVisibility(View.GONE);
+                        piecesSeparatorAdapter.setViewEnabled(false);
+                        piecesSeparatorAdapter.setViewVisibility(View.GONE);
+                        piecesMapViewAdapter.setViewEnabled(false);
+                        piecesMapViewAdapter.setViewVisibility(View.GONE);
 		} else {
-                        String piecesText = "";
-                        for (int piece : pieces) {
-                            piecesText += piece;
-                        }
-			piecesMapView.setText(piecesText.substring(0,40));
-			//errorsSeparatorAdapter.setViewVisibility(View.VISIBLE);
+			piecesMapView.setPieces(pieces);
+
+                        piecesMapViewAdapter.setViewEnabled(true);
+                        piecesMapViewAdapter.setViewVisibility(View.VISIBLE);
+                        piecesSeparatorAdapter.setViewEnabled(true);
+                        piecesSeparatorAdapter.setViewVisibility(View.VISIBLE);
 		}
 	}
 
