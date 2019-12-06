@@ -176,8 +176,6 @@
   <string name="result_togglefirstlastpiece">%1$s имеет %2$s</string>
   <string name="result_togglefirstlastpiece_onstate">приоритет первого и последнего куска</string>
   <string name="result_togglefirstlastpiece_offstate">обычый приоритет кусков</string>
-  <string name="result_togglesequential">Изменено последовательное скачивание торрента</string>
-  <string name="result_togglefirstlastpiece">Изменен приоритет скачивания начала и конца торрента</string>
   <string name="result_recheckedstarted">Проверка данных %1$s</string>
   <string name="result_locationset">Торрент перемещен в \'%1$s\'</string>
   <string name="result_priotitiesset">Приоритеты файлов обновлены</string>
