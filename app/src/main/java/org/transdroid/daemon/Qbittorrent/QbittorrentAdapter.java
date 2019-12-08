@@ -521,8 +521,12 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				ratio = tor.getDouble("ratio");
 				dlspeed = tor.getInt("dlspeed");
 				upspeed = tor.getInt("upspeed");
-                                dlseq = tor.getBoolean("seq_dl");
-                                dlflp = tor.getBoolean("f_l_piece_prio");
+                                if (tor.has("seq_dl")) {
+                                    dlseq = tor.getBoolean("seq_dl");
+                                }
+                                if (tor.has("f_l_piece_prio")) {
+                                    dlflp = tor.getBoolean("f_l_piece_prio");
+                                }
 				if (tor.has("uploaded")) {
 					uploaded = tor.getLong("uploaded");
 				} else {
