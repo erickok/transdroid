@@ -286,11 +286,23 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					}
 					return new DaemonTaskSuccessResult(task);
 
-                case ForceRecheck:
+                                case ForceRecheck:
 
-                    // Force recheck a torrent
-                    makeRequest(log, "/command/recheck", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
-                    return new DaemonTaskSuccessResult(task);
+                                        // Force recheck a torrent
+                                        makeRequest(log, "/command/recheck", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
+                                        return new DaemonTaskSuccessResult(task);
+
+                                case ToggleSequentialDownload:
+
+                                        // Toggle sequential download mode on a torrent
+                                        makeRequest(log, "/command/toggleSequentialDownload", new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
+                                        return new DaemonTaskSuccessResult(task);
+
+                                case ToggleFirstLastPieceDownload:
+
+                                        // Set policy for downloading first and last piece first on a torrent
+                                        makeRequest(log, "/command/toggleFirstLastPiecePrio", new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
+                                        return new DaemonTaskSuccessResult(task);
 
 				case SetLabel:
 
@@ -492,6 +504,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			long uploaded;
 			int dlspeed;
 			int upspeed;
+                        boolean dlseq = false;
+                        boolean dlflp = false;
 			Date addedOn = null;
 			Date completionOn = null;
 			String label = null;
@@ -507,6 +521,12 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				ratio = tor.getDouble("ratio");
 				dlspeed = tor.getInt("dlspeed");
 				upspeed = tor.getInt("upspeed");
+                                if (tor.has("seq_dl")) {
+                                    dlseq = tor.getBoolean("seq_dl");
+                                }
+                                if (tor.has("f_l_piece_prio")) {
+                                    dlflp = tor.getBoolean("f_l_piece_prio");
+                                }
 				if (tor.has("uploaded")) {
 					uploaded = tor.getLong("uploaded");
 				} else {
@@ -535,7 +555,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				eta = (long) (size - (size * progress)) / dlspeed;
 			// Add the parsed torrent to the list
 			// @formatter:off
-			torrents.add(new Torrent(
+                        Torrent torrent = new Torrent(
 					(long) i,
 					tor.getString("hash"),
 					tor.getString("name"),
@@ -557,7 +577,10 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					addedOn,
 					completionOn,
 					null,
-					settings.getType()));
+					settings.getType());
+                        torrent.mimicSequentialDownload(dlseq);
+                        torrent.mimicFirstLastPieceDownload(dlflp);
+			torrents.add(torrent);
 			// @formatter:on
 		}
 

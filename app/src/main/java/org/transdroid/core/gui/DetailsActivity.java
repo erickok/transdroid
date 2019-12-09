@@ -56,6 +56,8 @@ import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
+import org.transdroid.daemon.task.ToggleSequentialDownloadTask;
+import org.transdroid.daemon.task.ToggleFirstLastPieceDownloadTask;
 import org.transdroid.daemon.task.ForceRecheckTask;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
@@ -280,6 +282,36 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 
 	@Background
 	@Override
+	public void toggleSequentialDownload(Torrent torrent, boolean sequentialState) {
+		torrent.mimicSequentialDownload(sequentialState);
+                String onState = getString(R.string.result_togglesequential_onstate);
+                String offState = getString(R.string.result_togglesequential_offstate);
+                String stateString = sequentialState ? onState : offState;
+		DaemonTaskResult result = ToggleSequentialDownloadTask.create(currentConnection, torrent).execute(log);
+		if (result instanceof DaemonTaskSuccessResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_togglesequential, torrent.getName(), stateString));
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result, false);
+		}
+	}
+
+	@Background
+	@Override
+	public void toggleFirstLastPieceDownload(Torrent torrent, boolean firstLastPieceState) {
+		torrent.mimicFirstLastPieceDownload(firstLastPieceState);
+                String onState = getString(R.string.result_togglefirstlastpiece_onstate);
+                String offState = getString(R.string.result_togglefirstlastpiece_offstate);
+                String stateString = firstLastPieceState ? onState : offState;
+		DaemonTaskResult result = ToggleFirstLastPieceDownloadTask.create(currentConnection, torrent).execute(log);
+		if (result instanceof DaemonTaskSuccessResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_togglefirstlastpiece, torrent.getName(), stateString));
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result, false);
+		}
+	}
+
+	@Background
+	@Override
 	public void forceRecheckTorrent(Torrent torrent) {
 		torrent.mimicCheckingStatus();
 		DaemonTaskResult result = ForceRecheckTask.create(currentConnection, torrent).execute(log);
@@ -330,7 +362,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
 		// Refresh the screen as well
 		refreshTorrent();
 		refreshTorrentDetails(torrent);
-		SnackbarManager.show(Snackbar.with(this).text(successMessage));
+		SnackbarManager.show(Snackbar.with(this).text(successMessage).duration(Snackbar.SnackbarDuration.LENGTH_SHORT));
 	}
 
 	@UiThread

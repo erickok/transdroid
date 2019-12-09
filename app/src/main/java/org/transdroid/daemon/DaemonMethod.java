@@ -44,7 +44,9 @@ public enum DaemonMethod {
 	SetTrackers (19), 
 	SetAlternativeMode (20),
 	GetStats (21),
-	ForceRecheck (22);
+	ForceRecheck (22),
+        ToggleSequentialDownload(23),
+        ToggleFirstLastPieceDownload(24);
 
 	private int code;
     private static final Map<Integer,DaemonMethod> lookup  = new HashMap<>();

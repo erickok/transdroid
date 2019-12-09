@@ -301,6 +301,12 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 					case R.id.action_stop:
 						stopTorrent();
 						return true;
+                                        case R.id.action_toggle_sequential:
+						toggleSequentialDownload(menuItem);
+						return true;
+                                        case R.id.action_toggle_firstlastpiece:
+						toggleFirstLastPieceDownload(menuItem);
+						return true;
 					case R.id.action_forcerecheck:
 						setForceRecheck();
 						return true;
@@ -359,6 +365,15 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		detailsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(setLabel);
 		boolean forceRecheck = Daemon.supportsForceRecheck(torrent.getDaemon());
 		detailsMenu.getMenu().findItem(R.id.action_forcerecheck).setVisible(forceRecheck);
+		boolean sequentialdl = Daemon.supportsSequentialDownload(torrent.getDaemon());
+		MenuItem seqMenuItem = detailsMenu.getMenu().findItem(R.id.action_toggle_sequential);
+                seqMenuItem.setVisible(sequentialdl);
+                seqMenuItem.setChecked(torrent.isSequentiallyDownloading());
+		boolean firstlastpiecedl = Daemon.supportsFirstLastPiece(torrent.getDaemon());
+		MenuItem flpMenuItem = detailsMenu.getMenu().findItem(R.id.action_toggle_firstlastpiece);
+                flpMenuItem.setVisible(firstlastpiecedl);
+                flpMenuItem.setChecked(torrent.isDownloadingFirstLastPieceFirst());
+                detailsMenu.getMenu().findItem(R.id.action_download_mode).setVisible(!torrent.isFinished() && (firstlastpiecedl || sequentialdl));
 		boolean setTrackers = Daemon.supportsSetTrackers(torrent.getDaemon());
 		detailsMenu.getMenu().findItem(R.id.action_updatetrackers).setVisible(setTrackers);
 		boolean setLocation = Daemon.supportsSetDownloadLocation(torrent.getDaemon());
@@ -419,6 +434,18 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		if (currentLabels != null) {
 			SetLabelDialog.show(getActivity(), this, currentLabels);
 		}
+	}
+
+	@OptionsItem(R.id.action_toggle_sequential)
+	protected void toggleSequentialDownload(MenuItem menuItem) {
+		if (getTasksExecutor() != null)
+			getTasksExecutor().toggleSequentialDownload(torrent, !menuItem.isChecked());
+	}
+
+	@OptionsItem(R.id.action_toggle_firstlastpiece)
+	protected void toggleFirstLastPieceDownload(MenuItem menuItem) {
+		if (getTasksExecutor() != null)
+			getTasksExecutor().toggleFirstLastPieceDownload(torrent, !menuItem.isChecked());
 	}
 
 	@OptionsItem(R.id.action_forcerecheck)
