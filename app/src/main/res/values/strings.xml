@@ -131,6 +131,7 @@
 	<string name="status_priority_low">Low priority</string>
 	<string name="status_priority_normal">Normal priority</string>
 	<string name="status_priority_high">High priority</string>
+        <string name="status_pieces">PIECES</string>
 	<string name="status_trackers">TRACKERS</string>
 	<string name="status_errors">ERRORS</string>
 	<string name="status_files">FILES</string>

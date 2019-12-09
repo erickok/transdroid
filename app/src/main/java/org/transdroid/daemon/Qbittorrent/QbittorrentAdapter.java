@@ -204,7 +204,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					String mhash = task.getTargetTorrent().getUniqueID();
 					JSONArray messages =
 							new JSONArray(makeRequest(log, (version >= 30200 ? "/query/propertiesTrackers/" : "/json/propertiesTrackers/") + mhash));
-					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, parseJsonTorrentDetails(messages));
+					JSONArray pieces = new JSONArray(makeRequest(log, "/query/getPieceStates/" + mhash));
+					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, parseJsonTorrentDetails(messages, pieces));
 
 				case GetFileList:
 
@@ -451,7 +452,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + proxyFolder + path;
 	}
 
-	private TorrentDetails parseJsonTorrentDetails(JSONArray messages) throws JSONException {
+	private TorrentDetails parseJsonTorrentDetails(JSONArray messages, JSONArray pieceStates) throws JSONException {
 
 		ArrayList<String> trackers = new ArrayList<>();
 		ArrayList<String> errors = new ArrayList<>();
@@ -467,8 +468,15 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			}
 		}
 
+                ArrayList<Integer> pieces = new ArrayList<>();
+                if (pieceStates.length() > 0) {
+		        for (int i = 0; i < pieceStates.length(); i++) {
+                               pieces.add(pieceStates.getInt(i));
+                        }
+                }
+
 		// Return the list
-		return new TorrentDetails(trackers, errors);
+		return new TorrentDetails(trackers, errors, pieces);
 
 	}
 

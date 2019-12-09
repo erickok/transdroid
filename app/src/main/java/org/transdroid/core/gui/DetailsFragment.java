@@ -203,6 +203,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				.updateTrackers(SimpleListItemAdapter.SimpleStringItem.wrapStringsList(newTorrentDetails.getTrackers()));
 		((DetailsAdapter) detailsList.getAdapter())
 				.updateErrors(SimpleListItemAdapter.SimpleStringItem.wrapStringsList(newTorrentDetails.getErrors()));
+		((DetailsAdapter) detailsList.getAdapter())
+				.updatePieces(newTorrentDetails.getPieces());
 	}
 
 	/**

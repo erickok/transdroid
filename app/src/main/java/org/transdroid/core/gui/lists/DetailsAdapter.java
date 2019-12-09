@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.transdroid.R;
 import org.transdroid.core.gui.navigation.*;
+import org.transdroid.core.gui.lists.PiecesMapView;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentFile;
 
@@ -38,6 +39,9 @@ public class DetailsAdapter extends MergeAdapter {
 
 	private ViewHolderAdapter torrentDetailsViewAdapter = null;
 	private TorrentDetailsView torrentDetailsView = null;
+        private ViewHolderAdapter piecesSeparatorAdapter = null;
+	private ViewHolderAdapter piecesMapViewAdapter = null;
+        private PiecesMapView piecesMapView = null;
 	private ViewHolderAdapter trackersSeparatorAdapter = null;
 	private SimpleListItemAdapter trackersAdapter = null;
 	private ViewHolderAdapter errorsSeparatorAdapter = null;
@@ -55,6 +59,18 @@ public class DetailsAdapter extends MergeAdapter {
 		torrentDetailsViewAdapter.setViewEnabled(false);
 		torrentDetailsViewAdapter.setViewVisibility(View.GONE);
 		addAdapter(torrentDetailsViewAdapter);
+
+                // Pieces map
+		piecesSeparatorAdapter = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(
+				context.getString(R.string.status_pieces)));
+		piecesSeparatorAdapter.setViewEnabled(false);
+		piecesSeparatorAdapter.setViewVisibility(View.GONE);
+		addAdapter(piecesSeparatorAdapter);
+                piecesMapView = new PiecesMapView(context);
+		piecesMapViewAdapter = new ViewHolderAdapter(piecesMapView);
+		piecesMapViewAdapter.setViewEnabled(false);
+		piecesMapViewAdapter.setViewVisibility(View.GONE);
+		addAdapter(piecesMapViewAdapter);
 
 		// Tracker errors
 		errorsSeparatorAdapter = new ViewHolderAdapter(FilterSeparatorView_.build(context).setText(
@@ -134,6 +150,22 @@ public class DetailsAdapter extends MergeAdapter {
 		} else {
 			errorsAdapter.update(errors);
 			errorsSeparatorAdapter.setViewVisibility(View.VISIBLE);
+		}
+	}
+
+	public void updatePieces(List<Integer> pieces) {
+		if (pieces == null || pieces.isEmpty()) {
+                        piecesSeparatorAdapter.setViewEnabled(false);
+                        piecesSeparatorAdapter.setViewVisibility(View.GONE);
+                        piecesMapViewAdapter.setViewEnabled(false);
+                        piecesMapViewAdapter.setViewVisibility(View.GONE);
+		} else {
+			piecesMapView.setPieces(pieces);
+
+                        piecesMapViewAdapter.setViewEnabled(true);
+                        piecesMapViewAdapter.setViewVisibility(View.VISIBLE);
+                        piecesSeparatorAdapter.setViewEnabled(true);
+                        piecesSeparatorAdapter.setViewVisibility(View.VISIBLE);
 		}
 	}
 
