@@ -25,6 +25,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -70,7 +72,8 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 	private int version = -1;
-	private int apiVersion = -1;
+	private float apiVersion = -1; // starting from 2.3 old API is dropped so we are going to use float
+	private int http_response_code = -1;
 
 	public QbittorrentAdapter(DaemonSettings settings) {
 		this.settings = settings;
@@ -83,18 +86,40 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 		try {
 
+			// Since 4.2.0, old API is dropped. Fallback to old one if the new one failed for version <4.2.0
 			// The API version is only supported since qBittorrent 3.2, so otherwise we assume version 1
+
 			try {
-				String apiVerText = makeRequest(log, "/version/api");
-				apiVersion = Integer.parseInt(apiVerText.trim());
+				String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion", new BasicNameValuePair("username", settings.getUsername()),
+						new BasicNameValuePair("password", settings.getPassword()));
+				apiVersion = Float.parseFloat(apiVerText.trim());
 			} catch (DaemonException | NumberFormatException e) {
-				apiVersion = 1;
+				if (http_response_code == 403) {
+					try {
+						ensureAuthenticated(log);
+						String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion");
+						apiVersion = Float.parseFloat(apiVerText.trim());
+					} catch (DaemonException | NumberFormatException e2) {
+						apiVersion = (float) 2.3; // assume this is new API since we are forbidden to access API
+					}
+				} else {
+					try {
+						String apiVerText = makeRequest(log, "/version/api");
+						apiVersion = Float.parseFloat(apiVerText.trim());
+					} catch (DaemonException | NumberFormatException e3) {
+						apiVersion = 1;
+					}
+				}
 			}
 			log.d(LOG_NAME, "qBittorrent API version is " + apiVersion);
 
 			// The qBittorent version is only supported since 3.2; for earlier versions we parse the about dialog and parse it
+			// Since 4.2.0, new API version is used instead
 			String versionText = "";
-			if (apiVersion > 1) {
+			if (apiVersion >= (float) 2.3) {
+				ensureAuthenticated(log);
+				versionText = makeRequest(log, "/api/v2/app/version").substring(1);
+			} else if (apiVersion > (float) 1) {
 				// Format is something like 'v3.2.0'
 				versionText = makeRequest(log, "/version/qbittorrent").substring(1);
 			} else {
@@ -108,13 +133,14 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					versionText = about.substring(aboutStart + aboutStartText.length(), aboutEnd);
 				}
 			}
+			log.d(LOG_NAME, "qBittorrent client version is " + versionText);
 
 			// String found: now parse a version like 2.9.7 as a number like 20907 (allowing 10 places for each .)
 			String[] parts = versionText.split("\\.");
 			if (parts.length > 0) {
 				version = Integer.parseInt(parts[0]) * 100 * 100;
 				if (parts.length > 1) {
-					version += Integer.parseInt(parts[1]) * 100;
+					version += Float.parseFloat(parts[1]) * 100;
 					if (parts.length > 2) {
 						// For the last part only read until a non-numeric character is read
 						// For example version 3.0.0-alpha5 is read as version code 30000
@@ -128,8 +154,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 								break;
 							}
 						}
-						version += Integer.parseInt(numbers);
-						return;
+						version += Float.parseFloat(numbers);
 					}
 				}
 			}
@@ -146,7 +171,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		// API changed in 3.2.0, login is now handled by its own request, which provides you a cookie.
 		// If we don't have that cookie, let's try and get it.
 
-		if (apiVersion < 2) {
+		if (apiVersion < (float) 2) {
 			return;
 		}
 
@@ -159,8 +184,13 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			}
 		}
 
-		makeRequest(log, "/login", new BasicNameValuePair("username", settings.getUsername()),
-				new BasicNameValuePair("password", settings.getPassword()));
+		if (apiVersion >= (float) 2.3) {
+			makeRequest(log, "/api/v2/auth/login", new BasicNameValuePair("username", settings.getUsername()),
+					new BasicNameValuePair("password", settings.getPassword()));
+		} else {
+			makeRequest(log, "/login", new BasicNameValuePair("username", settings.getUsername()),
+					new BasicNameValuePair("password", settings.getPassword()));
+		}
 		// The HttpClient will automatically remember the cookie for us, no need to parse it out.
 
 		// However, we would like to see if authentication was successful or not... 
@@ -185,63 +215,113 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 			switch (task.getMethod()) {
 				case Retrieve:
+
+					// Request all torrents from server
 					String path;
-					if (version >= 30200) {
+					if (version >= 40200) {
+						path = "/api/v2/torrents/info";
+					} else if (version >= 30200) {
 						path = "/query/torrents";
 					} else if (version >= 30000) {
-						path = "/json/torrents";
+						path = "/json/torrents";;
 					} else {
 						path = "/json/events";
 					}
 
-					// Request all torrents from server
 					JSONArray result = new JSONArray(makeRequest(log, path));
+
 					return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result), parseJsonLabels(result));
 
 				case GetTorrentDetails:
 
 					// Request tracker and error details for a specific teacher
 					String mhash = task.getTargetTorrent().getUniqueID();
-					JSONArray messages =
-							new JSONArray(makeRequest(log, (version >= 30200 ? "/query/propertiesTrackers/" : "/json/propertiesTrackers/") + mhash));
-					JSONArray pieces = new JSONArray(makeRequest(log, "/query/getPieceStates/" + mhash));
+					JSONArray messages;
+					JSONArray pieces;
+					if (version >= 40200) {
+						messages = new JSONArray(makeRequest(log, "/api/v2/torrents/trackers", new BasicNameValuePair("hash", mhash)));
+						pieces = new JSONArray(makeRequest(log, "/api/v2/torrents/pieceStates",  new BasicNameValuePair("hash", mhash)));
+					} else {
+						messages = new JSONArray(makeRequest(log, "/query/propertiesTrackers/" + mhash));
+						pieces = new JSONArray(makeRequest(log, "/query/getPieceStates/" + mhash));
+					}
+
 					return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, parseJsonTorrentDetails(messages, pieces));
 
 				case GetFileList:
 
 					// Request files listing for a specific torrent
 					String fhash = task.getTargetTorrent().getUniqueID();
-					JSONArray files =
-							new JSONArray(makeRequest(log, (version >= 30200 ? "/query/propertiesFiles/" : "/json/propertiesFiles/") + fhash));
+					JSONArray files;
+					if (version >= 40200) {
+						files = new JSONArray(makeRequest(log, "/api/v2/torrents/files", new BasicNameValuePair("hash", fhash)));
+					} else if (version >= 30200) {
+						files = new JSONArray(makeRequest(log, "/query/propertiesFiles/" + fhash));
+					} else {
+						files = new JSONArray(makeRequest(log, "/json/propertiesFiles/" + fhash));
+					}
+
 					return new GetFileListTaskSuccessResult((GetFileListTask) task, parseJsonFiles(files));
 
 				case AddByFile:
 
 					// Upload a local .torrent file
+					if (version >= 40200) {
+						path = "/api/v2/torrents/add";
+					} else {
+						path = "/command/upload";
+					}
+
 					String ufile = ((AddByFileTask) task).getFile();
-					makeUploadRequest("/command/upload", ufile, log);
+					makeUploadRequest(path, ufile, log);
 					return new DaemonTaskSuccessResult(task);
 
 				case AddByUrl:
 
 					// Request to add a torrent by URL
 					String url = ((AddByUrlTask) task).getUrl();
-					makeRequest(log, "/command/download", new BasicNameValuePair("urls", url));
+					if (version >= 40200) {
+						path = "/api/v2/torrents/add";
+					} else {
+						path = "/command/upload";
+					}
+
+					makeRequest(log, path, new BasicNameValuePair("urls", url));
 					return new DaemonTaskSuccessResult(task);
 
 				case AddByMagnetUrl:
 
 					// Request to add a magnet link by URL
 					String magnet = ((AddByMagnetUrlTask) task).getUrl();
-					makeRequest(log, "/command/download", new BasicNameValuePair("urls", magnet));
+					if (version >= 40200) {
+						path = "/api/v2/torrents/add";
+					} else {
+						path = "/command/download";
+					}
+
+					makeRequest(log, path, new BasicNameValuePair("urls", magnet));
 					return new DaemonTaskSuccessResult(task);
 
 				case Remove:
 
 					// Remove a torrent
 					RemoveTask removeTask = (RemoveTask) task;
-					makeRequest(log, (removeTask.includingData() ? "/command/deletePerm" : "/command/delete"),
-							new BasicNameValuePair("hashes", removeTask.getTargetTorrent().getUniqueID()));
+					if (version >= 40200) {
+						if (removeTask.includingData()) {
+							makeRequest(log, "/api/v2/torrents/delete",
+									new BasicNameValuePair("hashes", removeTask.getTargetTorrent().getUniqueID()),
+									new BasicNameValuePair("deleteFiles", "true"));
+						} else {
+							makeRequest(log, "/api/v2/torrents/delete",
+									new BasicNameValuePair("hashes", removeTask.getTargetTorrent().getUniqueID()),
+									new BasicNameValuePair("deleteFiles", "false"));
+						}
+
+					} else {
+						path = (removeTask.includingData() ? "/command/deletePerm" : "/command/delete");
+						makeRequest(log, path, new BasicNameValuePair("hashes", removeTask.getTargetTorrent().getUniqueID()));
+					}
+
 					return new DaemonTaskSuccessResult(task);
 
 				case Pause:
@@ -253,19 +333,35 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				case PauseAll:
 
 					// Resume all torrents
-					makeRequest(log, "/command/pauseall");
+					if (version >= 40200) {
+						path = "/api/v2/torrents/pause";
+					} else {
+						path = "/command/pauseall";
+					}
+					makeRequest(log, path);
 					return new DaemonTaskSuccessResult(task);
 
 				case Resume:
 
 					// Resume a torrent
-					makeRequest(log, "/command/resume", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
+					if (version >= 40200) {
+						path = "/api/v2/torrents/resume";
+					} else {
+						path = "/command/resume";
+					}
+					makeRequest(log, path, new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
 					return new DaemonTaskSuccessResult(task);
 
 				case ResumeAll:
 
 					// Resume all torrents
-					makeRequest(log, "/command/resumeall");
+					if (version >= 40200) {
+						path = "/api/v2/torrents/resume";
+						makeRequest(log, path, new BasicNameValuePair("hash", "all"));
+					} else {
+						makeRequest(log, "/command/resumeall");
+					}
+
 					return new DaemonTaskSuccessResult(task);
 
 				case SetFilePriorities:
@@ -282,33 +378,59 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					}
 					// We have to make a separate request per file, it seems
 					for (TorrentFile file : setPrio.getForFiles()) {
-						makeRequest(log, "/command/setFilePrio", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()),
+						if (version >= 40200) {
+							path = "/api/v2/torrents/filePrio";
+						} else {
+							path = "/command/setFilePrio";
+						}
+						makeRequest(log, path, new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()),
 								new BasicNameValuePair("id", file.getKey()), new BasicNameValuePair("priority", newPrio));
+
 					}
 					return new DaemonTaskSuccessResult(task);
 
-                                case ForceRecheck:
+				case ForceRecheck:
 
-                                        // Force recheck a torrent
-                                        makeRequest(log, "/command/recheck", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
-                                        return new DaemonTaskSuccessResult(task);
+						// Force recheck a torrent
+					if (version >= 40200) {
+						path = "/api/v2/torrents/recheck";
+					} else {
+						path = "/command/recheck";
+					}
+					makeRequest(log, path, new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
+					return new DaemonTaskSuccessResult(task);
 
-                                case ToggleSequentialDownload:
+				case ToggleSequentialDownload:
 
-                                        // Toggle sequential download mode on a torrent
-                                        makeRequest(log, "/command/toggleSequentialDownload", new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
-                                        return new DaemonTaskSuccessResult(task);
+					// Toggle sequential download mode on a torrent
+					if (version >= 40200) {
+						path = "/api/v2/torrents/toggleSequentialDownload";
+					} else {
+						path = "/command/toggleSequentialDownload";
+					}
+					makeRequest(log, path, new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
+					return new DaemonTaskSuccessResult(task);
 
-                                case ToggleFirstLastPieceDownload:
+				case ToggleFirstLastPieceDownload:
 
-                                        // Set policy for downloading first and last piece first on a torrent
-                                        makeRequest(log, "/command/toggleFirstLastPiecePrio", new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
-                                        return new DaemonTaskSuccessResult(task);
+					// Set policy for downloading first and last piece first on a torrent
+					if (version >= 40200) {
+						path = "/api/v2/torrents/toggleFirstLastPiecePrio";
+					} else {
+						path = "/command/toggleFirstLastPiecePrio";
+					}
+					makeRequest(log, path, new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
+					return new DaemonTaskSuccessResult(task);
 
 				case SetLabel:
 
 					SetLabelTask labelTask = (SetLabelTask) task;
-					makeRequest(log, "/command/setCategory",
+					if (version >= 40200) {
+						path = "/api/v2/torrents/setCategory";
+					} else {
+						path = "/command/setCategory";
+					}
+					makeRequest(log, path,
 							new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()),
 							new BasicNameValuePair("category", labelTask.getNewLabel()));
 					return new DaemonTaskSuccessResult(task);
@@ -316,7 +438,12 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				case SetDownloadLocation:
 
 					SetDownloadLocationTask setLocationTask = (SetDownloadLocationTask) task;
-					makeRequest(log, "/command/setLocation",
+					if (version >= 40200) {
+						path = "/api/v2/torrents/setLocation";
+					} else {
+						path = "/command/setLocation";
+					}
+					makeRequest(log, path,
 							new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()),
 							new BasicNameValuePair("location", setLocationTask.getNewLocation()));
 					return new DaemonTaskSuccessResult(task);
@@ -324,18 +451,33 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				case SetTransferRates:
 
 					// Request to set the maximum transfer rates
+					String pathDL;
+					String pathUL;
 					SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
 					String dl = (ratesTask.getDownloadRate() == null ? "NaN" : Long.toString(ratesTask.getDownloadRate() * 1024));
 					String ul = (ratesTask.getUploadRate() == null ? "NaN" : Long.toString(ratesTask.getUploadRate() * 1024));
 
-					makeRequest(log, "/command/setGlobalDlLimit", new BasicNameValuePair("limit", dl));
-					makeRequest(log, "/command/setGlobalUpLimit", new BasicNameValuePair("limit", ul));
+					if (version >= 40200) {
+						pathDL = "/api/v2/torrents/setDownloadLimit";
+						pathUL = "/api/v2/torrents/setUploadLimit";
+					} else {
+						pathDL = "/command/setGlobalDlLimit";
+						pathUL = "/command/setGlobalUpLimit";
+					}
+
+					makeRequest(log, pathDL, new BasicNameValuePair("limit", dl));
+					makeRequest(log, pathUL, new BasicNameValuePair("limit", ul));
 					return new DaemonTaskSuccessResult(task);
 
 				case GetStats:
 
 					// Refresh alternative download speeds setting
-					JSONObject stats = new JSONObject(makeRequest(log, "/sync/maindata?rid=0"));
+					if (version >= 40200) {
+						path = "/api/v2/sync/maindata?rid=0";
+					} else {
+						path = "/sync/maindata?rid=0";
+					}
+					JSONObject stats = new JSONObject(makeRequest(log, path));
 					JSONObject serverStats = stats.optJSONObject("server_state");
 					boolean alternativeSpeeds = false;
 					if (serverStats != null) {
@@ -346,7 +488,12 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				case SetAlternativeMode:
 
 					// Flip alternative speed mode
-					makeRequest(log, "/command/toggleAlternativeSpeedLimits");
+					if (version >= 40200) {
+						path = "/api/v2/transfer/toggleSpeedLimitsMode";
+					} else {
+						path = "/command/toggleAlternativeSpeedLimits";
+					}
+					makeRequest(log, path);
 					return new DaemonTaskSuccessResult(task);
 
 				default:
@@ -365,7 +512,10 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		try {
 
 			// Setup request using POST
-			HttpPost httppost = new HttpPost(buildWebUIUrl(path));
+			String url_to_request = buildWebUIUrl(path);
+			HttpPost httppost = new HttpPost(url_to_request);
+			log.d(LOG_NAME, "URL to request: "+ url_to_request);
+			
 			List<NameValuePair> nvps = new ArrayList<>();
 			Collections.addAll(nvps, params);
 			httppost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
@@ -376,6 +526,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		}
 
 	}
+
 
 	private String makeUploadRequest(String path, String file, Log log) throws DaemonException {
 
@@ -394,7 +545,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 	}
 
-	private String makeWebRequest(HttpPost httppost, Log log) throws DaemonException {
+	private String makeWebRequest(HttpRequestBase httpmethod, Log log) throws DaemonException {
 
 		try {
 
@@ -404,7 +555,9 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			}
 
 			// Execute
-			HttpResponse response = httpclient.execute(httppost);
+			HttpResponse response = httpclient.execute(httpmethod);
+			http_response_code = response.getStatusLine().getStatusCode();
+			log.d(LOG_NAME, "Response code is: " + http_response_code);
 
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
