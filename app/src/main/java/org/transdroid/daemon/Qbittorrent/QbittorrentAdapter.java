@@ -223,7 +223,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					} else if (version >= 30200) {
 						path = "/query/torrents";
 					} else if (version >= 30000) {
-						path = "/json/torrents";;
+						path = "/json/torrents";
 					} else {
 						path = "/json/events";
 					}
@@ -327,29 +327,34 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 				case Pause:
 
 					// Pause a torrent
-					makeRequest(log, "/command/pause", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
+					if (version >= 40200) {
+						makeRequest(log, "/api/v2/torrents/pause", new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
+					} else {
+						makeRequest(log, "/command/pause", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
+					}
+
 					return new DaemonTaskSuccessResult(task);
 
 				case PauseAll:
 
 					// Resume all torrents
 					if (version >= 40200) {
-						path = "/api/v2/torrents/pause";
+						makeRequest(log, "/api/v2/torrents/pause", new BasicNameValuePair("hashes", "all"));
 					} else {
-						path = "/command/pauseall";
+						makeRequest(log, "/command/pauseall");
 					}
-					makeRequest(log, path);
+
 					return new DaemonTaskSuccessResult(task);
 
 				case Resume:
 
 					// Resume a torrent
 					if (version >= 40200) {
-						path = "/api/v2/torrents/resume";
+						makeRequest(log, "/api/v2/torrents/resume", new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
 					} else {
-						path = "/command/resume";
+						makeRequest(log, "/command/resume", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
 					}
-					makeRequest(log, path, new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
+
 					return new DaemonTaskSuccessResult(task);
 
 				case ResumeAll:
@@ -357,7 +362,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					// Resume all torrents
 					if (version >= 40200) {
 						path = "/api/v2/torrents/resume";
-						makeRequest(log, path, new BasicNameValuePair("hash", "all"));
+						makeRequest(log, path, new BasicNameValuePair("hashes", "all"));
 					} else {
 						makeRequest(log, "/command/resumeall");
 					}
@@ -526,7 +531,6 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		}
 
 	}
-
 
 	private String makeUploadRequest(String path, String file, Log log) throws DaemonException {
 
