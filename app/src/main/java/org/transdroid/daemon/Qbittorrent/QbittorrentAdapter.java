@@ -89,28 +89,39 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			// Since 4.2.0, old API is dropped. Fallback to old one if the new one failed for version <4.2.0
 			// The API version is only supported since qBittorrent 3.2, so otherwise we assume version 1
 
+                        boolean is_v2 = false;
+
+                        // First, try the v2 api version endpoint
 			try {
-				String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion", new BasicNameValuePair("username", settings.getUsername()),
-						new BasicNameValuePair("password", settings.getPassword()));
+				String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion");
 				apiVersion = Float.parseFloat(apiVerText.trim());
-			} catch (DaemonException | NumberFormatException e) {
-				if (http_response_code == 403) {
-					try {
-						ensureAuthenticated(log);
-						String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion");
-						apiVersion = Float.parseFloat(apiVerText.trim());
-					} catch (DaemonException | NumberFormatException e2) {
-						apiVersion = (float) 2.3; // assume this is new API since we are forbidden to access API
-					}
-				} else {
-					try {
-						String apiVerText = makeRequest(log, "/version/api");
-						apiVersion = Float.parseFloat(apiVerText.trim());
-					} catch (DaemonException | NumberFormatException e3) {
-						apiVersion = 1;
-					}
-				}
-			}
+                        } catch (DaemonException | NumberFormatException e) {
+                                is_v2 = http_response_code == 403;
+                        }
+
+                        // Keep trying
+                        if (is_v2) {
+                                // Preemptive assumption, for authentication
+                                apiVersion = (float) 2.3;
+
+                                // Authenticate, and try v2 again
+                                try {
+                                        ensureAuthenticated(log);
+                                        String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion");
+                                        apiVersion = Float.parseFloat(apiVerText.trim());
+                                } catch (DaemonException | NumberFormatException e) {
+                                        apiVersion = (float) 2.3; // assume this is new API since we are forbidden to access API
+                                }
+                        } else {
+                                // Fall back to old api
+                                try {
+                                        String apiVerText = makeRequest(log, "/version/api");
+                                        apiVersion = Float.parseFloat(apiVerText.trim());
+                                } catch (DaemonException | NumberFormatException e) {
+                                        apiVersion = 1;
+                                }
+                        }
+
 			log.d(LOG_NAME, "qBittorrent API version is " + apiVersion);
 
 			// The qBittorent version is only supported since 3.2; for earlier versions we parse the about dialog and parse it
