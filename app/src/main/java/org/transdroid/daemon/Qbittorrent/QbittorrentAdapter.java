@@ -25,8 +25,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -565,7 +563,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 	}
 
-	private String makeWebRequest(HttpRequestBase httpmethod, Log log) throws DaemonException {
+	private String makeWebRequest(HttpPost httppost, Log log) throws DaemonException {
 
 		try {
 
@@ -575,7 +573,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			}
 
 			// Execute
-			HttpResponse response = httpclient.execute(httpmethod);
+			HttpResponse response = httpclient.execute(httppost);
 
                         // Throw exception on 403
                         if (response.getStatusLine().getStatusCode() == 403) {
