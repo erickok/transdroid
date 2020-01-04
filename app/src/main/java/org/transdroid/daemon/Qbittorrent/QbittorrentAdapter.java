@@ -73,7 +73,6 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	private DefaultHttpClient httpclient;
 	private int version = -1;
 	private float apiVersion = -1; // starting from 2.3 old API is dropped so we are going to use float
-	private int http_response_code = -1;
 
 	public QbittorrentAdapter(DaemonSettings settings) {
 		this.settings = settings;
@@ -95,30 +94,36 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			try {
 				String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion");
 				apiVersion = Float.parseFloat(apiVerText.trim());
-                        } catch (DaemonException | NumberFormatException e) {
-                                is_v2 = http_response_code == 403;
+                        } catch (DaemonException e) {
+                                // 403 Forbidden - endpoint exists. Keep trying v2
+                                is_v2 = e.getType() == ExceptionType.AuthenticationFailure;
+                        } catch (NumberFormatException e) {
+                                // Assume endpoint exists and is reachable, set lowest possible version and stop trying
+                                apiVersion = (float) 2.3;
                         }
 
                         // Keep trying
-                        if (is_v2) {
-                                // Preemptive assumption, for authentication
-                                apiVersion = (float) 2.3;
+                        if (apiVersion < 0) {
+                                if (is_v2) {
+                                        // Preemptive assumption, for authentication
+                                        apiVersion = (float) 2.3;
 
-                                // Authenticate, and try v2 again
-                                try {
-                                        ensureAuthenticated(log);
-                                        String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion");
-                                        apiVersion = Float.parseFloat(apiVerText.trim());
-                                } catch (DaemonException | NumberFormatException e) {
-                                        apiVersion = (float) 2.3; // assume this is new API since we are forbidden to access API
-                                }
-                        } else {
-                                // Fall back to old api
-                                try {
-                                        String apiVerText = makeRequest(log, "/version/api");
-                                        apiVersion = Float.parseFloat(apiVerText.trim());
-                                } catch (DaemonException | NumberFormatException e) {
-                                        apiVersion = 1;
+                                        // Authenticate, and try v2 again
+                                        try {
+                                                ensureAuthenticated(log);
+                                                String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion");
+                                                apiVersion = Float.parseFloat(apiVerText.trim());
+                                        } catch (DaemonException | NumberFormatException e) {
+                                                apiVersion = (float) 2.3; // assume this is new API since we are forbidden to access API
+                                        }
+                                } else {
+                                        // Fall back to old api
+                                        try {
+                                                String apiVerText = makeRequest(log, "/version/api");
+                                                apiVersion = Float.parseFloat(apiVerText.trim());
+                                        } catch (DaemonException | NumberFormatException e) {
+                                                apiVersion = 1;
+                                        }
                                 }
                         }
 
@@ -571,8 +576,11 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 			// Execute
 			HttpResponse response = httpclient.execute(httpmethod);
-			http_response_code = response.getStatusLine().getStatusCode();
-			log.d(LOG_NAME, "Response code is: " + http_response_code);
+
+                        // Throw exception on 403
+                        if (response.getStatusLine().getStatusCode() == 403) {
+                                throw new DaemonException(ExceptionType.AuthenticationFailure, "Response code 403");
+                        }
 
 			HttpEntity entity = response.getEntity();
 			if (entity != null) {
@@ -594,7 +602,13 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
 		} catch (Exception e) {
 			log.d(LOG_NAME, "Error: " + e.toString());
-			throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+
+                        if (e instanceof DaemonException) {
+                                throw (DaemonException) e;
+                        }
+                        else {
+			        throw new DaemonException(ExceptionType.ConnectionError, e.toString());
+                        }
 		}
 
 	}
