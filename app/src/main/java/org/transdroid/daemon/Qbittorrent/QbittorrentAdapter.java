@@ -70,7 +70,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 	private DaemonSettings settings;
 	private DefaultHttpClient httpclient;
 	private int version = -1;
-	private float apiVersion = -1; // starting from 2.3 old API is dropped so we are going to use float
+	private int apiVersion = -1;
 
 	public QbittorrentAdapter(DaemonSettings settings) {
 		this.settings = settings;
@@ -87,53 +87,53 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			// The API version is only supported since qBittorrent 3.2, so otherwise we assume version 1
 
                         boolean is_v2 = false;
+                        String apiVersionText = "";
 
                         // First, try the v2 api version endpoint
 			try {
-				String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion");
-				apiVersion = Float.parseFloat(apiVerText.trim());
+				apiVersionText = makeRequest(log, "/api/v2/app/webapiVersion");
                         } catch (DaemonException e) {
                                 // 403 Forbidden - endpoint exists. Keep trying v2
                                 is_v2 = e.getType() == ExceptionType.AuthenticationFailure;
-                        } catch (NumberFormatException e) {
-                                // Assume endpoint exists and is reachable, set lowest possible version and stop trying
-                                apiVersion = (float) 2.3;
                         }
 
                         // Keep trying
                         if (apiVersion < 0) {
                                 if (is_v2) {
                                         // Preemptive assumption, for authentication
-                                        apiVersion = (float) 2.3;
+                                        apiVersion = 20300; //2.3.0
 
                                         // Authenticate, and try v2 again
                                         try {
                                                 ensureAuthenticated(log);
-                                                String apiVerText = makeRequest(log, "/api/v2/app/webapiVersion");
-                                                apiVersion = Float.parseFloat(apiVerText.trim());
-                                        } catch (DaemonException | NumberFormatException e) {
-                                                apiVersion = (float) 2.3; // assume this is new API since we are forbidden to access API
+                                                apiVersionText = makeRequest(log, "/api/v2/app/webapiVersion");
+                                        } catch (DaemonException e) {
+                                                apiVersion = 20300; // assume this is new API 2.3.0 since we are forbidden to access API
                                         }
                                 } else {
                                         // Fall back to old api
                                         try {
-                                                String apiVerText = makeRequest(log, "/version/api");
-                                                apiVersion = Float.parseFloat(apiVerText.trim());
-                                        } catch (DaemonException | NumberFormatException e) {
+                                                apiVersionText = makeRequest(log, "/version/api");
+                                        } catch (DaemonException e) {
                                                 apiVersion = 1;
                                         }
                                 }
                         }
 
+                        if (apiVersion < 0) {
+                                apiVersion = parseVersionNumber(apiVersionText);
+                        }
+
 			log.d(LOG_NAME, "qBittorrent API version is " + apiVersion);
+
 
 			// The qBittorent version is only supported since 3.2; for earlier versions we parse the about dialog and parse it
 			// Since 4.2.0, new API version is used instead
 			String versionText = "";
-			if (apiVersion >= (float) 2.3) {
+			if (apiVersion >= 20300) {
 				ensureAuthenticated(log);
 				versionText = makeRequest(log, "/api/v2/app/version").substring(1);
-			} else if (apiVersion > (float) 1) {
+			} else if (apiVersion > 10000) {
 				// Format is something like 'v3.2.0'
 				versionText = makeRequest(log, "/version/qbittorrent").substring(1);
 			} else {
@@ -149,43 +149,49 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			}
 			log.d(LOG_NAME, "qBittorrent client version is " + versionText);
 
-			// String found: now parse a version like 2.9.7 as a number like 20907 (allowing 10 places for each .)
-			String[] parts = versionText.split("\\.");
-			if (parts.length > 0) {
-				version = Integer.parseInt(parts[0]) * 100 * 100;
-				if (parts.length > 1) {
-					version += Float.parseFloat(parts[1]) * 100;
-					if (parts.length > 2) {
-						// For the last part only read until a non-numeric character is read
-						// For example version 3.0.0-alpha5 is read as version code 30000
-						String numbers = "";
-						for (char c : parts[2].toCharArray()) {
-							if (Character.isDigit(c))
-								// Still a number; add it to the numbers string
-								numbers += Character.toString(c);
-							else {
-								// No longer reading numbers; stop reading
-								break;
-							}
-						}
-						version += Float.parseFloat(numbers);
-					}
-				}
-			}
+                        version = parseVersionNumber(versionText);
 
 		} catch (Exception e) {
 			// Unable to establish version number; assume an old version by setting it to version 1
 			version = 10000;
-			apiVersion = 1;
+			apiVersion = 10000;
 		}
 
 	}
+
+        private int parseVersionNumber(String versionText) {
+                // String found: now parse a version like 2.9.7 as a number like 20907 (allowing 10 places for each .)
+                int version = -1;
+                String[] parts = versionText.split("\\.");
+                if (parts.length > 0) {
+                        version = Integer.parseInt(parts[0]) * 100 * 100;
+                        if (parts.length > 1) {
+                                version += Float.parseFloat(parts[1]) * 100;
+                                if (parts.length > 2) {
+                                        // For the last part only read until a non-numeric character is read
+                                        // For example version 3.0.0-alpha5 is read as version code 30000
+                                        String numbers = "";
+                                        for (char c : parts[2].toCharArray()) {
+                                                if (Character.isDigit(c))
+                                                        // Still a number; add it to the numbers string
+                                                        numbers += Character.toString(c);
+                                                else {
+                                                        // No longer reading numbers; stop reading
+                                                        break;
+                                                }
+                                        }
+                                        version += Float.parseFloat(numbers);
+                                }
+                        }
+                }
+                return version;
+        }
 
 	private synchronized void ensureAuthenticated(Log log) throws DaemonException {
 		// API changed in 3.2.0, login is now handled by its own request, which provides you a cookie.
 		// If we don't have that cookie, let's try and get it.
 
-		if (apiVersion < (float) 2) {
+		if (apiVersion < 20000) {
 			return;
 		}
 
@@ -198,7 +204,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			}
 		}
 
-		if (apiVersion >= (float) 2.3) {
+		if (apiVersion >= 20300) {
 			makeRequest(log, "/api/v2/auth/login", new BasicNameValuePair("username", settings.getUsername()),
 					new BasicNameValuePair("password", settings.getPassword()));
 		} else {
@@ -666,7 +672,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 		Map<String, Label> labels = new HashMap<>();
 		for (int i = 0; i < response.length(); i++) {
 			JSONObject tor = response.getJSONObject(i);
-			if (apiVersion >= 2) {
+			if (apiVersion >= 20000) {
 				String label = tor.optString("category");
 				if (label != null && label.length() > 0) {
 					final Label labelObject = labels.get(label);
@@ -698,7 +704,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			Date completionOn = null;
 			String label = null;
 
-			if (apiVersion >= 2) {
+			if (apiVersion >= 20000) {
 				leechers = new int[2];
 				leechers[0] = tor.getInt("num_leechs");
 				leechers[1] = tor.getInt("num_complete") + tor.getInt("num_incomplete");
@@ -890,7 +896,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			JSONObject file = response.getJSONObject(i);
 
 			long size;
-			if (apiVersion >= 2) {
+			if (apiVersion >= 20000) {
 				size = file.getLong("size");
 			} else {
 				size = parseSize(file.getString("size"));
