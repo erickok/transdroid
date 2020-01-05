@@ -124,9 +124,6 @@ public class QbittorrentAdapter implements IDaemonAdapter {
                                 apiVersion = parseVersionNumber(apiVersionText);
                         }
 
-			log.d(LOG_NAME, "qBittorrent API version is " + apiVersion);
-
-
 			// The qBittorent version is only supported since 3.2; for earlier versions we parse the about dialog and parse it
 			// Since 4.2.0, new API version is used instead
 			String versionText = "";
@@ -147,7 +144,6 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					versionText = about.substring(aboutStart + aboutStartText.length(), aboutEnd);
 				}
 			}
-			log.d(LOG_NAME, "qBittorrent client version is " + versionText);
 
                         version = parseVersionNumber(versionText);
 
@@ -539,7 +535,6 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 			// Setup request using POST
 			String url_to_request = buildWebUIUrl(path);
 			HttpPost httppost = new HttpPost(url_to_request);
-			log.d(LOG_NAME, "URL to request: "+ url_to_request);
 			
 			List<NameValuePair> nvps = new ArrayList<>();
 			Collections.addAll(nvps, params);
