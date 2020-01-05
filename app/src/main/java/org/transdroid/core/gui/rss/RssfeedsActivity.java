@@ -21,6 +21,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -61,12 +67,56 @@ public class RssfeedsActivity extends AppCompatActivity {
 	protected List<RssfeedLoader> loaders;
 
 	// Contained feeds and items fragments
-	@FragmentById(R.id.rssfeeds_fragment)
 	protected RssfeedsFragment fragmentFeeds;
 	@FragmentById(R.id.rssitems_fragment)
 	protected RssitemsFragment fragmentItems;
 	@ViewById
 	protected Toolbar rssfeedsToolbar;
+	@ViewById(R.id.rssfeeds_tabs)
+	protected TabLayout tabLayout;
+	@ViewById(R.id.rssfeeds_pager)
+	protected ViewPager viewPager;
+
+	protected static final int RSS_FEEDS_LOCAL = 0;
+	protected static final int RSS_FEEDS_REMOTE = 1;
+
+	class PagerAdapter extends FragmentPagerAdapter {
+		public PagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public Fragment getItem(int position) {
+			Fragment fragment = null;
+
+			if (position == RSS_FEEDS_LOCAL) {
+				fragment = fragmentFeeds;
+			}
+			else if (position == RSS_FEEDS_REMOTE) {
+				fragment = null;
+			}
+
+			return fragment;
+		}
+
+		@Override
+		public int getCount() {
+			return 2;
+		}
+
+		@Nullable
+		@Override
+		public CharSequence getPageTitle(int position) {
+			switch (position) {
+				case RSS_FEEDS_LOCAL:
+					return getString(R.string.navigation_rss_tabs_local);
+				case RSS_FEEDS_REMOTE:
+					return getString(R.string.navigation_rss_tabs_remote);
+			}
+
+			return super.getPageTitle(position);
+		}
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -82,18 +132,20 @@ public class RssfeedsActivity extends AppCompatActivity {
 		setSupportActionBar(rssfeedsToolbar);
 		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(getString(R.string.rss_feeds)));
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+		fragmentFeeds = RssfeedsFragment_.builder().build();
+		fragmentItems = RssitemsFragment_.builder().build();
+
+		PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+		viewPager.setAdapter(pagerAdapter);
+		tabLayout.setupWithViewPager(viewPager);
+		viewPager.setCurrentItem(0);
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@OptionsItem(android.R.id.home)
 	protected void navigateUp() {
 		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		refreshFeeds();
 	}
 
 	/**

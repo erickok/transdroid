@@ -16,7 +16,7 @@
  */
 package org.transdroid.core.gui.rss;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,6 +75,12 @@ public class RssfeedsFragment extends Fragment {
 	@OptionsItem(R.id.action_settings)
 	protected void openSettings() {
 		MainSettingsActivity_.intent(getActivity()).start();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		this.refreshScreen();
 	}
 
 	@OptionsItem(R.id.action_refresh)

@@ -17,13 +17,13 @@
 package org.transdroid.core.gui.rss;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.ActionMode;
