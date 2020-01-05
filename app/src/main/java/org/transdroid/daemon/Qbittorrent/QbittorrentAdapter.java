@@ -422,7 +422,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 					} else {
 						path = "/command/recheck";
 					}
-					makeRequest(log, path, new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
+					makeRequest(log, path, new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
 					return new DaemonTaskSuccessResult(task);
 
 				case ToggleSequentialDownload:
