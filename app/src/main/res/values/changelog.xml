@@ -17,6 +17,10 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.5.17\n
+- qBittorrent 4.2+ support\n
+- Proper label for checking status\n
+\n
 Transdroid 2.5.16\n
 - Deluge 2 via RPC support\n
 - Fix Transmission with digest auth\n
