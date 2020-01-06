@@ -82,10 +82,11 @@ public class LocalTorrent {
 
 		switch (t.getStatusCode()) {
 		case Waiting:
-		case Checking:
 		case Error:
 			// Not downloading yet
 			return r.getString(R.string.status_waitingtodl, FileSizeConverter.getSize(t.getTotalSize()));
+		case Checking:
+			return r.getString(R.string.status_checking);
 		case Downloading:
 			// Downloading
 			return r.getString(
