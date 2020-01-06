@@ -33,26 +33,43 @@ import android.text.TextUtils;
 
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.enums.SnackbarType;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
+import org.androidannotations.annotations.InstanceState;
+import org.androidannotations.annotations.NonConfigurationInstance;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.RssfeedSetting;
+import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.remoterss.RemoteRssFragment;
+import org.transdroid.core.gui.remoterss.RemoteRssFragment_;
+import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
+import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
+import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.core.rssparser.Channel;
 import org.transdroid.core.rssparser.RssParser;
+import org.transdroid.core.service.ConnectivityHelper;
+import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -64,10 +81,12 @@ public class RssfeedsActivity extends AppCompatActivity {
 	protected Log log;
 	@Bean
 	protected ApplicationSettings applicationSettings;
+
 	protected List<RssfeedLoader> loaders;
 
 	// Contained feeds and items fragments
 	protected RssfeedsFragment fragmentFeeds;
+	protected RemoteRssFragment fragmentRemoteFeeds;
 	@FragmentById(R.id.rssitems_fragment)
 	protected RssitemsFragment fragmentItems;
 	@ViewById
@@ -79,6 +98,17 @@ public class RssfeedsActivity extends AppCompatActivity {
 
 	protected static final int RSS_FEEDS_LOCAL = 0;
 	protected static final int RSS_FEEDS_REMOTE = 1;
+
+	// remote RSS stuff
+	@NonConfigurationInstance
+	protected ArrayList<RemoteRssChannel> feeds;
+	@InstanceState
+	protected int selectedFilter;
+	@NonConfigurationInstance
+	protected ArrayList<RemoteRssItem> recentItems;
+	@Bean
+	protected ConnectivityHelper connectivityHelper;
+
 
 	class PagerAdapter extends FragmentPagerAdapter {
 		public PagerAdapter(FragmentManager fm) {
@@ -93,7 +123,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 				fragment = fragmentFeeds;
 			}
 			else if (position == RSS_FEEDS_REMOTE) {
-				fragment = null;
+				fragment = fragmentRemoteFeeds;
 			}
 
 			return fragment;
@@ -134,7 +164,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		fragmentFeeds = RssfeedsFragment_.builder().build();
-		fragmentItems = RssitemsFragment_.builder().build();
+		fragmentRemoteFeeds = RemoteRssFragment_.builder().build();
 
 		PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
 		viewPager.setAdapter(pagerAdapter);
@@ -180,7 +210,6 @@ public class RssfeedsActivity extends AppCompatActivity {
 			handleRssfeedResult(loader, null, true);
 			log.i(this, "RSS feed " + loader.getSetting().getUrl() + " error: " + e.toString());
 		}
-
 	}
 
 	/**
@@ -250,7 +279,112 @@ public class RssfeedsActivity extends AppCompatActivity {
 					.requiresExternalAuthentication(loader.getSetting().requiresExternalAuthentication()).start();
 
 		}
-
 	}
 
+	protected IDaemonAdapter getCurrentConnection() {
+		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
+		return lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+	}
+
+	public void refreshRemoteFeeds() {
+		// Connect to the last used server
+		IDaemonAdapter currentConnection = this.getCurrentConnection();
+
+		// remote rss not supported for this connection type
+		if (currentConnection instanceof RemoteRssSupplier == false) {
+			return;
+		}
+
+		try {
+			feeds = ((RemoteRssSupplier) (currentConnection)).getRemoteRssChannels(log);
+
+			// loadFeeds() in background
+			recentItems = new ArrayList<>();
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.MONTH, -1);
+			Date oneMonthAgo = calendar.getTime();
+
+			for (RemoteRssChannel feed : feeds) {
+				for (RemoteRssItem item : feed.getItems()) {
+					if (item.getTimestamp().after(oneMonthAgo)) {
+						recentItems.add(item);
+					}
+				}
+			}
+
+			// Sort by -newest
+			Collections.sort(recentItems, new Comparator<RemoteRssItem>() {
+				@Override
+				public int compare(RemoteRssItem lhs, RemoteRssItem rhs) {
+					return rhs.getTimestamp().compareTo(lhs.getTimestamp());
+				}
+			});
+		} catch (DaemonException e) {
+			onCommunicationError(e);
+			return;
+		}
+
+//		if (feeds != null) {
+		// Called from a configuration change. No need to load anything from server
+//			showChannelFilters();
+		fragmentRemoteFeeds.updateRemoteItems(
+//				selectedFilter == 0 ? recentItems : feeds.get(selectedFilter).getItems(),
+				recentItems,
+				false /* allow android to restore scroll position */ );
+//		} else {
+//			loadFeeds();
+//		}
+	}
+
+	@UiThread
+	protected void onCommunicationError(DaemonException daemonException) {
+		//noinspection ThrowableResultOfMethodCallIgnored
+		log.i(this, daemonException.toString());
+		String error = getString(LocalTorrent.getResourceForDaemonException(daemonException));
+		SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
+	}
+
+
+//	@ItemClick(R.id.drawer_list)
+	protected void onFeedSelected(int position) {
+		selectedFilter = position;
+		RemoteRssChannel channel = feeds.get(position);
+
+		fragmentRemoteFeeds.updateRemoteItems(position == 0 ? recentItems : channel.getItems(), true);
+
+//		RemoteRssChannel channel = (RemoteRssChannel) drawerList.getAdapter().getItem(position);
+//		getSupportActionBar().setSubtitle(channel.getName());
+
+//		drawerLayout.closeDrawers();
+	}
+
+	/**
+	 * Download the item in a background thread and display success/fail accordingly.
+	 */
+	@Background
+	public void downloadRemoteRssItem(RemoteRssItem item) {
+		final RemoteRssSupplier supplier = (RemoteRssSupplier) this.getCurrentConnection();
+
+		try {
+			RemoteRssChannel channel = feeds.get(selectedFilter);
+			supplier.downloadRemoteRssItem(log, item, channel);
+			onTaskSucceeded(null, getString(R.string.result_added, item.getTitle()));
+		} catch (DaemonException e) {
+			onTaskFailed(getString(LocalTorrent.getResourceForDaemonException(e)));
+		}
+	}
+
+	@UiThread
+	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
+		SnackbarManager.show(Snackbar.with(this).text(successMessage));
+	}
+
+	@UiThread
+	protected void onTaskFailed(String message) {
+		SnackbarManager.show(Snackbar.with(this)
+			.text(message)
+			.colorResource(R.color.red)
+			.type(SnackbarType.MULTI_LINE)
+		);
+	}
 }

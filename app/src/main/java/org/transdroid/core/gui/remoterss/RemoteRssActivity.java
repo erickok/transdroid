@@ -72,24 +72,24 @@ import java.util.List;
  * @author Twig Nguyen
  */
 @EActivity(R.layout.activity_remoterss)
-public class RemoteRssActivity extends AppCompatActivity implements RefreshableActivity {
-	@NonConfigurationInstance
-	protected ArrayList<RemoteRssChannel> feeds;
+public class RemoteRssActivity extends AppCompatActivity {
+//	@NonConfigurationInstance
+//	protected ArrayList<RemoteRssChannel> feeds;
 
-	@InstanceState
-	protected int selectedFilter;
+//	@InstanceState
+//	protected int selectedFilter;
 
-	@NonConfigurationInstance
-	protected ArrayList<RemoteRssItem> recentItems;
+//	@NonConfigurationInstance
+//	protected ArrayList<RemoteRssItem> recentItems;
 
 	// Server connection
 	@Bean
 	protected ApplicationSettings applicationSettings;
 	@Bean
 	protected Log log;
-	@Bean
-	protected ConnectivityHelper connectivityHelper;
-	private IDaemonAdapter currentConnection;
+//	@Bean
+//	protected ConnectivityHelper connectivityHelper;
+//	private IDaemonAdapter currentConnection;
 
 	// Details view components
 	@ViewById
@@ -122,71 +122,71 @@ public class RemoteRssActivity extends AppCompatActivity implements RefreshableA
 		setSupportActionBar(torrentsToolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		// Connect to the last used server
-		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
-		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
-
-		if (feeds != null) {
-			// Called from a configuration change. No need to load anything from server
-			showChannelFilters();
-			fragmentRemoteRss.updateRemoteItems(
-					selectedFilter == 0 ? recentItems : feeds.get(selectedFilter - 1).getItems(),
-					false /* allow android to restore scroll position */ );
-		} else {
-			loadFeeds();
-		}
+//		// Connect to the last used server
+//		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
+//		currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+//
+//		if (feeds != null) {
+//			// Called from a configuration change. No need to load anything from server
+//			showChannelFilters();
+//			fragmentRemoteRss.updateRemoteItems(
+//					selectedFilter == 0 ? recentItems : feeds.get(selectedFilter - 1).getItems(),
+//					false /* allow android to restore scroll position */ );
+//		} else {
+//			loadFeeds();
+//		}
 
 	}
 
-	@Background
-	protected void loadFeeds() {
-		try {
-			fragmentRemoteRss.setRefreshing(true);
-			feeds = ((RemoteRssSupplier) (currentConnection)).getRemoteRssChannels(log);
-			fragmentRemoteRss.setRefreshing(false);
-		} catch (DaemonException e) {
-			onCommunicationError(e);
-		}
+//	@Background
+//	protected void loadFeeds() {
+//		try {
+//			fragmentRemoteRss.setRefreshing(true);
+//			feeds = ((RemoteRssSupplier) (currentConnection)).getRemoteRssChannels(log);
+//			fragmentRemoteRss.setRefreshing(false);
+//		} catch (DaemonException e) {
+//			onCommunicationError(e);
+//		}
+//
+//		recentItems = new ArrayList<>();
+//		Calendar calendar = Calendar.getInstance();
+//		calendar.add(Calendar.MONTH, -1);
+//		Date oneMonthAgo = calendar.getTime();
+//
+//		for (RemoteRssChannel feed : feeds) {
+//			for (RemoteRssItem item : feed.getItems()) {
+//				if (item.getTimestamp().after(oneMonthAgo)) {
+//					recentItems.add(item);
+//				}
+//			}
+//		}
+//		// Sort by -newest
+//		Collections.sort(recentItems, new Comparator<RemoteRssItem>() {
+//			@Override
+//			public int compare(RemoteRssItem lhs, RemoteRssItem rhs) {
+//				return rhs.getTimestamp().compareTo(lhs.getTimestamp());
+//			}
+//		});
+//
+//		afterLoadFeeds();
+//	}
 
-		recentItems = new ArrayList<>();
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MONTH, -1);
-		Date oneMonthAgo = calendar.getTime();
+//	@UiThread
+//	protected void afterLoadFeeds() {
+//		// We need to wrap these calls in a @UiThread rather than make them each a @UiThread themselves
+//		// because they need to run sequentially in a configuration change scenario in order for Android
+//		// to maintain scroll position on the fragment adapter.
+//		showChannelFilters();
+//		onFeedSelected(selectedFilter);
+//	}
 
-		for (RemoteRssChannel feed : feeds) {
-			for (RemoteRssItem item : feed.getItems()) {
-				if (item.getTimestamp().after(oneMonthAgo)) {
-					recentItems.add(item);
-				}
-			}
-		}
-		// Sort by -newest
-		Collections.sort(recentItems, new Comparator<RemoteRssItem>() {
-			@Override
-			public int compare(RemoteRssItem lhs, RemoteRssItem rhs) {
-				return rhs.getTimestamp().compareTo(lhs.getTimestamp());
-			}
-		});
-
-		afterLoadFeeds();
-	}
-
-	@UiThread
-	protected void afterLoadFeeds() {
-		// We need to wrap these calls in a @UiThread rather than make them each a @UiThread themselves
-		// because they need to run sequentially in a configuration change scenario in order for Android
-		// to maintain scroll position on the fragment adapter.
-		showChannelFilters();
-		onFeedSelected(selectedFilter);
-	}
-
-	@UiThread
-	protected void onCommunicationError(DaemonException daemonException) {
-		//noinspection ThrowableResultOfMethodCallIgnored
-		log.i(this, daemonException.toString());
-		String error = getString(LocalTorrent.getResourceForDaemonException(daemonException));
-		SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
-	}
+//	@UiThread
+//	protected void onCommunicationError(DaemonException daemonException) {
+//		//noinspection ThrowableResultOfMethodCallIgnored
+//		log.i(this, daemonException.toString());
+//		String error = getString(LocalTorrent.getResourceForDaemonException(daemonException));
+//		SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
+//	}
 
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -208,49 +208,49 @@ public class RemoteRssActivity extends AppCompatActivity implements RefreshableA
 		}
 	}
 
-		private void showChannelFilters() {
-		List<RemoteRssChannel> feedLabels = new ArrayList<>(feeds.size() +1);
-		feedLabels.add(new RemoteRssChannel() {
-			@Override
-			public String getName() {
-				return getString(R.string.remoterss_filter_allrecent);
-			}
-
-			@Override
-			public void writeToParcel(Parcel dest, int flags) {
-			}
-		});
-		feedLabels.addAll(feeds);
-
-		drawerList.setAdapter(new SimpleListItemAdapter(this, feedLabels));
+	private void showChannelFilters() {
+//		List<RemoteRssChannel> feedLabels = new ArrayList<>(feeds.size() +1);
+//		feedLabels.add(new RemoteRssChannel() {
+//			@Override
+//			public String getName() {
+//				return getString(R.string.remoterss_filter_allrecent);
+//			}
+//
+//			@Override
+//			public void writeToParcel(Parcel dest, int flags) {
+//			}
+//		});
+//		feedLabels.addAll(feeds);
+//
+//		drawerList.setAdapter(new SimpleListItemAdapter(this, feedLabels));
 	}
 
-	@ItemClick(R.id.drawer_list)
-	protected void onFeedSelected(int position) {
-		selectedFilter = position;
-		fragmentRemoteRss.updateRemoteItems(position == 0 ? recentItems : feeds.get(position - 1).getItems(), true);
+//	@ItemClick(R.id.drawer_list)
+//	protected void onFeedSelected(int position) {
+//		selectedFilter = position;
+//		fragmentRemoteRss.updateRemoteItems(position == 0 ? recentItems : feeds.get(position - 1).getItems(), true);
+//
+//		RemoteRssChannel channel = (RemoteRssChannel) drawerList.getAdapter().getItem(position);
+//		getSupportActionBar().setSubtitle(channel.getName());
+//
+//		drawerLayout.closeDrawers();
+//	}
 
-		RemoteRssChannel channel = (RemoteRssChannel) drawerList.getAdapter().getItem(position);
-		getSupportActionBar().setSubtitle(channel.getName());
+//	public IDaemonAdapter getCurrentConnection() {
+//		return currentConnection;
+//	}
 
-		drawerLayout.closeDrawers();
-	}
+//	public RemoteRssChannel getChannel(String name) {
+//		for (RemoteRssChannel feed : feeds) {
+//			if (feed.getName().equals(name)) {
+//				return feed;
+//			}
+//		}
+//		return null;
+//	}
 
-	public IDaemonAdapter getCurrentConnection() {
-		return currentConnection;
-	}
-
-	public RemoteRssChannel getChannel(String name) {
-		for (RemoteRssChannel feed : feeds) {
-			if (feed.getName().equals(name)) {
-				return feed;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public void refreshScreen() {
-		loadFeeds();
-	}
+//	@Override
+//	public void refreshScreen() {
+//		loadFeeds();
+//	}
 }

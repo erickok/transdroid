@@ -17,7 +17,7 @@
 package org.transdroid.core.gui.remoterss;
 
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.ActionMenuView;
 import android.view.View;
@@ -41,6 +41,7 @@ import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
+import org.transdroid.core.gui.rss.RssfeedsActivity;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 
@@ -65,8 +66,6 @@ public class RemoteRssFragment extends Fragment {
 	protected View detailsContainer;
 	@ViewById(R.id.contextual_menu)
 	protected ActionMenuView contextualMenu;
-	@ViewById
-	protected SwipeRefreshLayout swipeRefreshLayout;
 	@ViewById
 	protected ListView torrentsList;
 	@ViewById
@@ -94,16 +93,12 @@ public class RemoteRssFragment extends Fragment {
 		adapter = new RemoteRssItemsAdapter(getActivity());
 		torrentsList.setAdapter(adapter);
 		torrentsList.setFastScrollEnabled(true);
+	}
 
-		// Allow pulls on the list view to refresh the torrents
-		if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
-			swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-				@Override
-				public void onRefresh() {
-					((RefreshableActivity) getActivity()).refreshScreen();
-				}
-			});
-		}
+	@Override
+	public void onResume() {
+		super.onResume();
+		((RssfeedsActivity) getActivity()).refreshRemoteFeeds();
 	}
 
 	/**
@@ -123,12 +118,6 @@ public class RemoteRssFragment extends Fragment {
 			remoterssStatusMessage.setVisibility(View.VISIBLE);
 			remoterssStatusMessage.setText(R.string.remoterss_no_files);
 		}
-		swipeRefreshLayout.setRefreshing(false);
-	}
-
-	@UiThread
-	public void setRefreshing(boolean refreshing) {
-		swipeRefreshLayout.setRefreshing(refreshing);
 	}
 
 	/**
@@ -137,36 +126,38 @@ public class RemoteRssFragment extends Fragment {
 	@ItemClick(resName = "torrents_list")
 	protected void detailsListClicked(int position) {
 		RemoteRssItem item = (RemoteRssItem) adapter.getItem(position);
-		downloadRemoteRssItem(item);
+//		downloadRemoteRssItem(item);
+
+		((RssfeedsActivity) getActivity()).downloadRemoteRssItem(item);
 	}
 
-	/**
-	 * Download the item in a background thread and display success/fail accordingly.
-	 */
-	@Background
-	protected void downloadRemoteRssItem(RemoteRssItem item) {
-		final RemoteRssActivity activity = (RemoteRssActivity) getActivity();
-		final RemoteRssSupplier supplier = (RemoteRssSupplier) activity.getCurrentConnection();
-
-		try {
-			supplier.downloadRemoteRssItem(log, item, activity.getChannel(item.getSourceName()));
-			onTaskSucceeded(null, getString(R.string.result_added, item.getTitle()));
-		} catch (DaemonException e) {
-			onTaskFailed(getString(LocalTorrent.getResourceForDaemonException(e)));
-		}
-	}
-
-	@UiThread
-	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
-		SnackbarManager.show(Snackbar.with(getActivity()).text(successMessage));
-	}
-
-	@UiThread
-	protected void onTaskFailed(String message) {
-		SnackbarManager.show(Snackbar.with(getActivity())
-				.text(message)
-				.colorResource(R.color.red)
-				.type(SnackbarType.MULTI_LINE)
-		);
-	}
+//	/**
+//	 * Download the item in a background thread and display success/fail accordingly.
+//	 */
+//	@Background
+//	protected void downloadRemoteRssItem(RemoteRssItem item) {
+//		final RemoteRssActivity activity = (RemoteRssActivity) getActivity();
+//		final RemoteRssSupplier supplier = (RemoteRssSupplier) activity.getCurrentConnection();
+//
+//		try {
+//			supplier.downloadRemoteRssItem(log, item, activity.getChannel(item.getSourceName()));
+//			onTaskSucceeded(null, getString(R.string.result_added, item.getTitle()));
+//		} catch (DaemonException e) {
+//			onTaskFailed(getString(LocalTorrent.getResourceForDaemonException(e)));
+//		}
+//	}
+//
+//	@UiThread
+//	protected void onTaskSucceeded(DaemonTaskSuccessResult result, String successMessage) {
+//		SnackbarManager.show(Snackbar.with(getActivity()).text(successMessage));
+//	}
+//
+//	@UiThread
+//	protected void onTaskFailed(String message) {
+//		SnackbarManager.show(Snackbar.with(getActivity())
+//				.text(message)
+//				.colorResource(R.color.red)
+//				.type(SnackbarType.MULTI_LINE)
+//		);
+//	}
 }
