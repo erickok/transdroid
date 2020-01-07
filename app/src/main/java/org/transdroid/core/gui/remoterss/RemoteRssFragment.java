@@ -62,7 +62,7 @@ public class RemoteRssFragment extends Fragment {
 	@ViewById
 	protected TextView remoterssStatusMessage;
 
-	protected RemoteRssItemsAdapter adapter;
+//	protected RemoteRssItemsAdapter adapter;
 
 	@AfterViews
 	protected void init() {
@@ -70,7 +70,7 @@ public class RemoteRssFragment extends Fragment {
 		setHasOptionsMenu(true);
 
 		// Set up details adapter
-		adapter = new RemoteRssItemsAdapter(getActivity());
+		RemoteRssItemsAdapter adapter = new RemoteRssItemsAdapter(getActivity());
 		torrentsList.setAdapter(adapter);
 		torrentsList.setFastScrollEnabled(true);
 	}
@@ -85,8 +85,11 @@ public class RemoteRssFragment extends Fragment {
 	 * Updates the UI with a new list of RSS items.
 	 */
 	public void updateRemoteItems(List<RemoteRssItem> remoteItems, boolean scrollToTop) {
+		RemoteRssItemsAdapter adapter = (RemoteRssItemsAdapter) torrentsList.getAdapter();
+
 		remoteRssItems = new ArrayList<>(remoteItems);
 		adapter.updateItems(remoteRssItems);
+
 		if (scrollToTop) {
 			torrentsList.smoothScrollToPosition(0);
 		}
@@ -109,6 +112,7 @@ public class RemoteRssFragment extends Fragment {
 	 */
 	@ItemClick(resName = "torrents_list")
 	protected void detailsListClicked(int position) {
+		RemoteRssItemsAdapter adapter = (RemoteRssItemsAdapter) torrentsList.getAdapter();
 		RemoteRssItem item = (RemoteRssItem) adapter.getItem(position);
 
 		((RssfeedsActivity) getActivity()).downloadRemoteRssItem(item);

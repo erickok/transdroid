@@ -83,11 +83,10 @@ public class RssfeedsActivity extends AppCompatActivity {
 	@Bean
 	protected ApplicationSettings applicationSettings;
 
-	protected List<RssfeedLoader> loaders;
-
 	// Contained feeds and items fragments
 	protected RssfeedsFragment fragmentFeeds;
 	protected RemoteRssFragment fragmentRemoteFeeds;
+
 	@FragmentById(R.id.rssitems_fragment)
 	protected RssitemsFragment fragmentItems;
 	@ViewById
@@ -183,7 +182,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 	 * Reload the RSS feed settings and start loading all the feeds. To be called from contained fragments.
 	 */
 	public void refreshFeeds() {
-		loaders = new ArrayList<>();
+		List<RssfeedLoader> loaders = new ArrayList<>();
 		// For each RSS feed setting the user created, start a loader that retrieved the RSS feed (via a background
 		// thread) and, on success, determines the new items in the feed
 		for (RssfeedSetting setting : applicationSettings.getRssfeedSettings()) {
