@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -324,16 +325,10 @@ public class RssfeedsActivity extends AppCompatActivity {
 			return;
 		}
 
-//		if (feeds != null) {
-		// Called from a configuration change. No need to load anything from server
-//			showChannelFilters();
 		fragmentRemoteFeeds.updateRemoteItems(
-//				selectedFilter == 0 ? recentItems : feeds.get(selectedFilter).getItems(),
-				recentItems,
+				selectedFilter == 0 ? recentItems : feeds.get(selectedFilter -1).getItems(),
 				false /* allow android to restore scroll position */ );
-//		} else {
-//			loadFeeds();
-//		}
+		showRemoteChannelFilters();
 	}
 
 	@UiThread
@@ -345,17 +340,19 @@ public class RssfeedsActivity extends AppCompatActivity {
 	}
 
 
-//	@ItemClick(R.id.drawer_list)
-	protected void onFeedSelected(int position) {
+	public void onFeedSelected(int position) {
 		selectedFilter = position;
-		RemoteRssChannel channel = feeds.get(position);
 
-		fragmentRemoteFeeds.updateRemoteItems(position == 0 ? recentItems : channel.getItems(), true);
+		if (position == 0) {
+			fragmentRemoteFeeds.updateRemoteItems(recentItems, true);
+		}
+		else {
+			RemoteRssChannel channel = feeds.get(selectedFilter -1);
+			fragmentRemoteFeeds.updateRemoteItems(channel.getItems(), true);
+		}
 
 //		RemoteRssChannel channel = (RemoteRssChannel) drawerList.getAdapter().getItem(position);
 //		getSupportActionBar().setSubtitle(channel.getName());
-
-//		drawerLayout.closeDrawers();
 	}
 
 	/**
@@ -386,5 +383,22 @@ public class RssfeedsActivity extends AppCompatActivity {
 			.colorResource(R.color.red)
 			.type(SnackbarType.MULTI_LINE)
 		);
+	}
+
+	private void showRemoteChannelFilters() {
+		List<RemoteRssChannel> feedLabels = new ArrayList<>(feeds.size() +1);
+		feedLabels.add(new RemoteRssChannel() {
+			@Override
+			public String getName() {
+				return getString(R.string.remoterss_filter_allrecent);
+			}
+
+			@Override
+			public void writeToParcel(Parcel dest, int flags) {
+			}
+		});
+		feedLabels.addAll(feeds);
+
+		fragmentRemoteFeeds.updateChannelFilters(feedLabels);
 	}
 }

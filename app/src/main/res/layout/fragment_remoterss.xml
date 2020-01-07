@@ -15,10 +15,18 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/remoterss_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dialog" />
 
         <TextView
             android:layout_width="match_parent"
@@ -33,5 +41,5 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             tools:listitem="@layout/list_item_remoterssitem"
-            tools:visibility="visible"/>
-</FrameLayout>
+            tools:visibility="visible" />
+</LinearLayout>
