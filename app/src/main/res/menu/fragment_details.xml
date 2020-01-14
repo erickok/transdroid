@@ -47,19 +47,36 @@
 	<item
 		android:id="@+id/action_start_direct"
 		android:icon="@drawable/ic_action_start"
-		android:orderInCategory="202"
+		android:orderInCategory="203"
 		android:title="@string/action_start"
 		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_stop"
 		android:icon="@drawable/ic_action_stop"
-		android:orderInCategory="203"
+		android:orderInCategory="204"
 		android:title="@string/action_stop"
 		app:showAsAction="always" />
 	<item
+		android:id="@+id/action_download_mode"
+		android:icon="@drawable/ic_action_download"
+		android:orderInCategory="205"
+		android:title="@string/action_download_mode"
+		app:showAsAction="always" >
+                <menu>
+			<item
+				android:id="@+id/action_toggle_sequential"
+				android:title="@string/action_toggle_sequential"
+                                android:checkable="true" />
+			<item
+				android:id="@+id/action_toggle_firstlastpiece"
+				android:title="@string/action_toggle_firstlastpiece"
+                                android:checkable="true" />
+                </menu>
+        </item>
+	<item
 		android:id="@+id/action_remove"
 		android:icon="@drawable/ic_action_remove"
-		android:orderInCategory="204"
+		android:orderInCategory="206"
 		android:title="@string/action_remove"
 		app:showAsAction="always">
 		<menu>
@@ -74,25 +91,25 @@
 	<item
 		android:id="@+id/action_setlabel"
 		android:icon="@drawable/ic_action_labels"
-		android:orderInCategory="205"
+		android:orderInCategory="207"
 		android:title="@string/action_setlabel"
 		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_forcerecheck"
 		android:icon="@drawable/ic_action_force_recheck"
-		android:orderInCategory="206"
+		android:orderInCategory="208"
 		android:title="@string/action_forcerecheck"
 		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_updatetrackers"
 		android:icon="@drawable/ic_action_trackers"
-		android:orderInCategory="207"
+		android:orderInCategory="209"
 		android:title="@string/action_updatetrackers"
 		app:showAsAction="always" />
 	<item
 		android:id="@+id/action_changelocation"
 		android:icon="@drawable/ic_action_save"
-		android:orderInCategory="208"
+		android:orderInCategory="210"
 		android:title="@string/action_changelocation"
 		app:showAsAction="always" />
 

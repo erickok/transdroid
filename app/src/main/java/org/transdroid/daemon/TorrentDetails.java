@@ -18,6 +18,7 @@
 package org.transdroid.daemon;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -32,15 +33,29 @@ public final class TorrentDetails implements Parcelable {
 
 	private final List<String> trackers;
 	private final List<String> errors;
+	private final List<Integer> pieces;
 
 	public TorrentDetails(List<String> trackers, List<String> errors) {
 		this.trackers = trackers;
 		this.errors = errors;
+		this.pieces = null;
+	}
+
+	public TorrentDetails(List<String> trackers, List<String> errors, List<Integer> pieces) {
+		this.trackers = trackers;
+		this.errors = errors;
+		this.pieces = pieces;
 	}
 
 	private TorrentDetails(Parcel in) {
 		this.trackers = in.createStringArrayList();
 		this.errors = in.createStringArrayList();
+
+		int[] piecesarray = in.createIntArray();
+                this.pieces = new ArrayList<Integer>(piecesarray.length);
+                for (int i : piecesarray) {
+                    this.pieces.add(i);
+                }
 	}
 	
 	public List<String> getTrackers() {
@@ -77,6 +92,10 @@ public final class TorrentDetails implements Parcelable {
 		return errorsText;
 	}
 
+        public  List<Integer> getPieces() {
+                return this.pieces;
+        }
+
     public static final Parcelable.Creator<TorrentDetails> CREATOR = new Parcelable.Creator<TorrentDetails>() {
     	public TorrentDetails createFromParcel(Parcel in) {
     		return new TorrentDetails(in);
@@ -96,6 +115,14 @@ public final class TorrentDetails implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeStringList(trackers);
 		dest.writeStringList(errors);
+
+		int[] piecesarray = new int[this.pieces.size()];
+                for(int i = 0; i < this.pieces.size(); i++) {
+                        if (this.pieces.get(i) != null) {
+                                piecesarray[i] = this.pieces.get(i);
+                        }
+                }
+                dest.writeIntArray(piecesarray);
 	}
 
 }

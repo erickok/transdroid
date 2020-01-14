@@ -103,6 +103,8 @@ import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
+import org.transdroid.daemon.task.ToggleSequentialDownloadTask;
+import org.transdroid.daemon.task.ToggleFirstLastPieceDownloadTask;
 import org.transdroid.daemon.task.ForceRecheckTask;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
@@ -1220,6 +1222,30 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 		if (result instanceof DaemonTaskSuccessResult) {
 			onTaskSucceeded((DaemonTaskSuccessResult) result,
 					newLabel == null ? getString(R.string.result_labelremoved) : getString(R.string.result_labelset, newLabel));
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result, false);
+		}
+	}
+
+	@Background
+	@Override
+	public void toggleSequentialDownload(Torrent torrent, boolean sequentialState) {
+		torrent.mimicSequentialDownload(sequentialState);
+		DaemonTaskResult result = ToggleSequentialDownloadTask.create(currentConnection, torrent).execute(log);
+		if (result instanceof DaemonTaskSuccessResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_togglesequential));
+		} else {
+			onCommunicationError((DaemonTaskFailureResult) result, false);
+		}
+	}
+
+	@Background
+	@Override
+	public void toggleFirstLastPieceDownload(Torrent torrent, boolean firstLastPieceState) {
+		torrent.mimicFirstLastPieceDownload(firstLastPieceState);
+		DaemonTaskResult result = ToggleFirstLastPieceDownloadTask.create(currentConnection, torrent).execute(log);
+		if (result instanceof DaemonTaskSuccessResult) {
+			onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.action_toggle_firstlastpiece));
 		} else {
 			onCommunicationError((DaemonTaskFailureResult) result, false);
 		}

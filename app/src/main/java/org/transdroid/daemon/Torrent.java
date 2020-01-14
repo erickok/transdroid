@@ -49,6 +49,8 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 	final private float partDone;
 	final private float available;
 	private String label;
+        private boolean sequentialDownload;
+        private boolean firstLastPieceDownload;
 
 	final private Date dateAdded;
 	final private Date dateDone;
@@ -76,6 +78,8 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 		this.partDone = in.readFloat();
 		this.available = in.readFloat();
 		this.label = in.readString();
+                this.sequentialDownload = in.readByte() != 0;
+                this.firstLastPieceDownload = in.readByte() != 0;
 
 		long lDateAdded = in.readLong();
 		this.dateAdded = (lDateAdded == -1) ? null : new Date(lDateAdded);
@@ -109,6 +113,8 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 		this.partDone = partDone;
 		this.available = available;
 		this.label = label;
+                this.sequentialDownload = false;
+                this.firstLastPieceDownload = false;
 
 		this.dateAdded = dateAdded;
 		if (realDateDone != null) {
@@ -196,6 +202,13 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 	public String getLabelName() {
 		return label;
 	}
+
+        public boolean isSequentiallyDownloading() {
+                return sequentialDownload;
+        }
+        public boolean isDownloadingFirstLastPieceFirst() {
+                return firstLastPieceDownload;
+        }
 
 	public Date getDateAdded() {
 		return dateAdded;
@@ -342,6 +355,14 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 		label = newLabel;
 	}
 
+        public void mimicSequentialDownload(boolean sequentialDownload) {
+            this.sequentialDownload = sequentialDownload;
+        }
+
+        public void mimicFirstLastPieceDownload(boolean firstLastPieceDownload) {
+            this.firstLastPieceDownload = firstLastPieceDownload;
+        }
+
 	public void mimicCheckingStatus() {
 		statusCode = TorrentStatus.Checking;
 	}
@@ -399,6 +420,8 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 		dest.writeFloat(partDone);
 		dest.writeFloat(available);
 		dest.writeString(label);
+                dest.writeByte((byte) (sequentialDownload ? 1 : 0));
+                dest.writeByte((byte) (firstLastPieceDownload ? 1 : 0));
 
 		dest.writeLong((dateAdded == null) ? -1 : dateAdded.getTime());
 		dest.writeLong((dateDone == null) ? -1 : dateDone.getTime());
