@@ -31,6 +31,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -63,6 +64,7 @@ import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
 import org.transdroid.core.rssparser.Channel;
 import org.transdroid.core.rssparser.RssParser;
 import org.transdroid.core.service.ConnectivityHelper;
+import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
@@ -111,8 +113,12 @@ public class RssfeedsActivity extends AppCompatActivity {
 
 
 	class PagerAdapter extends FragmentPagerAdapter {
-		public PagerAdapter(FragmentManager fm) {
+		boolean hasRemoteRss = false;
+
+		public PagerAdapter(FragmentManager fm, boolean hasRemoteRss) {
 			super(fm);
+
+			this.hasRemoteRss = hasRemoteRss;
 		}
 
 		@Override
@@ -131,7 +137,11 @@ public class RssfeedsActivity extends AppCompatActivity {
 
 		@Override
 		public int getCount() {
-			return 2;
+			if (this.hasRemoteRss) {
+				return 2;
+			}
+
+			return 1;
 		}
 
 		@Nullable
@@ -163,10 +173,15 @@ public class RssfeedsActivity extends AppCompatActivity {
 		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(getString(R.string.rss_feeds)));
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+		boolean hasRemoteRss = Daemon.supportsRemoteRssManagement(this.getCurrentConnection().getType());
+		PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), hasRemoteRss);
 		viewPager.setAdapter(pagerAdapter);
 		tabLayout.setupWithViewPager(viewPager);
 		viewPager.setCurrentItem(0);
+
+		if (!hasRemoteRss) {
+			tabLayout.setVisibility(View.GONE);
+		}
 	}
 
 	public void onFragmentReady(Fragment fragment) {
@@ -307,6 +322,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 		return lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 	}
 
+//	@Background
 	public void refreshRemoteFeeds() {
 		// Connect to the last used server
 		IDaemonAdapter currentConnection = this.getCurrentConnection();
@@ -319,7 +335,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 		try {
 			feeds = ((RemoteRssSupplier) (currentConnection)).getRemoteRssChannels(log);
 
-			// loadFeeds() in background
+			//  By default it displays the latest items within the last month.
 			recentItems = new ArrayList<>();
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.MONTH, -1);
@@ -345,6 +361,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 			return;
 		}
 
+//		@UIThread
 		if (fragmentRemoteFeeds != null) {
 			fragmentRemoteFeeds.updateRemoteItems(
 				selectedFilter == 0 ? recentItems : feeds.get(selectedFilter -1).getItems(),

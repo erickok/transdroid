@@ -102,8 +102,8 @@
 	<string name="navigation_invertselection">Invert selection</string>
 	<string name="navigation_pickserver">Add torrent to&#8230;</string>
 	<string name="navigation_url_hint" translatable="false">http://…</string>
-	<string name="navigation_rss_tabs_local">RSS feeds</string>
-	<string name="navigation_rss_tabs_remote">Remote feeds</string>
+	<string name="navigation_rss_tabs_local">Transdroid</string>
+	<string name="navigation_rss_tabs_remote">Server</string>
 
 	<string name="status_status">STATUS: %1$s</string>
 	<string name="status_waiting">Waiting to check&#8230;</string>
