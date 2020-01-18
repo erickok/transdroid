@@ -84,7 +84,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 	protected ApplicationSettings applicationSettings;
 
 	// Contained feeds and items fragments
-	protected RssfeedsFragment fragmentFeeds;
+	protected RssfeedsFragment fragmentLocalFeeds;
 	protected RemoteRssFragment fragmentRemoteFeeds;
 
 	@FragmentById(R.id.rssitems_fragment)
@@ -120,10 +120,10 @@ public class RssfeedsActivity extends AppCompatActivity {
 			Fragment fragment = null;
 
 			if (position == RSS_FEEDS_LOCAL) {
-				fragment = fragmentFeeds;
+				fragment = RssfeedsFragment_.builder().build();
 			}
 			else if (position == RSS_FEEDS_REMOTE) {
-				fragment = fragmentRemoteFeeds;
+				fragment = RemoteRssFragment_.builder().build();
 			}
 
 			return fragment;
@@ -163,13 +163,28 @@ public class RssfeedsActivity extends AppCompatActivity {
 		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(getString(R.string.rss_feeds)));
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		fragmentFeeds = RssfeedsFragment_.builder().build();
-		fragmentRemoteFeeds = RemoteRssFragment_.builder().build();
-
 		PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
 		viewPager.setAdapter(pagerAdapter);
 		tabLayout.setupWithViewPager(viewPager);
 		viewPager.setCurrentItem(0);
+	}
+
+	public void onFragmentReady(Fragment fragment) {
+		if (fragment instanceof RssfeedsFragment) {
+			fragmentLocalFeeds = (RssfeedsFragment) fragment;
+		}
+		else if (fragment instanceof RemoteRssFragment) {
+			fragmentRemoteFeeds = (RemoteRssFragment) fragment;
+		}
+	}
+
+	public void onFragmentDestroy(Fragment fragment) {
+		if (fragment instanceof RssfeedsFragment) {
+			fragmentLocalFeeds = null;
+		}
+		else if (fragment instanceof RemoteRssFragment) {
+			fragmentRemoteFeeds = null;
+		}
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -190,7 +205,10 @@ public class RssfeedsActivity extends AppCompatActivity {
 			loaders.add(loader);
 			loadRssfeed(loader);
 		}
-		fragmentFeeds.update(loaders);
+
+		if (fragmentLocalFeeds != null) {
+			fragmentLocalFeeds.update(loaders);
+		}
 	}
 
 	/**
@@ -221,7 +239,10 @@ public class RssfeedsActivity extends AppCompatActivity {
 	@UiThread
 	protected void handleRssfeedResult(RssfeedLoader loader, Channel channel, boolean hasError) {
 		loader.update(channel, hasError);
-		fragmentFeeds.notifyDataSetChanged();
+
+		if (fragmentLocalFeeds != null) {
+			fragmentLocalFeeds.notifyDataSetChanged();
+		}
 	}
 
 	/**
@@ -324,9 +345,11 @@ public class RssfeedsActivity extends AppCompatActivity {
 			return;
 		}
 
-		fragmentRemoteFeeds.updateRemoteItems(
+		if (fragmentRemoteFeeds != null) {
+			fragmentRemoteFeeds.updateRemoteItems(
 				selectedFilter == 0 ? recentItems : feeds.get(selectedFilter -1).getItems(),
 				false /* allow android to restore scroll position */ );
+		}
 		showRemoteChannelFilters();
 	}
 
@@ -398,6 +421,8 @@ public class RssfeedsActivity extends AppCompatActivity {
 		});
 		feedLabels.addAll(feeds);
 
-		fragmentRemoteFeeds.updateChannelFilters(feedLabels);
+		if (fragmentRemoteFeeds != null) {
+			fragmentRemoteFeeds.updateChannelFilters(feedLabels);
+		}
 	}
 }

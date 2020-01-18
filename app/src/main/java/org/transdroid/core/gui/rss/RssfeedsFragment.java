@@ -77,20 +77,32 @@ public class RssfeedsFragment extends Fragment {
 		MainSettingsActivity_.intent(getActivity()).start();
 	}
 
+	protected RssfeedsActivity getRssActivity() {
+		return (RssfeedsActivity) getActivity();
+	}
+
 	@Override
 	public void onResume() {
 		super.onResume();
+		getRssActivity().onFragmentReady(this);
 		this.refreshScreen();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+
+		getRssActivity().onFragmentDestroy(this);
 	}
 
 	@OptionsItem(R.id.action_refresh)
 	protected void refreshScreen() {
-		((RssfeedsActivity) getActivity()).refreshFeeds();
+		getRssActivity().refreshFeeds();
 	}
 
 	@ItemClick(R.id.rssfeeds_list)
 	protected void onFeedClicked(RssfeedLoader loader) {
-		((RssfeedsActivity) getActivity()).openRssfeed(loader, true);
+		getRssActivity().openRssfeed(loader, true);
 	}
 
 	/**

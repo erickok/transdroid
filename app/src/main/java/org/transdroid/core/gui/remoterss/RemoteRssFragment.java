@@ -75,10 +75,23 @@ public class RemoteRssFragment extends Fragment {
 		torrentsList.setFastScrollEnabled(true);
 	}
 
+	protected RssfeedsActivity getRssActivity() {
+		return (RssfeedsActivity) getActivity();
+	}
+
 	@Override
 	public void onResume() {
 		super.onResume();
-		((RssfeedsActivity) getActivity()).refreshRemoteFeeds();
+
+		getRssActivity().onFragmentReady(this);
+		getRssActivity().refreshRemoteFeeds();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+
+		getRssActivity().onFragmentDestroy(this);
 	}
 
 	/**
