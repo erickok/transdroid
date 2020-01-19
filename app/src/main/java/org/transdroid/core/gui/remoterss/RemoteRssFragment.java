@@ -19,6 +19,7 @@ package org.transdroid.core.gui.remoterss;
 
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,7 +31,6 @@ import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ItemSelect;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
@@ -117,7 +117,15 @@ public class RemoteRssFragment extends Fragment {
 	}
 
 	public void updateChannelFilters(List<RemoteRssChannel> feedLabels) {
-		remoterssFilter.setAdapter(new SimpleListItemAdapter(this.getContext(), feedLabels));
+		List<String> labels = new ArrayList<>();
+
+		for (RemoteRssChannel feedLabel : feedLabels) {
+			labels.add(feedLabel.getName());
+		}
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, labels);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		remoterssFilter.setAdapter(adapter);
 	}
 
 	/**
