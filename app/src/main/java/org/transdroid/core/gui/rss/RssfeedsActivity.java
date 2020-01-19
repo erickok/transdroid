@@ -114,11 +114,13 @@ public class RssfeedsActivity extends AppCompatActivity {
 
 	class PagerAdapter extends FragmentPagerAdapter {
 		boolean hasRemoteRss = false;
+		String serverName = "";
 
-		public PagerAdapter(FragmentManager fm, boolean hasRemoteRss) {
+		public PagerAdapter(FragmentManager fm, boolean hasRemoteRss, String name) {
 			super(fm);
 
 			this.hasRemoteRss = hasRemoteRss;
+			this.serverName = (name.length() > 0 ? name : getString(R.string.navigation_rss_tabs_remote));
 		}
 
 		@Override
@@ -151,7 +153,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 				case RSS_FEEDS_LOCAL:
 					return getString(R.string.navigation_rss_tabs_local);
 				case RSS_FEEDS_REMOTE:
-					return getString(R.string.navigation_rss_tabs_remote);
+					return this.serverName;
 			}
 
 			return super.getPageTitle(position);
@@ -173,8 +175,10 @@ public class RssfeedsActivity extends AppCompatActivity {
 		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(getString(R.string.rss_feeds)));
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		boolean hasRemoteRss = Daemon.supportsRemoteRssManagement(this.getCurrentConnection().getType());
-		PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), hasRemoteRss);
+		IDaemonAdapter currentConnection = this.getCurrentConnection();
+		boolean hasRemoteRss = Daemon.supportsRemoteRssManagement(currentConnection.getType());
+
+		PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), hasRemoteRss, currentConnection.getSettings().getName());
 		viewPager.setAdapter(pagerAdapter);
 		tabLayout.setupWithViewPager(viewPager);
 		viewPager.setCurrentItem(0);
