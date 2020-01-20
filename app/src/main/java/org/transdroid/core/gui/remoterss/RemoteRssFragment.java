@@ -29,12 +29,15 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ItemSelect;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 import org.transdroid.core.gui.rss.RssfeedsActivity;
+import org.transdroid.core.gui.settings.MainSettingsActivity_;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +48,7 @@ import java.util.List;
  * @author Twig
  */
 @EFragment(R.layout.fragment_remoterss)
+@OptionsMenu(R.menu.fragment_rssfeeds)
 public class RemoteRssFragment extends Fragment {
 	@Bean
 	protected Log log;
@@ -62,7 +66,6 @@ public class RemoteRssFragment extends Fragment {
 	@ViewById
 	protected TextView remoterssStatusMessage;
 
-//	protected RemoteRssItemsAdapter adapter;
 
 	@AfterViews
 	protected void init() {
@@ -84,7 +87,17 @@ public class RemoteRssFragment extends Fragment {
 		super.onResume();
 
 		getRssActivity().onFragmentReady(this);
+		this.refreshScreen();
+	}
+
+	@OptionsItem(R.id.action_refresh)
+	protected void refreshScreen() {
 		getRssActivity().refreshRemoteFeeds();
+	}
+
+	@OptionsItem(R.id.action_settings)
+	protected void openSettings() {
+		MainSettingsActivity_.intent(getActivity()).start();
 	}
 
 	@Override
