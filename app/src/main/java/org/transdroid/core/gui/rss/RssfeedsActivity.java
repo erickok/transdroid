@@ -393,9 +393,6 @@ public class RssfeedsActivity extends AppCompatActivity {
 			RemoteRssChannel channel = feeds.get(selectedFilter -1);
 			fragmentRemoteFeeds.updateRemoteItems(channel.getItems(), true);
 		}
-
-//		RemoteRssChannel channel = (RemoteRssChannel) drawerList.getAdapter().getItem(position);
-//		getSupportActionBar().setSubtitle(channel.getName());
 	}
 
 	/**
