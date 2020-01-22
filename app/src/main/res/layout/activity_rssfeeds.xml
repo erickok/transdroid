@@ -44,13 +44,34 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"/>
 
-<!--		<fragment-->
-<!--			android:id="@+id/rssfeeds_fragment"-->
-<!--			class="org.transdroid.core.gui.rss.RssfeedsFragment_"-->
-<!--			android:layout_width="match_parent"-->
-<!--			android:layout_height="match_parent"-->
-<!--			android:layout_marginTop="-2dp"-->
-<!--			tools:layout="@layout/fragment_rssfeeds" />-->
+		<LinearLayout
+			android:id="@+id/layout_rssfeeds_local"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:baselineAligned="false"
+			android:orientation="horizontal">
+			<fragment
+				android:id="@+id/rssfeeds_fragment"
+				class="org.transdroid.core.gui.rss.RssfeedsFragment_"
+				android:layout_width="0dip"
+				android:layout_height="match_parent"
+				android:layout_weight="2"
+				tools:layout="@layout/fragment_rssfeeds" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/layout_rss_feeds_remote"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:baselineAligned="false"
+			android:orientation="horizontal">
+			<fragment
+				android:id="@+id/remoterss_fragment"
+				class="org.transdroid.core.gui.remoterss.RemoteRssFragment_"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				tools:layout="@layout/fragment_torrents" />
+		</LinearLayout>
 
 	</android.support.v4.view.ViewPager>
 

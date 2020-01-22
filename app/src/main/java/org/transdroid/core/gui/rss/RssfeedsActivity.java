@@ -22,16 +22,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -57,7 +58,6 @@ import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.remoterss.RemoteRssFragment;
-import org.transdroid.core.gui.remoterss.RemoteRssFragment_;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
 import org.transdroid.core.gui.remoterss.data.RemoteRssSupplier;
@@ -112,38 +112,45 @@ public class RssfeedsActivity extends AppCompatActivity {
 	protected ConnectivityHelper connectivityHelper;
 
 
-	class PagerAdapter extends FragmentPagerAdapter {
-		boolean hasRemoteRss = false;
-		String serverName = "";
+	protected class LayoutPagerAdapter extends PagerAdapter {
+		boolean hasRemoteRss;
+		String serverName;
 
-		public PagerAdapter(FragmentManager fm, boolean hasRemoteRss, String name) {
-			super(fm);
+		public LayoutPagerAdapter(boolean hasRemoteRss, String name) {
+			super();
 
 			this.hasRemoteRss = hasRemoteRss;
 			this.serverName = (name.length() > 0 ? name : getString(R.string.navigation_rss_tabs_remote));
 		}
 
+		@NonNull
 		@Override
-		public Fragment getItem(int position) {
-			Fragment fragment = null;
+		public Object instantiateItem(@NonNull ViewGroup container, int position) {
+			int resId = 0;
 
 			if (position == RSS_FEEDS_LOCAL) {
-				fragment = RssfeedsFragment_.builder().build();
+				resId = R.id.layout_rssfeeds_local;
 			}
 			else if (position == RSS_FEEDS_REMOTE) {
-				fragment = RemoteRssFragment_.builder().build();
+				resId = R.id.layout_rss_feeds_remote;
 			}
 
-			return fragment;
+			return findViewById(resId);
 		}
 
 		@Override
 		public int getCount() {
-			if (this.hasRemoteRss) {
-				return 2;
-			}
+			return (this.hasRemoteRss ? 2 : 1);
+		}
 
-			return 1;
+		@Override
+		public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
+			return (view == o);
+		}
+
+		@Override
+		public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+			container.removeView((View) object);
 		}
 
 		@Nullable
@@ -178,7 +185,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 		IDaemonAdapter currentConnection = this.getCurrentConnection();
 		boolean hasRemoteRss = Daemon.supportsRemoteRssManagement(currentConnection.getType());
 
-		PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), hasRemoteRss, currentConnection.getSettings().getName());
+		PagerAdapter pagerAdapter = new LayoutPagerAdapter(hasRemoteRss, currentConnection.getSettings().getName());
 		viewPager.setAdapter(pagerAdapter);
 		tabLayout.setupWithViewPager(viewPager);
 		viewPager.setCurrentItem(0);
