@@ -250,7 +250,7 @@ public class RssFeedsActivity extends AppCompatActivity {
 	}
 
 	/**
-	 * Opens an RSS feed in the dedicated fragment (if there was space in the UI) or a new {@link RssitemsActivity}. Optionally this also registers in
+	 * Opens an RSS feed in the dedicated fragment (if there was space in the UI) or a new {@link RssItemsActivity}. Optionally this also registers in
 	 * the user preferences that the feed was now viewed, so that in the future the new items can be properly marked.
 	 * @param loader The RSS feed loader (with settings and the loaded content channel) to show
 	 * @param markAsViewedNow True if the user settings should be updated to reflect this feed's last viewed date; false otherwise
@@ -300,7 +300,7 @@ public class RssFeedsActivity extends AppCompatActivity {
 			if (TextUtils.isEmpty(name) && !TextUtils.isEmpty(loader.getSetting().getUrl())) {
 				name = Uri.parse(loader.getSetting().getUrl()).getHost();
 			}
-			RssitemsActivity_.intent(this).rssfeed(loader.getChannel()).rssfeedName(name)
+			RssItemsActivity_.intent(this).rssfeed(loader.getChannel()).rssfeedName(name)
 					.requiresExternalAuthentication(loader.getSetting().requiresExternalAuthentication()).start();
 
 		}
