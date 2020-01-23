@@ -87,12 +87,12 @@ public class RssfeedsActivity extends AppCompatActivity {
 	protected static final int RSS_FEEDS_LOCAL = 0;
 	protected static final int RSS_FEEDS_REMOTE = 1;
 
-	@FragmentById(R.id.remoterss_fragment)
-	protected RemoteRssFragment fragmentRemoteFeeds;
-	@FragmentById(R.id.rssitems_fragment)
-	protected RssitemsFragment fragmentItems;
 	@FragmentById(R.id.rssfeeds_fragment)
 	protected RssfeedsFragment fragmentLocalFeeds;
+	@FragmentById(R.id.rssitems_fragment)
+	protected RssitemsFragment fragmentItems;
+	@FragmentById(R.id.remoterss_fragment)
+	protected RemoteRssFragment fragmentRemoteFeeds;
 
 	@ViewById
 	protected Toolbar rssfeedsToolbar;
@@ -311,7 +311,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 		return lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 	}
 
-//	@Background
+    // @Background
 	public void refreshRemoteFeeds() {
 		// Connect to the last used server
 		IDaemonAdapter currentConnection = this.getCurrentConnection();
@@ -350,7 +350,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 			return;
 		}
 
-//		@UIThread
+		// @UIThread
 		fragmentRemoteFeeds.updateRemoteItems(
 			selectedFilter == 0 ? recentItems : feeds.get(selectedFilter -1).getItems(),
 			false /* allow android to restore scroll position */ );
