@@ -25,7 +25,6 @@ import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -85,21 +84,22 @@ public class RssfeedsActivity extends AppCompatActivity {
 	@Bean
 	protected ApplicationSettings applicationSettings;
 
-	// Contained feeds and items fragments
-	protected RssfeedsFragment fragmentLocalFeeds;
-	protected RemoteRssFragment fragmentRemoteFeeds;
+	protected static final int RSS_FEEDS_LOCAL = 0;
+	protected static final int RSS_FEEDS_REMOTE = 1;
 
+	@FragmentById(R.id.remoterss_fragment)
+	protected RemoteRssFragment fragmentRemoteFeeds;
 	@FragmentById(R.id.rssitems_fragment)
 	protected RssitemsFragment fragmentItems;
+	@FragmentById(R.id.rssfeeds_fragment)
+	protected RssfeedsFragment fragmentLocalFeeds;
+
 	@ViewById
 	protected Toolbar rssfeedsToolbar;
 	@ViewById(R.id.rssfeeds_tabs)
 	protected TabLayout tabLayout;
 	@ViewById(R.id.rssfeeds_pager)
 	protected ViewPager viewPager;
-
-	protected static final int RSS_FEEDS_LOCAL = 0;
-	protected static final int RSS_FEEDS_REMOTE = 1;
 
 	// remote RSS stuff
 	@NonConfigurationInstance
@@ -195,24 +195,6 @@ public class RssfeedsActivity extends AppCompatActivity {
 		}
 	}
 
-	public void onFragmentReady(Fragment fragment) {
-		if (fragment instanceof RssfeedsFragment) {
-			fragmentLocalFeeds = (RssfeedsFragment) fragment;
-		}
-		else if (fragment instanceof RemoteRssFragment) {
-			fragmentRemoteFeeds = (RemoteRssFragment) fragment;
-		}
-	}
-
-	public void onFragmentDestroy(Fragment fragment) {
-		if (fragment instanceof RssfeedsFragment) {
-			fragmentLocalFeeds = null;
-		}
-		else if (fragment instanceof RemoteRssFragment) {
-			fragmentRemoteFeeds = null;
-		}
-	}
-
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@OptionsItem(android.R.id.home)
 	protected void navigateUp() {
@@ -232,9 +214,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 			loadRssfeed(loader);
 		}
 
-		if (fragmentLocalFeeds != null) {
-			fragmentLocalFeeds.update(loaders);
-		}
+		fragmentLocalFeeds.update(loaders);
 	}
 
 	/**
@@ -266,9 +246,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 	protected void handleRssfeedResult(RssfeedLoader loader, Channel channel, boolean hasError) {
 		loader.update(channel, hasError);
 
-		if (fragmentLocalFeeds != null) {
-			fragmentLocalFeeds.notifyDataSetChanged();
-		}
+		fragmentLocalFeeds.notifyDataSetChanged();
 	}
 
 	/**
@@ -373,11 +351,9 @@ public class RssfeedsActivity extends AppCompatActivity {
 		}
 
 //		@UIThread
-		if (fragmentRemoteFeeds != null) {
-			fragmentRemoteFeeds.updateRemoteItems(
-				selectedFilter == 0 ? recentItems : feeds.get(selectedFilter -1).getItems(),
-				false /* allow android to restore scroll position */ );
-		}
+		fragmentRemoteFeeds.updateRemoteItems(
+			selectedFilter == 0 ? recentItems : feeds.get(selectedFilter -1).getItems(),
+			false /* allow android to restore scroll position */ );
 		showRemoteChannelFilters();
 	}
 
@@ -446,8 +422,6 @@ public class RssfeedsActivity extends AppCompatActivity {
 		});
 		feedLabels.addAll(feeds);
 
-		if (fragmentRemoteFeeds != null) {
-			fragmentRemoteFeeds.updateChannelFilters(feedLabels);
-		}
+		fragmentRemoteFeeds.updateChannelFilters(feedLabels);
 	}
 }

@@ -30,7 +30,6 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ItemSelect;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
@@ -48,7 +47,6 @@ import java.util.List;
  * @author Twig
  */
 @EFragment(R.layout.fragment_remoterss)
-@OptionsMenu(R.menu.fragment_rssfeeds)
 public class RemoteRssFragment extends Fragment {
 	@Bean
 	protected Log log;
@@ -85,8 +83,6 @@ public class RemoteRssFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-
-		getRssActivity().onFragmentReady(this);
 		this.refreshScreen();
 	}
 
@@ -98,13 +94,6 @@ public class RemoteRssFragment extends Fragment {
 	@OptionsItem(R.id.action_settings)
 	protected void openSettings() {
 		MainSettingsActivity_.intent(getActivity()).start();
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-
-		getRssActivity().onFragmentDestroy(this);
 	}
 
 	/**

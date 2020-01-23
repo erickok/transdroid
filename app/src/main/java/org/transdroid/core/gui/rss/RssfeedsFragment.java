@@ -84,15 +84,7 @@ public class RssfeedsFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		getRssActivity().onFragmentReady(this);
 		this.refreshScreen();
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-
-		getRssActivity().onFragmentDestroy(this);
 	}
 
 	@OptionsItem(R.id.action_refresh)
