@@ -41,7 +41,7 @@ import java.util.List;
  */
 @EFragment(R.layout.fragment_rssfeeds)
 @OptionsMenu(R.menu.fragment_rssfeeds)
-public class RssfeedsFragment extends Fragment {
+public class RssFeedsFragment extends Fragment {
 
 	// Views
 	@ViewById(R.id.rssfeeds_list)
@@ -77,8 +77,8 @@ public class RssfeedsFragment extends Fragment {
 		MainSettingsActivity_.intent(getActivity()).start();
 	}
 
-	protected RssfeedsActivity getRssActivity() {
-		return (RssfeedsActivity) getActivity();
+	protected RssFeedsActivity getRssActivity() {
+		return (RssFeedsActivity) getActivity();
 	}
 
 	@Override

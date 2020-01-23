@@ -82,7 +82,7 @@ import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.gui.navigation.StatusType;
-import org.transdroid.core.gui.rss.RssfeedsActivity_;
+import org.transdroid.core.gui.rss.RssFeedsActivity_;
 import org.transdroid.core.gui.search.FilePickerHelper;
 import org.transdroid.core.gui.search.UrlEntryDialog;
 import org.transdroid.core.gui.settings.MainSettingsActivity_;
@@ -809,7 +809,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
 	@OptionsItem(R.id.action_rss)
 	protected void openRss() {
-		RssfeedsActivity_.intent(this).start();
+		RssFeedsActivity_.intent(this).start();
 	}
 
 	@OptionsItem(R.id.action_settings)

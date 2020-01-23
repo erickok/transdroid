@@ -60,10 +60,10 @@ import java.util.List;
  * @author Eric Kok
  */
 @EFragment(R.layout.fragment_rssitems)
-public class RssitemsFragment extends Fragment {
+public class RssItemsFragment extends Fragment {
 
 	@InstanceState
-	protected Channel rssfeed = null;
+	protected Channel rssFeed = null;
 	@InstanceState
 	protected boolean hasError = false;
 	@InstanceState
@@ -74,7 +74,7 @@ public class RssitemsFragment extends Fragment {
 
 	// Views
 	@ViewById(R.id.rssitems_list)
-	protected ListView rssitemsList;
+	protected ListView rssItemsList;
 	private MultiChoiceModeListener onItemsSelected = new MultiChoiceModeListener() {
 
 		SelectionManagerMode selectionManagerMode;
@@ -84,7 +84,7 @@ public class RssitemsFragment extends Fragment {
 			// Show contextual action bar to add items in batch mode
 			mode.getMenuInflater().inflate(R.menu.fragment_rssitems_cab, menu);
 			Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
-			selectionManagerMode = new SelectionManagerMode(themedContext, rssitemsList, R.plurals.rss_itemsselected);
+			selectionManagerMode = new SelectionManagerMode(themedContext, rssItemsList, R.plurals.rss_itemsselected);
 			selectionManagerMode.onCreateActionMode(mode, menu);
 			return true;
 		}
@@ -98,9 +98,9 @@ public class RssitemsFragment extends Fragment {
 
 			// Get checked torrents
 			List<Item> checked = new ArrayList<>();
-			for (int i = 0; i < rssitemsList.getCheckedItemPositions().size(); i++) {
-				if (rssitemsList.getCheckedItemPositions().valueAt(i)) {
-					checked.add(rssitemsAdapter.getItem(rssitemsList.getCheckedItemPositions().keyAt(i)));
+			for (int i = 0; i < rssItemsList.getCheckedItemPositions().size(); i++) {
+				if (rssItemsList.getCheckedItemPositions().valueAt(i)) {
+					checked.add(rssitemsAdapter.getItem(rssItemsList.getCheckedItemPositions().keyAt(i)));
 				}
 			}
 
@@ -189,9 +189,9 @@ public class RssitemsFragment extends Fragment {
 	protected void init() {
 
 		// Set up the list adapter, which allows multi-select
-		rssitemsList.setAdapter(rssitemsAdapter);
-		rssitemsList.setMultiChoiceModeListener(onItemsSelected);
-		update(rssfeed, hasError, requiresExternalAuthentication);
+		rssItemsList.setAdapter(rssitemsAdapter);
+		rssItemsList.setMultiChoiceModeListener(onItemsSelected);
+		update(rssFeed, hasError, requiresExternalAuthentication);
 
 	}
 
@@ -204,7 +204,7 @@ public class RssitemsFragment extends Fragment {
 	public void update(Channel channel, boolean hasError, boolean requiresExternalAuthentication) {
 		this.requiresExternalAuthentication = requiresExternalAuthentication;
 		rssitemsAdapter.update(channel);
-		rssitemsList.setVisibility(View.GONE);
+		rssItemsList.setVisibility(View.GONE);
 		emptyText.setVisibility(View.VISIBLE);
 		if (hasError) {
 			emptyText.setText(R.string.rss_error);
@@ -218,7 +218,7 @@ public class RssitemsFragment extends Fragment {
 			emptyText.setText(R.string.rss_empty);
 			return;
 		}
-		rssitemsList.setVisibility(View.VISIBLE);
+		rssItemsList.setVisibility(View.VISIBLE);
 		emptyText.setVisibility(View.INVISIBLE);
 	}
 

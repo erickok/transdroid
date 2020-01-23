@@ -19,7 +19,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".core.gui.rss.RssfeedsActivity_">
+	tools:context=".core.gui.rss.RssFeedsActivity_">
 
 	<android.support.v7.widget.Toolbar
 		android:id="@+id/rssfeeds_toolbar"
@@ -52,7 +52,7 @@
 			android:orientation="horizontal">
 			<fragment
 				android:id="@+id/rssfeeds_fragment"
-				class="org.transdroid.core.gui.rss.RssfeedsFragment_"
+				class="org.transdroid.core.gui.rss.RssFeedsFragment_"
 				android:layout_width="0dip"
 				android:layout_height="match_parent"
 				android:layout_weight="2"

@@ -248,7 +248,7 @@
 
 		<!-- RSS -->
 		<activity
-			android:name="org.transdroid.core.gui.rss.RssfeedsActivity_"
+			android:name="org.transdroid.core.gui.rss.RssFeedsActivity_"
 			android:label="@string/rss_feeds"
 			android:launchMode="singleTop"
 			android:theme="@style/TransdroidTheme" />

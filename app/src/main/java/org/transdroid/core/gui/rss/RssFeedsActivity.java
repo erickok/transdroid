@@ -76,7 +76,7 @@ import java.util.Date;
 import java.util.List;
 
 @EActivity(R.layout.activity_rssfeeds)
-public class RssfeedsActivity extends AppCompatActivity {
+public class RssFeedsActivity extends AppCompatActivity {
 
 	// Settings and local data
 	@Bean
@@ -88,14 +88,14 @@ public class RssfeedsActivity extends AppCompatActivity {
 	protected static final int RSS_FEEDS_REMOTE = 1;
 
 	@FragmentById(R.id.rssfeeds_fragment)
-	protected RssfeedsFragment fragmentLocalFeeds;
+	protected RssFeedsFragment fragmentLocalFeeds;
 	@FragmentById(R.id.rssitems_fragment)
-	protected RssitemsFragment fragmentItems;
+	protected RssItemsFragment fragmentItems;
 	@FragmentById(R.id.remoterss_fragment)
 	protected RemoteRssFragment fragmentRemoteFeeds;
 
-	@ViewById
-	protected Toolbar rssfeedsToolbar;
+	@ViewById(R.id.rssfeeds_toolbar)
+	protected Toolbar rssFeedsToolbar;
 	@ViewById(R.id.rssfeeds_tabs)
 	protected TabLayout tabLayout;
 	@ViewById(R.id.rssfeeds_pager)
@@ -178,7 +178,7 @@ public class RssfeedsActivity extends AppCompatActivity {
 
 	@AfterViews
 	protected void init() {
-		setSupportActionBar(rssfeedsToolbar);
+		setSupportActionBar(rssFeedsToolbar);
 		getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(getString(R.string.rss_feeds)));
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

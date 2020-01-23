@@ -35,7 +35,7 @@ import org.transdroid.R;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
-import org.transdroid.core.gui.rss.RssfeedsActivity;
+import org.transdroid.core.gui.rss.RssFeedsActivity;
 import org.transdroid.core.gui.settings.MainSettingsActivity_;
 
 import java.util.ArrayList;
@@ -57,12 +57,12 @@ public class RemoteRssFragment extends Fragment {
 	// Views
 	@ViewById
 	protected View detailsContainer;
-	@ViewById
-	protected Spinner remoterssFilter;
+	@ViewById(R.id.remoterss_filter)
+	protected Spinner remoteRssFilter;
 	@ViewById
 	protected ListView torrentsList;
-	@ViewById
-	protected TextView remoterssStatusMessage;
+	@ViewById(R.id.remoterss_status_message)
+	protected TextView remoteRssStatusMessage;
 
 
 	@AfterViews
@@ -84,7 +84,7 @@ public class RemoteRssFragment extends Fragment {
 
 	@OptionsItem(R.id.action_refresh)
 	protected void refreshScreen() {
-		RssfeedsActivity rssActivity = (RssfeedsActivity) getActivity();
+		RssFeedsActivity rssActivity = (RssFeedsActivity) getActivity();
 		rssActivity.refreshRemoteFeeds();
 	}
 
@@ -107,11 +107,11 @@ public class RemoteRssFragment extends Fragment {
 		}
 		// Show/hide a nice message if there are no items to show
 		if (remoteRssItems.size() > 0) {
-			remoterssStatusMessage.setVisibility(View.GONE);
+			remoteRssStatusMessage.setVisibility(View.GONE);
 		}
 		else {
-			remoterssStatusMessage.setVisibility(View.VISIBLE);
-			remoterssStatusMessage.setText(R.string.remoterss_no_files);
+			remoteRssStatusMessage.setVisibility(View.VISIBLE);
+			remoteRssStatusMessage.setText(R.string.remoterss_no_files);
 		}
 	}
 
@@ -124,7 +124,7 @@ public class RemoteRssFragment extends Fragment {
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, labels);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		remoterssFilter.setAdapter(adapter);
+		remoteRssFilter.setAdapter(adapter);
 	}
 
 	/**
@@ -135,11 +135,11 @@ public class RemoteRssFragment extends Fragment {
 		RemoteRssItemsAdapter adapter = (RemoteRssItemsAdapter) torrentsList.getAdapter();
 		RemoteRssItem item = (RemoteRssItem) adapter.getItem(position);
 
-		((RssfeedsActivity) getActivity()).downloadRemoteRssItem(item);
+		((RssFeedsActivity) getActivity()).downloadRemoteRssItem(item);
 	}
 
 	@ItemSelect(R.id.remoterss_filter)
 	protected void onFeedSelected(boolean selected, int position) {
-		((RssfeedsActivity) getActivity()).onFeedSelected(position);
+		((RssFeedsActivity) getActivity()).onFeedSelected(position);
 	}
 }
