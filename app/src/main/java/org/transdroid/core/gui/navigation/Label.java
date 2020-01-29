@@ -101,13 +101,17 @@ public class Label implements SimpleListItem, NavigationFilter, Comparable<Label
 		}
 		ArrayList<Label> localLabels = new ArrayList<>();
 		unnamedLabelText = unnamedLabel;
-		localLabels.add(new Label(unnamedLabel, -1, true));
+
 		for (org.transdroid.daemon.Label label : daemonLabels) {
 			if (label != null && !TextUtils.isEmpty(label.getName())) {
 				localLabels.add(new Label(label));
 			}
 		}
 		Collections.sort(localLabels);
+
+		// force unlabelled to be at the top
+		localLabels.add(0, new Label(unnamedLabel, -1, true));
+
 		return localLabels;
 	}
 
