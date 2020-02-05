@@ -18,7 +18,10 @@
 
 <resources>
 
-    <style name="Theme.Transdroid.Dark" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.Transdroid.Auto" parent="Theme.AppCompat.DayNight.NoActionBar">
+		<item name="drawer_background">@color/background_dark</item>
+		<item name="activatable_background">@drawable/activatable_background</item>
+
 		<item name="colorPrimary">@color/green</item>
 		<item name="colorPrimaryDark">@color/green_dark</item>
 		<item name="windowActionModeOverlay">true</item>

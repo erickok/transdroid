@@ -19,7 +19,10 @@
 
 <resources>
 
-    <style name="Theme.Transdroid.Light" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Transdroid.Auto" parent="Theme.AppCompat.DayNight.NoActionBar">
+		<item name="drawer_background">@color/background_light</item>
+		<item name="activatable_background">@drawable/activatable_background</item>
+
 		<item name="colorPrimary">@color/green</item>
 		<item name="colorPrimaryDark">@color/green_dark</item>
 		<item name="colorControlHighlight">@color/green_light</item>
