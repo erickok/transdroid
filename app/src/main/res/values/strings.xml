@@ -347,6 +347,8 @@
 	<string name="pref_dormantasinactive_info">Torrents at 0KB/s (no data transfer) will be filtered as being inactive</string>
 	<string name="pref_checkupdates">Check for updates</string>
 	<string name="pref_checkupdates_info">Check transdroid.org for latest app version</string>
+	<string name="pref_autodarktheme">Auto night mode</string>
+	<string name="pref_autodarktheme_info">Automatically choose between light or dark theme</string>
 	<string name="pref_usedarktheme">Use dark UI theme</string>
 	<string name="pref_usedarktheme_info">Requires a restart to take effect</string>
 	<string name="pref_clearsearch">Clear search history</string>

@@ -59,6 +59,10 @@ public class SystemSettings {
 		return prefs.getBoolean("system_checkupdates", true);
 	}
 
+	public boolean autoDarkTheme() {
+		return prefs.getBoolean("system_autodarktheme", true);
+	}
+
 	public boolean useDarkTheme() {
 		return prefs.getBoolean("system_usedarktheme", false);
 	}

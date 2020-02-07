@@ -30,9 +30,17 @@
 		android:entries="@array/pref_autorefresh_intervals"
 		android:entryValues="@array/pref_autorefresh_intervalvalues"
 		android:defaultValue="0" />
-	
+
+	<CheckBoxPreference
+		android:key="system_autodarktheme"
+		android:title="@string/pref_autodarktheme"
+		android:summary="@string/pref_autodarktheme_info"
+		android:disableDependentsState="true"
+		android:defaultValue="true" />
+
 	<CheckBoxPreference
 		android:key="system_usedarktheme"
+		android:dependency="system_autodarktheme"
 		android:title="@string/pref_usedarktheme"
 		android:summary="@string/pref_usedarktheme_info"
 		android:defaultValue="false" />
