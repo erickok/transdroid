@@ -30,6 +30,7 @@ import org.transdroid.R;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.*;
+import org.transdroid.core.service.ConnectivityHelper_;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
