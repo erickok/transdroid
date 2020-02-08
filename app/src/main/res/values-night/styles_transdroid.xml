@@ -28,7 +28,7 @@
 		<item name="actionModeBackground">@color/grey</item>
 		<item name="android:textViewStyle">@style/DefaultTextView</item>
 		<item name="android:windowBackground">@color/transdroid_background</item>
-		<item name="loading_progress">@drawable/loading_progress_dark</item>
+		<item name="loading_progress">@drawable/loading_progress</item>
 		<item name="text_bright">@color/transdroid_text_bright</item>
 		<item name="text_actionbar">@color/transdroid_text_actionbar</item>
 		<item name="text_actionbar_secondary">@color/transdroid_text_actionbar</item>
