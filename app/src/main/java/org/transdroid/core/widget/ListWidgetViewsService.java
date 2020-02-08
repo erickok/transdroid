@@ -30,7 +30,6 @@ import org.transdroid.R;
 import org.transdroid.core.app.settings.*;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.log.*;
-import org.transdroid.core.service.*;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
@@ -166,8 +165,7 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public RemoteViews getViewAt(int position) {
 
 		// Load the dark or light widget list item layout xml
-		RemoteViews rv = new RemoteViews(context.getPackageName(),
-				config.shouldUseDarkTheme() ? R.layout.list_item_widget_dark : R.layout.list_item_widget_light);
+		RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.list_item_widget);
 
 		// Bind the torrent details texts and status colour
 		Torrent torrent = torrents.get(position);

@@ -79,8 +79,7 @@ public class ListWidgetProvider extends AppWidgetProvider {
 		}
 
 		// Load the dark or light widget layout xml
-		RemoteViews rv = new RemoteViews(context.getPackageName(),
-				config.shouldUseDarkTheme() ? R.layout.widget_torrents_dark : R.layout.widget_torrents_light);
+		RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_torrents);
 
 		// Set up the widget's list view loading service which refers to the WidgetViewsFactory
 		Intent data = new Intent(context, ListWidgetViewsService_.class);

@@ -28,13 +28,13 @@
 		android:background="@null"
 		android:padding="@dimen/widget_preview_padding" >
 
-		<include layout="@layout/widget_torrents_light" />
+		<include layout="@layout/widget_torrents" />
 	</FrameLayout>
 
 	<ScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:background="@color/background_light"
+		android:background="@color/transdroid_background"
 		android:fillViewport="true"
 		android:paddingLeft="@dimen/margin_default"
 		android:paddingRight="@dimen/margin_default" >
