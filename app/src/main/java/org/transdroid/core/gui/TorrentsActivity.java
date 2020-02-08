@@ -68,8 +68,8 @@ import org.transdroid.R;
 import org.transdroid.core.app.search.SearchHelper_;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.core.app.settings.SettingsUtils;
 import org.transdroid.core.app.settings.SystemSettings;
-import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItem;
@@ -221,10 +221,8 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// Set the theme according to the user preference
-		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
-			setTheme(R.style.TransdroidTheme_Dark);
-		}
+		SettingsUtils.applyDayNightTheme(this);
+
 		// Catch any uncaught exception to log it
 		Thread.setDefaultUncaughtExceptionHandler(new LogUncaughtExceptionHandler(this, Thread.getDefaultUncaughtExceptionHandler()));
 		super.onCreate(savedInstanceState);
