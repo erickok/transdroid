@@ -19,7 +19,7 @@
 
 <resources>
     <color name="transdroid_pressed">#CC8ACC12</color>
-   	<color name="transdroid_divider">#bdbdbd</color>
+    <color name="transdroid_divider">#bdbdbd</color>
     <color name="transdroid_background">#fff</color>
     <color name="transdroid_text_bright">#000</color>
     <color name="transdroid_text_actionbar">#fff</color>
