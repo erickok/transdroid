@@ -22,5 +22,5 @@
    	<color name="transdroid_divider">#bdbdbd</color>
     <color name="transdroid_background">#fff</color>
     <color name="transdroid_text_bright">#000</color>
-    <color name="transdroid_text_actionbar">#000</color>
+    <color name="transdroid_text_actionbar">#fff</color>
 </resources>
