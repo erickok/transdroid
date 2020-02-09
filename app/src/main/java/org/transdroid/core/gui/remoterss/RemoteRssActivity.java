@@ -44,7 +44,7 @@ import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.SettingsUtils;
 import org.transdroid.core.gui.lists.LocalTorrent;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.log.Log;
@@ -108,10 +108,7 @@ public class RemoteRssActivity extends AppCompatActivity implements RefreshableA
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// Set the theme according to the user preference
-		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
-			setTheme(R.style.TransdroidTheme_Dark);
-		}
+		SettingsUtils.applyDayNightTheme(this);
 		super.onCreate(savedInstanceState);
 	}
 
