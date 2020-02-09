@@ -199,7 +199,6 @@
   <string name="widget_sortby">SORTEERVOLGORDE</string>
   <string name="widget_reversesortorder">Omgekeerde sorteervolgorde</string>
   <string name="widget_showstatusview">Serverstatus i.p.v. titel</string>
-  <string name="widget_usedarktheme">Gebruik donker kleurenschema (geen preview)</string>
   <string name="widget_done">KLAAR</string>
   <string name="pref_servers">Servers</string>
   <string name="pref_addserver">Nieuwe server toevoegen</string>

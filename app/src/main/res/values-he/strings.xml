@@ -160,7 +160,6 @@
   <string name="widget_loading">טוען...</string>
   <string name="widget_sortby">ממוין לפי</string>
   <string name="widget_reversesortorder">הפוך את הרשימה</string>
-  <string name="widget_usedarktheme">השתמש בעיצוב כהה</string>
   <string name="widget_done">סיים</string>
   <string name="pref_servers">שרתים</string>
   <string name="pref_addserver">הוסף שרת חדש</string>

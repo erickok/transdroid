@@ -202,7 +202,6 @@
   <string name="widget_sortby">SIRALAMA DÜZENİ</string>
   <string name="widget_reversesortorder">Ters sıralama düzeni</string>
   <string name="widget_showstatusview">Başlık yerine sunucu durumu</string>
-  <string name="widget_usedarktheme">Karanlık temayı kullanın (önizleme yok)</string>
   <string name="widget_done">BİTTİ</string>
   <string name="pref_servers">Sunucular</string>
   <string name="pref_addserver">Yeni sunucu ekle</string>
