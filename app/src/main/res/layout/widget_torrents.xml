@@ -59,6 +59,7 @@
 				android:singleLine="true"
 				android:textIsSelectable="false"
 				android:textSize="@dimen/ui_navigation_filter"
+				android:textColor="@color/transdroid_text_actionbar"
 				tools:text="Filter" />
 
 			<TextView
@@ -71,6 +72,7 @@
 				android:singleLine="true"
 				android:textIsSelectable="false"
 				android:textSize="@dimen/ui_navigation_server"
+				android:textColor="@color/transdroid_text_actionbar"
 				tools:text="Server"/>
 		</LinearLayout>
 
