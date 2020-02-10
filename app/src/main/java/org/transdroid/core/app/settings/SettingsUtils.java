@@ -1,8 +1,12 @@
 package org.transdroid.core.app.settings;
 
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 
 public class SettingsUtils {
     /**
@@ -19,5 +23,16 @@ public class SettingsUtils {
                     AppCompatDelegate.MODE_NIGHT_NO
             );
         }
+    }
+
+
+    public static MaterialDialog.Builder applyDialogTheme(MaterialDialog.Builder builder) {
+        SystemSettings settings = SystemSettings_.getInstance_(builder.getContext());
+
+        if (settings.autoDarkTheme()) {
+            return builder;
+        }
+
+        return builder.theme(settings.useDarkTheme() ? Theme.DARK: Theme.LIGHT);
     }
 }

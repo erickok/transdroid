@@ -25,7 +25,7 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
-import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.SettingsUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,14 +42,18 @@ public class SetTrackersDialog extends DialogFragment {
 		View trackersLayout = LayoutInflater.from(context).inflate(R.layout.dialog_trackers, null);
 		final EditText trackersText = (EditText) trackersLayout.findViewById(R.id.trackers_edit);
 		trackersText.setText(currentTrackers);
-		new MaterialDialog.Builder(context).customView(trackersLayout, false).positiveText(R.string.status_update)
-				.negativeText(android.R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
-			@Override
-			public void onPositive(MaterialDialog dialog) {
-				// User is done editing and requested to update given the text input
-				onTrackersUpdatedListener.onTrackersUpdated(Arrays.asList(trackersText.getText().toString().split("\n")));
-			}
-		}).theme(SystemSettings_.getInstance_(context).getMaterialDialogtheme()).show();
+		MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+			.customView(trackersLayout, false)
+			.positiveText(R.string.status_update)
+			.negativeText(android.R.string.cancel)
+			.callback(new MaterialDialog.ButtonCallback() {
+				@Override
+				public void onPositive(MaterialDialog dialog) {
+					// User is done editing and requested to update given the text input
+					onTrackersUpdatedListener.onTrackersUpdated(Arrays.asList(trackersText.getText().toString().split("\n")));
+				}
+			});
+		SettingsUtils.applyDialogTheme(builder).show();
 	}
 
 	public interface OnTrackersUpdatedListener {
