@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
-import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.SettingsUtils;
 
 public class SetTransferRatesDialog {
 
@@ -41,29 +41,34 @@ public class SetTransferRatesDialog {
 		final TextView maxSpeedDown = (TextView) transferRatesLayout.findViewById(R.id.maxspeeddown_text);
 		final TextView maxSpeedUp = (TextView) transferRatesLayout.findViewById(R.id.maxspeedup_text);
 
-		MaterialDialog dialog = new MaterialDialog.Builder(context).customView(transferRatesLayout, false).positiveText(R.string.status_update)
-				.neutralText(R.string.status_maxspeed_reset).negativeText(android.R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onPositive(MaterialDialog dialog) {
-						int maxDown = -1, maxUp = -1;
-						try {
-							maxDown = Integer.parseInt(maxSpeedDown.getText().toString());
-							maxUp = Integer.parseInt(maxSpeedUp.getText().toString());
-						} catch (NumberFormatException e) {
-							// Impossible as we only input via the number buttons
-						}
-						if (maxDown <= 0 || maxUp <= 0) {
-							onRatesPickedListener.onInvalidNumber();
-							return;
-						}
-						onRatesPickedListener.onRatesPicked(maxDown, maxUp);
+		MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+			.customView(transferRatesLayout, false)
+			.positiveText(R.string.status_update)
+			.neutralText(R.string.status_maxspeed_reset)
+			.negativeText(android.R.string.cancel)
+			.callback(new MaterialDialog.ButtonCallback() {
+				@Override
+				public void onPositive(MaterialDialog dialog) {
+					int maxDown = -1, maxUp = -1;
+					try {
+						maxDown = Integer.parseInt(maxSpeedDown.getText().toString());
+						maxUp = Integer.parseInt(maxSpeedUp.getText().toString());
+					} catch (NumberFormatException e) {
+						// Impossible as we only input via the number buttons
 					}
+					if (maxDown <= 0 || maxUp <= 0) {
+						onRatesPickedListener.onInvalidNumber();
+						return;
+					}
+					onRatesPickedListener.onRatesPicked(maxDown, maxUp);
+				}
 
-					@Override
-					public void onNeutral(MaterialDialog dialog) {
-						onRatesPickedListener.resetRates();
-					}
-				}).theme(SystemSettings_.getInstance_(context).getMaterialDialogtheme()).build();
+				@Override
+				public void onNeutral(MaterialDialog dialog) {
+					onRatesPickedListener.resetRates();
+				}
+			});
+		MaterialDialog dialog = SettingsUtils.applyDialogTheme(builder).build();
 
 		bindButtons(dialog.getCustomView(), maxSpeedDown, R.id.down1Button, R.id.down2Button, R.id.down3Button, R.id.down4Button, R.id.down5Button,
 				R.id.down6Button, R.id.down7Button, R.id.down8Button, R.id.down9Button, R.id.down0Button);

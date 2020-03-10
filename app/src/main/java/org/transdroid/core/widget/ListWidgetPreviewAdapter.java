@@ -42,7 +42,7 @@ public class ListWidgetPreviewAdapter extends ArrayAdapter<Torrent> {
 	 * @param torrents The already-retrieved, non-null list of torrents to show
 	 */
 	public ListWidgetPreviewAdapter(Context context, int foo, List<Torrent> torrents) {
-		super(context, R.layout.list_item_widget_light, torrents);
+		super(context, R.layout.list_item_widget, torrents);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class ListWidgetPreviewAdapter extends ArrayAdapter<Torrent> {
 		// Get the views
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_widget_light, parent, false);
+			convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_widget, parent, false);
 			holder = new ViewHolder();
 			holder.nameText = (TextView) convertView.findViewById(R.id.name_text);
 			holder.progressText = (TextView) convertView.findViewById(R.id.progress_text);

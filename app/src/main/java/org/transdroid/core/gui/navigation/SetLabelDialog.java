@@ -30,7 +30,7 @@ import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
 import org.transdroid.R;
-import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.SettingsUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -56,23 +56,30 @@ public class SetLabelDialog {
 		final ListView labelsList = (ListView) setLabelLayout.findViewById(R.id.labels_list);
 		final EditText newLabelEdit = (EditText) setLabelLayout.findViewById(R.id.newlabel_edit);
 
-		final MaterialDialog dialog = new MaterialDialog.Builder(context).customView(setLabelLayout, false).positiveText(R.string.status_update)
-				.neutralText(R.string.status_label_remove).negativeText(android.R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onPositive(MaterialDialog dialog) {
-						// User should have provided a new label
-						if (TextUtils.isEmpty(newLabelEdit.getText())) {
-							SnackbarManager.show(Snackbar.with(context).text(R.string.error_notalabel).colorResource(R.color.red));
-							return;
-						}
-						onLabelPickedListener.onLabelPicked(newLabelEdit.getText().toString());
+		MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+			.customView(setLabelLayout, false)
+			.positiveText(R.string.status_update)
+			.neutralText(R.string.status_label_remove)
+			.negativeText(android.R.string.cancel)
+			.callback(new MaterialDialog.ButtonCallback() {
+				@Override
+				public void onPositive(MaterialDialog dialog) {
+					// User should have provided a new label
+					if (TextUtils.isEmpty(newLabelEdit.getText())) {
+						SnackbarManager.show(Snackbar.with(context).text(R.string.error_notalabel).colorResource(R.color.red));
+						return;
 					}
+					onLabelPickedListener.onLabelPicked(newLabelEdit.getText().toString());
+				}
 
-					@Override
-					public void onNeutral(MaterialDialog dialog) {
-						onLabelPickedListener.onLabelPicked(null);
-					}
-				}).theme(SystemSettings_.getInstance_(context).getMaterialDialogtheme()).build();
+				@Override
+				public void onNeutral(MaterialDialog dialog) {
+					onLabelPickedListener.onLabelPicked(null);
+				}
+			});
+		final MaterialDialog dialog = SettingsUtils
+			.applyDialogTheme(builder)
+			.build();
 
 		if (currentLabels.size() == 0) {
 			// Hide the list (and its label) if there are no labels yet

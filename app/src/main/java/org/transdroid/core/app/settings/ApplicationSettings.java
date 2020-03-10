@@ -712,8 +712,7 @@ public class ApplicationSettings {
 				StatusType.valueOf(prefs.getString("widget_status_" + appWidgetId, StatusType.ShowAll.name())), 
 				TorrentsSortBy.valueOf(prefs.getString("widget_sortby_" + appWidgetId, TorrentsSortBy.Alphanumeric.name())), 
 				prefs.getBoolean("widget_reverse_" + appWidgetId, false), 
-				prefs.getBoolean("widget_showstatus_" + appWidgetId, false), 
-				prefs.getBoolean("widget_darktheme_" + appWidgetId, false));
+				prefs.getBoolean("widget_showstatus_" + appWidgetId, false));
 		// @formatter:on
 	}
 
@@ -733,7 +732,6 @@ public class ApplicationSettings {
 		edit.putString("widget_sortby_" + appWidgetId, settings.getSortBy().name());
 		edit.putBoolean("widget_reverse_" + appWidgetId, settings.shouldReserveSort());
 		edit.putBoolean("widget_showstatus_" + appWidgetId, settings.shouldShowStatusView());
-		edit.putBoolean("widget_darktheme_" + appWidgetId, settings.shouldUseDarkTheme());
 		edit.apply();
 	}
 

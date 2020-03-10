@@ -86,11 +86,7 @@ public class SearchResultsFragment extends Fragment {
 		// On large screens where this fragment is shown next to the sites list; we show a continues grey vertical line
 		// to separate the lists visually
 		if (!NavigationHelper_.getInstance_(getActivity()).isSmallScreen()) {
-			if (SystemSettings_.getInstance_(getActivity()).useDarkTheme()) {
-				resultsList.setBackgroundResource(R.drawable.details_list_background_dark);
-			} else {
-				resultsList.setBackgroundResource(R.drawable.details_list_background_light);
-			}
+			resultsList.setBackgroundResource(R.drawable.details_list_background);
 		}
 
 		// Set up the list adapter, which allows multi-select

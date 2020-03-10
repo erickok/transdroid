@@ -16,6 +16,6 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-	<item android:left="2dp" android:drawable="@color/divider_light" />
-	<item android:left="4dp" android:drawable="@color/background_light" />
+	<item android:left="2dp" android:drawable="@color/transdroid_divider" />
+	<item android:left="4dp" android:drawable="@color/transdroid_background" />
 </layer-list>

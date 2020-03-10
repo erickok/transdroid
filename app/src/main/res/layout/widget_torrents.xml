@@ -19,7 +19,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="@color/background_light">
+	android:background="@color/transdroid_background">
 
 	<LinearLayout
 		android:id="@+id/header_wrapper"
@@ -56,10 +56,10 @@
 				android:layout_height="wrap_content"
 				android:ellipsize="marquee"
 				android:fontFamily="sans-serif-condensed"
-				android:maxLines="1"
-				android:textColor="@color/text_actionbar_dark"
+				android:singleLine="true"
 				android:textIsSelectable="false"
 				android:textSize="@dimen/ui_navigation_filter"
+				android:textColor="@color/transdroid_text_actionbar"
 				tools:text="Filter" />
 
 			<TextView
@@ -69,10 +69,10 @@
 				android:layout_marginTop="-4dip"
 				android:ellipsize="marquee"
 				android:fontFamily="sans-serif-light"
-				android:maxLines="1"
-				android:textColor="@color/text_actionbar_dark"
+				android:singleLine="true"
 				android:textIsSelectable="false"
 				android:textSize="@dimen/ui_navigation_server"
+				android:textColor="@color/transdroid_text_actionbar"
 				tools:text="Server"/>
 		</LinearLayout>
 
@@ -94,7 +94,6 @@
 				android:fontFamily="sans-serif-light"
 				android:paddingTop="@dimen/ui_serverstatus_signmargin"
 				android:text="↑"
-				android:textColor="@color/text_bright_dark"
 				android:textSize="@dimen/ui_serverstatus_sign"
 				tools:ignore="HardcodedText" />
 
@@ -105,7 +104,6 @@
 				android:layout_toLeftOf="@id/upcount_sign"
 				android:fontFamily="sans-serif-light"
 				android:gravity="end"
-				android:textColor="@color/text_bright_dark"
 				android:textSize="@dimen/ui_serverstatus_bignumber" />
 
 			<TextView
@@ -116,7 +114,6 @@
 				android:fontFamily="sans-serif-light"
 				android:paddingTop="@dimen/ui_serverstatus_signmargin"
 				android:text="↓"
-				android:textColor="@color/text_bright_dark"
 				android:textSize="@dimen/ui_serverstatus_sign"
 				tools:ignore="HardcodedText" />
 
@@ -127,7 +124,6 @@
 				android:layout_toLeftOf="@id/downcount_sign"
 				android:fontFamily="sans-serif-light"
 				android:gravity="end"
-				android:textColor="@color/text_bright_dark"
 				android:textSize="@dimen/ui_serverstatus_bignumber" />
 
 			<TextView
@@ -140,7 +136,6 @@
 				android:layout_marginTop="-4dip"
 				android:fontFamily="sans-serif-light"
 				android:gravity="end"
-				android:textColor="@color/text_bright_dark"
 				android:textSize="@dimen/ui_serverstatus_smallnumber" />
 
 			<TextView
@@ -153,7 +148,6 @@
 				android:layout_marginTop="-4dip"
 				android:fontFamily="sans-serif-light"
 				android:gravity="end"
-				android:textColor="@color/text_bright_dark"
 				android:textSize="@dimen/ui_serverstatus_smallnumber" />
 		</RelativeLayout>
 
@@ -209,7 +203,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_above="@id/bottomline_view"
-		android:layout_below="@id/topline_view"
 		android:layout_gravity="center"
 		android:gravity="center"
 		android:maxWidth="400dip"

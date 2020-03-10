@@ -24,7 +24,7 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
-import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.SettingsUtils;
 
 public class SetStorageLocationDialog {
 
@@ -38,14 +38,21 @@ public class SetStorageLocationDialog {
 		View locationLayout = LayoutInflater.from(context).inflate(R.layout.dialog_storagelocation, null);
 		final EditText locationText = (EditText) locationLayout.findViewById(R.id.location_edit);
 		locationText.setText(currentLocation);
-		new MaterialDialog.Builder(context).customView(locationLayout, false).positiveText(R.string.status_update)
-				.negativeText(android.R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
-			@Override
-			public void onPositive(MaterialDialog dialog) {
-				// User is done editing and requested to update given the text input
-				onStorageLocationUpdatedListener.onStorageLocationUpdated(locationText.getText().toString());
-			}
-		}).theme(SystemSettings_.getInstance_(context).getMaterialDialogtheme()).show();
+		MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+			.customView(locationLayout, false)
+			.positiveText(R.string.status_update)
+			.negativeText(android.R.string.cancel)
+			.callback(new MaterialDialog.ButtonCallback() {
+				@Override
+				public void onPositive(MaterialDialog dialog) {
+					// User is done editing and requested to update given the text input
+					onStorageLocationUpdatedListener.onStorageLocationUpdated(locationText.getText().toString());
+				}
+			});
+
+		SettingsUtils
+			.applyDialogTheme(builder)
+			.show();
 	}
 
 	public interface OnStorageLocationUpdatedListener {
