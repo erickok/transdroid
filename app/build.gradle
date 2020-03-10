@@ -15,7 +15,7 @@ android {
             annotationProcessorOptions {
                 arguments = [
                         "resourcePackageName": "org.transdroid",
-                        "androidManifestFile": "app/src/main/AndroidManifest.xml"
+                        "androidManifestFile": file("src/main/AndroidManifest.xml").absolutePath
                 ]
             }
         }
