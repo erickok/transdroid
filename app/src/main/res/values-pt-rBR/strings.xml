@@ -203,7 +203,6 @@
   <string name="widget_sortby">Ordem de classificação</string>
   <string name="widget_reversesortorder">Ordem Invertida</string>
   <string name="widget_showstatusview">Estado do servidor ao invés do título</string>
-  <string name="widget_usedarktheme">Usar tema escuro (sem visualização)</string>
   <string name="widget_done">Concluído</string>
   <string name="pref_servers">Servidores</string>
   <string name="pref_addserver">Adicionar novo servidor</string>

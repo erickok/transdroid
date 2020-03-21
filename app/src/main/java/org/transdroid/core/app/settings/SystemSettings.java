@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.afollestad.materialdialogs.Theme;
 
 /**
  * Allows instantiation of the settings specified in R.xml.pref_system.
@@ -59,12 +58,12 @@ public class SystemSettings {
 		return prefs.getBoolean("system_checkupdates", true);
 	}
 
-	public boolean useDarkTheme() {
-		return prefs.getBoolean("system_usedarktheme", false);
+	public boolean autoDarkTheme() {
+		return prefs.getBoolean("system_autodarktheme", true);
 	}
 
-	public Theme getMaterialDialogtheme() {
-		return useDarkTheme() ? Theme.DARK: Theme.LIGHT;
+	public boolean useDarkTheme() {
+		return prefs.getBoolean("system_usedarktheme", false);
 	}
 
 	/**

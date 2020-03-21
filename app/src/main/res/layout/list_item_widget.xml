@@ -36,7 +36,7 @@
 		android:fontFamily="sans-serif-condensed"
 		android:maxLines="1"
 		android:paddingTop="@dimen/widget_list_item_padding"
-		android:textColor="@color/text_bright_dark"
+		android:textColor="@color/transdroid_text_bright"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_enlarged" />
 
@@ -49,6 +49,7 @@
 		android:layout_marginLeft="@dimen/widget_list_item_padding"
 		android:layout_marginTop="4dip"
 		android:maxLines="1"
+		android:textColor="@color/transdroid_text_bright"
 		android:paddingBottom="@dimen/widget_list_item_padding"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small" />
@@ -62,6 +63,7 @@
 		android:layout_marginLeft="@dimen/widget_list_item_padding_left"
 		android:layout_toLeftOf="@id/ratio_text"
 		android:maxLines="1"
+		android:textColor="@color/transdroid_text_bright"
 		android:textIsSelectable="false"
 		android:textSize="@dimen/text_small" />
 

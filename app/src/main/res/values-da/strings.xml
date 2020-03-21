@@ -187,7 +187,6 @@
   <string name="widget_sortby">SORTERINGS RÆKKEFØLGE</string>
   <string name="widget_reversesortorder">Omvendt sorterings rækkefølge</string>
   <string name="widget_showstatusview">Server status i stedet for titel</string>
-  <string name="widget_usedarktheme">Brug mørkt tema (ingen preview)</string>
   <string name="widget_done">FÆRDIG</string>
   <string name="pref_servers">Servere</string>
   <string name="pref_addserver">Tilføj ny server</string>

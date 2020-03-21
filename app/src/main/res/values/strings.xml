@@ -17,64 +17,64 @@
 -->
 <resources>
 
-	<string name="action_add">Add</string>
-	<string name="action_addall">Add all</string>
-	<string name="action_addfromfile">From file</string>
-	<string name="action_addfromurl">From URL</string>
-	<string name="action_scanbarcode">Scan barcode</string>
-	<string name="action_search">Search</string>
-	<string name="action_refresh">Refresh</string>
-	<string name="action_rss">RSS</string>
-	<string name="action_remoterss">Remote RSS</string>
-	<string name="action_enableturtle">Enable turtle mode</string>
-	<string name="action_disableturtle">Disable turtle mode</string>
-	<string name="action_sort">Sort list</string>
-	<string name="action_sort_alpha">Name</string>
-	<string name="action_sort_status">Status</string>
-	<string name="action_sort_done">Date done</string>
-	<string name="action_sort_added">Date added</string>
-	<string name="action_sort_seeders">Seeders</string>
-	<string name="action_sort_percent">Percent downloaded</string>
-	<string name="action_sort_downspeed">Download speed</string>
-	<string name="action_sort_upspeed">Upload speed</string>
-	<string name="action_sort_ratio">Ratio</string>
-	<string name="action_sort_size">Size</string>
-	<string name="action_filter">Filter list</string>
-	<string name="action_settings">Settings</string>
-	<string name="action_help">Help</string>
-	<string name="action_start">Start</string>
-	<string name="action_start_default">Normal start</string>
-	<string name="action_start_forced">Force start</string>
-	<string name="action_startall">Start all</string>
-	<string name="action_stop">Stop</string>
-	<string name="action_stopall">Stop all</string>
-	<string name="action_resume">Resume</string>
-	<string name="action_resumeall">Resume all</string>
-	<string name="action_pause">Pause</string>
-	<string name="action_pauseall">Pause all</string>
-	<string name="action_remove">Remove</string>
-	<string name="action_remove_default">Remove torrent</string>
-	<string name="action_remove_withdata">Remove and delete data</string>
-	<string name="action_setlabel">Set label</string>
-	<string name="action_download_mode">Download mode</string>
-	<string name="action_toggle_sequential">Download sequentially</string>
-	<string name="action_toggle_firstlastpiece">Prioritize first and last piece</string>
-	<string name="action_updatetrackers">Update trackers</string>
-	<string name="action_changelocation">Change storage location</string>
-	<string name="action_forcerecheck">Force data recheck</string>
-	<string name="action_priority_off">Off</string>
-	<string name="action_priority_low">Low</string>
-	<string name="action_priority_normal">Normal</string>
-	<string name="action_priority_high">High</string>
-	<string name="action_remoteplay">Remote play in VLC</string>
-	<string name="action_download">Download using FTP(S)</string>
-	<string name="action_copytoclipboard">Copy to clipboard</string>
-	<string name="action_showdetails">Show details</string>
-	<string name="action_openwebsite">Open website</string>
-	<string name="action_useassearch">Use as new search</string>
-	<string name="action_removesettings">Remove settings</string>
-	<string name="action_visitwebsite">Visit transdroid.org</string>
-	<string name="action_close">Close</string>
+    <string name="action_add">Add</string>
+    <string name="action_addall">Add all</string>
+    <string name="action_addfromfile">From file</string>
+    <string name="action_addfromurl">From URL</string>
+    <string name="action_scanbarcode">Scan barcode</string>
+    <string name="action_search">Search</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_rss">RSS</string>
+    <string name="action_remoterss">Remote RSS</string>
+    <string name="action_enableturtle">Enable turtle mode</string>
+    <string name="action_disableturtle">Disable turtle mode</string>
+    <string name="action_sort">Sort list</string>
+    <string name="action_sort_alpha">Name</string>
+    <string name="action_sort_status">Status</string>
+    <string name="action_sort_done">Date done</string>
+    <string name="action_sort_added">Date added</string>
+    <string name="action_sort_seeders">Seeders</string>
+    <string name="action_sort_percent">Percent downloaded</string>
+    <string name="action_sort_downspeed">Download speed</string>
+    <string name="action_sort_upspeed">Upload speed</string>
+    <string name="action_sort_ratio">Ratio</string>
+    <string name="action_sort_size">Size</string>
+    <string name="action_filter">Filter list</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_help">Help</string>
+    <string name="action_start">Start</string>
+    <string name="action_start_default">Normal start</string>
+    <string name="action_start_forced">Force start</string>
+    <string name="action_startall">Start all</string>
+    <string name="action_stop">Stop</string>
+    <string name="action_stopall">Stop all</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_resumeall">Resume all</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_pauseall">Pause all</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_remove_default">Remove torrent</string>
+    <string name="action_remove_withdata">Remove and delete data</string>
+    <string name="action_setlabel">Set label</string>
+    <string name="action_download_mode">Download mode</string>
+    <string name="action_toggle_sequential">Download sequentially</string>
+    <string name="action_toggle_firstlastpiece">Prioritize first and last piece</string>
+    <string name="action_updatetrackers">Update trackers</string>
+    <string name="action_changelocation">Change storage location</string>
+    <string name="action_forcerecheck">Force data recheck</string>
+    <string name="action_priority_off">Off</string>
+    <string name="action_priority_low">Low</string>
+    <string name="action_priority_normal">Normal</string>
+    <string name="action_priority_high">High</string>
+    <string name="action_remoteplay">Remote play in VLC</string>
+    <string name="action_download">Download using FTP(S)</string>
+    <string name="action_copytoclipboard">Copy to clipboard</string>
+    <string name="action_showdetails">Show details</string>
+    <string name="action_openwebsite">Open website</string>
+    <string name="action_useassearch">Use as new search</string>
+    <string name="action_removesettings">Remove settings</string>
+    <string name="action_visitwebsite">Visit transdroid.org</string>
+    <string name="action_close">Close</string>
 
 	<string name="navigation_opendrawer">Select server and filter</string>
 	<string name="navigation_closedrawer">Close filters list</string>
@@ -224,175 +224,176 @@
 	</plurals>
 	<string name="rss_service_newfor">New torrents for %1$s</string>
 
-	<string name="remoterss_filter_allrecent">(All recent)</string>
-	<string name="remoterss_no_files">No torrent files found.\n\nAre your RSS feeds configured correctly?</string>
-	<string name="remoterss_loading">Loading RSS feeds…</string>
+    <string name="remoterss_filter_allrecent">(All recent)</string>
+    <string name="remoterss_no_files">No torrent files found.\n\nAre your RSS feeds configured correctly?</string>
+    <string name="remoterss_loading">Loading RSS feeds…</string>
 
-	<string name="widget_loading">Loading&#8230;</string>
-	<string name="widget_opentransdroid">Open Transdroid</string>
-	<string name="widget_filter">SERVER VIEW</string>
-	<string name="widget_lookfeel">LOOK &amp; FEEL</string>
-	<string name="widget_sortby">SORT ORDER</string>
-	<string name="widget_reversesortorder">Reversed sort order</string>
-	<string name="widget_showstatusview">Server status instead of title</string>
-	<string name="widget_usedarktheme">Use dark theme (no preview)</string>
-	<string name="widget_done">DONE</string>
-	
-	<string name="pref_servers">Servers</string>
-	<string name="pref_addserver">Add new server</string>
-	<string name="pref_addserver_normal">Add normal, custom server</string>
-	<string name="pref_addseedbox">Add seedbox</string>
-	<string name="pref_defaultserver">Default server</string>
-	<string name="pref_defaultserver_lastused">Last used</string>
-	<string name="pref_defaultserver_askonadd">Ask when adding torrent</string>
-	<string name="pref_searchsites">Search sites</string>
-	<string name="pref_setsearchsite">Set default site</string>
-	<string name="pref_addwebsearch">Add web search site</string>
-	<string name="pref_rssfeeds">RSS feeds</string>
-	<string name="pref_addrssfeed">Add RSS feed</string>
-	<string name="pref_others">Other settings</string>
-	<string name="pref_confirmremove">Are you sure you want to remove these settings?</string>
-	
-	<string name="pref_name">Name</string>
-	<string name="pref_name_optional">Optional personal name</string>
-	<string name="pref_searchurl">Direct search URL</string>
-	<string name="pref_searchurl_info">%s will be replaced by the search query</string>
-	<string name="pref_cookies">Cookies</string>
-	<string name="pref_cookies_info">Optional; use the key1=value1;key2=value2 format</string>
-	<string name="pref_feedurl">Feed URL</string>
-	<string name="pref_reqauth">Requires authentication</string>
-	<string name="pref_reqauth_info">Opens links in the webbrowser for user login</string>
-	<string name="pref_alarmrssnew">New item notification</string>
-	<string name="pref_alarmrssnew_info">Notify when new torrents are released</string>
-	<string name="pref_alarmrssexclude">Exclude filter</string>
-	<string name="pref_alarmrssexclude_info">Don\'t show torrents whose name matches these |-separated words</string>
-	<string name="pref_alarmrssinclude">Include filter</string>
-	<string name="pref_alarmrssinclude_info">Only show torrents whose name matches these |-separated words</string>
-	
-	<string name="pref_servertype">Server type</string>
-	<string name="pref_address">IP or host name</string>
-	<string name="pref_port">Port number</string>
-	<string name="pref_user">User name</string>
-	<string name="pref_pass">Password</string>
-	<string name="pref_extrapassword">Deluge web password</string>
-	<string name="pref_secret">Secret token</string>
-	<string name="pref_advanced">Advanced settings</string>
-	<string name="pref_localaddress">Local IP or host</string>
-	<string name="pref_localaddress_info">When connected to the specified local network</string>
-	<string name="pref_localport">Local port number</string>
-	<string name="pref_localnetwork">Local network</string>
-	<string name="pref_localnetwork_info">The server\'s local network SSID</string>
-	<string name="pref_local_permission_title">Location permission</string>
-	<string name="pref_local_permission_rationale">To known the connected Wifi network SSID name, %1$s requires the location permission</string>
-	<string name="pref_folder">Folder</string>
-	<string name="pref_folder_info">Usually empty</string>
-	<string name="pref_scgifolder">SCGI mount point</string>
-	<string name="pref_optional">Optional settings</string>
-	<string name="pref_alarmdone">Finished notification</string>
-	<string name="pref_alarmdone_info">Notify when a torrent finishes</string>
-	<string name="pref_alarmnew">New torrent notification</string>
-	<string name="pref_alarmnew_info">Notify when a torrent was added</string>
-	<string name="pref_alarmexclude">Exclude filter</string>
-	<string name="pref_alarmexclude_info">Notify only if torrent name matches these |-separated words</string>
-	<string name="pref_alarminclude">Include filter</string>
-	<string name="pref_alarminclude_info">Notify never if torrent name matches these |-separated words</string>
-	<string name="pref_os">Server OS</string>
-	<string name="pref_downdir">Download directory</string>
-	<string name="pref_downdir_info">Manually set absolute path for remote connections</string>
-	<string name="pref_timeout">Connection timeout</string>
-	<string name="pref_timeout_info">Number of seconds before a connection attempt is aborted</string>
-	<string name="pref_ftpurl">Base FTP(S) url</string>
-	<string name="pref_ftpurl_info">For example ftp://me@server/downloads/</string>
-	<string name="pref_ftppass">FTP(S) password</string>
-	<string name="pref_disableauth">Disable authentication</string>
-	<string name="pref_disableauth_info">Don\'t send username and password</string>
-	<string name="pref_sslenable">Use SSL</string>
-	<string name="pref_sslenable_info">Connect using https</string>
-	<string name="pref_local_sslenable">Use SSL on local network</string>
-	<string name="pref_local_sslenable_info">Connect using https</string>
-	<string name="pref_sslkey">Custom SSL thumbprint (SHA-1)</string>
-	<string name="pref_sslkey_info">Permit only connections to this specific certificate</string>
-	<string name="pref_sslacceptall">Accept all SSL certificates</string>
-	<string name="pref_sslacceptall_info">Allow all connections from any thumbprint</string>
-	
-	<string name="pref_background">Background notifications</string>
-	<string name="pref_notifications_rss">Enable RSS notifications</string>
-	<string name="pref_notifications_torrent">Enable torrent notifications</string>
-	<string name="pref_notifications_info">Enables the background service</string>
-	<string name="pref_notifyinterval">Interval</string>
-	<string name="pref_notifyinterval_info">How often to check RSS or torrents</string>
-	<string name="pref_notifysound">Sound</string>
-	<string name="pref_notifyvibrate">Vibrate</string>
-	<string name="pref_notifyled">LED colour</string>
-	<string name="pref_notifyled_info">If supported by your device</string>
-	<string name="pref_adw">Support ADW notifications</string>
-	<string name="pref_adw_info">Show torrent counter in ADW Launcher</string>
-	
-	<string name="pref_system">System</string>
-	<string name="pref_autorefresh">Automatic refreshing</string>
-	<string name="pref_autorefresh_info">Interval-based refresh of the main screen</string>
-	<string-array name="pref_autorefresh_intervals">
-		<item>Disabled</item>
-		<item>2 seconds</item>
-		<item>5 seconds</item>
-		<item>10 seconds</item>
-		<item>30 seconds</item>
-	</string-array>
-	<string-array name="pref_autorefresh_intervalvalues" translatable="false">
-		<item>0</item>
-		<item>2</item>
-		<item>5</item>
-		<item>10</item>
-		<item>30</item>
-	</string-array>
-	<string name="pref_dormantasinactive">Treat dormant torrents as inactive</string>
-	<string name="pref_dormantasinactive_info">Torrents at 0KB/s (no data transfer) will be filtered as being inactive</string>
-	<string name="pref_checkupdates">Check for updates</string>
-	<string name="pref_checkupdates_info">Check transdroid.org for latest app version</string>
-	<string name="pref_usedarktheme">Use dark UI theme</string>
-	<string name="pref_usedarktheme_info">Requires a restart to take effect</string>
-	<string name="pref_clearsearch">Clear search history</string>
-	<string name="pref_clearsearch_success">Search history is cleared</string>
-	<string name="pref_import">Import settings</string>
-	<string name="pref_import_dialog">%1$s will try to import server, web search, RSS and system settings from: %2$s</string>
-	<string name="pref_import_fromfile">Use file</string>
-	<string name="pref_import_fromqr">Use QR code</string>
-	<string name="pref_import_success">Settings successfully imported</string>
-	<string name="pref_export">Export settings</string>
-	<string name="pref_export_dialog">%1$s will export server (including passwords), web search, RSS and system settings to the following plain text JSON file: %2$s</string>
-	<string name="pref_export_tofile">To file</string>
-	<string name="pref_export_toqr">To QR code</string>
-	<string name="pref_export_success">Settings successfully exported</string>
-	
-	<string name="pref_help">Transdroid help</string>
-	<string name="pref_sendlog">Send error log</string>
-	<string name="pref_sendlog_info">Get support or report a bug</string>
-	<string name="pref_installhelp">View install guides</string>
-	<string name="pref_installhelp_info">Available at transdroid.org/download</string>
-	<string name="pref_changelog">Recent changes</string>
-	<string name="pref_about">About %1$s</string>
+    <string name="widget_loading">Loading&#8230;</string>
+    <string name="widget_opentransdroid">Open Transdroid</string>
+    <string name="widget_filter">SERVER VIEW</string>
+    <string name="widget_lookfeel">LOOK &amp; FEEL</string>
+    <string name="widget_sortby">SORT ORDER</string>
+    <string name="widget_reversesortorder">Reversed sort order</string>
+    <string name="widget_showstatusview">Server status instead of title</string>
+    <string name="widget_done">DONE</string>
 
-	<string name="pref_seedbox_addseedbox">Add %1$s seedbox</string>
-	<string name="pref_seedbox_client">Torrent client</string>
-	<string name="pref_seedbox_client_info">Client to connect to</string>
-	<string name="pref_seedbox_server">Server address</string>
-	<string name="pref_seedbox_xirvikhint">Like eplus001.xirvik.com</string>
-	<string name="pref_seedbox_xirvikhint2">Like semixl001a.xirvik.com</string>
-	<string name="pref_seedbox_xirvikhint3">Like desharedgbit001.xirvik.com</string>
-	<string name="pref_seedbox_xirviknofolder">Cannot retrieve the Xirvik SCGI folder setting; please try again later or correct your server address setting</string>
-	<string name="pref_seedbox_seedstuffhint">Like 001.seedstuff.ca</string>
-	<string name="pref_seedbox_dediseedboxhint">Like abcd123.dediseedbox.com</string>
-	<string-array name="pref_seedbox_xirvikclients" translatable="false">
-		<item>rTorrent</item>
-		<item>uTorrent</item>
-		<item>Deluge</item>
-	</string-array>
-	<string-array name="pref_seedbox_xirviktypes" translatable="false">
-		<item>daemon_rtorrent</item>
-		<item>daemon_utorrent</item>
-		<item>daemon_deluge</item>
-	</string-array>
-	
+    <string name="pref_servers">Servers</string>
+    <string name="pref_addserver">Add new server</string>
+    <string name="pref_addserver_normal">Add normal, custom server</string>
+    <string name="pref_addseedbox">Add seedbox</string>
+    <string name="pref_defaultserver">Default server</string>
+    <string name="pref_defaultserver_lastused">Last used</string>
+    <string name="pref_defaultserver_askonadd">Ask when adding torrent</string>
+    <string name="pref_searchsites">Search sites</string>
+    <string name="pref_setsearchsite">Set default site</string>
+    <string name="pref_addwebsearch">Add web search site</string>
+    <string name="pref_rssfeeds">RSS feeds</string>
+    <string name="pref_addrssfeed">Add RSS feed</string>
+    <string name="pref_others">Other settings</string>
+    <string name="pref_confirmremove">Are you sure you want to remove these settings?</string>
+
+    <string name="pref_name">Name</string>
+    <string name="pref_name_optional">Optional personal name</string>
+    <string name="pref_searchurl">Direct search URL</string>
+    <string name="pref_searchurl_info">%s will be replaced by the search query</string>
+    <string name="pref_cookies">Cookies</string>
+    <string name="pref_cookies_info">Optional; use the key1=value1;key2=value2 format</string>
+    <string name="pref_feedurl">Feed URL</string>
+    <string name="pref_reqauth">Requires authentication</string>
+    <string name="pref_reqauth_info">Opens links in the webbrowser for user login</string>
+    <string name="pref_alarmrssnew">New item notification</string>
+    <string name="pref_alarmrssnew_info">Notify when new torrents are released</string>
+    <string name="pref_alarmrssexclude">Exclude filter</string>
+    <string name="pref_alarmrssexclude_info">Don\'t show torrents whose name matches these |-separated words</string>
+    <string name="pref_alarmrssinclude">Include filter</string>
+    <string name="pref_alarmrssinclude_info">Only show torrents whose name matches these |-separated words</string>
+
+    <string name="pref_servertype">Server type</string>
+    <string name="pref_address">IP or host name</string>
+    <string name="pref_port">Port number</string>
+    <string name="pref_user">User name</string>
+    <string name="pref_pass">Password</string>
+    <string name="pref_extrapassword">Deluge web password</string>
+    <string name="pref_secret">Secret token</string>
+    <string name="pref_advanced">Advanced settings</string>
+    <string name="pref_localaddress">Local IP or host</string>
+    <string name="pref_localaddress_info">When connected to the specified local network</string>
+    <string name="pref_localport">Local port number</string>
+    <string name="pref_localnetwork">Local network</string>
+    <string name="pref_localnetwork_info">The server\'s local network SSID</string>
+    <string name="pref_local_permission_title">Location permission</string>
+    <string name="pref_local_permission_rationale">To known the connected Wifi network SSID name, %1$s requires the location permission</string>
+    <string name="pref_folder">Folder</string>
+    <string name="pref_folder_info">Usually empty</string>
+    <string name="pref_scgifolder">SCGI mount point</string>
+    <string name="pref_optional">Optional settings</string>
+    <string name="pref_alarmdone">Finished notification</string>
+    <string name="pref_alarmdone_info">Notify when a torrent finishes</string>
+    <string name="pref_alarmnew">New torrent notification</string>
+    <string name="pref_alarmnew_info">Notify when a torrent was added</string>
+    <string name="pref_alarmexclude">Exclude filter</string>
+    <string name="pref_alarmexclude_info">Notify only if torrent name matches these |-separated words</string>
+    <string name="pref_alarminclude">Include filter</string>
+    <string name="pref_alarminclude_info">Notify never if torrent name matches these |-separated words</string>
+    <string name="pref_os">Server OS</string>
+    <string name="pref_downdir">Download directory</string>
+    <string name="pref_downdir_info">Manually set absolute path for remote connections</string>
+    <string name="pref_timeout">Connection timeout</string>
+    <string name="pref_timeout_info">Number of seconds before a connection attempt is aborted</string>
+    <string name="pref_ftpurl">Base FTP(S) url</string>
+    <string name="pref_ftpurl_info">For example ftp://me@server/downloads/</string>
+    <string name="pref_ftppass">FTP(S) password</string>
+    <string name="pref_disableauth">Disable authentication</string>
+    <string name="pref_disableauth_info">Don\'t send username and password</string>
+    <string name="pref_sslenable">Use SSL</string>
+    <string name="pref_sslenable_info">Connect using https</string>
+    <string name="pref_local_sslenable">Use SSL on local network</string>
+    <string name="pref_local_sslenable_info">Connect using https</string>
+    <string name="pref_sslkey">Custom SSL thumbprint (SHA-1)</string>
+    <string name="pref_sslkey_info">Permit only connections to this specific certificate</string>
+    <string name="pref_sslacceptall">Accept all SSL certificates</string>
+    <string name="pref_sslacceptall_info">Allow all connections from any thumbprint</string>
+
+    <string name="pref_background">Background notifications</string>
+    <string name="pref_notifications_rss">Enable RSS notifications</string>
+    <string name="pref_notifications_torrent">Enable torrent notifications</string>
+    <string name="pref_notifications_info">Enables the background service</string>
+    <string name="pref_notifyinterval">Interval</string>
+    <string name="pref_notifyinterval_info">How often to check RSS or torrents</string>
+    <string name="pref_notifysound">Sound</string>
+    <string name="pref_notifyvibrate">Vibrate</string>
+    <string name="pref_notifyled">LED colour</string>
+    <string name="pref_notifyled_info">If supported by your device</string>
+    <string name="pref_adw">Support ADW notifications</string>
+    <string name="pref_adw_info">Show torrent counter in ADW Launcher</string>
+
+    <string name="pref_system">System</string>
+    <string name="pref_autorefresh">Automatic refreshing</string>
+    <string name="pref_autorefresh_info">Interval-based refresh of the main screen</string>
+    <string-array name="pref_autorefresh_intervals">
+        <item>Disabled</item>
+        <item>2 seconds</item>
+        <item>5 seconds</item>
+        <item>10 seconds</item>
+        <item>30 seconds</item>
+    </string-array>
+    <string-array name="pref_autorefresh_intervalvalues" translatable="false">
+        <item>0</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>30</item>
+    </string-array>
+    <string name="pref_dormantasinactive">Treat dormant torrents as inactive</string>
+    <string name="pref_dormantasinactive_info">Torrents at 0KB/s (no data transfer) will be filtered as being inactive</string>
+    <string name="pref_checkupdates">Check for updates</string>
+    <string name="pref_checkupdates_info">Check transdroid.org for latest app version</string>
+    <string name="pref_autodarktheme">Auto night mode</string>
+    <string name="pref_autodarktheme_info">Automatically choose between light or dark theme</string>
+    <string name="pref_usedarktheme">Use dark UI theme</string>
+    <string name="pref_usedarktheme_info">Requires a restart to take effect</string>
+    <string name="pref_clearsearch">Clear search history</string>
+    <string name="pref_clearsearch_success">Search history is cleared</string>
+    <string name="pref_import">Import settings</string>
+    <string name="pref_import_dialog">%1$s will try to import server, web search, RSS and system settings from: %2$s</string>
+    <string name="pref_import_fromfile">Use file</string>
+    <string name="pref_import_fromqr">Use QR code</string>
+    <string name="pref_import_success">Settings successfully imported</string>
+    <string name="pref_export">Export settings</string>
+    <string name="pref_export_dialog">%1$s will export server (including passwords), web search, RSS and system settings to the following plain text JSON file: %2$s</string>
+    <string name="pref_export_tofile">To file</string>
+    <string name="pref_export_toqr">To QR code</string>
+    <string name="pref_export_success">Settings successfully exported</string>
+
+    <string name="pref_help">Transdroid help</string>
+    <string name="pref_sendlog">Send error log</string>
+    <string name="pref_sendlog_info">Get support or report a bug</string>
+    <string name="pref_installhelp">View install guides</string>
+    <string name="pref_installhelp_info">Available at transdroid.org/download</string>
+    <string name="pref_changelog">Recent changes</string>
+    <string name="pref_about">About %1$s</string>
+
+    <string name="pref_seedbox_addseedbox">Add %1$s seedbox</string>
+    <string name="pref_seedbox_client">Torrent client</string>
+    <string name="pref_seedbox_client_info">Client to connect to</string>
+    <string name="pref_seedbox_server">Server address</string>
+    <string name="pref_seedbox_xirvikhint">Like eplus001.xirvik.com</string>
+    <string name="pref_seedbox_xirvikhint2">Like semixl001a.xirvik.com</string>
+    <string name="pref_seedbox_xirvikhint3">Like desharedgbit001.xirvik.com</string>
+    <string name="pref_seedbox_xirviknofolder">Cannot retrieve the Xirvik SCGI folder setting; please try again later or correct your server address setting</string>
+    <string name="pref_seedbox_seedstuffhint">Like 001.seedstuff.ca</string>
+    <string name="pref_seedbox_dediseedboxhint">Like abcd123.dediseedbox.com</string>
+    <string-array name="pref_seedbox_xirvikclients" translatable="false">
+        <item>rTorrent</item>
+        <item>uTorrent</item>
+        <item>Deluge</item>
+    </string-array>
+    <string-array name="pref_seedbox_xirviktypes" translatable="false">
+        <item>daemon_rtorrent</item>
+        <item>daemon_utorrent</item>
+        <item>daemon_deluge</item>
+    </string-array>
+
     <string-array name="pref_daemon_types" translatable="false">
         <item>Aria2</item>
         <item>BitComet</item>
@@ -401,14 +402,14 @@
         <item>Buffalo NAS -1.31</item>
         <item>Deluge 1.2+</item>
         <item>Deluge RPC</item>
-		<item>Deluge 2 RPC</item>
-		<item>DLink Router BT</item>
+        <item>Deluge 2 RPC</item>
+        <item>DLink Router BT</item>
         <item>Ktorrent</item>
         <item>qBittorrent</item>
         <item>rTorrent</item>
         <item>Synology</item>
-		<item>Torrentflux-b4rt</item>
-		<item>tTorrent</item>
+        <item>Torrentflux-b4rt</item>
+        <item>tTorrent</item>
         <item>Transmission</item>
         <item>µTorrent</item>
         <item>Vuze</item>
@@ -421,86 +422,86 @@
         <item>daemon_buffalonas</item>
         <item>daemon_deluge</item>
         <item>daemon_deluge_rpc</item>
-		<item>daemon_deluge2_rpc</item>
-		<item>daemon_dlinkrouterbt</item>
+        <item>daemon_deluge2_rpc</item>
+        <item>daemon_dlinkrouterbt</item>
         <item>daemon_ktorrent</item>
         <item>daemon_qbittorrent</item>
         <item>daemon_rtorrent</item>
         <item>daemon_synology</item>
-		<item>daemon_tfb4rt</item>
-		<item>daemon_ttorrent</item>
+        <item>daemon_tfb4rt</item>
+        <item>daemon_ttorrent</item>
         <item>daemon_transmission</item>
         <item>daemon_utorrent</item>
         <item>daemon_vuze</item>
     </string-array>
-	<string-array name="pref_os_types" translatable="false">
-		<item>Windows</item>
-		<item>Mac</item>
-		<item>Linux</item>
-	</string-array>
-	<string-array name="pref_os_values" translatable="false">
-		<item>type_windows</item>
-		<item>type_mac</item>
-		<item>type_linux</item>
-	</string-array>
-	<string-array name="pref_notifyinterval_types">
-		<item>15 minutes</item>
-		<item>30 minutes</item>
-		<item>1 hour</item>
-		<item>3 hours</item>
-		<item>12 hours</item>
-		<item>1 day</item>
-	</string-array>
-	<string-array name="pref_notifyinterval_values" translatable="false">
-		<item>900</item>
-		<item>1800</item>
-		<item>3600</item>
-		<item>10800</item>
-		<item>43200</item>
-		<item>86400</item>
-	</string-array>
+    <string-array name="pref_os_types" translatable="false">
+        <item>Windows</item>
+        <item>Mac</item>
+        <item>Linux</item>
+    </string-array>
+    <string-array name="pref_os_values" translatable="false">
+        <item>type_windows</item>
+        <item>type_mac</item>
+        <item>type_linux</item>
+    </string-array>
+    <string-array name="pref_notifyinterval_types">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>12 hours</item>
+        <item>1 day</item>
+    </string-array>
+    <string-array name="pref_notifyinterval_values" translatable="false">
+        <item>900</item>
+        <item>1800</item>
+        <item>3600</item>
+        <item>10800</item>
+        <item>43200</item>
+        <item>86400</item>
+    </string-array>
 
-	<string name="permission_readtorrent">Transdroid requires read access to your file storage in order to read local .torrent files</string>
-	<string name="permission_readsettings">Transdroid requires read access to your file storage if you want to read from a local settings file</string>
-	<string name="permission_writesettings">Transdroid requires write access to your file storage to write the local settings file</string>
+    <string name="permission_readtorrent">Transdroid requires read access to your file storage in order to read local .torrent files</string>
+    <string name="permission_readsettings">Transdroid requires read access to your file storage if you want to read from a local settings file</string>
+    <string name="permission_writesettings">Transdroid requires write access to your file storage to write the local settings file</string>
 
-	<string name="error_httperror">Error during communication; check your connection</string>
-	<string name="error_unsupported">Your torrent client does not support this operation</string>
-	<string name="error_magnet_links_unsupported">Your torrent client does not support magnet links</string>
-	<string name="error_jsonrequesterror">Internal error building request</string>
-	<string name="error_jsonresponseerror">Error parsing server response (please check your settings)</string>
-	<string name="error_daemonnotconnected">Web interface not connected to a running daemon</string>
-	<string name="error_401">Access denied (please check your settings)</string>
-	<string name="error_torrentfile">Can\'t read .torrent file</string>
-	<string name="error_parsingrss">Error while parsing the RSS feed</string>
-	<string name="error_invalid_url_form">This URL is not well-formed</string>
-	<string name="error_invalid_search_url">Your web search URL is invalid:</string>
-	<string name="error_invalid_ip_or_hostname">Input is not a valid IP address or host name</string>
-	<string name="error_invalid_port_number">Port number is always numeric</string>
-	<string name="error_invalid_directory">Directory paths end with a / or \</string>
-	<string name="error_invalid_timeout">Timeout can not be empty and is a positive number</string>
-	<string name="error_notorrentfile">The search result does not link to a .torrent file</string>
-	<string name="error_noproductforcode">Can\'t find torrent link or product information for this barcode</string>
-	<string name="error_no_url_enclosure">The RSS feed item didn\'t provide an URL enclosure or link tag pointing to the .torrent file</string>
-	<string name="error_no_link">The RSS feed item does not provide a link to browse to</string>
-	<string name="error_norssfeed">URL is not a (valid) RSS feed</string>
-	<string name="error_media_not_available">SD card not available to read/write</string>
-	<string name="error_no_valid_settings_file">File does not seem to contain %1$s settings</string>
-	<string name="error_file_not_found">The settings file could not be found</string>
-	<string name="error_cant_write_settings_file">Can\'t write to the settings file</string>
-	<string name="error_notanumber">Please enter a positive number for both speeds</string>
-	<string name="error_notalabel">Please enter a valid label or pick from the list</string>
-	<string name="error_stillloadingdetails">Please wait until the torrent details have been loaded</string>
-	<string name="error_noftpapp">No app found that can download %1$s</string>
-	
-	<string name="update_app_newversion">New Transdroid version available</string>
-	<string name="update_search_newversion">New Transdroid search module available</string>
-	<string name="update_updateto">You can now update to %1$s</string>
-	
-	<string name="system_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>
-	<string name="system_license" translatable="false">Published under GNU General Public License v3</string>
-	<string name="system_librarieslabel">Some code/libraries are used in the project:</string>
-	<string name="system_libraries" translatable="false">AndroidAnnotations\n \u00A0 http://androidannotations.org/\n \u00A0 Pierre-Yves Ricau (eBusinessInformations) et al.  \n \u00A0 Apache License, Version 2.0\nMaterial Dialogs\n \u00A0 https://github.com/afollestad/material-dialogs\n \u00A0 Aidan Follestad et al.  \n \u00A0 MIT License\nSnackbar\n \u00A0 https://github.com/nispok/snackbar\n \u00A0 William Mora et al.  \n \u00A0 MIT License\nFloatingActionButton\n \u00A0 https://github.com/futuresimple/android-floating-action-button\n \u00A0 Jerzy Chałupski et al.  \n \u00A0 Apache License, Version 2.0\nBase16Encoder\n \u00A0 http://openjpa.apache.org/\n \u00A0 Marc Prud\'hommeaux  \n \u00A0 Apache OpenJPA\n MultipartEntity  \n \u00A0 Apache Software Foundation  \n \u00A0 Apache License, Version 2.0\nRssParser (learning-android)\n \u00A0 http://github.com/digitalspaghetti/learning-android\n \u00A0 Tane Piper  \n \u00A0 Public Domain\nBase64\n \u00A0 http://iharder.net/base64\n \u00A0 Robert Harder  \n \u00A0 Public Domain\naXMLRPC\n \u00A0 https://github.com/timroes/aXMLRPC\n \u00A0 Tim Roes  \n \u00A0 MIT License\nandroid-ColorPickerPreference\n \u00A0 https://github.com/attenzione/android-ColorPickerPreference\n \u00A0 Daniel Nilsson and Sergey Margaritov  \n \u00A0 Apache License, Version 2.0\nFunnel icon\n \u00A0 http://thenounproject.com/noun/funnel/#icon-No5608\n \u00A0 Naomi Atkinson from The Noun Project\n \u00A0 Creative Commons Attribution 3.0</string>
-	<string name="system_description">Manage your torrents from your Android device</string>
+    <string name="error_httperror">Error during communication; check your connection</string>
+    <string name="error_unsupported">Your torrent client does not support this operation</string>
+    <string name="error_magnet_links_unsupported">Your torrent client does not support magnet links</string>
+    <string name="error_jsonrequesterror">Internal error building request</string>
+    <string name="error_jsonresponseerror">Error parsing server response (please check your settings)</string>
+    <string name="error_daemonnotconnected">Web interface not connected to a running daemon</string>
+    <string name="error_401">Access denied (please check your settings)</string>
+    <string name="error_torrentfile">Can\'t read .torrent file</string>
+    <string name="error_parsingrss">Error while parsing the RSS feed</string>
+    <string name="error_invalid_url_form">This URL is not well-formed</string>
+    <string name="error_invalid_search_url">Your web search URL is invalid:</string>
+    <string name="error_invalid_ip_or_hostname">Input is not a valid IP address or host name</string>
+    <string name="error_invalid_port_number">Port number is always numeric</string>
+    <string name="error_invalid_directory">Directory paths end with a / or \</string>
+    <string name="error_invalid_timeout">Timeout can not be empty and is a positive number</string>
+    <string name="error_notorrentfile">The search result does not link to a .torrent file</string>
+    <string name="error_noproductforcode">Can\'t find torrent link or product information for this barcode</string>
+    <string name="error_no_url_enclosure">The RSS feed item didn\'t provide an URL enclosure or link tag pointing to the .torrent file</string>
+    <string name="error_no_link">The RSS feed item does not provide a link to browse to</string>
+    <string name="error_norssfeed">URL is not a (valid) RSS feed</string>
+    <string name="error_media_not_available">SD card not available to read/write</string>
+    <string name="error_no_valid_settings_file">File does not seem to contain %1$s settings</string>
+    <string name="error_file_not_found">The settings file could not be found</string>
+    <string name="error_cant_write_settings_file">Can\'t write to the settings file</string>
+    <string name="error_notanumber">Please enter a positive number for both speeds</string>
+    <string name="error_notalabel">Please enter a valid label or pick from the list</string>
+    <string name="error_stillloadingdetails">Please wait until the torrent details have been loaded</string>
+    <string name="error_noftpapp">No app found that can download %1$s</string>
+
+    <string name="update_app_newversion">New Transdroid version available</string>
+    <string name="update_search_newversion">New Transdroid search module available</string>
+    <string name="update_updateto">You can now update to %1$s</string>
+
+    <string name="system_developer" translatable="false">\u00A9 Eric Kok, 2312 development</string>
+    <string name="system_license" translatable="false">Published under GNU General Public License v3</string>
+    <string name="system_librarieslabel">Some code/libraries are used in the project:</string>
+    <string name="system_libraries" translatable="false">AndroidAnnotations\n \u00A0 http://androidannotations.org/\n \u00A0 Pierre-Yves Ricau (eBusinessInformations) et al.  \n \u00A0 Apache License, Version 2.0\nMaterial Dialogs\n \u00A0 https://github.com/afollestad/material-dialogs\n \u00A0 Aidan Follestad et al.  \n \u00A0 MIT License\nSnackbar\n \u00A0 https://github.com/nispok/snackbar\n \u00A0 William Mora et al.  \n \u00A0 MIT License\nFloatingActionButton\n \u00A0 https://github.com/futuresimple/android-floating-action-button\n \u00A0 Jerzy Chałupski et al.  \n \u00A0 Apache License, Version 2.0\nBase16Encoder\n \u00A0 http://openjpa.apache.org/\n \u00A0 Marc Prud\'hommeaux  \n \u00A0 Apache OpenJPA\n MultipartEntity  \n \u00A0 Apache Software Foundation  \n \u00A0 Apache License, Version 2.0\nRssParser (learning-android)\n \u00A0 http://github.com/digitalspaghetti/learning-android\n \u00A0 Tane Piper  \n \u00A0 Public Domain\nBase64\n \u00A0 http://iharder.net/base64\n \u00A0 Robert Harder  \n \u00A0 Public Domain\naXMLRPC\n \u00A0 https://github.com/timroes/aXMLRPC\n \u00A0 Tim Roes  \n \u00A0 MIT License\nandroid-ColorPickerPreference\n \u00A0 https://github.com/attenzione/android-ColorPickerPreference\n \u00A0 Daniel Nilsson and Sergey Margaritov  \n \u00A0 Apache License, Version 2.0\nFunnel icon\n \u00A0 http://thenounproject.com/noun/funnel/#icon-No5608\n \u00A0 Naomi Atkinson from The Noun Project\n \u00A0 Creative Commons Attribution 3.0</string>
+    <string name="system_description">Manage your torrents from your Android device</string>
 
 </resources>

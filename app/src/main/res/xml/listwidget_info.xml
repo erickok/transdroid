@@ -17,8 +17,8 @@
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
 	android:configure="org.transdroid.core.widget.ListWidgetConfigActivity_"
-	android:initialKeyguardLayout="@layout/widget_torrents_light"
-	android:initialLayout="@layout/widget_torrents_light"
+	android:initialKeyguardLayout="@layout/widget_torrents"
+	android:initialLayout="@layout/widget_torrents"
 	android:minHeight="110dip"
 	android:minResizeHeight="40dip"
 	android:minResizeWidth="110dp"

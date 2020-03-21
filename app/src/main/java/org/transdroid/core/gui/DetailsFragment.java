@@ -122,11 +122,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 		// On large screens where this fragment is shown next to the torrents list, we show a continues grey vertical
 		// line to separate the lists visually
 		if (!NavigationHelper_.getInstance_(getActivity()).isSmallScreen()) {
-			if (SystemSettings_.getInstance_(getActivity()).useDarkTheme()) {
-				detailsContainer.setBackgroundResource(R.drawable.details_list_background_dark);
-			} else {
-				detailsContainer.setBackgroundResource(R.drawable.details_list_background_light);
-			}
+			detailsContainer.setBackgroundResource(R.drawable.details_list_background);
 		}
 
 		createMenuOptions();

@@ -30,7 +30,7 @@ import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
-import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.SettingsUtils;
 import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.rssparser.Channel;
@@ -52,10 +52,7 @@ public class RssItemsActivity extends AppCompatActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// Set the theme according to the user preference
-		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
-			setTheme(R.style.TransdroidTheme_Dark);
-		}
+		SettingsUtils.applyDayNightTheme(this);
 		super.onCreate(savedInstanceState);
 	}
 

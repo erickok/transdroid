@@ -48,7 +48,7 @@ import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchHelper.SearchSortOrder;
 import org.transdroid.core.app.search.SearchSite;
 import org.transdroid.core.app.settings.ApplicationSettings;
-import org.transdroid.core.app.settings.SystemSettings_;
+import org.transdroid.core.app.settings.SettingsUtils;
 import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.NavigationHelper;
@@ -88,10 +88,7 @@ public class SearchActivity extends AppCompatActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// Set the theme according to the user preference
-		if (SystemSettings_.getInstance_(this).useDarkTheme()) {
-			setTheme(R.style.TransdroidTheme_Dark);
-		}
+		SettingsUtils.applyDayNightTheme(this);
 		super.onCreate(savedInstanceState);
 	}
 

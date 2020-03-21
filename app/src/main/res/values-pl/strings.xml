@@ -171,7 +171,6 @@
   <string name="widget_sortby">SORTOWANIE</string>
   <string name="widget_reversesortorder">Odwrócony porządek sortowania</string>
   <string name="widget_showstatusview">Status serwera zamiast tytułu</string>
-  <string name="widget_usedarktheme">Użyj ciemnego motywu (brak podglądu)</string>
   <string name="widget_done">GOTOWE</string>
   <string name="pref_servers">Serwery</string>
   <string name="pref_addserver">Dodaj nowy serwer</string>
