@@ -144,7 +144,6 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	 * @param newTorrents The new, updated list of torrents
 	 */
 	public void updateTorrents(ArrayList<Torrent> newTorrents, ArrayList<Label> currentLabels) {
-		if (!isResumed()) return;
 		torrents = newTorrents;
 		this.currentLabels = currentLabels;
 		applyAllFilters();
@@ -156,7 +155,6 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
 	 * @param wasRemoved Whether the affected torrent was indeed removed; otherwise it was updated somehow
 	 */
 	public void quickUpdateTorrent(Torrent affected, boolean wasRemoved) {
-		if (!isResumed()) return;
 		// Remove the old torrent object first
 		Iterator<Torrent> iter = torrents.iterator();
 		while (iter.hasNext()) {
