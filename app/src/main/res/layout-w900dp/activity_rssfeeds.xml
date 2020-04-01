@@ -19,7 +19,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".core.gui.rss.RssfeedsActivity_">
+	tools:context=".core.gui.rss.RssFeedsActivity_">
 
 	<android.support.v7.widget.Toolbar
 		android:id="@+id/rssfeeds_toolbar"
@@ -32,28 +32,53 @@
 		style="@style/DefaultToolbarShadow"
 		android:layout_below="@id/rssfeeds_toolbar" />
 
-	<LinearLayout
+	<android.support.v4.view.ViewPager
+		android:id="@+id/rssfeeds_pager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_below="@id/rssfeeds_toolbar"
-		android:baselineAligned="false"
-		android:orientation="horizontal">
+		android:layout_below="@+id/rssfeeds_toolbar">
 
-		<fragment
-			android:id="@+id/rssfeeds_fragment"
-			class="org.transdroid.core.gui.rss.RssfeedsFragment_"
-			android:layout_width="0dip"
-			android:layout_height="match_parent"
-			android:layout_weight="2"
-			tools:layout="@layout/fragment_rssfeeds" />
+		<android.support.design.widget.TabLayout
+			android:id="@+id/rssfeeds_tabs"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" />
 
-		<fragment
-			android:id="@+id/rssitems_fragment"
-			class="org.transdroid.core.gui.rss.RssitemsFragment_"
-			android:layout_width="0dip"
+		<LinearLayout
+			android:id="@+id/layout_rssfeeds_local"
+			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:layout_weight="3"
-			tools:layout="@layout/fragment_rssitems" />
-	</LinearLayout>
+			android:baselineAligned="false"
+			android:orientation="horizontal">
+			<fragment
+				android:id="@+id/rssfeeds_fragment"
+				class="org.transdroid.core.gui.rss.RssFeedsFragment_"
+				android:layout_width="0dip"
+				android:layout_height="match_parent"
+				android:layout_weight="2"
+				tools:layout="@layout/fragment_rssfeeds" />
+
+			<fragment
+				android:id="@+id/rssitems_fragment"
+				class="org.transdroid.core.gui.rss.RssItemsFragment_"
+				android:layout_width="0dip"
+				android:layout_height="match_parent"
+				android:layout_weight="3"
+				tools:layout="@layout/fragment_rssitems" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/layout_rss_feeds_remote"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:baselineAligned="false"
+			android:orientation="horizontal">
+			<fragment
+				android:id="@+id/remoterss_fragment"
+				class="org.transdroid.core.gui.remoterss.RemoteRssFragment_"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				tools:layout="@layout/fragment_torrents" />
+		</LinearLayout>
+	</android.support.v4.view.ViewPager>
 
 </RelativeLayout>

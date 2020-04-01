@@ -16,7 +16,7 @@
  */
 package org.transdroid.core.gui.rss;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,7 +41,7 @@ import java.util.List;
  */
 @EFragment(R.layout.fragment_rssfeeds)
 @OptionsMenu(R.menu.fragment_rssfeeds)
-public class RssfeedsFragment extends Fragment {
+public class RssFeedsFragment extends Fragment {
 
 	// Views
 	@ViewById(R.id.rssfeeds_list)
@@ -77,14 +77,24 @@ public class RssfeedsFragment extends Fragment {
 		MainSettingsActivity_.intent(getActivity()).start();
 	}
 
+	protected RssFeedsActivity getRssActivity() {
+		return (RssFeedsActivity) getActivity();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		this.refreshScreen();
+	}
+
 	@OptionsItem(R.id.action_refresh)
 	protected void refreshScreen() {
-		((RssfeedsActivity) getActivity()).refreshFeeds();
+		getRssActivity().refreshFeeds();
 	}
 
 	@ItemClick(R.id.rssfeeds_list)
 	protected void onFeedClicked(RssfeedLoader loader) {
-		((RssfeedsActivity) getActivity()).openRssfeed(loader, true);
+		getRssActivity().openRssfeed(loader, true);
 	}
 
 	/**

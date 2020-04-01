@@ -248,17 +248,13 @@
 
 		<!-- RSS -->
 		<activity
-			android:name="org.transdroid.core.gui.rss.RssfeedsActivity_"
+			android:name="org.transdroid.core.gui.rss.RssFeedsActivity_"
 			android:label="@string/rss_feeds"
 			android:launchMode="singleTop"
 			android:theme="@style/TransdroidTheme" />
 		<activity
-			android:name="org.transdroid.core.gui.rss.RssitemsActivity_"
+			android:name="org.transdroid.core.gui.rss.RssItemsActivity_"
 			android:label="@string/rss_feeds"
-			android:theme="@style/TransdroidTheme" />
-		<activity
-			android:name=".core.gui.remoterss.RemoteRssActivity_"
-			android:label="Remote RSS feeds"
 			android:theme="@style/TransdroidTheme" />
 
 		<receiver android:name="org.transdroid.core.service.BootReceiver_" >

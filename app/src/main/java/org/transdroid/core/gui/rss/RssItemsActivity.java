@@ -36,7 +36,7 @@ import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.rssparser.Channel;
 
 @EActivity(R.layout.activity_rssitems)
-public class RssitemsActivity extends AppCompatActivity {
+public class RssItemsActivity extends AppCompatActivity {
 
 	@Extra
 	protected Channel rssfeed = null;
@@ -46,7 +46,7 @@ public class RssitemsActivity extends AppCompatActivity {
 	protected boolean requiresExternalAuthentication;
 
 	@FragmentById(R.id.rssitems_fragment)
-	protected RssitemsFragment fragmentItems;
+	protected RssItemsFragment fragmentItems;
 	@ViewById
 	protected Toolbar rssfeedsToolbar;
 

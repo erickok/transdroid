@@ -15,10 +15,18 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/remoterss_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dialog" />
 
         <TextView
             android:layout_width="match_parent"
@@ -27,16 +35,11 @@
             android:gravity="center"
             android:id="@+id/remoterss_status_message"/>
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refresh_layout"
+        <ListView
+            android:id="@+id/torrents_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-                <ListView
-                    android:id="@+id/torrents_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    tools:listitem="@layout/list_item_remoterssitem"
-                    tools:visibility="visible"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
-</FrameLayout>
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            tools:listitem="@layout/list_item_remoterssitem"
+            tools:visibility="visible" />
+</LinearLayout>
