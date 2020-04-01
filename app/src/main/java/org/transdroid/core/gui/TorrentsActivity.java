@@ -339,9 +339,13 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 	protected void onResume() {
 		super.onResume();
 
+		// update navigation labels
+		navigationListAdapter.updateLabels(lastNavigationLabels);
+
 		// Refresh server settings
 		navigationListAdapter.updateServers(applicationSettings.getAllServerSettings());
 		ServerSetting lastUsed = applicationSettings.getLastUsedServer();
+
 		if (lastUsed == null) {
 			// Still no settings
 			updateFragmentVisibility(false);
