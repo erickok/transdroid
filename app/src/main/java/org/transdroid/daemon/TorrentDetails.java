@@ -17,11 +17,11 @@
  */
 package org.transdroid.daemon;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a torrent's fine details (currently only the trackers).
@@ -38,7 +38,7 @@ public final class TorrentDetails implements Parcelable {
 	public TorrentDetails(List<String> trackers, List<String> errors) {
 		this.trackers = trackers;
 		this.errors = errors;
-		this.pieces = null;
+		this.pieces = new ArrayList<>();
 	}
 
 	public TorrentDetails(List<String> trackers, List<String> errors, List<Integer> pieces) {
