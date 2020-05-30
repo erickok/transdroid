@@ -610,8 +610,6 @@ public class BitCometAdapter implements IDaemonAdapter {
 							settings.getType()));
 					// @formatter:on
 
-					id++; // Stop/start/etc. requests are made by ID, which is the order number in the returned XML list :-S
-
 				} else if (next == XmlPullParser.START_TAG && tagName.equals("task")) {
 
 					// Start of a new 'transfer' item; reset gathered torrent data
@@ -638,6 +636,8 @@ public class BitCometAdapter implements IDaemonAdapter {
 					if (next == XmlPullParser.TEXT) {
 						if (tagName.equals("name")) {
 							name = xpp.getText().trim();
+						} else if (tagName.equals("id")) {
+							id = Integer.parseInt(xpp.getText().trim());
 						} else if (tagName.equals("infohash")) {
 							hash = xpp.getText().trim();
 						} else if (tagName.equals("state")) {
