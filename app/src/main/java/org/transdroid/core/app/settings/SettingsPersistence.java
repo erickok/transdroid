@@ -16,11 +16,9 @@
  */
 package org.transdroid.core.app.settings;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Environment;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -30,9 +28,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.transdroid.daemon.util.HttpHelper;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.Environment;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Singleton class that can persist user settings (servers, RSS feeds, etc.) to and from a plain text JSON file.
@@ -48,8 +50,8 @@ public class SettingsPersistence {
 	protected SystemSettings systemSettings;
 
 	public static final String DEFAULT_SETTINGS_DIR = Environment.getExternalStorageDirectory().toString()
-			+ "/Transdroid";
-	public static final String DEFAULT_SETTINGS_FILENAME = "/settings.json";
+			+ "/Transdroid/";
+	public static final String DEFAULT_SETTINGS_FILENAME = "settings.json";
 	public static final File DEFAULT_SETTINGS_FILE = new File(DEFAULT_SETTINGS_DIR + DEFAULT_SETTINGS_FILENAME);
 
 	/**
@@ -59,9 +61,7 @@ public class SettingsPersistence {
 	 * @throws JSONException Thrown when the file did not contain valid JSON content
 	 */
 	public void importSettingsAsString(SharedPreferences prefs, String contents) throws JSONException {
-
 		importSettings(prefs, new JSONObject(contents));
-
 	}
 
 	/**
@@ -72,13 +72,21 @@ public class SettingsPersistence {
 	 * @throws FileNotFoundException Thrown when the settings file doesn't exist or couldn't be read
 	 * @throws JSONException Thrown when the file did not contain valid JSON content
 	 */
-	public void importSettingsFromFile(SharedPreferences prefs, File settingsFile) throws FileNotFoundException,
-			JSONException {
-
-		String raw = HttpHelper.convertStreamToString(new FileInputStream(settingsFile));
-		importSettings(prefs, new JSONObject(raw));
-
+	public void importSettingsFromFile(SharedPreferences prefs, File settingsFile) throws FileNotFoundException, JSONException {
+        importSettingsFromStream(prefs, new FileInputStream(settingsFile));
 	}
+
+    /**
+     * Synchronously reads the server, web searches, RSS feed, background service and system settings from a stream (file) in
+     * JSON format.
+     * @param prefs The application-global preferences object to write settings to
+     * @param settingsStream The stream to read the settings from
+     * @throws JSONException Thrown when the file did not contain valid JSON content
+     */
+    public void importSettingsFromStream(SharedPreferences prefs, InputStream settingsStream) throws JSONException {
+        String raw = HttpHelper.convertStreamToString(settingsStream);
+        importSettings(prefs, new JSONObject(raw));
+    }
 
 	public void importSettings(SharedPreferences prefs, JSONObject json) throws JSONException {
 
@@ -227,7 +235,7 @@ public class SettingsPersistence {
 	public String exportSettingsAsString(SharedPreferences prefs) throws JSONException {
 		return exportSettings(prefs).toString();
 	}
-	
+
 	/**
 	 * Synchronously writes the server, web searches, RSS feed, background service and system settings to a file in JSON
 	 * format.
@@ -237,20 +245,30 @@ public class SettingsPersistence {
 	 * @throws IOException Thrown when the settings file could not be created or written to
 	 */
 	public void exportSettingsToFile(SharedPreferences prefs, File settingsFile) throws JSONException, IOException {
-
-		JSONObject json = exportSettings(prefs);
-		
-		// Serialise the JSON object to a file
 		if (settingsFile.exists()) {
 			settingsFile.delete();
 		}
 		settingsFile.getParentFile().mkdirs();
 		settingsFile.createNewFile();
-		FileWriter writer = new FileWriter(settingsFile);
-		writer.write(json.toString(2));
-		writer.flush();
-		writer.close();
+		exportSettingsToStream(prefs, new FileOutputStream(settingsFile));
+	}
 
+	/**
+	 * Synchronously writes the server, web searches, RSS feed, background service and system settings to a stream (file) in JSON format. The stream
+	 * will be closed regardless of success.
+	 *
+	 * @param prefs          The application-global preferences object to read settings from
+	 * @param settingsStream The stream to read the settings to
+	 * @throws JSONException Thrown when the JSON content could not be constructed properly
+	 * @throws IOException   Thrown when the settings file could not be created or written to
+	 */
+	public void exportSettingsToStream(SharedPreferences prefs, OutputStream settingsStream) throws JSONException, IOException {
+		try {
+			JSONObject json = exportSettings(prefs);
+			settingsStream.write(json.toString(2).getBytes());
+		} finally {
+			settingsStream.close();
+		}
 	}
 
 	private JSONObject exportSettings(SharedPreferences prefs) throws JSONException {

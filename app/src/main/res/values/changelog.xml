@@ -19,6 +19,7 @@
 <string name="system_changelog">
 Transdroid 2.5.18\n
 - BitComet details fixes\n
+- Settings import/export on Android 10+\n
 \n
 Transdroid 2.5.17\n
 - qBittorrent 4.2+ support\n

@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2018 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -50,6 +50,8 @@ import org.transdroid.core.service.AppUpdateJob;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 @EActivity
 public class SystemSettingsActivity extends PreferenceCompatActivity {
@@ -72,6 +74,9 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 			return true;
 		}
 	};
+	protected static final int ACTIVITY_IMPORT_SETTINGS = 1;
+	protected static final int ACTIVITY_EXPORT_SETTINGS = 2;
+
 	@Bean
 	protected NavigationHelper navigationHelper;
 	@Bean
@@ -99,7 +104,8 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 	private OnClickListener importSettingsFromFile = new OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			if (!navigationHelper.checkSettingsReadPermission(SystemSettingsActivity.this))
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+					&& !navigationHelper.checkSettingsReadPermission(SystemSettingsActivity.this))
 				return; // We are requesting permission to access file storage
 			importSettingsFromFile();
 		}
@@ -114,7 +120,8 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 	private OnClickListener exportSettingsToFile = new OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			if (!navigationHelper.checkSettingsWritePermission(SystemSettingsActivity.this))
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+					&& !navigationHelper.checkSettingsWritePermission(SystemSettingsActivity.this))
 				return; // We are requesting permission to access file storage
 			exportSettingsToFile();
 		}
@@ -171,10 +178,17 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 	}
 
 	private void importSettingsFromFile() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
 		try {
-			settingsPersistence.importSettingsFromFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
-			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+				settingsPersistence.importSettingsFromFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
+				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
+			} else {
+				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+				intent.addCategory(Intent.CATEGORY_OPENABLE);
+				intent.setType("application/json");
+				startActivityForResult(intent, ACTIVITY_IMPORT_SETTINGS);
+			}
 		} catch (FileNotFoundException e) {
 			SnackbarManager
 					.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.red));
@@ -184,14 +198,56 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 		}
 	}
 
+	@OnActivityResult(ACTIVITY_IMPORT_SETTINGS)
+	public void importSettingsFilePicked(int resultCode, Intent data) {
+		if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+			try {
+				InputStream fis = getContentResolver().openInputStream(data.getData());
+				if (fis != null) {
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+					settingsPersistence.importSettingsFromStream(prefs, fis);
+					SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
+				}
+			} catch (IOException | JSONException e) {
+				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found)
+						.colorResource(R.color.red));
+			}
+		}
+	}
+
 	private void exportSettingsToFile() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
 		try {
-			settingsPersistence.exportSettingsToFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
-			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+				settingsPersistence.exportSettingsToFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
+				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
+			} else {
+				Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+				intent.addCategory(Intent.CATEGORY_OPENABLE);
+				intent.setType("application/json");
+				intent.putExtra(Intent.EXTRA_TITLE, SettingsPersistence.DEFAULT_SETTINGS_FILENAME);
+				startActivityForResult(intent, ACTIVITY_EXPORT_SETTINGS);
+			}
 		} catch (JSONException | IOException e) {
 			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
 					.colorResource(R.color.red));
+		}
+	}
+
+	@OnActivityResult(ACTIVITY_EXPORT_SETTINGS)
+	public void exportSettingsFilePicked(int resultCode, Intent data) {
+		if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+			try {
+				OutputStream fos = getContentResolver().openOutputStream(data.getData());
+				if (fos != null) {
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+					settingsPersistence.exportSettingsToStream(prefs, fos);
+					SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
+				}
+			} catch (IOException | JSONException e) {
+				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
+						.colorResource(R.color.red));
+			}
 		}
 	}
 
@@ -219,22 +275,24 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
 		switch (id) {
 			case DIALOG_IMPORTSETTINGS:
 				// @formatter:off
-			return new AlertDialog.Builder(this)
-					.setMessage(
-							getString(
-									R.string.pref_import_dialog,
-									getString(R.string.app_name),
-									SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
-					.setPositiveButton(R.string.pref_import_fromfile, importSettingsFromFile)
-					.setNeutralButton(R.string.pref_import_fromqr, importSettingsFromQr)
-					.setNegativeButton(android.R.string.cancel, null).create();
-			// @formatter:on
+				return new AlertDialog.Builder(this)
+						.setMessage(
+								getString(
+										Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+												? R.string.pref_import_dialog : R.string.pref_import_dialog_android10,
+										getString(R.string.app_name),
+										SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
+						.setPositiveButton(R.string.pref_import_fromfile, importSettingsFromFile)
+						.setNeutralButton(R.string.pref_import_fromqr, importSettingsFromQr)
+						.setNegativeButton(android.R.string.cancel, null).create();
+				// @formatter:on
 			case DIALOG_EXPORTSETTINGS:
 				// @formatter:off
 			return new AlertDialog.Builder(this)
 					.setMessage(
 							getString(
-									R.string.pref_export_dialog,
+									Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+											? R.string.pref_export_dialog : R.string.pref_export_dialog_android10,
 									getString(R.string.app_name),
 									SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
 					.setPositiveButton(R.string.pref_export_tofile, exportSettingsToFile)
