@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 237
-        versionName '2.5.17'
+        versionCode 238
+        versionName '2.5.18'
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -60,13 +60,13 @@ android {
         }
     }
     lintOptions {
-        disable 'MissingTranslation', 'ExtraTranslation', 'StringFormatInvalid', 'ValidFragment'
+        disable 'MissingTranslation', 'ExtraTranslation', 'StringFormatInvalid', 'ValidFragment', 'Registered'
     }
 }
 
 dependencies {
-    implementation 'org.androidannotations:androidannotations-api:4.6.0'
-    implementation 'org.androidannotations:ormlite-api:4.6.0'
+    implementation 'org.androidannotations:androidannotations-api:4.7.0'
+    implementation 'org.androidannotations:ormlite-api:4.7.0'
     implementation 'com.j256.ormlite:ormlite-core:4.48'
     implementation 'com.j256.ormlite:ormlite-android:4.48'
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
@@ -82,7 +82,7 @@ dependencies {
         transitive = true
     }
     implementation 'com.evernote:android-job:1.2.6'
-    annotationProcessor 'org.androidannotations:androidannotations:4.6.0'
-    annotationProcessor 'org.androidannotations:ormlite:4.6.0'
+    annotationProcessor 'org.androidannotations:androidannotations:4.7.0'
+    annotationProcessor 'org.androidannotations:ormlite:4.7.0'
 }
 
