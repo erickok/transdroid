@@ -161,12 +161,6 @@ public class QbittorrentAdapter implements IDaemonAdapter {
     }
 
     private synchronized void ensureAuthenticated(Log log) throws DaemonException {
-        // API changed in 3.2.0, login is now handled by its own request, which provides you a cookie.
-        // If we don't have that cookie, let's try and get it.
-        if (version != -1 && version < 30200) {
-            return;
-        }
-
         // Have we already authenticated?  Check if we have the cookie that we need
         if (isAuthenticated()) {
             return;
@@ -174,12 +168,13 @@ public class QbittorrentAdapter implements IDaemonAdapter {
 
         final BasicNameValuePair usernameParam = new BasicNameValuePair("username", settings.getUsername());
         final BasicNameValuePair passwordParam = new BasicNameValuePair("password", settings.getPassword());
-        if (version == -1 || version >= 40100) {
-            try {
-                makeRequest(log, "/api/v2/auth/login", usernameParam, passwordParam);
-            } catch (DaemonException ignored) {
-            }
+
+        // Try qBittorrent 4.1 API v2 first
+        try {
+            makeRequest(log, "/api/v2/auth/login", usernameParam, passwordParam);
+        } catch (DaemonException ignored) {
         }
+        // If still not authenticated, try the qBittorrent 3.2 API v1 endpoint
         if (!isAuthenticated()) {
             try {
                 makeRequest(log, "/login", usernameParam, passwordParam);
