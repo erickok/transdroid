@@ -641,12 +641,10 @@ public class QbittorrentAdapter implements IDaemonAdapter {
         Map<String, Label> labels = new HashMap<>();
         for (int i = 0; i < response.length(); i++) {
             JSONObject tor = response.getJSONObject(i);
-            if (version >= 40100) {
+            if (tor.has("category")) {
                 String label = tor.optString("category");
-                if (label != null && label.length() > 0) {
-                    final Label labelObject = labels.get(label);
-                    labels.put(label, new Label(label, (labelObject != null) ? labelObject.getCount() + 1 : 1));
-                }
+                final Label labelObject = labels.get(label);
+                labels.put(label, new Label(label, (labelObject != null) ? labelObject.getCount() + 1 : 1));
             }
         }
         return new ArrayList<>(labels.values());
