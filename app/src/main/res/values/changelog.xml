@@ -20,6 +20,8 @@
 Transdroid 2.5.18\n
 - BitComet details fixes\n
 - Settings import/export on Android 10+\n
+- Better authentication on qBittorrent preventing 401s\n
+- Fix label support in qBittorrent 3.x\n
 \n
 Transdroid 2.5.17\n
 - qBittorrent 4.2+ support\n
