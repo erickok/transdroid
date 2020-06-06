@@ -33,7 +33,7 @@ public class AddByUrlTask extends DaemonTask {
 		return new AddByUrlTask(adapter, data);
 	}
 	public String getUrl() {
-		return extras.getString("URL");
+		return extras.getString("URL").replaceAll("\\s", "");
 	}
 	public String getTitle() {
 		return extras.getString("TITLE");
