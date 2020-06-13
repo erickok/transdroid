@@ -575,6 +575,14 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 				if (urlBase == null || urlBase.equals("")) {
 					urlBase = "ftp://" + currentServerSettings.getAddress() + "/";
 				}
+				String rootDir = "";
+				if (urlBase.matches("(ftps?|scp|sftp)://.+/.+")) {
+					String[] split = urlBase.split("/", 4);
+					rootDir = "/" + split[3];
+					if (!rootDir.endsWith("/")) {
+						rootDir = rootDir + "/";
+					}
+				}
 
 				// Try using AndFTP intents
 				Intent andftpStart = new Intent(Intent.ACTION_PICK);
@@ -603,7 +611,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 						if (file.startsWith("/") && file.indexOf("/", 1) < 0) {
 							file = file.substring(1);
 						}
-						andftpStart.putExtra("remote_file" + (f + 1), file);
+						andftpStart.putExtra("remote_file" + (f + 1), rootDir + file);
 					}
 				}
 				if (andftpStart.resolveActivity(getActivity().getPackageManager()) != null) {
