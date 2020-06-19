@@ -185,7 +185,25 @@ public class RssFeedsActivity extends AppCompatActivity {
 		PagerAdapter pagerAdapter = new LayoutPagerAdapter(hasRemoteRss, currentConnection.getSettings().getName());
 		viewPager.setAdapter(pagerAdapter);
 		tabLayout.setupWithViewPager(viewPager);
-		viewPager.setCurrentItem(0);
+
+		// if local feeds dont have any entries but remote does, show it instead
+		int defaultTab = RSS_FEEDS_LOCAL;
+
+		if (hasRemoteRss && applicationSettings.getRssfeedSettings().size() == 0) {
+			if (currentConnection instanceof  RemoteRssSupplier) {
+				RemoteRssSupplier remoteConnection = ((RemoteRssSupplier) (currentConnection));
+				boolean hasRemoteFeeds = false;
+
+				try {
+					hasRemoteFeeds = remoteConnection.getRemoteRssChannels(log).size() > 0;
+				} catch (DaemonException e) {}
+
+				if (hasRemoteFeeds) {
+					defaultTab = RSS_FEEDS_REMOTE;
+				}
+			}
+		}
+		viewPager.setCurrentItem(defaultTab);
 
 		if (!hasRemoteRss) {
 			tabLayout.setVisibility(View.GONE);
