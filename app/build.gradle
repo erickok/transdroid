@@ -85,8 +85,8 @@ dependencies {
 // Other
     implementation 'org.androidannotations:androidannotations-api:4.7.0'
     implementation 'org.androidannotations:ormlite-api:4.7.0'
-    implementation 'com.j256.ormlite:ormlite-core:4.48'
-    implementation 'com.j256.ormlite:ormlite-android:4.48'
+    implementation 'com.j256.ormlite:ormlite-core:5.1'
+    implementation 'com.j256.ormlite:ormlite-android:5.1'
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.nispok:snackbar:2.11.0'
