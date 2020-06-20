@@ -78,7 +78,7 @@ android {
 dependencies {
 // Android support
     implementation 'androidx.appcompat:appcompat:1.1.0'
-	implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'com.google.android.material:material:1.1.0'
 
@@ -91,9 +91,9 @@ dependencies {
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.nispok:snackbar:2.11.0'
     implementation 'com.github.aegnor:rencode-java:cb628e824e'
-	implementation 'org.apache.openjpa:openjpa-lib:3.1.1'
-	implementation 'net.iharder:base64:2.3.9'
-	//implementation 'de.timroes:aXMLRPC:1.12.0'
+    implementation 'org.apache.openjpa:openjpa-lib:3.1.1'
+    implementation 'net.iharder:base64:2.3.9'
+    //implementation 'fr.turri:aXMLRPC:1.12.0'
     implementation('com.github.afollestad.material-dialogs:core:0.9.6.0@aar') {
         transitive = true
     }
