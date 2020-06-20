@@ -16,7 +16,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
  *
  * @author Tim Roes
  */
-class ResponseParser {
+public class ResponseParser {
 
 	private static final String FAULT_CODE = "faultCode";
 	private static final String FAULT_STRING = "faultString";
@@ -71,13 +71,13 @@ class ResponseParser {
 				pullParser.nextTag(); // TAG_VALUE (<value>)
 				// no parser.require() here since its called in XMLRPCSerializer.deserialize() below
 				// deserialize result
-				Object obj = SerializerHandler.getDefault().deserialize(pullParser);
+				Object obj = SerializerHandler.deserialize(pullParser);
 				consumeHttpEntity(response, entity);
 				return obj;
 			} else if (tag.equals(XMLRPCClient.FAULT)) {
 				// fault response
 				pullParser.nextTag(); // TAG_VALUE (<value>)
-				Map<String, Object> map = (Map<String, Object>) SerializerHandler.getDefault().deserialize(pullParser);
+				Map<String, Object> map = (Map<String, Object>) SerializerHandler.deserialize(pullParser);
 				consumeHttpEntity(response, entity);
 
 				//Check that required tags are in the response
@@ -92,12 +92,11 @@ class ResponseParser {
 		} catch (XmlPullParserException ex) {
 			consumeHttpEntity(response, entity);
 			throw new XMLRPCException("Error parsing response.", ex);
+		} catch(XMLRPCServerException e) {
+			throw e;
 		} catch (Exception ex) {
 			consumeHttpEntity(response, entity);
-			if(ex instanceof XMLRPCServerException)
-				throw (XMLRPCServerException)ex;
-			else
-				throw new XMLRPCException("Error getting result from server.", ex);
+			throw new XMLRPCException("Error getting result from server.", ex);
 		}
 	}
 }

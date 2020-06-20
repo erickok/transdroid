@@ -8,7 +8,7 @@ package de.timroes.axmlrpc;
  */
 public class XMLRPCServerException extends XMLRPCException {
 
-	private int errornr;
+	private final int errornr;
 
 	public XMLRPCServerException(String ex, int errnr) {
 		super(ex);

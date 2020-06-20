@@ -9,6 +9,8 @@ import de.timroes.axmlrpc.xmlcreator.XmlElement;
  */
 public class XMLUtil {
 
+	private XMLUtil() {}
+
 	/**
 	 * Creates an xml tag with a given type and content.
 	 *

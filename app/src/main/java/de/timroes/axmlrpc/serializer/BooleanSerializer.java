@@ -11,7 +11,7 @@ public class BooleanSerializer implements Serializer {
 
 	public XmlElement serialize(Object object) {
 		return XMLUtil.makeXmlTag(SerializerHandler.TYPE_BOOLEAN,
-				((Boolean)object == true) ? "1" : "0");
+				(Boolean) object ? "1" : "0");
 	}
 
 }

@@ -128,6 +128,11 @@ public class XMLRPCClient {
 	public static final int FLAGS_NO_STRING_ENCODE = 0x1000;
 
 	/**
+	 * Accepts response containing eg: <dateTime.iso8601/>
+	 */
+	public static final int FLAGS_ACCEPT_NULL_DATES = 0x4000;
+
+	/**
 	 * This flag should be used if the server is an apache ws xmlrpc server.
 	 * This will set some flags, so that the not standard conform behavior
 	 * of the server will be ignored.
@@ -140,28 +145,30 @@ public class XMLRPCClient {
 	private final int flags;
 
 	private DefaultHttpClient httpclient;
-	
+
 	private String url;
 
 	private Map<Long,Caller> backgroundCalls = new ConcurrentHashMap<Long, Caller>();
 
 	private ResponseParser responseParser;
 
+	private final SerializerHandler serializerHandler;
+
 	/**
 	 * Create a new XMLRPC client for the given URL.
-	 * 
+	 *
 	 * @param httpclient The already-initialized Apache HttpClient to use for connection.
 	 * @param url The URL to send the requests to.
 	 * @param flags A combination of flags to be set.
 	 */
 	public XMLRPCClient(DefaultHttpClient httpclient, String url, int flags) {
 
-		SerializerHandler.initialize(flags);
+		this.serializerHandler = new SerializerHandler(flags);
 
 		this.httpclient = httpclient;
 		this.url = url;
 		this.flags = flags;
-		
+
 		// Create a parser for the http responses.
 		responseParser = new ResponseParser();
 
@@ -260,7 +267,7 @@ public class XMLRPCClient {
 			throw new XMLRPCRuntimeException("Method name must only contain A-Z a-z . : _ / ");
 		}
 
-		return new Call(method, params);
+		return new Call(serializerHandler, method, params);
 
 	}
 
@@ -368,7 +375,7 @@ public class XMLRPCClient {
 			try {
 
 				Call c = createCall(methodName, params);
-				
+
 				// Prepare POST request
 				// FIXME: where creating a new HttpPost so calling #cancel isn't going to do anything
 				HttpPost post = new HttpPost(url);
@@ -377,10 +384,10 @@ public class XMLRPCClient {
 				StringEntity entity = new StringEntity(c.getXML(), HTTP.UTF_8);
 				entity.setContentType(TYPE_XML);
 				post.setEntity(entity);
-				
+
 				HttpResponse response = httpclient.execute(post);
 				int statusCode = response.getStatusLine().getStatusCode();
-				
+
 				InputStream istream;
 
 				// If status code was 401 or 403 throw exception or if appropriate
@@ -406,7 +413,7 @@ public class XMLRPCClient {
 						|| statusCode == HttpURLConnection.HTTP_MOVED_TEMP) {
 					// ... do either a foward
 					if(isFlagSet(FLAGS_FORWARD)) {
-						boolean temporaryForward = (statusCode == HttpURLConnection.HTTP_MOVED_TEMP);
+						boolean temporaryForward = statusCode == HttpURLConnection.HTTP_MOVED_TEMP;
 
 						// Get new location from header field.
 						String newLocation = response.getFirstHeader("Location").getValue();
@@ -440,10 +447,8 @@ public class XMLRPCClient {
 				}
 
 				// Check for strict parameters
-				if(isFlagSet(FLAGS_STRICT)) {
-					if(!response.getFirstHeader("Content-Type").getValue().startsWith(TYPE_XML)) {
+				if(isFlagSet(FLAGS_STRICT) && !response.getFirstHeader("Content-Type").getValue().startsWith(TYPE_XML)) {
 						throw new XMLRPCException("The Content-Type of the response must be text/xml.");
-					}
 				}
 
 				return responseParser.parse(istream, entity);
@@ -462,9 +467,9 @@ public class XMLRPCClient {
 			}
 
 		}
-		
+
 	}
-	
+
 	public static class CancelException extends Exception {
 		private static final long serialVersionUID = 9125122307255855136L;
 	}
@@ -475,5 +480,5 @@ public class XMLRPCClient {
 		public UnauthorizdException(int statusCode) { this.statusCode = statusCode; }
 		public int getStatusCode() { return statusCode; }
 	}
-	
+
 }

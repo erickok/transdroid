@@ -2,7 +2,6 @@ package de.timroes.axmlrpc.serializer;
 
 import de.timroes.axmlrpc.XMLRPCClient;
 import de.timroes.axmlrpc.XMLRPCException;
-import de.timroes.axmlrpc.XMLRPCRuntimeException;
 import de.timroes.axmlrpc.xmlcreator.XmlElement;
 
 import java.io.BufferedReader;
@@ -60,54 +59,29 @@ public class SerializerHandler {
 	public static final String TYPE_BASE64 = "base64";
 	public static final String TYPE_NULL = "nil";
 
-	private static SerializerHandler instance;
-
-	/**
-	 * Initialize the serialization handler. This method must be called before
-	 * the get method returns any object.
-	 *
-	 * @param flags The flags that has been set in the XMLRPCClient.
-	 * @see XMLRPCClient
-	 */
-	public static void initialize(int flags) {
-		instance = new SerializerHandler(flags);
-	}
-
-	/**
-	 * Return the instance of the SerializerHandler.
-	 * It must have been initialized with initialize() before.
-	 *
-	 * @return The instance of the SerializerHandler.
-	 */
-	public static SerializerHandler getDefault() {
-		if(instance == null) {
-			throw new XMLRPCRuntimeException("The SerializerHandler has not been initialized.");
-		}
-		return instance;
-	}
-
 	private StringSerializer string;
 	private BooleanSerializer bool = new BooleanSerializer();
 	private IntSerializer integer = new IntSerializer();
 	private LongSerializer long8 = new LongSerializer();
-	private StructSerializer struct = new StructSerializer();
+	private StructSerializer struct;
 	private DoubleSerializer floating = new DoubleSerializer();
-	private DateTimeSerializer datetime = new DateTimeSerializer();
-	private ArraySerializer array = new ArraySerializer();
+	private DateTimeSerializer datetime;
+	public static boolean accepts_null_input;
+	public SerializerHandler(boolean accepts_null_input) {
+		SerializerHandler.accepts_null_input = accepts_null_input;
+	}
+	private ArraySerializer array;
 	private Base64Serializer base64 = new Base64Serializer();
 	private NullSerializer nil = new NullSerializer();
-	
+
 	private int flags;
 
-	/**
-	 * Generates the SerializerHandler.
-	 * This method can only called from within the class (the initialize method).
-	 *
-	 * @param flags The flags to use.
-	 */
-	private SerializerHandler(int flags) {
+	public SerializerHandler(int flags) {
 		this.flags = flags;
 		string = new StringSerializer((flags & XMLRPCClient.FLAGS_NO_STRING_ENCODE) == 0);
+		struct = new StructSerializer(this);
+		array = new ArraySerializer(this);
+		datetime = new DateTimeSerializer((flags & XMLRPCClient.FLAGS_ACCEPT_NULL_DATES) != 0);
 	}
 
 	/**
@@ -152,8 +126,12 @@ public class SerializerHandler {
 			obj = parser.nextText();
 		} else
 		if (typeNodeName.equals(TYPE_DATE_TIME_ISO8601)) {
+
 			dateFormat.setCalendar(cal);
 			String value = parser.nextText();
+			if (accepts_null_input && (value==null || value.trim().length()==0)) {
+				return null;
+			}
 			try {
 				obj = dateFormat.parseObject(value);
 			} catch (ParseException e) {
@@ -232,7 +210,7 @@ public class SerializerHandler {
 	 */
 	public XmlElement serialize(Object object) throws XMLRPCException {
 
-		Serializer s = null;
+		Serializer s;
 
 		if((flags & XMLRPCClient.FLAGS_NIL) != 0 && object == null) {
 			s = nil;
@@ -277,7 +255,7 @@ public class SerializerHandler {
 			s = base64;
 		} else if(object instanceof Byte[]) {
 			s = base64;
-		} else if(object instanceof Iterable<?>) {
+		} else if(object instanceof Iterable<?> || object instanceof Object[]) {
 			s = array;
 		} else {
 			throw new XMLRPCException("No serializer found for type '"
