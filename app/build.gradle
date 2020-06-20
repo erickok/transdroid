@@ -2,8 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion '28.0.3'
-    useLibrary 'org.apache.http.legacy'
+    buildToolsVersion '29.0.3'
 
     defaultConfig {
         minSdkVersion 15
@@ -20,6 +19,7 @@ android {
             }
         }
     }
+
     signingConfigs {
         releaseConfig {
             def propsFile = rootProject.file('keystore.properties')
@@ -35,6 +35,7 @@ android {
             }
         }
     }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -46,6 +47,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     flavorDimensions "version"
     productFlavors {
         full {
@@ -59,22 +61,34 @@ android {
             resValue "string", "search_history_authority", applicationId + ".search.SearchHistoryProvider"
         }
     }
+
     lintOptions {
         disable 'MissingTranslation', 'ExtraTranslation', 'StringFormatInvalid', 'ValidFragment', 'Registered'
     }
+
+    compileOptions {
+        encoding = 'UTF-8'
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
-    implementation 'org.androidannotations:androidannotations-api:4.7.0'
-    implementation 'org.androidannotations:ormlite-api:4.7.0'
-    implementation 'com.j256.ormlite:ormlite-core:4.48'
-    implementation 'com.j256.ormlite:ormlite-android:4.48'
-    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+// Android support
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:support-annotations:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
+
+// Other
+    implementation 'org.androidannotations:androidannotations-api:4.7.0'
+    implementation 'org.androidannotations:ormlite-api:4.7.0'
+    implementation 'com.j256.ormlite:ormlite-core:4.48'
+    implementation 'com.j256.ormlite:ormlite-android:4.48'
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.nispok:snackbar:2.11.0'
     implementation 'com.github.aegnor:rencode-java:cb628e824e'
@@ -82,7 +96,7 @@ dependencies {
         transitive = true
     }
     implementation 'com.evernote:android-job:1.2.6'
+
     annotationProcessor 'org.androidannotations:androidannotations:4.7.0'
     annotationProcessor 'org.androidannotations:ormlite:4.7.0'
 }
-
