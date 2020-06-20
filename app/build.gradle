@@ -90,6 +90,7 @@ dependencies {
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.nispok:snackbar:2.11.0'
     implementation 'com.github.aegnor:rencode-java:cb628e824e'
+	implementation 'org.apache.openjpa:openjpa-lib:3.1.1'
     implementation('com.github.afollestad.material-dialogs:core:0.9.6.0@aar') {
         transitive = true
     }
