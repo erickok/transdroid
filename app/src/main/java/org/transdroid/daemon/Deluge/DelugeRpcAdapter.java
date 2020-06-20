@@ -17,7 +17,7 @@
  */
 package org.transdroid.daemon.Deluge;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import org.base64.android.Base64;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;

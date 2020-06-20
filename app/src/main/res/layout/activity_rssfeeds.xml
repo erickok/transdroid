@@ -21,7 +21,7 @@
 	android:layout_height="match_parent"
 	tools:context=".core.gui.rss.RssFeedsActivity_">
 
-	<android.support.v7.widget.Toolbar
+	<androidx.appcompat.widget.Toolbar
 		android:id="@+id/rssfeeds_toolbar"
 		style="@style/DefaultToolbar"
 		android:layout_width="match_parent"
@@ -32,14 +32,14 @@
 		style="@style/DefaultToolbarShadow"
 		android:layout_below="@id/rssfeeds_toolbar" />
 
-	<android.support.v4.view.ViewPager
+	<androidx.viewpager.widget.ViewPager
 		android:id="@+id/rssfeeds_pager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_below="@id/rssfeeds_toolbar"
 		android:layout_marginTop="-2dp">
 
-		<android.support.design.widget.TabLayout
+		<com.google.android.material.tabs.TabLayout
 			android:id="@+id/rssfeeds_tabs"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"/>
@@ -73,6 +73,6 @@
 				tools:layout="@layout/fragment_torrents" />
 		</LinearLayout>
 
-	</android.support.v4.view.ViewPager>
+	</androidx.viewpager.widget.ViewPager>
 
 </RelativeLayout>

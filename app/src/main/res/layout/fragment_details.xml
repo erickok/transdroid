@@ -23,7 +23,7 @@
 	android:layout_height="match_parent"
 	tools:context=".core.gui.DetailsActivity_">
 
-	<android.support.v7.widget.ActionMenuView
+	<androidx.appcompat.widget.ActionMenuView
 		android:id="@+id/details_menu"
 		style="@style/SplitToolbar"
 		android:layout_width="match_parent"
@@ -31,7 +31,7 @@
 		android:layout_alignParentBottom="true"
 		android:minHeight="?attr/actionBarSize" />
 
-	<android.support.v7.widget.ActionMenuView
+	<androidx.appcompat.widget.ActionMenuView
 		android:id="@+id/contextual_menu"
 		style="@style/SplitToolbar"
 		android:layout_width="match_parent"
@@ -41,7 +41,7 @@
 		android:visibility="gone"
 		tools:visibility="visible"/>
 
-	<android.support.v4.widget.SwipeRefreshLayout
+	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 		android:id="@+id/swipe_refresh_layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -56,7 +56,7 @@
 			android:dividerHeight="0dip"
 			android:visibility="gone" />
 
-	</android.support.v4.widget.SwipeRefreshLayout>
+	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 	<ProgressBar
 		android:id="@+id/loading_progress"

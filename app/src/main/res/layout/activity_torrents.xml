@@ -16,7 +16,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- This layout is for phones in portrait and shows the torrents list with the filters as navigation drawer. -->
-<android.support.v4.widget.DrawerLayout
+<androidx.drawerlayout.widget.DrawerLayout
 	android:id="@+id/drawer_layout"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -31,14 +31,14 @@
 		android:layout_height="match_parent"
 		android:orientation="vertical">
 
-		<android.support.v7.widget.Toolbar
+		<androidx.appcompat.widget.Toolbar
 			android:id="@+id/torrents_toolbar"
 			style="@style/DefaultToolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:minHeight="?attr/actionBarSize" />
 
-		<android.support.v7.widget.Toolbar
+		<androidx.appcompat.widget.Toolbar
 			android:id="@+id/actions_toolbar"
 			style="@style/SplitToolbar"
 			android:layout_width="match_parent"
@@ -48,7 +48,7 @@
 			android:paddingEnd="@dimen/ui_actions_padding"
 			android:paddingRight="@dimen/ui_actions_padding" />
 
-		<android.support.v7.widget.ActionMenuView
+		<androidx.appcompat.widget.ActionMenuView
 			android:id="@+id/contextual_menu"
 			style="@style/SplitToolbar"
 			android:layout_width="match_parent"
@@ -107,7 +107,7 @@
 			android:divider="@null"
 			tools:listitem="@layout/list_item_filter" />
 
-		<android.support.v7.widget.SearchView
+		<androidx.appcompat.widget.SearchView
 			android:id="@+id/filter_search"
 			android:layout_width="@dimen/ui_filters_list"
 			android:layout_height="wrap_content"
@@ -121,4 +121,4 @@
 
 	</LinearLayout>
 
-</android.support.v4.widget.DrawerLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

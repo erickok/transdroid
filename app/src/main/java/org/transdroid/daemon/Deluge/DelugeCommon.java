@@ -17,7 +17,7 @@
  */
 package org.transdroid.daemon.Deluge;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.TorrentStatus;
 

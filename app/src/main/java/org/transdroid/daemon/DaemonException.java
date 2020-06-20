@@ -18,7 +18,7 @@
  package org.transdroid.daemon;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * An exception thrown when an error occurs inside a server daemon adapter.

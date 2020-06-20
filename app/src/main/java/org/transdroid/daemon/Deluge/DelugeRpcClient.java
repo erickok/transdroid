@@ -17,7 +17,7 @@
  */
 package org.transdroid.daemon.Deluge;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;

@@ -3,7 +3,7 @@ package org.transdroid.core.gui.settings;
 import android.content.Context;
 import android.os.Build;
 import android.preference.EditTextPreference;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 
 public class InterceptableEditTextPreference extends EditTextPreference {
