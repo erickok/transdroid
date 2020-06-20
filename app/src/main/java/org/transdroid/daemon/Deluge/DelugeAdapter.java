@@ -17,9 +17,9 @@
  */
 package org.transdroid.daemon.Deluge;
 
-import com.android.internalcopy.http.multipart.FilePart;
-import com.android.internalcopy.http.multipart.MultipartEntity;
-import com.android.internalcopy.http.multipart.Part;
+import com.android.internal.http.multipart.FilePart;
+import com.android.internal.http.multipart.MultipartEntity;
+import com.android.internal.http.multipart.Part;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -418,7 +418,7 @@ public class DelugeAdapter implements IDaemonAdapter {
 			return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.FileAccessError, e.toString()));
 		}
 	}
-	
+
 	/*private JSONArray buildSetTorrentOptions(String torrent, String key, String value) throws JSONException {
 		JSONArray params = new JSONArray();
 		params.put(new JSONArray().put(torrent)); // torrent_id
