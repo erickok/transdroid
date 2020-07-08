@@ -49,7 +49,7 @@
 	<integer name="widget_config_orientation">1</integer>
 	<dimen name="widget_preview_padding">20dp</dimen>
 	<dimen name="widget_preview_height">200dp</dimen>
-	<dimen name="widget_preview_width">-1dp</dimen>
+	<dimen name="widget_preview_width">320dp</dimen>
 	<dimen name="widget_header_height">46dp</dimen>
 	<dimen name="widget_header_padding">8dp</dimen>
 	<dimen name="widget_list_item_height">54dp</dimen>

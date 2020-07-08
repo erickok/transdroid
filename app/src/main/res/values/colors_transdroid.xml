@@ -23,4 +23,9 @@
     <color name="transdroid_background">#fff</color>
     <color name="transdroid_text_bright">#000</color>
     <color name="transdroid_text_actionbar">#fff</color>
+
+    <color name="transdroid_dark_pressed">#CCaada62</color>
+    <color name="transdroid_dark_divider">#303030</color>
+    <color name="transdroid_dark_background">#000</color>
+    <color name="transdroid_dark_text_bright">#fff</color>
 </resources>

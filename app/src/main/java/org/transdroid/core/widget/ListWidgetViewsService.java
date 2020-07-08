@@ -166,7 +166,9 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public RemoteViews getViewAt(int position) {
 
 		// Load the dark or light widget list item layout xml
-		RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.list_item_widget);
+		RemoteViews rv = new RemoteViews(context.getPackageName(),
+				config.shouldUseDarkTheme() ? R.layout.list_item_widget_dark : R.layout.list_item_widget);
+
 
 		// Bind the torrent details texts and status colour
 		Torrent torrent = torrents.get(position);

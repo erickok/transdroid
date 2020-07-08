@@ -19,9 +19,6 @@
 	<style name="TransdroidTheme" parent="Theme.Transdroid.Auto">
 	</style>
 
-	<style name="TransdroidTheme.Dark" parent="Theme.Transdroid.Auto">
-	</style>
-
 	<!-- No theme background to let the user's wall paper shine through -->
 	<!-- Inspired by NoNonsenseNotes's ThemeWidgetConfig -->
 	<style name="TransdroidTheme.WidgetConfig" parent="@style/TransdroidTheme">
