@@ -21,7 +21,7 @@
 	android:layout_height="match_parent"
 	tools:context=".core.gui.rss.RssItemsActivity_">
 
-	<android.support.v7.widget.Toolbar
+	<androidx.appcompat.widget.Toolbar
 		android:id="@+id/rssfeeds_toolbar"
 		style="@style/DefaultToolbar"
 		android:layout_width="match_parent"

@@ -17,9 +17,9 @@
  */
 package org.transdroid.daemon.Qbittorrent;
 
-import com.android.internalcopy.http.multipart.FilePart;
-import com.android.internalcopy.http.multipart.MultipartEntity;
-import com.android.internalcopy.http.multipart.Part;
+import com.android.internal.http.multipart.FilePart;
+import com.android.internal.http.multipart.MultipartEntity;
+import com.android.internal.http.multipart.Part;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

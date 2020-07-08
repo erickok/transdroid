@@ -15,6 +15,12 @@ public class StructSerializer implements Serializer {
 	private static final String STRUCT_NAME = "name";
 	private static final String STRUCT_VALUE = "value";
 
+	private final SerializerHandler serializerHandler;
+
+	public StructSerializer(SerializerHandler serializerHandler) {
+		this.serializerHandler = serializerHandler;
+	}
+
 	public XmlElement serialize(Object object) {
 
 		XmlElement struct = new XmlElement(SerializerHandler.TYPE_STRUCT);
@@ -33,7 +39,7 @@ public class StructSerializer implements Serializer {
 				name = new XmlElement(STRUCT_NAME);
 				value = new XmlElement(STRUCT_VALUE);
 				name.setContent(member.getKey());
-				value.addChildren(SerializerHandler.getDefault().serialize(member.getValue()));
+				value.addChildren(serializerHandler.serialize(member.getValue()));
 				entry.addChildren(name);
 				entry.addChildren(value);
 				struct.addChildren(entry);

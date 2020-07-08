@@ -1,19 +1,19 @@
 /*
  *	This file is part of Transdroid <http://www.transdroid.org>
- *	
+ *
  *	Transdroid is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation, either version 3 of the License, or
  *	(at your option) any later version.
- *	
+ *
  *	Transdroid is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	You should have received a copy of the GNU General Public License
  *	along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
- *	
+ *
  */
 package org.transdroid.daemon.Aria2c;
 
@@ -25,7 +25,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.base64.android.Base64;
+import net.iharder.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -360,27 +360,27 @@ public class Aria2Adapter implements IDaemonAdapter {
 			}
 			// @formatter:off
 			torrents.add(new Torrent(
-					j, 
-					tor.getString("gid"), 
-					name, 
-					status, 
-					tor.getString("dir"), 
+					j,
+					tor.getString("gid"),
+					name,
+					status,
+					tor.getString("dir"),
 					downloadSpeed,
-					tor.getInt("uploadSpeed"), 
-					tor.getInt("connections"), 
-					numSeeders , 
-					tor.getInt("connections"), 
-					numSeeders, 
-					(downloadSpeed > 0? (int) (totalLength / downloadSpeed): -1), 
-					completedLength, 
+					tor.getInt("uploadSpeed"),
+					tor.getInt("connections"),
+					numSeeders ,
+					tor.getInt("connections"),
+					numSeeders,
+					(downloadSpeed > 0? (int) (totalLength / downloadSpeed): -1),
+					completedLength,
 					tor.getLong("uploadLength"),
-					totalLength, 
+					totalLength,
 					completedLength / (float) totalLength, // Percentage to [0..1]
 					0f, // Not available
 					null, // Not available
 					null, // Not available
 					null, // Not available
-					error, 
+					error,
 					settings.getType()));
 			// @formatter:on
 
@@ -403,12 +403,12 @@ public class Aria2Adapter implements IDaemonAdapter {
 			}
 			// @formatter:off
 			files.add(new TorrentFile(
-					Integer.toString(file.getInt("index")), 
-					rel, 
-					rel, 
-					file.getString("path"), 
+					Integer.toString(file.getInt("index")),
+					rel,
+					rel,
+					file.getString("path"),
 					file.getLong("length"),
-					file.getLong("completedLength"), 
+					file.getLong("completedLength"),
 					file.getBoolean("selected") ? Priority.Normal : Priority.Off));
 			// @formatter:on
 

@@ -22,8 +22,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.base64.android.Base64;
-import org.base64.android.Base64.InputStream;
+import net.iharder.Base64;
+import net.iharder.Base64.InputStream;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -192,7 +192,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
 
 					// Encode the .torrent file's data
 					InputStream in =
-							new Base64.InputStream(new FileInputStream(new File(URI.create(file))), Base64.ENCODE);
+							new InputStream(new FileInputStream(new File(URI.create(file))), Base64.ENCODE);
 					StringWriter writer = new StringWriter();
 					int c;
 					while ((c = in.read()) != -1) {

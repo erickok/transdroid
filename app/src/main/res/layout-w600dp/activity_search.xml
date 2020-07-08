@@ -23,7 +23,7 @@
 	android:orientation="horizontal"
 	tools:context=".core.gui.search.SearchActivity_">
 
-	<android.support.v7.widget.Toolbar
+	<androidx.appcompat.widget.Toolbar
 		android:id="@+id/search_toolbar"
 		style="@style/DefaultToolbar"
 		android:layout_width="match_parent"

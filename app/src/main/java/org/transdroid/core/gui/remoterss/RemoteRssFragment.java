@@ -17,7 +17,7 @@
 package org.transdroid.core.gui.remoterss;
 
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;

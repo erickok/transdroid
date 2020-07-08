@@ -14,6 +14,8 @@ public class Base64 {
 
 	private static final HashMap<Character,Byte> map = new HashMap<Character, Byte>();
 
+	private Base64() {}
+
 	static {
 		for(int i = 0; i < code.length; i++) {
 			map.put(code[i], (byte)i);
@@ -44,10 +46,10 @@ public class Base64 {
 		int outi = 0;
 		int b1, b2, b3, b4;
 		for(int i = 0; i < input.length; i+=4) {
-			b1 = (map.get(input[i]) - 1);
-			b2 = (map.get(input[i+1]) - 1);
-			b3 = (map.get(input[i+2]) - 1);
-			b4 = (map.get(input[i+3]) - 1);
+			b1 = map.get(input[i]) - 1;
+			b2 = map.get(input[i+1]) - 1;
+			b3 = map.get(input[i+2]) - 1;
+			b4 = map.get(input[i+3]) - 1;
 			out[outi++] = (byte)(b1 << 2 | b2 >>> 4);
 			out[outi++] = (byte)((b2 & 0x0F) << 4 | b3 >>> 2);
 			out[outi++] = (byte)((b3 & 0x03) << 6 | (b4 & 0x3F));
