@@ -195,6 +195,7 @@
   <string name="widget_sortby">مرتب کردن بر اساس سفارش	</string>
   <string name="widget_reversesortorder">معکوس مرتب کردن بر اساس سفارش	</string>
   <string name="widget_showstatusview">وضعیت کارگزار به‌جای عنوان</string>
+  <string name="widget_usedarktheme">استفاده از تم تیره (بدون پیش نمایش)	</string>
   <string name="widget_done">تمام</string>
   <string name="pref_servers">سرورها</string>
   <string name="pref_addserver">اضافه کردن سرور جدید	</string>

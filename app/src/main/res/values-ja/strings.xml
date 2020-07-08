@@ -195,6 +195,7 @@
   <string name="widget_sortby">ｿｰﾄ順</string>
   <string name="widget_reversesortorder">ソート順を逆にする</string>
   <string name="widget_showstatusview">タイトルにサーバーステータスを表示</string>
+  <string name="widget_usedarktheme">ダーク･テーマを使用 (プレビューなし)</string>
   <string name="widget_done">完了</string>
   <string name="pref_servers">サーバー</string>
   <string name="pref_addserver">新しいサーバーを追加</string>

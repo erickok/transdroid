@@ -220,6 +220,7 @@
   <string name="widget_sortby">ПОРЯДОК СОРТИРОВКИ</string>
   <string name="widget_reversesortorder">Обратный порядок сортировки</string>
   <string name="widget_showstatusview">Статистика сервера вместо названия</string>
+  <string name="widget_usedarktheme">Использовать темную тему (без предпросмотра)</string>
   <string name="widget_done">ГОТОВО</string>
   <string name="pref_servers">Серверы</string>
   <string name="pref_addserver">Добавить новый сервер</string>

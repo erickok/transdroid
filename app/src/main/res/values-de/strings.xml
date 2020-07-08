@@ -203,6 +203,7 @@
   <string name="widget_sortby">SORTIERREIHENFOLGE</string>
   <string name="widget_reversesortorder">Umgekehrte Sortierreihenfolge</string>
   <string name="widget_showstatusview">Serverstatus anstelle des Titels</string>
+  <string name="widget_usedarktheme">Dunkles Thema benutzen (keine Vorschau)</string>
   <string name="widget_done">FERTIG</string>
   <string name="pref_servers">Server</string>
   <string name="pref_addserver">Neuen Server hinzufügen</string>

@@ -30,14 +30,16 @@ public class ListWidgetConfig {
 	private final TorrentsSortBy sortBy;
 	private final boolean reserveSort;
 	private final boolean showStatusView;
+	private final boolean useDarkTheme;
 
 	public ListWidgetConfig(int serverId, StatusType statusType, TorrentsSortBy sortBy, boolean reverseSort,
-			boolean showStatusView) {
+			boolean showStatusView, boolean useDarkTheme) {
 		this.serverId = serverId;
 		this.statusType = statusType;
 		this.sortBy = sortBy;
 		this.reserveSort = reverseSort;
 		this.showStatusView = showStatusView;
+		this.useDarkTheme = useDarkTheme;
 	}
 
 	public int getServerId() {
@@ -58,6 +60,10 @@ public class ListWidgetConfig {
 
 	public boolean shouldShowStatusView() {
 		return showStatusView;
+	}
+	
+	public boolean shouldUseDarkTheme() {
+		return useDarkTheme;
 	}
 
 }

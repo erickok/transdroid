@@ -73,7 +73,7 @@ public class ListWidgetConfigActivity extends AppCompatActivity {
 	@ViewById
 	protected Spinner serverSpinner, filterSpinner, sortSpinner;
 	@ViewById
-	protected CheckBox reverseorderCheckBox, showstatusCheckBox;
+	protected CheckBox reverseorderCheckBox, showstatusCheckBox, darkthemeCheckBox;
 	@ViewById
 	protected TextView filterText, serverText, errorText;
 	@ViewById
@@ -127,7 +127,8 @@ public class ListWidgetConfigActivity extends AppCompatActivity {
 			TorrentsSortBy sortBy = ((SortByListItem) sortSpinner.getSelectedItem()).getSortBy();
 			boolean reverseSort = reverseorderCheckBox.isChecked();
 			boolean showstatus = showstatusCheckBox.isChecked();
-			ListWidgetConfig config = new ListWidgetConfig(server, statusType, sortBy, reverseSort, showstatus);
+			boolean useDarkTheme = darkthemeCheckBox.isChecked();
+			ListWidgetConfig config = new ListWidgetConfig(server, statusType, sortBy, reverseSort, showstatus, useDarkTheme);
 			applicationSettings.setWidgetConfig(appWidgetId, config);
 
 			// Return the widget configuration result

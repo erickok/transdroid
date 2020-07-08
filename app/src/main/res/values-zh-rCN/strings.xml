@@ -179,6 +179,7 @@
   <string name="widget_sortby">排序顺序</string>
   <string name="widget_reversesortorder">反向排序</string>
   <string name="widget_showstatusview">服务器状态而不是标题</string>
+  <string name="widget_usedarktheme">使用暗色主题(无预览)</string>
   <string name="widget_done">完成</string>
   <string name="pref_servers">服务器</string>
   <string name="pref_addserver">添加服务器</string>
