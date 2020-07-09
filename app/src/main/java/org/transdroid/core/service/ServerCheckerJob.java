@@ -35,7 +35,7 @@ public class ServerCheckerJob extends Job {
 		NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
 		if (notificationSettings.isEnabledForTorrents()) {
 			Log_.getInstance_(context).d(TAG, "Schedule server checker job");
-			NotificationChannels.ensureServerCheckerChannel(context);
+			NotificationChannels.ensureServerCheckerChannel(context, notificationSettings);
 			scheduledJobId = new JobRequest.Builder(ServerCheckerJob.TAG)
 					.setPeriodic(notificationSettings.getInvervalInMilliseconds())
 					.setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)

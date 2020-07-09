@@ -40,7 +40,7 @@ public class RssCheckerJob extends Job {
 		NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
 		if (notificationSettings.isEnabledForRss()) {
 			Log_.getInstance_(context).d(TAG, "Schedule rss checker job");
-			NotificationChannels.ensureRssCheckerChannel(context);
+			NotificationChannels.ensureRssCheckerChannel(context, notificationSettings);
 			scheduledJobId = new JobRequest.Builder(RssCheckerJob.TAG)
 					.setPeriodic(notificationSettings.getInvervalInMilliseconds())
 					.setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)

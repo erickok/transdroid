@@ -21,6 +21,9 @@ import androidx.annotation.NonNull;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
+
+import org.transdroid.core.app.settings.NotificationSettings;
+import org.transdroid.core.app.settings.NotificationSettings_;
 import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.log.Log_;
@@ -35,11 +38,12 @@ public class AppUpdateJob extends Job {
 	private static Integer scheduledJobId;
 
 	public static void schedule(Context context) {
+		NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
 		SystemSettings systemSettings = SystemSettings_.getInstance_(context);
 		NavigationHelper_ navigationHelper = NavigationHelper_.getInstance_(context);
 		if (systemSettings.checkForUpdates() && navigationHelper.enableUpdateChecker()) {
 			Log_.getInstance_(context).d(TAG, "Schedule app update checker job");
-			NotificationChannels.ensureAppUpdateChannel(context);
+			NotificationChannels.ensureAppUpdateChannel(context, notificationSettings);
 			scheduledJobId = new JobRequest.Builder(AppUpdateJob.TAG)
 					.setPeriodic(TimeUnit.DAYS.toMillis(1))
 					.setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
