@@ -8,19 +8,20 @@ import androidx.appcompat.app.AppCompatCallback;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceManagerBinder;
 import androidx.preference.PreferenceScreen;
 
-    public class PreferenceCompatActivity extends AppCompatActivity implements AppCompatCallback, PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
+public class PreferenceCompatActivity extends AppCompatActivity implements AppCompatCallback, PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
-        private PreferenceFragmentCompat fragment;
+    private PreferenceFragmentCompat fragment;
 
-        public void addPreferencesFromResource(@XmlRes int preferencesResId) {
-            fragment = new RootPreferencesFragment(preferencesResId);
-            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commitNow();
-        }
+    public void addPreferencesFromResource(@XmlRes int preferencesResId) {
+        fragment = new RootPreferencesFragment(preferencesResId);
+        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commitNow();
+    }
 
-        public PreferenceManager getPreferenceManager() {
-            return fragment.getPreferenceManager();
+    public PreferenceManager getPreferenceManager() {
+        return fragment.getPreferenceManager();
         }
 
         public PreferenceScreen getPreferenceScreen() {
@@ -66,6 +67,10 @@ import androidx.preference.PreferenceScreen;
             @Override
             public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
                 if (prefs != null) {
+                    // Update the already loaded preferences with this fragment's manager to handle dialog clicks, etc.
+                    for (int i = 0; i < prefs.getPreferenceCount(); i++) {
+                        PreferenceManagerBinder.bind(prefs.getPreference(i), getPreferenceManager());
+                    }
                     setPreferenceScreen(prefs);
                     prefs = null;
                 }
