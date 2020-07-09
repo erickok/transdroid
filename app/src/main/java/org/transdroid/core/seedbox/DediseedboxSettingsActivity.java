@@ -21,8 +21,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.PreferenceManager;
+
+import androidx.preference.EditTextPreference;
+import androidx.preference.PreferenceManager;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
@@ -30,7 +31,6 @@ import org.androidannotations.annotations.OptionsMenu;
 import org.transdroid.R;
 import org.transdroid.core.gui.settings.KeyBoundPreferencesActivity;
 import org.transdroid.core.gui.settings.MainSettingsActivity_;
-import org.transdroid.daemon.Daemon;
 
 /**
  * Activity that allows for the configuration of a Dediseedbox seedbox. The key can be supplied to update an

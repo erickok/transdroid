@@ -197,21 +197,47 @@
 		</activity>
 
 		<!-- Settings screens -->
-		<activity android:name="org.transdroid.core.gui.settings.MainSettingsActivity_" />
-		<activity android:name="org.transdroid.core.gui.settings.ServerSettingsActivity_" />
-		<activity android:name="org.transdroid.core.gui.settings.WebsearchSettingsActivity_" />
-		<activity android:name="org.transdroid.core.gui.settings.RssfeedSettingsActivity_" />
-		<activity android:name="org.transdroid.core.gui.settings.NotificationSettingsActivity_" />
-		<activity android:name="org.transdroid.core.gui.settings.SystemSettingsActivity_" />
-		<activity android:name="org.transdroid.core.gui.settings.HelpSettingsActivity_" />
-		<activity android:name="org.transdroid.core.gui.navigation.DialogHelper_" />
+		<activity
+			android:name="org.transdroid.core.gui.settings.MainSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.gui.settings.ServerSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.gui.settings.WebsearchSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.gui.settings.RssfeedSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.gui.settings.NotificationSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.gui.settings.SystemSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.gui.settings.HelpSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.gui.navigation.DialogHelper_"
+			android:theme="@style/TransdroidTheme.Settings" />
 
 		<!-- Seedbox settings -->
-		<activity android:name="org.transdroid.core.seedbox.DediseedboxSettingsActivity_" />
-		<activity android:name="org.transdroid.core.seedbox.SeedstuffSettingsActivity_" />
-		<activity android:name="org.transdroid.core.seedbox.XirvikSharedSettingsActivity_" />
-		<activity android:name="org.transdroid.core.seedbox.XirvikSemiSettingsActivity_" />
-		<activity android:name="org.transdroid.core.seedbox.XirvikDediSettingsActivity_" />
+		<activity
+			android:name="org.transdroid.core.seedbox.DediseedboxSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.seedbox.SeedstuffSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.seedbox.XirvikSharedSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.seedbox.XirvikSemiSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
+		<activity
+			android:name="org.transdroid.core.seedbox.XirvikDediSettingsActivity_"
+			android:theme="@style/TransdroidTheme.Settings" />
 
 		<!-- Search -->
 		<activity

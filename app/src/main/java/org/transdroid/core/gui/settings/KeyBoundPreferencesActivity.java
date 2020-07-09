@@ -1,37 +1,37 @@
-/* 
+/*
  * Copyright 2010-2018 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.transdroid.core.gui.settings;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.text.TextUtils;
+
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceScreen;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.preference.CheckBoxPreference;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
-import android.text.TextUtils;
-import android.text.method.PasswordTransformationMethod;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Abstract activity that helps implement a preference screen for key-bound settings, i.e. settings of which there can
@@ -59,7 +59,6 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivi
 	 * @param currentMaxKey The value of what is currently the last defined settings object, or -1 of no settings were
 	 *            defined so far at all
 	 */
-	@SuppressWarnings("deprecation")
 	protected final void init(int preferencesResId, int currentMaxKey) {
 
 		// Load the raw preferences to show in this screen
@@ -132,7 +131,6 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivi
 	 * @param dependency The base name of the preference to which this preference depends
 	 * @return The concrete {@link EditTextPreference} that is bound to this preference
 	 */
-	@SuppressWarnings("deprecation")
 	protected final EditTextPreference initTextPreference(String baseName, String defValue, String dependency) {
 		// Update the loaded Preference with the actual preference key to load/store with
 		EditTextPreference pref = (EditTextPreference) findPreference(baseName);
@@ -175,7 +173,6 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivi
 	 * @param dependency The base name of the preference to which this preference depends
 	 * @return The concrete {@link CheckBoxPreference} that is bound to this preference
 	 */
-	@SuppressWarnings("deprecation")
 	protected final CheckBoxPreference initBooleanPreference(String baseName, boolean defValue, String dependency) {
 		// Update the loaded Preference with the actual preference key to load/store with
 		CheckBoxPreference pref = (CheckBoxPreference) findPreference(baseName);
@@ -203,7 +200,6 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivi
 	 * @param defValue The default value for this preference, as shown when no value was yet stored
 	 * @return The concrete {@link ListPreference} that is bound to this preference
 	 */
-	@SuppressWarnings("deprecation")
 	protected final ListPreference initListPreference(String baseName, String defValue) {
 		// Update the loaded Preference with the actual preference key to load/store with
 		ListPreference pref = (ListPreference) findPreference(baseName);
@@ -216,13 +212,12 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivi
 		return pref;
 	}
 
-	@SuppressWarnings("deprecation")
 	protected void showValueOnSummary(String prefKey) {
 		Preference pref = findPreference(prefKey);
 		if (sharedPrefs.contains(prefKey)
 				&& pref instanceof EditTextPreference
 				&& !TextUtils.isEmpty(sharedPrefs.getString(prefKey, ""))
-				&& !(((EditTextPreference) pref).getEditText().getTransformationMethod() instanceof PasswordTransformationMethod)) {
+				&& !isPasswordPref((EditTextPreference) pref)) {
 			// Non-password edit preferences show the user-entered value
 			pref.setSummary(sharedPrefs.getString(prefKey, ""));
 			return;
@@ -235,6 +230,11 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivi
 		}
 		if (originalSummaries.containsKey(prefKey))
 			pref.setSummary(originalSummaries.get(prefKey));
+	}
+
+	protected boolean isPasswordPref(EditTextPreference preference) {
+		return preference.getKey().startsWith("server_pass_") || preference.getKey().startsWith("server_extrapass")
+				|| preference.getKey().startsWith("server_ftppass");
 	}
 
 }

@@ -26,9 +26,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceClickListener;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.Preference.OnPreferenceClickListener;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
@@ -69,7 +69,6 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
 	protected SearchHelper searchHelper;
 	protected SharedPreferences prefs;
 	private OnPreferenceClickListener onAddServer = new OnPreferenceClickListener() {
-		@SuppressWarnings("deprecation")
 		@Override
 		public boolean onPreferenceClick(Preference preference) {
 			if (navigationHelper.enableSeedboxes())
@@ -164,17 +163,11 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
 		// Note: Settings are loaded in onResume()
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onResume() {
 		super.onResume();
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-		prefs = getPreferenceManager().getSharedPreferences();
-		if (getPreferenceScreen() != null) {
-			getPreferenceScreen().removeAll();
-		}
 
 		boolean enableSearchUi = navigationHelper.enableSearchUi();
 		boolean enableRssUi = navigationHelper.enableRssUi();
@@ -182,6 +175,7 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
 
 		// Load the preference menu and attach actions
 		addPreferencesFromResource(R.xml.pref_main);
+		prefs = getPreferenceManager().getSharedPreferences();
 		findPreference("header_addserver").setOnPreferenceClickListener(onAddServer);
 		if (enableSearchUi) {
 			findPreference("header_addwebsearch").setOnPreferenceClickListener(onAddWebsearch);
@@ -289,12 +283,6 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
 	@OptionsItem(android.R.id.home)
 	protected void navigateUp() {
 		TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-	}
-
-	@Override
-	public void onBuildHeaders(List<Header> target) {
-		// TODO: Add two-pane support in settings
-		super.onBuildHeaders(target);
 	}
 
 	@Override

@@ -16,6 +16,16 @@
  */
 package org.transdroid.core.gui.settings;
 
+import android.annotation.TargetApi;
+import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+
+import androidx.preference.Preference;
+import androidx.preference.Preference.OnPreferenceClickListener;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
@@ -25,16 +35,6 @@ import org.transdroid.core.app.settings.SettingsPersistence;
 import org.transdroid.core.gui.log.ErrorLogSender;
 import org.transdroid.core.gui.navigation.DialogHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper;
-
-import android.annotation.TargetApi;
-import android.app.Dialog;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceActivity;
 
 @EActivity
 public class HelpSettingsActivity extends PreferenceCompatActivity {
@@ -52,7 +52,6 @@ public class HelpSettingsActivity extends PreferenceCompatActivity {
 	@Bean
 	protected SettingsPersistence settingsPersistence;
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2018 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,12 +23,13 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.NotificationSettings;
-import org.transdroid.core.service.BootReceiver;
 import org.transdroid.core.service.RssCheckerJob;
 import org.transdroid.core.service.ServerCheckerJob;
 
@@ -38,7 +39,6 @@ public class NotificationSettingsActivity extends PreferenceCompatActivity imple
 	@Bean
 	protected NotificationSettings notificationSettings;
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,7 +52,12 @@ public class NotificationSettingsActivity extends PreferenceCompatActivity imple
 
 	}
 
-	@SuppressWarnings("deprecation")
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		((RingtonePreference) findPreference("notifications_sound")).onActivityResult(requestCode, resultCode, data);
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -60,7 +65,6 @@ public class NotificationSettingsActivity extends PreferenceCompatActivity imple
 		getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -79,7 +83,6 @@ public class NotificationSettingsActivity extends PreferenceCompatActivity imple
 		RssCheckerJob.schedule(getApplicationContext());
 	}
 
-	@SuppressWarnings("deprecation")
 	private void updatePrefsEnabled(boolean disabled) {
 		findPreference("notifications_interval").setEnabled(!disabled);
 		findPreference("notifications_sound").setEnabled(!disabled);

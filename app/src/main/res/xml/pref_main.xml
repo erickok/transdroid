@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
   
   Transdroid is free software: you can redistribute it and/or modify
@@ -15,67 +14,81 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-	
-	<PreferenceCategory
-		android:key="header_servers"
-		android:title="@string/pref_servers"
-		android:order="0">
-		<Preference
-			android:key="header_addserver"
-			android:title="@string/pref_addserver"
-			android:order="98" />
-		<ListPreference
-			android:key="header_defaultserver"
-			android:title="@string/pref_defaultserver"
-			android:order="99"
-			android:defaultValue="-2" />
-	</PreferenceCategory>
-	
-	<PreferenceCategory
-		android:key="header_searchsites"
-		android:title="@string/pref_searchsites"
-		android:order="100">
-		<ListPreference
-			android:key="header_setsearchsite"
-			android:title="@string/pref_setsearchsite"
-			android:order="101" />
-		<Preference
-			android:key="header_addwebsearch"
-			android:title="@string/pref_addwebsearch" 
-			android:order="199"/>
-	</PreferenceCategory>
-	
-	<PreferenceCategory
-		android:key="header_rssfeeds"
-		android:title="@string/pref_rssfeeds"
-		android:order="200">
-		<Preference
-			android:key="header_addrssfeed"
-			android:title="@string/pref_addrssfeed" 
-			android:order="199"/>
-	</PreferenceCategory>
-	
-	<PreferenceCategory
-		android:key="header_other"
-		android:title="@string/pref_others"
-		android:order="300">
-		<Preference
-			android:key="header_background"
-			android:title="@string/pref_background"
-			android:order="301" />
-		<Preference
-			android:key="header_system"
-			android:title="@string/pref_system"
-			android:order="302" />
-		<Preference
-			android:key="header_help"
-			android:title="@string/pref_help"
-			android:order="303" />
-		<Preference
-			android:key="header_donate"
-			android:title="@string/donate_text"
-			android:order="304" />
-	</PreferenceCategory>
-	
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="header_servers"
+        android:order="0"
+        android:title="@string/pref_servers"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="header_addserver"
+            android:order="98"
+            android:title="@string/pref_addserver"
+            app:iconSpaceReserved="false" />
+        <ListPreference
+            android:defaultValue="-2"
+            android:key="header_defaultserver"
+            android:order="99"
+            android:title="@string/pref_defaultserver"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="header_searchsites"
+        android:order="100"
+        android:title="@string/pref_searchsites"
+        app:iconSpaceReserved="false">
+        <ListPreference
+            android:key="header_setsearchsite"
+            android:order="101"
+            android:title="@string/pref_setsearchsite"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:key="header_addwebsearch"
+            android:order="199"
+            android:title="@string/pref_addwebsearch"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="header_rssfeeds"
+        android:order="200"
+        android:title="@string/pref_rssfeeds"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="header_addrssfeed"
+            android:order="199"
+            android:title="@string/pref_addrssfeed"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="header_other"
+        android:order="300"
+        android:title="@string/pref_others"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="header_background"
+            android:order="301"
+            android:title="@string/pref_background"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:key="header_system"
+            android:order="302"
+            android:title="@string/pref_system"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:key="header_help"
+            android:order="303"
+            android:title="@string/pref_help"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:key="header_donate"
+            android:order="304"
+            android:title="@string/donate_text"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

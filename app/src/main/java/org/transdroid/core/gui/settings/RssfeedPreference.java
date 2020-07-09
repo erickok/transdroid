@@ -16,10 +16,11 @@
  */
 package org.transdroid.core.gui.settings;
 
-import org.transdroid.core.app.settings.RssfeedSetting;
-
 import android.content.Context;
-import android.preference.Preference;
+
+import androidx.preference.Preference;
+
+import org.transdroid.core.app.settings.RssfeedSetting;
 
 /**
  * Represents a {@link RssfeedSetting} in a preferences screen.
@@ -35,6 +36,7 @@ public class RssfeedPreference extends Preference {
 	public RssfeedPreference(Context context) {
 		super(context);
 		setOnPreferenceClickListener(onPreferenceClicked);
+		setIconSpaceReserved(false);
 	}
 
 	/**
@@ -70,7 +72,7 @@ public class RssfeedPreference extends Preference {
 	};
 	
 	public interface OnRssfeedClickedListener {
-		public void onRssfeedClicked(RssfeedSetting rssfeedSetting);
+		void onRssfeedClicked(RssfeedSetting rssfeedSetting);
 	}
 	
 }

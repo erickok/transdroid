@@ -1,66 +1,74 @@
 package org.transdroid.core.gui.settings;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
+
+import androidx.annotation.XmlRes;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatCallback;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.view.ActionMode;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceScreen;
 
-public class PreferenceCompatActivity extends PreferenceActivity implements AppCompatCallback {
+    public class PreferenceCompatActivity extends AppCompatActivity implements AppCompatCallback, PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
-	private AppCompatDelegate acd;
+        private PreferenceFragmentCompat fragment;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		acd = AppCompatDelegate.create(this, this);
-		acd.onCreate(savedInstanceState);
-	}
+        public void addPreferencesFromResource(@XmlRes int preferencesResId) {
+            fragment = new RootPreferencesFragment(preferencesResId);
+            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commitNow();
+        }
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		acd.onPostCreate(savedInstanceState);
-	}
+        public PreferenceManager getPreferenceManager() {
+            return fragment.getPreferenceManager();
+        }
 
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		acd.onConfigurationChanged(newConfig);
-	}
+        public PreferenceScreen getPreferenceScreen() {
+            return fragment.getPreferenceScreen();
+        }
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-		acd.onStop();
-	}
+        public Preference findPreference(CharSequence key) {
+            return fragment.findPreference(key);
+        }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		acd.onDestroy();
-	}
+        @Override
+        public boolean onPreferenceStartScreen(PreferenceFragmentCompat caller, PreferenceScreen pref) {
+            LowerPreferencesFragment lowerFragment = new LowerPreferencesFragment(pref);
+            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, lowerFragment).addToBackStack("lower").commit();
+            return true;
+        }
 
-	public ActionBar getSupportActionBar() {
-		return acd.getSupportActionBar();
-	}
+        public static class RootPreferencesFragment extends PreferenceFragmentCompat {
 
-	@Override
-	public void onSupportActionModeStarted(ActionMode actionMode) {
+            private int preferencesResId;
 
-	}
+            public RootPreferencesFragment(int preferencesResId) {
+                this.preferencesResId = preferencesResId;
+            }
 
-	@Override
-	public void onSupportActionModeFinished(ActionMode actionMode) {
+            @Override
+            public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+                addPreferencesFromResource(preferencesResId);
+            }
+        }
 
-	}
+        public static class LowerPreferencesFragment extends PreferenceFragmentCompat {
 
-	@Nullable
-	@Override
-	public ActionMode onWindowStartingSupportActionMode(ActionMode.Callback callback) {
-		return acd.startSupportActionMode(callback);
-	}
-}
+            private PreferenceScreen prefs;
+
+            public LowerPreferencesFragment() {
+            }
+
+            public LowerPreferencesFragment(PreferenceScreen prefs) {
+                this.prefs = prefs;
+            }
+
+            @Override
+            public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+                if (prefs != null) {
+                    setPreferenceScreen(prefs);
+                    prefs = null;
+                }
+            }
+        }
+    }

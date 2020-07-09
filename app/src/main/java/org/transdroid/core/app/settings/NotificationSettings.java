@@ -16,16 +16,17 @@
  */
 package org.transdroid.core.app.settings;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.provider.Settings;
+
+import androidx.preference.PreferenceManager;
+
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EBean.Scope;
 import org.androidannotations.annotations.RootContext;
 import org.transdroid.R;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
 
 /**
  * Allows instantiation of the settings specified in R.xml.pref_notifications.
@@ -91,7 +92,6 @@ public class NotificationSettings {
 
 	/**
 	 * Whether the device should vibrate on a new notification
-	 * @return
 	 */
 	public boolean shouldVibrate() {
 		return prefs.getBoolean("notifications_vibrate", false);

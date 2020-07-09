@@ -16,16 +16,16 @@
  */
 package org.transdroid.core.app.settings;
 
-import java.util.Date;
-
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.RootContext;
-import org.androidannotations.annotations.EBean.Scope;
-
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
+import androidx.preference.PreferenceManager;
+
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.EBean.Scope;
+import org.androidannotations.annotations.RootContext;
+
+import java.util.Date;
 
 /**
  * Allows instantiation of the settings specified in R.xml.pref_system.

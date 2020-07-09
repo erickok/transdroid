@@ -2,9 +2,10 @@ package org.transdroid.core.gui.settings;
 
 import android.content.Context;
 import android.os.Build;
-import android.preference.EditTextPreference;
-import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
+
+import androidx.annotation.RequiresApi;
+import androidx.preference.EditTextPreference;
 
 public class InterceptableEditTextPreference extends EditTextPreference {
 

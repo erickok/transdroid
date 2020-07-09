@@ -23,8 +23,9 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.PreferenceManager;
+
+import androidx.preference.EditTextPreference;
+import androidx.preference.PreferenceManager;
 
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -129,7 +130,6 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	protected void storeScgiMountFolder(String result) {
 		Editor edit = PreferenceManager.getDefaultSharedPreferences(XirvikSharedSettingsActivity.this).edit();
 		EditTextPreference pref = (EditTextPreference) findPreference("seedbox_xirvikshared_rpc_" + key);

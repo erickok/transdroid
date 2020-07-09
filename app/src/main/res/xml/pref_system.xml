@@ -15,16 +15,19 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 	
 	<CheckBoxPreference
 		android:key="system_dormantasinactive"
+		app:iconSpaceReserved="false"
 		android:title="@string/pref_dormantasinactive"
 		android:summary="@string/pref_dormantasinactive_info"
 		android:defaultValue="false" />
 	
 	<ListPreference
 		android:key="system_autorefresh"
+		app:iconSpaceReserved="false"
 		android:title="@string/pref_autorefresh"
 		android:summary="@string/pref_autorefresh_info"
 		android:entries="@array/pref_autorefresh_intervals"
@@ -33,6 +36,7 @@
 
 	<CheckBoxPreference
 		android:key="system_autodarktheme"
+		app:iconSpaceReserved="false"
 		android:title="@string/pref_autodarktheme"
 		android:summary="@string/pref_autodarktheme_info"
 		android:disableDependentsState="true"
@@ -42,25 +46,30 @@
 		android:key="system_usedarktheme"
 		android:dependency="system_autodarktheme"
 		android:title="@string/pref_usedarktheme"
+		app:iconSpaceReserved="false"
 		android:summary="@string/pref_usedarktheme_info"
 		android:defaultValue="false" />
 	
 	<CheckBoxPreference
 		android:key="system_checkupdates"
 		android:title="@string/pref_checkupdates"
+		app:iconSpaceReserved="false"
 		android:summary="@string/pref_checkupdates_info"
 		android:defaultValue="true" />
 	
 	<Preference
 		android:key="system_clearsearch"
+		app:iconSpaceReserved="false"
 		android:title="@string/pref_clearsearch" />
 	
 	<Preference
 		android:key="system_importsettings"
+		app:iconSpaceReserved="false"
 		android:title="@string/pref_import" />
 	
 	<Preference
 		android:key="system_exportsettings"
+		app:iconSpaceReserved="false"
 		android:title="@string/pref_export" />
 	
 </PreferenceScreen>

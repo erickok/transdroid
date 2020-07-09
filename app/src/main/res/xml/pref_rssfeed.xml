@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
   
   Transdroid is free software: you can redistribute it and/or modify
@@ -15,41 +14,48 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<EditTextPreference
-		android:key="rssfeed_name"
-		android:title="@string/pref_name"
-		android:summary="@string/pref_name_optional"
-		android:inputType="textNoSuggestions" />
+    <EditTextPreference
+        android:inputType="textNoSuggestions"
+        android:key="rssfeed_name"
+        android:summary="@string/pref_name_optional"
+        android:title="@string/pref_name"
+        app:iconSpaceReserved="false" />
 
-	<EditTextPreference
-		android:key="rssfeed_url"
-		android:title="@string/pref_feedurl"
-		android:inputType="textUri" />
+    <EditTextPreference
+        android:inputType="textUri"
+        android:key="rssfeed_url"
+        android:title="@string/pref_feedurl"
+        app:iconSpaceReserved="false" />
 
-	<CheckBoxPreference
-		android:key="rssfeed_reqauth"
-		android:title="@string/pref_reqauth"
-		android:summary="@string/pref_reqauth_info"
-		android:defaultValue="false" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="rssfeed_reqauth"
+        android:summary="@string/pref_reqauth_info"
+        android:title="@string/pref_reqauth"
+        app:iconSpaceReserved="false" />
 
-	<CheckBoxPreference
-		android:key="rssfeed_alarmnew"
-		android:title="@string/pref_alarmrssnew"
-		android:summary="@string/pref_alarmrssnew_info"
-		android:defaultValue="true" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="rssfeed_alarmnew"
+        android:summary="@string/pref_alarmrssnew_info"
+        android:title="@string/pref_alarmrssnew"
+        app:iconSpaceReserved="false" />
 
-	<EditTextPreference
-		android:key="rssfeed_exclude"
-		android:title="@string/pref_alarmrssexclude"
-		android:summary="@string/pref_alarmrssexclude_info"
-		android:inputType="textFilter" />
+    <EditTextPreference
+        android:inputType="textFilter"
+        android:key="rssfeed_exclude"
+        android:summary="@string/pref_alarmrssexclude_info"
+        android:title="@string/pref_alarmrssexclude"
+        app:iconSpaceReserved="false" />
 
-	<EditTextPreference
-		android:key="rssfeed_include"
-		android:title="@string/pref_alarmrssinclude"
-		android:summary="@string/pref_alarmrssinclude_info"
-		android:inputType="textFilter" />
+    <EditTextPreference
+        android:inputType="textFilter"
+        android:key="rssfeed_include"
+        android:summary="@string/pref_alarmrssinclude_info"
+        android:title="@string/pref_alarmrssinclude"
+        app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

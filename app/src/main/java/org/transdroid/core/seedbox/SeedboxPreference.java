@@ -16,11 +16,12 @@
  */
 package org.transdroid.core.seedbox;
 
+import android.content.Context;
+
+import androidx.preference.Preference;
+
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.settings.ServerPreference;
-
-import android.content.Context;
-import android.preference.Preference;
 
 /**
  * Represents a {@link ServerSetting} in a preferences screen, as constructed for a specific {@link SeedboxProvider}.
@@ -91,8 +92,8 @@ public class SeedboxPreference extends ServerPreference {
 	}
 
 	public interface OnSeedboxClickedListener {
-		public void onSeedboxClicked(ServerSetting serverSetting, SeedboxProvider provider,
-				int onSeedboxClickedListenerOffset);
+		void onSeedboxClicked(ServerSetting serverSetting, SeedboxProvider provider,
+							  int onSeedboxClickedListenerOffset);
 	}
 
 }

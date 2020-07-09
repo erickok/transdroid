@@ -19,8 +19,9 @@ package org.transdroid.core.app.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
+
+import androidx.preference.PreferenceManager;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;

@@ -17,7 +17,8 @@
 package org.transdroid.core.gui.settings;
 
 import android.content.Context;
-import android.preference.Preference;
+
+import androidx.preference.Preference;
 
 import org.transdroid.core.app.settings.WebsearchSetting;
 
@@ -35,6 +36,7 @@ public class WebsearchPreference extends Preference {
 	public WebsearchPreference(Context context) {
 		super(context);
 		setOnPreferenceClickListener(onPreferenceClicked);
+		setIconSpaceReserved(false);
 	}
 
 	/**

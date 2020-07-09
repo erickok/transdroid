@@ -19,7 +19,6 @@ package org.transdroid.core.seedbox;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.EditTextPreference;
 
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.daemon.Daemon;
@@ -30,8 +29,6 @@ import org.transdroid.daemon.OS;
  * @author Eric Kok
  */
 public class DediseedboxSettings extends SeedboxSettingsImpl implements SeedboxSettings {
-
-	private EditTextPreference excludeFilter, includeFilter;
 
 	@Override
 	public String getName() {

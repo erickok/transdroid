@@ -16,22 +16,19 @@
  */
 package org.transdroid.core.seedbox;
 
-import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.daemon.Daemon;
-import org.transdroid.daemon.OS;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.EditTextPreference;
+
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.OS;
 
 /**
  * Implementation of {@link SeedboxSettings} for Seedstuff seedboxes.
  * @author Eric Kok
  */
 public class SeedstuffSettings extends SeedboxSettingsImpl implements SeedboxSettings {
-
-	private EditTextPreference excludeFilter, includeFilter;
 
 	@Override
 	public String getName() {
