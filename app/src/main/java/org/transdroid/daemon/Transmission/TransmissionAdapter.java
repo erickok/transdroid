@@ -17,13 +17,14 @@
  */
 package org.transdroid.daemon.Transmission;
 
+import net.iharder.Base64;
+import net.iharder.Base64.InputStream;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import net.iharder.Base64;
-import net.iharder.Base64.InputStream;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -579,6 +580,18 @@ public class TransmissionAdapter implements IDaemonAdapter {
 
 	private ArrayList<TorrentFile> parseJsonFileList(JSONObject response, Torrent torrent) throws JSONException {
 
+		String absoluteDir = torrent.getLocationDir();
+		String relativeDir = settings.getDownloadDir();
+		if (relativeDir == null) {
+			// We can make no assumptions except the torrent's location is the main download dir
+			relativeDir = "";
+		} else if (absoluteDir.startsWith(relativeDir)) {
+			relativeDir = absoluteDir.substring(relativeDir.length());
+			if (relativeDir.startsWith("/")) {
+				relativeDir = relativeDir.substring(1);
+			}
+		}
+
 		// Parse response
 		ArrayList<TorrentFile> torrentfiles = new ArrayList<>();
 		JSONArray rarray = response.getJSONArray("torrents");
@@ -592,8 +605,8 @@ public class TransmissionAdapter implements IDaemonAdapter {
 				torrentfiles.add(new TorrentFile(
 						String.valueOf(i),
 						file.getString(RPC_FILE_NAME),
-						file.getString(RPC_FILE_NAME),
-						torrent.getLocationDir() + file.getString(RPC_FILE_NAME),
+						relativeDir + file.getString(RPC_FILE_NAME),
+						absoluteDir + file.getString(RPC_FILE_NAME),
 						file.getLong(RPC_FILE_LENGTH),
 						file.getLong(RPC_FILE_COMPLETED),
 						convertTransmissionPriority(stat.getBoolean(RPC_FILESTAT_WANTED), stat.getInt(RPC_FILESTAT_PRIORITY))));

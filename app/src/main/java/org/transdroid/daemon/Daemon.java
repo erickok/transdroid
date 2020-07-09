@@ -329,7 +329,7 @@ public enum Daemon {
 	}
 
 	public static boolean needsManualPathSpecified(Daemon type) {
-		return type == uTorrent || type == BitTorrent || type == KTorrent || type == BuffaloNas;
+		return type == uTorrent || type == BitTorrent || type == KTorrent || type == BuffaloNas || type == Transmission;
 	}
 
 	public static boolean supportsFilePaths(Daemon type) {
