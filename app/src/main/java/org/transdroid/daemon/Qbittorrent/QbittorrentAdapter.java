@@ -760,7 +760,7 @@ public class QbittorrentAdapter implements IDaemonAdapter {
     }
 
     private long parseSize(String string) {
-        // See https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-Documentation
+        // See https://github.com/qbittorrent/qBittorrent/wiki
         if (string.equals("Unknown"))
             return -1;
         // Sizes are given in "1,023.3 MiB"-like string format
@@ -770,6 +770,10 @@ public class QbittorrentAdapter implements IDaemonAdapter {
             number = Double.parseDouble(normalizeNumber(parts[0]));
         } catch (Exception e) {
             return -1L;
+        }
+        if (parts.length <= 1) {
+            // Interpret as bytes, as no qualifier was given
+            return (long) number;
         }
         // Returns size in B-based long
         if (parts[1].equals("TiB")) {
