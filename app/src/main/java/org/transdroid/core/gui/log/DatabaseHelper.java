@@ -59,7 +59,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             switch (oldVersion) {
                 case 1:
                     TableUtils.createTable(connectionSource, ErrorLogEntry.class);
-			/*case 1:
+			/*case 2:
 				etc...*/
             }
 

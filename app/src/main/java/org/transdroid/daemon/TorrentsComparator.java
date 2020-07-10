@@ -67,42 +67,42 @@ public class TorrentsComparator implements Comparator<Torrent> {
                 case DateDone:
                     return tor1.getDateDone().compareTo(tor2.getDateDone());
                 case Percent:
-                    return Float.valueOf(tor1.getDownloadedPercentage()).compareTo(tor2.getDownloadedPercentage());
+                    return Float.compare(tor1.getDownloadedPercentage(), tor2.getDownloadedPercentage());
                 case DownloadSpeed:
-                    return Integer.valueOf(tor1.getRateDownload()).compareTo(tor2.getRateDownload());
+                    return Integer.compare(tor1.getRateDownload(), tor2.getRateDownload());
                 case UploadSpeed:
-                    return Integer.valueOf(tor1.getRateUpload()).compareTo(tor2.getRateUpload());
+                    return Integer.compare(tor1.getRateUpload(), tor2.getRateUpload());
                 case Ratio:
-                    return Double.valueOf(tor1.getRatio()).compareTo(tor2.getRatio());
+                    return Double.compare(tor1.getRatio(), tor2.getRatio());
                 case Size:
-                    return Double.valueOf(tor1.getTotalSize()).compareTo((double) tor2.getTotalSize());
+                    return Double.compare(tor1.getTotalSize(), (double) tor2.getTotalSize());
                 default:
                     return alphanumComparator.compare(tor1.getName().toLowerCase(), tor2.getName().toLowerCase());
             }
         } else {
             switch (sortBy) {
                 case Status:
-                    return 0 - tor1.getStatusCode().compareStatusCodeTo(tor2.getStatusCode());
+                    return -tor1.getStatusCode().compareStatusCodeTo(tor2.getStatusCode());
                 case DateAdded:
                     if (tor1.getDateAdded() == null)
                         return 1;
                     if (tor2.getDateAdded() == null)
                         return -1;
-                    return 0 - tor1.getDateAdded().compareTo(tor2.getDateAdded());
+                    return -tor1.getDateAdded().compareTo(tor2.getDateAdded());
                 case DateDone:
-                    return 0 - tor1.getDateDone().compareTo(tor2.getDateDone());
+                    return -tor1.getDateDone().compareTo(tor2.getDateDone());
                 case Percent:
-                    return 0 - (Float.valueOf(tor1.getDownloadedPercentage()).compareTo(tor2.getDownloadedPercentage()));
+                    return -(Float.compare(tor1.getDownloadedPercentage(), tor2.getDownloadedPercentage()));
                 case DownloadSpeed:
-                    return 0 - (Integer.valueOf(tor1.getRateDownload()).compareTo(tor2.getRateDownload()));
+                    return -(Integer.compare(tor1.getRateDownload(), tor2.getRateDownload()));
                 case UploadSpeed:
-                    return 0 - (Integer.valueOf(tor1.getRateUpload()).compareTo(tor2.getRateUpload()));
+                    return -(Integer.compare(tor1.getRateUpload(), tor2.getRateUpload()));
                 case Ratio:
-                    return 0 - Double.valueOf(tor1.getRatio()).compareTo(tor2.getRatio());
+                    return -Double.compare(tor1.getRatio(), tor2.getRatio());
                 case Size:
-                    return 0 - Double.valueOf(tor1.getTotalSize()).compareTo((double) tor2.getTotalSize());
+                    return -Double.compare(tor1.getTotalSize(), (double) tor2.getTotalSize());
                 default:
-                    return 0 - alphanumComparator.compare(tor1.getName().toLowerCase(), tor2.getName().toLowerCase());
+                    return -alphanumComparator.compare(tor1.getName().toLowerCase(), tor2.getName().toLowerCase());
             }
         }
     }

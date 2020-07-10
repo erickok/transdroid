@@ -78,10 +78,8 @@ public class SelfSignedTrustManager implements X509TrustManager {
                 return;
             }
 
-            CertificateException certificateException =
-                    new CertificateException("Certificate key [" + thumbprint + "] doesn't match expected value.");
             //Log.e(SelfSignedTrustManager.class.getSimpleName(), certificateException.toString());
-            throw certificateException;
+            throw new CertificateException("Certificate key [" + thumbprint + "] doesn't match expected value.");
 
         } catch (NoSuchAlgorithmException e) {
             throw new CertificateException("Unable to check self-signed cert, unknown algorithm. " + e.toString());

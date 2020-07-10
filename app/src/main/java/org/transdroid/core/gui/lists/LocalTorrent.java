@@ -63,8 +63,6 @@ public class LocalTorrent {
         switch (e.getType()) {
             case MethodUnsupported:
                 return R.string.error_unsupported;
-            case ConnectionError:
-                return R.string.error_httperror;
             case UnexpectedResponse:
                 return R.string.error_jsonresponseerror;
             case ParsingFailed:
@@ -75,6 +73,7 @@ public class LocalTorrent {
                 return R.string.error_401;
             case FileAccessError:
                 return R.string.error_torrentfile;
+            case ConnectionError:
             default:
                 return R.string.error_httperror;
         }
@@ -201,16 +200,15 @@ public class LocalTorrent {
     public String getProgressSpeedText(Resources r) {
 
         switch (t.getStatusCode()) {
-            case Waiting:
-            case Checking:
-            case Paused:
-            case Queued:
-                return "";
             case Downloading:
                 return r.getString(R.string.status_speed_down, FileSizeConverter.getSize(t.getRateDownload()) + "/s") + " "
                         + r.getString(R.string.status_speed_up, FileSizeConverter.getSize(t.getRateUpload()) + "/s");
             case Seeding:
                 return r.getString(R.string.status_speed_up, FileSizeConverter.getSize(t.getRateUpload()) + "/s");
+            case Waiting:
+            case Checking:
+            case Paused:
+            case Queued:
             default:
                 return "";
         }

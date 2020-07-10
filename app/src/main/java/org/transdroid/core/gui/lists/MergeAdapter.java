@@ -26,6 +26,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * An adapter that can contain many other adapters and shows them in sequence. Taken from
@@ -293,9 +294,7 @@ public class MergeAdapter extends BaseAdapter implements SectionIndexer {
                 Object[] curSections = ((SectionIndexer) piece).getSections();
 
                 if (curSections != null) {
-                    for (Object section : curSections) {
-                        sections.add(section);
-                    }
+                    sections.addAll(Arrays.asList(curSections));
                 }
             }
         }

@@ -56,15 +56,15 @@ public class RssfeedLoader {
             Date pubDate = channel.getItems().get(0).getPubdate();
             usePublishDate = pubDate != null && pubDate.getTime() > 0;
         }
+        newCount = 0;
         if (usePublishDate) {
             // Count the number of new items, based on the date that this RSS feed was last viewed by the user
-            newCount = 0;
             List<Item> items = channel.getItems();
             // Reverse-order sort the items on their published date
             Collections.sort(items, new Comparator<Item>() {
                 @Override
                 public int compare(Item lhs, Item rhs) {
-                    return 0 - lhs.getPubdate().compareTo(rhs.getPubdate());
+                    return -lhs.getPubdate().compareTo(rhs.getPubdate());
                 }
             });
             for (Item item : items) {
@@ -77,7 +77,6 @@ public class RssfeedLoader {
             }
         } else {
             // Use the url of the last RSS item the last time the feed was viewed by the user to count new items
-            newCount = 0;
             boolean isNew = true;
             for (Item item : channel.getItems()) {
                 if (item.getTheLink() != null && setting.getLastViewedItemUrl() != null && item.getTheLink().equals(setting.getLastViewedItemUrl())) {

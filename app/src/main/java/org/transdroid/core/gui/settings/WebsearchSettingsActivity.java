@@ -70,16 +70,15 @@ public class WebsearchSettingsActivity extends KeyBoundPreferencesActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DIALOG_CONFIRMREMOVE:
-                return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
-                        .setPositiveButton(android.R.string.ok, new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ApplicationSettings_.getInstance_(WebsearchSettingsActivity.this).removeWebsearchSettings(key);
-                                finish();
-                            }
-                        }).setNegativeButton(android.R.string.cancel, null).create();
+        if (id == DIALOG_CONFIRMREMOVE) {
+            return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
+                    .setPositiveButton(android.R.string.ok, new OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ApplicationSettings_.getInstance_(WebsearchSettingsActivity.this).removeWebsearchSettings(key);
+                            finish();
+                        }
+                    }).setNegativeButton(android.R.string.cancel, null).create();
         }
         return null;
     }

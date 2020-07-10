@@ -180,15 +180,17 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
 
             // Add the parameters to the query string
             boolean first = true;
+            StringBuilder urlBuilder = new StringBuilder(url);
             for (NameValuePair param : params) {
                 if (first) {
-                    url += "?";
+                    urlBuilder.append("?");
                     first = false;
                 } else {
-                    url += "&";
+                    urlBuilder.append("&");
                 }
-                url += param.getName() + "=" + param.getValue();
+                urlBuilder.append(param.getName()).append("=").append(param.getValue());
             }
+            url = urlBuilder.toString();
 
             // Make the request
             HttpResponse response = httpclient.execute(new HttpGet(buildWebUIUrl(url)));

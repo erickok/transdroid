@@ -95,7 +95,7 @@ public class SelectionModificationSpinner extends AppCompatSpinner {
      * Local adapter that holds the actions which can be performed and a title text view that always shows instead of a
      * list item as in a normal spinner.
      */
-    private class SelectionDropDownAdapter extends ArrayAdapter<String> {
+    private static class SelectionDropDownAdapter extends ArrayAdapter<String> {
 
         protected TextView titleView = null;
 

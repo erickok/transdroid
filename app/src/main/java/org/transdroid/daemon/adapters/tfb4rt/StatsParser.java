@@ -163,12 +163,13 @@ public class StatsParser {
      * @return The size in number of kB
      */
     private static long convertSize(String size) {
+        float v = Float.parseFloat(size.substring(0, size.length() - 3));
         if (size.endsWith("GB")) {
-            return (long) (Float.parseFloat(size.substring(0, size.length() - 3)) * 1024 * 1024 * 1024);
+            return (long) (v * 1024 * 1024 * 1024);
         } else if (size.endsWith("MB")) {
-            return (long) (Float.parseFloat(size.substring(0, size.length() - 3)) * 1024 * 1024);
+            return (long) (v * 1024 * 1024);
         } else if (size.endsWith("kB")) {
-            return (long) (Float.parseFloat(size.substring(0, size.length() - 3)) * 1024);
+            return (long) (v * 1024);
         } else if (size.endsWith("B")) {
             return (long) (Float.parseFloat(size.substring(0, size.length() - 2)));
         }
@@ -216,10 +217,11 @@ public class StatsParser {
      * @return The rate (or speed) in kB/s
      */
     private static int convertRate(String rate) {
+        float v = Float.parseFloat(rate.substring(0, rate.length() - 5));
         if (rate.endsWith("MB/s")) {
-            return (int) (Float.parseFloat(rate.substring(0, rate.length() - 5)) * 1024 * 1024);
+            return (int) (v * 1024 * 1024);
         } else if (rate.endsWith("kB/s")) {
-            return (int) (Float.parseFloat(rate.substring(0, rate.length() - 5)) * 1024);
+            return (int) (v * 1024);
         } else if (rate.endsWith("B/s")) {
             return (int) Float.parseFloat(rate.substring(0, rate.length() - 4));
         }

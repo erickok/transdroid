@@ -332,13 +332,15 @@ public class RTorrentAdapter implements IDaemonAdapter {
             initialise();
         }
 
-        String params = "";
+        StringBuilder paramsBuilder = new StringBuilder();
         for (Object arg : arguments) {
-            params += " " + arg.toString();
+            paramsBuilder.append(" ").append(arg.toString());
         }
+        String params = paramsBuilder.toString();
+        String s = params.length() > 100 ? params.substring(0, 100) + "..." : params;
         try {
             log.d(LOG_NAME, "Calling " + serverMethod + " with params [" +
-                    (params.length() > 100 ? params.substring(0, 100) + "..." : params) + " ]");
+                    s + " ]");
             return rpcclient.call(serverMethod, arguments);
         } catch (IllegalArgumentException e) {
             log.d(LOG_NAME, "Using " + buildWebUIUrl() + ": " + e.toString());
@@ -353,7 +355,7 @@ public class RTorrentAdapter implements IDaemonAdapter {
             }
             throw new DaemonException(ExceptionType.ConnectionError,
                     "Error making call to " + serverMethod + " with params [" +
-                            (params.length() > 100 ? params.substring(0, 100) + "..." : params) + " ]: " +
+                            s + " ]: " +
                             e.toString());
         }
 
@@ -386,7 +388,7 @@ public class RTorrentAdapter implements IDaemonAdapter {
 
     private List<Torrent> onTorrentsRetrieved(Object response) throws DaemonException {
 
-        if (response == null || !(response instanceof Object[])) {
+        if (!(response instanceof Object[])) {
 
             throw new DaemonException(ExceptionType.ParsingFailed,
                     "Response on retrieveing torrents did not return a list of objects");
@@ -532,7 +534,7 @@ public class RTorrentAdapter implements IDaemonAdapter {
 
     private List<TorrentFile> onTorrentFilesRetrieved(Object response, Torrent torrent) throws DaemonException {
 
-        if (response == null || !(response instanceof Object[])) {
+        if (!(response instanceof Object[])) {
 
             throw new DaemonException(ExceptionType.ParsingFailed,
                     "Response on retrieveing torrent files did not return a list of objects");
@@ -639,7 +641,7 @@ public class RTorrentAdapter implements IDaemonAdapter {
 
     private TorrentDetails onTorrentDetailsRetrieved(Log log, Object response) throws DaemonException {
 
-        if (response == null || !(response instanceof Object[])) {
+        if (!(response instanceof Object[])) {
 
             throw new DaemonException(ExceptionType.ParsingFailed,
                     "Response on retrieveing trackers did not return a list of objects");

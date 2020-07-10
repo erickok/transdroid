@@ -259,9 +259,9 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 
                     // Set priorities of the files of some torrent
                     SetFilePriorityTask prioTask = (SetFilePriorityTask) task;
-                    String prioUrl = "&p=" + convertPriority(prioTask.getNewPriority());
+                    StringBuilder prioUrl = new StringBuilder("&p=" + convertPriority(prioTask.getNewPriority()));
                     for (TorrentFile forFile : prioTask.getForFiles()) {
-                        prioUrl += "&f=" + forFile.getKey();
+                        prioUrl.append("&f=").append(forFile.getKey());
                     }
                     makeUtorrentRequest(log,
                             "&action=setprio" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID() + prioUrl);
@@ -291,13 +291,13 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
                     // Set the trackers of some torrent
                     SetTrackersTask trackersTask = (SetTrackersTask) task;
                     // Build list of tracker lines, separated by a \r\n
-                    String newTrackersText = "";
+                    StringBuilder newTrackersText = new StringBuilder();
                     for (String tracker : trackersTask.getNewTrackers()) {
-                        newTrackersText += (newTrackersText.length() == 0 ? "" : "\r\n") + tracker;
+                        newTrackersText.append(newTrackersText.length() == 0 ? "" : "\r\n").append(tracker);
                     }
                     makeUtorrentRequest(log,
                             "&action=setprops" + RPC_URL_HASH + trackersTask.getTargetTorrent().getUniqueID() +
-                                    "&s=trackers&v=" + URLEncoder.encode(newTrackersText, "UTF-8"));
+                                    "&s=trackers&v=" + URLEncoder.encode(newTrackersText.toString(), "UTF-8"));
                     return new DaemonTaskSuccessResult(task);
 
                 case ForceRecheck:
@@ -552,7 +552,7 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
         for (int i = 0; i < results.length(); i++) {
             JSONArray tor = results.getJSONArray(i);
             String name = tor.getString(RPC_NAME_IDX);
-            boolean downloaded = (tor.getLong(RPC_PARTDONE) == 1000l);
+            boolean downloaded = (tor.getLong(RPC_PARTDONE) == 1000L);
             float available = ((float) tor.getInt(RPC_AVAILABILITY_IDX)) / 65536f; // Integer in 1/65536ths
             // The full torrent path is not available in uTorrent web UI API
             // Guess the torrent's directory based on the user-specific default download dir and the torrent name
@@ -641,11 +641,11 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
         ArrayList<Torrent> torrents = parseJsonRetrieveTorrents(result.getJSONArray("torrents"));
 
         // Build a string of hashes of all the torrents
-        String hashes = "";
+        StringBuilder hashes = new StringBuilder();
         for (Torrent torrent : torrents) {
-            hashes += RPC_URL_HASH + torrent.getUniqueID();
+            hashes.append(RPC_URL_HASH).append(torrent.getUniqueID());
         }
-        return hashes;
+        return hashes.toString();
 
     }
 

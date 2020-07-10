@@ -172,16 +172,14 @@ public class VuzeXmlOverHttpClient {
 
         // Long?
         try {
-            Long longnum = Long.parseLong(rawText);
-            return longnum;
+            return Long.parseLong(rawText);
         } catch (NumberFormatException e) {
             // Just continue trying the next type
         }
 
         // Double?
         try {
-            Double doublenum = Double.parseDouble(rawText);
-            return doublenum;
+            return Double.parseDouble(rawText);
         } catch (NumberFormatException e) {
             // Just continue trying the next type
         }

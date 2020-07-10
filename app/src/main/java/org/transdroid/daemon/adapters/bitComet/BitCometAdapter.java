@@ -107,7 +107,7 @@ public class BitCometAdapter implements IDaemonAdapter {
             } else if (size.endsWith("B")) {
                 return (long) (Float.parseFloat(size.substring(0, size.indexOf("B"))));
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return 0;
     }
@@ -277,15 +277,17 @@ public class BitCometAdapter implements IDaemonAdapter {
 
             // Add the parameters to the query string
             boolean first = true;
+            StringBuilder urlBuilder = new StringBuilder(url);
             for (NameValuePair param : params) {
                 if (first) {
-                    url += "?";
+                    urlBuilder.append("?");
                     first = false;
                 } else {
-                    url += "&";
+                    urlBuilder.append("&");
                 }
-                url += param.getName() + "=" + param.getValue();
+                urlBuilder.append(param.getName()).append("=").append(param.getValue());
             }
+            url = urlBuilder.toString();
 
             // Make the request
             HttpResponse response = httpclient.execute(new HttpGet(buildWebUIUrl(url)));

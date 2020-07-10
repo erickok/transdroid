@@ -111,9 +111,9 @@ class PiecesMapView extends View {
             piecesScaled.add(state);
         }
 
-        String scaledPiecesString = "";
+        StringBuilder scaledPiecesString = new StringBuilder();
         for (int s : piecesScaled) {
-            scaledPiecesString += s;
+            scaledPiecesString.append(s);
         }
 
         // Draw downscaled peices

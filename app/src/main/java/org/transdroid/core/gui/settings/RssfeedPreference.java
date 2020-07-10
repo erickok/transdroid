@@ -33,17 +33,17 @@ public class RssfeedPreference extends Preference {
 
     private RssfeedSetting rssfeedSetting;
     private OnRssfeedClickedListener onRssfeedClickedListener = null;
-    private OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            if (onRssfeedClickedListener != null)
-                onRssfeedClickedListener.onRssfeedClicked(rssfeedSetting);
-            return true;
-        }
-    };
 
     public RssfeedPreference(Context context) {
         super(context);
+        OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if (onRssfeedClickedListener != null)
+                    onRssfeedClickedListener.onRssfeedClicked(rssfeedSetting);
+                return true;
+            }
+        };
         setOnPreferenceClickListener(onPreferenceClicked);
         setIconSpaceReserved(false);
     }

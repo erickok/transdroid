@@ -49,18 +49,18 @@ public class TorrentFilesComparator implements Comparator<TorrentFile> {
                 case PartDone:
                     return Float.compare(file1.getPartDone(), file2.getPartDone());
                 case TotalSize:
-                    return Long.valueOf(file1.getTotalSize()).compareTo(file2.getTotalSize());
+                    return Long.compare(file1.getTotalSize(), file2.getTotalSize());
                 default:
                     return alphanumComparator.compare(file1.getName().toLowerCase(), file2.getName().toLowerCase());
             }
         } else {
             switch (sortBy) {
                 case PartDone:
-                    return 0 - Float.compare(file1.getPartDone(), file2.getPartDone());
+                    return -Float.compare(file1.getPartDone(), file2.getPartDone());
                 case TotalSize:
-                    return 0 - Long.valueOf(file1.getTotalSize()).compareTo(file2.getTotalSize());
+                    return -Long.compare(file1.getTotalSize(), file2.getTotalSize());
                 default:
-                    return 0 - alphanumComparator.compare(file1.getName().toLowerCase(), file2.getName().toLowerCase());
+                    return -alphanumComparator.compare(file1.getName().toLowerCase(), file2.getName().toLowerCase());
             }
         }
     }

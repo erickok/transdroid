@@ -256,11 +256,9 @@ public class VuzeAdapter implements IDaemonAdapter {
                         throw new DaemonException(ExceptionType.UnexpectedResponse, "No plugin config ID returned on getPluginconfig");
                     }
                     savedPluginConfigID = (Long) config.get("_object_id");
-                    vuzeObjectID = savedPluginConfigID;
-                } else {
-                    // We stored the plugin config ID, so no need to ask for it again
-                    vuzeObjectID = savedPluginConfigID;
                 }
+                // We stored the plugin config ID, so no need to ask for it again
+                vuzeObjectID = savedPluginConfigID;
 
             } else if (serverMethod.equals("createFromBEncodedData[byte[]]")) {
 
@@ -272,11 +270,10 @@ public class VuzeAdapter implements IDaemonAdapter {
                         throw new DaemonException(ExceptionType.UnexpectedResponse, "No torrent manager ID returned on getTorrentManager");
                     }
                     savedTorrentManagerID = (Long) manager.get("_object_id");
-                    vuzeObjectID = savedTorrentManagerID;
-                } else {
-                    // We stored the torrent manager ID, so no need to ask for it again
-                    vuzeObjectID = savedTorrentManagerID;
                 }
+                // We stored the torrent manager ID, so no need to ask for it again
+                vuzeObjectID = savedTorrentManagerID;
+
                 // And we will need the download manager as well later on (for addDownload after createFromBEncodedData)
                 if (savedDownloadManagerID == null) {
                     // Download manager needed, but we don't know it's ID yet
@@ -297,11 +294,9 @@ public class VuzeAdapter implements IDaemonAdapter {
                         throw new DaemonException(ExceptionType.UnexpectedResponse, "No download manager ID returned on getDownloadManager");
                     }
                     savedDownloadManagerID = (Long) manager.get("_object_id");
-                    vuzeObjectID = savedDownloadManagerID;
-                } else {
-                    // We stored the download manager ID, so no need to ask for it again
-                    vuzeObjectID = savedDownloadManagerID;
                 }
+                // We stored the download manager ID, so no need to ask for it again
+                vuzeObjectID = savedDownloadManagerID;
 
             }
         } else {

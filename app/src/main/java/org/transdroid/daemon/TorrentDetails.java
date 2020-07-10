@@ -81,11 +81,11 @@ public final class TorrentDetails implements Parcelable {
      */
     public String getTrackersText() {
         // Build a string with one tracker URL per line
-        String trackersText = "";
+        StringBuilder trackersText = new StringBuilder();
         for (String tracker : trackers) {
-            trackersText += (trackersText.length() == 0 ? "" : "\n") + tracker;
+            trackersText.append(trackersText.length() == 0 ? "" : "\n").append(tracker);
         }
-        return trackersText;
+        return trackersText.toString();
     }
 
     /**
@@ -95,11 +95,11 @@ public final class TorrentDetails implements Parcelable {
      */
     public String getErrorsText() {
         // Build a string with one tracker error per line
-        String errorsText = "";
+        StringBuilder errorsText = new StringBuilder();
         for (String error : errors) {
-            errorsText += (errorsText.length() == 0 ? "" : "\n") + error;
+            errorsText.append(errorsText.length() == 0 ? "" : "\n").append(error);
         }
-        return errorsText;
+        return errorsText.toString();
     }
 
     public List<Integer> getPieces() {

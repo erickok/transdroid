@@ -10,12 +10,12 @@ public class Collections2 {
      */
     public static <T> String joinString(Iterable<T> iterable, String separator) {
         boolean first = true;
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (T anIterable : iterable) {
-            result += (first ? "" : separator) + anIterable.toString();
+            result.append(first ? "" : separator).append(anIterable.toString());
             first = false;
         }
-        return result;
+        return result.toString();
     }
 
 }

@@ -91,8 +91,6 @@ public class SynologyAdapter implements IDaemonAdapter {
             switch (task.getMethod()) {
                 case Retrieve:
                     return new RetrieveTaskSuccessResult((RetrieveTask) task, tasksList(log), null);
-                case GetStats:
-                    return null;
                 case GetTorrentDetails:
                     tid = task.getTargetTorrent().getUniqueID();
                     return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
@@ -129,10 +127,6 @@ public class SynologyAdapter implements IDaemonAdapter {
                 case ResumeAll:
                     resumeAllTasks(log);
                     return new DaemonTaskSuccessResult(task);
-                case SetDownloadLocation:
-                    return null;
-                case SetFilePriorities:
-                    return null;
                 case SetTransferRates:
                     SetTransferRatesTask ratesTask = (SetTransferRatesTask) task;
                     int uploadRate = ratesTask.getUploadRate() == null ? 0 : ratesTask.getUploadRate();
@@ -140,6 +134,9 @@ public class SynologyAdapter implements IDaemonAdapter {
                     setTransferRates(log, uploadRate, downloadRate);
                     return new DaemonTaskSuccessResult(task);
                 case SetAlternativeMode:
+                case GetStats:
+                case SetDownloadLocation:
+                case SetFilePriorities:
                 default:
                     return null;
             }

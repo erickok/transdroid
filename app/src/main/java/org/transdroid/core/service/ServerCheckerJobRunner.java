@@ -171,10 +171,11 @@ public class ServerCheckerJobRunner {
                 // No notification to show
                 continue;
             }
-            String forString = "";
+            StringBuilder forStringBuilder = new StringBuilder();
             for (Torrent affected : affectedTorrents) {
-                forString += affected.getName() + ", ";
+                forStringBuilder.append(affected.getName()).append(", ");
             }
+            String forString = forStringBuilder.toString();
             forString = forString.substring(0, forString.length() - 2);
 
             // Build the basic notification

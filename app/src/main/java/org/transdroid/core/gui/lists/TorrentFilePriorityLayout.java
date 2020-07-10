@@ -72,9 +72,7 @@ public class TorrentFilePriorityLayout extends RelativeLayout {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        int height = getHeight();
-        int width = WIDTH;
-        fullRect.set(0, 0, width, height);
+        fullRect.set(0, 0, WIDTH, getHeight());
 
         if (priority == null) {
             return;

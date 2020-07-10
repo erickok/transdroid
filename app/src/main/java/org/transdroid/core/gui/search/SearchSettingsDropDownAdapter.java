@@ -43,7 +43,7 @@ public class SearchSettingsDropDownAdapter extends FilterListItemAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         // This returns the item to show in the action bar spinner
         SearchSettingSelectionView filterItemView;
-        if (convertView == null || !(convertView instanceof SearchSettingSelectionView)) {
+        if (!(convertView instanceof SearchSettingSelectionView)) {
             filterItemView = SearchSettingSelectionView_.build(context);
         } else {
             filterItemView = (SearchSettingSelectionView) convertView;

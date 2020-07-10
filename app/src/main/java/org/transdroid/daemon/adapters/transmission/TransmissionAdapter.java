@@ -567,11 +567,10 @@ public class TransmissionAdapter implements IDaemonAdapter {
                 case 2:
                     return TorrentStatus.Checking;
                 case 3:
+                case 5:
                     return TorrentStatus.Queued;
                 case 4:
                     return TorrentStatus.Downloading;
-                case 5:
-                    return TorrentStatus.Queued;
                 case 6:
                     return TorrentStatus.Seeding;
             }

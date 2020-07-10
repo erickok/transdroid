@@ -33,17 +33,17 @@ public class ServerPreference extends Preference {
 
     protected ServerSetting serverSetting;
     private OnServerClickedListener onServerClickedListener = null;
-    private OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            if (onServerClickedListener != null)
-                onServerClickedListener.onServerClicked(serverSetting);
-            return true;
-        }
-    };
 
     public ServerPreference(Context context) {
         super(context);
+        OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if (onServerClickedListener != null)
+                    onServerClickedListener.onServerClicked(serverSetting);
+                return true;
+            }
+        };
         setOnPreferenceClickListener(onPreferenceClicked);
         setIconSpaceReserved(false);
     }

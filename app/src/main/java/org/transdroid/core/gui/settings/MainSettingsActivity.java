@@ -230,8 +230,8 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
         }
         // Allow selection of the default server
         ListPreference defaultServerPreference = (ListPreference) findPreference("header_defaultserver");
-        defaultServerPreference.setEntries(serverNames.toArray(new String[serverNames.size()]));
-        defaultServerPreference.setEntryValues(serverCodes.toArray(new String[serverCodes.size()]));
+        defaultServerPreference.setEntries(serverNames.toArray(new String[0]));
+        defaultServerPreference.setEntryValues(serverCodes.toArray(new String[0]));
 
         // Add existing RSS feeds
         if (!enableRssUi) {
@@ -276,8 +276,8 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
             siteValues.add(websearch.getKey());
         }
         // Supply the Preference list names and values
-        setSite.setEntries(siteNames.toArray(new String[siteNames.size()]));
-        setSite.setEntryValues(siteValues.toArray(new String[siteValues.size()]));
+        setSite.setEntries(siteNames.toArray(new String[0]));
+        setSite.setEntryValues(siteValues.toArray(new String[0]));
 
     }
 
@@ -289,15 +289,14 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DIALOG_ADDSEEDBOX:
-                // Open dialog to pick one of the supported seedbox providers (or a normal server)
-                String[] seedboxes = new String[SeedboxProvider.values().length + 1];
-                seedboxes[0] = getString(R.string.pref_addserver_normal);
-                for (int i = 0; i < seedboxes.length - 1; i++) {
-                    seedboxes[i + 1] = getString(R.string.pref_seedbox_addseedbox, SeedboxProvider.values()[i].getSettings().getName());
-                }
-                return new AlertDialog.Builder(this).setItems(seedboxes, onAddSeedbox).create();
+        if (id == DIALOG_ADDSEEDBOX) {
+            // Open dialog to pick one of the supported seedbox providers (or a normal server)
+            String[] seedboxes = new String[SeedboxProvider.values().length + 1];
+            seedboxes[0] = getString(R.string.pref_addserver_normal);
+            for (int i = 0; i < seedboxes.length - 1; i++) {
+                seedboxes[i + 1] = getString(R.string.pref_seedbox_addseedbox, SeedboxProvider.values()[i].getSettings().getName());
+            }
+            return new AlertDialog.Builder(this).setItems(seedboxes, onAddSeedbox).create();
         }
         return null;
     }

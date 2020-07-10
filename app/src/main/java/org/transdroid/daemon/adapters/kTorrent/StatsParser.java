@@ -209,12 +209,13 @@ public class StatsParser {
      * @return The size in number of kB
      */
     public static long convertSize(String size) {
+        String s = size.substring(0, size.length() - 4);
         if (size.endsWith("GiB")) {
-            return (long) (convertStringToFloat(size.substring(0, size.length() - 4)) * 1024 * 1024 * 1024);
+            return (long) (convertStringToFloat(s) * 1024 * 1024 * 1024);
         } else if (size.endsWith("MiB")) {
-            return (long) (convertStringToFloat(size.substring(0, size.length() - 4)) * 1024 * 1024);
+            return (long) (convertStringToFloat(s) * 1024 * 1024);
         } else if (size.endsWith("KiB")) {
-            return (long) (convertStringToFloat(size.substring(0, size.length() - 4)) * 1024);
+            return (long) (convertStringToFloat(s) * 1024);
         } else if (size.endsWith("B")) {
             return convertStringToFloat(size.substring(0, size.length() - 2)).longValue();
         }
@@ -228,10 +229,11 @@ public class StatsParser {
      * @return The rate (or speed) in KiB/s
      */
     public static int convertRate(String rate) {
+        String s = rate.substring(0, rate.length() - 6);
         if (rate.endsWith("MiB/s")) {
-            return (int) (convertStringToFloat(rate.substring(0, rate.length() - 6)) * 1024 * 1024);
+            return (int) (convertStringToFloat(s) * 1024 * 1024);
         } else if (rate.endsWith("KiB/s")) {
-            return (int) (convertStringToFloat(rate.substring(0, rate.length() - 6)) * 1024);
+            return (int) (convertStringToFloat(s) * 1024);
         } else if (rate.endsWith("B/s")) {
             return convertStringToFloat(rate.substring(0, rate.length() - 4)).intValue();
         }
@@ -245,22 +247,19 @@ public class StatsParser {
      * @return The status as TorrentStatus or Unknown if it could not been parsed
      */
     private static TorrentStatus convertStatus(String status) {
-        if (status.equals("Downloading")) {
-            return TorrentStatus.Downloading;
-        } else if (status.equals("Seeding")) {
-            return TorrentStatus.Seeding;
-        } else if (status.equals("Stopped")) {
-            return TorrentStatus.Paused;
-        } else if (status.equals("Stalled")) {
-            return TorrentStatus.Paused;
-        } else if (status.equals("Download completed")) {
-            return TorrentStatus.Paused;
-        } else if (status.equals("Not started")) {
-            return TorrentStatus.Paused;
-        } else if (status.equals("Stalled")) {
-            return TorrentStatus.Waiting;
-        } else if (status.equals("Checking data")) {
-            return TorrentStatus.Checking;
+        switch (status) {
+            case "Downloading":
+                return TorrentStatus.Downloading;
+            case "Seeding":
+                return TorrentStatus.Seeding;
+            case "Stopped":
+            case "Download completed":
+            case "Not started":
+                return TorrentStatus.Paused;
+            case "Stalled":
+                return TorrentStatus.Waiting;
+            case "Checking data":
+                return TorrentStatus.Checking;
         }
         return TorrentStatus.Unknown;
     }

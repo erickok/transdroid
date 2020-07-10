@@ -201,6 +201,8 @@ public class DummyAdapter implements IDaemonAdapter {
 
                 case Pause:
 
+                case Resume:
+
                     task.getTargetTorrent().mimicPause();
                     return new DaemonTaskSuccessResult(task);
 
@@ -209,11 +211,6 @@ public class DummyAdapter implements IDaemonAdapter {
                     for (Torrent torrent : dummyTorrents) {
                         torrent.mimicPause();
                     }
-                    return new DaemonTaskSuccessResult(task);
-
-                case Resume:
-
-                    task.getTargetTorrent().mimicPause();
                     return new DaemonTaskSuccessResult(task);
 
                 case ResumeAll:

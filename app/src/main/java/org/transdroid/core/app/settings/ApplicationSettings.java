@@ -74,8 +74,7 @@ public class ApplicationSettings {
      * @return A list of all stored server settings objects
      */
     public List<ServerSetting> getAllServerSettings() {
-        List<ServerSetting> all = new ArrayList<>();
-        all.addAll(getNormalServerSettings());
+        List<ServerSetting> all = new ArrayList<>(getNormalServerSettings());
         for (SeedboxProvider provider : SeedboxProvider.values()) {
             all.addAll(provider.getSettings().getAllServerSettings(prefs, all.size()));
         }

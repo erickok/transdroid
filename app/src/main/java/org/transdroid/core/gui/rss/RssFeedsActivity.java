@@ -139,7 +139,7 @@ public class RssFeedsActivity extends AppCompatActivity {
 
                 try {
                     hasRemoteFeeds = remoteConnection.getRemoteRssChannels(log).size() > 0;
-                } catch (DaemonException e) {
+                } catch (DaemonException ignored) {
                 }
 
                 if (hasRemoteFeeds) {
@@ -279,7 +279,7 @@ public class RssFeedsActivity extends AppCompatActivity {
         IDaemonAdapter currentConnection = this.getCurrentConnection();
 
         // remote rss not supported for this connection type
-        if (currentConnection instanceof RemoteRssSupplier == false) {
+        if (!(currentConnection instanceof RemoteRssSupplier)) {
             return;
         }
 
