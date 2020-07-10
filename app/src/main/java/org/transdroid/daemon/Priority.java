@@ -55,7 +55,7 @@ public enum Priority {
     }
 
     public int comparePriorityTo(Priority another) {
-        return new Integer(this.getCode()).compareTo(new Integer(another.getCode()));
+        return Integer.compare(this.getCode(), another.getCode());
     }
 
 }

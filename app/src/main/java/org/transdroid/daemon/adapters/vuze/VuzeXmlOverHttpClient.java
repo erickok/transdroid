@@ -232,8 +232,8 @@ public class VuzeXmlOverHttpClient {
                 serializer.startTag(null, TAG_CONNECTION_ID).text(connectionID.toString()).endTag(null, TAG_CONNECTION_ID);
             }
             // set request id, which for this purpose is always a random number
-            Integer randomRequestID = new Integer(random.nextInt());
-            serializer.startTag(null, TAG_REQUEST_ID).text(randomRequestID.toString()).endTag(null, TAG_REQUEST_ID);
+            int randomRequestID = random.nextInt();
+            serializer.startTag(null, TAG_REQUEST_ID).text(Integer.toString(randomRequestID)).endTag(null, TAG_REQUEST_ID);
 
             serializer.endTag(null, TAG_REQUEST);
             serializer.endDocument();

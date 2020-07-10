@@ -53,7 +53,7 @@ public enum TorrentStatus {
     }
 
     public int compareStatusCodeTo(TorrentStatus another) {
-        return new Integer(this.getCode()).compareTo(new Integer(another.getCode()));
+        return Integer.compare(this.getCode(), another.getCode());
     }
 
 }

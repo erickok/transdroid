@@ -36,11 +36,11 @@ public class SetTransferRatesTask extends DaemonTask {
 
     public Integer getUploadRate() {
         int uploadRate = extras.getInt("UPLOAD_RATE");
-        return (uploadRate == -1 ? null : new Integer(uploadRate));
+        return (uploadRate == -1 ? null : uploadRate);
     }
 
     public Integer getDownloadRate() {
         int downloadRate = extras.getInt("DOWNLOAD_RATE");
-        return (downloadRate == -1 ? null : new Integer(downloadRate));
+        return (downloadRate == -1 ? null : downloadRate);
     }
 }
