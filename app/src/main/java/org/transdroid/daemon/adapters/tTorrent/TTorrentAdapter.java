@@ -383,26 +383,22 @@ public class TTorrentAdapter implements IDaemonAdapter {
 
     private TorrentStatus parseStatus(String state) {
         // Status is given as a descriptive string
-        if (state.equals("downloading")) {
-            return TorrentStatus.Downloading;
-        } else if (state.equals("uploading")) {
-            return TorrentStatus.Seeding;
-        } else if (state.equals("pausedDL")) {
-            return TorrentStatus.Paused;
-        } else if (state.equals("pausedUL")) {
-            return TorrentStatus.Paused;
-        } else if (state.equals("stalledUP")) {
-            return TorrentStatus.Seeding;
-        } else if (state.equals("stalledDL")) {
-            return TorrentStatus.Downloading;
-        } else if (state.equals("checkingUP")) {
-            return TorrentStatus.Checking;
-        } else if (state.equals("checkingDL")) {
-            return TorrentStatus.Checking;
-        } else if (state.equals("queuedDL")) {
-            return TorrentStatus.Queued;
-        } else if (state.equals("queuedUL")) {
-            return TorrentStatus.Queued;
+        switch (state) {
+            case "downloading":
+            case "stalledDL":
+                return TorrentStatus.Downloading;
+            case "uploading":
+            case "stalledUP":
+                return TorrentStatus.Seeding;
+            case "pausedDL":
+            case "pausedUL":
+                return TorrentStatus.Paused;
+            case "checkingUP":
+            case "checkingDL":
+                return TorrentStatus.Checking;
+            case "queuedDL":
+            case "queuedUL":
+                return TorrentStatus.Queued;
         }
         return TorrentStatus.Unknown;
     }

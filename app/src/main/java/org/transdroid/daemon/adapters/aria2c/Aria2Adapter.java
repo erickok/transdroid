@@ -448,16 +448,18 @@ public class Aria2Adapter implements IDaemonAdapter {
     private TorrentStatus convertAriaState(String state, boolean isFinished) {
         // Aria2 sends a string as status code
         // (http://aria2.sourceforge.net/manual/en/html/aria2c.html#aria2.tellStatus)
-        if (state.equals("active")) {
-            return isFinished ? TorrentStatus.Seeding : TorrentStatus.Downloading;
-        } else if (state.equals("waiting")) {
-            return TorrentStatus.Queued;
-        } else if (state.equals("paused") || state.equals("complete")) {
-            return TorrentStatus.Paused;
-        } else if (state.equals("error")) {
-            return TorrentStatus.Error;
-        } else if (state.equals("removed")) {
-            return TorrentStatus.Checking;
+        switch (state) {
+            case "active":
+                return isFinished ? TorrentStatus.Seeding : TorrentStatus.Downloading;
+            case "waiting":
+                return TorrentStatus.Queued;
+            case "paused":
+            case "complete":
+                return TorrentStatus.Paused;
+            case "error":
+                return TorrentStatus.Error;
+            case "removed":
+                return TorrentStatus.Checking;
         }
         return TorrentStatus.Unknown;
     }

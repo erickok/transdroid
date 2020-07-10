@@ -643,38 +643,55 @@ public class BitCometAdapter implements IDaemonAdapter {
                     // Probably encountered a torrent property, i.e. '<type>BT</type>'
                     next = xpp.next();
                     if (next == XmlPullParser.TEXT) {
-                        if (tagName.equals("name")) {
-                            name = xpp.getText().trim();
-                        } else if (tagName.equals("id")) {
-                            id = Integer.parseInt(xpp.getText().trim());
-                        } else if (tagName.equals("infohash")) {
-                            hash = xpp.getText().trim();
-                        } else if (tagName.equals("state")) {
-                            status = convertStatus(xpp.getText());
-                        } else if (tagName.equals("bytes_downloaded")) {
-                            sizeDone = Integer.parseInt(xpp.getText());
-                        } else if (tagName.equals("bytes_uploaded")) {
-                            sizeUp = Integer.parseInt(xpp.getText());
-                        } else if (tagName.equals("size")) {
-                            totalSize = Long.parseLong(xpp.getText());
-                        } else if (tagName.equals("down_speed")) {
-                            rateDown = Integer.parseInt(xpp.getText());
-                        } else if (tagName.equals("up_speed")) {
-                            rateUp = Integer.parseInt(xpp.getText());
-                        } else if (tagName.equals("seeders")) {
-                            seeders = Integer.parseInt(xpp.getText());
-                        } else if (tagName.equals("total_seeders")) {
-                            seedersTotal = Integer.parseInt(xpp.getText());
-                        } else if (tagName.equals("peers")) {
-                            leechers = Integer.parseInt(xpp.getText());
-                        } else if (tagName.equals("total_peers")) {
-                            leechersTotal = Integer.parseInt(xpp.getText());
-                        } else if (tagName.equals("progress_permillage")) {
-                            progress = convertProgress(xpp.getText());
-                        } else if (tagName.equals("created_time")) {
-                            dateAdded = new Date(Long.parseLong(xpp.getText()));
-                        } else if (tagName.equals("comment")) {
-                            label = xpp.getText().trim();
+                        switch (tagName) {
+                            case "name":
+                                name = xpp.getText().trim();
+                                break;
+                            case "id":
+                                id = Integer.parseInt(xpp.getText().trim());
+                                break;
+                            case "infohash":
+                                hash = xpp.getText().trim();
+                                break;
+                            case "state":
+                                status = convertStatus(xpp.getText());
+                                break;
+                            case "bytes_downloaded":
+                                sizeDone = Integer.parseInt(xpp.getText());
+                                break;
+                            case "bytes_uploaded":
+                                sizeUp = Integer.parseInt(xpp.getText());
+                                break;
+                            case "size":
+                                totalSize = Long.parseLong(xpp.getText());
+                                break;
+                            case "down_speed":
+                                rateDown = Integer.parseInt(xpp.getText());
+                                break;
+                            case "up_speed":
+                                rateUp = Integer.parseInt(xpp.getText());
+                                break;
+                            case "seeders":
+                                seeders = Integer.parseInt(xpp.getText());
+                                break;
+                            case "total_seeders":
+                                seedersTotal = Integer.parseInt(xpp.getText());
+                                break;
+                            case "peers":
+                                leechers = Integer.parseInt(xpp.getText());
+                                break;
+                            case "total_peers":
+                                leechersTotal = Integer.parseInt(xpp.getText());
+                                break;
+                            case "progress_permillage":
+                                progress = convertProgress(xpp.getText());
+                                break;
+                            case "created_time":
+                                dateAdded = new Date(Long.parseLong(xpp.getText()));
+                                break;
+                            case "comment":
+                                label = xpp.getText().trim();
+                                break;
                         }
                     }
                 }

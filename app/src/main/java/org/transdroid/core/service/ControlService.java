@@ -102,20 +102,26 @@ public class ControlService extends IntentService {
         // See which action should be performed on the server
         IDaemonAdapter adapter = server.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
         DaemonTask task = null;
-        if (intent.getAction().equals(INTENT_RESUMEALL)) {
-            task = ResumeAllTask.create(adapter);
-        } else if (intent.getAction().equals(INTENT_PAUSEALL)) {
-            task = PauseAllTask.create(adapter);
-        } else if (intent.getAction().equals(INTENT_STARTALL)) {
-            task = StartAllTask.create(adapter, false);
-        } else if (intent.getAction().equals(INTENT_STOPALL)) {
-            task = StopAllTask.create(adapter);
-        } else if (intent.getAction().equals(INTENT_SETTRANSFERRATES)) {
-            // NOTE: If the upload or download rate was not specified, it will be reset on the server instead
-            int uploadRate = intent.getIntExtra(EXTRA_UPLOAD_RATE, -1);
-            int downloadRate = intent.getIntExtra(EXTRA_DOWNLOAD_RATE, -1);
-            task = SetTransferRatesTask
-                    .create(adapter, uploadRate == -1 ? null : uploadRate, downloadRate == -1 ? null : downloadRate);
+        switch (intent.getAction()) {
+            case INTENT_RESUMEALL:
+                task = ResumeAllTask.create(adapter);
+                break;
+            case INTENT_PAUSEALL:
+                task = PauseAllTask.create(adapter);
+                break;
+            case INTENT_STARTALL:
+                task = StartAllTask.create(adapter, false);
+                break;
+            case INTENT_STOPALL:
+                task = StopAllTask.create(adapter);
+                break;
+            case INTENT_SETTRANSFERRATES:
+                // NOTE: If the upload or download rate was not specified, it will be reset on the server instead
+                int uploadRate = intent.getIntExtra(EXTRA_UPLOAD_RATE, -1);
+                int downloadRate = intent.getIntExtra(EXTRA_DOWNLOAD_RATE, -1);
+                task = SetTransferRatesTask
+                        .create(adapter, uploadRate == -1 ? null : uploadRate, downloadRate == -1 ? null : downloadRate);
+                break;
         }
 
         // Execute the task, if we have one now

@@ -105,20 +105,28 @@ public class StatsParser {
                     next = xpp.next();
                     if (next == XmlPullParser.TEXT) {
                         try {
-                            if (type.equals("Size")) {
-                                size = convertSize(xpp.getText());
-                            } else if (type.equals("Status")) {
-                                status = convertStatus(xpp.getText());
-                            } else if (type.equals("Progress")) {
-                                progress = convertProgress(xpp.getText());
-                            } else if (type.equals("Down")) {
-                                down = convertRate(xpp.getText());
-                            } else if (type.equals("Up")) {
-                                up = convertRate(xpp.getText());
-                            } else if (type.equals("Estimated Time")) {
-                                time = convertEta(xpp.getText());
-                            } else if (type.equals("T. Up")) {
-                                upSize = convertSize(xpp.getText());
+                            switch (type) {
+                                case "Size":
+                                    size = convertSize(xpp.getText());
+                                    break;
+                                case "Status":
+                                    status = convertStatus(xpp.getText());
+                                    break;
+                                case "Progress":
+                                    progress = convertProgress(xpp.getText());
+                                    break;
+                                case "Down":
+                                    down = convertRate(xpp.getText());
+                                    break;
+                                case "Up":
+                                    up = convertRate(xpp.getText());
+                                    break;
+                                case "Estimated Time":
+                                    time = convertEta(xpp.getText());
+                                    break;
+                                case "T. Up":
+                                    upSize = convertSize(xpp.getText());
+                                    break;
                             }
                         } catch (Exception e) {
                             throw new DaemonException(ExceptionType.ConnectionError, e.toString());
@@ -235,16 +243,15 @@ public class StatsParser {
      * @return The status as TorrentStatus or Unknown if it could not been parsed
      */
     private static TorrentStatus convertStatus(String status) {
-        if (status.equals("Leeching")) {
-            return TorrentStatus.Downloading;
-        } else if (status.equals("Seeding")) {
-            return TorrentStatus.Seeding;
-        } else if (status.equals("Stopped")) {
-            return TorrentStatus.Paused;
-        } else if (status.equals("New")) {
-            return TorrentStatus.Paused;
-        } else if (status.equals("Done")) {
-            return TorrentStatus.Paused;
+        switch (status) {
+            case "Leeching":
+                return TorrentStatus.Downloading;
+            case "Seeding":
+                return TorrentStatus.Seeding;
+            case "Stopped":
+            case "New":
+            case "Done":
+                return TorrentStatus.Paused;
         }
         return TorrentStatus.Unknown;
     }

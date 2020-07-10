@@ -776,14 +776,15 @@ public class QBittorrentAdapter implements IDaemonAdapter {
             return (long) number;
         }
         // Returns size in B-based long
-        if (parts[1].equals("TiB")) {
-            return (long) (number * 1024L * 1024L * 1024L * 1024L);
-        } else if (parts[1].equals("GiB")) {
-            return (long) (number * 1024L * 1024L * 1024L);
-        } else if (parts[1].equals("MiB")) {
-            return (long) (number * 1024L * 1024L);
-        } else if (parts[1].equals("KiB")) {
-            return (long) (number * 1024L);
+        switch (parts[1]) {
+            case "TiB":
+                return (long) (number * 1024L * 1024L * 1024L * 1024L);
+            case "GiB":
+                return (long) (number * 1024L * 1024L * 1024L);
+            case "MiB":
+                return (long) (number * 1024L * 1024L);
+            case "KiB":
+                return (long) (number * 1024L);
         }
         return (long) number;
     }
@@ -811,12 +812,13 @@ public class QBittorrentAdapter implements IDaemonAdapter {
             return -1;
         }
         // Returns size in B-based int
-        if (parts[1].equals("GiB/s")) {
-            return (int) (number * 1024 * 1024 * 1024);
-        } else if (parts[1].equals("MiB/s")) {
-            return (int) (number * 1024 * 1024);
-        } else if (parts[1].equals("KiB/s")) {
-            return (int) (number * 1024);
+        switch (parts[1]) {
+            case "GiB/s":
+                return (int) (number * 1024 * 1024 * 1024);
+            case "MiB/s":
+                return (int) (number * 1024 * 1024);
+            case "KiB/s":
+                return (int) (number * 1024);
         }
         return (int) (Double.parseDouble(normalizeNumber(parts[0])));
     }
@@ -833,28 +835,30 @@ public class QBittorrentAdapter implements IDaemonAdapter {
 
     private TorrentStatus parseStatus(String state) {
         // Status is given as a descriptive string
-        if (state.equals("error")) {
-            return TorrentStatus.Error;
-        } else if (state.equals("downloading") || state.equals("metaDL")) {
-            return TorrentStatus.Downloading;
-        } else if (state.equals("uploading")) {
-            return TorrentStatus.Seeding;
-        } else if (state.equals("pausedDL")) {
-            return TorrentStatus.Paused;
-        } else if (state.equals("pausedUP")) {
-            return TorrentStatus.Paused;
-        } else if (state.equals("stalledUP")) {
-            return TorrentStatus.Seeding;
-        } else if (state.equals("stalledDL")) {
-            return TorrentStatus.Downloading;
-        } else if (state.equals("checkingUP")) {
-            return TorrentStatus.Checking;
-        } else if (state.equals("checkingDL")) {
-            return TorrentStatus.Checking;
-        } else if (state.equals("queuedDL")) {
-            return TorrentStatus.Queued;
-        } else if (state.equals("queuedUP")) {
-            return TorrentStatus.Queued;
+        switch (state) {
+            case "error":
+                return TorrentStatus.Error;
+            case "downloading":
+            case "metaDL":
+                return TorrentStatus.Downloading;
+            case "uploading":
+                return TorrentStatus.Seeding;
+            case "pausedDL":
+                return TorrentStatus.Paused;
+            case "pausedUP":
+                return TorrentStatus.Paused;
+            case "stalledUP":
+                return TorrentStatus.Seeding;
+            case "stalledDL":
+                return TorrentStatus.Downloading;
+            case "checkingUP":
+                return TorrentStatus.Checking;
+            case "checkingDL":
+                return TorrentStatus.Checking;
+            case "queuedDL":
+                return TorrentStatus.Queued;
+            case "queuedUP":
+                return TorrentStatus.Queued;
         }
         return TorrentStatus.Unknown;
     }

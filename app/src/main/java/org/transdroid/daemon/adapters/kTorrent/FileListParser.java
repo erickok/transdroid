@@ -75,14 +75,19 @@ public class FileListParser {
                     // Probably encountered a file property, i.e. '<percentage>73.09</percentage>'
                     next = xpp.next();
                     if (next == XmlPullParser.TEXT) {
-                        if (name.equals("path")) {
-                            path = xpp.getText().trim();
-                        } else if (name.equals("size")) {
-                            size = StatsParser.convertSize(xpp.getText());
-                        } else if (name.equals("priority")) {
-                            priority = convertPriority(xpp.getText());
-                        } else if (name.equals("percentage")) {
-                            partDone = StatsParser.convertProgress(xpp.getText());
+                        switch (name) {
+                            case "path":
+                                path = xpp.getText().trim();
+                                break;
+                            case "size":
+                                size = StatsParser.convertSize(xpp.getText());
+                                break;
+                            case "priority":
+                                priority = convertPriority(xpp.getText());
+                                break;
+                            case "percentage":
+                                partDone = StatsParser.convertProgress(xpp.getText());
+                                break;
                         }
                     }
                 }
@@ -111,14 +116,15 @@ public class FileListParser {
      * @return The priority as enum type, i.e. Priority.Off
      */
     private static Priority convertPriority(String priority) {
-        if (priority.equals("20")) {
-            return Priority.Off;
-        } else if (priority.equals("30")) {
-            return Priority.Low;
-        } else if (priority.equals("50")) {
-            return Priority.High;
-        } else {
-            return Priority.Normal;
+        switch (priority) {
+            case "20":
+                return Priority.Off;
+            case "30":
+                return Priority.Low;
+            case "50":
+                return Priority.High;
+            default:
+                return Priority.Normal;
         }
     }
 

@@ -112,34 +112,48 @@ public class StatsParser {
                     // Probably encountered a torrent property, i.e. '<status>Stopped</status>'
                     next = xpp.next();
                     if (next == XmlPullParser.TEXT) {
-                        if (name.equals("name")) {
-                            tname = xpp.getText().trim();
-                            //} else if (name.equals("info_hash")) {
-                            //hash = xpp.getText().trim();
-                        } else if (name.equals("status")) {
-                            status = convertStatus(xpp.getText());
-                        } else if (name.equals("bytes_downloaded")) {
-                            down = convertSize(xpp.getText());
-                        } else if (name.equals("bytes_uploaded")) {
-                            up = convertSize(xpp.getText());
-                        } else if (name.equals("total_bytes_to_download")) {
-                            total = convertSize(xpp.getText());
-                        } else if (name.equals("download_rate")) {
-                            downRate = convertRate(xpp.getText());
-                        } else if (name.equals("upload_rate")) {
-                            upRate = convertRate(xpp.getText());
-                        } else if (name.equals("seeders")) {
-                            seeders = Integer.parseInt(xpp.getText());
-                        } else if (name.equals("seeders_total")) {
-                            seedersTotal = Integer.parseInt(xpp.getText());
-                        } else if (name.equals("leechers")) {
-                            leechers = Integer.parseInt(xpp.getText());
-                        } else if (name.equals("leechers_total")) {
-                            leechersTotal = Integer.parseInt(xpp.getText());
-                        } else if (name.equals("percentage")) {
-                            progress = convertProgress(xpp.getText());
-                        } else if (name.equals("num_files")) {
-                            numFiles = Integer.parseInt(xpp.getText());
+                        switch (name) {
+                            case "name":
+                                tname = xpp.getText().trim();
+                                //} else if (name.equals("info_hash")) {
+                                //hash = xpp.getText().trim();
+                                break;
+                            case "status":
+                                status = convertStatus(xpp.getText());
+                                break;
+                            case "bytes_downloaded":
+                                down = convertSize(xpp.getText());
+                                break;
+                            case "bytes_uploaded":
+                                up = convertSize(xpp.getText());
+                                break;
+                            case "total_bytes_to_download":
+                                total = convertSize(xpp.getText());
+                                break;
+                            case "download_rate":
+                                downRate = convertRate(xpp.getText());
+                                break;
+                            case "upload_rate":
+                                upRate = convertRate(xpp.getText());
+                                break;
+                            case "seeders":
+                                seeders = Integer.parseInt(xpp.getText());
+                                break;
+                            case "seeders_total":
+                                seedersTotal = Integer.parseInt(xpp.getText());
+                                break;
+                            case "leechers":
+                                leechers = Integer.parseInt(xpp.getText());
+                                break;
+                            case "leechers_total":
+                                leechersTotal = Integer.parseInt(xpp.getText());
+                                break;
+                            case "percentage":
+                                progress = convertProgress(xpp.getText());
+                                break;
+                            case "num_files":
+                                numFiles = Integer.parseInt(xpp.getText());
+                                break;
                         }
                     }
                 }
