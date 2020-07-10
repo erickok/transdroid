@@ -19,7 +19,6 @@ package org.transdroid.core.gui.settings;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -80,83 +79,44 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
             return true;
         }
     };
-    private OnPreferenceClickListener onAddWebsearch = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            WebsearchSettingsActivity_.intent(MainSettingsActivity.this).start();
-            return true;
-        }
+    private OnPreferenceClickListener onAddWebsearch = preference -> {
+        WebsearchSettingsActivity_.intent(MainSettingsActivity.this).start();
+        return true;
     };
-    private OnPreferenceClickListener onAddRssfeed = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            RssfeedSettingsActivity_.intent(MainSettingsActivity.this).start();
-            return true;
-        }
+    private OnPreferenceClickListener onAddRssfeed = preference -> {
+        RssfeedSettingsActivity_.intent(MainSettingsActivity.this).start();
+        return true;
     };
-    private OnPreferenceClickListener onBackgroundSettings = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            NotificationSettingsActivity_.intent(MainSettingsActivity.this).start();
-            return true;
-        }
+    private OnPreferenceClickListener onBackgroundSettings = preference -> {
+        NotificationSettingsActivity_.intent(MainSettingsActivity.this).start();
+        return true;
     };
-    private OnPreferenceClickListener onSystemSettings = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            SystemSettingsActivity_.intent(MainSettingsActivity.this).start();
-            return true;
-        }
+    private OnPreferenceClickListener onSystemSettings = preference -> {
+        SystemSettingsActivity_.intent(MainSettingsActivity.this).start();
+        return true;
     };
-    private OnPreferenceClickListener onHelpSettings = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            HelpSettingsActivity_.intent(MainSettingsActivity.this).start();
-            return true;
-        }
+    private OnPreferenceClickListener onHelpSettings = preference -> {
+        HelpSettingsActivity_.intent(MainSettingsActivity.this).start();
+        return true;
     };
-    private OnPreferenceClickListener onDonate = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.donate_url))));
-            return true;
-        }
+    private OnPreferenceClickListener onDonate = preference -> {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.donate_url))));
+        return true;
     };
-    private OnServerClickedListener onServerClicked = new OnServerClickedListener() {
-        @Override
-        public void onServerClicked(ServerSetting serverSetting) {
-            ServerSettingsActivity_.intent(MainSettingsActivity.this).key(serverSetting.getOrder()).start();
-        }
+    private OnServerClickedListener onServerClicked = serverSetting -> ServerSettingsActivity_.intent(MainSettingsActivity.this).key(serverSetting.getOrder()).start();
+    private OnSeedboxClickedListener onSeedboxClicked = (serverSetting, provider, seedboxOffset) -> {
+        // NOTE: The seedboxOffset is the seedbox type-unique order that we need to supply uin the Extras bundle to
+        // edit this specific seedbox
+        startActivity(provider.getSettings().getSettingsActivityIntent(MainSettingsActivity.this).putExtra("key", seedboxOffset));
     };
-    private OnSeedboxClickedListener onSeedboxClicked = new OnSeedboxClickedListener() {
-        @Override
-        public void onSeedboxClicked(ServerSetting serverSetting, SeedboxProvider provider, int seedboxOffset) {
-            // NOTE: The seedboxOffset is the seedbox type-unique order that we need to supply uin the Extras bundle to
-            // edit this specific seedbox
-            startActivity(provider.getSettings().getSettingsActivityIntent(MainSettingsActivity.this).putExtra("key", seedboxOffset));
-        }
-    };
-    private OnWebsearchClickedListener onWebsearchClicked = new OnWebsearchClickedListener() {
-        @Override
-        public void onWebsearchClicked(WebsearchSetting websearchSetting) {
-            WebsearchSettingsActivity_.intent(MainSettingsActivity.this).key(websearchSetting.getOrder()).start();
-        }
-    };
-    private OnRssfeedClickedListener onRssfeedClicked = new OnRssfeedClickedListener() {
-        @Override
-        public void onRssfeedClicked(RssfeedSetting rssfeedSetting) {
-            RssfeedSettingsActivity_.intent(MainSettingsActivity.this).key(rssfeedSetting.getOrder()).start();
-        }
-    };
-    private OnClickListener onAddSeedbox = new OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            // Start the configuration activity for this specific chosen seedbox
-            if (which == 0)
-                ServerSettingsActivity_.intent(MainSettingsActivity.this).start();
-            else
-                startActivity(SeedboxProvider.values()[which - 1].getSettings().getSettingsActivityIntent(MainSettingsActivity.this));
-        }
+    private OnWebsearchClickedListener onWebsearchClicked = websearchSetting -> WebsearchSettingsActivity_.intent(MainSettingsActivity.this).key(websearchSetting.getOrder()).start();
+    private OnRssfeedClickedListener onRssfeedClicked = rssfeedSetting -> RssfeedSettingsActivity_.intent(MainSettingsActivity.this).key(rssfeedSetting.getOrder()).start();
+    private OnClickListener onAddSeedbox = (dialog, which) -> {
+        // Start the configuration activity for this specific chosen seedbox
+        if (which == 0)
+            ServerSettingsActivity_.intent(MainSettingsActivity.this).start();
+        else
+            startActivity(SeedboxProvider.values()[which - 1].getSettings().getSettingsActivityIntent(MainSettingsActivity.this));
     };
 
     @Override

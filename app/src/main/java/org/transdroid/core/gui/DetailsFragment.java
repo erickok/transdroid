@@ -121,12 +121,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
             // Show contextual action bar to start/stop/remove/etc. torrents in batch mode
             detailsMenu.setEnabled(false);
             contextualMenu.setVisibility(View.VISIBLE);
-            contextualMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    return onActionItemClicked(mode, menuItem);
-                }
-            });
+            contextualMenu.setOnMenuItemClickListener(menuItem -> onActionItemClicked(mode, menuItem));
             contextualMenu.getMenu().clear();
             getActivity().getMenuInflater().inflate(R.menu.fragment_details_cab_main, contextualMenu.getMenu());
             Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
@@ -301,12 +296,9 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
         detailsList.setMultiChoiceModeListener(onDetailsSelected);
         detailsList.setFastScrollEnabled(true);
         if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
-            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    ((RefreshableActivity) getActivity()).refreshScreen();
-                    swipeRefreshLayout.setRefreshing(false); // Use our custom indicator
-                }
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                ((RefreshableActivity) getActivity()).refreshScreen();
+                swipeRefreshLayout.setRefreshing(false); // Use our custom indicator
             });
         }
 
@@ -454,55 +446,52 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
     public void createMenuOptions() {
         getActivity().getMenuInflater().inflate(R.menu.fragment_details, detailsMenu.getMenu());
-        detailsMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.action_pause:
-                        pauseTorrent();
-                        return true;
-                    case R.id.action_updatetrackers:
-                        updateTrackers();
-                        return true;
-                    case R.id.action_start_forced:
-                        startTorrentForced();
-                        return true;
-                    case R.id.action_remove_withdata:
-                        removeTorrentWithData();
-                        return true;
-                    case R.id.action_stop:
-                        stopTorrent();
-                        return true;
-                    case R.id.action_toggle_sequential:
-                        toggleSequentialDownload(menuItem);
-                        return true;
-                    case R.id.action_toggle_firstlastpiece:
-                        toggleFirstLastPieceDownload(menuItem);
-                        return true;
-                    case R.id.action_forcerecheck:
-                        setForceRecheck();
-                        return true;
-                    case R.id.action_changelocation:
-                        changeStorageLocation();
-                        return true;
-                    case R.id.action_start_default:
-                        startTorrentDefault();
-                        return true;
-                    case R.id.action_remove_default:
-                        removeTorrentDefault();
-                        return true;
-                    case R.id.action_start_direct:
-                        startTorrentDirect();
-                        return true;
-                    case R.id.action_setlabel:
-                        setLabel();
-                        return true;
-                    case R.id.action_resume:
-                        resumeTorrent();
-                        return true;
-                }
-                return false;
+        detailsMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.action_pause:
+                    pauseTorrent();
+                    return true;
+                case R.id.action_updatetrackers:
+                    updateTrackers();
+                    return true;
+                case R.id.action_start_forced:
+                    startTorrentForced();
+                    return true;
+                case R.id.action_remove_withdata:
+                    removeTorrentWithData();
+                    return true;
+                case R.id.action_stop:
+                    stopTorrent();
+                    return true;
+                case R.id.action_toggle_sequential:
+                    toggleSequentialDownload(menuItem);
+                    return true;
+                case R.id.action_toggle_firstlastpiece:
+                    toggleFirstLastPieceDownload(menuItem);
+                    return true;
+                case R.id.action_forcerecheck:
+                    setForceRecheck();
+                    return true;
+                case R.id.action_changelocation:
+                    changeStorageLocation();
+                    return true;
+                case R.id.action_start_default:
+                    startTorrentDefault();
+                    return true;
+                case R.id.action_remove_default:
+                    removeTorrentDefault();
+                    return true;
+                case R.id.action_start_direct:
+                    startTorrentDirect();
+                    return true;
+                case R.id.action_setlabel:
+                    setLabel();
+                    return true;
+                case R.id.action_resume:
+                    resumeTorrent();
+                    return true;
             }
+            return false;
         });
     }
 

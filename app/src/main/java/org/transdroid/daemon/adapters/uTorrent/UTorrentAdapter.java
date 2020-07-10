@@ -74,7 +74,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -339,12 +338,8 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
             }
         }
 
-        Collections.sort(remoteRssChannels, new Comparator<RemoteRssChannel>() {
-            @Override
-            public int compare(RemoteRssChannel lhs, RemoteRssChannel rhs) {
-                return lhs.getName().compareToIgnoreCase(rhs.getName());
-            }
-        });
+        Collections.sort(remoteRssChannels, (lhs, rhs) ->
+                lhs.getName().compareToIgnoreCase(rhs.getName()));
     }
 
     private ArrayList<Label> parseJsonRetrieveGetLabels(JSONArray lresults) throws JSONException {

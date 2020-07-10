@@ -20,8 +20,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -76,12 +74,9 @@ public class BarcodeHelper {
             final WeakReference<Context> intentStartContext = new WeakReference<>(activity);
             new AlertDialog.Builder(activity).setIcon(android.R.drawable.ic_dialog_alert)
                     .setMessage(activity.getString(R.string.search_barcodescannernotfound))
-                    .setPositiveButton(android.R.string.yes, new OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (intentStartContext.get() != null)
-                                intentStartContext.get().startActivity(new Intent(Intent.ACTION_VIEW, SCANNER_MARKET_URI));
-                        }
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        if (intentStartContext.get() != null)
+                            intentStartContext.get().startActivity(new Intent(Intent.ACTION_VIEW, SCANNER_MARKET_URI));
                     }).setNegativeButton(android.R.string.no, null).show();
         }
     }

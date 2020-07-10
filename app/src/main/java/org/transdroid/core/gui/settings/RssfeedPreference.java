@@ -36,13 +36,10 @@ public class RssfeedPreference extends Preference {
 
     public RssfeedPreference(Context context) {
         super(context);
-        OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (onRssfeedClickedListener != null)
-                    onRssfeedClickedListener.onRssfeedClicked(rssfeedSetting);
-                return true;
-            }
+        OnPreferenceClickListener onPreferenceClicked = preference -> {
+            if (onRssfeedClickedListener != null)
+                onRssfeedClickedListener.onRssfeedClicked(rssfeedSetting);
+            return true;
         };
         setOnPreferenceClickListener(onPreferenceClicked);
         setIconSpaceReserved(false);

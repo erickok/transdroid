@@ -21,7 +21,6 @@ import org.transdroid.core.rssparser.Channel;
 import org.transdroid.core.rssparser.Item;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -61,12 +60,8 @@ public class RssfeedLoader {
             // Count the number of new items, based on the date that this RSS feed was last viewed by the user
             List<Item> items = channel.getItems();
             // Reverse-order sort the items on their published date
-            Collections.sort(items, new Comparator<Item>() {
-                @Override
-                public int compare(Item lhs, Item rhs) {
-                    return -lhs.getPubdate().compareTo(rhs.getPubdate());
-                }
-            });
+            Collections.sort(items, (lhs, rhs) ->
+                    -lhs.getPubdate().compareTo(rhs.getPubdate()));
             for (Item item : items) {
                 if (item.getPubdate() == null || setting.getLastViewed() == null || item.getPubdate().after(setting.getLastViewed())) {
                     newCount++;

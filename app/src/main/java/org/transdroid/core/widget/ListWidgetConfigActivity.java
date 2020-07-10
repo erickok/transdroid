@@ -100,12 +100,7 @@ public class ListWidgetConfigActivity extends AppCompatActivity {
         }
     };
     private List<Torrent> previewTorrents = null;
-    protected OnCheckedChangeListener reverseorderCheckedChanged = new OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            filterTorrents();
-        }
-    };
+    protected OnCheckedChangeListener reverseorderCheckedChanged = (buttonView, isChecked) -> filterTorrents();
     private int appWidgetId;
     private OnClickListener doneClicked = new OnClickListener() {
         @Override

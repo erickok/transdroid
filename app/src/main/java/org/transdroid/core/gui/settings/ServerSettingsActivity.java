@@ -19,8 +19,6 @@ package org.transdroid.core.gui.settings;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -28,7 +26,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.preference.EditTextPreference;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 
 import org.androidannotations.annotations.Bean;
@@ -89,15 +86,12 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
         initTextPreference("server_ssltrustkey", null, "server_sslenabled");
         onPreferencesChanged();
 
-        localNetworkPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(final Preference preference) {
-                if (!connectivityHelper.hasNetworkNamePermission(ServerSettingsActivity.this)) {
-                    connectivityHelper.askNetworkNamePermission(ServerSettingsActivity.this);
-                    return true;
-                }
-                return false;
+        localNetworkPreference.setOnPreferenceClickListener(preference -> {
+            if (!connectivityHelper.hasNetworkNamePermission(ServerSettingsActivity.this)) {
+                connectivityHelper.askNetworkNamePermission(ServerSettingsActivity.this);
+                return true;
             }
+            return false;
         });
     }
 
@@ -116,12 +110,9 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_CONFIRMREMOVE) {
             return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
-                    .setPositiveButton(android.R.string.ok, new OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ApplicationSettings_.getInstance_(ServerSettingsActivity.this).removeNormalServerSettings(key);
-                            finish();
-                        }
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        ApplicationSettings_.getInstance_(ServerSettingsActivity.this).removeNormalServerSettings(key);
+                        finish();
                     }).setNegativeButton(android.R.string.cancel, null).create();
         }
         return null;

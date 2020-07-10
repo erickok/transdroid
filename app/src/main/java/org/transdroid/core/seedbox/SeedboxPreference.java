@@ -18,8 +18,6 @@ package org.transdroid.core.seedbox;
 
 import android.content.Context;
 
-import androidx.preference.Preference;
-
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.settings.ServerPreference;
 
@@ -36,13 +34,10 @@ public class SeedboxPreference extends ServerPreference {
 
     public SeedboxPreference(Context context) {
         super(context);
-        OnPreferenceClickListener onSeedboxPreferenceClicked = new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (onSeedboxClickedListener != null)
-                    onSeedboxClickedListener.onSeedboxClicked(serverSetting, provider, onSeedboxClickedListenerOffset);
-                return true;
-            }
+        OnPreferenceClickListener onSeedboxPreferenceClicked = preference -> {
+            if (onSeedboxClickedListener != null)
+                onSeedboxClickedListener.onSeedboxClicked(serverSetting, provider, onSeedboxClickedListenerOffset);
+            return true;
         };
         setOnPreferenceClickListener(onSeedboxPreferenceClicked);
     }

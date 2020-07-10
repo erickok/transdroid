@@ -24,9 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
@@ -49,19 +46,19 @@ public class UrlEntryDialog {
             CharSequence content = clipboard.getPrimaryClip().getItemAt(0).coerceToText(activity);
             urlEdit.setText(content);
         }
-        new MaterialDialog.Builder(activity).customView(inputLayout, false).positiveText(android.R.string.ok).negativeText(android.R.string.cancel)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        String url = urlEdit.getText().toString();
-                        Uri uri = Uri.parse(url);
-                        if (!TextUtils.isEmpty(url)) {
-                            String title = NavigationHelper.extractNameFromUri(uri);
-                            if (uri.getScheme() != null && uri.getScheme().equals("magnet")) {
-                                activity.addTorrentByMagnetUrl(url, title);
-                            } else {
-                                activity.addTorrentByUrl(url, title);
-                            }
+        new MaterialDialog.Builder(activity)
+                .customView(inputLayout, false)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.cancel)
+                .onPositive((dialog, which) -> {
+                    String url = urlEdit.getText().toString();
+                    Uri uri = Uri.parse(url);
+                    if (!TextUtils.isEmpty(url)) {
+                        String title = NavigationHelper.extractNameFromUri(uri);
+                        if (uri.getScheme() != null && uri.getScheme().equals("magnet")) {
+                            activity.addTorrentByMagnetUrl(url, title);
+                        } else {
+                            activity.addTorrentByUrl(url, title);
                         }
                     }
                 }).show();

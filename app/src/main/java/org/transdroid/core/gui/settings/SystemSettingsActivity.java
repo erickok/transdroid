@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import androidx.preference.Preference;
 import androidx.preference.Preference.OnPreferenceClickListener;
 import androidx.preference.PreferenceManager;
 
@@ -69,34 +68,22 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
     protected ErrorLogSender errorLogSender;
     @Bean
     protected SettingsPersistence settingsPersistence;
-    private OnPreferenceClickListener onImportSettingsClick = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            showDialog(DIALOG_IMPORTSETTINGS);
-            return true;
-        }
+    private OnPreferenceClickListener onImportSettingsClick = preference -> {
+        showDialog(DIALOG_IMPORTSETTINGS);
+        return true;
     };
-    private OnPreferenceClickListener onExportSettingsClick = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            showDialog(DIALOG_EXPORTSETTINGS);
-            return true;
-        }
+    private OnPreferenceClickListener onExportSettingsClick = preference -> {
+        showDialog(DIALOG_EXPORTSETTINGS);
+        return true;
     };
-    private OnPreferenceClickListener onCheckUpdatesClick = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            AppUpdateJob.schedule(getApplicationContext());
-            return true;
-        }
+    private OnPreferenceClickListener onCheckUpdatesClick = preference -> {
+        AppUpdateJob.schedule(getApplicationContext());
+        return true;
     };
-    private OnPreferenceClickListener onClearSearchClick = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            SearchHistoryProvider.clearHistory(getApplicationContext());
-            SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_clearsearch_success));
-            return true;
-        }
+    private OnPreferenceClickListener onClearSearchClick = preference -> {
+        SearchHistoryProvider.clearHistory(getApplicationContext());
+        SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_clearsearch_success));
+        return true;
     };
     private OnClickListener importSettingsFromFile = new OnClickListener() {
         @Override
@@ -108,12 +95,9 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
         }
     };
 
-    private OnClickListener importSettingsFromQr = new OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
+    private OnClickListener importSettingsFromQr = (dialog, which) ->
             BarcodeHelper.startBarcodeScanner(SystemSettingsActivity.this, BarcodeHelper.ACTIVITY_BARCODE_QRSETTINGS);
-        }
-    };
+
     private OnClickListener exportSettingsToFile = new OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {

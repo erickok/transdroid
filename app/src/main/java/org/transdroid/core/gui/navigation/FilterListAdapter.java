@@ -24,7 +24,6 @@ import org.androidannotations.annotations.RootContext;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.lists.MergeAdapter;
-import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.lists.ViewHolderAdapter;
 import org.transdroid.core.gui.navigation.StatusType.StatusTypeFilter;
 

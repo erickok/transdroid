@@ -130,12 +130,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
             actionsToolbar.setEnabled(false);
             actionsMenu.setVisibility(View.VISIBLE);
             addmenuButton.setVisibility(View.GONE);
-            actionsMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    return onActionItemClicked(mode, menuItem);
-                }
-            });
+            actionsMenu.setOnMenuItemClickListener(menuItem -> onActionItemClicked(mode, menuItem));
             actionsMenu.getMenu().clear();
             getActivity().getMenuInflater().inflate(R.menu.fragment_torrents_cab, actionsMenu.getMenu());
             Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
@@ -256,12 +251,9 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
         }
         // Allow pulls on the list view to refresh the torrents
         if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
-            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    ((RefreshableActivity) getActivity()).refreshScreen();
-                    swipeRefreshLayout.setRefreshing(false); // Use our custom indicator
-                }
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                ((RefreshableActivity) getActivity()).refreshScreen();
+                swipeRefreshLayout.setRefreshing(false); // Use our custom indicator
             });
         }
         nosettingsText.setText(getString(R.string.navigation_nosettings, getString(R.string.app_name)));

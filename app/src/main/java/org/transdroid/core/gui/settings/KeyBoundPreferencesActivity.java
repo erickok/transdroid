@@ -51,12 +51,9 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivi
 
     private SharedPreferences sharedPrefs;
     private Map<String, String> originalSummaries = new HashMap<>();
-    private OnSharedPreferenceChangeListener onPreferenceChangeListener = new OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            showValueOnSummary(key);
-            onPreferencesChanged();
-        }
+    private OnSharedPreferenceChangeListener onPreferenceChangeListener = (sharedPreferences, key) -> {
+        showValueOnSummary(key);
+        onPreferencesChanged();
     };
 
     /**

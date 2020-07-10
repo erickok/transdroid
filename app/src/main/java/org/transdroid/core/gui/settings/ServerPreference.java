@@ -36,13 +36,10 @@ public class ServerPreference extends Preference {
 
     public ServerPreference(Context context) {
         super(context);
-        OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (onServerClickedListener != null)
-                    onServerClickedListener.onServerClicked(serverSetting);
-                return true;
-            }
+        OnPreferenceClickListener onPreferenceClicked = preference -> {
+            if (onServerClickedListener != null)
+                onServerClickedListener.onServerClicked(serverSetting);
+            return true;
         };
         setOnPreferenceClickListener(onPreferenceClicked);
         setIconSpaceReserved(false);

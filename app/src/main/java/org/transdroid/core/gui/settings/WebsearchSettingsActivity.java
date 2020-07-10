@@ -19,8 +19,6 @@ package org.transdroid.core.gui.settings;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -72,12 +70,9 @@ public class WebsearchSettingsActivity extends KeyBoundPreferencesActivity {
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_CONFIRMREMOVE) {
             return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
-                    .setPositiveButton(android.R.string.ok, new OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ApplicationSettings_.getInstance_(WebsearchSettingsActivity.this).removeWebsearchSettings(key);
-                            finish();
-                        }
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        ApplicationSettings_.getInstance_(WebsearchSettingsActivity.this).removeWebsearchSettings(key);
+                        finish();
                     }).setNegativeButton(android.R.string.cancel, null).create();
         }
         return null;

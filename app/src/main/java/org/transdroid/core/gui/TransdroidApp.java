@@ -18,12 +18,8 @@ package org.transdroid.core.gui;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.evernote.android.job.JobConfig;
 import com.evernote.android.job.JobManager;
-import com.evernote.android.job.util.JobLogger;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EApplication;
@@ -41,12 +37,7 @@ public class TransdroidApp extends Application {
         super.onCreate();
 
         // Configure Android-Job
-        JobConfig.addLogger(new JobLogger() {
-            @Override
-            public void log(int priority, @NonNull String tag, @NonNull String message, @Nullable Throwable t) {
-                log.d(tag, message);
-            }
-        });
+        JobConfig.addLogger((priority, tag, message, t) -> log.d(tag, message));
         JobManager.create(this).addJobCreator(new ScheduledJobCreator());
     }
 

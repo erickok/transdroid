@@ -58,26 +58,17 @@ public class HelpSettingsActivity extends PreferenceCompatActivity {
             return true;
         }
     };
-    private OnPreferenceClickListener onInstallHelpClick = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(INSTALLHELP_URI)));
-            return true;
-        }
+    private OnPreferenceClickListener onInstallHelpClick = preference -> {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(INSTALLHELP_URI)));
+        return true;
     };
-    private OnPreferenceClickListener onChangeLogClick = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            showDialog(DIALOG_CHANGELOG);
-            return true;
-        }
+    private OnPreferenceClickListener onChangeLogClick = preference -> {
+        showDialog(DIALOG_CHANGELOG);
+        return true;
     };
-    private OnPreferenceClickListener onAboutClick = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            showDialog(DIALOG_ABOUT);
-            return true;
-        }
+    private OnPreferenceClickListener onAboutClick = preference -> {
+        showDialog(DIALOG_ABOUT);
+        return true;
     };
 
     @Override

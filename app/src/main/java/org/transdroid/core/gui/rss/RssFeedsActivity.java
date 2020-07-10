@@ -72,7 +72,6 @@ import org.transdroid.daemon.task.DaemonTaskSuccessResult;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -301,12 +300,8 @@ public class RssFeedsActivity extends AppCompatActivity {
             }
 
             // Sort by -newest
-            Collections.sort(recentItems, new Comparator<RemoteRssItem>() {
-                @Override
-                public int compare(RemoteRssItem lhs, RemoteRssItem rhs) {
-                    return rhs.getTimestamp().compareTo(lhs.getTimestamp());
-                }
-            });
+            Collections.sort(recentItems, (lhs, rhs) ->
+                    rhs.getTimestamp().compareTo(lhs.getTimestamp()));
         } catch (DaemonException e) {
             onCommunicationError(e);
             return;

@@ -116,12 +116,8 @@ public class SearchActivity extends AppCompatActivity {
     protected void init() {
 
         searchToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
-        searchToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TorrentsActivity_.intent(SearchActivity.this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-            }
-        });
+        searchToolbar.setNavigationOnClickListener(v ->
+                TorrentsActivity_.intent(SearchActivity.this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start());
         setSupportActionBar(searchToolbar);
 
         // Get the user query, as coming from the standard SearchManager

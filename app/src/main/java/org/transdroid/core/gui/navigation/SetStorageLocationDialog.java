@@ -21,9 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
@@ -46,12 +43,9 @@ public class SetStorageLocationDialog {
                 .customView(locationLayout, false)
                 .positiveText(R.string.status_update)
                 .negativeText(android.R.string.cancel)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        // User is done editing and requested to update given the text input
-                        onStorageLocationUpdatedListener.onStorageLocationUpdated(locationText.getText().toString());
-                    }
+                .onPositive((dialog, which) -> {
+                    // User is done editing and requested to update given the text input
+                    onStorageLocationUpdatedListener.onStorageLocationUpdated(locationText.getText().toString());
                 });
 
         SettingsUtils

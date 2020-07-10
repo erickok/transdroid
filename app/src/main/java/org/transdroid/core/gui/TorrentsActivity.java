@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -270,13 +269,8 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
             torrentsToolbar.addView(serverSelectionView);
         }
         actionsToolbar.addView(serverStatusView);
-        actionsToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                // Redirect to the classic activity implementation so we can use @OptionsItem methods
-                return onOptionsItemSelected(menuItem);
-            }
-        });
+        // Redirect to the classic activity implementation so we can use @OptionsItem methods
+        actionsToolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
         setSupportActionBar(torrentsToolbar); // For direct menu item inflation by the contained fragments
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -458,13 +452,10 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
             SearchView searchView = new SearchView(torrentsToolbar.getContext());
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
             searchView.setQueryRefinementEnabled(true);
-            searchView.setOnSearchClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Pause autorefresh
-                    stopRefresh = true;
-                    stopAutoRefresh();
-                }
+            searchView.setOnSearchClickListener(v -> {
+                // Pause autorefresh
+                stopRefresh = true;
+                stopAutoRefresh();
             });
             item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                 @Override

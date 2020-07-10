@@ -19,7 +19,6 @@ package org.transdroid.core.service;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
@@ -66,13 +65,8 @@ public class ConnectivityHelper {
                 .setTitle(R.string.pref_local_permission_title)
                 .setMessage(activity.getString(R.string.pref_local_permission_rationale,
                         activity.getString(R.string.app_name)))
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(activity,
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
-                    }
-                })
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION))
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }

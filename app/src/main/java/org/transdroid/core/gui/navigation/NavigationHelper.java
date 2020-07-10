@@ -30,11 +30,9 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.TypefaceSpan;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -160,17 +158,12 @@ public class NavigationHelper {
             return true;
         if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
             // Never asked again: show a dialog with an explanation
-            activity.runOnUiThread(new Runnable() {
-                public void run() {
-                    new MaterialDialog.Builder(context).content(R.string.permission_readtorrent).positiveText(android.R.string.ok)
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    ActivityCompat.requestPermissions(activity, new String[]{permission}, requestCode);
-                                }
-                            }).show();
-                }
-            });
+            activity.runOnUiThread(() ->
+                    new MaterialDialog.Builder(context)
+                            .content(R.string.permission_readtorrent)
+                            .positiveText(android.R.string.ok)
+                            .onPositive((dialog, which) ->
+                                    ActivityCompat.requestPermissions(activity, new String[]{permission}, requestCode)).show());
             return false;
         }
         // Permission not granted (and we asked for it already before)

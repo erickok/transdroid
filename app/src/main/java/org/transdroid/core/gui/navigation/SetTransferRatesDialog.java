@@ -23,9 +23,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
@@ -33,17 +30,14 @@ import org.transdroid.core.app.settings.SettingsUtils;
 
 public class SetTransferRatesDialog {
 
-    private static OnClickListener onNumberClicked = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // Append the text contents of the button itself as text to the current number (as reference in the view's
-            // tag)
-            TextView numberView = (TextView) v.getTag();
-            if (numberView.getText().toString().equals(v.getContext().getString(R.string.status_maxspeed_novalue))) {
-                numberView.setText("");
-            }
-            numberView.setText(numberView.getText().toString() + ((Button) v).getText().toString());
+    private static OnClickListener onNumberClicked = v -> {
+        // Append the text contents of the button itself as text to the current number (as reference in the view's
+        // tag)
+        TextView numberView = (TextView) v.getTag();
+        if (numberView.getText().toString().equals(v.getContext().getString(R.string.status_maxspeed_novalue))) {
+            numberView.setText("");
         }
+        numberView.setText(numberView.getText().toString() + ((Button) v).getText().toString());
     };
 
     /**
@@ -63,29 +57,23 @@ public class SetTransferRatesDialog {
                 .positiveText(R.string.status_update)
                 .neutralText(R.string.status_maxspeed_reset)
                 .negativeText(android.R.string.cancel)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        int maxDown = -1, maxUp = -1;
-                        try {
-                            maxDown = Integer.parseInt(maxSpeedDown.getText().toString());
-                            maxUp = Integer.parseInt(maxSpeedUp.getText().toString());
-                        } catch (NumberFormatException e) {
-                            // Impossible as we only input via the number buttons
-                        }
-                        if (maxDown <= 0 || maxUp <= 0) {
-                            onRatesPickedListener.onInvalidNumber();
-                            return;
-                        }
-                        onRatesPickedListener.onRatesPicked(maxDown, maxUp);
+                .onPositive((dialog, which) -> {
+                    int maxDown = -1, maxUp = -1;
+                    try {
+                        maxDown = Integer.parseInt(maxSpeedDown.getText().toString());
+                        maxUp = Integer.parseInt(maxSpeedUp.getText().toString());
+                    } catch (NumberFormatException e) {
+                        // Impossible as we only input via the number buttons
                     }
+                    if (maxDown <= 0 || maxUp <= 0) {
+                        onRatesPickedListener.onInvalidNumber();
+                        return;
+                    }
+                    onRatesPickedListener.onRatesPicked(maxDown, maxUp);
                 })
-                .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        onRatesPickedListener.resetRates();
-                    }
-                });
+                .onNeutral((dialog, which) ->
+                        onRatesPickedListener.resetRates());
+
         MaterialDialog dialog = SettingsUtils.applyDialogTheme(builder).build();
 
         bindButtons(dialog.getCustomView(), maxSpeedDown, R.id.down1Button, R.id.down2Button, R.id.down3Button, R.id.down4Button, R.id.down5Button,

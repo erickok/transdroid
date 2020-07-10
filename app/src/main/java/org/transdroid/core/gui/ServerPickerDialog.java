@@ -18,8 +18,6 @@ package org.transdroid.core.gui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
@@ -55,12 +53,9 @@ public class ServerPickerDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String[] serverNames = getArguments().getStringArray("serverNames");
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.navigation_pickserver)
-                .setItems(serverNames, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (getActivity() != null && getActivity() instanceof TorrentsActivity)
-                            ((TorrentsActivity) getActivity()).switchServerAndAddFromIntent(which);
-                    }
+                .setItems(serverNames, (dialog, which) -> {
+                    if (getActivity() != null && getActivity() instanceof TorrentsActivity)
+                        ((TorrentsActivity) getActivity()).switchServerAndAddFromIntent(which);
                 }).create();
     }
 
