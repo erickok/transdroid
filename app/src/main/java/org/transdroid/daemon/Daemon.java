@@ -17,22 +17,22 @@
  */
 package org.transdroid.daemon;
 
-import org.transdroid.daemon.Aria2c.Aria2Adapter;
-import org.transdroid.daemon.BitComet.BitCometAdapter;
-import org.transdroid.daemon.Bitflu.BitfluAdapter;
-import org.transdroid.daemon.BuffaloNas.BuffaloNasAdapter;
-import org.transdroid.daemon.DLinkRouterBT.DLinkRouterBTAdapter;
-import org.transdroid.daemon.Deluge.DelugeAdapter;
-import org.transdroid.daemon.Deluge.DelugeRpcAdapter;
-import org.transdroid.daemon.Ktorrent.KtorrentAdapter;
-import org.transdroid.daemon.Qbittorrent.QbittorrentAdapter;
-import org.transdroid.daemon.Rtorrent.RtorrentAdapter;
-import org.transdroid.daemon.Synology.SynologyAdapter;
-import org.transdroid.daemon.Tfb4rt.Tfb4rtAdapter;
-import org.transdroid.daemon.Transmission.TransmissionAdapter;
-import org.transdroid.daemon.Ttorrent.TtorrentAdapter;
-import org.transdroid.daemon.Utorrent.UtorrentAdapter;
-import org.transdroid.daemon.Vuze.VuzeAdapter;
+import org.transdroid.daemon.adapters.Aria2c.Aria2Adapter;
+import org.transdroid.daemon.adapters.BitComet.BitCometAdapter;
+import org.transdroid.daemon.adapters.Bitflu.BitfluAdapter;
+import org.transdroid.daemon.adapters.BuffaloNas.BuffaloNasAdapter;
+import org.transdroid.daemon.adapters.DLinkRouterBT.DLinkRouterBTAdapter;
+import org.transdroid.daemon.adapters.Deluge.DelugeAdapter;
+import org.transdroid.daemon.adapters.Deluge.DelugeRpcAdapter;
+import org.transdroid.daemon.adapters.Ktorrent.KtorrentAdapter;
+import org.transdroid.daemon.adapters.Qbittorrent.QbittorrentAdapter;
+import org.transdroid.daemon.adapters.Rtorrent.RtorrentAdapter;
+import org.transdroid.daemon.adapters.Synology.SynologyAdapter;
+import org.transdroid.daemon.adapters.Tfb4rt.Tfb4rtAdapter;
+import org.transdroid.daemon.adapters.Transmission.TransmissionAdapter;
+import org.transdroid.daemon.adapters.Ttorrent.TtorrentAdapter;
+import org.transdroid.daemon.adapters.Utorrent.UtorrentAdapter;
+import org.transdroid.daemon.adapters.Vuze.VuzeAdapter;
 
 /**
  * Factory for new instances of server daemons, based on user settings.
