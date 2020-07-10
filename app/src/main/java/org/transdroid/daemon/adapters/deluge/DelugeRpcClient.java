@@ -162,7 +162,7 @@ class DelugeRpcClient implements Closeable {
         if (!(responseObject instanceof List)) {
             throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
         }
-        final List response = (List) responseObject;
+        final List<?> response = (List<?>) responseObject;
 
         if (response.size() < RESPONSE_RETURN_VALUE_INDEX + 1) {
             throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());

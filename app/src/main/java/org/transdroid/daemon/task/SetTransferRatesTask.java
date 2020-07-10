@@ -29,8 +29,8 @@ public class SetTransferRatesTask extends DaemonTask {
 
     public static SetTransferRatesTask create(IDaemonAdapter adapter, Integer uploadRate, Integer downloadRate) {
         Bundle data = new Bundle();
-        data.putInt("UPLOAD_RATE", (uploadRate == null ? -1 : uploadRate.intValue()));
-        data.putInt("DOWNLOAD_RATE", (downloadRate == null ? -1 : downloadRate.intValue()));
+        data.putInt("UPLOAD_RATE", (uploadRate == null ? -1 : uploadRate));
+        data.putInt("DOWNLOAD_RATE", (downloadRate == null ? -1 : downloadRate));
         return new SetTransferRatesTask(adapter, data);
     }
 
