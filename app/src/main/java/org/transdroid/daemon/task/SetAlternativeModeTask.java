@@ -17,10 +17,10 @@
  */
 package org.transdroid.daemon.task;
 
+import android.os.Bundle;
+
 import org.transdroid.daemon.DaemonMethod;
 import org.transdroid.daemon.IDaemonAdapter;
-
-import android.os.Bundle;
 
 public class SetAlternativeModeTask extends DaemonTask {
     protected SetAlternativeModeTask(IDaemonAdapter adapter, Bundle data) {

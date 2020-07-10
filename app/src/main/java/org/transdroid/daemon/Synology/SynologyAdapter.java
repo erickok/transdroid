@@ -21,8 +21,6 @@ import com.android.internal.http.multipart.FilePart;
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
 
-import org.transdroid.multipart.Utf8StringPart;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -58,6 +56,7 @@ import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.Collections2;
 import org.transdroid.daemon.util.HttpHelper;
+import org.transdroid.multipart.Utf8StringPart;
 
 import java.io.File;
 import java.io.FileNotFoundException;

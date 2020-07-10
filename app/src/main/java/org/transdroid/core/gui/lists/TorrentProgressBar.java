@@ -16,8 +16,6 @@
  */
 package org.transdroid.core.gui.lists;
 
-import org.transdroid.R;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -25,6 +23,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
+
+import org.transdroid.R;
 
 /**
  * Draws a progress bar indicating the download progress as well as the torrent status.

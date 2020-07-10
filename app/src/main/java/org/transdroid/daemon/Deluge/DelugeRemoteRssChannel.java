@@ -3,11 +3,11 @@ package org.transdroid.daemon.Deluge;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.transdroid.core.gui.remoterss.data.RemoteRssChannel;
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Deluge implementation of RemoteRssChannel.

@@ -16,21 +16,21 @@
  */
 package org.transdroid.core.app.search;
 
+import android.content.ContentProviderClient;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.EBean.Scope;
+import org.androidannotations.annotations.RootContext;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.EBean.Scope;
-import org.androidannotations.annotations.RootContext;
-
-import android.content.ContentProviderClient;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 
 @EBean(scope = Scope.Singleton)
 public class SearchHelper {

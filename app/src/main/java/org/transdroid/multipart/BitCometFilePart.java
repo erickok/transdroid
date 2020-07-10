@@ -34,13 +34,13 @@ import com.android.internal.http.multipart.FilePartSource;
 import com.android.internal.http.multipart.PartBase;
 import com.android.internal.http.multipart.PartSource;
 
+import org.apache.http.util.EncodingUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import org.apache.http.util.EncodingUtils;
 
 /**
  * This class implements a part of a Multipart post object that

@@ -16,13 +16,13 @@
  */
 package org.transdroid.core.gui.rss;
 
-import androidx.fragment.app.Fragment;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;

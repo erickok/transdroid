@@ -17,12 +17,8 @@
  */
 package org.transdroid.daemon.BitComet;
 
-import org.transdroid.multipart.BitCometFilePart;
-
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
-
-import org.transdroid.multipart.Utf8StringPart;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -58,6 +54,8 @@ import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetTransferRatesTask;
 import org.transdroid.daemon.util.HttpHelper;
+import org.transdroid.multipart.BitCometFilePart;
+import org.transdroid.multipart.Utf8StringPart;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;

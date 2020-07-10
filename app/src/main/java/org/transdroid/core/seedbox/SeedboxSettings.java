@@ -16,13 +16,13 @@
  */
 package org.transdroid.core.seedbox;
 
-import java.util.List;
-
-import org.transdroid.core.app.settings.ServerSetting;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
+import org.transdroid.core.app.settings.ServerSetting;
+
+import java.util.List;
 
 /**
  * Interface to implement by any seedbox type (as appears in the {@link SeedboxProvider} enum) to access and modify

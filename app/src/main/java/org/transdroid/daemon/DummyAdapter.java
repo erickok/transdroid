@@ -17,13 +17,7 @@
  */
 package org.transdroid.daemon;
 
-import java.io.File;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import android.net.Uri;
 
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.DaemonException.ExceptionType;
@@ -49,7 +43,13 @@ import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
 
-import android.net.Uri;
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 /**
  * A dummy adapter that does not communicate with some server, but maintains a local list of dummy data (reset every

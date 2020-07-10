@@ -16,8 +16,11 @@
  */
 package org.transdroid.core.gui.log;
 
-import java.sql.SQLException;
-import java.util.List;
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+
+import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -26,11 +29,8 @@ import org.transdroid.R;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-
-import com.j256.ormlite.dao.Dao;
+import java.sql.SQLException;
+import java.util.List;
 
 @EBean
 public class ErrorLogSender {

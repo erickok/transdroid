@@ -16,14 +16,14 @@
  */
 package org.transdroid.core.seedbox;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 
 import org.transdroid.core.app.settings.ServerSetting;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Abstract class that acts as a helper for actual {@link SeedboxSettings} implementations by implementing some

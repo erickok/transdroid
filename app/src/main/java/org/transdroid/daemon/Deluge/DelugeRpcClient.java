@@ -24,8 +24,6 @@ import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.util.TlsSniSocketFactory;
 
-import se.dimovski.rencode.Rencode;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -38,6 +36,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
+
+import se.dimovski.rencode.Rencode;
 
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_DAEMON_LOGIN;
 import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_INFO;

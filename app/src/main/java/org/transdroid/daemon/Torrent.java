@@ -17,11 +17,11 @@
  */
 package org.transdroid.daemon;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Represents a torrent on a server daemon.

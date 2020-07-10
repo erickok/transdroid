@@ -18,12 +18,6 @@ package org.transdroid.core.gui;
 
 import android.app.Fragment;
 import android.content.Context;
-
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ActionMenuView;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +26,11 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ActionMenuView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 

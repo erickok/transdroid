@@ -16,8 +16,6 @@
  */
 package org.transdroid.core.gui.search;
 
-import org.transdroid.R;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,6 +24,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
+
+import org.transdroid.R;
 
 import java.lang.ref.WeakReference;
 

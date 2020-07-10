@@ -4,11 +4,11 @@
  */
 package org.transdroid.core.rssparser;
 
-import java.util.Date;
-
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.Date;
 
 public class Item implements Parcelable {
 

@@ -17,7 +17,7 @@
  */
 package org.transdroid.daemon.task;
 
-import java.util.ArrayList;
+import android.os.Bundle;
 
 import org.transdroid.daemon.DaemonMethod;
 import org.transdroid.daemon.IDaemonAdapter;
@@ -25,7 +25,7 @@ import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentFile;
 
-import android.os.Bundle;
+import java.util.ArrayList;
 
 public class SetFilePriorityTask extends DaemonTask {
     protected SetFilePriorityTask(IDaemonAdapter adapter, Torrent targetTorrent, Bundle data) {

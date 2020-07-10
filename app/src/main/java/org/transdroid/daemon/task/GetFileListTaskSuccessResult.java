@@ -17,9 +17,9 @@
  */
 package org.transdroid.daemon.task;
 
-import java.util.List;
-
 import org.transdroid.daemon.TorrentFile;
+
+import java.util.List;
 
 /**
  * The result of a successfully executed GetFileListTask on the daemon.

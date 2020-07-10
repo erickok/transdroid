@@ -17,10 +17,10 @@
  */
 package org.transdroid.daemon.task;
 
-import java.util.List;
-
-import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.Label;
+import org.transdroid.daemon.Torrent;
+
+import java.util.List;
 
 /**
  * The result of a successfully executed RetrieveTask on the daemon.

@@ -17,11 +17,11 @@
  */
 package org.transdroid.daemon.task;
 
+import android.os.Bundle;
+
 import org.transdroid.daemon.DaemonMethod;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
-
-import android.os.Bundle;
 
 public class SetDownloadLocationTask extends DaemonTask {
     protected SetDownloadLocationTask(IDaemonAdapter adapter, Torrent targetTorrent, Bundle data) {

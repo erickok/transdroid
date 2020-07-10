@@ -1,18 +1,18 @@
 package org.transdroid.daemon.Tfb4rt;
 
+import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.DaemonException.ExceptionType;
+import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.TorrentStatus;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.transdroid.daemon.Daemon;
-import org.transdroid.daemon.DaemonException;
-import org.transdroid.daemon.Torrent;
-import org.transdroid.daemon.TorrentStatus;
-import org.transdroid.daemon.DaemonException.ExceptionType;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * A Torrentflux-b4rt-specific parser for it's stats.xml output.

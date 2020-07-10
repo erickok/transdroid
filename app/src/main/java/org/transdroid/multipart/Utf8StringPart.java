@@ -2,10 +2,10 @@ package org.transdroid.multipart;
 
 import com.android.internal.http.multipart.PartBase;
 
+import org.apache.http.util.EncodingUtils;
+
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.apache.http.util.EncodingUtils;
 
 public class Utf8StringPart extends PartBase {
 

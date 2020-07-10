@@ -16,9 +16,6 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import org.transdroid.core.gui.navigation.SelectionModificationSpinner.OnModificationActionSelectedListener;
-import org.transdroid.daemon.Finishable;
-
 import android.content.Context;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -27,6 +24,9 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
+
+import org.transdroid.core.gui.navigation.SelectionModificationSpinner.OnModificationActionSelectedListener;
+import org.transdroid.daemon.Finishable;
 
 /**
  * A helper to implement {@link ListView} selection modification behaviour with the {@link SelectionModificationSpinner}

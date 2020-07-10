@@ -16,12 +16,12 @@
  */
 package org.transdroid.core.gui.settings;
 
-import org.transdroid.R;
-import org.transdroid.core.gui.navigation.DialogHelper;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+
+import org.transdroid.R;
+import org.transdroid.core.gui.navigation.DialogHelper;
 
 /**
  * Fragment that shows recent app changes.

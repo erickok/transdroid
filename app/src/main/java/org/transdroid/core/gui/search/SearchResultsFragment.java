@@ -20,9 +20,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -33,6 +30,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -50,7 +49,6 @@ import org.transdroid.core.app.search.SearchHelper;
 import org.transdroid.core.app.search.SearchHelper.SearchSortOrder;
 import org.transdroid.core.app.search.SearchResult;
 import org.transdroid.core.app.search.SearchSite;
-import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.TorrentsActivity_;
 import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.SelectionManagerMode;

@@ -16,18 +16,17 @@
  */
 package org.transdroid.core.gui.log;
 
-import java.sql.SQLException;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import androidx.annotation.Keep;
-
-import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+
+import java.sql.SQLException;
 
 /**
  * Helper to access the database to access persisting objects.

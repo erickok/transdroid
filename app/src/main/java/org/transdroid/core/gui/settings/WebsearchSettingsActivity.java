@@ -16,12 +16,6 @@
  */
 package org.transdroid.core.gui.settings;
 
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
-import org.transdroid.R;
-import org.transdroid.core.app.settings.*;
-
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,6 +24,12 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
+import org.transdroid.R;
+import org.transdroid.core.app.settings.ApplicationSettings_;
 
 /**
  * Activity that allows for a configuration of a web search site. The key can be supplied to update an existing web

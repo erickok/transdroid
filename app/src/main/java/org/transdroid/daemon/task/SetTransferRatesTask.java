@@ -17,10 +17,10 @@
  */
 package org.transdroid.daemon.task;
 
+import android.os.Bundle;
+
 import org.transdroid.daemon.DaemonMethod;
 import org.transdroid.daemon.IDaemonAdapter;
-
-import android.os.Bundle;
 
 public class SetTransferRatesTask extends DaemonTask {
     protected SetTransferRatesTask(IDaemonAdapter adapter, Bundle data) {

@@ -17,13 +17,13 @@
 package org.transdroid.core.gui.remoterss;
 
 
-import androidx.fragment.app.Fragment;
-
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;

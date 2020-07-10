@@ -16,13 +16,13 @@
  */
 package org.transdroid.core.seedbox;
 
-import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.daemon.Daemon;
-import org.transdroid.daemon.OS;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
+import org.transdroid.core.app.settings.ServerSetting;
+import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.OS;
 
 /**
  * Implementation of {@link SeedboxSettings} for the Xirvik dedicated seedbox.

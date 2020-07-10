@@ -17,14 +17,9 @@
  */
 package org.transdroid.daemon.Tfb4rt;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.math.BigInteger;
-import java.net.URI;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
+import com.android.internal.http.multipart.FilePart;
+import com.android.internal.http.multipart.MultipartEntity;
+import com.android.internal.http.multipart.Part;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -33,10 +28,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
+import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
-import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByUrlTask;
 import org.transdroid.daemon.task.DaemonTask;
@@ -48,9 +43,14 @@ import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.util.HttpHelper;
 
-import com.android.internal.http.multipart.FilePart;
-import com.android.internal.http.multipart.MultipartEntity;
-import com.android.internal.http.multipart.Part;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.net.URI;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * An adapter that allows for easy access to Torrentflux-b4rt installs. Communication is handled via HTTP GET requests

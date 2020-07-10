@@ -1,15 +1,14 @@
 package org.transdroid.core.gui.lists;
 
-import org.transdroid.R;
-
 import android.content.Context;
-import android.view.View;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.View;
+
+import org.transdroid.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.Math;
 
 class PiecesMapView extends View {
 

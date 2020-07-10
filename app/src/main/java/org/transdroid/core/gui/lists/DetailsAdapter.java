@@ -16,20 +16,19 @@
  */
 package org.transdroid.core.gui.lists;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.transdroid.R;
-import org.transdroid.core.gui.navigation.*;
-import org.transdroid.core.gui.lists.PiecesMapView;
-import org.transdroid.daemon.Torrent;
-import org.transdroid.daemon.TorrentFile;
-
 import android.content.Context;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import org.transdroid.R;
+import org.transdroid.core.gui.navigation.FilterSeparatorView_;
+import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.TorrentFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * List adapter that holds a header view showing torrent details and show the list list contained by the torrent.

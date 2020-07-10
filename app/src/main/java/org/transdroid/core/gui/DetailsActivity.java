@@ -57,8 +57,6 @@ import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.task.DaemonTaskFailureResult;
 import org.transdroid.daemon.task.DaemonTaskResult;
 import org.transdroid.daemon.task.DaemonTaskSuccessResult;
-import org.transdroid.daemon.task.ToggleSequentialDownloadTask;
-import org.transdroid.daemon.task.ToggleFirstLastPieceDownloadTask;
 import org.transdroid.daemon.task.ForceRecheckTask;
 import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
@@ -75,6 +73,8 @@ import org.transdroid.daemon.task.SetLabelTask;
 import org.transdroid.daemon.task.SetTrackersTask;
 import org.transdroid.daemon.task.StartTask;
 import org.transdroid.daemon.task.StopTask;
+import org.transdroid.daemon.task.ToggleFirstLastPieceDownloadTask;
+import org.transdroid.daemon.task.ToggleSequentialDownloadTask;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,15 +16,15 @@
  */
 package org.transdroid.core.gui.lists;
 
-import org.transdroid.R;
-import org.transdroid.daemon.Priority;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+
+import org.transdroid.R;
+import org.transdroid.daemon.Priority;
 
 /**
  * A relative layout that that is checkable (to be used in a contextual action bar) and shows a coloured bar in the far

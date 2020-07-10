@@ -16,7 +16,7 @@
  */
 package org.transdroid.core.gui.lists;
 
-import java.util.Locale;
+import android.content.res.Resources;
 
 import org.transdroid.R;
 import org.transdroid.daemon.DaemonException;
@@ -25,7 +25,7 @@ import org.transdroid.daemon.TorrentStatus;
 import org.transdroid.daemon.util.FileSizeConverter;
 import org.transdroid.daemon.util.TimespanConverter;
 
-import android.content.res.Resources;
+import java.util.Locale;
 
 /**
  * Wrapper around Torrent to provide some addition getters that give translatable or otherwise formatted Strings of

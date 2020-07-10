@@ -17,17 +17,6 @@
  */
 package org.transdroid.daemon.Vuze;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.openjpa.lib.util.Base16Encoder;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
@@ -53,6 +42,17 @@ import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
 import org.transdroid.daemon.task.SetFilePriorityTask;
 import org.transdroid.daemon.task.SetTransferRatesTask;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An adapter that allows for easy access to Vuze torrent data. Communication

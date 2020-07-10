@@ -20,14 +20,13 @@ package org.transdroid.daemon.Aria2c;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import net.iharder.Base64;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import net.iharder.Base64;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

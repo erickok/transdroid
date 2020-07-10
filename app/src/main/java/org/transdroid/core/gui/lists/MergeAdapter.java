@@ -16,8 +16,6 @@
  */
 package org.transdroid.core.gui.lists;
 
-import java.util.ArrayList;
-
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +24,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * An adapter that can contain many other adapters and shows them in sequence. Taken from

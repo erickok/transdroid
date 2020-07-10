@@ -3,9 +3,9 @@ package org.transdroid.daemon.Deluge;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
-
 import org.transdroid.core.gui.remoterss.data.RemoteRssItem;
+
+import java.util.Date;
 
 /**
  * Deluge implementation of RemoteRssItem.

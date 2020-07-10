@@ -26,12 +26,7 @@ import com.evernote.android.job.JobRequest;
 
 import org.transdroid.core.app.settings.NotificationSettings;
 import org.transdroid.core.app.settings.NotificationSettings_;
-import org.transdroid.core.app.settings.SystemSettings;
-import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.log.Log_;
-import org.transdroid.core.gui.navigation.NavigationHelper_;
-
-import java.util.concurrent.TimeUnit;
 
 public class RssCheckerJob extends Job {
 

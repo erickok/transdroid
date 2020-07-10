@@ -23,11 +23,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ActionMenuView;
-
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +31,10 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ActionMenuView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -50,7 +49,6 @@ import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.app.settings.SystemSettings_;
 import org.transdroid.core.gui.lists.DetailsAdapter;
 import org.transdroid.core.gui.lists.SimpleListItemAdapter;
 import org.transdroid.core.gui.navigation.Label;

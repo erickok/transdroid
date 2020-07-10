@@ -16,15 +16,15 @@
  */
 package org.transdroid.core.gui.search;
 
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
-import org.transdroid.R;
-import org.transdroid.core.app.search.SearchResult;
-
 import android.content.Context;
 import android.text.format.DateUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.ViewById;
+import org.transdroid.R;
+import org.transdroid.core.app.search.SearchResult;
 
 /**
  * View that represents a {@link SearchResult} object from an in-app search

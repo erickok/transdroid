@@ -16,16 +16,16 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import java.util.Arrays;
-import java.util.List;
+import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.transdroid.R;
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.daemon.Torrent;
 
-import android.content.Context;
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Enumeration of all status types, which filter the list of shown torrents based on transfer activity.

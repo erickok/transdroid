@@ -16,12 +16,6 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import java.io.Serializable;
-
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.Extra;
-import org.transdroid.core.gui.*;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -31,6 +25,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
+
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
+import org.transdroid.core.gui.TorrentsActivity_;
+
+import java.io.Serializable;
 
 /**
  * Helper class that show a dialog either as pop-up or as full screen activity. Should be used by calling

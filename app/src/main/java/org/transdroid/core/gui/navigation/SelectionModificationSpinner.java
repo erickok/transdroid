@@ -16,14 +16,14 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import org.transdroid.R;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.transdroid.R;
 
 /**
  * Spinner that holds actions that can be performed on list selections. The spinner itself has some title, which can for

@@ -16,12 +16,12 @@
  */
 package org.transdroid.core.app.settings;
 
-import java.util.Date;
+import android.net.Uri;
+import android.text.TextUtils;
 
 import org.transdroid.core.gui.lists.SimpleListItem;
 
-import android.net.Uri;
-import android.text.TextUtils;
+import java.util.Date;
 
 /**
  * Represents a user-specified RSS feed.

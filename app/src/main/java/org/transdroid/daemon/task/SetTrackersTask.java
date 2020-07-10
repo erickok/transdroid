@@ -17,14 +17,14 @@
  */
 package org.transdroid.daemon.task;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.os.Bundle;
 
 import org.transdroid.daemon.DaemonMethod;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
 
-import android.os.Bundle;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetTrackersTask extends DaemonTask {
     protected SetTrackersTask(IDaemonAdapter adapter, Torrent targetTorrent, Bundle data) {

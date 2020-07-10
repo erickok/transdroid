@@ -16,18 +16,18 @@
  */
 package org.transdroid.core.widget;
 
-import java.util.List;
-
-import org.transdroid.R;
-import org.transdroid.core.gui.lists.LocalTorrent;
-import org.transdroid.daemon.Torrent;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import org.transdroid.R;
+import org.transdroid.core.gui.lists.LocalTorrent;
+import org.transdroid.daemon.Torrent;
+
+import java.util.List;
 
 /**
  * A list list item adapter that shows torrents as simplified, widget-style list items; the light theme is always used.

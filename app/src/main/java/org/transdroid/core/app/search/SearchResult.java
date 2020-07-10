@@ -16,10 +16,10 @@
  */
 package org.transdroid.core.app.search;
 
-import java.util.Date;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.Date;
 
 /**
  * Represents a search result as retrieved by querying the Torrent Search package.

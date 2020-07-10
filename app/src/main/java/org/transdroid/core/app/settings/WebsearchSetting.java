@@ -16,11 +16,11 @@
  */
 package org.transdroid.core.app.settings;
 
-import org.transdroid.core.gui.lists.SimpleListItem;
-import org.transdroid.core.gui.search.SearchSetting;
-
 import android.net.Uri;
 import android.text.TextUtils;
+
+import org.transdroid.core.gui.lists.SimpleListItem;
+import org.transdroid.core.gui.search.SearchSetting;
 
 /**
  * Represents a user-specified website that can be searched (by starting the browser, rather than in-app)

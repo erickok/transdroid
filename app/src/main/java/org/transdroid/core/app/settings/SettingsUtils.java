@@ -1,8 +1,6 @@
 package org.transdroid.core.app.settings;
 
 
-import android.content.Context;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 

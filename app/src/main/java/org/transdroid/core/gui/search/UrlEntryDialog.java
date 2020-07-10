@@ -19,7 +19,6 @@ package org.transdroid.core.gui.search;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.Uri;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;

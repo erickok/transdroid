@@ -17,13 +17,13 @@
  */
 package org.transdroid.daemon;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.transdroid.daemon.util.FileSizeConverter;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a single file contained in a torrent.
