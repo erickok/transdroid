@@ -17,22 +17,22 @@
  */
 package org.transdroid.daemon;
 
-import org.transdroid.daemon.adapters.Aria2c.Aria2Adapter;
-import org.transdroid.daemon.adapters.BitComet.BitCometAdapter;
-import org.transdroid.daemon.adapters.Bitflu.BitfluAdapter;
-import org.transdroid.daemon.adapters.BuffaloNas.BuffaloNasAdapter;
-import org.transdroid.daemon.adapters.DLinkRouterBT.DLinkRouterBTAdapter;
-import org.transdroid.daemon.adapters.Deluge.DelugeAdapter;
-import org.transdroid.daemon.adapters.Deluge.DelugeRpcAdapter;
-import org.transdroid.daemon.adapters.Ktorrent.KtorrentAdapter;
-import org.transdroid.daemon.adapters.Qbittorrent.QbittorrentAdapter;
-import org.transdroid.daemon.adapters.Rtorrent.RtorrentAdapter;
-import org.transdroid.daemon.adapters.Synology.SynologyAdapter;
-import org.transdroid.daemon.adapters.Tfb4rt.Tfb4rtAdapter;
-import org.transdroid.daemon.adapters.Transmission.TransmissionAdapter;
-import org.transdroid.daemon.adapters.Ttorrent.TtorrentAdapter;
-import org.transdroid.daemon.adapters.Utorrent.UtorrentAdapter;
-import org.transdroid.daemon.adapters.Vuze.VuzeAdapter;
+import org.transdroid.daemon.adapters.aria2c.Aria2Adapter;
+import org.transdroid.daemon.adapters.bitComet.BitCometAdapter;
+import org.transdroid.daemon.adapters.bitflu.BitfluAdapter;
+import org.transdroid.daemon.adapters.buffaloNas.BuffaloNasAdapter;
+import org.transdroid.daemon.adapters.dLinkRouterBT.DLinkRouterBTAdapter;
+import org.transdroid.daemon.adapters.deluge.DelugeAdapter;
+import org.transdroid.daemon.adapters.deluge.DelugeRpcAdapter;
+import org.transdroid.daemon.adapters.kTorrent.KTorrentAdapter;
+import org.transdroid.daemon.adapters.qBittorrent.QBittorrentAdapter;
+import org.transdroid.daemon.adapters.rTorrent.RTorrentAdapter;
+import org.transdroid.daemon.adapters.synology.SynologyAdapter;
+import org.transdroid.daemon.adapters.tfb4rt.Tfb4rtAdapter;
+import org.transdroid.daemon.adapters.transmission.TransmissionAdapter;
+import org.transdroid.daemon.adapters.tTorrent.TTorrentAdapter;
+import org.transdroid.daemon.adapters.uTorrent.UTorrentAdapter;
+import org.transdroid.daemon.adapters.vuze.VuzeAdapter;
 
 /**
  * Factory for new instances of server daemons, based on user settings.
@@ -53,7 +53,7 @@ public enum Daemon {
     },
     BitTorrent {
         public IDaemonAdapter createAdapter(DaemonSettings settings) {
-            return new UtorrentAdapter(settings);
+            return new UTorrentAdapter(settings);
         }
     },
     BuffaloNas {
@@ -88,17 +88,17 @@ public enum Daemon {
     },
     KTorrent {
         public IDaemonAdapter createAdapter(DaemonSettings settings) {
-            return new KtorrentAdapter(settings);
+            return new KTorrentAdapter(settings);
         }
     },
     qBittorrent {
         public IDaemonAdapter createAdapter(DaemonSettings settings) {
-            return new QbittorrentAdapter(settings);
+            return new QBittorrentAdapter(settings);
         }
     },
     rTorrent {
         public IDaemonAdapter createAdapter(DaemonSettings settings) {
-            return new RtorrentAdapter(settings);
+            return new RTorrentAdapter(settings);
         }
     },
     Tfb4rt {
@@ -108,7 +108,7 @@ public enum Daemon {
     },
     tTorrent {
         public IDaemonAdapter createAdapter(DaemonSettings settings) {
-            return new TtorrentAdapter(settings);
+            return new TTorrentAdapter(settings);
         }
     },
     Synology {
@@ -123,7 +123,7 @@ public enum Daemon {
     },
     uTorrent {
         public IDaemonAdapter createAdapter(DaemonSettings settings) {
-            return new UtorrentAdapter(settings);
+            return new UTorrentAdapter(settings);
         }
     },
     Vuze {
