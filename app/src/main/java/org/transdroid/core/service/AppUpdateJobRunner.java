@@ -108,9 +108,9 @@ public class AppUpdateJobRunner {
             // New version of the app?
             try {
                 PackageInfo appPackage = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-                log.d(this, "Local Transdroid is at " + appPackage.versionCode + " and the reported latest version is "
+                log.d(this, "Local Transdroid is at " + appPackage.getLongVersionCode() + " and the reported latest version is "
                         + appVersion);
-                if (appPackage.versionCode < appVersion) {
+                if (appPackage.getLongVersionCode() < appVersion) {
                     // New version available! Notify the user.
                     newNotification(context.getString(R.string.update_app_newversion),
                             context.getString(R.string.update_app_newversion),
@@ -124,9 +124,9 @@ public class AppUpdateJobRunner {
             // New version of the search module?
             try {
                 PackageInfo searchPackage = context.getPackageManager().getPackageInfo("org.transdroid.search", 0);
-                log.d(this, "Local Transdroid Seach is at " + searchPackage.versionCode
+                log.d(this, "Local Transdroid Seach is at " + searchPackage.getLongVersionCode()
                         + " and the reported latest version is " + searchVersion);
-                if (searchPackage.versionCode < searchVersion) {
+                if (searchPackage.getLongVersionCode() < searchVersion) {
                     // New version available! Notify the user.
                     newNotification(context.getString(R.string.update_search_newversion),
                             context.getString(R.string.update_search_newversion),

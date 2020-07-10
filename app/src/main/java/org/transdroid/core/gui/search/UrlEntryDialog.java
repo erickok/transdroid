@@ -24,6 +24,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
@@ -47,9 +50,9 @@ public class UrlEntryDialog {
             urlEdit.setText(content);
         }
         new MaterialDialog.Builder(activity).customView(inputLayout, false).positiveText(android.R.string.ok).negativeText(android.R.string.cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onPositive(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         String url = urlEdit.getText().toString();
                         Uri uri = Uri.parse(url);
                         if (!TextUtils.isEmpty(url)) {

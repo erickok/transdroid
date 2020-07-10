@@ -23,6 +23,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
@@ -60,9 +63,9 @@ public class SetTransferRatesDialog {
                 .positiveText(R.string.status_update)
                 .neutralText(R.string.status_maxspeed_reset)
                 .negativeText(android.R.string.cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onPositive(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         int maxDown = -1, maxUp = -1;
                         try {
                             maxDown = Integer.parseInt(maxSpeedDown.getText().toString());
@@ -76,9 +79,10 @@ public class SetTransferRatesDialog {
                         }
                         onRatesPickedListener.onRatesPicked(maxDown, maxUp);
                     }
-
+                })
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onNeutral(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         onRatesPickedListener.resetRates();
                     }
                 });

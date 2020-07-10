@@ -39,7 +39,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -296,7 +295,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
             drawerToggle =
                     new ActionBarDrawerToggle(this, drawerLayout, torrentsToolbar, R.string.navigation_opendrawer, R.string.navigation_closedrawer);
             drawerToggle.setDrawerIndicatorEnabled(true);
-            drawerLayout.setDrawerListener(drawerToggle);
+            drawerLayout.addDrawerListener(drawerToggle);
         }
         navigationList.setAdapter(navigationListAdapter);
         navigationList.setOnItemClickListener(onFilterListItemClicked);
@@ -467,7 +466,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
                     stopAutoRefresh();
                 }
             });
-            MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     return true;
@@ -480,7 +479,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
                     return true;
                 }
             });
-            MenuItemCompat.setActionView(item, searchView);
+            item.setActionView(searchView);
             searchMenu = item;
         }
         return true;
@@ -619,9 +618,9 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
     private void updateFragmentVisibility(boolean hasServerSettings) {
         if (fragmentDetails != null && fragmentDetails.isResumed()) {
             if (hasServerSettings) {
-                getFragmentManager().beginTransaction().show(fragmentDetails).commit();
+                getSupportFragmentManager().beginTransaction().show(fragmentDetails).commit();
             } else {
-                getFragmentManager().beginTransaction().hide(fragmentDetails).commit();
+                getSupportFragmentManager().beginTransaction().hide(fragmentDetails).commit();
             }
         }
         invalidateOptionsMenu();

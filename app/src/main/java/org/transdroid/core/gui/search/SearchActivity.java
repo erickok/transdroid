@@ -35,7 +35,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuItemCompat;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -193,7 +192,7 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setQueryRefinementEnabled(true);
         searchView.setIconified(false);
         searchView.setIconifiedByDefault(false);
-        MenuItemCompat.setActionView(item, searchView);
+        item.setActionView(searchView);
         searchMenu = item;
         final MenuItem sortBySeeders = menu.findItem(R.id.action_sort_seeders);
         final MenuItem sortByAdded = menu.findItem(R.id.action_sort_added);
@@ -218,9 +217,9 @@ public class SearchActivity extends AppCompatActivity {
             searchsitesList.setVisibility(searchInstalled ? View.VISIBLE : View.GONE);
         }
         if (searchInstalled) {
-            getFragmentManager().beginTransaction().show(fragmentResults).commit();
+            getSupportFragmentManager().beginTransaction().show(fragmentResults).commit();
         } else {
-            getFragmentManager().beginTransaction().hide(fragmentResults).commit();
+            getSupportFragmentManager().beginTransaction().hide(fragmentResults).commit();
         }
         installmoduleText.setVisibility(searchInstalled ? View.GONE : View.VISIBLE);
 

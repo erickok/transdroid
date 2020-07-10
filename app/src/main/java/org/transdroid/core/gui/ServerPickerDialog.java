@@ -18,10 +18,11 @@ package org.transdroid.core.gui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+
+import androidx.fragment.app.DialogFragment;
 
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ServerSetting;
@@ -47,7 +48,7 @@ public class ServerPickerDialog extends DialogFragment {
         Bundle arguments = new Bundle();
         arguments.putStringArray("serverNames", serverNames);
         dialog.setArguments(arguments);
-        dialog.show(activity.getFragmentManager(), "serverpicker");
+        dialog.show(activity.getSupportFragmentManager(), "serverpicker");
     }
 
     @Override

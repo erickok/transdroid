@@ -25,6 +25,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -62,9 +65,9 @@ public class SetLabelDialog {
                 .positiveText(R.string.status_update)
                 .neutralText(R.string.status_label_remove)
                 .negativeText(android.R.string.cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onPositive(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         // User should have provided a new label
                         if (TextUtils.isEmpty(newLabelEdit.getText())) {
                             SnackbarManager.show(Snackbar.with(context).text(R.string.error_notalabel).colorResource(R.color.red));
@@ -72,9 +75,10 @@ public class SetLabelDialog {
                         }
                         onLabelPickedListener.onLabelPicked(newLabelEdit.getText().toString());
                     }
-
+                })
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onNeutral(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         onLabelPickedListener.onLabelPicked(null);
                     }
                 });

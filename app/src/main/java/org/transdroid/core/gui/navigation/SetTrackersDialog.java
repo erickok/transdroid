@@ -16,12 +16,15 @@
  */
 package org.transdroid.core.gui.navigation;
 
-import android.app.DialogFragment;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.transdroid.R;
@@ -47,9 +50,9 @@ public class SetTrackersDialog extends DialogFragment {
                 .customView(trackersLayout, false)
                 .positiveText(R.string.status_update)
                 .negativeText(android.R.string.cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onPositive(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         // User is done editing and requested to update given the text input
                         onTrackersUpdatedListener.onTrackersUpdated(Arrays.asList(trackersText.getText().toString().split("\n")));
                     }
