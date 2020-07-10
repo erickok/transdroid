@@ -74,7 +74,7 @@ public class ServerPreference extends Preference {
     }
 
     public interface OnServerClickedListener {
-        public void onServerClicked(ServerSetting serverSetting);
+        void onServerClicked(ServerSetting serverSetting);
     }
 
 }

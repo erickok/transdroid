@@ -38,7 +38,7 @@ public class TimespanConverter {
 
         // less then ONE_MINUTE left
         if (from < ONE_MINUTE) {
-            return String.valueOf(from) + "s";
+            return from + "s";
 
             // less than ONE_HOUR left
         } else if (from < ONE_HOUR) {

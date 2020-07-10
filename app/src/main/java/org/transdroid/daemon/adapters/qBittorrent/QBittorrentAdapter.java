@@ -658,8 +658,8 @@ public class QBittorrentAdapter implements IDaemonAdapter {
         for (int i = 0; i < response.length(); i++) {
             JSONObject tor = response.getJSONObject(i);
             double progress = tor.getDouble("progress");
-            int leechers[];
-            int seeders[];
+            int[] leechers;
+            int[] seeders;
             double ratio;
             long size;
             long uploaded;

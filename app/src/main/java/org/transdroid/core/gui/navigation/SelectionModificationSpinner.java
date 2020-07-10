@@ -84,11 +84,11 @@ public class SelectionModificationSpinner extends AppCompatSpinner {
      * Interface to implement if an interface want to respond to selection modification actions.
      */
     public interface OnModificationActionSelectedListener {
-        public void selectAll();
+        void selectAll();
 
-        public void selectFinished();
+        void selectFinished();
 
-        public void invertSelection();
+        void invertSelection();
     }
 
     /**

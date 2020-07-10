@@ -13,7 +13,7 @@ public interface Finishable {
      *
      * @return True iif the object (like the data transfer) was started and is in progress, but was not finished yet.
      */
-    public boolean isStarted();
+    boolean isStarted();
 
     /**
      * Whether the represented object has been finished.
@@ -21,6 +21,6 @@ public interface Finishable {
      * @return True iif the object (like the data transfer) was finished, which means it is no longer started or in
      * progress.
      */
-    public boolean isFinished();
+    boolean isFinished();
 
 }

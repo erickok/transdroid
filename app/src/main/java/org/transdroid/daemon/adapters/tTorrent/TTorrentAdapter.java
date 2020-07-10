@@ -308,8 +308,8 @@ public class TTorrentAdapter implements IDaemonAdapter {
         for (int i = 0; i < response.length(); i++) {
             JSONObject tor = response.getJSONObject(i);
             double progress = tor.getDouble("progress");
-            int leechers[] = parsePeers(tor.getString("num_leechs"));
-            int seeders[] = parsePeers(tor.getString("num_seeds"));
+            int[] leechers = parsePeers(tor.getString("num_leechs"));
+            int[] seeders = parsePeers(tor.getString("num_seeds"));
             long size = parseSize(tor.getString("size"));
             double ratio = parseRatio(tor.getString("ratio"));
             int dlspeed = (int) parseSize(tor.getString("dlspeed"));

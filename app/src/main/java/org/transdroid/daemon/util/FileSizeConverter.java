@@ -76,7 +76,7 @@ public class FileSizeConverter {
      */
     public static String getSize(long from, boolean withUnit) {
         if (from < INC_SIZE) {
-            return String.valueOf(from) + (withUnit ? SizeUnit.B.toString() : "");
+            return from + (withUnit ? SizeUnit.B.toString() : "");
         } else if (from < (INC_SIZE * INC_SIZE)) {
             return String.format(Locale.getDefault(), DECIMAL_FORMATTER, ((double) from) / INC_SIZE)
                     + (withUnit ? SizeUnit.KB.toString() : "");

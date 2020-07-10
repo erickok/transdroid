@@ -29,10 +29,10 @@ import org.transdroid.daemon.task.DaemonTaskResult;
  */
 public interface IDaemonAdapter {
 
-    public DaemonTaskResult executeTask(Log log, DaemonTask task);
+    DaemonTaskResult executeTask(Log log, DaemonTask task);
 
-    public Daemon getType();
+    Daemon getType();
 
-    public DaemonSettings getSettings();
+    DaemonSettings getSettings();
 
 }

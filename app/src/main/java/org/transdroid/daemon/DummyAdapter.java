@@ -82,7 +82,7 @@ public class DummyAdapter implements IDaemonAdapter {
                 TorrentStatus.Error};
         Random random = new Random();
         for (int i = 1; i < 2026; i++) {
-            String name = names[i % names.length] + Integer.toString(i);
+            String name = names[i % names.length] + i;
             TorrentStatus status = statuses[i % statuses.length];
             int peersGetting = status == TorrentStatus.Downloading ? i * random.nextInt(16) : 0;
             int peersSending = status == TorrentStatus.Downloading ? i * random.nextInt(16) : 0;
@@ -144,7 +144,7 @@ public class DummyAdapter implements IDaemonAdapter {
 
                     Torrent t = task.getTargetTorrent();
                     List<TorrentFile> dummyFiles = new ArrayList<TorrentFile>();
-                    Priority priorities[] = new Priority[]{Priority.Normal, Priority.Normal, Priority.High, Priority.Low,
+                    Priority[] priorities = new Priority[]{Priority.Normal, Priority.Normal, Priority.High, Priority.Low,
                             Priority.Normal};
                     for (int i = 1; i < 16; i++) {
                         String fileName = "file_" + i + ".ext";

@@ -28,9 +28,9 @@ import org.transdroid.daemon.adapters.kTorrent.KTorrentAdapter;
 import org.transdroid.daemon.adapters.qBittorrent.QBittorrentAdapter;
 import org.transdroid.daemon.adapters.rTorrent.RTorrentAdapter;
 import org.transdroid.daemon.adapters.synology.SynologyAdapter;
+import org.transdroid.daemon.adapters.tTorrent.TTorrentAdapter;
 import org.transdroid.daemon.adapters.tfb4rt.Tfb4rtAdapter;
 import org.transdroid.daemon.adapters.transmission.TransmissionAdapter;
-import org.transdroid.daemon.adapters.tTorrent.TTorrentAdapter;
 import org.transdroid.daemon.adapters.uTorrent.UTorrentAdapter;
 import org.transdroid.daemon.adapters.vuze.VuzeAdapter;
 

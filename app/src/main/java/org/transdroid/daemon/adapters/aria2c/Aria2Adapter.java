@@ -464,7 +464,7 @@ public class Aria2Adapter implements IDaemonAdapter {
 
     private String convertAriaError(int errorCode) {
         // Aria2 sends an exit code as error (http://aria2.sourceforge.net/manual/en/html/aria2c.html#id1)
-        String error = "Aria error #" + Integer.toString(errorCode);
+        String error = "Aria error #" + errorCode;
         switch (errorCode) {
             case 3:
             case 4:

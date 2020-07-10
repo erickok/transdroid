@@ -259,7 +259,7 @@ public class NavigationHelper {
      * @return The app name and version, such as 'Transdroid 1.5.0 (180)'
      */
     public String getAppNameAndVersion() {
-        return context.getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME + " (" + Integer.toString(BuildConfig.VERSION_CODE) + ")";
+        return context.getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")";
     }
 
     /**

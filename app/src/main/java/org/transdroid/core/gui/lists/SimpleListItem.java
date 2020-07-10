@@ -24,6 +24,6 @@ package org.transdroid.core.gui.lists;
  */
 public interface SimpleListItem {
 
-    public String getName();
+    String getName();
 
 }

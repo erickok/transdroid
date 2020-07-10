@@ -133,7 +133,7 @@ public class BitCometAdapter implements IDaemonAdapter {
                     // first, check client for the new AJAX interface (BitComet v.1.34 and up)
                     try {
                         String xmlResult = makeRequest(log, "/panel/task_list_xml");
-                        if (xmlResult.startsWith("<?xml", 0)) {
+                        if (xmlResult.startsWith("<?xml")) {
                             return new RetrieveTaskSuccessResult((RetrieveTask) task, parseXmlTorrents(xmlResult),
                                     null);
                         }

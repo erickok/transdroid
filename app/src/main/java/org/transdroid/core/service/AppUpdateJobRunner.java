@@ -115,7 +115,7 @@ public class AppUpdateJobRunner {
                     newNotification(context.getString(R.string.update_app_newversion),
                             context.getString(R.string.update_app_newversion),
                             context.getString(R.string.update_updateto, app[1].trim()),
-                            DOWNLOAD_URL_APP + "?" + Integer.toString(random.nextInt()), 90000);
+                            DOWNLOAD_URL_APP + "?" + random.nextInt(), 90000);
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 // Not installed... this can never happen since this Service is part of the app itself
@@ -131,7 +131,7 @@ public class AppUpdateJobRunner {
                     newNotification(context.getString(R.string.update_search_newversion),
                             context.getString(R.string.update_search_newversion),
                             context.getString(R.string.update_updateto, search[1].trim()),
-                            DOWNLOAD_URL_SEARCH + "?" + Integer.toString(random.nextInt()), 90001);
+                            DOWNLOAD_URL_SEARCH + "?" + random.nextInt(), 90001);
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 // The search module isn't installed yet at all; ignore and wait for the user to manually
@@ -164,7 +164,7 @@ public class AppUpdateJobRunner {
     private String[] retrieveLatestVersion(AbstractHttpClient httpclient, String url) throws IOException {
         HttpResponse request = httpclient.execute(new HttpGet(url));
         InputStream stream = request.getEntity().getContent();
-        String appVersion[] = HttpHelper.convertStreamToString(stream).split("\\|");
+        String[] appVersion = HttpHelper.convertStreamToString(stream).split("\\|");
         stream.close();
         return appVersion;
     }
