@@ -26,7 +26,7 @@ public enum TorrentFilesSortBy {
     PartDone(2),
     TotalSize(3);
 
-    private static final Map<Integer, TorrentFilesSortBy> lookup = new HashMap<Integer, TorrentFilesSortBy>();
+    private static final Map<Integer, TorrentFilesSortBy> lookup = new HashMap<>();
 
     static {
         for (TorrentFilesSortBy s : EnumSet.allOf(TorrentFilesSortBy.class))

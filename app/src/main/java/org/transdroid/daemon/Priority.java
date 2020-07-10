@@ -33,7 +33,7 @@ public enum Priority {
     Normal(2),
     High(3);
 
-    private static final Map<Integer, Priority> lookup = new HashMap<Integer, Priority>();
+    private static final Map<Integer, Priority> lookup = new HashMap<>();
 
     static {
         for (Priority s : EnumSet.allOf(Priority.class))

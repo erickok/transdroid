@@ -269,7 +269,7 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
     private ArrayList<Torrent> parseJsonTorrents(JSONObject response) throws JSONException {
 
         // Parse response
-        ArrayList<Torrent> torrents = new ArrayList<Torrent>();
+        ArrayList<Torrent> torrents = new ArrayList<>();
         JSONArray all = response.getJSONArray("torrents");
         for (int i = 0; i < all.length(); i++) {
             JSONObject tor = all.getJSONObject(i);
@@ -336,7 +336,7 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
     private ArrayList<TorrentFile> parseJsonFiles(JSONObject response, String hash) throws JSONException {
 
         // Parse response
-        ArrayList<TorrentFile> torrentfiles = new ArrayList<TorrentFile>();
+        ArrayList<TorrentFile> torrentfiles = new ArrayList<>();
         JSONArray all = response.getJSONObject("torrents").getJSONArray(hash);
         for (int i = 0; i < all.length(); i++) {
             JSONObject file = all.getJSONObject(i);

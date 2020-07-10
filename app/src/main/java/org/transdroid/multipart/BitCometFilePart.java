@@ -213,16 +213,13 @@ public class BitCometFilePart extends PartBase {
         }
 
         byte[] tmp = new byte[4096];
-        InputStream instream = source.createInputStream();
-        try {
+        try (InputStream instream = source.createInputStream()) {
             int len;
             while ((len = instream.read(tmp)) >= 0) {
                 out.write(tmp, 0, len);
             }
-        } finally {
-            // we're done with the stream, close it
-            instream.close();
         }
+        // we're done with the stream, close it
     }
 
     /**

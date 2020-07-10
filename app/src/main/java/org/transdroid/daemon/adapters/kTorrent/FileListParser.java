@@ -36,7 +36,7 @@ public class FileListParser {
             Priority priority = Priority.Normal;
 
             // Start pulling
-            List<TorrentFile> torrents = new ArrayList<TorrentFile>();
+            List<TorrentFile> torrents = new ArrayList<>();
             int next = xpp.nextTag();
             String name = xpp.getName();
 

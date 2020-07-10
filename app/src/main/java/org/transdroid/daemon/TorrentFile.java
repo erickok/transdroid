@@ -73,7 +73,7 @@ public final class TorrentFile implements Parcelable, Comparable<TorrentFile>, F
     private static Map<String, String> fillMimeTypes() {
         // Full mime type support list is in http://code.google.com/p/android-vlc-remote/source/browse/trunk/AndroidManifest.xml
         // We use a selection of the most popular/obvious ones
-        HashMap<String, String> types = new HashMap<String, String>();
+        HashMap<String, String> types = new HashMap<>();
         // Application
         types.put("m4a", "application/x-extension-m4a");
         types.put("flac", "application/x-flac");

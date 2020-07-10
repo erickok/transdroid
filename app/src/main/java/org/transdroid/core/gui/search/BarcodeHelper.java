@@ -73,7 +73,7 @@ public class BarcodeHelper {
             activity.startActivityForResult(intent, requestCode);
         } catch (Exception e) {
             // Can't start the bar code scanner, for example with a SecurityException or when ZXing is not present
-            final WeakReference<Context> intentStartContext = new WeakReference<Context>(activity);
+            final WeakReference<Context> intentStartContext = new WeakReference<>(activity);
             new AlertDialog.Builder(activity).setIcon(android.R.drawable.ic_dialog_alert)
                     .setMessage(activity.getString(R.string.search_barcodescannernotfound))
                     .setPositiveButton(android.R.string.yes, new OnClickListener() {

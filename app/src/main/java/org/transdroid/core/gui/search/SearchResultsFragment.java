@@ -102,7 +102,7 @@ public class SearchResultsFragment extends Fragment {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
             // Get checked torrents
-            List<SearchResult> checked = new ArrayList<SearchResult>();
+            List<SearchResult> checked = new ArrayList<>();
             for (int i = 0; i < resultsList.getCheckedItemPositions().size(); i++) {
                 if (resultsList.getCheckedItemPositions().valueAt(i)) {
                     checked.add(resultsAdapter.getItem(resultsList.getCheckedItemPositions().keyAt(i)));

@@ -53,7 +53,7 @@ public class FilePickerHelper {
                 activity.startActivityForResult(new Intent("org.openintents.action.PICK_FILE"), ACTIVITY_FILEPICKER);
             } catch (Exception e2) {
                 // Can't start the file manager, for example with a SecurityException or when IO File Manager is not present
-                final WeakReference<Context> intentStartContext = new WeakReference<Context>(activity);
+                final WeakReference<Context> intentStartContext = new WeakReference<>(activity);
                 new AlertDialog.Builder(activity).setIcon(android.R.drawable.ic_dialog_alert)
                         .setMessage(activity.getString(R.string.search_filemanagernotfound))
                         .setPositiveButton(android.R.string.yes, new OnClickListener() {

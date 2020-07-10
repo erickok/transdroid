@@ -285,7 +285,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         navigationListAdapter.updateServers(applicationSettings.getAllServerSettings());
         navigationListAdapter.updateStatusTypes(StatusType.getAllStatusTypes(this));
         // Add an empty labels list (which will be updated later, but the adapter needs to be created now)
-        navigationListAdapter.updateLabels(new ArrayList<Label>());
+        navigationListAdapter.updateLabels(new ArrayList<>());
 
         // Apply the filters list to the navigation drawer (on phones) or the dedicated side bar (i.e. on tablets)
         if (filtersList != null) {
@@ -1122,8 +1122,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         try {
             // Write a temporary file with the torrent contents
             tempFile = File.createTempFile("transdroid_", ".torrent", getCacheDir());
-            FileOutputStream output = new FileOutputStream(tempFile);
-            try {
+            try (FileOutputStream output = new FileOutputStream(tempFile)) {
                 final byte[] buffer = new byte[1024];
                 int read;
                 while ((read = input.read(buffer)) != -1) {
@@ -1132,8 +1131,6 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
                 output.flush();
                 String fileName = Uri.fromFile(tempFile).toString();
                 addTorrentByFile(fileName, title);
-            } finally {
-                output.close();
             }
         } catch (IOException e) {
             log.e(this, "Can't write input stream to " + tempFile.toString() + ": " + e.toString());

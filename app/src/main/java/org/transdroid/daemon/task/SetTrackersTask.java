@@ -33,7 +33,7 @@ public class SetTrackersTask extends DaemonTask {
 
     public static SetTrackersTask create(IDaemonAdapter adapter, Torrent targetTorrent, List<String> list) {
         Bundle data = new Bundle();
-        data.putStringArrayList("NEW_TRACKERS_LSIT", new ArrayList<String>(list));
+        data.putStringArrayList("NEW_TRACKERS_LSIT", new ArrayList<>(list));
         return new SetTrackersTask(adapter, targetTorrent, data);
     }
 

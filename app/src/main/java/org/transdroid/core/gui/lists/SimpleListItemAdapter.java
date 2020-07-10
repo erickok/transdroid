@@ -98,7 +98,7 @@ public class SimpleListItemAdapter extends BaseAdapter {
          * @return A list of SimpleStringItem objects representing the input strings
          */
         public static List<SimpleStringItem> wrapStringsList(List<String> strings) {
-            ArrayList<SimpleStringItem> errors = new ArrayList<SimpleStringItem>();
+            ArrayList<SimpleStringItem> errors = new ArrayList<>();
             if (strings != null) {
                 for (String string : strings) {
                     errors.add(new SimpleStringItem(string));

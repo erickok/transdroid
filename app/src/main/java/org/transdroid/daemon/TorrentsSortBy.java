@@ -32,7 +32,7 @@ public enum TorrentsSortBy {
     Percent(8),
     Size(9);
 
-    private static final Map<Integer, TorrentsSortBy> lookup = new HashMap<Integer, TorrentsSortBy>();
+    private static final Map<Integer, TorrentsSortBy> lookup = new HashMap<>();
 
     static {
         for (TorrentsSortBy s : EnumSet.allOf(TorrentsSortBy.class))

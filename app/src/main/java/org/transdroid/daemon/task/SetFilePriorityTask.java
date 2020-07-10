@@ -40,7 +40,7 @@ public class SetFilePriorityTask extends DaemonTask {
     }
 
     public static SetFilePriorityTask create(IDaemonAdapter adapter, Torrent targetTorrent, Priority newPriority, TorrentFile forFile) {
-        ArrayList<TorrentFile> forFiles = new ArrayList<TorrentFile>();
+        ArrayList<TorrentFile> forFiles = new ArrayList<>();
         forFiles.add(forFile);
         return create(adapter, targetTorrent, newPriority, forFiles);
     }

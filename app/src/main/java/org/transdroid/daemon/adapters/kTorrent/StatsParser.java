@@ -48,7 +48,7 @@ public class StatsParser {
             int numFiles = -1;
 
             // Start pulling
-            List<Torrent> torrents = new ArrayList<Torrent>();
+            List<Torrent> torrents = new ArrayList<>();
             int next = xpp.nextTag();
             String name = xpp.getName();
 

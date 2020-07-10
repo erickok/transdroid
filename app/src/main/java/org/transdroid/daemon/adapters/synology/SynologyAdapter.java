@@ -196,25 +196,25 @@ public class SynologyAdapter implements IDaemonAdapter {
     }
 
     private void removeTask(Log log, String tid) throws DaemonException {
-        List<String> tids = new ArrayList<String>();
+        List<String> tids = new ArrayList<>();
         tids.add(tid);
         removeTasks(log, tids);
     }
 
     private void pauseTask(Log log, String tid) throws DaemonException {
-        List<String> tids = new ArrayList<String>();
+        List<String> tids = new ArrayList<>();
         tids.add(tid);
         pauseTasks(log, tids);
     }
 
     private void resumeTask(Log log, String tid) throws DaemonException {
-        List<String> tids = new ArrayList<String>();
+        List<String> tids = new ArrayList<>();
         tids.add(tid);
         resumeTasks(log, tids);
     }
 
     private void pauseAllTasks(Log log) throws DaemonException {
-        List<String> tids = new ArrayList<String>();
+        List<String> tids = new ArrayList<>();
         for (Torrent torrent : tasksList(log)) {
             tids.add(torrent.getUniqueID());
         }
@@ -222,7 +222,7 @@ public class SynologyAdapter implements IDaemonAdapter {
     }
 
     private void resumeAllTasks(Log log) throws DaemonException {
-        List<String> tids = new ArrayList<String>();
+        List<String> tids = new ArrayList<>();
         for (Torrent torrent : tasksList(log)) {
             tids.add(torrent.getUniqueID());
         }
@@ -249,7 +249,7 @@ public class SynologyAdapter implements IDaemonAdapter {
             JSONArray jsonTasks = authGet(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
                     "&method=list&additional=detail,transfer,tracker").getData(log).getJSONArray("tasks");
             log.d(LOG_NAME, "Tasks = " + jsonTasks.toString());
-            List<Torrent> result = new ArrayList<Torrent>();
+            List<Torrent> result = new ArrayList<>();
             for (int i = 0; i < jsonTasks.length(); i++) {
                 result.add(parseTorrent(i, jsonTasks.getJSONObject(i)));
             }
@@ -261,7 +261,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 
     private List<TorrentFile> fileList(Log log, String torrentId) throws DaemonException {
         try {
-            List<TorrentFile> result = new ArrayList<TorrentFile>();
+            List<TorrentFile> result = new ArrayList<>();
             JSONObject jsonTask = authGet(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
                     "&method=getinfo&id=" + torrentId + "&additional=detail,transfer,tracker,file").getData(log)
                     .getJSONArray("tasks").getJSONObject(0);
@@ -292,8 +292,8 @@ public class SynologyAdapter implements IDaemonAdapter {
     }
 
     private TorrentDetails torrentDetails(Log log, String torrentId) throws DaemonException {
-        List<String> trackers = new ArrayList<String>();
-        List<String> errors = new ArrayList<String>();
+        List<String> trackers = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
         try {
             JSONObject jsonTorrent = authGet(log, "SYNO.DownloadStation.Task", "1", "DownloadStation/task.cgi",
                     "&method=getinfo&id=" + torrentId + "&additional=tracker").getData(log).getJSONArray("tasks")

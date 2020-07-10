@@ -65,7 +65,7 @@ public class DummyAdapter implements IDaemonAdapter {
     private List<Torrent> dummyTorrents;
     private List<Label> dummyLabels;
     private boolean alternativeModeEnabled = false;
-    private List<String> trackersList = new ArrayList<String>(Arrays.asList("udp://tracker.com/announce:80",
+    private List<String> trackersList = new ArrayList<>(Arrays.asList("udp://tracker.com/announce:80",
             "https://torrents.org/announce:443"));
 
     /**
@@ -73,8 +73,8 @@ public class DummyAdapter implements IDaemonAdapter {
      */
     public DummyAdapter(DaemonSettings settings) {
         this.settings = settings;
-        this.dummyTorrents = new ArrayList<Torrent>();
-        this.dummyLabels = new ArrayList<Label>();
+        this.dummyTorrents = new ArrayList<>();
+        this.dummyLabels = new ArrayList<>();
         String[] names = new String[]{"Documentary ", "Book ", "CD Image ", "Mix tape ", "App "};
         String[] labels = new String[]{"docs", "books", "isos", "music", "software"};
         TorrentStatus[] statuses = new TorrentStatus[]{TorrentStatus.Seeding, TorrentStatus.Downloading,
@@ -143,7 +143,7 @@ public class DummyAdapter implements IDaemonAdapter {
                 case GetFileList:
 
                     Torrent t = task.getTargetTorrent();
-                    List<TorrentFile> dummyFiles = new ArrayList<TorrentFile>();
+                    List<TorrentFile> dummyFiles = new ArrayList<>();
                     Priority[] priorities = new Priority[]{Priority.Normal, Priority.Normal, Priority.High, Priority.Low,
                             Priority.Normal};
                     for (int i = 1; i < 16; i++) {
@@ -265,7 +265,7 @@ public class DummyAdapter implements IDaemonAdapter {
 
                 case SetTrackers:
 
-                    trackersList = new ArrayList<String>(((SetTrackersTask) task).getNewTrackers());
+                    trackersList = new ArrayList<>(((SetTrackersTask) task).getNewTrackers());
                     return new DaemonTaskSuccessResult(task);
 
                 case ForceRecheck:

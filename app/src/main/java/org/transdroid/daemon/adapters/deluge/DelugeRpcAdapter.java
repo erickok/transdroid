@@ -162,8 +162,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 
     @Override
     public DaemonTaskResult executeTask(Log log, DaemonTask task) {
-        final DelugeRpcClient client = new DelugeRpcClient(isVersion2);
-        try {
+        try (DelugeRpcClient client = new DelugeRpcClient(isVersion2)) {
             client.connect(settings);
             switch (task.getMethod()) {
                 case Retrieve:
@@ -206,8 +205,6 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
             }
         } catch (DaemonException e) {
             return new DaemonTaskFailureResult(task, e);
-        } finally {
-            client.close();
         }
     }
 
@@ -224,8 +221,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
     @Override
     public ArrayList<RemoteRssChannel> getRemoteRssChannels(Log log) throws DaemonException {
         final long now = System.currentTimeMillis();
-        final DelugeRpcClient client = new DelugeRpcClient(isVersion2);
-        try {
+        try (DelugeRpcClient client = new DelugeRpcClient(isVersion2)) {
             client.connect(settings);
 
             if (!hasMethod(client, RPC_METHOD_GET_RSS_CONFIG)) {
@@ -275,7 +271,6 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
             }
             return channels;
         } finally {
-            client.close();
             android.util.Log.i("Alon", String.format("getRemoteRssChannels: %dms", System.currentTimeMillis() - now));
         }
     }
@@ -301,17 +296,14 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
         } else {
             label = null;
         }
-        final DelugeRpcClient client = new DelugeRpcClient(isVersion2);
 
-        try {
+        try (DelugeRpcClient client = new DelugeRpcClient(isVersion2)) {
             client.connect(settings);
             final String torrentId = (String) client
                     .sendRequest(item.isMagnetLink() ? RPC_METHOD_ADD_MAGNET : RPC_METHOD_ADD, item.getLink(), options);
             if (label != null && hasMethod(client, RPC_METHOD_SETLABEL)) {
                 client.sendRequest(RPC_METHOD_SETLABEL, torrentId, label);
             }
-        } finally {
-            client.close();
         }
     }
 
@@ -328,7 +320,7 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
 
         // Get label list from server
         //noinspection unchecked
-        final List<String> labelNames = hasLabelPlugin ? (List<String>) client.sendRequest(RPC_METHOD_GET_LABELS) : new ArrayList<String>();
+        final List<String> labelNames = hasLabelPlugin ? (List<String>) client.sendRequest(RPC_METHOD_GET_LABELS) : new ArrayList<>();
 
         // Extract labels & counts from torrents.
         final List<Label> labels = getLabels(labelNames, torrents);

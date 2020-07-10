@@ -65,7 +65,7 @@ public class FilterListAdapter extends MergeAdapter {
             this.serverItems.update(servers);
         } else {
             serverSeparator.setViewVisibility(View.GONE);
-            this.serverItems.update(new ArrayList<SimpleListItem>());
+            this.serverItems.update(new ArrayList<>());
         }
         notifyDataSetChanged();
     }
@@ -87,7 +87,7 @@ public class FilterListAdapter extends MergeAdapter {
             this.statusTypeItems.update(statusTypes);
         } else {
             statusTypeSeparator.setViewVisibility(View.GONE);
-            this.statusTypeItems.update(new ArrayList<SimpleListItem>());
+            this.statusTypeItems.update(new ArrayList<>());
         }
         notifyDataSetChanged();
     }
@@ -109,7 +109,7 @@ public class FilterListAdapter extends MergeAdapter {
             this.labelItems.update(labels);
         } else {
             labelSeperator.setViewVisibility(View.GONE);
-            this.labelItems.update(new ArrayList<SimpleListItem>());
+            this.labelItems.update(new ArrayList<>());
         }
         notifyDataSetChanged();
     }

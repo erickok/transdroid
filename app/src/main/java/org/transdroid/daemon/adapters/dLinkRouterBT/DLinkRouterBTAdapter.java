@@ -343,7 +343,7 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
     private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONObject response) throws JSONException {
 
         // Parse response
-        ArrayList<Torrent> torrents = new ArrayList<Torrent>();
+        ArrayList<Torrent> torrents = new ArrayList<>();
         JSONArray rarray = response.getJSONArray(JSON_TORRENTS);
         for (int i = 0; i < rarray.length(); i++) {
             JSONObject tor = rarray.getJSONObject(i);
@@ -396,7 +396,7 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
     private ArrayList<TorrentFile> parseJsonFileList(JSONObject response, String hash) throws JSONException {
 
         // Parse response
-        ArrayList<TorrentFile> torrentfiles = new ArrayList<TorrentFile>();
+        ArrayList<TorrentFile> torrentfiles = new ArrayList<>();
         JSONObject jobj = response.getJSONObject(JSON_TORRENTS);
         if (jobj != null) {
             JSONArray files = jobj.getJSONArray(hash); // "Hash id"

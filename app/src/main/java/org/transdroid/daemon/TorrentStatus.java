@@ -31,7 +31,7 @@ public enum TorrentStatus {
     Error(64),
     Unknown(0);
 
-    private static final Map<Integer, TorrentStatus> lookup = new HashMap<Integer, TorrentStatus>();
+    private static final Map<Integer, TorrentStatus> lookup = new HashMap<>();
 
     static {
         for (TorrentStatus s : EnumSet.allOf(TorrentStatus.class))

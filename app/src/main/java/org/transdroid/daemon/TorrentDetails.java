@@ -60,7 +60,7 @@ public final class TorrentDetails implements Parcelable {
         this.errors = in.createStringArrayList();
 
         int[] piecesarray = in.createIntArray();
-        this.pieces = new ArrayList<Integer>(piecesarray.length);
+        this.pieces = new ArrayList<>(piecesarray.length);
         for (int i : piecesarray) {
             this.pieces.add(i);
         }

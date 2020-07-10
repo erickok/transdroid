@@ -351,12 +351,12 @@ public class VuzeAdapter implements IDaemonAdapter {
 
         // We might have an empty list if no torrents are on the server
         if (response == null) {
-            return new ArrayList<Torrent>();
+            return new ArrayList<>();
         }
 
         log.d(LOG_NAME, response.toString().length() > 300 ? response.toString().substring(0, 300) + "... (" + response.toString().length() + " chars)" : response.toString());
 
-        List<Torrent> torrents = new ArrayList<Torrent>();
+        List<Torrent> torrents = new ArrayList<>();
 
         // Parse torrent list from Vuze response, which is a map list of ENTRYs
         for (String key : response.keySet()) {
@@ -430,12 +430,12 @@ public class VuzeAdapter implements IDaemonAdapter {
 
         // We might have an empty list
         if (response == null) {
-            return new ArrayList<TorrentFile>();
+            return new ArrayList<>();
         }
 
         //DLog.d(LOG_NAME, response.toString().length() > 300? response.toString().substring(0, 300) + "... (" + response.toString().length() + " chars)": response.toString());
 
-        List<TorrentFile> files = new ArrayList<TorrentFile>();
+        List<TorrentFile> files = new ArrayList<>();
 
         // Parse torrent file list from Vuze response, which is a map list of ENTRYs
         for (String key : response.keySet()) {

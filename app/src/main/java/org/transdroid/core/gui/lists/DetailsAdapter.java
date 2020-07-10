@@ -78,7 +78,7 @@ public class DetailsAdapter extends MergeAdapter {
         errorsSeparatorAdapter.setViewEnabled(false);
         errorsSeparatorAdapter.setViewVisibility(View.GONE);
         addAdapter(errorsSeparatorAdapter);
-        this.errorsAdapter = new SimpleListItemAdapter(context, new ArrayList<SimpleListItem>());
+        this.errorsAdapter = new SimpleListItemAdapter(context, new ArrayList<>());
         this.errorsAdapter.setAutoLinkMask(Linkify.WEB_URLS);
         addAdapter(errorsAdapter);
 
@@ -88,7 +88,7 @@ public class DetailsAdapter extends MergeAdapter {
         trackersSeparatorAdapter.setViewEnabled(false);
         trackersSeparatorAdapter.setViewVisibility(View.GONE);
         addAdapter(trackersSeparatorAdapter);
-        this.trackersAdapter = new SimpleListItemAdapter(context, new ArrayList<SimpleListItem>());
+        this.trackersAdapter = new SimpleListItemAdapter(context, new ArrayList<>());
         addAdapter(trackersAdapter);
 
         // Torrent files
@@ -97,7 +97,7 @@ public class DetailsAdapter extends MergeAdapter {
         torrentFilesSeparatorAdapter.setViewEnabled(false);
         torrentFilesSeparatorAdapter.setViewVisibility(View.GONE);
         addAdapter(torrentFilesSeparatorAdapter);
-        this.torrentFilesAdapter = new TorrentFilesAdapter(context, new ArrayList<TorrentFile>());
+        this.torrentFilesAdapter = new TorrentFilesAdapter(context, new ArrayList<>());
         addAdapter(torrentFilesAdapter);
 
     }
@@ -119,7 +119,7 @@ public class DetailsAdapter extends MergeAdapter {
      */
     public void updateTorrentFiles(List<TorrentFile> torrentFiles) {
         if (torrentFiles == null) {
-            torrentFilesAdapter.update(new ArrayList<TorrentFile>());
+            torrentFilesAdapter.update(new ArrayList<>());
             torrentFilesSeparatorAdapter.setViewVisibility(View.GONE);
         } else {
             torrentFilesAdapter.update(torrentFiles);

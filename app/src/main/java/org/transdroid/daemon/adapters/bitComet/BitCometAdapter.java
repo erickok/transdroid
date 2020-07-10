@@ -395,7 +395,7 @@ public class BitCometAdapter implements IDaemonAdapter {
                 // Setup form fields and post request
                 HttpPost httppost = new HttpPost(buildWebUIUrl(path));
 
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("url", url));
                 params.add(new BasicNameValuePair("save_path", defaultPath));
                 params.add(new BasicNameValuePair("connection", "5"));
@@ -435,7 +435,7 @@ public class BitCometAdapter implements IDaemonAdapter {
      */
     private ArrayList<Torrent> parseHttpTorrents(Log log, String response) throws DaemonException {
 
-        ArrayList<Torrent> torrents = new ArrayList<Torrent>();
+        ArrayList<Torrent> torrents = new ArrayList<>();
 
         try {
 
@@ -558,7 +558,7 @@ public class BitCometAdapter implements IDaemonAdapter {
      */
     private ArrayList<Torrent> parseXmlTorrents(String response) throws DaemonException {
 
-        ArrayList<Torrent> torrents = new ArrayList<Torrent>();
+        ArrayList<Torrent> torrents = new ArrayList<>();
 
         try {
             // Use a PullParser to handle XML tags one by one
@@ -704,7 +704,7 @@ public class BitCometAdapter implements IDaemonAdapter {
     private ArrayList<TorrentFile> parseHttpTorrentFiles(String response, String hash) throws DaemonException {
 
         // Parse response
-        ArrayList<TorrentFile> torrentfiles = new ArrayList<TorrentFile>();
+        ArrayList<TorrentFile> torrentfiles = new ArrayList<>();
 
         try {
 

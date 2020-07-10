@@ -291,7 +291,7 @@ public class VuzeXmlOverHttpClient {
                 // Consume a list of ENTRYs?
                 if (name.equals(TAG_ENTRY)) {
 
-                    Map<String, Object> entries = new HashMap<String, Object>();
+                    Map<String, Object> entries = new HashMap<>();
                     for (int i = 0; name.equals(TAG_ENTRY); i++) {
                         entries.put(TAG_ENTRY + i, consumeEntry(pullParser));
                         name = pullParser.getName();
@@ -320,7 +320,7 @@ public class VuzeXmlOverHttpClient {
         String name = pullParser.getName();
 
         // Consume the ENTRY objects
-        Map<String, Object> returnValues = new HashMap<String, Object>();
+        Map<String, Object> returnValues = new HashMap<>();
         while (next == XmlPullParser.START_TAG) {
 
             if (name.equals(TAG_TORRENT) || name.equals(TAG_ANNOUNCE) || name.equals(TAG_SCRAPE) || name.equals(TAG_STATS)) {
@@ -349,7 +349,7 @@ public class VuzeXmlOverHttpClient {
         String name = pullParser.getName();
 
         // Consume bottom-level (contains no objects of its own) object
-        Map<String, Object> returnValues = new HashMap<String, Object>();
+        Map<String, Object> returnValues = new HashMap<>();
         while (next == XmlPullParser.START_TAG && !(name.equals(TAG_CACHED_PROPERTY_NAMES))) {
 
             if (name.equals(TAG_TORRENT) || name.equals(TAG_ANNOUNCE) || name.equals(TAG_SCRAPE) || name.equals(TAG_STATS)) {

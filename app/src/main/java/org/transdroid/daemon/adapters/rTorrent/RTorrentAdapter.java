@@ -397,8 +397,8 @@ public class RTorrentAdapter implements IDaemonAdapter {
 
             // Parse torrent list from response
             // Formatted as Object[][], see http://libtorrent.rakshasa.no/wiki/RTorrentCommands#Download
-            List<Torrent> torrents = new ArrayList<Torrent>();
-            Map<String, Integer> labels = new HashMap<String, Integer>();
+            List<Torrent> torrents = new ArrayList<>();
+            Map<String, Integer> labels = new HashMap<>();
             Object[] responseList = (Object[]) response;
             for (int i = 0; i < responseList.length; i++) {
 
@@ -520,7 +520,7 @@ public class RTorrentAdapter implements IDaemonAdapter {
 
                 }
             }
-            lastKnownLabels = new ArrayList<Label>();
+            lastKnownLabels = new ArrayList<>();
             for (Entry<String, Integer> pair : labels.entrySet()) {
                 if (pair.getKey() != null) {
                     lastKnownLabels.add(new Label(pair.getKey(), pair.getValue()));
@@ -543,7 +543,7 @@ public class RTorrentAdapter implements IDaemonAdapter {
 
             // Parse torrent files from response
             // Formatted as Object[][], see http://libtorrent.rakshasa.no/wiki/RTorrentCommands#Download
-            List<TorrentFile> files = new ArrayList<TorrentFile>();
+            List<TorrentFile> files = new ArrayList<>();
             Object[] responseList = (Object[]) response;
             for (int i = 0; i < responseList.length; i++) {
 
@@ -650,7 +650,7 @@ public class RTorrentAdapter implements IDaemonAdapter {
 
             // Parse a torrent's trackers from response
             // Formatted as Object[][], see http://libtorrent.rakshasa.no/wiki/RTorrentCommands#Download
-            List<String> trackers = new ArrayList<String>();
+            List<String> trackers = new ArrayList<>();
             Object[] responseList = (Object[]) response;
             try {
                 for (Object aResponseList : responseList) {

@@ -350,7 +350,7 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
     private ArrayList<Label> parseJsonRetrieveGetLabels(JSONArray lresults) throws JSONException {
 
         // Parse response
-        ArrayList<Label> labels = new ArrayList<Label>();
+        ArrayList<Label> labels = new ArrayList<>();
         for (int i = 0; i < lresults.length(); i++) {
             JSONArray lab = lresults.getJSONArray(i);
             String name = lab.getString(NAME_IDX);
@@ -547,7 +547,7 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
     private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONArray results) throws JSONException {
 
         // Parse response
-        ArrayList<Torrent> torrents = new ArrayList<Torrent>();
+        ArrayList<Torrent> torrents = new ArrayList<>();
         boolean createPaths = !(settings.getDownloadDir() == null || settings.getDownloadDir().equals(""));
         for (int i = 0; i < results.length(); i++) {
             JSONArray tor = results.getJSONArray(i);
@@ -593,7 +593,7 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
         if (results.length() > 0) {
 
             JSONObject tor = results.getJSONObject(0);
-            List<String> trackers = new ArrayList<String>();
+            List<String> trackers = new ArrayList<>();
             for (String tracker : tor.getString("trackers").split("\\r\\n")) {
                 // Ignore any blank lines
                 if (!tracker.trim().equals("")) {
@@ -612,7 +612,7 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
     private ArrayList<TorrentFile> parseJsonFileListing(JSONArray results, Torrent torrent) throws JSONException {
 
         // Parse response
-        ArrayList<TorrentFile> files = new ArrayList<TorrentFile>();
+        ArrayList<TorrentFile> files = new ArrayList<>();
         boolean createPaths =
                 torrent != null && torrent.getLocationDir() != null && !torrent.getLocationDir().equals("");
         final String pathSep = settings.getOS().getPathSeperator();

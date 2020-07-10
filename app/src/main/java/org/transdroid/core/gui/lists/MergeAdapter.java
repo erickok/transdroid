@@ -39,7 +39,7 @@ import java.util.Arrays;
  */
 public class MergeAdapter extends BaseAdapter implements SectionIndexer {
 
-    protected ArrayList<ListAdapter> pieces = new ArrayList<ListAdapter>();
+    protected ArrayList<ListAdapter> pieces = new ArrayList<>();
     protected String noItemsText;
 
     /**
@@ -287,7 +287,7 @@ public class MergeAdapter extends BaseAdapter implements SectionIndexer {
     }
 
     public final Object[] getSections() {
-        ArrayList<Object> sections = new ArrayList<Object>();
+        ArrayList<Object> sections = new ArrayList<>();
 
         for (ListAdapter piece : pieces) {
             if (piece instanceof SectionIndexer) {

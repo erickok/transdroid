@@ -42,7 +42,7 @@ public class StatsParser {
             long upSize = -1;    // Total uploaded
 
             // Start pulling
-            List<Torrent> torrents = new ArrayList<Torrent>();
+            List<Torrent> torrents = new ArrayList<>();
             int next = xpp.nextTag();
             String name = xpp.getName();
             if (name.equals("html")) {

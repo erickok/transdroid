@@ -32,7 +32,7 @@ class PiecesMapView extends View {
     }
 
     public void setPieces(List<Integer> pieces) {
-        this.pieces = new ArrayList<Integer>(pieces);
+        this.pieces = new ArrayList<>(pieces);
         invalidate();
     }
 
@@ -59,7 +59,7 @@ class PiecesMapView extends View {
         int pieceWidth;
 
         pieceWidth = MINIMUM_PIECE_WIDTH;
-        piecesScaled = new ArrayList<Integer>();
+        piecesScaled = new ArrayList<>();
 
         int bucketCount = (int) Math.ceil((double) width / (double) pieceWidth);
         int bucketSize = (int) Math.floor((double) this.pieces.size() / (double) bucketCount);
@@ -73,7 +73,7 @@ class PiecesMapView extends View {
             // If this is the last bucket, throw the remainder of the pieces array into it
             int end = (i == bucketCount - 1) ? this.pieces.size() : (i + 1) * bucketSize;
 
-            ArrayList<Integer> bucket = new ArrayList<Integer>(this.pieces.subList(start, end));
+            ArrayList<Integer> bucket = new ArrayList<>(this.pieces.subList(start, end));
 
             int doneCount = 0;
             int downloadingCount = 0;

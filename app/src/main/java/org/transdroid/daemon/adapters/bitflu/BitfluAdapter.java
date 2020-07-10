@@ -182,7 +182,7 @@ public class BitfluAdapter implements IDaemonAdapter {
     }
 
     private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONArray results) throws JSONException {
-        ArrayList<Torrent> torrents = new ArrayList<Torrent>();
+        ArrayList<Torrent> torrents = new ArrayList<>();
 
         if (results != null) {
             for (int i = 0; i < results.length(); i++) {
@@ -223,7 +223,7 @@ public class BitfluAdapter implements IDaemonAdapter {
     }
 
     private ArrayList<TorrentFile> parseJsonShowFilesTorrent(JSONArray response) throws JSONException {
-        ArrayList<TorrentFile> files = new ArrayList<TorrentFile>();
+        ArrayList<TorrentFile> files = new ArrayList<>();
 
         if (response != null) {
             for (int i = 0; i < response.length(); i++) {

@@ -327,7 +327,7 @@ public class KTorrentAdapter implements IDaemonAdapter {
 
             // Make login request
             HttpPost httppost2 = new HttpPost(buildWebUIUrl() + RPC_URL_LOGIN);
-            List<NameValuePair> params = new ArrayList<NameValuePair>(3);
+            List<NameValuePair> params = new ArrayList<>(3);
             params.add(new BasicNameValuePair(RPC_URL_LOGIN_USER, settings.getUsername()));
             params.add(new BasicNameValuePair(RPC_URL_LOGIN_PASS,
                     "")); // Password is send (as SHA1 hex) in the challenge field

@@ -117,18 +117,12 @@ class DelugeRpcClient implements Closeable {
 
     @NonNull
     private byte[] compress(byte[] bytes) throws IOException {
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        try {
-            DeflaterOutputStream deltaterOut = new DeflaterOutputStream(byteOut);
-            try {
+        try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream()) {
+            try (DeflaterOutputStream deltaterOut = new DeflaterOutputStream(byteOut)) {
                 deltaterOut.write(bytes);
                 deltaterOut.finish();
                 return byteOut.toByteArray();
-            } finally {
-                deltaterOut.close();
             }
-        } finally {
-            byteOut.close();
         }
     }
 

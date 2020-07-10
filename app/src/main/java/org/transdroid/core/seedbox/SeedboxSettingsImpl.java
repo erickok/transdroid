@@ -85,7 +85,7 @@ public abstract class SeedboxSettingsImpl implements SeedboxSettings {
      *                    seedbox-unique internal order number)
      */
     public List<ServerSetting> getAllServerSettings(SharedPreferences prefs, int orderOffset) {
-        List<ServerSetting> servers = new ArrayList<ServerSetting>();
+        List<ServerSetting> servers = new ArrayList<>();
         for (int i = 0; true; i++) {
             ServerSetting settings = getServerSetting(prefs, orderOffset, i);
             if (settings != null)

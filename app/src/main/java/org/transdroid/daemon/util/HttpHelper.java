@@ -223,7 +223,7 @@ public class HttpHelper {
      */
     public static Map<String, String> parseCookiePairs(String raw) {
 
-        Map<String, String> pairs = new HashMap<String, String>();
+        Map<String, String> pairs = new HashMap<>();
         int start = 0;
         do {
             int next = raw.indexOf(';', start);
