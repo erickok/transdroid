@@ -628,6 +628,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         setIntent(intent);
         handleStartIntent();
     }
