@@ -32,7 +32,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-@SuppressWarnings("deprecation")
 public class RssParser extends DefaultHandler {
 
     private final String urlString;
@@ -201,7 +200,6 @@ public class RssParser extends DefaultHandler {
     /**
      * This is where we actually parse for the elements contents
      */
-    @SuppressWarnings("deprecation")
     public final void endElement(String uri, String localName, String qName) {
         /** Check we have an RSS Feed */
         if (this.channel == null) {

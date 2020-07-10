@@ -66,7 +66,6 @@ public class HelpSettingsActivity extends PreferenceCompatActivity {
         }
     };
     private OnPreferenceClickListener onChangeLogClick = new OnPreferenceClickListener() {
-        @SuppressWarnings("deprecation")
         @Override
         public boolean onPreferenceClick(Preference preference) {
             showDialog(DIALOG_CHANGELOG);
@@ -74,7 +73,6 @@ public class HelpSettingsActivity extends PreferenceCompatActivity {
         }
     };
     private OnPreferenceClickListener onAboutClick = new OnPreferenceClickListener() {
-        @SuppressWarnings("deprecation")
         @Override
         public boolean onPreferenceClick(Preference preference) {
             showDialog(DIALOG_ABOUT);

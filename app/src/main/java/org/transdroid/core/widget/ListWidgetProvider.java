@@ -66,7 +66,6 @@ public class ListWidgetProvider extends AppWidgetProvider {
      * @param config      The user widget configuration, with filter and theme preferences
      * @return A fully initialised set of remote views to update the widget with the AppWidgetManager
      */
-    @SuppressWarnings("deprecation")
     public static RemoteViews buildRemoteViews(Context context, int appWidgetId, ListWidgetConfig config) {
 
         // Does the server to show and its widget settings actually still exist?

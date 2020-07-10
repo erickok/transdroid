@@ -70,7 +70,6 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
     @Bean
     protected SettingsPersistence settingsPersistence;
     private OnPreferenceClickListener onImportSettingsClick = new OnPreferenceClickListener() {
-        @SuppressWarnings("deprecation")
         @Override
         public boolean onPreferenceClick(Preference preference) {
             showDialog(DIALOG_IMPORTSETTINGS);
@@ -78,7 +77,6 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
         }
     };
     private OnPreferenceClickListener onExportSettingsClick = new OnPreferenceClickListener() {
-        @SuppressWarnings("deprecation")
         @Override
         public boolean onPreferenceClick(Preference preference) {
             showDialog(DIALOG_EXPORTSETTINGS);
@@ -268,7 +266,6 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
         }
     }
 
-    @SuppressWarnings("deprecation")
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_IMPORTSETTINGS:

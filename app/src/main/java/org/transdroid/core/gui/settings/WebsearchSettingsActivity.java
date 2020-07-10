@@ -63,7 +63,6 @@ public class WebsearchSettingsActivity extends KeyBoundPreferencesActivity {
         MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
     }
 
-    @SuppressWarnings("deprecation")
     @OptionsItem(R.id.action_removesettings)
     protected void removeSettings() {
         showDialog(DIALOG_CONFIRMREMOVE);

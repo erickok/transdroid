@@ -169,7 +169,6 @@ public class AppUpdateJobRunner {
         return appVersion;
     }
 
-    @SuppressWarnings("deprecation")
     private void newNotification(String ticker, String title, String text, String downloadUrl, int notifyID) {
         PendingIntent pi = PendingIntent.getActivity(context, notifyID,
                 new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)), PendingIntent.FLAG_UPDATE_CURRENT);

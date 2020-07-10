@@ -1311,7 +1311,6 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
     @UiThread
     protected void onCommunicationError(DaemonTaskFailureResult result, boolean isCritical) {
-        //noinspection ThrowableResultOfMethodCallIgnored
         log.i(this, result.getException().toString());
         String error = getString(LocalTorrent.getResourceForDaemonException(result.getException()));
         SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));

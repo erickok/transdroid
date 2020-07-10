@@ -321,7 +321,6 @@ public class RssFeedsActivity extends AppCompatActivity {
 
     @UiThread
     protected void onCommunicationError(DaemonException daemonException) {
-        //noinspection ThrowableResultOfMethodCallIgnored
         log.i(this, daemonException.toString());
         String error = getString(LocalTorrent.getResourceForDaemonException(daemonException));
         SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
