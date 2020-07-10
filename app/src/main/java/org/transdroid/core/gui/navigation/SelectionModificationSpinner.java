@@ -80,6 +80,17 @@ public class SelectionModificationSpinner extends Spinner {
     }
 
     /**
+     * Interface to implement if an interface want to respond to selection modification actions.
+     */
+    public interface OnModificationActionSelectedListener {
+        public void selectAll();
+
+        public void selectFinished();
+
+        public void invertSelection();
+    }
+
+    /**
      * Local adapter that holds the actions which can be performed and a title text view that always shows instead of a
      * list item as in a normal spinner.
      */
@@ -107,17 +118,6 @@ public class SelectionModificationSpinner extends Spinner {
             return super.getView(position, convertView, parent);
         }
 
-    }
-
-    /**
-     * Interface to implement if an interface want to respond to selection modification actions.
-     */
-    public interface OnModificationActionSelectedListener {
-        public void selectAll();
-
-        public void selectFinished();
-
-        public void invertSelection();
     }
 
 }

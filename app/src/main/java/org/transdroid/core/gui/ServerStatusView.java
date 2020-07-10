@@ -42,6 +42,11 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
     @ViewById
     protected View speedswrapperLayout;
     private TorrentsActivity activity;
+    private OnClickListener onStartDownPickerClicked = new OnClickListener() {
+        public void onClick(View v) {
+            SetTransferRatesDialog.show(getContext(), ServerStatusView.this);
+        }
+    };
 
     public ServerStatusView(Context context) {
         super(context);
@@ -99,12 +104,6 @@ public class ServerStatusView extends RelativeLayout implements OnRatesPickedLis
             speedswrapperLayout.setBackgroundDrawable(null);
 
     }
-
-    private OnClickListener onStartDownPickerClicked = new OnClickListener() {
-        public void onClick(View v) {
-            SetTransferRatesDialog.show(getContext(), ServerStatusView.this);
-        }
-    };
 
     @Override
     public void onRatesPicked(int maxDownloadSpeed, int maxUploadSpeed) {

@@ -79,15 +79,13 @@ import java.util.List;
 @EActivity(R.layout.activity_rssfeeds)
 public class RssFeedsActivity extends AppCompatActivity {
 
+    protected static final int RSS_FEEDS_LOCAL = 0;
+    protected static final int RSS_FEEDS_REMOTE = 1;
     // Settings and local data
     @Bean
     protected Log log;
     @Bean
     protected ApplicationSettings applicationSettings;
-
-    protected static final int RSS_FEEDS_LOCAL = 0;
-    protected static final int RSS_FEEDS_REMOTE = 1;
-
     @FragmentById(R.id.rssfeeds_fragment)
     protected RssFeedsFragment fragmentLocalFeeds;
     @FragmentById(R.id.rssitems_fragment)
@@ -111,61 +109,6 @@ public class RssFeedsActivity extends AppCompatActivity {
     protected ArrayList<RemoteRssItem> recentItems;
     @Bean
     protected ConnectivityHelper connectivityHelper;
-
-
-    protected class LayoutPagerAdapter extends PagerAdapter {
-        boolean hasRemoteRss;
-        String serverName;
-
-        public LayoutPagerAdapter(boolean hasRemoteRss, String name) {
-            super();
-
-            this.hasRemoteRss = hasRemoteRss;
-            this.serverName = (name.length() > 0 ? name : getString(R.string.navigation_rss_tabs_remote));
-        }
-
-        @NonNull
-        @Override
-        public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            int resId = 0;
-
-            if (position == RSS_FEEDS_LOCAL) {
-                resId = R.id.layout_rssfeeds_local;
-            } else if (position == RSS_FEEDS_REMOTE) {
-                resId = R.id.layout_rss_feeds_remote;
-            }
-
-            return findViewById(resId);
-        }
-
-        @Override
-        public int getCount() {
-            return (this.hasRemoteRss ? 2 : 1);
-        }
-
-        @Override
-        public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
-            return (view == o);
-        }
-
-        @Override
-        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-            container.removeView((View) object);
-        }
-
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case RSS_FEEDS_LOCAL:
-                    return getString(R.string.navigation_rss_tabs_local);
-                case RSS_FEEDS_REMOTE:
-                    return this.serverName;
-            }
-
-            return super.getPageTitle(position);
-        }
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -384,7 +327,6 @@ public class RssFeedsActivity extends AppCompatActivity {
         SnackbarManager.show(Snackbar.with(this).text(error).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
     }
 
-
     public void onFeedSelected(int position) {
         selectedFilter = position;
 
@@ -441,5 +383,59 @@ public class RssFeedsActivity extends AppCompatActivity {
         feedLabels.addAll(feeds);
 
         fragmentRemoteFeeds.updateChannelFilters(feedLabels);
+    }
+
+    protected class LayoutPagerAdapter extends PagerAdapter {
+        boolean hasRemoteRss;
+        String serverName;
+
+        public LayoutPagerAdapter(boolean hasRemoteRss, String name) {
+            super();
+
+            this.hasRemoteRss = hasRemoteRss;
+            this.serverName = (name.length() > 0 ? name : getString(R.string.navigation_rss_tabs_remote));
+        }
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            int resId = 0;
+
+            if (position == RSS_FEEDS_LOCAL) {
+                resId = R.id.layout_rssfeeds_local;
+            } else if (position == RSS_FEEDS_REMOTE) {
+                resId = R.id.layout_rss_feeds_remote;
+            }
+
+            return findViewById(resId);
+        }
+
+        @Override
+        public int getCount() {
+            return (this.hasRemoteRss ? 2 : 1);
+        }
+
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
+            return (view == o);
+        }
+
+        @Override
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+            container.removeView((View) object);
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case RSS_FEEDS_LOCAL:
+                    return getString(R.string.navigation_rss_tabs_local);
+                case RSS_FEEDS_REMOTE:
+                    return this.serverName;
+            }
+
+            return super.getPageTitle(position);
+        }
     }
 }

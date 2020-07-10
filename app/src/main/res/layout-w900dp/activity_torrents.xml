@@ -35,22 +35,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@id/filters_list"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_alignRight="@id/filters_list"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:minHeight="?attr/actionBarSize" />
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/filter_search"
         android:layout_width="@dimen/ui_filters_list"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="5dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         app:iconifiedByDefault="false"
         app:queryHint="@string/action_filter"
         app:searchIcon="@drawable/ic_action_filter" />
@@ -60,9 +60,9 @@
         android:layout_width="@dimen/ui_filters_list"
         android:layout_height="match_parent"
         android:layout_above="@id/filter_search"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_below="@id/selection_toolbar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:choiceMode="singleChoice"
         tools:listitem="@layout/list_item_filter" />
 
@@ -84,8 +84,8 @@
             style="@style/DefaultToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/fragments_divider"
             android:layout_toStartOf="@id/fragments_divider"
+            android:layout_toLeftOf="@id/fragments_divider"
             android:minHeight="?attr/actionBarSize" />
 
         <androidx.appcompat.widget.ActionMenuView
@@ -93,9 +93,9 @@
             style="@style/SplitToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/fragments_divider"
-            android:layout_toStartOf="@id/fragments_divider"
             android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@id/fragments_divider"
+            android:layout_toLeftOf="@id/fragments_divider"
             android:minHeight="?attr/actionBarSize"
             android:visibility="gone"
             tools:visibility="visible" />
@@ -115,8 +115,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/torrents_toolbar"
-            android:layout_toLeftOf="@id/fragments_divider"
             android:layout_toStartOf="@id/fragments_divider"
+            android:layout_toLeftOf="@id/fragments_divider"
             tools:layout="@layout/fragment_torrents" />
 
         <fragment
@@ -135,11 +135,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|end"
-            android:layout_marginBottom="20dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@id/fragments_divider"
-            android:layout_toStartOf="@id/fragments_divider" />
+            android:layout_marginBottom="20dp"
+            android:layout_toStartOf="@id/fragments_divider"
+            android:layout_toLeftOf="@id/fragments_divider" />
 
     </RelativeLayout>
 

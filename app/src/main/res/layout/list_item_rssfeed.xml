@@ -26,11 +26,11 @@
         android:id="@+id/favicon_image"
         android:layout_width="24dip"
         android:layout_height="24dip"
-        android:layout_marginRight="@dimen/margin_default"
         android:layout_marginEnd="@dimen/margin_default"
+        android:layout_marginRight="@dimen/margin_default"
         android:scaleType="centerCrop"
-        tools:src="@drawable/ic_launcher"
-        tools:ignore="contentDescription" />
+        tools:ignore="contentDescription"
+        tools:src="@drawable/ic_launcher" />
 
     <TextView
         android:id="@+id/name_text"

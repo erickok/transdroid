@@ -96,8 +96,6 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
     protected boolean isLoadingTorrent = false;
     @InstanceState
     protected boolean hasCriticalError = false;
-    private ServerSetting currentServerSettings = null;
-
     // Views
     @ViewById
     protected View detailsContainer;
@@ -113,6 +111,175 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
     protected TextView emptyText, errorText;
     @ViewById
     protected ProgressBar loadingProgress;
+    private ServerSetting currentServerSettings = null;
+    private MultiChoiceModeListener onDetailsSelected = new MultiChoiceModeListener() {
+
+        SelectionManagerMode selectionManagerMode;
+
+        @Override
+        public boolean onCreateActionMode(final ActionMode mode, Menu menu) {
+            // Show contextual action bar to start/stop/remove/etc. torrents in batch mode
+            detailsMenu.setEnabled(false);
+            contextualMenu.setVisibility(View.VISIBLE);
+            contextualMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    return onActionItemClicked(mode, menuItem);
+                }
+            });
+            contextualMenu.getMenu().clear();
+            getActivity().getMenuInflater().inflate(R.menu.fragment_details_cab_main, contextualMenu.getMenu());
+            Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
+            mode.getMenuInflater().inflate(R.menu.fragment_details_cab_secondary, menu);
+            selectionManagerMode = new SelectionManagerMode(themedContext, detailsList, R.plurals.navigation_filesselected);
+            selectionManagerMode.setOnlyCheckClass(TorrentFile.class);
+            selectionManagerMode.onCreateActionMode(mode, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            selectionManagerMode.onPrepareActionMode(mode, menu);
+            // Pause autorefresh
+            if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
+                ((TorrentsActivity) getActivity()).stopRefresh = true;
+                ((TorrentsActivity) getActivity()).stopAutoRefresh();
+            }
+            boolean filePaths = currentServerSettings != null && Daemon.supportsFilePaths(currentServerSettings.getType());
+            contextualMenu.getMenu().findItem(R.id.action_download).setVisible(filePaths);
+            boolean filePriorities = currentServerSettings != null && Daemon.supportsFilePrioritySetting(currentServerSettings.getType());
+            contextualMenu.getMenu().findItem(R.id.action_priority_off).setVisible(filePriorities);
+            contextualMenu.getMenu().findItem(R.id.action_priority_low).setVisible(filePriorities);
+            contextualMenu.getMenu().findItem(R.id.action_priority_normal).setVisible(filePriorities);
+            contextualMenu.getMenu().findItem(R.id.action_priority_high).setVisible(filePriorities);
+            return true;
+        }
+
+        @SuppressLint("SdCardPath")
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+            // Get checked torrents
+            List<TorrentFile> checked = new ArrayList<>();
+            for (int i = 0; i < detailsList.getCheckedItemPositions().size(); i++) {
+                if (detailsList.getCheckedItemPositions().valueAt(i) && i < detailsList.getAdapter().getCount() &&
+                        detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)) instanceof TorrentFile) {
+                    checked.add((TorrentFile) detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)));
+                }
+            }
+
+            int itemId = item.getItemId();
+            if (itemId == R.id.action_download) {
+
+                if (checked.size() < 1 || currentServerSettings == null) {
+                    return true;
+                }
+                String urlBase = currentServerSettings.getFtpUrl();
+                if (urlBase == null || urlBase.equals("")) {
+                    urlBase = "ftp://" + currentServerSettings.getAddress() + "/";
+                }
+
+                // Try using AndFTP intents
+                Intent andftpStart = new Intent(Intent.ACTION_PICK);
+                andftpStart.setDataAndType(Uri.parse(urlBase), "vnd.android.cursor.dir/lysesoft.andftp.uri");
+                andftpStart.putExtra("command_type", "download");
+                andftpStart.putExtra("ftp_pasv", "true");
+                if (Uri.parse(urlBase).getUserInfo() != null) {
+                    andftpStart.putExtra("ftp_username", Uri.parse(urlBase).getUserInfo());
+                } else {
+                    andftpStart.putExtra("ftp_username", currentServerSettings.getUsername());
+                }
+                if (currentServerSettings.getFtpPassword() != null && !currentServerSettings.getFtpPassword().equals("")) {
+                    andftpStart.putExtra("ftp_password", currentServerSettings.getFtpPassword());
+                } else {
+                    andftpStart.putExtra("ftp_password", currentServerSettings.getPassword());
+                }
+                // Note: AndFTP doesn't understand the directory that Environment.getExternalStoragePublicDirectory()
+                // uses :(
+                andftpStart.putExtra("local_folder", "/sdcard/Download");
+                for (int f = 0; f < checked.size(); f++) {
+                    String file = checked.get(f).getRelativePath();
+                    if (file != null) {
+                        // If the file is directly in the root, AndFTP fails if we supply the proper path (like
+                        // /file.pdf)
+                        // Work around this bug by removing the leading / if no further directories are used in the path
+                        if (file.startsWith("/") && file.indexOf("/", 1) < 0) {
+                            file = file.substring(1);
+                        }
+                        andftpStart.putExtra("remote_file" + (f + 1), file);
+                    }
+                }
+                if (andftpStart.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(andftpStart);
+                    mode.finish();
+                    return true;
+                }
+
+                // Try using a VIEW intent given an ftp:// scheme URI
+                String url = urlBase + checked.get(0).getRelativePath();
+                Intent simpleStart = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (simpleStart.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(simpleStart);
+                    mode.finish();
+                    return true;
+                }
+
+                // No app is available that can handle FTP downloads
+                SnackbarManager.show(Snackbar.with(getActivity()).text(getString(R.string.error_noftpapp, url)).type(SnackbarType.MULTI_LINE)
+                        .colorResource(R.color.red));
+                mode.finish();
+                return true;
+
+            } else if (itemId == R.id.action_copytoclipboard) {
+
+                StringBuilder names = new StringBuilder();
+                for (int f = 0; f < checked.size(); f++) {
+                    if (f != 0) {
+                        names.append("\n");
+                    }
+                    names.append(checked.get(f).getName());
+                }
+                ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboardManager.setPrimaryClip(ClipData.newPlainText("Transdroid", names.toString()));
+                mode.finish();
+                return true;
+
+            } else {
+                Priority priority = Priority.Off;
+                if (itemId == R.id.action_priority_low) {
+                    priority = Priority.Low;
+                }
+                if (itemId == R.id.action_priority_normal) {
+                    priority = Priority.Normal;
+                }
+                if (itemId == R.id.action_priority_high) {
+                    priority = Priority.High;
+                }
+                if (getTasksExecutor() != null)
+                    getTasksExecutor().updatePriority(torrent, checked, priority);
+                mode.finish();
+                return true;
+            }
+        }
+
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            selectionManagerMode.onItemCheckedStateChanged(mode, position, id, checked);
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            // Resume autorefresh
+            if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
+                ((TorrentsActivity) getActivity()).stopRefresh = false;
+                ((TorrentsActivity) getActivity()).startAutoRefresh();
+            }
+            selectionManagerMode.onDestroyActionMode(mode);
+            contextualMenu.setVisibility(View.GONE);
+            detailsMenu.setEnabled(true);
+        }
+
+    };
 
     @AfterViews
     protected void init() {
@@ -515,175 +682,6 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
             ((RefreshableActivity) getActivity()).refreshScreen();
         }
     }
-
-    private MultiChoiceModeListener onDetailsSelected = new MultiChoiceModeListener() {
-
-        SelectionManagerMode selectionManagerMode;
-
-        @Override
-        public boolean onCreateActionMode(final ActionMode mode, Menu menu) {
-            // Show contextual action bar to start/stop/remove/etc. torrents in batch mode
-            detailsMenu.setEnabled(false);
-            contextualMenu.setVisibility(View.VISIBLE);
-            contextualMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    return onActionItemClicked(mode, menuItem);
-                }
-            });
-            contextualMenu.getMenu().clear();
-            getActivity().getMenuInflater().inflate(R.menu.fragment_details_cab_main, contextualMenu.getMenu());
-            Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
-            mode.getMenuInflater().inflate(R.menu.fragment_details_cab_secondary, menu);
-            selectionManagerMode = new SelectionManagerMode(themedContext, detailsList, R.plurals.navigation_filesselected);
-            selectionManagerMode.setOnlyCheckClass(TorrentFile.class);
-            selectionManagerMode.onCreateActionMode(mode, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            selectionManagerMode.onPrepareActionMode(mode, menu);
-            // Pause autorefresh
-            if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
-                ((TorrentsActivity) getActivity()).stopRefresh = true;
-                ((TorrentsActivity) getActivity()).stopAutoRefresh();
-            }
-            boolean filePaths = currentServerSettings != null && Daemon.supportsFilePaths(currentServerSettings.getType());
-            contextualMenu.getMenu().findItem(R.id.action_download).setVisible(filePaths);
-            boolean filePriorities = currentServerSettings != null && Daemon.supportsFilePrioritySetting(currentServerSettings.getType());
-            contextualMenu.getMenu().findItem(R.id.action_priority_off).setVisible(filePriorities);
-            contextualMenu.getMenu().findItem(R.id.action_priority_low).setVisible(filePriorities);
-            contextualMenu.getMenu().findItem(R.id.action_priority_normal).setVisible(filePriorities);
-            contextualMenu.getMenu().findItem(R.id.action_priority_high).setVisible(filePriorities);
-            return true;
-        }
-
-        @SuppressLint("SdCardPath")
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-
-            // Get checked torrents
-            List<TorrentFile> checked = new ArrayList<>();
-            for (int i = 0; i < detailsList.getCheckedItemPositions().size(); i++) {
-                if (detailsList.getCheckedItemPositions().valueAt(i) && i < detailsList.getAdapter().getCount() &&
-                        detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)) instanceof TorrentFile) {
-                    checked.add((TorrentFile) detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)));
-                }
-            }
-
-            int itemId = item.getItemId();
-            if (itemId == R.id.action_download) {
-
-                if (checked.size() < 1 || currentServerSettings == null) {
-                    return true;
-                }
-                String urlBase = currentServerSettings.getFtpUrl();
-                if (urlBase == null || urlBase.equals("")) {
-                    urlBase = "ftp://" + currentServerSettings.getAddress() + "/";
-                }
-
-                // Try using AndFTP intents
-                Intent andftpStart = new Intent(Intent.ACTION_PICK);
-                andftpStart.setDataAndType(Uri.parse(urlBase), "vnd.android.cursor.dir/lysesoft.andftp.uri");
-                andftpStart.putExtra("command_type", "download");
-                andftpStart.putExtra("ftp_pasv", "true");
-                if (Uri.parse(urlBase).getUserInfo() != null) {
-                    andftpStart.putExtra("ftp_username", Uri.parse(urlBase).getUserInfo());
-                } else {
-                    andftpStart.putExtra("ftp_username", currentServerSettings.getUsername());
-                }
-                if (currentServerSettings.getFtpPassword() != null && !currentServerSettings.getFtpPassword().equals("")) {
-                    andftpStart.putExtra("ftp_password", currentServerSettings.getFtpPassword());
-                } else {
-                    andftpStart.putExtra("ftp_password", currentServerSettings.getPassword());
-                }
-                // Note: AndFTP doesn't understand the directory that Environment.getExternalStoragePublicDirectory()
-                // uses :(
-                andftpStart.putExtra("local_folder", "/sdcard/Download");
-                for (int f = 0; f < checked.size(); f++) {
-                    String file = checked.get(f).getRelativePath();
-                    if (file != null) {
-                        // If the file is directly in the root, AndFTP fails if we supply the proper path (like
-                        // /file.pdf)
-                        // Work around this bug by removing the leading / if no further directories are used in the path
-                        if (file.startsWith("/") && file.indexOf("/", 1) < 0) {
-                            file = file.substring(1);
-                        }
-                        andftpStart.putExtra("remote_file" + (f + 1), file);
-                    }
-                }
-                if (andftpStart.resolveActivity(getActivity().getPackageManager()) != null) {
-                    startActivity(andftpStart);
-                    mode.finish();
-                    return true;
-                }
-
-                // Try using a VIEW intent given an ftp:// scheme URI
-                String url = urlBase + checked.get(0).getRelativePath();
-                Intent simpleStart = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if (simpleStart.resolveActivity(getActivity().getPackageManager()) != null) {
-                    startActivity(simpleStart);
-                    mode.finish();
-                    return true;
-                }
-
-                // No app is available that can handle FTP downloads
-                SnackbarManager.show(Snackbar.with(getActivity()).text(getString(R.string.error_noftpapp, url)).type(SnackbarType.MULTI_LINE)
-                        .colorResource(R.color.red));
-                mode.finish();
-                return true;
-
-            } else if (itemId == R.id.action_copytoclipboard) {
-
-                StringBuilder names = new StringBuilder();
-                for (int f = 0; f < checked.size(); f++) {
-                    if (f != 0) {
-                        names.append("\n");
-                    }
-                    names.append(checked.get(f).getName());
-                }
-                ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                clipboardManager.setPrimaryClip(ClipData.newPlainText("Transdroid", names.toString()));
-                mode.finish();
-                return true;
-
-            } else {
-                Priority priority = Priority.Off;
-                if (itemId == R.id.action_priority_low) {
-                    priority = Priority.Low;
-                }
-                if (itemId == R.id.action_priority_normal) {
-                    priority = Priority.Normal;
-                }
-                if (itemId == R.id.action_priority_high) {
-                    priority = Priority.High;
-                }
-                if (getTasksExecutor() != null)
-                    getTasksExecutor().updatePriority(torrent, checked, priority);
-                mode.finish();
-                return true;
-            }
-        }
-
-        @Override
-        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            selectionManagerMode.onItemCheckedStateChanged(mode, position, id, checked);
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            // Resume autorefresh
-            if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
-                ((TorrentsActivity) getActivity()).stopRefresh = false;
-                ((TorrentsActivity) getActivity()).startAutoRefresh();
-            }
-            selectionManagerMode.onDestroyActionMode(mode);
-            contextualMenu.setVisibility(View.GONE);
-            detailsMenu.setEnabled(true);
-        }
-
-    };
 
     /**
      * Returns the object responsible for executing torrent tasks against a connected server

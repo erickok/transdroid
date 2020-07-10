@@ -58,26 +58,9 @@ import java.io.OutputStream;
 public class SystemSettingsActivity extends PreferenceCompatActivity {
 
     protected static final int DIALOG_IMPORTSETTINGS = 0;
-    private OnPreferenceClickListener onImportSettingsClick = new OnPreferenceClickListener() {
-        @SuppressWarnings("deprecation")
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            showDialog(DIALOG_IMPORTSETTINGS);
-            return true;
-        }
-    };
     protected static final int DIALOG_EXPORTSETTINGS = 1;
-    private OnPreferenceClickListener onExportSettingsClick = new OnPreferenceClickListener() {
-        @SuppressWarnings("deprecation")
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            showDialog(DIALOG_EXPORTSETTINGS);
-            return true;
-        }
-    };
     protected static final int ACTIVITY_IMPORT_SETTINGS = 1;
     protected static final int ACTIVITY_EXPORT_SETTINGS = 2;
-
     @Bean
     protected NavigationHelper navigationHelper;
     @Bean
@@ -86,7 +69,22 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
     protected ErrorLogSender errorLogSender;
     @Bean
     protected SettingsPersistence settingsPersistence;
-
+    private OnPreferenceClickListener onImportSettingsClick = new OnPreferenceClickListener() {
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            showDialog(DIALOG_IMPORTSETTINGS);
+            return true;
+        }
+    };
+    private OnPreferenceClickListener onExportSettingsClick = new OnPreferenceClickListener() {
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            showDialog(DIALOG_EXPORTSETTINGS);
+            return true;
+        }
+    };
     private OnPreferenceClickListener onCheckUpdatesClick = new OnPreferenceClickListener() {
         @Override
         public boolean onPreferenceClick(Preference preference) {

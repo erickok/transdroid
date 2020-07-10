@@ -71,13 +71,13 @@ import java.util.Locale;
 @EFragment(R.layout.fragment_torrents)
 public class TorrentsFragment extends Fragment implements OnLabelPickedListener {
 
+    // HACK Working around #391 while hopefully we rework the UI in the future to persist the list in db or something
+    protected static ArrayList<Torrent> torrents = null;
     // Local data
     @Bean
     protected ApplicationSettings applicationSettings;
     @Bean
     protected SystemSettings systemSettings;
-    // HACK Working around #391 while hopefully we rework the UI in the future to persist the list in db or something
-    protected static ArrayList<Torrent> torrents = null;
     @InstanceState
     protected ArrayList<Torrent> lastMultiSelectedTorrents;
     @InstanceState
@@ -112,6 +112,133 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
     protected TextView errorText;
     @ViewById
     protected ProgressBar loadingProgress;
+    private MultiChoiceModeListener onTorrentsSelected = new MultiChoiceModeListener() {
+
+        private SelectionManagerMode selectionManagerMode;
+        private ActionMenuView actionsMenu;
+        private Toolbar actionsToolbar;
+        private FloatingActionsMenu addmenuButton;
+
+        @Override
+        public boolean onCreateActionMode(final ActionMode mode, Menu menu) {
+            // Show contextual action bars to start/stop/remove/etc. torrents in batch mode
+            if (actionsMenu == null) {
+                actionsMenu = ((TorrentsActivity) getActivity()).contextualMenu;
+                actionsToolbar = ((TorrentsActivity) getActivity()).actionsToolbar;
+                addmenuButton = ((TorrentsActivity) getActivity()).addmenuButton;
+            }
+            actionsToolbar.setEnabled(false);
+            actionsMenu.setVisibility(View.VISIBLE);
+            addmenuButton.setVisibility(View.GONE);
+            actionsMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    return onActionItemClicked(mode, menuItem);
+                }
+            });
+            actionsMenu.getMenu().clear();
+            getActivity().getMenuInflater().inflate(R.menu.fragment_torrents_cab, actionsMenu.getMenu());
+            Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
+            selectionManagerMode = new SelectionManagerMode(themedContext, torrentsList, R.plurals.navigation_torrentsselected);
+            selectionManagerMode.onCreateActionMode(mode, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            selectionManagerMode.onPrepareActionMode(mode, menu);
+            // Hide/show options depending on the type of server we are connected to
+            if (daemonType != null) {
+                actionsMenu.getMenu().findItem(R.id.action_start).setVisible(Daemon.supportsStoppingStarting(daemonType));
+                actionsMenu.getMenu().findItem(R.id.action_stop).setVisible(Daemon.supportsStoppingStarting(daemonType));
+                actionsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(Daemon.supportsSetLabel(daemonType));
+            }
+            // Pause autorefresh
+            if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
+                ((TorrentsActivity) getActivity()).stopRefresh = true;
+                ((TorrentsActivity) getActivity()).stopAutoRefresh();
+            }
+            return true;
+        }
+
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+            // Get checked torrents
+            ArrayList<Torrent> checked = new ArrayList<>();
+            for (int i = 0; i < torrentsList.getCheckedItemPositions().size(); i++) {
+                if (torrentsList.getCheckedItemPositions().valueAt(i) && i < torrentsList.getAdapter().getCount()) {
+                    checked.add((Torrent) torrentsList.getAdapter().getItem(torrentsList.getCheckedItemPositions().keyAt(i)));
+                }
+            }
+
+            int itemId = item.getItemId();
+            if (itemId == R.id.action_resume) {
+                for (Torrent torrent : checked) {
+                    getTasksExecutor().resumeTorrent(torrent);
+                }
+                mode.finish();
+                return true;
+            } else if (itemId == R.id.action_pause) {
+                for (Torrent torrent : checked) {
+                    getTasksExecutor().pauseTorrent(torrent);
+                }
+                mode.finish();
+                return true;
+            } else if (itemId == R.id.action_start) {
+                for (Torrent torrent : checked) {
+                    getTasksExecutor().startTorrent(torrent, false);
+                }
+                mode.finish();
+                return true;
+            } else if (itemId == R.id.action_stop) {
+                for (Torrent torrent : checked) {
+                    getTasksExecutor().stopTorrent(torrent);
+                }
+                mode.finish();
+                return true;
+            } else if (itemId == R.id.action_remove_default) {
+                for (Torrent torrent : checked) {
+                    getTasksExecutor().removeTorrent(torrent, false);
+                }
+                mode.finish();
+                return true;
+            } else if (itemId == R.id.action_remove_withdata) {
+                for (Torrent torrent : checked) {
+                    getTasksExecutor().removeTorrent(torrent, true);
+                }
+                mode.finish();
+                return true;
+            } else if (itemId == R.id.action_setlabel) {
+                lastMultiSelectedTorrents = checked;
+                if (currentLabels != null) {
+                    SetLabelDialog.show(getActivity(), TorrentsFragment.this, currentLabels);
+                }
+                mode.finish();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            selectionManagerMode.onItemCheckedStateChanged(mode, position, id, checked);
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            // Resume autorefresh
+            if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
+                ((TorrentsActivity) getActivity()).stopRefresh = false;
+                ((TorrentsActivity) getActivity()).startAutoRefresh();
+            }
+            selectionManagerMode.onDestroyActionMode(mode);
+            actionsMenu.setVisibility(View.GONE);
+            actionsToolbar.setEnabled(true);
+            addmenuButton.setVisibility(View.VISIBLE);
+        }
+
+    };
 
     @AfterViews
     protected void init() {
@@ -271,134 +398,6 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
         }
         updateViewVisibility();
     }
-
-    private MultiChoiceModeListener onTorrentsSelected = new MultiChoiceModeListener() {
-
-        private SelectionManagerMode selectionManagerMode;
-        private ActionMenuView actionsMenu;
-        private Toolbar actionsToolbar;
-        private FloatingActionsMenu addmenuButton;
-
-        @Override
-        public boolean onCreateActionMode(final ActionMode mode, Menu menu) {
-            // Show contextual action bars to start/stop/remove/etc. torrents in batch mode
-            if (actionsMenu == null) {
-                actionsMenu = ((TorrentsActivity) getActivity()).contextualMenu;
-                actionsToolbar = ((TorrentsActivity) getActivity()).actionsToolbar;
-                addmenuButton = ((TorrentsActivity) getActivity()).addmenuButton;
-            }
-            actionsToolbar.setEnabled(false);
-            actionsMenu.setVisibility(View.VISIBLE);
-            addmenuButton.setVisibility(View.GONE);
-            actionsMenu.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    return onActionItemClicked(mode, menuItem);
-                }
-            });
-            actionsMenu.getMenu().clear();
-            getActivity().getMenuInflater().inflate(R.menu.fragment_torrents_cab, actionsMenu.getMenu());
-            Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
-            selectionManagerMode = new SelectionManagerMode(themedContext, torrentsList, R.plurals.navigation_torrentsselected);
-            selectionManagerMode.onCreateActionMode(mode, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            selectionManagerMode.onPrepareActionMode(mode, menu);
-            // Hide/show options depending on the type of server we are connected to
-            if (daemonType != null) {
-                actionsMenu.getMenu().findItem(R.id.action_start).setVisible(Daemon.supportsStoppingStarting(daemonType));
-                actionsMenu.getMenu().findItem(R.id.action_stop).setVisible(Daemon.supportsStoppingStarting(daemonType));
-                actionsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(Daemon.supportsSetLabel(daemonType));
-            }
-            // Pause autorefresh
-            if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
-                ((TorrentsActivity) getActivity()).stopRefresh = true;
-                ((TorrentsActivity) getActivity()).stopAutoRefresh();
-            }
-            return true;
-        }
-
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-
-            // Get checked torrents
-            ArrayList<Torrent> checked = new ArrayList<>();
-            for (int i = 0; i < torrentsList.getCheckedItemPositions().size(); i++) {
-                if (torrentsList.getCheckedItemPositions().valueAt(i) && i < torrentsList.getAdapter().getCount()) {
-                    checked.add((Torrent) torrentsList.getAdapter().getItem(torrentsList.getCheckedItemPositions().keyAt(i)));
-                }
-            }
-
-            int itemId = item.getItemId();
-            if (itemId == R.id.action_resume) {
-                for (Torrent torrent : checked) {
-                    getTasksExecutor().resumeTorrent(torrent);
-                }
-                mode.finish();
-                return true;
-            } else if (itemId == R.id.action_pause) {
-                for (Torrent torrent : checked) {
-                    getTasksExecutor().pauseTorrent(torrent);
-                }
-                mode.finish();
-                return true;
-            } else if (itemId == R.id.action_start) {
-                for (Torrent torrent : checked) {
-                    getTasksExecutor().startTorrent(torrent, false);
-                }
-                mode.finish();
-                return true;
-            } else if (itemId == R.id.action_stop) {
-                for (Torrent torrent : checked) {
-                    getTasksExecutor().stopTorrent(torrent);
-                }
-                mode.finish();
-                return true;
-            } else if (itemId == R.id.action_remove_default) {
-                for (Torrent torrent : checked) {
-                    getTasksExecutor().removeTorrent(torrent, false);
-                }
-                mode.finish();
-                return true;
-            } else if (itemId == R.id.action_remove_withdata) {
-                for (Torrent torrent : checked) {
-                    getTasksExecutor().removeTorrent(torrent, true);
-                }
-                mode.finish();
-                return true;
-            } else if (itemId == R.id.action_setlabel) {
-                lastMultiSelectedTorrents = checked;
-                if (currentLabels != null) {
-                    SetLabelDialog.show(getActivity(), TorrentsFragment.this, currentLabels);
-                }
-                mode.finish();
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            selectionManagerMode.onItemCheckedStateChanged(mode, position, id, checked);
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            // Resume autorefresh
-            if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
-                ((TorrentsActivity) getActivity()).stopRefresh = false;
-                ((TorrentsActivity) getActivity()).startAutoRefresh();
-            }
-            selectionManagerMode.onDestroyActionMode(mode);
-            actionsMenu.setVisibility(View.GONE);
-            actionsToolbar.setEnabled(true);
-            addmenuButton.setVisibility(View.VISIBLE);
-        }
-
-    };
 
     @Click
     protected void emptyTextClicked() {

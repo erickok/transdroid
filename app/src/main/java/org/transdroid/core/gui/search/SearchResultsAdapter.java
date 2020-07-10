@@ -35,10 +35,9 @@ import java.util.List;
 @EBean
 public class SearchResultsAdapter extends BaseAdapter {
 
-    private List<SearchResult> results = null;
-
     @RootContext
     protected Context context;
+    private List<SearchResult> results = null;
 
     /**
      * Allows updating the search results, replacing the old data

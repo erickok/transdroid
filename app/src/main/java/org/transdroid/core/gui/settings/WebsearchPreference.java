@@ -33,6 +33,14 @@ public class WebsearchPreference extends Preference {
 
     private WebsearchSetting websearchSetting;
     private OnWebsearchClickedListener onWebsearchClickedListener = null;
+    private OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            if (onWebsearchClickedListener != null)
+                onWebsearchClickedListener.onWebsearchClicked(websearchSetting);
+            return true;
+        }
+    };
 
     public WebsearchPreference(Context context) {
         super(context);
@@ -64,15 +72,6 @@ public class WebsearchPreference extends Preference {
         this.onWebsearchClickedListener = onWebsearchClickedListener;
         return this;
     }
-
-    private OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            if (onWebsearchClickedListener != null)
-                onWebsearchClickedListener.onWebsearchClicked(websearchSetting);
-            return true;
-        }
-    };
 
     public interface OnWebsearchClickedListener {
         void onWebsearchClicked(WebsearchSetting serverSetting);

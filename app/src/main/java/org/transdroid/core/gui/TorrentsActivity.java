@@ -188,12 +188,6 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
     protected ListView filtersList;
     @ViewById
     protected SearchView filterSearch;
-    private ListView navigationList;
-    private FilterListAdapter navigationListAdapter;
-    private ServerSelectionView serverSelectionView;
-    private ServerStatusView serverStatusView;
-    private ActionBarDrawerToggle drawerToggle;
-
     // Settings
     @Bean
     protected ApplicationSettings applicationSettings;
@@ -214,6 +208,11 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
     protected DetailsFragment fragmentDetails;
     @InstanceState
     boolean firstStart = true;
+    private ListView navigationList;
+    private FilterListAdapter navigationListAdapter;
+    private ServerSelectionView serverSelectionView;
+    private ServerStatusView serverStatusView;
+    private ActionBarDrawerToggle drawerToggle;
     private MenuItem searchMenu = null;
     private IDaemonAdapter currentConnection = null;
 
@@ -222,6 +221,34 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
     private String awaitingAddLocalFile;
     private String awaitingAddTitle;
+    /**
+     * Handles item selections on the dedicated list of filter items
+     */
+    private OnItemClickListener onFilterListItemClicked = new OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            navigationList.setItemChecked(position, true);
+            Object item = navigationList.getAdapter().getItem(position);
+            if (item instanceof SimpleListItem) {
+                filterSelected((SimpleListItem) item, false);
+            }
+            if (drawerLayout != null)
+                drawerLayout.closeDrawer(drawerContainer);
+        }
+    };
+    private SearchView.OnQueryTextListener filterQueryTextChanged = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            // Redirect to filter method which will directly apply it
+            filterTorrents(newText);
+            return true;
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -523,22 +550,6 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         // Handle only if this is the drawer toggle; otherwise the AndroidAnnotations will be used
         return drawerToggle != null && drawerToggle.onOptionsItemSelected(item);
     }
-
-    /**
-     * Handles item selections on the dedicated list of filter items
-     */
-    private OnItemClickListener onFilterListItemClicked = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            navigationList.setItemChecked(position, true);
-            Object item = navigationList.getAdapter().getItem(position);
-            if (item instanceof SimpleListItem) {
-                filterSelected((SimpleListItem) item, false);
-            }
-            if (drawerLayout != null)
-                drawerLayout.closeDrawer(drawerContainer);
-        }
-    };
 
     /**
      * A new filter was selected; update the view over the current data
@@ -875,20 +886,6 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
     protected void sortBySize() {
         fragmentTorrents.sortBy(TorrentsSortBy.Size);
     }
-
-    private SearchView.OnQueryTextListener filterQueryTextChanged = new SearchView.OnQueryTextListener() {
-        @Override
-        public boolean onQueryTextSubmit(String query) {
-            return false;
-        }
-
-        @Override
-        public boolean onQueryTextChange(String newText) {
-            // Redirect to filter method which will directly apply it
-            filterTorrents(newText);
-            return true;
-        }
-    };
 
     /**
      * Redirect the newly entered list filter to the torrents fragment.

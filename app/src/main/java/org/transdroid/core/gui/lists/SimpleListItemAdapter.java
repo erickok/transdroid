@@ -84,6 +84,12 @@ public class SimpleListItemAdapter extends BaseAdapter {
      */
     public static class SimpleStringItem implements SimpleListItem {
 
+        private final String string;
+
+        public SimpleStringItem(String string) {
+            this.string = string;
+        }
+
         /**
          * Wraps a simple string of strings into a list of SimpleStringItem to add as data to a
          * {@link SimpleListItemAdapter}
@@ -99,12 +105,6 @@ public class SimpleListItemAdapter extends BaseAdapter {
                 }
             }
             return errors;
-        }
-
-        private final String string;
-
-        public SimpleStringItem(String string) {
-            this.string = string;
         }
 
         @Override

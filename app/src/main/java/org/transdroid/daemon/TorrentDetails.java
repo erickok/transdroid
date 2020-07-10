@@ -30,6 +30,15 @@ import java.util.List;
  */
 public final class TorrentDetails implements Parcelable {
 
+    public static final Parcelable.Creator<TorrentDetails> CREATOR = new Parcelable.Creator<TorrentDetails>() {
+        public TorrentDetails createFromParcel(Parcel in) {
+            return new TorrentDetails(in);
+        }
+
+        public TorrentDetails[] newArray(int size) {
+            return new TorrentDetails[size];
+        }
+    };
     private final List<String> trackers;
     private final List<String> errors;
     private final List<Integer> pieces;
@@ -96,16 +105,6 @@ public final class TorrentDetails implements Parcelable {
     public List<Integer> getPieces() {
         return this.pieces;
     }
-
-    public static final Parcelable.Creator<TorrentDetails> CREATOR = new Parcelable.Creator<TorrentDetails>() {
-        public TorrentDetails createFromParcel(Parcel in) {
-            return new TorrentDetails(in);
-        }
-
-        public TorrentDetails[] newArray(int size) {
-            return new TorrentDetails[size];
-        }
-    };
 
     @Override
     public int describeContents() {

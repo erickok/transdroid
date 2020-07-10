@@ -65,12 +65,12 @@
         <menu>
             <item
                 android:id="@+id/action_toggle_sequential"
-                android:title="@string/action_toggle_sequential"
-                android:checkable="true" />
+                android:checkable="true"
+                android:title="@string/action_toggle_sequential" />
             <item
                 android:id="@+id/action_toggle_firstlastpiece"
-                android:title="@string/action_toggle_firstlastpiece"
-                android:checkable="true" />
+                android:checkable="true"
+                android:title="@string/action_toggle_firstlastpiece" />
         </menu>
     </item>
     <item

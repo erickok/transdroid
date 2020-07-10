@@ -87,6 +87,25 @@ public class SearchActivity extends AppCompatActivity {
     private List<SearchSetting> searchSites;
     private SearchSetting lastUsedSite;
     private String lastUsedQuery;
+    private OnItemClickListener onSearchSiteClicked = new OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            lastUsedSite = searchSites.get(position);
+            refreshSearch();
+        }
+    };
+    private AdapterView.OnItemSelectedListener onSearchSiteSelected = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            lastUsedSite = searchSites.get(position);
+            refreshSearch();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -237,26 +256,6 @@ public class SearchActivity extends AppCompatActivity {
         }
         return true;
     }
-
-    private OnItemClickListener onSearchSiteClicked = new OnItemClickListener() {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            lastUsedSite = searchSites.get(position);
-            refreshSearch();
-        }
-    };
-    private AdapterView.OnItemSelectedListener onSearchSiteSelected = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            lastUsedSite = searchSites.get(position);
-            refreshSearch();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-        }
-    };
 
     /**
      * Extracts the query string from the search {@link Intent}

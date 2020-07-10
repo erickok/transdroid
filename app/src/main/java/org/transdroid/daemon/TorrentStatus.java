@@ -31,7 +31,6 @@ public enum TorrentStatus {
     Error(64),
     Unknown(0);
 
-    private int code;
     private static final Map<Integer, TorrentStatus> lookup = new HashMap<Integer, TorrentStatus>();
 
     static {
@@ -39,16 +38,18 @@ public enum TorrentStatus {
             lookup.put(s.getCode(), s);
     }
 
+    private int code;
+
     TorrentStatus(int code) {
         this.code = code;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public static TorrentStatus getStatus(int code) {
         return lookup.get(code);
+    }
+
+    public int getCode() {
+        return code;
     }
 
     public int compareStatusCodeTo(TorrentStatus another) {

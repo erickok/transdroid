@@ -12,6 +12,15 @@ import java.util.Date;
 
 public class Item implements Parcelable {
 
+    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
     private int id;
     private String title;
     private String link;
@@ -20,74 +29,89 @@ public class Item implements Parcelable {
     private String enclosureUrl;
     private String enclosureType;
     private long enclosureLength;
-
     /**
      * isNew is not parsed from the RSS feed but may be set using {@link #setIsNew(boolean)} manually
      */
     private boolean isNew;
 
-    public void setId(int id) {
-        this.id = id;
+    public Item() {
+    }
+
+    private Item(Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        link = in.readString();
+        description = in.readString();
+        long pubDateIn = in.readLong();
+        pubDate = pubDateIn == -1 ? null : new Date(pubDateIn);
+        enclosureUrl = in.readString();
+        enclosureType = in.readString();
+        enclosureLength = in.readLong();
+        isNew = in.readInt() == 1;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
         return this.title;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
         return this.description;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getLink() {
         return this.link;
     }
 
-    public void setPubdate(Date pubdate) {
-        this.pubDate = pubdate;
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public Date getPubdate() {
         return this.pubDate;
     }
 
-    public void setEnclosureUrl(String enclosureUrl) {
-        this.enclosureUrl = enclosureUrl;
-    }
-
-    public void setEnclosureLength(long enclosureLength) {
-        this.enclosureLength = enclosureLength;
-    }
-
-    public void setEnclosureType(String enclosureType) {
-        this.enclosureType = enclosureType;
+    public void setPubdate(Date pubdate) {
+        this.pubDate = pubdate;
     }
 
     public String getEnclosureUrl() {
         return this.enclosureUrl;
     }
 
+    public void setEnclosureUrl(String enclosureUrl) {
+        this.enclosureUrl = enclosureUrl;
+    }
+
     public String getEnclosureType() {
         return this.enclosureType;
     }
 
+    public void setEnclosureType(String enclosureType) {
+        this.enclosureType = enclosureType;
+    }
+
     public long getEnclosureLength() {
         return this.enclosureLength;
+    }
+
+    public void setEnclosureLength(long enclosureLength) {
+        this.enclosureLength = enclosureLength;
     }
 
     public void setIsNew(boolean isNew) {
@@ -138,32 +162,6 @@ public class Item implements Parcelable {
         out.writeString(enclosureType);
         out.writeLong(enclosureLength);
         out.writeInt(isNew ? 1 : 0);
-    }
-
-    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
-        public Item createFromParcel(Parcel in) {
-            return new Item(in);
-        }
-
-        public Item[] newArray(int size) {
-            return new Item[size];
-        }
-    };
-
-    public Item() {
-    }
-
-    private Item(Parcel in) {
-        id = in.readInt();
-        title = in.readString();
-        link = in.readString();
-        description = in.readString();
-        long pubDateIn = in.readLong();
-        pubDate = pubDateIn == -1 ? null : new Date(pubDateIn);
-        enclosureUrl = in.readString();
-        enclosureType = in.readString();
-        enclosureLength = in.readLong();
-        isNew = in.readInt() == 1;
     }
 
 }

@@ -48,7 +48,6 @@ public enum DaemonMethod {
     ToggleSequentialDownload(23),
     ToggleFirstLastPieceDownload(24);
 
-    private int code;
     private static final Map<Integer, DaemonMethod> lookup = new HashMap<>();
 
     static {
@@ -56,16 +55,18 @@ public enum DaemonMethod {
             lookup.put(s.getCode(), s);
     }
 
+    private int code;
+
     DaemonMethod(int code) {
         this.code = code;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public static DaemonMethod getStatus(int code) {
         return lookup.get(code);
+    }
+
+    public int getCode() {
+        return code;
     }
 
 }

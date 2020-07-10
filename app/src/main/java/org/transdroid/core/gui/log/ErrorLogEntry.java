@@ -34,7 +34,15 @@ public class ErrorLogEntry implements Parcelable {
 
     public static final String ID = "logId";
     public static final String DATEANDTIME = "dateAndTime";
+    public static final Parcelable.Creator<ErrorLogEntry> CREATOR = new Parcelable.Creator<ErrorLogEntry>() {
+        public ErrorLogEntry createFromParcel(Parcel in) {
+            return new ErrorLogEntry(in);
+        }
 
+        public ErrorLogEntry[] newArray(int size) {
+            return new ErrorLogEntry[size];
+        }
+    };
     @DatabaseField(id = true, columnName = ID)
     private Integer logId;
     @DatabaseField(columnName = DATEANDTIME)
@@ -54,6 +62,14 @@ public class ErrorLogEntry implements Parcelable {
         this.priority = priority;
         this.tag = tag;
         this.message = message;
+    }
+
+    private ErrorLogEntry(Parcel in) {
+        logId = in.readInt();
+        dateAndTime = new Date(in.readLong());
+        priority = in.readInt();
+        tag = in.readString();
+        message = in.readString();
     }
 
     public Integer getLogId() {
@@ -86,24 +102,6 @@ public class ErrorLogEntry implements Parcelable {
         out.writeInt(priority);
         out.writeString(tag);
         out.writeString(message);
-    }
-
-    public static final Parcelable.Creator<ErrorLogEntry> CREATOR = new Parcelable.Creator<ErrorLogEntry>() {
-        public ErrorLogEntry createFromParcel(Parcel in) {
-            return new ErrorLogEntry(in);
-        }
-
-        public ErrorLogEntry[] newArray(int size) {
-            return new ErrorLogEntry[size];
-        }
-    };
-
-    private ErrorLogEntry(Parcel in) {
-        logId = in.readInt();
-        dateAndTime = new Date(in.readLong());
-        priority = in.readInt();
-        tag = in.readString();
-        message = in.readString();
     }
 
 }

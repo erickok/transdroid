@@ -34,16 +34,6 @@ public class DaemonException extends Exception {
 
     private ExceptionType internalException;
 
-    public enum ExceptionType {
-        MethodUnsupported,
-        ConnectionError,
-        UnexpectedResponse,
-        ParsingFailed,
-        AuthenticationFailure,
-        NotConnected,
-        FileAccessError
-    }
-
     public DaemonException(ExceptionType internalException, String message) {
         super(message);
         this.internalException = internalException;
@@ -57,6 +47,16 @@ public class DaemonException extends Exception {
     @Override
     public String toString() {
         return internalException.toString() + " exception: " + getMessage();
+    }
+
+    public enum ExceptionType {
+        MethodUnsupported,
+        ConnectionError,
+        UnexpectedResponse,
+        ParsingFailed,
+        AuthenticationFailure,
+        NotConnected,
+        FileAccessError
     }
 
 }

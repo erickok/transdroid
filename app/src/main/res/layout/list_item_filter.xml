@@ -18,10 +18,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/activatable_background"
-    android:paddingBottom="@dimen/margin_half"
     android:paddingLeft="@dimen/margin_default"
+    android:paddingTop="@dimen/margin_half"
     android:paddingRight="@dimen/margin_default"
-    android:paddingTop="@dimen/margin_half">
+    android:paddingBottom="@dimen/margin_half">
 
     <TextView
         android:id="@+id/item_text"

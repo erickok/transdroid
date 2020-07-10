@@ -37,13 +37,12 @@ public class TorrentFilePriorityLayout extends RelativeLayout {
 
     private final float scale = getContext().getResources().getDisplayMetrics().density;
     private final int WIDTH = (int) (6 * scale + 0.5f);
-
-    private Priority priority = null;
     private final Paint offPaint = new Paint();
     private final Paint lowPaint = new Paint();
     private final Paint highPaint = new Paint();
     private final Paint normalPaint = new Paint();
     private final RectF fullRect = new RectF();
+    private Priority priority = null;
 
     public TorrentFilePriorityLayout(Context context) {
         super(context);

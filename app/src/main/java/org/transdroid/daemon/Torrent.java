@@ -30,12 +30,18 @@ import java.util.Date;
  */
 public final class Torrent implements Parcelable, Comparable<Torrent>, Finishable {
 
+    public static final Parcelable.Creator<Torrent> CREATOR = new Parcelable.Creator<Torrent>() {
+        public Torrent createFromParcel(Parcel in) {
+            return new Torrent(in);
+        }
+
+        public Torrent[] newArray(int size) {
+            return new Torrent[size];
+        }
+    };
     final private long id;
     final private String hash;
     final private String name;
-    private TorrentStatus statusCode;
-    private String locationDir;
-
     final private int rateDownload;
     final private int rateUpload;
     final private int seedersConnected;
@@ -43,20 +49,20 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
     final private int leechersConnected;
     final private int leechersKnown;
     final private int eta;
-
     final private long downloadedEver;
     final private long uploadedEver;
     final private long totalSize;
     final private float partDone;
     final private float available;
-    private String label;
-    private boolean sequentialDownload;
-    private boolean firstLastPieceDownload;
-
     final private Date dateAdded;
     final private Date dateDone;
     final private String error;
     final private Daemon daemon;
+    private TorrentStatus statusCode;
+    private String locationDir;
+    private String label;
+    private boolean sequentialDownload;
+    private boolean firstLastPieceDownload;
 
     private Torrent(Parcel in) {
         this.id = in.readLong();
@@ -393,16 +399,6 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
         // Compare torrent objects on their name (used for sorting only!)
         return name.compareTo(another.getName());
     }
-
-    public static final Parcelable.Creator<Torrent> CREATOR = new Parcelable.Creator<Torrent>() {
-        public Torrent createFromParcel(Parcel in) {
-            return new Torrent(in);
-        }
-
-        public Torrent[] newArray(int size) {
-            return new Torrent[size];
-        }
-    };
 
     @Override
     public int describeContents() {

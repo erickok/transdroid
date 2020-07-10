@@ -16,6 +16,15 @@ import java.util.List;
  */
 class DelugeRemoteRssChannel extends RemoteRssChannel {
 
+    public static final Parcelable.Creator<DelugeRemoteRssChannel> CREATOR = new Parcelable.Creator<DelugeRemoteRssChannel>() {
+        public DelugeRemoteRssChannel createFromParcel(Parcel in) {
+            return new DelugeRemoteRssChannel(in);
+        }
+
+        public DelugeRemoteRssChannel[] newArray(int size) {
+            return new DelugeRemoteRssChannel[size];
+        }
+    };
     private final String label;
     private final String downloadLocation;
     private final String moveCompleted;
@@ -73,14 +82,4 @@ class DelugeRemoteRssChannel extends RemoteRssChannel {
     public String getMoveCompleted() {
         return moveCompleted;
     }
-
-    public static final Parcelable.Creator<DelugeRemoteRssChannel> CREATOR = new Parcelable.Creator<DelugeRemoteRssChannel>() {
-        public DelugeRemoteRssChannel createFromParcel(Parcel in) {
-            return new DelugeRemoteRssChannel(in);
-        }
-
-        public DelugeRemoteRssChannel[] newArray(int size) {
-            return new DelugeRemoteRssChannel[size];
-        }
-    };
 }

@@ -35,10 +35,9 @@ import java.util.ArrayList;
 @EBean
 public class TorrentsAdapter extends BaseAdapter {
 
-    private ArrayList<Torrent> torrents = null;
-
     @RootContext
     protected Context context;
+    private ArrayList<Torrent> torrents = null;
 
     /**
      * Allows updating the full internal list of torrents at once, replacing the old list

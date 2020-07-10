@@ -39,8 +39,8 @@ public class RssfeedSetting implements SimpleListItem {
     private final boolean alarm;
     private final String excludeFilter;
     private final String includeFilter;
-    private Date lastViewed;
     private final String lastViewedItemUrl;
+    private Date lastViewed;
 
     public RssfeedSetting(int order, String name, String baseUrl, boolean needsAuth, boolean alarm, String excludeFilter, String includeFilter, Date lastViewed,
                           String lastViewedItemUrl) {

@@ -45,6 +45,27 @@ public class DialogHelper extends Activity {
     @Extra
     protected DialogSpecification dialog;
 
+    /**
+     * Call this from {@link Activity#onCreateDialog(int)}, supplying an instance of the {@link DialogSpecification}
+     * that should be shown to the user.
+     *
+     * @param context The activity that calls this method and which will own the constructed dialog
+     * @param dialog  An instance of the specification for the dialog that needs to be shown
+     * @return Either an instance of a {@link Dialog} that the activity should further control or null if the dialog
+     * will instead be opened as a full screen activity
+     */
+    public static Dialog showDialog(Context context, DialogSpecification dialog) {
+
+        // If the device is large (i.e. a tablet) then return a dialog to show
+        if (!NavigationHelper_.getInstance_(context).isSmallScreen())
+            return new PopupDialog(context, dialog);
+
+        // This is a small device; create a full screen dialog (which is just an activity)
+        DialogHelper_.intent(context).dialog(dialog).start();
+        return null;
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,24 +91,16 @@ public class DialogHelper extends Activity {
     }
 
     /**
-     * Call this from {@link Activity#onCreateDialog(int)}, supplying an instance of the {@link DialogSpecification}
-     * that should be shown to the user.
-     *
-     * @param context The activity that calls this method and which will own the constructed dialog
-     * @param dialog  An instance of the specification for the dialog that needs to be shown
-     * @return Either an instance of a {@link Dialog} that the activity should further control or null if the dialog
-     * will instead be opened as a full screen activity
+     * Specification for some dialog that can be show to the user, consisting of a custom layout and possibly an action
+     * bar menu. Warning: the action bar, and thus the menu options, is only shown when the dialog is presented as full
+     * screen activity. Use only for unimportant actions.
      */
-    public static Dialog showDialog(Context context, DialogSpecification dialog) {
+    public interface DialogSpecification extends Serializable {
+        int getDialogLayoutId();
 
-        // If the device is large (i.e. a tablet) then return a dialog to show
-        if (!NavigationHelper_.getInstance_(context).isSmallScreen())
-            return new PopupDialog(context, dialog);
+        int getDialogMenuId();
 
-        // This is a small device; create a full screen dialog (which is just an activity)
-        DialogHelper_.intent(context).dialog(dialog).start();
-        return null;
-
+        boolean onMenuItemSelected(Activity ownerActivity, int selectedItemId);
     }
 
     /**
@@ -99,19 +112,6 @@ public class DialogHelper extends Activity {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(dialog.getDialogLayoutId());
         }
-    }
-
-    /**
-     * Specification for some dialog that can be show to the user, consisting of a custom layout and possibly an action
-     * bar menu. Warning: the action bar, and thus the menu options, is only shown when the dialog is presented as full
-     * screen activity. Use only for unimportant actions.
-     */
-    public interface DialogSpecification extends Serializable {
-        int getDialogLayoutId();
-
-        int getDialogMenuId();
-
-        boolean onMenuItemSelected(Activity ownerActivity, int selectedItemId);
     }
 
 }

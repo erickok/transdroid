@@ -34,10 +34,9 @@ import org.transdroid.core.rssparser.Item;
 @EBean
 public class RssitemsAdapter extends BaseAdapter {
 
-    private Channel rssfeed = null;
-
     @RootContext
     protected Context context;
+    private Channel rssfeed = null;
 
     /**
      * Allows updating the full RSS feed (channel and contained items), replacing the old data

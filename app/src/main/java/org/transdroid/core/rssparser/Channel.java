@@ -13,6 +13,15 @@ import java.util.List;
 
 public class Channel implements Parcelable {
 
+    public static final Parcelable.Creator<Channel> CREATOR = new Parcelable.Creator<Channel>() {
+        public Channel createFromParcel(Parcel in) {
+            return new Channel(in);
+        }
+
+        public Channel[] newArray(int size) {
+            return new Channel[size];
+        }
+    };
     private int id;
     private String title;
     private String link;
@@ -28,56 +37,67 @@ public class Channel implements Parcelable {
         this.items = new ArrayList<>();
     }
 
-    public void setId(int id) {
-        this.id = id;
+    private Channel(Parcel in) {
+        this();
+        id = in.readInt();
+        title = in.readString();
+        link = in.readString();
+        description = in.readString();
+        long pubDateIn = in.readLong();
+        pubDate = pubDateIn == -1 ? null : new Date(pubDateIn);
+        lastBuildDate = in.readLong();
+        categories = new ArrayList<>();
+        in.readTypedList(items, Item.CREATOR);
+        in.readStringList(categories);
+        image = in.readString();
     }
 
     public int getId() {
         return id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getLink() {
         return link;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setPubDate(Date date) {
-        this.pubDate = date;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getPubDate() {
         return pubDate;
     }
 
-    public void setLastBuildDate(long lastBuildDate) {
-        this.lastBuildDate = lastBuildDate;
+    public void setPubDate(Date date) {
+        this.pubDate = date;
     }
 
     public long getLastBuildDate() {
         return lastBuildDate;
     }
 
-    public void setCategories(List<String> categories) {
-        this.categories = categories;
+    public void setLastBuildDate(long lastBuildDate) {
+        this.lastBuildDate = lastBuildDate;
     }
 
     public void addCategory(String category) {
@@ -88,8 +108,8 @@ public class Channel implements Parcelable {
         return categories;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
     }
 
     public void addItem(Item item) {
@@ -100,12 +120,16 @@ public class Channel implements Parcelable {
         return items;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
     public String getImage() {
         return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override
@@ -124,31 +148,6 @@ public class Channel implements Parcelable {
         out.writeTypedList(items);
         out.writeStringList(categories);
         out.writeString(image);
-    }
-
-    public static final Parcelable.Creator<Channel> CREATOR = new Parcelable.Creator<Channel>() {
-        public Channel createFromParcel(Parcel in) {
-            return new Channel(in);
-        }
-
-        public Channel[] newArray(int size) {
-            return new Channel[size];
-        }
-    };
-
-    private Channel(Parcel in) {
-        this();
-        id = in.readInt();
-        title = in.readString();
-        link = in.readString();
-        description = in.readString();
-        long pubDateIn = in.readLong();
-        pubDate = pubDateIn == -1 ? null : new Date(pubDateIn);
-        lastBuildDate = in.readLong();
-        categories = new ArrayList<>();
-        in.readTypedList(items, Item.CREATOR);
-        in.readStringList(categories);
-        image = in.readString();
     }
 
 }

@@ -26,7 +26,6 @@ public enum TorrentFilesSortBy {
     PartDone(2),
     TotalSize(3);
 
-    private int code;
     private static final Map<Integer, TorrentFilesSortBy> lookup = new HashMap<Integer, TorrentFilesSortBy>();
 
     static {
@@ -34,16 +33,18 @@ public enum TorrentFilesSortBy {
             lookup.put(s.getCode(), s);
     }
 
+    private int code;
+
     TorrentFilesSortBy(int code) {
         this.code = code;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public static TorrentFilesSortBy getStatus(int code) {
         return lookup.get(code);
+    }
+
+    public int getCode() {
+        return code;
     }
 
 }

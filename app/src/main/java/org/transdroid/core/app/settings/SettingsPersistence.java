@@ -44,15 +44,14 @@ import java.io.OutputStream;
 @EBean(scope = Scope.Singleton)
 public class SettingsPersistence {
 
-    @Bean
-    protected ApplicationSettings applicationSettings;
-    @Bean
-    protected SystemSettings systemSettings;
-
     public static final String DEFAULT_SETTINGS_DIR = Environment.getExternalStorageDirectory().toString()
             + "/Transdroid/";
     public static final String DEFAULT_SETTINGS_FILENAME = "settings.json";
     public static final File DEFAULT_SETTINGS_FILE = new File(DEFAULT_SETTINGS_DIR + DEFAULT_SETTINGS_FILENAME);
+    @Bean
+    protected ApplicationSettings applicationSettings;
+    @Bean
+    protected SystemSettings systemSettings;
 
     /**
      * Reads the server, web searches, RSS feed, background service and system settings from a JSON-encoded String, such as when read via a QR code.

@@ -80,74 +80,6 @@ public class SearchResultsFragment extends Fragment {
     protected TextView emptyText;
     @ViewById
     protected ProgressBar loadingProgress;
-
-    @AfterViews
-    protected void init() {
-
-        // On large screens where this fragment is shown next to the sites list; we show a continues grey vertical line
-        // to separate the lists visually
-        if (!NavigationHelper_.getInstance_(getActivity()).isSmallScreen()) {
-            resultsList.setBackgroundResource(R.drawable.details_list_background);
-        }
-
-        // Set up the list adapter, which allows multi-select
-        resultsList.setAdapter(resultsAdapter);
-        resultsList.setMultiChoiceModeListener(onItemsSelected);
-        if (results != null) {
-            showResults();
-        }
-
-    }
-
-    public void startSearch(String query, SearchSite site, SearchSortOrder sortBy) {
-        loadingProgress.setVisibility(View.VISIBLE);
-        resultsList.setVisibility(View.GONE);
-        emptyText.setVisibility(View.GONE);
-        performSearch(query, site, sortBy);
-    }
-
-    @Background
-    protected void performSearch(String query, SearchSite site, SearchSortOrder sortBy) {
-        results = searchHelper.search(query, site, sortBy);
-        resultsSource = site.isPrivate() ? site.getKey() : null;
-        showResults();
-    }
-
-    @UiThread
-    protected void showResults() {
-        loadingProgress.setVisibility(View.GONE);
-        if (results == null || results.size() == 0) {
-            resultsList.setVisibility(View.GONE);
-            emptyText.setVisibility(View.VISIBLE);
-            return;
-        }
-        resultsAdapter.update(results);
-        resultsList.setVisibility(View.VISIBLE);
-        emptyText.setVisibility(View.GONE);
-    }
-
-    public void clearResults() {
-        loadingProgress.setVisibility(View.GONE);
-        resultsList.setVisibility(View.GONE);
-        emptyText.setVisibility(View.VISIBLE);
-    }
-
-    @ItemClick(R.id.searchresults_list)
-    protected void onItemClicked(SearchResult item) {
-        if (item.getTorrentUrl() == null) {
-            SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_notorrentfile).colorResource(R.color.red));
-            return;
-        }
-        // Don't broadcast this intent; we can safely assume this is intended for Transdroid only
-        Intent i = TorrentsActivity_.intent(getActivity()).get();
-        i.setData(Uri.parse(item.getTorrentUrl()));
-        i.putExtra("TORRENT_TITLE", item.getName());
-        if (resultsSource != null) {
-            i.putExtra("PRIVATE_SOURCE", resultsSource);
-        }
-        startActivity(i);
-    }
-
     private MultiChoiceModeListener onItemsSelected = new MultiChoiceModeListener() {
 
         SelectionManagerMode selectionManagerMode;
@@ -224,5 +156,72 @@ public class SearchResultsFragment extends Fragment {
         }
 
     };
+
+    @AfterViews
+    protected void init() {
+
+        // On large screens where this fragment is shown next to the sites list; we show a continues grey vertical line
+        // to separate the lists visually
+        if (!NavigationHelper_.getInstance_(getActivity()).isSmallScreen()) {
+            resultsList.setBackgroundResource(R.drawable.details_list_background);
+        }
+
+        // Set up the list adapter, which allows multi-select
+        resultsList.setAdapter(resultsAdapter);
+        resultsList.setMultiChoiceModeListener(onItemsSelected);
+        if (results != null) {
+            showResults();
+        }
+
+    }
+
+    public void startSearch(String query, SearchSite site, SearchSortOrder sortBy) {
+        loadingProgress.setVisibility(View.VISIBLE);
+        resultsList.setVisibility(View.GONE);
+        emptyText.setVisibility(View.GONE);
+        performSearch(query, site, sortBy);
+    }
+
+    @Background
+    protected void performSearch(String query, SearchSite site, SearchSortOrder sortBy) {
+        results = searchHelper.search(query, site, sortBy);
+        resultsSource = site.isPrivate() ? site.getKey() : null;
+        showResults();
+    }
+
+    @UiThread
+    protected void showResults() {
+        loadingProgress.setVisibility(View.GONE);
+        if (results == null || results.size() == 0) {
+            resultsList.setVisibility(View.GONE);
+            emptyText.setVisibility(View.VISIBLE);
+            return;
+        }
+        resultsAdapter.update(results);
+        resultsList.setVisibility(View.VISIBLE);
+        emptyText.setVisibility(View.GONE);
+    }
+
+    public void clearResults() {
+        loadingProgress.setVisibility(View.GONE);
+        resultsList.setVisibility(View.GONE);
+        emptyText.setVisibility(View.VISIBLE);
+    }
+
+    @ItemClick(R.id.searchresults_list)
+    protected void onItemClicked(SearchResult item) {
+        if (item.getTorrentUrl() == null) {
+            SnackbarManager.show(Snackbar.with(getActivity()).text(R.string.error_notorrentfile).colorResource(R.color.red));
+            return;
+        }
+        // Don't broadcast this intent; we can safely assume this is intended for Transdroid only
+        Intent i = TorrentsActivity_.intent(getActivity()).get();
+        i.setData(Uri.parse(item.getTorrentUrl()));
+        i.putExtra("TORRENT_TITLE", item.getName());
+        if (resultsSource != null) {
+            i.putExtra("PRIVATE_SOURCE", resultsSource);
+        }
+        startActivity(i);
+    }
 
 }

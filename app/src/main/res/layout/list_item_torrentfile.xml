@@ -20,10 +20,10 @@
     android:layout_height="wrap_content"
     android:background="?attr/activatable_background"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/margin_half"
     android:paddingLeft="@dimen/margin_default"
+    android:paddingTop="@dimen/margin_half"
     android:paddingRight="@dimen/margin_default"
-    android:paddingTop="@dimen/margin_half">
+    android:paddingBottom="@dimen/margin_half">
 
     <TextView
         android:id="@+id/name_text"
@@ -39,11 +39,11 @@
         android:id="@+id/progress_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/name_text"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/name_text"
-        android:layout_marginLeft="@dimen/margin_half"
         android:layout_marginStart="@dimen/margin_half"
+        android:layout_marginLeft="@dimen/margin_half"
         android:layout_marginTop="4dip"
         android:textIsSelectable="false"
         android:textSize="@dimen/text_small"

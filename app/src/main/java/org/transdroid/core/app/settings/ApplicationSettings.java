@@ -60,9 +60,9 @@ public class ApplicationSettings {
 
     @RootContext
     protected Context context;
-    private SharedPreferences prefs;
     @Bean
     protected SearchHelper searchHelper;
+    private SharedPreferences prefs;
 
     protected ApplicationSettings(Context context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -349,6 +349,15 @@ public class ApplicationSettings {
     }
 
     /**
+     * Registers some server as being the last used by the user
+     *
+     * @param server The settings of the server that the user last used
+     */
+    public void setLastUsedServer(ServerSetting server) {
+        setLastUsedServerKey(server.getOrder());
+    }
+
+    /**
      * Returns the order number/unique key of the server that the used last used; use with getServerSettings(int) or
      * call getLastUsedServer directly. WARNING: the returned integer may no longer refer to a known server settings
      * object: check the bounds.
@@ -357,15 +366,6 @@ public class ApplicationSettings {
      */
     public int getLastUsedServerKey() {
         return prefs.getInt("system_lastusedserver", -1);
-    }
-
-    /**
-     * Registers some server as being the last used by the user
-     *
-     * @param server The settings of the server that the user last used
-     */
-    public void setLastUsedServer(ServerSetting server) {
-        setLastUsedServerKey(server.getOrder());
     }
 
     /**
@@ -591,6 +591,15 @@ public class ApplicationSettings {
     }
 
     /**
+     * Returns the search sort order property that the user last used.
+     *
+     * @return The last used sort order enumeration value
+     */
+    public SearchSortOrder getLastUsedSearchSortOrder() {
+        return SearchSortOrder.values()[(prefs.getInt("system_lastusedsearchsortorder", SearchSortOrder.BySeeders.ordinal()))];
+    }
+
+    /**
      * Registers the search list sort order as being last used by the user
      *
      * @param currentSortOrder The sort order property the user selected last
@@ -599,15 +608,6 @@ public class ApplicationSettings {
         Editor edit = prefs.edit();
         edit.putInt("system_lastusedsearchsortorder", currentSortOrder.ordinal());
         edit.apply();
-    }
-
-    /**
-     * Returns the search sort order property that the user last used.
-     *
-     * @return The last used sort order enumeration value
-     */
-    public SearchSortOrder getLastUsedSearchSortOrder() {
-        return SearchSortOrder.values()[(prefs.getInt("system_lastusedsearchsortorder", SearchSortOrder.BySeeders.ordinal()))];
     }
 
     /**
@@ -687,6 +687,15 @@ public class ApplicationSettings {
     }
 
     /**
+     * Registers the unique key of some web search or in-app search site as being last used by the user
+     *
+     * @param site The site settings to register as being last used
+     */
+    public void setLastUsedSearchSite(SearchSetting site) {
+        prefs.edit().putString("header_setsearchsite", site.getKey()).apply();
+    }
+
+    /**
      * Returns the unique key of the site that the used last used or selected as default form the main settings; use
      * with getLastUsedSearchSite directly. WARNING: the returned string may no longer refer to a known web search site
      * or in-app search settings object.
@@ -696,15 +705,6 @@ public class ApplicationSettings {
      */
     private String getLastUsedSearchSiteKey() {
         return prefs.getString("header_setsearchsite", null);
-    }
-
-    /**
-     * Registers the unique key of some web search or in-app search site as being last used by the user
-     *
-     * @param site The site settings to register as being last used
-     */
-    public void setLastUsedSearchSite(SearchSetting site) {
-        prefs.edit().putString("header_setsearchsite", site.getKey()).apply();
     }
 
     /**

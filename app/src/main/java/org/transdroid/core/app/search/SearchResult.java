@@ -28,6 +28,15 @@ import java.util.Date;
  */
 public class SearchResult implements Parcelable {
 
+    public static final Parcelable.Creator<SearchResult> CREATOR = new Parcelable.Creator<SearchResult>() {
+        public SearchResult createFromParcel(Parcel in) {
+            return new SearchResult(in);
+        }
+
+        public SearchResult[] newArray(int size) {
+            return new SearchResult[size];
+        }
+    };
     private final int id;
     private final String name;
     private final String torrentUrl;
@@ -47,6 +56,18 @@ public class SearchResult implements Parcelable {
         this.addedOn = (addedOnTime == -1L) ? null : new Date(addedOnTime);
         this.seeders = seeders;
         this.leechers = leechers;
+    }
+
+    public SearchResult(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        torrentUrl = in.readString();
+        detailsUrl = in.readString();
+        size = in.readString();
+        long addedOnIn = in.readLong();
+        addedOn = addedOnIn == -1 ? null : new Date(addedOnIn);
+        seeders = in.readString();
+        leechers = in.readString();
     }
 
     public int getId() {
@@ -96,28 +117,6 @@ public class SearchResult implements Parcelable {
         out.writeLong(addedOn == null ? -1 : addedOn.getTime());
         out.writeString(seeders);
         out.writeString(leechers);
-    }
-
-    public static final Parcelable.Creator<SearchResult> CREATOR = new Parcelable.Creator<SearchResult>() {
-        public SearchResult createFromParcel(Parcel in) {
-            return new SearchResult(in);
-        }
-
-        public SearchResult[] newArray(int size) {
-            return new SearchResult[size];
-        }
-    };
-
-    public SearchResult(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        torrentUrl = in.readString();
-        detailsUrl = in.readString();
-        size = in.readString();
-        long addedOnIn = in.readLong();
-        addedOn = addedOnIn == -1 ? null : new Date(addedOnIn);
-        seeders = in.readString();
-        leechers = in.readString();
     }
 
 }

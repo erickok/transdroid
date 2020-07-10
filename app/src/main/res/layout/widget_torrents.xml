@@ -45,9 +45,9 @@
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:orientation="vertical"
-            android:paddingRight="@dimen/margin_half"
+            android:paddingTop="3dp"
             android:paddingEnd="@dimen/margin_half"
-            android:paddingTop="3dp">
+            android:paddingRight="@dimen/margin_half">
 
             <TextView
                 android:id="@+id/filter_text"
@@ -56,9 +56,9 @@
                 android:ellipsize="marquee"
                 android:fontFamily="sans-serif-condensed"
                 android:singleLine="true"
+                android:textColor="@color/transdroid_text_actionbar"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/ui_navigation_filter"
-                android:textColor="@color/transdroid_text_actionbar"
                 tools:text="Filter" />
 
             <TextView
@@ -69,9 +69,9 @@
                 android:ellipsize="marquee"
                 android:fontFamily="sans-serif-light"
                 android:singleLine="true"
+                android:textColor="@color/transdroid_text_actionbar"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/ui_navigation_server"
-                android:textColor="@color/transdroid_text_actionbar"
                 tools:text="Server" />
         </LinearLayout>
 
@@ -129,9 +129,9 @@
                 android:id="@+id/upspeed_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/upcount_text"
                 android:layout_alignLeft="@id/upcount_text"
                 android:layout_alignParentRight="true"
-                android:layout_below="@id/upcount_text"
                 android:layout_marginTop="-4dip"
                 android:fontFamily="sans-serif-light"
                 android:gravity="end"
@@ -141,9 +141,9 @@
                 android:id="@+id/downspeed_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/downcount_text"
                 android:layout_alignLeft="@id/downcount_text"
                 android:layout_alignRight="@id/downcount_sign"
-                android:layout_below="@id/downcount_text"
                 android:layout_marginTop="-4dip"
                 android:fontFamily="sans-serif-light"
                 android:gravity="end"

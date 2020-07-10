@@ -81,6 +81,25 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
         this.settings = settings;
     }
 
+    /**
+     * Calculate the MD5 hash of a password to use with the Torrentflux-b4rt dispatcher requests.
+     *
+     * @param pass The plain text password
+     * @return A hex-formatted MD5-hashed string of the password
+     */
+    public static String md5Pass(String pass) {
+        try {
+            MessageDigest m = MessageDigest.getInstance("MD5");
+            byte[] data = pass.getBytes();
+            m.update(data, 0, data.length);
+            BigInteger i = new BigInteger(1, m.digest());
+            return String.format("%1$032X", i);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public DaemonTaskResult executeTask(Log log, DaemonTask task) {
 
@@ -280,25 +299,6 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
         return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + folder
                 + act + RPC_URL_USER + settings.getUsername() + RPC_URL_PASS
                 + md5Pass((settings.getPassword() == null ? "" : settings.getPassword()));
-    }
-
-    /**
-     * Calculate the MD5 hash of a password to use with the Torrentflux-b4rt dispatcher requests.
-     *
-     * @param pass The plain text password
-     * @return A hex-formatted MD5-hashed string of the password
-     */
-    public static String md5Pass(String pass) {
-        try {
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            byte[] data = pass.getBytes();
-            m.update(data, 0, data.length);
-            BigInteger i = new BigInteger(1, m.digest());
-            return String.format("%1$032X", i);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @Override

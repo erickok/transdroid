@@ -41,12 +41,12 @@ public class FilterListAdapter extends MergeAdapter {
 
     @RootContext
     protected Context context;
-    private FilterListItemAdapter serverItems = null;
-    private FilterListItemAdapter statusTypeItems = null;
-    private FilterListItemAdapter labelItems = null;
     protected ViewHolderAdapter statusTypeSeparator;
     protected ViewHolderAdapter labelSeperator;
     protected ViewHolderAdapter serverSeparator;
+    private FilterListItemAdapter serverItems = null;
+    private FilterListItemAdapter statusTypeItems = null;
+    private FilterListItemAdapter labelItems = null;
 
     /**
      * Update the list of available servers

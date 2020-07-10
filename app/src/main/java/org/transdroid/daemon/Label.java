@@ -28,16 +28,17 @@ import android.os.Parcelable;
  */
 public final class Label implements Parcelable, Comparable<Label> {
 
+    public static final Parcelable.Creator<Label> CREATOR = new Parcelable.Creator<Label>() {
+        public Label createFromParcel(Parcel in) {
+            return new Label(in);
+        }
+
+        public Label[] newArray(int size) {
+            return new Label[size];
+        }
+    };
     final private String name;
     final private int count;
-
-    public String getName() {
-        return name;
-    }
-
-    public int getCount() {
-        return count;
-    }
 
     private Label(Parcel in) {
         this.name = in.readString();
@@ -47,6 +48,14 @@ public final class Label implements Parcelable, Comparable<Label> {
     public Label(String name, int count) {
         this.name = name;
         this.count = count;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     @Override
@@ -59,16 +68,6 @@ public final class Label implements Parcelable, Comparable<Label> {
         // Compare Label objects on their name (used for sorting only!)
         return name.compareTo(another.getName());
     }
-
-    public static final Parcelable.Creator<Label> CREATOR = new Parcelable.Creator<Label>() {
-        public Label createFromParcel(Parcel in) {
-            return new Label(in);
-        }
-
-        public Label[] newArray(int size) {
-            return new Label[size];
-        }
-    };
 
     @Override
     public int describeContents() {

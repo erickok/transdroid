@@ -33,6 +33,14 @@ public class SeedboxPreference extends ServerPreference {
     private SeedboxProvider provider = null;
     private OnSeedboxClickedListener onSeedboxClickedListener = null;
     private int onSeedboxClickedListenerOffset = 0;
+    private OnPreferenceClickListener onSeedboxPreferenceClicked = new OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            if (onSeedboxClickedListener != null)
+                onSeedboxClickedListener.onSeedboxClicked(serverSetting, provider, onSeedboxClickedListenerOffset);
+            return true;
+        }
+    };
 
     public SeedboxPreference(Context context) {
         super(context);
@@ -73,15 +81,6 @@ public class SeedboxPreference extends ServerPreference {
     public SeedboxProvider getSeedboxProvider() {
         return provider;
     }
-
-    private OnPreferenceClickListener onSeedboxPreferenceClicked = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            if (onSeedboxClickedListener != null)
-                onSeedboxClickedListener.onSeedboxClicked(serverSetting, provider, onSeedboxClickedListenerOffset);
-            return true;
-        }
-    };
 
     /**
      * Set a listener that will be notified of click events on this preference

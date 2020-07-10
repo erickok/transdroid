@@ -103,8 +103,8 @@
                 android:id="@+id/darktheme_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_half"
                 android:layout_marginTop="@dimen/margin_half"
+                android:layout_marginBottom="@dimen/margin_half"
                 android:text="@string/widget_usedarktheme" />
         </LinearLayout>
     </ScrollView>

@@ -32,6 +32,16 @@ import java.util.Map;
  */
 public final class TorrentFile implements Parcelable, Comparable<TorrentFile>, Finishable {
 
+    public static final Parcelable.Creator<TorrentFile> CREATOR = new Parcelable.Creator<TorrentFile>() {
+        public TorrentFile createFromParcel(Parcel in) {
+            return new TorrentFile(in);
+        }
+
+        public TorrentFile[] newArray(int size) {
+            return new TorrentFile[size];
+        }
+    };
+    private static final Map<String, String> mimeTypes = fillMimeTypes();
     private final String key;
     private final String name;
     private final String relativePath;
@@ -58,6 +68,35 @@ public final class TorrentFile implements Parcelable, Comparable<TorrentFile>, F
         this.totalSize = in.readLong();
         this.downloaded = in.readLong();
         this.priority = Priority.getPriority(in.readInt());
+    }
+
+    private static Map<String, String> fillMimeTypes() {
+        // Full mime type support list is in http://code.google.com/p/android-vlc-remote/source/browse/trunk/AndroidManifest.xml
+        // We use a selection of the most popular/obvious ones
+        HashMap<String, String> types = new HashMap<String, String>();
+        // Application
+        types.put("m4a", "application/x-extension-m4a");
+        types.put("flac", "application/x-flac");
+        types.put("mkv", "application/x-matroska");
+        types.put("ogg", "application/x-ogg");
+        // Audio
+        types.put("m3u", "audio/mpegurl");
+        types.put("mp3", "audio/mpeg");
+        types.put("mpa", "audio/mpeg");
+        types.put("mpc", "audio/x-musepack");
+        types.put("wav", "audio/x-wav");
+        types.put("wma", "audio/x-ms-wma");
+        // Video
+        types.put("3gp", "video/3gpp");
+        types.put("avi", "video/x-avi");
+        types.put("flv", "video/x-flv");
+        types.put("mov", "video/quicktime");
+        types.put("mp4", "video/mp4");
+        types.put("mpg", "video/mpeg");
+        types.put("mpeg", "video/mpeg");
+        types.put("vob", "video/mpeg");
+        types.put("wmv", "video/x-ms-wmv");
+        return types;
     }
 
     public String getKey() {
@@ -177,47 +216,6 @@ public final class TorrentFile implements Parcelable, Comparable<TorrentFile>, F
         // Compare file objects on their name (used for sorting only!)
         return name.compareTo(another.getName());
     }
-
-    private static final Map<String, String> mimeTypes = fillMimeTypes();
-
-    private static Map<String, String> fillMimeTypes() {
-        // Full mime type support list is in http://code.google.com/p/android-vlc-remote/source/browse/trunk/AndroidManifest.xml
-        // We use a selection of the most popular/obvious ones
-        HashMap<String, String> types = new HashMap<String, String>();
-        // Application
-        types.put("m4a", "application/x-extension-m4a");
-        types.put("flac", "application/x-flac");
-        types.put("mkv", "application/x-matroska");
-        types.put("ogg", "application/x-ogg");
-        // Audio
-        types.put("m3u", "audio/mpegurl");
-        types.put("mp3", "audio/mpeg");
-        types.put("mpa", "audio/mpeg");
-        types.put("mpc", "audio/x-musepack");
-        types.put("wav", "audio/x-wav");
-        types.put("wma", "audio/x-ms-wma");
-        // Video
-        types.put("3gp", "video/3gpp");
-        types.put("avi", "video/x-avi");
-        types.put("flv", "video/x-flv");
-        types.put("mov", "video/quicktime");
-        types.put("mp4", "video/mp4");
-        types.put("mpg", "video/mpeg");
-        types.put("mpeg", "video/mpeg");
-        types.put("vob", "video/mpeg");
-        types.put("wmv", "video/x-ms-wmv");
-        return types;
-    }
-
-    public static final Parcelable.Creator<TorrentFile> CREATOR = new Parcelable.Creator<TorrentFile>() {
-        public TorrentFile createFromParcel(Parcel in) {
-            return new TorrentFile(in);
-        }
-
-        public TorrentFile[] newArray(int size) {
-            return new TorrentFile[size];
-        }
-    };
 
     @Override
     public int describeContents() {

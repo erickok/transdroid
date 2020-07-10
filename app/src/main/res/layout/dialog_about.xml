@@ -29,8 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/margin_half"
             android:layout_marginTop="@dimen/margin_half"
+            android:layout_marginBottom="@dimen/margin_half"
             android:drawableLeft="@drawable/ic_launcher"
             android:drawablePadding="@dimen/margin_half"
             android:fontFamily="sans-serif-condensed"
@@ -61,8 +61,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/margin_default"
             android:layout_marginTop="4dip"
+            android:layout_marginBottom="@dimen/margin_default"
             android:gravity="center"
             android:text="@string/system_license" />
 
@@ -80,8 +80,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/margin_default"
             android:fontFamily="monospace"
-            android:textSize="12sp"
-            android:text="@string/system_libraries" />
+            android:text="@string/system_libraries"
+            android:textSize="12sp" />
     </LinearLayout>
 
 </ScrollView>

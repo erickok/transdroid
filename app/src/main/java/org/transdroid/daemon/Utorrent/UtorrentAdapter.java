@@ -117,10 +117,9 @@ public class UtorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
     private static final int RPC_FILEDOWNLOADED_IDX = 2;
     private static final int RPC_FILEPRIORITY_IDX = 3;
     private static String authtoken;
+    private static ArrayList<RemoteRssChannel> remoteRssChannels = new ArrayList<>();
     private DaemonSettings settings;
     private DefaultHttpClient httpclient;
-
-    private static ArrayList<RemoteRssChannel> remoteRssChannels = new ArrayList<>();
 
 
     /**

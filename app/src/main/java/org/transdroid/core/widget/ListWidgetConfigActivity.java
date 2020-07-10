@@ -92,12 +92,6 @@ public class ListWidgetConfigActivity extends AppCompatActivity {
     protected ApplicationSettings applicationSettings;
     @Bean
     protected SystemSettings systemSettings;
-    protected OnCheckedChangeListener reverseorderCheckedChanged = new OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            filterTorrents();
-        }
-    };
     protected OnCheckedChangeListener showstatusCheckChanged = new OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -106,6 +100,12 @@ public class ListWidgetConfigActivity extends AppCompatActivity {
         }
     };
     private List<Torrent> previewTorrents = null;
+    protected OnCheckedChangeListener reverseorderCheckedChanged = new OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            filterTorrents();
+        }
+    };
     private int appWidgetId;
     private OnClickListener doneClicked = new OnClickListener() {
         @Override

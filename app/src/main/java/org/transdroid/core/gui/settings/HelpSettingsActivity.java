@@ -51,6 +51,36 @@ public class HelpSettingsActivity extends PreferenceCompatActivity {
     protected ErrorLogSender errorLogSender;
     @Bean
     protected SettingsPersistence settingsPersistence;
+    private OnPreferenceClickListener onSendLogClick = new OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            errorLogSender.collectAndSendLog(HelpSettingsActivity.this, applicationSettings.getLastUsedServer());
+            return true;
+        }
+    };
+    private OnPreferenceClickListener onInstallHelpClick = new OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(INSTALLHELP_URI)));
+            return true;
+        }
+    };
+    private OnPreferenceClickListener onChangeLogClick = new OnPreferenceClickListener() {
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            showDialog(DIALOG_CHANGELOG);
+            return true;
+        }
+    };
+    private OnPreferenceClickListener onAboutClick = new OnPreferenceClickListener() {
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            showDialog(DIALOG_ABOUT);
+            return true;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,40 +104,6 @@ public class HelpSettingsActivity extends PreferenceCompatActivity {
     protected void navigateUp() {
         MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
     }
-
-    private OnPreferenceClickListener onSendLogClick = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            errorLogSender.collectAndSendLog(HelpSettingsActivity.this, applicationSettings.getLastUsedServer());
-            return true;
-        }
-    };
-
-    private OnPreferenceClickListener onInstallHelpClick = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(INSTALLHELP_URI)));
-            return true;
-        }
-    };
-
-    private OnPreferenceClickListener onChangeLogClick = new OnPreferenceClickListener() {
-        @SuppressWarnings("deprecation")
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            showDialog(DIALOG_CHANGELOG);
-            return true;
-        }
-    };
-
-    private OnPreferenceClickListener onAboutClick = new OnPreferenceClickListener() {
-        @SuppressWarnings("deprecation")
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            showDialog(DIALOG_ABOUT);
-            return true;
-        }
-    };
 
     protected Dialog onCreateDialog(int id) {
         switch (id) {

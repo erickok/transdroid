@@ -36,10 +36,9 @@ import java.util.List;
 @EBean
 public class SearchSitesAdapter extends BaseAdapter {
 
-    private List<SearchSetting> sites = null;
-
     @RootContext
     protected Context context;
+    private List<SearchSetting> sites = null;
 
     /**
      * Allows updating the full internal list of sites at once, replacing the old list

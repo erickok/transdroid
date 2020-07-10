@@ -20,6 +20,17 @@ public class UTorrentRemoteRssItem extends RemoteRssItem {
 //    public int season;
 //    public int episode;
 
+    public static final Parcelable.Creator<UTorrentRemoteRssItem> CREATOR = new Parcelable.Creator<UTorrentRemoteRssItem>() {
+        public UTorrentRemoteRssItem createFromParcel(Parcel in) {
+            return new UTorrentRemoteRssItem(in);
+        }
+
+        public UTorrentRemoteRssItem[] newArray(int size) {
+            return new UTorrentRemoteRssItem[size];
+        }
+    };
+
+
     public UTorrentRemoteRssItem(JSONArray json) throws JSONException {
 //        name = json.getString(0); // clean name
         title = json.getString(1); // filename
@@ -32,17 +43,6 @@ public class UTorrentRemoteRssItem extends RemoteRssItem {
 //        season = json.getInt(6);
 //        episode = json.getInt(7);
     }
-
-
-    public static final Parcelable.Creator<UTorrentRemoteRssItem> CREATOR = new Parcelable.Creator<UTorrentRemoteRssItem>() {
-        public UTorrentRemoteRssItem createFromParcel(Parcel in) {
-            return new UTorrentRemoteRssItem(in);
-        }
-
-        public UTorrentRemoteRssItem[] newArray(int size) {
-            return new UTorrentRemoteRssItem[size];
-        }
-    };
 
     public UTorrentRemoteRssItem(Parcel in) {
 //        name = in.readString();

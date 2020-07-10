@@ -14,9 +14,9 @@
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/details_container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".core.gui.DetailsActivity_">
@@ -72,8 +72,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:drawablePadding="8dip"
         android:drawableTop="?attr/loading_progress"
+        android:drawablePadding="8dip"
         android:gravity="center"
         android:padding="@dimen/margin_default"
         android:text="@string/navigation_emptydetails"
@@ -85,8 +85,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:drawablePadding="8dip"
         android:drawableTop="?attr/loading_progress"
+        android:drawablePadding="8dip"
         android:gravity="center"
         android:maxWidth="400dip"
         android:padding="@dimen/margin_default"

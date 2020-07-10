@@ -35,10 +35,6 @@ public class TorrentProgressBar extends View {
 
     private final float scale = getContext().getResources().getDisplayMetrics().density;
     private final int MINIMUM_HEIGHT = (int) (3 * scale + 0.5f);
-
-    private int progress;
-    private boolean isActive;
-    private boolean isError;
     private final Paint notdonePaint = new Paint();
     private final Paint inactiveDonePaint = new Paint();
     private final Paint inactivePaint = new Paint();
@@ -47,21 +43,9 @@ public class TorrentProgressBar extends View {
     private final Paint errorPaint = new Paint();
     private final RectF fullRect = new RectF();
     private final RectF progressRect = new RectF();
-
-    public void setProgress(int progress) {
-        this.progress = progress;
-        this.invalidate();
-    }
-
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
-        this.invalidate();
-    }
-
-    public void setError(boolean isError) {
-        this.isError = isError;
-        this.invalidate();
-    }
+    private int progress;
+    private boolean isActive;
+    private boolean isError;
 
     public TorrentProgressBar(Context context) {
         super(context);
@@ -79,6 +63,21 @@ public class TorrentProgressBar extends View {
             this.isActive = a.getBoolean(R.styleable.TorrentProgressBar_isActive, false);
         }
         a.recycle();
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+        this.invalidate();
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+        this.invalidate();
+    }
+
+    public void setError(boolean isError) {
+        this.isError = isError;
+        this.invalidate();
     }
 
     private void initPaints() {

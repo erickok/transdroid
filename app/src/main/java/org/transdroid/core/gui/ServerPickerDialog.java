@@ -30,19 +30,6 @@ import java.util.List;
 
 public class ServerPickerDialog extends DialogFragment {
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String[] serverNames = getArguments().getStringArray("serverNames");
-        return new AlertDialog.Builder(getActivity()).setTitle(R.string.navigation_pickserver)
-                .setItems(serverNames, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (getActivity() != null && getActivity() instanceof TorrentsActivity)
-                            ((TorrentsActivity) getActivity()).switchServerAndAddFromIntent(which);
-                    }
-                }).create();
-    }
-
     /**
      * Opens a dialog that allows the selection of a configured server (manual or seedbox). The calling activity will
      * receive a callback on its switchServerAndAddFromIntent(int) method.
@@ -61,6 +48,19 @@ public class ServerPickerDialog extends DialogFragment {
         arguments.putStringArray("serverNames", serverNames);
         dialog.setArguments(arguments);
         dialog.show(activity.getFragmentManager(), "serverpicker");
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        String[] serverNames = getArguments().getStringArray("serverNames");
+        return new AlertDialog.Builder(getActivity()).setTitle(R.string.navigation_pickserver)
+                .setItems(serverNames, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (getActivity() != null && getActivity() instanceof TorrentsActivity)
+                            ((TorrentsActivity) getActivity()).switchServerAndAddFromIntent(which);
+                    }
+                }).create();
     }
 
 }

@@ -35,6 +35,14 @@ import java.util.Locale;
  */
 public class LocalTorrent {
 
+    private static final String DECIMAL_FORMATTER = "%.1f";
+    private static final String DECIMAL_FORMATTER_2 = "%.2f";
+    private final Torrent t;
+
+    private LocalTorrent(Torrent torrent) {
+        this.t = torrent;
+    }
+
     /**
      * Creates the LocalTorrent object so that the translatable/formattable version of a Torrent can be used.
      *
@@ -45,14 +53,32 @@ public class LocalTorrent {
         return new LocalTorrent(torrent);
     }
 
-    private final Torrent t;
-
-    private LocalTorrent(Torrent torrent) {
-        this.t = torrent;
+    /**
+     * Convert a DaemonException to a translatable human-readable error message
+     *
+     * @param e The exception that was thrown by the server
+     * @return A string resource ID to show to the user
+     */
+    public static int getResourceForDaemonException(DaemonException e) {
+        switch (e.getType()) {
+            case MethodUnsupported:
+                return R.string.error_unsupported;
+            case ConnectionError:
+                return R.string.error_httperror;
+            case UnexpectedResponse:
+                return R.string.error_jsonresponseerror;
+            case ParsingFailed:
+                return R.string.error_jsonrequesterror;
+            case NotConnected:
+                return R.string.error_daemonnotconnected;
+            case AuthenticationFailure:
+                return R.string.error_401;
+            case FileAccessError:
+                return R.string.error_torrentfile;
+            default:
+                return R.string.error_httperror;
+        }
     }
-
-    private static final String DECIMAL_FORMATTER = "%.1f";
-    private static final String DECIMAL_FORMATTER_2 = "%.2f";
 
     /**
      * Builds a string showing the upload/download seed ratio. If not downloading, it will base the ratio on the total
@@ -228,33 +254,6 @@ public class LocalTorrent {
         }
         return r.getString(abbreviate ? R.string.status_eta : R.string.status_etalong,
                 TimespanConverter.getTime(t.getEta(), inDays));
-    }
-
-    /**
-     * Convert a DaemonException to a translatable human-readable error message
-     *
-     * @param e The exception that was thrown by the server
-     * @return A string resource ID to show to the user
-     */
-    public static int getResourceForDaemonException(DaemonException e) {
-        switch (e.getType()) {
-            case MethodUnsupported:
-                return R.string.error_unsupported;
-            case ConnectionError:
-                return R.string.error_httperror;
-            case UnexpectedResponse:
-                return R.string.error_jsonresponseerror;
-            case ParsingFailed:
-                return R.string.error_jsonrequesterror;
-            case NotConnected:
-                return R.string.error_daemonnotconnected;
-            case AuthenticationFailure:
-                return R.string.error_401;
-            case FileAccessError:
-                return R.string.error_torrentfile;
-            default:
-                return R.string.error_httperror;
-        }
     }
 
 }

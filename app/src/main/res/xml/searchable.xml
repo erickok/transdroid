@@ -18,5 +18,5 @@
     android:hint="@string/search_hint"
     android:label="@string/search_torrentsearch"
     android:searchSuggestAuthority="@string/search_history_authority"
-    android:searchSuggestThreshold="0"
-    android:searchSuggestSelection=" ?" />
+    android:searchSuggestSelection=" ?"
+    android:searchSuggestThreshold="0" />

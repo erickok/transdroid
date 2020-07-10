@@ -37,14 +37,13 @@ public class TorrentStatusLayout extends RelativeLayout {
 
     private final float scale = getContext().getResources().getDisplayMetrics().density;
     private final int WIDTH = (int) (6 * scale + 0.5f);
-
-    private TorrentStatus status = null;
     private final Paint pausedPaint = new Paint();
     private final Paint otherPaint = new Paint();
     private final Paint downloadingPaint = new Paint();
     private final Paint seedingPaint = new Paint();
     private final Paint errorPaint = new Paint();
     private final RectF fullRect = new RectF();
+    private TorrentStatus status = null;
 
     public TorrentStatusLayout(Context context) {
         super(context);

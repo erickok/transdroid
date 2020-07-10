@@ -92,12 +92,26 @@ public enum StatusType {
 
     public static class StatusTypeFilter implements SimpleListItem, NavigationFilter {
 
+        public static final Parcelable.Creator<StatusTypeFilter> CREATOR = new Parcelable.Creator<StatusTypeFilter>() {
+            public StatusTypeFilter createFromParcel(Parcel in) {
+                return new StatusTypeFilter(in);
+            }
+
+            public StatusTypeFilter[] newArray(int size) {
+                return new StatusTypeFilter[size];
+            }
+        };
         private final StatusType statusType;
         private final String name;
 
         StatusTypeFilter(StatusType statusType, String name) {
             this.statusType = statusType;
             this.name = name;
+        }
+
+        private StatusTypeFilter(Parcel in) {
+            this.statusType = StatusType.valueOf(in.readString());
+            this.name = in.readString();
         }
 
         public StatusType getStatusType() {
@@ -138,21 +152,6 @@ public enum StatusType {
                     return true;
             }
         }
-
-        private StatusTypeFilter(Parcel in) {
-            this.statusType = StatusType.valueOf(in.readString());
-            this.name = in.readString();
-        }
-
-        public static final Parcelable.Creator<StatusTypeFilter> CREATOR = new Parcelable.Creator<StatusTypeFilter>() {
-            public StatusTypeFilter createFromParcel(Parcel in) {
-                return new StatusTypeFilter(in);
-            }
-
-            public StatusTypeFilter[] newArray(int size) {
-                return new StatusTypeFilter[size];
-            }
-        };
 
         @Override
         public int describeContents() {

@@ -28,16 +28,6 @@ public class FileSizeConverter {
 
     private static final String DECIMAL_FORMATTER = "%.1f";
     private static final String DECIMAL_FORMATTER_GB = "%.2f";
-
-    /**
-     * A quantity in which to express a file size.
-     *
-     * @author erickok
-     */
-    public enum SizeUnit {
-        B, KB, MB, GB
-    }
-
     private static int INC_SIZE = 1024;
 
     /**
@@ -116,6 +106,15 @@ public class FileSizeConverter {
         } else {
             return SizeUnit.GB;
         }
+    }
+
+    /**
+     * A quantity in which to express a file size.
+     *
+     * @author erickok
+     */
+    public enum SizeUnit {
+        B, KB, MB, GB
     }
 
 }

@@ -27,11 +27,11 @@
         android:spinnerMode="dialog" />
 
     <TextView
+        android:id="@+id/remoterss_status_message"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/remoterss_loading"
         android:gravity="center"
-        android:id="@+id/remoterss_status_message" />
+        android:text="@string/remoterss_loading" />
 
     <ListView
         android:id="@+id/torrents_list"

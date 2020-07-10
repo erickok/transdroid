@@ -53,10 +53,6 @@ public class SearchHelper {
     @RootContext
     protected Context context;
 
-    public enum SearchSortOrder {
-        Combined, BySeeders
-    }
-
     /**
      * Return whether the Torrent Search package is installed and available to query against
      *
@@ -167,6 +163,10 @@ public class SearchHelper {
             // Ignore
             return null;
         }
+    }
+
+    public enum SearchSortOrder {
+        Combined, BySeeders
     }
 
 }

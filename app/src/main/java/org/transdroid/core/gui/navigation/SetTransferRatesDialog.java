@@ -30,6 +30,19 @@ import org.transdroid.core.app.settings.SettingsUtils;
 
 public class SetTransferRatesDialog {
 
+    private static OnClickListener onNumberClicked = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // Append the text contents of the button itself as text to the current number (as reference in the view's
+            // tag)
+            TextView numberView = (TextView) v.getTag();
+            if (numberView.getText().toString().equals(v.getContext().getString(R.string.status_maxspeed_novalue))) {
+                numberView.setText("");
+            }
+            numberView.setText(numberView.getText().toString() + ((Button) v).getText().toString());
+        }
+    };
+
     /**
      * A dialog fragment that allow picking of maximum download and upload transfer rates as well as the resetting of these values.
      *
@@ -87,19 +100,6 @@ public class SetTransferRatesDialog {
             transferRatesContent.findViewById(i).setOnClickListener(onNumberClicked);
         }
     }
-
-    private static OnClickListener onNumberClicked = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // Append the text contents of the button itself as text to the current number (as reference in the view's
-            // tag)
-            TextView numberView = (TextView) v.getTag();
-            if (numberView.getText().toString().equals(v.getContext().getString(R.string.status_maxspeed_novalue))) {
-                numberView.setText("");
-            }
-            numberView.setText(numberView.getText().toString() + ((Button) v).getText().toString());
-        }
-    };
 
     /**
      * Listener interface to the user having picked or wanting to resets the current maximum transfer speeds;

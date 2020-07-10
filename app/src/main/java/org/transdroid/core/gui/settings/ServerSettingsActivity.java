@@ -49,11 +49,9 @@ import org.transdroid.daemon.Daemon;
 @OptionsMenu(R.menu.activity_deleteableprefs)
 public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 
+    private static final int DIALOG_CONFIRMREMOVE = 0;
     @Bean
     protected ConnectivityHelper connectivityHelper;
-
-    private static final int DIALOG_CONFIRMREMOVE = 0;
-
     private EditTextPreference extraPass, folder, downloadDir, excludeFilter, includeFilter, localNetworkPreference;
 
     @Override

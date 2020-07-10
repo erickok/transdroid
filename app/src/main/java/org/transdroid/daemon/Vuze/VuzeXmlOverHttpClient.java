@@ -153,6 +153,43 @@ public class VuzeXmlOverHttpClient {
         this(settings, URI.create(url));
     }
 
+    static Object deserialize(String rawText) {
+
+        // Null?
+        if (rawText == null || rawText.equals("null")) {
+            return null;
+        }
+
+		/* For now cast all integers as Long; this prevents casting problems later on when
+		 * we know it's a long but the value was small so it is casted to an Integer here
+		// Integer?
+		try {
+			Integer integernum = Integer.parseInt(rawText);
+			return integernum;
+		} catch (NumberFormatException e) {
+			// Just continue trying the next type
+		}*/
+
+        // Long?
+        try {
+            Long longnum = Long.parseLong(rawText);
+            return longnum;
+        } catch (NumberFormatException e) {
+            // Just continue trying the next type
+        }
+
+        // Double?
+        try {
+            Double doublenum = Double.parseDouble(rawText);
+            return doublenum;
+        } catch (NumberFormatException e) {
+            // Just continue trying the next type
+        }
+
+        // String otherwise
+        return rawText;
+    }
+
     protected Map<String, Object> callXMLRPC(Long object, String method, Object[] params, Long connectionID, boolean paramsAreVuzeObjects) throws DaemonException {
         try {
 
@@ -336,43 +373,6 @@ public class VuzeXmlOverHttpClient {
 
     private String serialize(Object value) {
         return value.toString();
-    }
-
-    static Object deserialize(String rawText) {
-
-        // Null?
-        if (rawText == null || rawText.equals("null")) {
-            return null;
-        }
-
-		/* For now cast all integers as Long; this prevents casting problems later on when
-		 * we know it's a long but the value was small so it is casted to an Integer here
-		// Integer?
-		try {
-			Integer integernum = Integer.parseInt(rawText);
-			return integernum;
-		} catch (NumberFormatException e) {
-			// Just continue trying the next type
-		}*/
-
-        // Long?
-        try {
-            Long longnum = Long.parseLong(rawText);
-            return longnum;
-        } catch (NumberFormatException e) {
-            // Just continue trying the next type
-        }
-
-        // Double?
-        try {
-            Double doublenum = Double.parseDouble(rawText);
-            return doublenum;
-        } catch (NumberFormatException e) {
-            // Just continue trying the next type
-        }
-
-        // String otherwise
-        return rawText;
     }
 
 }

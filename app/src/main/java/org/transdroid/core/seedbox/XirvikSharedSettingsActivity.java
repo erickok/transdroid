@@ -55,10 +55,9 @@ import java.io.InputStream;
 @OptionsMenu(resName = "activity_deleteableprefs")
 public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 
-    private EditTextPreference excludeFilter, includeFilter;
-
     @Bean
     protected Log log;
+    private EditTextPreference excludeFilter, includeFilter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

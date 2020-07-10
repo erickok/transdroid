@@ -23,7 +23,7 @@
         android:id="@+id/trackers_edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minLines="5"
-        android:inputType="textUri|textMultiLine" />
+        android:inputType="textUri|textMultiLine"
+        android:minLines="5" />
 
 </FrameLayout>

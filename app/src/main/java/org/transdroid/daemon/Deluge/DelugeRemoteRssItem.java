@@ -13,6 +13,16 @@ import java.util.Date;
  * @author alonalbert
  */
 class DelugeRemoteRssItem extends RemoteRssItem {
+    public static final Parcelable.Creator<DelugeRemoteRssItem> CREATOR = new Parcelable.Creator<DelugeRemoteRssItem>() {
+        public DelugeRemoteRssItem createFromParcel(Parcel in) {
+            return new DelugeRemoteRssItem(in);
+        }
+
+        public DelugeRemoteRssItem[] newArray(int size) {
+            return new DelugeRemoteRssItem[size];
+        }
+    };
+
     DelugeRemoteRssItem(String title, String link, String sourceName, Date timestamp) {
         this.title = title;
         this.link = link;
@@ -34,14 +44,4 @@ class DelugeRemoteRssItem extends RemoteRssItem {
         dest.writeString(sourceName);
         dest.writeSerializable(timestamp);
     }
-
-    public static final Parcelable.Creator<DelugeRemoteRssItem> CREATOR = new Parcelable.Creator<DelugeRemoteRssItem>() {
-        public DelugeRemoteRssItem createFromParcel(Parcel in) {
-            return new DelugeRemoteRssItem(in);
-        }
-
-        public DelugeRemoteRssItem[] newArray(int size) {
-            return new DelugeRemoteRssItem[size];
-        }
-    };
 }

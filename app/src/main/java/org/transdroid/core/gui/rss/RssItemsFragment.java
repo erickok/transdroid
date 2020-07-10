@@ -77,6 +77,10 @@ public class RssItemsFragment extends Fragment {
     // Views
     @ViewById(R.id.rssitems_list)
     protected ListView rssItemsList;
+    @Bean
+    protected RssitemsAdapter rssitemsAdapter;
+    @ViewById
+    protected TextView emptyText;
     private MultiChoiceModeListener onItemsSelected = new MultiChoiceModeListener() {
 
         SelectionManagerMode selectionManagerMode;
@@ -182,10 +186,6 @@ public class RssItemsFragment extends Fragment {
         }
 
     };
-    @Bean
-    protected RssitemsAdapter rssitemsAdapter;
-    @ViewById
-    protected TextView emptyText;
 
     @AfterViews
     protected void init() {

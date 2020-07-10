@@ -18,24 +18,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <EditTextPreference
+        android:inputType="textNoSuggestions"
         android:key="websearch_name"
-        app:iconSpaceReserved="false"
-        android:title="@string/pref_name"
         android:summary="@string/pref_name_optional"
-        android:inputType="textNoSuggestions" />
+        android:title="@string/pref_name"
+        app:iconSpaceReserved="false" />
 
     <EditTextPreference
+        android:inputType="textUri"
         android:key="websearch_baseurl"
-        app:iconSpaceReserved="false"
-        android:title="@string/pref_searchurl"
         android:summary="@string/pref_searchurl_info"
-        android:inputType="textUri" />
+        android:title="@string/pref_searchurl"
+        app:iconSpaceReserved="false" />
 
     <EditTextPreference
+        android:inputType="textUri"
         android:key="websearch_cookies"
-        app:iconSpaceReserved="false"
-        android:title="@string/pref_cookies"
         android:summary="@string/pref_cookies_info"
-        android:inputType="textUri" />
+        android:title="@string/pref_cookies"
+        app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

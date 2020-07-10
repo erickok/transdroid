@@ -106,13 +106,12 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
     protected ConnectivityHelper connectivityHelper;
     @Bean
     protected ApplicationSettings applicationSettings;
-    private IDaemonAdapter currentConnection = null;
-
     // Details view components
     @ViewById
     protected Toolbar selectionToolbar;
     @FragmentById(R.id.torrentdetails_fragment)
     protected DetailsFragment fragmentDetails;
+    private IDaemonAdapter currentConnection = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

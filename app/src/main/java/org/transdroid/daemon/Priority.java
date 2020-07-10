@@ -33,7 +33,6 @@ public enum Priority {
     Normal(2),
     High(3);
 
-    private int code;
     private static final Map<Integer, Priority> lookup = new HashMap<Integer, Priority>();
 
     static {
@@ -41,16 +40,18 @@ public enum Priority {
             lookup.put(s.getCode(), s);
     }
 
+    private int code;
+
     Priority(int code) {
         this.code = code;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public static Priority getPriority(int code) {
         return lookup.get(code);
+    }
+
+    public int getCode() {
+        return code;
     }
 
     public int comparePriorityTo(Priority another) {

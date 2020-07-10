@@ -33,6 +33,14 @@ public class ServerPreference extends Preference {
 
     protected ServerSetting serverSetting;
     private OnServerClickedListener onServerClickedListener = null;
+    private OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            if (onServerClickedListener != null)
+                onServerClickedListener.onServerClicked(serverSetting);
+            return true;
+        }
+    };
 
     public ServerPreference(Context context) {
         super(context);
@@ -64,15 +72,6 @@ public class ServerPreference extends Preference {
         this.onServerClickedListener = onServerClickedListener;
         return this;
     }
-
-    private OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            if (onServerClickedListener != null)
-                onServerClickedListener.onServerClicked(serverSetting);
-            return true;
-        }
-    };
 
     public interface OnServerClickedListener {
         public void onServerClicked(ServerSetting serverSetting);

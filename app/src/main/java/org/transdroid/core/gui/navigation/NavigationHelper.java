@@ -70,6 +70,72 @@ public class NavigationHelper {
     @RootContext
     protected Context context;
 
+    /**
+     * Converts a string into a {@link Spannable} that displays the string in the Roboto Condensed font
+     *
+     * @param string A plain text {@link String}
+     * @return A {@link Spannable} that can be applied to supporting views (such as the action bar title) so that the input string will be displayed
+     * using the Roboto Condensed font (if the OS has this)
+     */
+    public static SpannableString buildCondensedFontString(String string) {
+        if (string == null) {
+            return null;
+        }
+        SpannableString s = new SpannableString(string);
+        s.setSpan(new TypefaceSpan("sans-serif-condensed"), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return s;
+    }
+
+    /**
+     * Analyses a torrent http or magnet URI and tries to come up with a reasonable human-readable name.
+     *
+     * @param rawTorrentUri The raw http:// or magnet: link to the torrent
+     * @return A best-guess, reasonably long name for the linked torrent
+     */
+    public static String extractNameFromUri(Uri rawTorrentUri) {
+
+        if (rawTorrentUri.getScheme() == null) {
+            // Probably an incorrect URI; just return the whole thing
+            return rawTorrentUri.toString();
+        }
+
+        if (rawTorrentUri.getScheme().equals("magnet")) {
+            // Magnet links might have a dn (display name) parameter
+            String dn = getQueryParameter(rawTorrentUri, "dn");
+            if (dn != null && !dn.equals("")) {
+                return dn;
+            }
+            // If not, try to return the hash that is specified as xt (exact topci)
+            String xt = getQueryParameter(rawTorrentUri, "xt");
+            if (xt != null && !xt.equals("")) {
+                return xt;
+            }
+        }
+
+        if (rawTorrentUri.isHierarchical()) {
+            String path = rawTorrentUri.getPath();
+            if (path != null) {
+                if (path.contains("/")) {
+                    path = path.substring(path.lastIndexOf("/"));
+                }
+                return path;
+            }
+        }
+
+        // No idea what to do with this; return as is
+        return rawTorrentUri.toString();
+    }
+
+    private static String getQueryParameter(Uri uri, String parameter) {
+        int start = uri.toString().indexOf(parameter + "=");
+        if (start >= 0) {
+            int begin = start + (parameter + "=").length();
+            int end = uri.toString().indexOf("&", begin);
+            return uri.toString().substring(begin, end >= 0 ? end : uri.toString().length());
+        }
+        return null;
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public boolean checkTorrentReadPermission(final Activity activity) {
         return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ||
@@ -136,72 +202,6 @@ public class NavigationHelper {
         if (requestCode == REQUEST_SETTINGS_WRITE_PERMISSION) {
             // Return permission granting result
             return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
-        }
-        return null;
-    }
-
-    /**
-     * Converts a string into a {@link Spannable} that displays the string in the Roboto Condensed font
-     *
-     * @param string A plain text {@link String}
-     * @return A {@link Spannable} that can be applied to supporting views (such as the action bar title) so that the input string will be displayed
-     * using the Roboto Condensed font (if the OS has this)
-     */
-    public static SpannableString buildCondensedFontString(String string) {
-        if (string == null) {
-            return null;
-        }
-        SpannableString s = new SpannableString(string);
-        s.setSpan(new TypefaceSpan("sans-serif-condensed"), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return s;
-    }
-
-    /**
-     * Analyses a torrent http or magnet URI and tries to come up with a reasonable human-readable name.
-     *
-     * @param rawTorrentUri The raw http:// or magnet: link to the torrent
-     * @return A best-guess, reasonably long name for the linked torrent
-     */
-    public static String extractNameFromUri(Uri rawTorrentUri) {
-
-        if (rawTorrentUri.getScheme() == null) {
-            // Probably an incorrect URI; just return the whole thing
-            return rawTorrentUri.toString();
-        }
-
-        if (rawTorrentUri.getScheme().equals("magnet")) {
-            // Magnet links might have a dn (display name) parameter
-            String dn = getQueryParameter(rawTorrentUri, "dn");
-            if (dn != null && !dn.equals("")) {
-                return dn;
-            }
-            // If not, try to return the hash that is specified as xt (exact topci)
-            String xt = getQueryParameter(rawTorrentUri, "xt");
-            if (xt != null && !xt.equals("")) {
-                return xt;
-            }
-        }
-
-        if (rawTorrentUri.isHierarchical()) {
-            String path = rawTorrentUri.getPath();
-            if (path != null) {
-                if (path.contains("/")) {
-                    path = path.substring(path.lastIndexOf("/"));
-                }
-                return path;
-            }
-        }
-
-        // No idea what to do with this; return as is
-        return rawTorrentUri.toString();
-    }
-
-    private static String getQueryParameter(Uri uri, String parameter) {
-        int start = uri.toString().indexOf(parameter + "=");
-        if (start >= 0) {
-            int begin = start + (parameter + "=").length();
-            int end = uri.toString().indexOf("&", begin);
-            return uri.toString().substring(begin, end >= 0 ? end : uri.toString().length());
         }
         return null;
     }

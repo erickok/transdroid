@@ -52,10 +52,9 @@ class DelugeRpcClient implements Closeable {
     private static final int RPC_ERROR = 2;
     private static final byte V2_PROTOCOL_VERSION = 1;
     private static final int V2_HEADER_SIZE = 5;
-
-    private Socket socket;
-    private final boolean isVersion2;
     private static AtomicInteger requestId = new AtomicInteger();
+    private final boolean isVersion2;
+    private Socket socket;
 
     DelugeRpcClient(boolean isVersion2) {
         this.isVersion2 = isVersion2;

@@ -137,8 +137,6 @@ public enum Daemon {
         }
     };
 
-    public abstract IDaemonAdapter createAdapter(DaemonSettings settings);
-
     /**
      * Returns the code as used in preferences matching the given daemon type
      *
@@ -428,5 +426,7 @@ public enum Daemon {
     public static boolean supportsRemoteRssManagement(Daemon type) {
         return type == uTorrent || type == DelugeRpc || type == Deluge2Rpc;
     }
+
+    public abstract IDaemonAdapter createAdapter(DaemonSettings settings);
 
 }

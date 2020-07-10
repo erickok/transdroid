@@ -16,6 +16,16 @@ import java.util.ArrayList;
  * @author Twig
  */
 public class UTorrentRemoteRssChannel extends RemoteRssChannel {
+    public static final Parcelable.Creator<UTorrentRemoteRssChannel> CREATOR = new Parcelable.Creator<UTorrentRemoteRssChannel>() {
+        public UTorrentRemoteRssChannel createFromParcel(Parcel in) {
+            return new UTorrentRemoteRssChannel(in);
+        }
+
+        public UTorrentRemoteRssChannel[] newArray(int size) {
+            return new UTorrentRemoteRssChannel[size];
+        }
+    };
+
     public UTorrentRemoteRssChannel(JSONArray json) throws JSONException {
 //        boolean enabled = json.getBoolean(1);
         boolean isCustomAlias = !json.getBoolean(2);
@@ -61,14 +71,4 @@ public class UTorrentRemoteRssChannel extends RemoteRssChannel {
         dest.writeLong(lastUpdated);
         dest.writeList(items);
     }
-
-    public static final Parcelable.Creator<UTorrentRemoteRssChannel> CREATOR = new Parcelable.Creator<UTorrentRemoteRssChannel>() {
-        public UTorrentRemoteRssChannel createFromParcel(Parcel in) {
-            return new UTorrentRemoteRssChannel(in);
-        }
-
-        public UTorrentRemoteRssChannel[] newArray(int size) {
-            return new UTorrentRemoteRssChannel[size];
-        }
-    };
 }

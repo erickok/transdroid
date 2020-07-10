@@ -18,16 +18,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/margin_default"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/margin_default">
 
     <TextView
         android:id="@+id/pick_label"
+        style="@style/SectionHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/status_label_pick"
         android:layout_marginBottom="@dimen/margin_half"
-        style="@style/SectionHeader" />
+        android:text="@string/status_label_pick" />
 
     <ListView
         android:id="@+id/labels_list"
@@ -37,19 +37,19 @@
         tools:listitem="@layout/list_item_simple" />
 
     <TextView
+        style="@style/SectionHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_default"
-        android:text="@string/status_label_new"
         android:layout_marginBottom="@dimen/margin_half"
-        style="@style/SectionHeader" />
+        android:text="@string/status_label_new" />
 
     <EditText
         android:id="@+id/newlabel_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
+        android:hint="@string/status_label_hint"
         android:inputType="textFilter"
-        android:hint="@string/status_label_hint" />
+        android:singleLine="true" />
 
 </LinearLayout>

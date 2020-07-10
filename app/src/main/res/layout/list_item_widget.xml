@@ -43,13 +43,13 @@
         android:id="@+id/ratio_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@id/name_text"
+        android:layout_alignParentRight="true"
         android:layout_marginLeft="@dimen/widget_list_item_padding"
         android:layout_marginTop="4dip"
         android:maxLines="1"
-        android:textColor="@color/transdroid_text_bright"
         android:paddingBottom="@dimen/widget_list_item_padding"
+        android:textColor="@color/transdroid_text_bright"
         android:textIsSelectable="false"
         android:textSize="@dimen/text_small" />
 

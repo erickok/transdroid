@@ -35,10 +35,9 @@ import java.util.List;
 @EBean
 public class RssfeedsAdapter extends BaseAdapter {
 
-    private List<RssfeedLoader> loaders = null;
-
     @RootContext
     protected Context context;
+    private List<RssfeedLoader> loaders = null;
 
     /**
      * Allows updating the full internal list of feed loaders at once, replacing the old list

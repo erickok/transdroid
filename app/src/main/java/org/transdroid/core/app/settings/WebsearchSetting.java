@@ -29,9 +29,8 @@ import org.transdroid.core.gui.search.SearchSetting;
  */
 public class WebsearchSetting implements SimpleListItem, SearchSetting {
 
-    private static final String DEFAULT_NAME = "Default";
     public static final String KEY_PREFIX = "websearch_";
-
+    private static final String DEFAULT_NAME = "Default";
     private final int order;
     private final String name;
     private final String baseUrl;

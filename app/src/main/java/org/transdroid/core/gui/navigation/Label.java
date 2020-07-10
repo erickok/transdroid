@@ -34,8 +34,16 @@ import java.util.List;
  */
 public class Label implements SimpleListItem, NavigationFilter, Comparable<Label> {
 
-    private static String unnamedLabelText = null;
+    public static final Parcelable.Creator<Label> CREATOR = new Parcelable.Creator<Label>() {
+        public Label createFromParcel(Parcel in) {
+            return new Label(in);
+        }
 
+        public Label[] newArray(int size) {
+            return new Label[size];
+        }
+    };
+    private static String unnamedLabelText = null;
     private final boolean isEmptyLabel;
     private final String name;
     private final int count;
@@ -48,6 +56,39 @@ public class Label implements SimpleListItem, NavigationFilter, Comparable<Label
 
     public Label(org.transdroid.daemon.Label daemonLabel) {
         this(daemonLabel.getName(), daemonLabel.getCount(), false);
+    }
+
+    private Label(Parcel in) {
+        this.name = in.readString();
+        this.count = in.readInt();
+        this.isEmptyLabel = in.readInt() == 1;
+    }
+
+    /**
+     * Converts a list of labels as retrieved from a server daemon into a list of labels that can be used in the UI as navigation filters.
+     *
+     * @param daemonLabels The raw list of labels as received from the server daemon adapter
+     * @param unnamedLabel The text to show for the empty label (i.e. the unnamed label)
+     * @return A label items that can be used in a filter list such as the action bar spinner
+     */
+    public static ArrayList<Label> convertToNavigationLabels(List<org.transdroid.daemon.Label> daemonLabels, String unnamedLabel) {
+        if (daemonLabels == null) {
+            return null;
+        }
+        ArrayList<Label> localLabels = new ArrayList<>();
+        unnamedLabelText = unnamedLabel;
+
+        for (org.transdroid.daemon.Label label : daemonLabels) {
+            if (label != null && !TextUtils.isEmpty(label.getName())) {
+                localLabels.add(new Label(label));
+            }
+        }
+        Collections.sort(localLabels);
+
+        // force unlabelled to be at the top
+        localLabels.add(0, new Label(unnamedLabel, -1, true));
+
+        return localLabels;
     }
 
     @Override
@@ -90,49 +131,6 @@ public class Label implements SimpleListItem, NavigationFilter, Comparable<Label
     public int compareTo(Label another) {
         return this.name.compareTo(another.getName());
     }
-
-    /**
-     * Converts a list of labels as retrieved from a server daemon into a list of labels that can be used in the UI as navigation filters.
-     *
-     * @param daemonLabels The raw list of labels as received from the server daemon adapter
-     * @param unnamedLabel The text to show for the empty label (i.e. the unnamed label)
-     * @return A label items that can be used in a filter list such as the action bar spinner
-     */
-    public static ArrayList<Label> convertToNavigationLabels(List<org.transdroid.daemon.Label> daemonLabels, String unnamedLabel) {
-        if (daemonLabels == null) {
-            return null;
-        }
-        ArrayList<Label> localLabels = new ArrayList<>();
-        unnamedLabelText = unnamedLabel;
-
-        for (org.transdroid.daemon.Label label : daemonLabels) {
-            if (label != null && !TextUtils.isEmpty(label.getName())) {
-                localLabels.add(new Label(label));
-            }
-        }
-        Collections.sort(localLabels);
-
-        // force unlabelled to be at the top
-        localLabels.add(0, new Label(unnamedLabel, -1, true));
-
-        return localLabels;
-    }
-
-    private Label(Parcel in) {
-        this.name = in.readString();
-        this.count = in.readInt();
-        this.isEmptyLabel = in.readInt() == 1;
-    }
-
-    public static final Parcelable.Creator<Label> CREATOR = new Parcelable.Creator<Label>() {
-        public Label createFromParcel(Parcel in) {
-            return new Label(in);
-        }
-
-        public Label[] newArray(int size) {
-            return new Label[size];
-        }
-    };
 
     @Override
     public int describeContents() {

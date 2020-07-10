@@ -15,12 +15,10 @@ class PiecesMapView extends View {
     private final float scale = getContext().getResources().getDisplayMetrics().density;
     private final int MINIMUM_HEIGHT = (int) (25 * scale);
     private final int MINIMUM_PIECE_WIDTH = (int) (2 * scale);
-
-    private ArrayList<Integer> pieces = null;
-
     private final Paint downloadingPaint = new Paint();
     private final Paint donePaint = new Paint();
     private final Paint partialDonePaint = new Paint();
+    private ArrayList<Integer> pieces = null;
 
     public PiecesMapView(Context context) {
         super(context);

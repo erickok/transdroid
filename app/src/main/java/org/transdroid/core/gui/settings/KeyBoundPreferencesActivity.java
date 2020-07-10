@@ -51,6 +51,13 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivi
 
     private SharedPreferences sharedPrefs;
     private Map<String, String> originalSummaries = new HashMap<>();
+    private OnSharedPreferenceChangeListener onPreferenceChangeListener = new OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            showValueOnSummary(key);
+            onPreferencesChanged();
+        }
+    };
 
     /**
      * Should be called during the activity {@link #onCreate(android.os.Bundle)} (but after super.onCreate(Bundle)) to
@@ -87,14 +94,6 @@ public abstract class KeyBoundPreferencesActivity extends PreferenceCompatActivi
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(
                 onPreferenceChangeListener);
     }
-
-    private OnSharedPreferenceChangeListener onPreferenceChangeListener = new OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            showValueOnSummary(key);
-            onPreferencesChanged();
-        }
-    };
 
     /**
      * Key-bound preference activities may override this method if they want to react to preference changes.
