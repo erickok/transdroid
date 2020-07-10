@@ -27,8 +27,7 @@ public class UTorrentRemoteRssChannel extends RemoteRssChannel {
         if (isCustomAlias) {
             name = link.split("\\|")[0];
             link = link.split("\\|")[1];
-        }
-        else {
+        } else {
             name = link;
         }
 
@@ -64,12 +63,12 @@ public class UTorrentRemoteRssChannel extends RemoteRssChannel {
     }
 
     public static final Parcelable.Creator<UTorrentRemoteRssChannel> CREATOR = new Parcelable.Creator<UTorrentRemoteRssChannel>() {
-   		public UTorrentRemoteRssChannel createFromParcel(Parcel in) {
+        public UTorrentRemoteRssChannel createFromParcel(Parcel in) {
             return new UTorrentRemoteRssChannel(in);
         }
 
-   		public UTorrentRemoteRssChannel[] newArray(int size) {
-   			return new UTorrentRemoteRssChannel[size];
-   		}
-   	};
+        public UTorrentRemoteRssChannel[] newArray(int size) {
+            return new UTorrentRemoteRssChannel[size];
+        }
+    };
 }

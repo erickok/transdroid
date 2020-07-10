@@ -5,7 +5,8 @@ package androidx.preference;
  * around the protected visibility of {@link Preference#onAttachedToHierarchy(PreferenceManager)}.
  */
 public class PreferenceManagerBinder {
-    private PreferenceManagerBinder() {}
+    private PreferenceManagerBinder() {
+    }
 
     public static void bind(Preference pref, PreferenceManager manager) {
         pref.onAttachedToHierarchy(manager);

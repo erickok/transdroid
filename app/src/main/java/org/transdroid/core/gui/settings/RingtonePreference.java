@@ -62,7 +62,7 @@ public class RingtonePreference extends Preference {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_RINGTONE && resultCode == Activity.RESULT_OK && data != null && data.getExtras() != null) {
             Uri ringtone = (Uri) data.getExtras().get(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-            getSharedPreferences().edit().putString(getKey(), ringtone == null? "": ringtone.toString()).apply();
+            getSharedPreferences().edit().putString(getKey(), ringtone == null ? "" : ringtone.toString()).apply();
         }
     }
 }

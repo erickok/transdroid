@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2018 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,34 +27,35 @@ import java.util.List;
 
 /**
  * Interface to be implemented by any activity that wants containing fragments to be able to load data and execute commands against a torrent server.
+ *
  * @author Eric Kok
  */
 public interface TorrentTasksExecutor {
-	void resumeTorrent(Torrent torrent);
+    void resumeTorrent(Torrent torrent);
 
-	void pauseTorrent(Torrent torrent);
+    void pauseTorrent(Torrent torrent);
 
-	void startTorrent(Torrent torrent, boolean forced);
+    void startTorrent(Torrent torrent, boolean forced);
 
-	void stopTorrent(Torrent torrent);
+    void stopTorrent(Torrent torrent);
 
-	void removeTorrent(Torrent torrent, boolean withData);
+    void removeTorrent(Torrent torrent, boolean withData);
 
-	void toggleSequentialDownload(Torrent torrent, boolean sequentialState);
+    void toggleSequentialDownload(Torrent torrent, boolean sequentialState);
 
-	void toggleFirstLastPieceDownload(Torrent torrent, boolean firstLastPieceState);
+    void toggleFirstLastPieceDownload(Torrent torrent, boolean firstLastPieceState);
 
-	void forceRecheckTorrent(Torrent torrent);
+    void forceRecheckTorrent(Torrent torrent);
 
-	void updateLabel(Torrent torrent, String newLabel);
+    void updateLabel(Torrent torrent, String newLabel);
 
-	void updateTrackers(Torrent torrent, List<String> newTrackers);
+    void updateTrackers(Torrent torrent, List<String> newTrackers);
 
-	void updateLocation(Torrent torrent, String newLocation);
+    void updateLocation(Torrent torrent, String newLocation);
 
-	void refreshTorrentDetails(Torrent torrent);
+    void refreshTorrentDetails(Torrent torrent);
 
-	void refreshTorrentFiles(Torrent torrent);
+    void refreshTorrentFiles(Torrent torrent);
 
-	void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority);
+    void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority);
 }

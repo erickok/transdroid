@@ -1,78 +1,79 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	tools:context=".core.gui.rss.RssFeedsActivity_">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".core.gui.rss.RssFeedsActivity_">
 
-	<androidx.appcompat.widget.Toolbar
-		android:id="@+id/rssfeeds_toolbar"
-		style="@style/DefaultToolbar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:minHeight="?attr/actionBarSize" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/rssfeeds_toolbar"
+        style="@style/DefaultToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize" />
 
-	<View
-		style="@style/DefaultToolbarShadow"
-		android:layout_below="@id/rssfeeds_toolbar" />
+    <View
+        style="@style/DefaultToolbarShadow"
+        android:layout_below="@id/rssfeeds_toolbar" />
 
-	<androidx.viewpager.widget.ViewPager
-		android:id="@+id/rssfeeds_pager"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_below="@id/rssfeeds_toolbar"
-		android:layout_marginTop="-2dp">
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/rssfeeds_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rssfeeds_toolbar"
+        android:layout_marginTop="-2dp">
 
-		<com.google.android.material.tabs.TabLayout
-			android:id="@+id/rssfeeds_tabs"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/rssfeeds_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-		<LinearLayout
-			android:id="@+id/layout_rssfeeds_local"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:baselineAligned="false"
-			android:orientation="horizontal">
-			<fragment
-				android:id="@+id/rssfeeds_fragment"
-				class="org.transdroid.core.gui.rss.RssFeedsFragment_"
-				android:layout_width="0dip"
-				android:layout_height="match_parent"
-				android:layout_weight="2"
-				tools:layout="@layout/fragment_rssfeeds" />
-		</LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout_rssfeeds_local"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-		<LinearLayout
-			android:id="@+id/layout_rss_feeds_remote"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:baselineAligned="false"
-			android:orientation="horizontal">
-			<fragment
-				android:id="@+id/remoterss_fragment"
-				class="org.transdroid.core.gui.remoterss.RemoteRssFragment_"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				tools:layout="@layout/fragment_torrents" />
-		</LinearLayout>
+            <fragment
+                android:id="@+id/rssfeeds_fragment"
+                class="org.transdroid.core.gui.rss.RssFeedsFragment_"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                tools:layout="@layout/fragment_rssfeeds" />
+        </LinearLayout>
 
-	</androidx.viewpager.widget.ViewPager>
+        <LinearLayout
+            android:id="@+id/layout_rss_feeds_remote"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <fragment
+                android:id="@+id/remoterss_fragment"
+                class="org.transdroid.core.gui.remoterss.RemoteRssFragment_"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout="@layout/fragment_torrents" />
+        </LinearLayout>
+
+    </androidx.viewpager.widget.ViewPager>
 
 </RelativeLayout>

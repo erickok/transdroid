@@ -35,14 +35,14 @@ public class UTorrentRemoteRssItem extends RemoteRssItem {
 
 
     public static final Parcelable.Creator<UTorrentRemoteRssItem> CREATOR = new Parcelable.Creator<UTorrentRemoteRssItem>() {
-   		public UTorrentRemoteRssItem createFromParcel(Parcel in) {
+        public UTorrentRemoteRssItem createFromParcel(Parcel in) {
             return new UTorrentRemoteRssItem(in);
         }
 
-   		public UTorrentRemoteRssItem[] newArray(int size) {
-   			return new UTorrentRemoteRssItem[size];
-   		}
-   	};
+        public UTorrentRemoteRssItem[] newArray(int size) {
+            return new UTorrentRemoteRssItem[size];
+        }
+    };
 
     public UTorrentRemoteRssItem(Parcel in) {
 //        name = in.readString();

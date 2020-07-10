@@ -2,6 +2,7 @@ package org.transdroid.core.app.settings;
 
 
 import android.content.Context;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -33,6 +34,6 @@ public class SettingsUtils {
             return builder;
         }
 
-        return builder.theme(settings.useDarkTheme() ? Theme.DARK: Theme.LIGHT);
+        return builder.theme(settings.useDarkTheme() ? Theme.DARK : Theme.LIGHT);
     }
 }

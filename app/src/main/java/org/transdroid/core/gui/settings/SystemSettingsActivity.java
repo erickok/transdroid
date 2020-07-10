@@ -57,250 +57,250 @@ import java.io.OutputStream;
 @EActivity
 public class SystemSettingsActivity extends PreferenceCompatActivity {
 
-	protected static final int DIALOG_IMPORTSETTINGS = 0;
-	private OnPreferenceClickListener onImportSettingsClick = new OnPreferenceClickListener() {
-		@SuppressWarnings("deprecation")
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			showDialog(DIALOG_IMPORTSETTINGS);
-			return true;
-		}
-	};
-	protected static final int DIALOG_EXPORTSETTINGS = 1;
-	private OnPreferenceClickListener onExportSettingsClick = new OnPreferenceClickListener() {
-		@SuppressWarnings("deprecation")
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			showDialog(DIALOG_EXPORTSETTINGS);
-			return true;
-		}
-	};
-	protected static final int ACTIVITY_IMPORT_SETTINGS = 1;
-	protected static final int ACTIVITY_EXPORT_SETTINGS = 2;
+    protected static final int DIALOG_IMPORTSETTINGS = 0;
+    private OnPreferenceClickListener onImportSettingsClick = new OnPreferenceClickListener() {
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            showDialog(DIALOG_IMPORTSETTINGS);
+            return true;
+        }
+    };
+    protected static final int DIALOG_EXPORTSETTINGS = 1;
+    private OnPreferenceClickListener onExportSettingsClick = new OnPreferenceClickListener() {
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            showDialog(DIALOG_EXPORTSETTINGS);
+            return true;
+        }
+    };
+    protected static final int ACTIVITY_IMPORT_SETTINGS = 1;
+    protected static final int ACTIVITY_EXPORT_SETTINGS = 2;
 
-	@Bean
-	protected NavigationHelper navigationHelper;
-	@Bean
-	protected ApplicationSettings applicationSettings;
-	@Bean
-	protected ErrorLogSender errorLogSender;
-	@Bean
-	protected SettingsPersistence settingsPersistence;
+    @Bean
+    protected NavigationHelper navigationHelper;
+    @Bean
+    protected ApplicationSettings applicationSettings;
+    @Bean
+    protected ErrorLogSender errorLogSender;
+    @Bean
+    protected SettingsPersistence settingsPersistence;
 
-	private OnPreferenceClickListener onCheckUpdatesClick = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			AppUpdateJob.schedule(getApplicationContext());
-			return true;
-		}
-	};
-	private OnPreferenceClickListener onClearSearchClick = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			SearchHistoryProvider.clearHistory(getApplicationContext());
-			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_clearsearch_success));
-			return true;
-		}
-	};
-	private OnClickListener importSettingsFromFile = new OnClickListener() {
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
-					&& !navigationHelper.checkSettingsReadPermission(SystemSettingsActivity.this))
-				return; // We are requesting permission to access file storage
-			importSettingsFromFile();
-		}
-	};
+    private OnPreferenceClickListener onCheckUpdatesClick = new OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            AppUpdateJob.schedule(getApplicationContext());
+            return true;
+        }
+    };
+    private OnPreferenceClickListener onClearSearchClick = new OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            SearchHistoryProvider.clearHistory(getApplicationContext());
+            SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_clearsearch_success));
+            return true;
+        }
+    };
+    private OnClickListener importSettingsFromFile = new OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+                    && !navigationHelper.checkSettingsReadPermission(SystemSettingsActivity.this))
+                return; // We are requesting permission to access file storage
+            importSettingsFromFile();
+        }
+    };
 
-	private OnClickListener importSettingsFromQr = new OnClickListener() {
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			BarcodeHelper.startBarcodeScanner(SystemSettingsActivity.this, BarcodeHelper.ACTIVITY_BARCODE_QRSETTINGS);
-		}
-	};
-	private OnClickListener exportSettingsToFile = new OnClickListener() {
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
-					&& !navigationHelper.checkSettingsWritePermission(SystemSettingsActivity.this))
-				return; // We are requesting permission to access file storage
-			exportSettingsToFile();
-		}
-	};
+    private OnClickListener importSettingsFromQr = new OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            BarcodeHelper.startBarcodeScanner(SystemSettingsActivity.this, BarcodeHelper.ACTIVITY_BARCODE_QRSETTINGS);
+        }
+    };
+    private OnClickListener exportSettingsToFile = new OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+                    && !navigationHelper.checkSettingsWritePermission(SystemSettingsActivity.this))
+                return; // We are requesting permission to access file storage
+            exportSettingsToFile();
+        }
+    };
 
-	private OnClickListener exportSettingsToQr = new OnClickListener() {
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
-			try {
-				String settings = settingsPersistence.exportSettingsAsString(prefs);
-				BarcodeHelper.shareContentBarcode(SystemSettingsActivity.this, settings);
-			} catch (JSONException e) {
-				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
-						.colorResource(R.color.red));
-			}
-		}
-	};
+    private OnClickListener exportSettingsToQr = new OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+            try {
+                String settings = settingsPersistence.exportSettingsAsString(prefs);
+                BarcodeHelper.shareContentBarcode(SystemSettingsActivity.this, settings);
+            } catch (JSONException e) {
+                SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
+                        .colorResource(R.color.red));
+            }
+        }
+    };
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		// Just load the system-related preferences from XML
-		addPreferencesFromResource(R.xml.pref_system);
+        // Just load the system-related preferences from XML
+        addPreferencesFromResource(R.xml.pref_system);
 
-		// Handle outgoing links and preference changes
-		if (navigationHelper.enableUpdateChecker()) {
-			findPreference("system_checkupdates").setOnPreferenceClickListener(onCheckUpdatesClick);
-		} else {
-			getPreferenceScreen().removePreference(findPreference("system_checkupdates"));
-		}
-		findPreference("system_clearsearch").setOnPreferenceClickListener(onClearSearchClick);
-		findPreference("system_importsettings").setOnPreferenceClickListener(onImportSettingsClick);
-		findPreference("system_exportsettings").setOnPreferenceClickListener(onExportSettingsClick);
-	}
+        // Handle outgoing links and preference changes
+        if (navigationHelper.enableUpdateChecker()) {
+            findPreference("system_checkupdates").setOnPreferenceClickListener(onCheckUpdatesClick);
+        } else {
+            getPreferenceScreen().removePreference(findPreference("system_checkupdates"));
+        }
+        findPreference("system_clearsearch").setOnPreferenceClickListener(onClearSearchClick);
+        findPreference("system_importsettings").setOnPreferenceClickListener(onImportSettingsClick);
+        findPreference("system_exportsettings").setOnPreferenceClickListener(onExportSettingsClick);
+    }
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	@OptionsItem(android.R.id.home)
-	protected void navigateUp() {
-		MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @OptionsItem(android.R.id.home)
+    protected void navigateUp() {
+        MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+    }
 
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		if (Boolean.TRUE.equals(navigationHelper.handleSettingsReadPermissionResult(requestCode, grantResults))) {
-			importSettingsFromFile();
-		} else if (Boolean.TRUE.equals(navigationHelper.handleSettingsWritePermissionResult(requestCode, grantResults))) {
-			exportSettingsToFile();
-		}
-	}
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (Boolean.TRUE.equals(navigationHelper.handleSettingsReadPermissionResult(requestCode, grantResults))) {
+            importSettingsFromFile();
+        } else if (Boolean.TRUE.equals(navigationHelper.handleSettingsWritePermissionResult(requestCode, grantResults))) {
+            exportSettingsToFile();
+        }
+    }
 
-	private void importSettingsFromFile() {
-		try {
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
-				settingsPersistence.importSettingsFromFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
-				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
-			} else {
-				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-				intent.addCategory(Intent.CATEGORY_OPENABLE);
-				intent.setType("application/json");
-				startActivityForResult(intent, ACTIVITY_IMPORT_SETTINGS);
-			}
-		} catch (FileNotFoundException e) {
-			SnackbarManager
-					.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.red));
-		} catch (JSONException e) {
-			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this)
-					.text(getString(R.string.error_no_valid_settings_file, getString(R.string.app_name))).colorResource(R.color.red));
-		}
-	}
+    private void importSettingsFromFile() {
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+                settingsPersistence.importSettingsFromFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
+                SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
+            } else {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("application/json");
+                startActivityForResult(intent, ACTIVITY_IMPORT_SETTINGS);
+            }
+        } catch (FileNotFoundException e) {
+            SnackbarManager
+                    .show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.red));
+        } catch (JSONException e) {
+            SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this)
+                    .text(getString(R.string.error_no_valid_settings_file, getString(R.string.app_name))).colorResource(R.color.red));
+        }
+    }
 
-	@OnActivityResult(ACTIVITY_IMPORT_SETTINGS)
-	public void importSettingsFilePicked(int resultCode, Intent data) {
-		if (resultCode == RESULT_OK && data != null && data.getData() != null) {
-			try {
-				InputStream fis = getContentResolver().openInputStream(data.getData());
-				if (fis != null) {
-					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
-					settingsPersistence.importSettingsFromStream(prefs, fis);
-					SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
-				}
-			} catch (IOException | JSONException e) {
-				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found)
-						.colorResource(R.color.red));
-			}
-		}
-	}
+    @OnActivityResult(ACTIVITY_IMPORT_SETTINGS)
+    public void importSettingsFilePicked(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+            try {
+                InputStream fis = getContentResolver().openInputStream(data.getData());
+                if (fis != null) {
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+                    settingsPersistence.importSettingsFromStream(prefs, fis);
+                    SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
+                }
+            } catch (IOException | JSONException e) {
+                SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found)
+                        .colorResource(R.color.red));
+            }
+        }
+    }
 
-	private void exportSettingsToFile() {
-		try {
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
-				settingsPersistence.exportSettingsToFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
-				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
-			} else {
-				Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-				intent.addCategory(Intent.CATEGORY_OPENABLE);
-				intent.setType("application/json");
-				intent.putExtra(Intent.EXTRA_TITLE, SettingsPersistence.DEFAULT_SETTINGS_FILENAME);
-				startActivityForResult(intent, ACTIVITY_EXPORT_SETTINGS);
-			}
-		} catch (JSONException | IOException e) {
-			SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
-					.colorResource(R.color.red));
-		}
-	}
+    private void exportSettingsToFile() {
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+                settingsPersistence.exportSettingsToFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
+                SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
+            } else {
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("application/json");
+                intent.putExtra(Intent.EXTRA_TITLE, SettingsPersistence.DEFAULT_SETTINGS_FILENAME);
+                startActivityForResult(intent, ACTIVITY_EXPORT_SETTINGS);
+            }
+        } catch (JSONException | IOException e) {
+            SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
+                    .colorResource(R.color.red));
+        }
+    }
 
-	@OnActivityResult(ACTIVITY_EXPORT_SETTINGS)
-	public void exportSettingsFilePicked(int resultCode, Intent data) {
-		if (resultCode == RESULT_OK && data != null && data.getData() != null) {
-			try {
-				OutputStream fos = getContentResolver().openOutputStream(data.getData());
-				if (fos != null) {
-					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
-					settingsPersistence.exportSettingsToStream(prefs, fos);
-					SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
-				}
-			} catch (IOException | JSONException e) {
-				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
-						.colorResource(R.color.red));
-			}
-		}
-	}
+    @OnActivityResult(ACTIVITY_EXPORT_SETTINGS)
+    public void exportSettingsFilePicked(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+            try {
+                OutputStream fos = getContentResolver().openOutputStream(data.getData());
+                if (fos != null) {
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+                    settingsPersistence.exportSettingsToStream(prefs, fos);
+                    SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
+                }
+            } catch (IOException | JSONException e) {
+                SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
+                        .colorResource(R.color.red));
+            }
+        }
+    }
 
-	@OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE_QRSETTINGS)
-	public void onQrCodeScanned(@SuppressWarnings("UnusedParameters") int resultCode, Intent data) {
-		// We should have received Intent extras with the QR-decoded data representing Transdroid settings
-		if (data == null || !data.hasExtra("SCAN_RESULT"))
-			return; // Cancelled scan; ignore
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
-		String contents = data.getStringExtra("SCAN_RESULT");
-		String formatName = data.getStringExtra("SCAN_RESULT_FORMAT");
-		if (formatName != null && formatName.equals("QR_CODE") && !TextUtils.isEmpty(contents)) {
-			try {
-				settingsPersistence.importSettingsAsString(prefs, contents);
-				SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
-			} catch (JSONException e) {
-				SnackbarManager
-						.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.red));
-			}
-		}
-	}
+    @OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE_QRSETTINGS)
+    public void onQrCodeScanned(@SuppressWarnings("UnusedParameters") int resultCode, Intent data) {
+        // We should have received Intent extras with the QR-decoded data representing Transdroid settings
+        if (data == null || !data.hasExtra("SCAN_RESULT"))
+            return; // Cancelled scan; ignore
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
+        String contents = data.getStringExtra("SCAN_RESULT");
+        String formatName = data.getStringExtra("SCAN_RESULT_FORMAT");
+        if (formatName != null && formatName.equals("QR_CODE") && !TextUtils.isEmpty(contents)) {
+            try {
+                settingsPersistence.importSettingsAsString(prefs, contents);
+                SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
+            } catch (JSONException e) {
+                SnackbarManager
+                        .show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.red));
+            }
+        }
+    }
 
-	@SuppressWarnings("deprecation")
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-			case DIALOG_IMPORTSETTINGS:
-				// @formatter:off
-				return new AlertDialog.Builder(this)
-						.setMessage(
-								getString(
-										Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
-												? R.string.pref_import_dialog : R.string.pref_import_dialog_android10,
-										getString(R.string.app_name),
-										SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
-						.setPositiveButton(R.string.pref_import_fromfile, importSettingsFromFile)
-						.setNeutralButton(R.string.pref_import_fromqr, importSettingsFromQr)
-						.setNegativeButton(android.R.string.cancel, null).create();
-				// @formatter:on
-			case DIALOG_EXPORTSETTINGS:
-				// @formatter:off
-			return new AlertDialog.Builder(this)
-					.setMessage(
-							getString(
-									Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
-											? R.string.pref_export_dialog : R.string.pref_export_dialog_android10,
-									getString(R.string.app_name),
-									SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
-					.setPositiveButton(R.string.pref_export_tofile, exportSettingsToFile)
-					.setNeutralButton(R.string.pref_export_toqr, exportSettingsToQr)
-					.setNegativeButton(android.R.string.cancel, null).create();
-			// @formatter:on
-		}
-		return null;
-	}
+    @SuppressWarnings("deprecation")
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_IMPORTSETTINGS:
+                // @formatter:off
+                return new AlertDialog.Builder(this)
+                        .setMessage(
+                                getString(
+                                        Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+                                                ? R.string.pref_import_dialog : R.string.pref_import_dialog_android10,
+                                        getString(R.string.app_name),
+                                        SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
+                        .setPositiveButton(R.string.pref_import_fromfile, importSettingsFromFile)
+                        .setNeutralButton(R.string.pref_import_fromqr, importSettingsFromQr)
+                        .setNegativeButton(android.R.string.cancel, null).create();
+            // @formatter:on
+            case DIALOG_EXPORTSETTINGS:
+                // @formatter:off
+                return new AlertDialog.Builder(this)
+                        .setMessage(
+                                getString(
+                                        Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
+                                                ? R.string.pref_export_dialog : R.string.pref_export_dialog_android10,
+                                        getString(R.string.app_name),
+                                        SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
+                        .setPositiveButton(R.string.pref_export_tofile, exportSettingsToFile)
+                        .setNeutralButton(R.string.pref_export_toqr, exportSettingsToQr)
+                        .setNegativeButton(android.R.string.cancel, null).create();
+            // @formatter:on
+        }
+        return null;
+    }
 
 }

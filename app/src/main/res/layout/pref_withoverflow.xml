@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-	<ImageButton
-		android:id="@+id/overflow_button"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="right|center_vertical"
-		android:background="?android:attr/selectableItemBackground"
-		android:contentDescription="@string/pref_addseedbox"
-		android:padding="5dp"
-		android:src="@drawable/ic_action_overflow" />
+    <ImageButton
+        android:id="@+id/overflow_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/pref_addseedbox"
+        android:padding="5dp"
+        android:src="@drawable/ic_action_overflow" />
 
 </FrameLayout>

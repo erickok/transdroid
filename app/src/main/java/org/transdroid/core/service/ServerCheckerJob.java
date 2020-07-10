@@ -17,41 +17,44 @@
 package org.transdroid.core.service;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
+
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
+
 import org.transdroid.core.app.settings.NotificationSettings;
 import org.transdroid.core.app.settings.NotificationSettings_;
 import org.transdroid.core.gui.log.Log_;
 
 public class ServerCheckerJob extends Job {
 
-	static final String TAG = "server_checker";
+    static final String TAG = "server_checker";
 
-	private static Integer scheduledJobId;
+    private static Integer scheduledJobId;
 
-	public static void schedule(Context context) {
-		NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
-		if (notificationSettings.isEnabledForTorrents()) {
-			Log_.getInstance_(context).d(TAG, "Schedule server checker job");
-			NotificationChannels.ensureServerCheckerChannel(context, notificationSettings);
-			scheduledJobId = new JobRequest.Builder(ServerCheckerJob.TAG)
-					.setPeriodic(notificationSettings.getInvervalInMilliseconds())
-					.setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-					.setUpdateCurrent(true)
-					.build()
-					.schedule();
-		} else if (scheduledJobId != null) {
-			Log_.getInstance_(context).d(TAG, "Cancel server checker job");
-			JobManager.instance().cancel(scheduledJobId);
-		}
-	}
+    public static void schedule(Context context) {
+        NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
+        if (notificationSettings.isEnabledForTorrents()) {
+            Log_.getInstance_(context).d(TAG, "Schedule server checker job");
+            NotificationChannels.ensureServerCheckerChannel(context, notificationSettings);
+            scheduledJobId = new JobRequest.Builder(ServerCheckerJob.TAG)
+                    .setPeriodic(notificationSettings.getInvervalInMilliseconds())
+                    .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
+                    .setUpdateCurrent(true)
+                    .build()
+                    .schedule();
+        } else if (scheduledJobId != null) {
+            Log_.getInstance_(context).d(TAG, "Cancel server checker job");
+            JobManager.instance().cancel(scheduledJobId);
+        }
+    }
 
-	@NonNull
-	@Override
-	protected Result onRunJob(@NonNull Params params) {
-		return ServerCheckerJobRunner_.getInstance_(getContext()).run();
-	}
+    @NonNull
+    @Override
+    protected Result onRunJob(@NonNull Params params) {
+        return ServerCheckerJobRunner_.getInstance_(getContext()).run();
+    }
 
 }

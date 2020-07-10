@@ -1,213 +1,212 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:background="@color/transdroid_background">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transdroid_background">
 
-	<LinearLayout
-		android:id="@+id/header_wrapper"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/widget_header_height"
-		android:background="@color/green"
-		android:orientation="horizontal">
+    <LinearLayout
+        android:id="@+id/header_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widget_header_height"
+        android:background="@color/green"
+        android:orientation="horizontal">
 
-		<ImageButton
-			android:id="@+id/icon_image"
-			android:layout_width="@dimen/widget_header_height"
-			android:layout_height="@dimen/widget_header_height"
-			android:background="?android:attr/selectableItemBackground"
-			android:contentDescription="@string/widget_opentransdroid"
-			android:padding="@dimen/widget_header_padding"
-			android:scaleType="fitXY"
-			android:src="@drawable/ic_launcher" />
+        <ImageButton
+            android:id="@+id/icon_image"
+            android:layout_width="@dimen/widget_header_height"
+            android:layout_height="@dimen/widget_header_height"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/widget_opentransdroid"
+            android:padding="@dimen/widget_header_padding"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_launcher" />
 
-		<LinearLayout
-			android:id="@+id/navigation_view"
-			android:layout_width="0dp"
-			android:layout_height="@dimen/widget_header_height"
-			android:layout_weight="1"
-			android:background="?android:attr/selectableItemBackground"
-			android:clickable="true"
-			android:orientation="vertical"
-			android:paddingRight="@dimen/margin_half"
-			android:paddingEnd="@dimen/margin_half"
-			android:paddingTop="3dp" >
+        <LinearLayout
+            android:id="@+id/navigation_view"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/widget_header_height"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:orientation="vertical"
+            android:paddingRight="@dimen/margin_half"
+            android:paddingEnd="@dimen/margin_half"
+            android:paddingTop="3dp">
 
-			<TextView
-				android:id="@+id/filter_text"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:ellipsize="marquee"
-				android:fontFamily="sans-serif-condensed"
-				android:singleLine="true"
-				android:textIsSelectable="false"
-				android:textSize="@dimen/ui_navigation_filter"
-				android:textColor="@color/transdroid_text_actionbar"
-				tools:text="Filter" />
+            <TextView
+                android:id="@+id/filter_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:fontFamily="sans-serif-condensed"
+                android:singleLine="true"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/ui_navigation_filter"
+                android:textColor="@color/transdroid_text_actionbar"
+                tools:text="Filter" />
 
-			<TextView
-				android:id="@+id/server_text"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="-4dip"
-				android:ellipsize="marquee"
-				android:fontFamily="sans-serif-light"
-				android:singleLine="true"
-				android:textIsSelectable="false"
-				android:textSize="@dimen/ui_navigation_server"
-				android:textColor="@color/transdroid_text_actionbar"
-				tools:text="Server"/>
-		</LinearLayout>
+            <TextView
+                android:id="@+id/server_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-4dip"
+                android:ellipsize="marquee"
+                android:fontFamily="sans-serif-light"
+                android:singleLine="true"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/ui_navigation_server"
+                android:textColor="@color/transdroid_text_actionbar"
+                tools:text="Server" />
+        </LinearLayout>
 
-		<RelativeLayout
-			android:id="@+id/serverstatus_view"
-			android:layout_width="0dp"
-			android:layout_height="@dimen/widget_header_height"
-			android:layout_weight="1"
-			android:background="?android:attr/selectableItemBackground"
-			android:clickable="true"
-			android:paddingTop="@dimen/ui_serverstatus_margin"
-			android:visibility="gone" >
+        <RelativeLayout
+            android:id="@+id/serverstatus_view"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/widget_header_height"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:paddingTop="@dimen/ui_serverstatus_margin"
+            android:visibility="gone">
 
-			<TextView
-				android:id="@+id/upcount_sign"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_alignParentRight="true"
-				android:fontFamily="sans-serif-light"
-				android:paddingTop="@dimen/ui_serverstatus_signmargin"
-				android:text="↑"
-				android:textSize="@dimen/ui_serverstatus_sign"
-				tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/upcount_sign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:fontFamily="sans-serif-light"
+                android:paddingTop="@dimen/ui_serverstatus_signmargin"
+                android:text="↑"
+                android:textSize="@dimen/ui_serverstatus_sign"
+                tools:ignore="HardcodedText" />
 
-			<TextView
-				android:id="@+id/upcount_text"
-				android:layout_width="@dimen/ui_serverstatus_width"
-				android:layout_height="wrap_content"
-				android:layout_toLeftOf="@id/upcount_sign"
-				android:fontFamily="sans-serif-light"
-				android:gravity="end"
-				android:textSize="@dimen/ui_serverstatus_bignumber" />
+            <TextView
+                android:id="@+id/upcount_text"
+                android:layout_width="@dimen/ui_serverstatus_width"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/upcount_sign"
+                android:fontFamily="sans-serif-light"
+                android:gravity="end"
+                android:textSize="@dimen/ui_serverstatus_bignumber" />
 
-			<TextView
-				android:id="@+id/downcount_sign"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_toLeftOf="@id/upcount_text"
-				android:fontFamily="sans-serif-light"
-				android:paddingTop="@dimen/ui_serverstatus_signmargin"
-				android:text="↓"
-				android:textSize="@dimen/ui_serverstatus_sign"
-				tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/downcount_sign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/upcount_text"
+                android:fontFamily="sans-serif-light"
+                android:paddingTop="@dimen/ui_serverstatus_signmargin"
+                android:text="↓"
+                android:textSize="@dimen/ui_serverstatus_sign"
+                tools:ignore="HardcodedText" />
 
-			<TextView
-				android:id="@+id/downcount_text"
-				android:layout_width="@dimen/ui_serverstatus_width"
-				android:layout_height="wrap_content"
-				android:layout_toLeftOf="@id/downcount_sign"
-				android:fontFamily="sans-serif-light"
-				android:gravity="end"
-				android:textSize="@dimen/ui_serverstatus_bignumber" />
+            <TextView
+                android:id="@+id/downcount_text"
+                android:layout_width="@dimen/ui_serverstatus_width"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/downcount_sign"
+                android:fontFamily="sans-serif-light"
+                android:gravity="end"
+                android:textSize="@dimen/ui_serverstatus_bignumber" />
 
-			<TextView
-				android:id="@+id/upspeed_text"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_alignLeft="@id/upcount_text"
-				android:layout_alignParentRight="true"
-				android:layout_below="@id/upcount_text"
-				android:layout_marginTop="-4dip"
-				android:fontFamily="sans-serif-light"
-				android:gravity="end"
-				android:textSize="@dimen/ui_serverstatus_smallnumber" />
+            <TextView
+                android:id="@+id/upspeed_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/upcount_text"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/upcount_text"
+                android:layout_marginTop="-4dip"
+                android:fontFamily="sans-serif-light"
+                android:gravity="end"
+                android:textSize="@dimen/ui_serverstatus_smallnumber" />
 
-			<TextView
-				android:id="@+id/downspeed_text"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_alignLeft="@id/downcount_text"
-				android:layout_alignRight="@id/downcount_sign"
-				android:layout_below="@id/downcount_text"
-				android:layout_marginTop="-4dip"
-				android:fontFamily="sans-serif-light"
-				android:gravity="end"
-				android:textSize="@dimen/ui_serverstatus_smallnumber" />
-		</RelativeLayout>
+            <TextView
+                android:id="@+id/downspeed_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/downcount_text"
+                android:layout_alignRight="@id/downcount_sign"
+                android:layout_below="@id/downcount_text"
+                android:layout_marginTop="-4dip"
+                android:fontFamily="sans-serif-light"
+                android:gravity="end"
+                android:textSize="@dimen/ui_serverstatus_smallnumber" />
+        </RelativeLayout>
 
-		<ImageButton
-			android:id="@+id/resumeall_button"
-			android:layout_width="@dimen/widget_header_height"
-			android:layout_height="@dimen/widget_header_height"
-			android:background="?android:attr/selectableItemBackground"
-			android:contentDescription="@string/action_resumeall"
-			android:padding="@dimen/widget_header_padding"
-			android:scaleType="fitXY"
-			android:src="@drawable/ic_action_resume" />
+        <ImageButton
+            android:id="@+id/resumeall_button"
+            android:layout_width="@dimen/widget_header_height"
+            android:layout_height="@dimen/widget_header_height"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/action_resumeall"
+            android:padding="@dimen/widget_header_padding"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_action_resume" />
 
-		<ImageButton
-			android:id="@+id/pauseall_button"
-			android:layout_width="@dimen/widget_header_height"
-			android:layout_height="@dimen/widget_header_height"
-			android:background="?android:attr/selectableItemBackground"
-			android:contentDescription="@string/action_pauseall"
-			android:padding="@dimen/widget_header_padding"
-			android:scaleType="fitXY"
-			android:src="@drawable/ic_action_pause" />
+        <ImageButton
+            android:id="@+id/pauseall_button"
+            android:layout_width="@dimen/widget_header_height"
+            android:layout_height="@dimen/widget_header_height"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/action_pauseall"
+            android:padding="@dimen/widget_header_padding"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_action_pause" />
 
-		<ImageButton
-			android:id="@+id/refresh_button"
-			android:layout_width="@dimen/widget_header_height"
-			android:layout_height="@dimen/widget_header_height"
-			android:background="?android:attr/selectableItemBackground"
-			android:contentDescription="@string/action_refresh"
-			android:padding="@dimen/widget_header_padding"
-			android:scaleType="fitXY"
-			android:src="@drawable/ic_action_refresh" />
+        <ImageButton
+            android:id="@+id/refresh_button"
+            android:layout_width="@dimen/widget_header_height"
+            android:layout_height="@dimen/widget_header_height"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/action_refresh"
+            android:padding="@dimen/widget_header_padding"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_action_refresh" />
 
-	</LinearLayout>
+    </LinearLayout>
 
-	<TextView
-		android:id="@+id/bottomline_view"
-		android:layout_width="match_parent"
-		android:layout_height="2dp"
-		android:layout_alignParentBottom="true"
-		android:background="@color/green" />
+    <TextView
+        android:id="@+id/bottomline_view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/green" />
 
-	<ListView
-		android:id="@+id/torrents_list"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_above="@id/bottomline_view"
-		android:layout_below="@id/header_wrapper"
-		android:visibility="gone" />
+    <ListView
+        android:id="@+id/torrents_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomline_view"
+        android:layout_below="@id/header_wrapper"
+        android:visibility="gone" />
 
-	<TextView
-		android:id="@+id/error_text"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_above="@id/bottomline_view"
-		android:layout_gravity="center"
-		android:gravity="center"
-		android:maxWidth="400dip"
-		android:padding="@dimen/margin_default"
-		android:textIsSelectable="false"
-		android:visibility="gone" />
-	
+    <TextView
+        android:id="@+id/error_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomline_view"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:maxWidth="400dip"
+        android:padding="@dimen/margin_default"
+        android:textIsSelectable="false"
+        android:visibility="gone" />
+
 </RelativeLayout>

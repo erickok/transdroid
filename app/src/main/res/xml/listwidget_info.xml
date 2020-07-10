@@ -1,29 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-	android:configure="org.transdroid.core.widget.ListWidgetConfigActivity_"
-	android:initialKeyguardLayout="@layout/widget_torrents"
-	android:initialLayout="@layout/widget_torrents"
-	android:minHeight="110dip"
-	android:minResizeHeight="40dip"
-	android:minResizeWidth="110dp"
-	android:minWidth="180dp"
-	android:previewImage="@drawable/widget_preview"
-	android:resizeMode="horizontal|vertical"
-	android:updatePeriodMillis="3600000"
-	android:widgetCategory="home_screen|keyguard" />
+    android:configure="org.transdroid.core.widget.ListWidgetConfigActivity_"
+    android:initialKeyguardLayout="@layout/widget_torrents"
+    android:initialLayout="@layout/widget_torrents"
+    android:minHeight="110dip"
+    android:minResizeHeight="40dip"
+    android:minResizeWidth="110dp"
+    android:minWidth="180dp"
+    android:previewImage="@drawable/widget_preview"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="3600000"
+    android:widgetCategory="home_screen|keyguard" />

@@ -17,7 +17,9 @@
 package org.transdroid.core.service;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
+
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
@@ -33,33 +35,33 @@ import java.util.concurrent.TimeUnit;
 
 public class AppUpdateJob extends Job {
 
-	static final String TAG = "app_update_checker";
+    static final String TAG = "app_update_checker";
 
-	private static Integer scheduledJobId;
+    private static Integer scheduledJobId;
 
-	public static void schedule(Context context) {
-		NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
-		SystemSettings systemSettings = SystemSettings_.getInstance_(context);
-		NavigationHelper_ navigationHelper = NavigationHelper_.getInstance_(context);
-		if (systemSettings.checkForUpdates() && navigationHelper.enableUpdateChecker()) {
-			Log_.getInstance_(context).d(TAG, "Schedule app update checker job");
-			NotificationChannels.ensureAppUpdateChannel(context, notificationSettings);
-			scheduledJobId = new JobRequest.Builder(AppUpdateJob.TAG)
-					.setPeriodic(TimeUnit.DAYS.toMillis(1))
-					.setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-					.setUpdateCurrent(true)
-					.build()
-					.schedule();
-		} else if (scheduledJobId != null) {
-			Log_.getInstance_(context).d(TAG, "Cancel rss checker job");
-			JobManager.instance().cancel(scheduledJobId);
-		}
-	}
+    public static void schedule(Context context) {
+        NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
+        SystemSettings systemSettings = SystemSettings_.getInstance_(context);
+        NavigationHelper_ navigationHelper = NavigationHelper_.getInstance_(context);
+        if (systemSettings.checkForUpdates() && navigationHelper.enableUpdateChecker()) {
+            Log_.getInstance_(context).d(TAG, "Schedule app update checker job");
+            NotificationChannels.ensureAppUpdateChannel(context, notificationSettings);
+            scheduledJobId = new JobRequest.Builder(AppUpdateJob.TAG)
+                    .setPeriodic(TimeUnit.DAYS.toMillis(1))
+                    .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
+                    .setUpdateCurrent(true)
+                    .build()
+                    .schedule();
+        } else if (scheduledJobId != null) {
+            Log_.getInstance_(context).d(TAG, "Cancel rss checker job");
+            JobManager.instance().cancel(scheduledJobId);
+        }
+    }
 
-	@NonNull
-	@Override
-	protected Result onRunJob(@NonNull Params params) {
-		return AppUpdateJobRunner_.getInstance_(getContext()).run();
-	}
+    @NonNull
+    @Override
+    protected Result onRunJob(@NonNull Params params) {
+        return AppUpdateJobRunner_.getInstance_(getContext()).run();
+    }
 
 }

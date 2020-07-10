@@ -19,6 +19,7 @@ package org.transdroid.core.service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
 import org.androidannotations.annotations.EReceiver;
 
 /**
@@ -29,12 +30,12 @@ import org.androidannotations.annotations.EReceiver;
 @EReceiver
 public class BootReceiver extends BroadcastReceiver {
 
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		// Ensure user-requested background jobs are scheduled
-		ServerCheckerJob.schedule(context);
-		RssCheckerJob.schedule(context);
-		AppUpdateJob.schedule(context);
-	}
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        // Ensure user-requested background jobs are scheduled
+        ServerCheckerJob.schedule(context);
+        RssCheckerJob.schedule(context);
+        AppUpdateJob.schedule(context);
+    }
 
 }

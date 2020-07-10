@@ -36,59 +36,59 @@ import org.transdroid.core.service.ServerCheckerJob;
 @EActivity
 public class NotificationSettingsActivity extends PreferenceCompatActivity implements OnSharedPreferenceChangeListener {
 
-	@Bean
-	protected NotificationSettings notificationSettings;
+    @Bean
+    protected NotificationSettings notificationSettings;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		// Load the notification-related preferences from XML and update availability thereof
-		addPreferencesFromResource(R.xml.pref_notifications);
-		boolean disabled = !notificationSettings.isEnabledForRss() && !notificationSettings.isEnabledForTorrents();
-		updatePrefsEnabled(disabled);
+        // Load the notification-related preferences from XML and update availability thereof
+        addPreferencesFromResource(R.xml.pref_notifications);
+        boolean disabled = !notificationSettings.isEnabledForRss() && !notificationSettings.isEnabledForTorrents();
+        updatePrefsEnabled(disabled);
 
-	}
+    }
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		((RingtonePreference) findPreference("notifications_sound")).onActivityResult(requestCode, resultCode, data);
-	}
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ((RingtonePreference) findPreference("notifications_sound")).onActivityResult(requestCode, resultCode, data);
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		// Start/stop the background service appropriately
-		getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Start/stop the background service appropriately
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-		getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-	}
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	@OptionsItem(android.R.id.home)
-	protected void navigateUp() {
-		MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @OptionsItem(android.R.id.home)
+    protected void navigateUp() {
+        MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+    }
 
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		ServerCheckerJob.schedule(getApplicationContext());
-		RssCheckerJob.schedule(getApplicationContext());
-	}
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        ServerCheckerJob.schedule(getApplicationContext());
+        RssCheckerJob.schedule(getApplicationContext());
+    }
 
-	private void updatePrefsEnabled(boolean disabled) {
-		findPreference("notifications_interval").setEnabled(!disabled);
-		findPreference("notifications_sound").setEnabled(!disabled);
-		findPreference("notifications_vibrate").setEnabled(!disabled);
-		findPreference("notifications_ledcolour").setEnabled(!disabled);
-		findPreference("notifications_adwnotify").setEnabled(!disabled);
-	}
+    private void updatePrefsEnabled(boolean disabled) {
+        findPreference("notifications_interval").setEnabled(!disabled);
+        findPreference("notifications_sound").setEnabled(!disabled);
+        findPreference("notifications_vibrate").setEnabled(!disabled);
+        findPreference("notifications_ledcolour").setEnabled(!disabled);
+        findPreference("notifications_adwnotify").setEnabled(!disabled);
+    }
 
 }

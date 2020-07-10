@@ -18,24 +18,25 @@ package org.transdroid.core.service;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
 
 public class ScheduledJobCreator implements JobCreator {
 
-	@Nullable
-	@Override
-	public Job create(@NonNull String tag) {
-		switch (tag) {
-			case AppUpdateJob.TAG:
-				return new AppUpdateJob();
-			case RssCheckerJob.TAG:
-				return new RssCheckerJob();
-			case ServerCheckerJob.TAG:
-				return new ServerCheckerJob();
-			default:
-				return null;
-		}
-	}
+    @Nullable
+    @Override
+    public Job create(@NonNull String tag) {
+        switch (tag) {
+            case AppUpdateJob.TAG:
+                return new AppUpdateJob();
+            case RssCheckerJob.TAG:
+                return new RssCheckerJob();
+            case ServerCheckerJob.TAG:
+                return new ServerCheckerJob();
+            default:
+                return null;
+        }
+    }
 
 }

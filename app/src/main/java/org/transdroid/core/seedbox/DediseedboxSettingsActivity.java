@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2018 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,58 +35,59 @@ import org.transdroid.core.gui.settings.MainSettingsActivity_;
 /**
  * Activity that allows for the configuration of a Dediseedbox seedbox. The key can be supplied to update an
  * existing server setting instead of creating a new one.
+ *
  * @author Eric Kok
  */
 @EActivity
 @OptionsMenu(resName = "activity_deleteableprefs")
 public class DediseedboxSettingsActivity extends KeyBoundPreferencesActivity {
 
-	private EditTextPreference excludeFilter, includeFilter;
+    private EditTextPreference excludeFilter, includeFilter;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		// Load the raw preferences to show in this screen
-		init(R.xml.pref_seedbox_dediseedbox,
-				SeedboxProvider.Dediseedbox.getSettings().getMaxSeedboxOrder(
-						PreferenceManager.getDefaultSharedPreferences(this)));
-		initTextPreference("seedbox_dediseedbox_name");
-		initTextPreference("seedbox_dediseedbox_server");
-		initTextPreference("seedbox_dediseedbox_user");
-		initTextPreference("seedbox_dediseedbox_pass");
-		initBooleanPreference("seedbox_dediseedbox_alarmfinished", true);
-		initBooleanPreference("seedbox_dediseedbox_alarmnew", true);
-		excludeFilter = initTextPreference("seedbox_dediseedbox_alarmexclude");
-		includeFilter = initTextPreference("seedbox_dediseedbox_alarminclude");
+        // Load the raw preferences to show in this screen
+        init(R.xml.pref_seedbox_dediseedbox,
+                SeedboxProvider.Dediseedbox.getSettings().getMaxSeedboxOrder(
+                        PreferenceManager.getDefaultSharedPreferences(this)));
+        initTextPreference("seedbox_dediseedbox_name");
+        initTextPreference("seedbox_dediseedbox_server");
+        initTextPreference("seedbox_dediseedbox_user");
+        initTextPreference("seedbox_dediseedbox_pass");
+        initBooleanPreference("seedbox_dediseedbox_alarmfinished", true);
+        initBooleanPreference("seedbox_dediseedbox_alarmnew", true);
+        excludeFilter = initTextPreference("seedbox_dediseedbox_alarmexclude");
+        includeFilter = initTextPreference("seedbox_dediseedbox_alarminclude");
 
-	}
+    }
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	@OptionsItem(android.R.id.home)
-	protected void navigateUp() {
-		MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @OptionsItem(android.R.id.home)
+    protected void navigateUp() {
+        MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+    }
 
-	@OptionsItem(resName = "action_removesettings")
-	protected void removeSettings() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		SeedboxProvider.Dediseedbox.getSettings().removeServerSetting(prefs, key);
-		finish();
-	}
+    @OptionsItem(resName = "action_removesettings")
+    protected void removeSettings() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SeedboxProvider.Dediseedbox.getSettings().removeServerSetting(prefs, key);
+        finish();
+    }
 
-	@Override
-	protected void onPreferencesChanged() {
+    @Override
+    protected void onPreferencesChanged() {
 
-		// Show the exclude and the include filters if notifying
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean alarmFinished = prefs.getBoolean("seedbox_dediseedbox_alarmfinished_" + key, true);
-		boolean alarmNew = prefs.getBoolean("seedbox_dediseedbox_alarmnew_" + key, true);
-		excludeFilter.setEnabled(alarmNew || alarmFinished);
-		includeFilter.setEnabled(alarmNew || alarmFinished);
+        // Show the exclude and the include filters if notifying
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean alarmFinished = prefs.getBoolean("seedbox_dediseedbox_alarmfinished_" + key, true);
+        boolean alarmNew = prefs.getBoolean("seedbox_dediseedbox_alarmnew_" + key, true);
+        excludeFilter.setEnabled(alarmNew || alarmFinished);
+        includeFilter.setEnabled(alarmNew || alarmFinished);
 
-	}
+    }
 
 }

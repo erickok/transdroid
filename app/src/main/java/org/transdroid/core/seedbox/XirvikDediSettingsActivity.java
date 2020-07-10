@@ -1,16 +1,16 @@
-/* 
+/*
  * Copyright 2010-2018 Eric Kok et al.
- * 
+ *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Transdroid is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,59 +35,60 @@ import org.transdroid.core.gui.settings.MainSettingsActivity_;
 /**
  * Activity that allows for the configuration of a Xirvik dedicated seedbox. The key can be supplied to update an
  * existing server setting instead of creating a new one.
+ *
  * @author Eric Kok
  */
 @EActivity
 @OptionsMenu(resName = "activity_deleteableprefs")
 public class XirvikDediSettingsActivity extends KeyBoundPreferencesActivity {
 
-	private EditTextPreference excludeFilter, includeFilter;
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    private EditTextPreference excludeFilter, includeFilter;
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		// Load the raw preferences to show in this screen
-		init(R.xml.pref_seedbox_xirvikdedi,
-				SeedboxProvider.XirvikDedi.getSettings().getMaxSeedboxOrder(
-						PreferenceManager.getDefaultSharedPreferences(this)));
-		initTextPreference("seedbox_xirvikdedi_name");
-		initListPreference("seedbox_xirvikdedi_client");
-		initTextPreference("seedbox_xirvikdedi_server");
-		initTextPreference("seedbox_xirvikdedi_user");
-		initTextPreference("seedbox_xirvikdedi_pass");
-		initBooleanPreference("seedbox_xirvikdedi_alarmfinished", true);
-		initBooleanPreference("seedbox_xirvikdedi_alarmnew", true);
-		excludeFilter = initTextPreference("seedbox_xirvikdedi_alarmexclude");
-		includeFilter = initTextPreference("seedbox_xirvikdedi_alarminclude");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-	}
+        // Load the raw preferences to show in this screen
+        init(R.xml.pref_seedbox_xirvikdedi,
+                SeedboxProvider.XirvikDedi.getSettings().getMaxSeedboxOrder(
+                        PreferenceManager.getDefaultSharedPreferences(this)));
+        initTextPreference("seedbox_xirvikdedi_name");
+        initListPreference("seedbox_xirvikdedi_client");
+        initTextPreference("seedbox_xirvikdedi_server");
+        initTextPreference("seedbox_xirvikdedi_user");
+        initTextPreference("seedbox_xirvikdedi_pass");
+        initBooleanPreference("seedbox_xirvikdedi_alarmfinished", true);
+        initBooleanPreference("seedbox_xirvikdedi_alarmnew", true);
+        excludeFilter = initTextPreference("seedbox_xirvikdedi_alarmexclude");
+        includeFilter = initTextPreference("seedbox_xirvikdedi_alarminclude");
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	@OptionsItem(android.R.id.home)
-	protected void navigateUp() {
-		MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-	}
+    }
 
-	@OptionsItem(resName = "action_removesettings")
-	protected void removeSettings() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		SeedboxProvider.XirvikDedi.getSettings().removeServerSetting(prefs, key);
-		finish();
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @OptionsItem(android.R.id.home)
+    protected void navigateUp() {
+        MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+    }
 
-	@Override
-	protected void onPreferencesChanged() {
+    @OptionsItem(resName = "action_removesettings")
+    protected void removeSettings() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SeedboxProvider.XirvikDedi.getSettings().removeServerSetting(prefs, key);
+        finish();
+    }
 
-		// Show the exclude and the include filters if notifying
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean alarmFinished = prefs.getBoolean("seedbox_xirvikdedi_alarmfinished_" + key, true);
-		boolean alarmNew = prefs.getBoolean("seedbox_xirvikdedi_alarmnew_" + key, true);
-		excludeFilter.setEnabled(alarmNew || alarmFinished);
-		includeFilter.setEnabled(alarmNew || alarmFinished);
+    @Override
+    protected void onPreferencesChanged() {
 
-	}
+        // Show the exclude and the include filters if notifying
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean alarmFinished = prefs.getBoolean("seedbox_xirvikdedi_alarmfinished_" + key, true);
+        boolean alarmNew = prefs.getBoolean("seedbox_xirvikdedi_alarmnew_" + key, true);
+        excludeFilter.setEnabled(alarmNew || alarmFinished);
+        includeFilter.setEnabled(alarmNew || alarmFinished);
+
+    }
 
 }

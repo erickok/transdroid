@@ -41,9 +41,9 @@ class PiecesMapView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            int ws = MeasureSpec.getSize(widthMeasureSpec);
-            int hs = Math.max(getHeight(), MINIMUM_HEIGHT);
-            setMeasuredDimension(ws, hs);
+        int ws = MeasureSpec.getSize(widthMeasureSpec);
+        int hs = Math.max(getHeight(), MINIMUM_HEIGHT);
+        setMeasuredDimension(ws, hs);
     }
 
     @Override
@@ -65,7 +65,7 @@ class PiecesMapView extends View {
         piecesScaled = new ArrayList<Integer>();
 
         int bucketCount = (int) Math.ceil((double) width / (double) pieceWidth);
-        int bucketSize = (int) Math.floor((double)this.pieces.size() / (double) bucketCount);
+        int bucketSize = (int) Math.floor((double) this.pieces.size() / (double) bucketCount);
 
         // loop buckets
         for (int i = 0; i < bucketCount; i++) {
@@ -74,7 +74,7 @@ class PiecesMapView extends View {
             int start = i * bucketSize;
 
             // If this is the last bucket, throw the remainder of the pieces array into it
-            int end = (i == bucketCount-1) ? this.pieces.size() : (i+1) * bucketSize;
+            int end = (i == bucketCount - 1) ? this.pieces.size() : (i + 1) * bucketSize;
 
             ArrayList<Integer> bucket = new ArrayList<Integer>(this.pieces.subList(start, end));
 
@@ -82,7 +82,7 @@ class PiecesMapView extends View {
             int downloadingCount = 0;
 
             // loop pieces in bucket
-            for(int j = 0; j < bucket.size(); j++) {
+            for (int j = 0; j < bucket.size(); j++) {
                 // Count downloading pieces
                 if (bucket.get(j) == 1) {
                     downloadingCount++;
@@ -115,8 +115,7 @@ class PiecesMapView extends View {
         }
 
         String scaledPiecesString = "";
-        for (int s : piecesScaled)
-        {
+        for (int s : piecesScaled) {
             scaledPiecesString += s;
         }
 

@@ -18,10 +18,12 @@
 package org.transdroid.daemon.Deluge;
 
 import androidx.annotation.NonNull;
+
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.util.TlsSniSocketFactory;
+
 import se.dimovski.rencode.Rencode;
 
 import java.io.ByteArrayOutputStream;
@@ -45,155 +47,155 @@ import static org.transdroid.daemon.Deluge.DelugeCommon.RPC_METHOD_INFO;
  */
 class DelugeRpcClient implements Closeable {
 
-	private static final int RESPONSE_TYPE_INDEX = 0;
-	private static final int RESPONSE_RETURN_VALUE_INDEX = 2;
-	private static final int RPC_ERROR = 2;
-	private static final byte V2_PROTOCOL_VERSION = 1;
-	private static final int V2_HEADER_SIZE = 5;
+    private static final int RESPONSE_TYPE_INDEX = 0;
+    private static final int RESPONSE_RETURN_VALUE_INDEX = 2;
+    private static final int RPC_ERROR = 2;
+    private static final byte V2_PROTOCOL_VERSION = 1;
+    private static final int V2_HEADER_SIZE = 5;
 
-	private Socket socket;
-	private final boolean isVersion2;
-	private static AtomicInteger requestId = new AtomicInteger();
+    private Socket socket;
+    private final boolean isVersion2;
+    private static AtomicInteger requestId = new AtomicInteger();
 
-	DelugeRpcClient(boolean isVersion2) {
-		this.isVersion2 = isVersion2;
-	}
+    DelugeRpcClient(boolean isVersion2) {
+        this.isVersion2 = isVersion2;
+    }
 
-	void connect(DaemonSettings settings) throws DaemonException {
-		try {
-			socket = openSocket(settings);
-			if (isVersion2) {
-				sendRequest(RPC_METHOD_INFO);
-			}
-			if (settings.shouldUseAuthentication()) {
-				sendRequest(RPC_METHOD_DAEMON_LOGIN, settings.getUsername(), settings.getPassword());
-			}
-		} catch (UnknownHostException e) {
-			throw new DaemonException(ExceptionType.AuthenticationFailure, "Failed to sign in: " + e.getMessage());
-		} catch (IOException e) {
-			throw new DaemonException(ExceptionType.ConnectionError, "Failed to open socket: " + e.getMessage());
-		}
-	}
+    void connect(DaemonSettings settings) throws DaemonException {
+        try {
+            socket = openSocket(settings);
+            if (isVersion2) {
+                sendRequest(RPC_METHOD_INFO);
+            }
+            if (settings.shouldUseAuthentication()) {
+                sendRequest(RPC_METHOD_DAEMON_LOGIN, settings.getUsername(), settings.getPassword());
+            }
+        } catch (UnknownHostException e) {
+            throw new DaemonException(ExceptionType.AuthenticationFailure, "Failed to sign in: " + e.getMessage());
+        } catch (IOException e) {
+            throw new DaemonException(ExceptionType.ConnectionError, "Failed to open socket: " + e.getMessage());
+        }
+    }
 
-	public void close() {
-		try {
-			if (socket != null)
-				socket.close();
-		} catch (IOException e) {
-			// ignore
-		}
-	}
+    public void close() {
+        try {
+            if (socket != null)
+                socket.close();
+        } catch (IOException e) {
+            // ignore
+        }
+    }
 
-	@NonNull
-	Object sendRequest(String method, Object... args) throws DaemonException {
-		final byte[] requestBytes;
-		try {
-			HashMap<Object, Object> kwargs = new HashMap<>();
-			if (isVersion2 && RPC_METHOD_DAEMON_LOGIN.equals(method)) {
-				kwargs.put("client_version", "" + V2_PROTOCOL_VERSION);
-			}
-			requestBytes = compress(Rencode.encode(new Object[]{new Object[]{requestId.getAndIncrement(), method, args, kwargs}}));
-		} catch (IOException e) {
-			throw new DaemonException(ExceptionType.ConnectionError, "Failed to encode request: " + e.getMessage());
-		}
-		try {
-			if (isVersion2) {
-				socket.getOutputStream().write(
-						ByteBuffer.allocate(V2_HEADER_SIZE + requestBytes.length)
-								.put(V2_PROTOCOL_VERSION)
-								.putInt(requestBytes.length)
-								.put(requestBytes)
-								.array()
-				);
-			} else {
-				socket.getOutputStream().write(requestBytes);
-			}
-			return readResponse();
-		} catch (IOException e) {
-			throw new DaemonException(ExceptionType.ConnectionError, e.getMessage());
-		}
-	}
+    @NonNull
+    Object sendRequest(String method, Object... args) throws DaemonException {
+        final byte[] requestBytes;
+        try {
+            HashMap<Object, Object> kwargs = new HashMap<>();
+            if (isVersion2 && RPC_METHOD_DAEMON_LOGIN.equals(method)) {
+                kwargs.put("client_version", "" + V2_PROTOCOL_VERSION);
+            }
+            requestBytes = compress(Rencode.encode(new Object[]{new Object[]{requestId.getAndIncrement(), method, args, kwargs}}));
+        } catch (IOException e) {
+            throw new DaemonException(ExceptionType.ConnectionError, "Failed to encode request: " + e.getMessage());
+        }
+        try {
+            if (isVersion2) {
+                socket.getOutputStream().write(
+                        ByteBuffer.allocate(V2_HEADER_SIZE + requestBytes.length)
+                                .put(V2_PROTOCOL_VERSION)
+                                .putInt(requestBytes.length)
+                                .put(requestBytes)
+                                .array()
+                );
+            } else {
+                socket.getOutputStream().write(requestBytes);
+            }
+            return readResponse();
+        } catch (IOException e) {
+            throw new DaemonException(ExceptionType.ConnectionError, e.getMessage());
+        }
+    }
 
-	@NonNull
-	private byte[] compress(byte[] bytes) throws IOException {
-		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-		try {
-			DeflaterOutputStream deltaterOut = new DeflaterOutputStream(byteOut);
-			try {
-				deltaterOut.write(bytes);
-				deltaterOut.finish();
-				return byteOut.toByteArray();
-			} finally {
-				deltaterOut.close();
-			}
-		} finally {
-			byteOut.close();
-		}
-	}
+    @NonNull
+    private byte[] compress(byte[] bytes) throws IOException {
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        try {
+            DeflaterOutputStream deltaterOut = new DeflaterOutputStream(byteOut);
+            try {
+                deltaterOut.write(bytes);
+                deltaterOut.finish();
+                return byteOut.toByteArray();
+            } finally {
+                deltaterOut.close();
+            }
+        } finally {
+            byteOut.close();
+        }
+    }
 
-	@NonNull
-	private Object readResponse() throws DaemonException, IOException {
-		final InputStream in = socket.getInputStream();
-		final InflaterInputStream inflater = new InflaterInputStream(in);
-		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    @NonNull
+    private Object readResponse() throws DaemonException, IOException {
+        final InputStream in = socket.getInputStream();
+        final InflaterInputStream inflater = new InflaterInputStream(in);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-		final byte[] buffer;
-		if (isVersion2) {
-			final byte[] header = new byte[V2_HEADER_SIZE];
-			in.read(header, 0, V2_HEADER_SIZE);
-			if (header[0] != V2_PROTOCOL_VERSION) {
-				throw new DaemonException(ExceptionType.ConnectionError, "Unexpected protocol version: " + header[0]);
-			}
-			buffer = new byte[ByteBuffer.wrap(header).getInt(1)];
-		} else {
-			buffer = new byte[1024];
-		}
+        final byte[] buffer;
+        if (isVersion2) {
+            final byte[] header = new byte[V2_HEADER_SIZE];
+            in.read(header, 0, V2_HEADER_SIZE);
+            if (header[0] != V2_PROTOCOL_VERSION) {
+                throw new DaemonException(ExceptionType.ConnectionError, "Unexpected protocol version: " + header[0]);
+            }
+            buffer = new byte[ByteBuffer.wrap(header).getInt(1)];
+        } else {
+            buffer = new byte[1024];
+        }
 
-		while (inflater.available() > 0) {
-			final int n = inflater.read(buffer);
-			if (n > 0) {
-				out.write(buffer, 0, n);
-			}
-		}
-		final byte[] bytes = out.toByteArray();
-		final Object responseObject = Rencode.decode(bytes);
+        while (inflater.available() > 0) {
+            final int n = inflater.read(buffer);
+            if (n > 0) {
+                out.write(buffer, 0, n);
+            }
+        }
+        final byte[] bytes = out.toByteArray();
+        final Object responseObject = Rencode.decode(bytes);
 
-		if (!(responseObject instanceof List)) {
-			throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
-		}
-		final List response = (List) responseObject;
+        if (!(responseObject instanceof List)) {
+            throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
+        }
+        final List response = (List) responseObject;
 
-		if (response.size() < RESPONSE_RETURN_VALUE_INDEX + 1) {
-			throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
-		}
+        if (response.size() < RESPONSE_RETURN_VALUE_INDEX + 1) {
+            throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
+        }
 
-		if (!(response.get(RESPONSE_TYPE_INDEX) instanceof Number)) {
-			throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
-		}
-		final int type = ((Number) (response.get(RESPONSE_TYPE_INDEX))).intValue();
+        if (!(response.get(RESPONSE_TYPE_INDEX) instanceof Number)) {
+            throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
+        }
+        final int type = ((Number) (response.get(RESPONSE_TYPE_INDEX))).intValue();
 
-		if (type == RPC_ERROR) {
-			throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
-		}
+        if (type == RPC_ERROR) {
+            throw new DaemonException(ExceptionType.UnexpectedResponse, responseObject.toString());
+        }
 
-		return response.get(2);
-	}
+        return response.get(2);
+    }
 
-	@NonNull
-	private Socket openSocket(DaemonSettings settings) throws IOException, DaemonException {
-		if (!settings.getSsl()) {
-			// Non-ssl connections
-			throw new DaemonException(ExceptionType.ConnectionError, "Deluge RPC Adapter must have SSL enabled");
-		}
-		final TlsSniSocketFactory socketFactory;
-		if (settings.getSslTrustKey() != null && settings.getSslTrustKey().length() != 0) {
-			socketFactory = new TlsSniSocketFactory(settings.getSslTrustKey());
-		} else if (settings.getSslTrustAll()) {
-			socketFactory = new TlsSniSocketFactory(true);
-		} else {
-			socketFactory = new TlsSniSocketFactory();
-		}
-		return socketFactory.createSocket(null, settings.getAddress(), settings.getPort(), false);
-	}
+    @NonNull
+    private Socket openSocket(DaemonSettings settings) throws IOException, DaemonException {
+        if (!settings.getSsl()) {
+            // Non-ssl connections
+            throw new DaemonException(ExceptionType.ConnectionError, "Deluge RPC Adapter must have SSL enabled");
+        }
+        final TlsSniSocketFactory socketFactory;
+        if (settings.getSslTrustKey() != null && settings.getSslTrustKey().length() != 0) {
+            socketFactory = new TlsSniSocketFactory(settings.getSslTrustKey());
+        } else if (settings.getSslTrustAll()) {
+            socketFactory = new TlsSniSocketFactory(true);
+        } else {
+            socketFactory = new TlsSniSocketFactory();
+        }
+        return socketFactory.createSocket(null, settings.getAddress(), settings.getPort(), false);
+    }
 
 }

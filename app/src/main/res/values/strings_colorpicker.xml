@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<!-- App -->
+    <!-- App -->
     <string name="hello">Hello World, Main!</string>
     <string name="app_name">ColorPickerPreference</string>
-    
+
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>
-    <string name="press_color_to_apply">Press on Color to apply</string>    
-    
+    <string name="press_color_to_apply">Press on Color to apply</string>
+
     <!-- Preferences -->
     <string name="pref_category">Category</string>
     <string name="color1_title">Color 1</string>

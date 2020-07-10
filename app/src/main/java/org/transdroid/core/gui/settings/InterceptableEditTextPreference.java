@@ -9,40 +9,40 @@ import androidx.preference.EditTextPreference;
 
 public class InterceptableEditTextPreference extends EditTextPreference {
 
-	private OnPreferenceClickListener overrideClickListener = null;
+    private OnPreferenceClickListener overrideClickListener = null;
 
-	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-	public InterceptableEditTextPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-		super(context, attrs, defStyleAttr, defStyleRes);
-	}
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public InterceptableEditTextPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
 
-	public InterceptableEditTextPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-		super(context, attrs, defStyleAttr);
-	}
+    public InterceptableEditTextPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
 
-	public InterceptableEditTextPreference(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public InterceptableEditTextPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public InterceptableEditTextPreference(Context context) {
-		super(context);
-	}
+    public InterceptableEditTextPreference(Context context) {
+        super(context);
+    }
 
-	@Override
-	public OnPreferenceClickListener getOnPreferenceClickListener() {
-		return overrideClickListener;
-	}
+    @Override
+    public OnPreferenceClickListener getOnPreferenceClickListener() {
+        return overrideClickListener;
+    }
 
-	@Override
-	public void setOnPreferenceClickListener(OnPreferenceClickListener onPreferenceClickListener) {
-		this.overrideClickListener = onPreferenceClickListener;
-	}
+    @Override
+    public void setOnPreferenceClickListener(OnPreferenceClickListener onPreferenceClickListener) {
+        this.overrideClickListener = onPreferenceClickListener;
+    }
 
-	@Override
-	protected void onClick() {
-		if (overrideClickListener == null || !overrideClickListener.onPreferenceClick(this)) {
-			super.onClick();
-		}
-	}
+    @Override
+    protected void onClick() {
+        if (overrideClickListener == null || !overrideClickListener.onPreferenceClick(this)) {
+            super.onClick();
+        }
+    }
 
 }

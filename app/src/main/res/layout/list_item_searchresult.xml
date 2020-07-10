@@ -1,85 +1,84 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <org.transdroid.core.gui.rss.RssitemStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:background="?attr/activatable_background"
-	android:paddingBottom="@dimen/margin_half"
-	android:paddingLeft="@dimen/margin_default"
-	android:paddingRight="@dimen/margin_default"
-	android:paddingTop="@dimen/margin_half">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/activatable_background"
+    android:paddingBottom="@dimen/margin_half"
+    android:paddingLeft="@dimen/margin_default"
+    android:paddingRight="@dimen/margin_default"
+    android:paddingTop="@dimen/margin_half">
 
-	<TextView
-		android:id="@+id/name_text"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:fontFamily="sans-serif-condensed"
-		android:textColor="?attr/text_bright"
-		android:textIsSelectable="false"
-		android:textSize="@dimen/text_enlarged"
-		tools:text="Torrent.Title.2016.1080p.mkv" />
+    <TextView
+        android:id="@+id/name_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="?attr/text_bright"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_enlarged"
+        tools:text="Torrent.Title.2016.1080p.mkv" />
 
-	<TextView
-		android:id="@+id/leechers_text"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignParentEnd="true"
-		android:layout_alignParentRight="true"
-		android:layout_below="@id/name_text"
-		android:layout_marginTop="4dip"
-		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small"
-		tools:text="@string/search_seeders" />
+    <TextView
+        android:id="@+id/leechers_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/name_text"
+        android:layout_marginTop="4dip"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_small"
+        tools:text="@string/search_seeders" />
 
-	<TextView
-		android:id="@+id/seeders_text"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignBaseline="@id/leechers_text"
-		android:layout_marginEnd="@dimen/margin_default"
-		android:layout_marginRight="@dimen/margin_default"
-		android:layout_toLeftOf="@id/leechers_text"
-		android:layout_toStartOf="@id/leechers_text"
-		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small"
-		tools:text="@string/search_leechers" />
+    <TextView
+        android:id="@+id/seeders_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/leechers_text"
+        android:layout_marginEnd="@dimen/margin_default"
+        android:layout_marginRight="@dimen/margin_default"
+        android:layout_toLeftOf="@id/leechers_text"
+        android:layout_toStartOf="@id/leechers_text"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_small"
+        tools:text="@string/search_leechers" />
 
-	<TextView
-		android:id="@+id/size_text"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignBaseline="@id/leechers_text"
-		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small"
-		tools:text="1.5GB" />
+    <TextView
+        android:id="@+id/size_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/leechers_text"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_small"
+        tools:text="1.5GB" />
 
-	<TextView
-		android:id="@+id/date_text"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignBaseline="@id/leechers_text"
-		android:layout_marginLeft="@dimen/margin_default"
-		android:layout_marginStart="@dimen/margin_default"
-		android:layout_toEndOf="@id/size_text"
-		android:layout_toRightOf="@id/size_text"
-		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small"
-		tools:text="0 weeks ago" />
+    <TextView
+        android:id="@+id/date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/leechers_text"
+        android:layout_marginLeft="@dimen/margin_default"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_toEndOf="@id/size_text"
+        android:layout_toRightOf="@id/size_text"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_small"
+        tools:text="0 weeks ago" />
 
 </org.transdroid.core.gui.rss.RssitemStatusLayout>
