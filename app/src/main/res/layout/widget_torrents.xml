@@ -15,6 +15,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -55,11 +56,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
-                android:fontFamily="sans-serif-condensed"
                 android:singleLine="true"
                 android:textColor="@color/transdroid_text_actionbar"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/ui_navigation_filter"
+                app:fontFamily="sans-serif-condensed"
                 tools:text="Filter" />
 
             <TextView
@@ -68,11 +69,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-4dip"
                 android:ellipsize="marquee"
-                android:fontFamily="sans-serif-light"
                 android:singleLine="true"
                 android:textColor="@color/transdroid_text_actionbar"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/ui_navigation_server"
+                app:fontFamily="sans-serif-light"
                 tools:text="Server" />
         </LinearLayout>
 
@@ -93,10 +94,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:fontFamily="sans-serif-light"
                 android:paddingTop="@dimen/ui_serverstatus_signmargin"
                 android:text="↑"
                 android:textSize="@dimen/ui_serverstatus_sign"
+                app:fontFamily="sans-serif-light"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -105,9 +106,9 @@
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@id/upcount_sign"
                 android:layout_toLeftOf="@id/upcount_sign"
-                android:fontFamily="sans-serif-light"
                 android:gravity="end"
-                android:textSize="@dimen/ui_serverstatus_bignumber" />
+                android:textSize="@dimen/ui_serverstatus_bignumber"
+                app:fontFamily="sans-serif-light" />
 
             <TextView
                 android:id="@+id/downcount_sign"
@@ -115,10 +116,10 @@
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@id/upcount_text"
                 android:layout_toLeftOf="@id/upcount_text"
-                android:fontFamily="sans-serif-light"
                 android:paddingTop="@dimen/ui_serverstatus_signmargin"
                 android:text="↓"
                 android:textSize="@dimen/ui_serverstatus_sign"
+                app:fontFamily="sans-serif-light"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -127,9 +128,9 @@
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@id/downcount_sign"
                 android:layout_toLeftOf="@id/downcount_sign"
-                android:fontFamily="sans-serif-light"
                 android:gravity="end"
-                android:textSize="@dimen/ui_serverstatus_bignumber" />
+                android:textSize="@dimen/ui_serverstatus_bignumber"
+                app:fontFamily="sans-serif-light" />
 
             <TextView
                 android:id="@+id/upspeed_text"
@@ -141,9 +142,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="-4dip"
-                android:fontFamily="sans-serif-light"
                 android:gravity="end"
-                android:textSize="@dimen/ui_serverstatus_smallnumber" />
+                android:textSize="@dimen/ui_serverstatus_smallnumber"
+                app:fontFamily="sans-serif-light" />
 
             <TextView
                 android:id="@+id/downspeed_text"
@@ -155,9 +156,9 @@
                 android:layout_alignEnd="@id/downcount_sign"
                 android:layout_alignRight="@id/downcount_sign"
                 android:layout_marginTop="-4dip"
-                android:fontFamily="sans-serif-light"
                 android:gravity="end"
-                android:textSize="@dimen/ui_serverstatus_smallnumber" />
+                android:textSize="@dimen/ui_serverstatus_smallnumber"
+                app:fontFamily="sans-serif-light" />
         </RelativeLayout>
 
         <ImageButton

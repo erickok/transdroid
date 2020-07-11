@@ -15,6 +15,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/margin_default"
@@ -71,10 +72,10 @@
         android:layout_marginTop="@dimen/margin_half"
         android:layout_toEndOf="@id/separator"
         android:layout_toRightOf="@id/separator"
-        android:fontFamily="sans-serif-light"
         android:textColor="?attr/text_bright"
         android:textIsSelectable="false"
-        android:textSize="@dimen/text_hugenumbers" />
+        android:textSize="@dimen/text_hugenumbers"
+        app:fontFamily="sans-serif-light" />
 
     <TextView
         android:id="@+id/uploadedunit_text"
@@ -85,9 +86,9 @@
         android:layout_marginLeft="4dip"
         android:layout_toEndOf="@id/uploaded_text"
         android:layout_toRightOf="@id/uploaded_text"
-        android:fontFamily="sans-serif-light"
         android:textColor="?attr/text_bright"
-        android:textIsSelectable="false" />
+        android:textIsSelectable="false"
+        app:fontFamily="sans-serif-light" />
 
     <TextView
         android:id="@+id/ratio_text"
@@ -111,10 +112,10 @@
         android:layout_marginBottom="4dip"
         android:layout_toEndOf="@id/separator"
         android:layout_toRightOf="@id/separator"
-        android:fontFamily="sans-serif-light"
         android:textColor="?attr/text_bright"
         android:textIsSelectable="false"
-        android:textSize="@dimen/text_enlargednumbers" />
+        android:textSize="@dimen/text_enlargednumbers"
+        app:fontFamily="sans-serif-light" />
 
     <TextView
         android:id="@+id/leechers_text"
@@ -137,9 +138,9 @@
         android:layout_marginRight="@dimen/margin_half"
         android:layout_toStartOf="@id/separator"
         android:layout_toLeftOf="@id/separator"
-        android:fontFamily="sans-serif-light"
         android:textColor="?attr/text_bright"
-        android:textIsSelectable="false" />
+        android:textIsSelectable="false"
+        app:fontFamily="sans-serif-light" />
 
     <TextView
         android:id="@+id/downloaded_text"
@@ -150,10 +151,10 @@
         android:layout_marginRight="4dip"
         android:layout_toStartOf="@id/downloadedunit_text"
         android:layout_toLeftOf="@id/downloadedunit_text"
-        android:fontFamily="sans-serif-light"
         android:textColor="?attr/text_bright"
         android:textIsSelectable="false"
-        android:textSize="@dimen/text_hugenumbers" />
+        android:textSize="@dimen/text_hugenumbers"
+        app:fontFamily="sans-serif-light" />
 
     <TextView
         android:id="@+id/totalsize_text"
@@ -176,10 +177,10 @@
         android:layout_marginRight="@dimen/margin_half"
         android:layout_toStartOf="@id/separator"
         android:layout_toLeftOf="@id/separator"
-        android:fontFamily="sans-serif-light"
         android:textColor="?attr/text_bright"
         android:textIsSelectable="false"
-        android:textSize="@dimen/text_enlargednumbers" />
+        android:textSize="@dimen/text_enlargednumbers"
+        app:fontFamily="sans-serif-light" />
 
     <TextView
         android:id="@+id/seeders_text"

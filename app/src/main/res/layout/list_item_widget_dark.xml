@@ -15,6 +15,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/widget_line_layout"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/widget_list_item_height"
@@ -34,12 +35,12 @@
         android:layout_marginStart="@dimen/widget_list_item_padding_left"
         android:layout_marginLeft="@dimen/widget_list_item_padding_left"
         android:ellipsize="end"
-        android:fontFamily="sans-serif-condensed"
         android:maxLines="1"
         android:paddingTop="@dimen/widget_list_item_padding"
         android:textColor="@color/transdroid_dark_text_bright"
         android:textIsSelectable="false"
-        android:textSize="@dimen/text_enlarged" />
+        android:textSize="@dimen/text_enlarged"
+        app:fontFamily="sans-serif-condensed" />
 
     <TextView
         android:id="@+id/ratio_text"

@@ -15,6 +15,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:layout_height="?android:attr/actionBarSize"
     tools:layout_width="match_parent">
@@ -30,10 +31,10 @@
             android:id="@+id/filter_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
             android:textColor="?attr/text_actionbar"
             android:textIsSelectable="false"
             android:textSize="@dimen/ui_navigation_filter"
+            app:fontFamily="sans-serif-condensed"
             tools:text="Downloading" />
 
         <TextView
@@ -41,10 +42,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-4dip"
-            android:fontFamily="sans-serif-light"
             android:textColor="?attr/text_actionbar"
             android:textIsSelectable="false"
             android:textSize="@dimen/ui_navigation_server"
+            app:fontFamily="sans-serif-light"
             tools:text="XIRVIK RTORRENT" />
 
     </LinearLayout>

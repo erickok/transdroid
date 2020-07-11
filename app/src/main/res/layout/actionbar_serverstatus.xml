@@ -15,6 +15,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/actionBarSize"
@@ -40,10 +41,10 @@
             android:id="@+id/downcount_text"
             android:layout_width="@dimen/ui_serverstatus_width"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
             android:gravity="end"
             android:textColor="?attr/text_actionbar"
             android:textSize="@dimen/ui_serverstatus_bignumber"
+            app:fontFamily="sans-serif-light"
             tools:text="7" />
 
         <TextView
@@ -52,11 +53,11 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/downcount_text"
             android:layout_toRightOf="@id/downcount_text"
-            android:fontFamily="sans-serif-light"
             android:text="↓"
             android:textColor="?attr/text_actionbar"
             android:textSize="@dimen/ui_serverstatus_sign"
             android:visibility="invisible"
+            app:fontFamily="sans-serif-light"
             tools:ignore="HardcodedText"
             tools:visibility="visible" />
 
@@ -66,10 +67,10 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/downcount_sign"
             android:layout_toRightOf="@id/downcount_sign"
-            android:fontFamily="sans-serif-light"
             android:gravity="end"
             android:textColor="?attr/text_actionbar"
             android:textSize="@dimen/ui_serverstatus_bignumber"
+            app:fontFamily="sans-serif-light"
             tools:text="128" />
 
         <TextView
@@ -78,11 +79,11 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/upcount_text"
             android:layout_toRightOf="@id/upcount_text"
-            android:fontFamily="sans-serif-light"
             android:text="↑"
             android:textColor="?attr/text_actionbar"
             android:textSize="@dimen/ui_serverstatus_sign"
             android:visibility="invisible"
+            app:fontFamily="sans-serif-light"
             tools:ignore="HardcodedText"
             tools:visibility="visible" />
 
@@ -96,10 +97,10 @@
             android:layout_alignEnd="@id/downcount_sign"
             android:layout_alignRight="@id/downcount_sign"
             android:layout_marginTop="-4dip"
-            android:fontFamily="sans-serif-light"
             android:gravity="end"
             android:textColor="?attr/text_actionbar"
             android:textSize="@dimen/ui_serverstatus_smallnumber"
+            app:fontFamily="sans-serif-light"
             tools:text="1.2 MB/s" />
 
         <TextView
@@ -112,10 +113,10 @@
             android:layout_alignEnd="@id/upcount_sign"
             android:layout_alignRight="@id/upcount_sign"
             android:layout_marginTop="-4dip"
-            android:fontFamily="sans-serif-light"
             android:gravity="end"
             android:textColor="?attr/text_actionbar"
             android:textSize="@dimen/ui_serverstatus_smallnumber"
+            app:fontFamily="sans-serif-light"
             tools:text="678 KB/s" />
 
     </RelativeLayout>

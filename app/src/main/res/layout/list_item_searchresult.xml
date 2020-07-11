@@ -15,6 +15,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <org.transdroid.core.gui.rss.RssitemStatusLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -28,10 +29,10 @@
         android:id="@+id/name_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
         android:textColor="?attr/text_bright"
         android:textIsSelectable="false"
         android:textSize="@dimen/text_enlarged"
+        app:fontFamily="sans-serif-condensed"
         tools:text="Torrent.Title.2016.1080p.mkv" />
 
     <TextView

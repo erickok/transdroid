@@ -15,6 +15,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -34,11 +35,11 @@
             android:drawableStart="@drawable/ic_launcher"
             android:drawableLeft="@drawable/ic_launcher"
             android:drawablePadding="@dimen/margin_half"
-            android:fontFamily="sans-serif-condensed"
             android:gravity="center_vertical"
             android:text="@string/app_name"
             android:textColor="@android:color/white"
-            android:textSize="36sp" />
+            android:textSize="36sp"
+            app:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -52,11 +53,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_default"
-            android:fontFamily="sans-serif-condensed"
             android:gravity="center"
             android:text="@string/system_developer"
             android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -80,9 +81,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/margin_default"
-            android:fontFamily="monospace"
             android:text="@string/system_libraries"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            app:fontFamily="monospace" />
     </LinearLayout>
 
 </ScrollView>
