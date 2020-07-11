@@ -40,7 +40,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="left"
+            android:gravity="start"
             android:text="@string/press_color_to_apply"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -54,7 +54,7 @@
             android:inputType="textCapCharacters"
             android:maxLength="7"
             android:singleLine="true"
-            android:visibility="gone"></EditText>
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout

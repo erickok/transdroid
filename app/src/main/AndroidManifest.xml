@@ -54,6 +54,7 @@
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat"
         android:usesCleartextTraffic="true">
 
@@ -192,7 +193,7 @@
         <activity
             android:name="org.transdroid.core.gui.DetailsActivity_"
             android:theme="@style/TransdroidTheme"
-            android:uiOptions="splitActionBarWhenNarrow"></activity>
+            android:uiOptions="splitActionBarWhenNarrow" />
 
         <!-- Settings screens -->
         <activity

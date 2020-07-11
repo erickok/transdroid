@@ -44,7 +44,7 @@
             android:inputType="textCapCharacters"
             android:maxLength="7"
             android:singleLine="true"
-            android:visibility="gone"></EditText>
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"

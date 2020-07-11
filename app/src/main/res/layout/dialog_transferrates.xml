@@ -30,6 +30,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_half"
             android:layout_marginRight="@dimen/margin_half"
             android:text="@string/status_maxspeed_down"
             android:textAllCaps="true" />
@@ -40,13 +41,14 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="right"
+            android:gravity="end"
             android:singleLine="true"
             android:text="@string/status_maxspeed_novalue" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_half"
             android:layout_marginRight="@dimen/margin_half"
             android:text="@string/status_maxspeed_unit"
             android:textAllCaps="true" />
@@ -174,6 +176,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_half"
             android:layout_marginRight="@dimen/margin_half"
             android:text="@string/status_maxspeed_up"
             android:textAllCaps="true" />
@@ -184,13 +187,14 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="right"
+            android:gravity="end"
             android:singleLine="true"
             android:text="@string/status_maxspeed_novalue" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_half"
             android:layout_marginRight="@dimen/margin_half"
             android:text="@string/status_maxspeed_unit"
             android:textAllCaps="true" />

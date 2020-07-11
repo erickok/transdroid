@@ -7,7 +7,7 @@
         android:id="@+id/overflow_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
+        android:layout_gravity="end|center_vertical"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/pref_addseedbox"
         android:padding="5dp"
