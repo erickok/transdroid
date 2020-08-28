@@ -22,8 +22,10 @@ import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -119,6 +121,7 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
     private static ArrayList<RemoteRssChannel> remoteRssChannels = new ArrayList<>();
     private DaemonSettings settings;
     private DefaultHttpClient httpclient;
+    private static CookieStore cookieStore;
 
 
     /**
@@ -462,7 +465,12 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
      * @throws DaemonException On conflicting or missing settings
      */
     private void initialise() throws DaemonException {
+        if (this.cookieStore == null) {
+            this.cookieStore = new BasicCookieStore();
+        }
+
         this.httpclient = HttpHelper.createStandardHttpClient(settings, true);
+        this.httpclient.setCookieStore(this.cookieStore);
     }
 
     /**
