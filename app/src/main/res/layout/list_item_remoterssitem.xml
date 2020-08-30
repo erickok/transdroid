@@ -1,59 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:background="?attr/activatable_background"
-	android:paddingBottom="@dimen/margin_default"
-	android:paddingLeft="@dimen/margin_default"
-	android:paddingRight="@dimen/margin_default"
-	android:paddingTop="@dimen/margin_default">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/activatable_background"
+    android:paddingLeft="@dimen/margin_default"
+    android:paddingTop="@dimen/margin_default"
+    android:paddingRight="@dimen/margin_default"
+    android:paddingBottom="@dimen/margin_default">
 
-	<TextView
-			android:id="@+id/label_text"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="4dip"
-			android:textIsSelectable="false"
-			android:textSize="@dimen/text_small"
-			tools:text="Source channel name"/>
+    <TextView
+        android:id="@+id/label_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dip"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_small"
+        tools:text="Source channel name" />
 
-	<TextView
-		android:id="@+id/name_text"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:fontFamily="sans-serif-condensed"
-		android:textColor="?attr/text_bright"
-		android:textIsSelectable="false"
-		android:textSize="@dimen/text_enlarged"
-		tools:text="Title for torrent"
-		android:layout_below="@+id/label_text"/>
+    <TextView
+        android:id="@+id/name_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/label_text"
+        android:textColor="?attr/text_bright"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_enlarged"
+        app:fontFamily="sans-serif-condensed"
+        tools:text="Title for torrent" />
 
-	<TextView
-		android:id="@+id/date_text"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/name_text"
-		android:layout_marginTop="4dip"
-		android:textIsSelectable="false"
-		android:textSize="@dimen/text_small"
-		tools:text="25-12-2015"
-		/>
+    <TextView
+        android:id="@+id/date_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name_text"
+        android:layout_marginTop="4dip"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_small"
+        tools:text="25-12-2015" />
 
 </RelativeLayout>

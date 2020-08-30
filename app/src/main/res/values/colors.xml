@@ -1,17 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -21,20 +20,20 @@
     <color name="green_light">#A5D6A7</color>
     <color name="green">#388E3C</color>
     <color name="green_dark">#1B5E20</color>
-	<color name="grey">#757575</color>
+    <color name="grey">#757575</color>
     <color name="ledgreen">#7dbb21</color>
     <color name="red">#C62828</color>
 
     <!-- Torrent and file status colours -->
-    <color name="torrent_downloading">#1E88E5</color>	<!-- Blue -->
-    <color name="torrent_paused">#AB47BC</color>		<!-- Purple -->
-    <color name="torrent_seeding">#66BB6A</color>		<!-- Green -->
-    <color name="torrent_error">#C62828</color>			<!-- Red -->
-    <color name="torrent_other">#757575</color>			<!-- Grey -->
-    <color name="torrent_background">#BDBDBD</color>	<!-- Light grey -->
-    <color name="file_low">#A5D6A7</color>				<!-- Light green -->
-    <color name="file_normal">#66BB6A</color>			<!-- Normal green -->
-    <color name="file_high">#1B5E20</color>				<!-- Dark green -->
-    <color name="file_off">#757575</color>				<!-- Grey -->
+    <color name="torrent_downloading">#1E88E5</color>    <!-- Blue -->
+    <color name="torrent_paused">#AB47BC</color>        <!-- Purple -->
+    <color name="torrent_seeding">#66BB6A</color>        <!-- Green -->
+    <color name="torrent_error">#C62828</color>            <!-- Red -->
+    <color name="torrent_other">#757575</color>            <!-- Grey -->
+    <color name="torrent_background">#BDBDBD</color>    <!-- Light grey -->
+    <color name="file_low">#A5D6A7</color>                <!-- Light green -->
+    <color name="file_normal">#66BB6A</color>            <!-- Normal green -->
+    <color name="file_high">#1B5E20</color>                <!-- Dark green -->
+    <color name="file_off">#757575</color>                <!-- Grey -->
 
 </resources>

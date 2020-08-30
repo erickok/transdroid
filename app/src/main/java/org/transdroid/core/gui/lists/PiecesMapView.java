@@ -1,27 +1,24 @@
 package org.transdroid.core.gui.lists;
 
-import org.transdroid.R;
-
 import android.content.Context;
-import android.view.View;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.View;
+
+import org.transdroid.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.Math;
 
 class PiecesMapView extends View {
 
     private final float scale = getContext().getResources().getDisplayMetrics().density;
     private final int MINIMUM_HEIGHT = (int) (25 * scale);
     private final int MINIMUM_PIECE_WIDTH = (int) (2 * scale);
-
-    private ArrayList<Integer> pieces = null;
-
     private final Paint downloadingPaint = new Paint();
     private final Paint donePaint = new Paint();
     private final Paint partialDonePaint = new Paint();
+    private ArrayList<Integer> pieces = null;
 
     public PiecesMapView(Context context) {
         super(context);
@@ -35,15 +32,15 @@ class PiecesMapView extends View {
     }
 
     public void setPieces(List<Integer> pieces) {
-        this.pieces = new ArrayList<Integer>(pieces);
+        this.pieces = new ArrayList<>(pieces);
         invalidate();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            int ws = MeasureSpec.getSize(widthMeasureSpec);
-            int hs = Math.max(getHeight(), MINIMUM_HEIGHT);
-            setMeasuredDimension(ws, hs);
+        int ws = MeasureSpec.getSize(widthMeasureSpec);
+        int hs = Math.max(getHeight(), MINIMUM_HEIGHT);
+        setMeasuredDimension(ws, hs);
     }
 
     @Override
@@ -62,10 +59,10 @@ class PiecesMapView extends View {
         int pieceWidth;
 
         pieceWidth = MINIMUM_PIECE_WIDTH;
-        piecesScaled = new ArrayList<Integer>();
+        piecesScaled = new ArrayList<>();
 
         int bucketCount = (int) Math.ceil((double) width / (double) pieceWidth);
-        int bucketSize = (int) Math.floor((double)this.pieces.size() / (double) bucketCount);
+        int bucketSize = (int) Math.floor((double) this.pieces.size() / (double) bucketCount);
 
         // loop buckets
         for (int i = 0; i < bucketCount; i++) {
@@ -74,15 +71,15 @@ class PiecesMapView extends View {
             int start = i * bucketSize;
 
             // If this is the last bucket, throw the remainder of the pieces array into it
-            int end = (i == bucketCount-1) ? this.pieces.size() : (i+1) * bucketSize;
+            int end = (i == bucketCount - 1) ? this.pieces.size() : (i + 1) * bucketSize;
 
-            ArrayList<Integer> bucket = new ArrayList<Integer>(this.pieces.subList(start, end));
+            ArrayList<Integer> bucket = new ArrayList<>(this.pieces.subList(start, end));
 
             int doneCount = 0;
             int downloadingCount = 0;
 
             // loop pieces in bucket
-            for(int j = 0; j < bucket.size(); j++) {
+            for (int j = 0; j < bucket.size(); j++) {
                 // Count downloading pieces
                 if (bucket.get(j) == 1) {
                     downloadingCount++;
@@ -114,10 +111,9 @@ class PiecesMapView extends View {
             piecesScaled.add(state);
         }
 
-        String scaledPiecesString = "";
-        for (int s : piecesScaled)
-        {
-            scaledPiecesString += s;
+        StringBuilder scaledPiecesString = new StringBuilder();
+        for (int s : piecesScaled) {
+            scaledPiecesString.append(s);
         }
 
         // Draw downscaled peices

@@ -11,47 +11,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RemoteRssItemsAdapter extends BaseAdapter {
-	protected Context context;
-	protected List<RemoteRssItem> items;
+    protected Context context;
+    protected List<RemoteRssItem> items;
 
-	public RemoteRssItemsAdapter(Context context) {
-		this.context = context;
-		items = new ArrayList<>();
-	}
+    public RemoteRssItemsAdapter(Context context) {
+        this.context = context;
+        items = new ArrayList<>();
+    }
 
-	@Override
-	public int getCount() {
-		return items.size();
-	}
+    @Override
+    public int getCount() {
+        return items.size();
+    }
 
-	@Override
-	public Object getItem(int position) {
-		return items.get(position);
-	}
+    @Override
+    public Object getItem(int position) {
+        return items.get(position);
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		RemoteRssItemView itemView;
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        RemoteRssItemView itemView;
 
-		if (convertView == null) {
-			itemView = RemoteRssItemView_.build(context);
-		}
-		else {
-			itemView = (RemoteRssItemView) convertView;
-		}
+        if (convertView == null) {
+            itemView = RemoteRssItemView_.build(context);
+        } else {
+            itemView = (RemoteRssItemView) convertView;
+        }
 
-		itemView.bind((RemoteRssItem) getItem(position));
+        itemView.bind((RemoteRssItem) getItem(position));
 
-		return itemView;
-	}
+        return itemView;
+    }
 
-	public void updateItems(List<RemoteRssItem> remoteItems) {
-		items = remoteItems;
-		notifyDataSetChanged();
-	}
+    public void updateItems(List<RemoteRssItem> remoteItems) {
+        items = remoteItems;
+        notifyDataSetChanged();
+    }
 }

@@ -1,59 +1,59 @@
 <!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
 
-	<!-- Margins -->
-	<dimen name="margin_default">16dp</dimen>
-	<dimen name="margin_half">8dp</dimen>
-	<dimen name="margin_torrentlistleft">16dp</dimen>
-	<dimen name="margin_widget">8dp</dimen>
+    <!-- Margins -->
+    <dimen name="margin_default">16dp</dimen>
+    <dimen name="margin_half">8dp</dimen>
+    <dimen name="margin_torrentlistleft">16dp</dimen>
+    <dimen name="margin_widget">8dp</dimen>
 
-	<!-- Text sizes -->
-	<dimen name="text_small">12sp</dimen>
-	<dimen name="text_default">15sp</dimen>
-	<dimen name="text_enlarged">17sp</dimen>
-	<dimen name="text_enlargednumbers">24sp</dimen>
-	<dimen name="text_hugenumbers">35sp</dimen>
-	<dimen name="text_label">14sp</dimen>
-	
-	<!-- UI elements -->
-	<dimen name="ui_filters_list">220dp</dimen>
-	<dimen name="ui_navigation_filter">17sp</dimen>
-	<dimen name="ui_navigation_server">14sp</dimen>
-	<dimen name="ui_actions_padding">75dp</dimen>
-	<dimen name="ui_details_seperator">105dp</dimen>
-	<dimen name="ui_serverstatus_margin">2dp</dimen>
-	<dimen name="ui_serverstatus_signmargin">3dp</dimen>
-	<dimen name="ui_serverstatus_bignumber">21sp</dimen>
-	<dimen name="ui_serverstatus_sign">17dp</dimen>
-	<dimen name="ui_serverstatus_smallnumber">12sp</dimen>
-	<dimen name="ui_serverstatus_width">60dp</dimen>
-	<dimen name="ui_bignumber_size">20sp</dimen>
-	<dimen name="ui_bignumber_padding">2dp</dimen>
-	
-	<!-- Widget configuration -->
-	<integer name="widget_config_orientation">1</integer>
-	<dimen name="widget_preview_padding">20dp</dimen>
-	<dimen name="widget_preview_height">200dp</dimen>
-	<dimen name="widget_preview_width">320dp</dimen>
-	<dimen name="widget_header_height">46dp</dimen>
-	<dimen name="widget_header_padding">8dp</dimen>
-	<dimen name="widget_list_item_height">54dp</dimen>
-	<dimen name="widget_list_item_padding">6dp</dimen>
-	<dimen name="widget_list_item_padding_left">12dp</dimen>
-	
+    <!-- Text sizes -->
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_default">15sp</dimen>
+    <dimen name="text_enlarged">17sp</dimen>
+    <dimen name="text_enlargednumbers">24sp</dimen>
+    <dimen name="text_hugenumbers">35sp</dimen>
+    <dimen name="text_label">14sp</dimen>
+
+    <!-- UI elements -->
+    <dimen name="ui_filters_list">220dp</dimen>
+    <dimen name="ui_navigation_filter">17sp</dimen>
+    <dimen name="ui_navigation_server">14sp</dimen>
+    <dimen name="ui_actions_padding">75dp</dimen>
+    <dimen name="ui_details_seperator">105dp</dimen>
+    <dimen name="ui_serverstatus_margin">2dp</dimen>
+    <dimen name="ui_serverstatus_signmargin">3dp</dimen>
+    <dimen name="ui_serverstatus_bignumber">21sp</dimen>
+    <dimen name="ui_serverstatus_sign">17dp</dimen>
+    <dimen name="ui_serverstatus_smallnumber">12sp</dimen>
+    <dimen name="ui_serverstatus_width">60dp</dimen>
+    <dimen name="ui_bignumber_size">20sp</dimen>
+    <dimen name="ui_bignumber_padding">2dp</dimen>
+
+    <!-- Widget configuration -->
+    <integer name="widget_config_orientation">1</integer>
+    <dimen name="widget_preview_padding">20dp</dimen>
+    <dimen name="widget_preview_height">200dp</dimen>
+    <dimen name="widget_preview_width">320dp</dimen>
+    <dimen name="widget_header_height">46dp</dimen>
+    <dimen name="widget_header_padding">8dp</dimen>
+    <dimen name="widget_list_item_height">54dp</dimen>
+    <dimen name="widget_list_item_padding">6dp</dimen>
+    <dimen name="widget_list_item_padding_left">12dp</dimen>
+
 </resources>

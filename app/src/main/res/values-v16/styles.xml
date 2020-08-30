@@ -1,51 +1,51 @@
 <!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->
-	<style name="SectionHeader" parent="TextAppearance.AppCompat">
-		<item name="android:drawablePadding">4dp</item>
-		<item name="android:layout_marginTop">@dimen/margin_default</item>
-		<item name="android:textColor">@color/green</item>
-		<item name="android:textSize">13sp</item>
-		<item name="android:fontFamily">sans-serif</item>
-	</style>
-	
-	<style name="DefaultTextView" parent="TextAppearance.AppCompat">
-		<item name="android:textSize">@dimen/text_default</item>
-		<item name="android:fontFamily">sans-serif-light</item>
-	</style>
+    <!-- Taken from http://stackoverflow.com/questions/10020466/android-4-0-sub-title-section-label-styling -->
+    <style name="SectionHeader" parent="TextAppearance.AppCompat">
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:layout_marginTop">@dimen/margin_default</item>
+        <item name="android:textColor">@color/green</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
 
-	<style name="LabelTextView" parent="TextAppearance.AppCompat">
-		<item name="android:textSize">@dimen/text_label</item>
-		<item name="android:background">#333</item>
-		<item name="android:textColor">#fff</item>
-		<item name="android:paddingLeft">4dip</item>
-		<item name="android:paddingRight">4dip</item>
-		<item name="android:paddingTop">2dip</item>
-		<item name="android:paddingBottom">2dip</item>
-		<item name="android:fontFamily">sans-serif-condensed</item>
-	</style>
-	
-	<style name="BigNumberButton">
-		<item name="android:background">?android:attr/selectableItemBackground</item>
-		<item name="android:padding">@dimen/ui_bignumber_padding</item>
-		<item name="android:textSize">@dimen/ui_bignumber_size</item>
-		<item name="android:fontFamily">sans-serif-light</item>
-	</style>
-	
+    <style name="DefaultTextView" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_default</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="LabelTextView" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_label</item>
+        <item name="android:background">#333</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:paddingLeft">4dip</item>
+        <item name="android:paddingRight">4dip</item>
+        <item name="android:paddingTop">2dip</item>
+        <item name="android:paddingBottom">2dip</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="BigNumberButton">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:padding">@dimen/ui_bignumber_padding</item>
+        <item name="android:textSize">@dimen/ui_bignumber_size</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
 </resources>

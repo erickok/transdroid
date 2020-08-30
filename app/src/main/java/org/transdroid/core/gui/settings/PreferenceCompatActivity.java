@@ -22,58 +22,58 @@ public class PreferenceCompatActivity extends AppCompatActivity implements AppCo
 
     public PreferenceManager getPreferenceManager() {
         return fragment.getPreferenceManager();
-        }
+    }
 
-        public PreferenceScreen getPreferenceScreen() {
-            return fragment.getPreferenceScreen();
-        }
+    public PreferenceScreen getPreferenceScreen() {
+        return fragment.getPreferenceScreen();
+    }
 
-        public Preference findPreference(CharSequence key) {
-            return fragment.findPreference(key);
+    public Preference findPreference(CharSequence key) {
+        return fragment.findPreference(key);
+    }
+
+    @Override
+    public boolean onPreferenceStartScreen(PreferenceFragmentCompat caller, PreferenceScreen pref) {
+        LowerPreferencesFragment lowerFragment = new LowerPreferencesFragment(pref);
+        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, lowerFragment).addToBackStack("lower").commit();
+        return true;
+    }
+
+    public static class RootPreferencesFragment extends PreferenceFragmentCompat {
+
+        private int preferencesResId;
+
+        public RootPreferencesFragment(int preferencesResId) {
+            this.preferencesResId = preferencesResId;
         }
 
         @Override
-        public boolean onPreferenceStartScreen(PreferenceFragmentCompat caller, PreferenceScreen pref) {
-            LowerPreferencesFragment lowerFragment = new LowerPreferencesFragment(pref);
-            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, lowerFragment).addToBackStack("lower").commit();
-            return true;
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            addPreferencesFromResource(preferencesResId);
+        }
+    }
+
+    public static class LowerPreferencesFragment extends PreferenceFragmentCompat {
+
+        private PreferenceScreen prefs;
+
+        public LowerPreferencesFragment() {
         }
 
-        public static class RootPreferencesFragment extends PreferenceFragmentCompat {
-
-            private int preferencesResId;
-
-            public RootPreferencesFragment(int preferencesResId) {
-                this.preferencesResId = preferencesResId;
-            }
-
-            @Override
-            public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-                addPreferencesFromResource(preferencesResId);
-            }
+        public LowerPreferencesFragment(PreferenceScreen prefs) {
+            this.prefs = prefs;
         }
 
-        public static class LowerPreferencesFragment extends PreferenceFragmentCompat {
-
-            private PreferenceScreen prefs;
-
-            public LowerPreferencesFragment() {
-            }
-
-            public LowerPreferencesFragment(PreferenceScreen prefs) {
-                this.prefs = prefs;
-            }
-
-            @Override
-            public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-                if (prefs != null) {
-                    // Update the already loaded preferences with this fragment's manager to handle dialog clicks, etc.
-                    for (int i = 0; i < prefs.getPreferenceCount(); i++) {
-                        PreferenceManagerBinder.bind(prefs.getPreference(i), getPreferenceManager());
-                    }
-                    setPreferenceScreen(prefs);
-                    prefs = null;
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            if (prefs != null) {
+                // Update the already loaded preferences with this fragment's manager to handle dialog clicks, etc.
+                for (int i = 0; i < prefs.getPreferenceCount(); i++) {
+                    PreferenceManagerBinder.bind(prefs.getPreference(i), getPreferenceManager());
                 }
+                setPreferenceScreen(prefs);
+                prefs = null;
             }
         }
     }
+}

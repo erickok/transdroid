@@ -1,88 +1,89 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:fillViewport="true" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		android:padding="@dimen/margin_default" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_default">
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
-			android:layout_marginBottom="@dimen/margin_half"
-			android:layout_marginTop="@dimen/margin_half"
-			android:drawableLeft="@drawable/ic_launcher"
-			android:drawablePadding="@dimen/margin_half"
-			android:fontFamily="sans-serif-condensed"
-			android:gravity="center_vertical"
-			android:text="@string/app_name"
-			android:textColor="@android:color/white"
-			android:textSize="36sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_half"
+            android:layout_marginBottom="@dimen/margin_half"
+            android:drawableStart="@drawable/ic_launcher"
+            android:drawableLeft="@drawable/ic_launcher"
+            android:drawablePadding="@dimen/margin_half"
+            android:gravity="center_vertical"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="36sp"
+            app:fontFamily="sans-serif-condensed" />
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
-			android:gravity="center"
-			android:text="@string/system_description" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/system_description" />
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
-			android:layout_marginTop="@dimen/margin_default"
-			android:fontFamily="sans-serif-condensed"
-			android:gravity="center"
-			android:text="@string/system_developer"
-			android:textColor="@android:color/white"
-			android:textSize="18sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_default"
+            android:gravity="center"
+            android:text="@string/system_developer"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:fontFamily="sans-serif-condensed" />
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
-			android:layout_marginBottom="@dimen/margin_default"
-			android:layout_marginTop="4dip"
-			android:gravity="center"
-			android:text="@string/system_license" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dip"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:gravity="center"
+            android:text="@string/system_license" />
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
-			android:layout_marginBottom="@dimen/margin_half"
-			android:gravity="center"
-			android:text="@string/system_librarieslabel" />
-		
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
-			android:layout_marginBottom="@dimen/margin_default"
-			android:fontFamily="monospace"
-			android:textSize="12sp"
-			android:text="@string/system_libraries" />
-	</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_half"
+            android:gravity="center"
+            android:text="@string/system_librarieslabel" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:text="@string/system_libraries"
+            android:textSize="12sp"
+            app:fontFamily="monospace" />
+    </LinearLayout>
 
 </ScrollView>

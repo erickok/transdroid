@@ -1,103 +1,101 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<RelativeLayout
-	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/details_container"
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	tools:context=".core.gui.DetailsActivity_">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/details_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".core.gui.DetailsActivity_">
 
-	<androidx.appcompat.widget.ActionMenuView
-		android:id="@+id/details_menu"
-		style="@style/SplitToolbar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:minHeight="?attr/actionBarSize" />
+    <androidx.appcompat.widget.ActionMenuView
+        android:id="@+id/details_menu"
+        style="@style/SplitToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:minHeight="?attr/actionBarSize" />
 
-	<androidx.appcompat.widget.ActionMenuView
-		android:id="@+id/contextual_menu"
-		style="@style/SplitToolbar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:minHeight="?attr/actionBarSize"
-		android:visibility="gone"
-		tools:visibility="visible"/>
+    <androidx.appcompat.widget.ActionMenuView
+        android:id="@+id/contextual_menu"
+        style="@style/SplitToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:minHeight="?attr/actionBarSize"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-		android:id="@+id/swipe_refresh_layout"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_above="@id/details_menu">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/details_menu">
 
-		<ListView
-			android:id="@+id/details_list"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:choiceMode="multipleChoiceModal"
-			android:divider="@null"
-			android:dividerHeight="0dip"
-			android:visibility="gone" />
+        <ListView
+            android:id="@+id/details_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:choiceMode="multipleChoiceModal"
+            android:divider="@null"
+            android:dividerHeight="0dip"
+            android:visibility="gone" />
 
-	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-	<ProgressBar
-		android:id="@+id/loading_progress"
-		android:layout_width="128dp"
-		android:layout_height="128dp"
-		android:layout_centerInParent="true"
-		android:indeterminate="true"
-		android:indeterminateDrawable="?attr/loading_progress"
-		android:indeterminateOnly="true"
-		android:visibility="gone"
-		tools:visibility="visible" />
+    <ProgressBar
+        android:id="@+id/loading_progress"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:indeterminateDrawable="?attr/loading_progress"
+        android:indeterminateOnly="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-	<TextView
-		android:id="@+id/empty_text"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
-		android:drawablePadding="8dip"
-		android:drawableTop="?attr/loading_progress"
-		android:gravity="center"
-		android:padding="@dimen/margin_default"
-		android:text="@string/navigation_emptydetails"
-		android:textIsSelectable="false"
-		android:visibility="visible" />
+    <TextView
+        android:id="@+id/empty_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:drawableTop="?attr/loading_progress"
+        android:drawablePadding="8dip"
+        android:gravity="center"
+        android:padding="@dimen/margin_default"
+        android:text="@string/navigation_emptydetails"
+        android:textIsSelectable="false"
+        android:visibility="visible" />
 
-	<TextView
-		android:id="@+id/error_text"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
-		android:drawablePadding="8dip"
-		android:drawableTop="?attr/loading_progress"
-		android:gravity="center"
-		android:maxWidth="400dip"
-		android:padding="@dimen/margin_default"
-		android:textIsSelectable="false"
-		android:visibility="gone"
-		tools:visibility="visible"/>
+    <TextView
+        android:id="@+id/error_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:drawableTop="?attr/loading_progress"
+        android:drawablePadding="8dip"
+        android:gravity="center"
+        android:maxWidth="400dip"
+        android:padding="@dimen/margin_default"
+        android:textIsSelectable="false"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-	<View
-		style="@style/SplitToolbarShadow"
-		android:layout_above="@id/details_menu" />
+    <View
+        style="@style/SplitToolbarShadow"
+        android:layout_above="@id/details_menu" />
 
 </RelativeLayout>

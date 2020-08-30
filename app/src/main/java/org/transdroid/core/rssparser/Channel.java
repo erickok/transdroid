@@ -4,151 +4,150 @@
  */
 package org.transdroid.core.rssparser;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 public class Channel implements Parcelable {
 
-	private int id;
-	private String title;
-	private String link;
-	private String description;
-	private Date pubDate;
-	private long lastBuildDate;
-	private List<String> categories;
-	private List<Item> items;
-	private String image;
+    public static final Parcelable.Creator<Channel> CREATOR = new Parcelable.Creator<Channel>() {
+        public Channel createFromParcel(Parcel in) {
+            return new Channel(in);
+        }
 
-	public Channel() {
-		this.categories = new ArrayList<>();
-		this.items = new ArrayList<>();
-	}
+        public Channel[] newArray(int size) {
+            return new Channel[size];
+        }
+    };
+    private int id;
+    private String title;
+    private String link;
+    private String description;
+    private Date pubDate;
+    private long lastBuildDate;
+    private List<String> categories;
+    private List<Item> items;
+    private String image;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public Channel() {
+        this.categories = new ArrayList<>();
+        this.items = new ArrayList<>();
+    }
 
-	public int getId() {
-		return id;
-	}
+    private Channel(Parcel in) {
+        this();
+        id = in.readInt();
+        title = in.readString();
+        link = in.readString();
+        description = in.readString();
+        long pubDateIn = in.readLong();
+        pubDate = pubDateIn == -1 ? null : new Date(pubDateIn);
+        lastBuildDate = in.readLong();
+        categories = new ArrayList<>();
+        in.readTypedList(items, Item.CREATOR);
+        in.readStringList(categories);
+        image = in.readString();
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setLink(String link) {
-		this.link = link;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public String getLink() {
-		return link;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getLink() {
+        return link;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setLink(String link) {
+        this.link = link;
+    }
 
-	public void setPubDate(Date date) {
-		this.pubDate = date;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public Date getPubDate() {
-		return pubDate;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setLastBuildDate(long lastBuildDate) {
-		this.lastBuildDate = lastBuildDate;
-	}
+    public Date getPubDate() {
+        return pubDate;
+    }
 
-	public long getLastBuildDate() {
-		return lastBuildDate;
-	}
+    public void setPubDate(Date date) {
+        this.pubDate = date;
+    }
 
-	public void setCategories(List<String> categories) {
-		this.categories = categories;
-	}
+    public long getLastBuildDate() {
+        return lastBuildDate;
+    }
 
-	public void addCategory(String category) {
-		this.categories.add(category);
-	}
+    public void setLastBuildDate(long lastBuildDate) {
+        this.lastBuildDate = lastBuildDate;
+    }
 
-	public List<String> getCategories() {
-		return categories;
-	}
+    public void addCategory(String category) {
+        this.categories.add(category);
+    }
 
-	public void setItems(List<Item> items) {
-		this.items = items;
-	}
+    public List<String> getCategories() {
+        return categories;
+    }
 
-	public void addItem(Item item) {
-		this.items.add(item);
-	}
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
 
-	public List<Item> getItems() {
-		return items;
-	}
+    public void addItem(Item item) {
+        this.items.add(item);
+    }
 
-	public void setImage(String image) {
-		this.image = image;
-	}
+    public List<Item> getItems() {
+        return items;
+    }
 
-	public String getImage() {
-		return image;
-	}
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
 
-	@Override
-	public int describeContents() {
-		return 0;
-	}
+    public String getImage() {
+        return image;
+    }
 
-	@Override
-	public void writeToParcel(Parcel out, int flags) {
-		out.writeInt(id);
-		out.writeString(title);
-		out.writeString(link);
-		out.writeString(description);
-		out.writeLong(pubDate == null ? -1 : pubDate.getTime());
-		out.writeLong(lastBuildDate);
-		out.writeTypedList(items);
-		out.writeStringList(categories);
-		out.writeString(image);
-	}
+    public void setImage(String image) {
+        this.image = image;
+    }
 
-	public static final Parcelable.Creator<Channel> CREATOR = new Parcelable.Creator<Channel>() {
-		public Channel createFromParcel(Parcel in) {
-			return new Channel(in);
-		}
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-		public Channel[] newArray(int size) {
-			return new Channel[size];
-		}
-	};
-
-	private Channel(Parcel in) {
-		this();
-		id = in.readInt();
-		title = in.readString();
-		link = in.readString();
-		description = in.readString();
-		long pubDateIn = in.readLong();
-		pubDate = pubDateIn == -1 ? null : new Date(pubDateIn);
-		lastBuildDate = in.readLong();
-		categories = new ArrayList<>();
-		in.readTypedList(items, Item.CREATOR);
-		in.readStringList(categories);
-		image = in.readString();
-	}
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(id);
+        out.writeString(title);
+        out.writeString(link);
+        out.writeString(description);
+        out.writeLong(pubDate == null ? -1 : pubDate.getTime());
+        out.writeLong(lastBuildDate);
+        out.writeTypedList(items);
+        out.writeStringList(categories);
+        out.writeString(image);
+    }
 
 }

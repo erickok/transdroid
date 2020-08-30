@@ -1,31 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
-	<declare-styleable name="TorrentProgressBar">
-		<attr name="progress" format="integer" />
-		<attr name="isActive" format="boolean" />
-	</declare-styleable>
+    <declare-styleable name="TorrentProgressBar">
+        <attr name="progress" format="integer" />
+        <attr name="isActive" format="boolean" />
+    </declare-styleable>
 
-	<!-- Themeable drawables-->
-	<attr name="drawer_background" format="reference" />
-	<attr name="loading_progress" format="reference" />
-	<attr name="activatable_background" format="reference" />
-	<attr name="text_bright" format="reference" />
-	<attr name="text_actionbar" format="reference" />
-	<attr name="text_actionbar_secondary" format="reference" />
+    <!-- Themeable drawables-->
+    <attr name="drawer_background" format="reference" />
+    <attr name="loading_progress" format="reference" />
+    <attr name="activatable_background" format="reference" />
+    <attr name="text_bright" format="reference" />
+    <attr name="text_actionbar" format="reference" />
+    <attr name="text_actionbar_secondary" format="reference" />
 </resources>

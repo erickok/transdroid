@@ -1,76 +1,75 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:baselineAligned="false"
-	android:orientation="horizontal"
-	tools:context=".core.gui.search.SearchActivity_">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    tools:context=".core.gui.search.SearchActivity_">
 
-	<androidx.appcompat.widget.Toolbar
-		android:id="@+id/search_toolbar"
-		style="@style/DefaultToolbar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:minHeight="?attr/actionBarSize" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/search_toolbar"
+        style="@style/DefaultToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize" />
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_below="@id/search_toolbar"
-		android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_toolbar"
+        android:orientation="horizontal">
 
-		<ListView
-			android:id="@+id/searchsites_list"
-			android:layout_width="0dip"
-			android:layout_height="match_parent"
-			android:layout_weight="1"
-			android:choiceMode="singleChoice"
-			android:listSelector="?attr/activatable_background"
-			tools:listitem="@layout/list_item_searchsite" />
+        <ListView
+            android:id="@+id/searchsites_list"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:choiceMode="singleChoice"
+            android:listSelector="?attr/activatable_background"
+            tools:listitem="@layout/list_item_searchsite" />
 
-		<fragment
-			android:id="@+id/searchresults_fragment"
-			class="org.transdroid.core.gui.search.SearchResultsFragment_"
-			android:layout_width="0dip"
-			android:layout_height="match_parent"
-			android:layout_weight="2"
-			tools:layout="@layout/fragment_searchresults" />
+        <fragment
+            android:id="@+id/searchresults_fragment"
+            class="org.transdroid.core.gui.search.SearchResultsFragment_"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            tools:layout="@layout/fragment_searchresults" />
 
-		<TextView
-			android:id="@+id/installmodule_text"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:drawablePadding="8dip"
-			android:drawableTop="?attr/loading_progress"
-			android:gravity="center"
-			android:maxWidth="400dip"
-			android:padding="@dimen/margin_default"
-			android:text="@string/search_installsearch"
-			android:textIsSelectable="false"
-			android:visibility="gone" />
+        <TextView
+            android:id="@+id/installmodule_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableTop="?attr/loading_progress"
+            android:drawablePadding="8dip"
+            android:gravity="center"
+            android:maxWidth="400dip"
+            android:padding="@dimen/margin_default"
+            android:text="@string/search_installsearch"
+            android:textIsSelectable="false"
+            android:visibility="gone" />
 
-	</LinearLayout>
+    </LinearLayout>
 
-	<View
-		style="@style/DefaultToolbarShadow"
-		android:layout_below="@id/search_toolbar" />
+    <View
+        style="@style/DefaultToolbarShadow"
+        android:layout_below="@id/search_toolbar" />
 
 </RelativeLayout>

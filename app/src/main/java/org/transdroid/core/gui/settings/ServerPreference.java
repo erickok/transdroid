@@ -24,55 +24,54 @@ import org.transdroid.core.app.settings.ServerSetting;
 
 /**
  * Represents a {@link ServerSetting} in a preferences screen.
+ *
  * @author Eric Kok
  */
 public class ServerPreference extends Preference {
 
-	private static final int ORDER_START = 1;
+    private static final int ORDER_START = 1;
 
-	protected ServerSetting serverSetting;
-	private OnServerClickedListener onServerClickedListener = null;
+    protected ServerSetting serverSetting;
+    private OnServerClickedListener onServerClickedListener = null;
 
-	public ServerPreference(Context context) {
-		super(context);
-		setOnPreferenceClickListener(onPreferenceClicked);
-		setIconSpaceReserved(false);
-	}
+    public ServerPreference(Context context) {
+        super(context);
+        OnPreferenceClickListener onPreferenceClicked = preference -> {
+            if (onServerClickedListener != null)
+                onServerClickedListener.onServerClicked(serverSetting);
+            return true;
+        };
+        setOnPreferenceClickListener(onPreferenceClicked);
+        setIconSpaceReserved(false);
+    }
 
-	/**
-	 * Set the server settings object that is bound to this preference item
-	 * @param serverSetting The server settings
-	 * @return Itself, for method chaining
-	 */
-	public ServerPreference setServerSetting(ServerSetting serverSetting) {
-		this.serverSetting = serverSetting;
-		setTitle(serverSetting.getName());
-		setSummary(serverSetting.getHumanReadableIdentifier());
-		setOrder(ORDER_START + serverSetting.getOrder());
-		return this;
-	}
+    /**
+     * Set the server settings object that is bound to this preference item
+     *
+     * @param serverSetting The server settings
+     * @return Itself, for method chaining
+     */
+    public ServerPreference setServerSetting(ServerSetting serverSetting) {
+        this.serverSetting = serverSetting;
+        setTitle(serverSetting.getName());
+        setSummary(serverSetting.getHumanReadableIdentifier());
+        setOrder(ORDER_START + serverSetting.getOrder());
+        return this;
+    }
 
-	/**
-	 * Set a listener that will be notified of click events on this preference
-	 * @param onServerClickedListener The click listener to register
-	 * @return Itself, for method chaining
-	 */
-	public ServerPreference setOnServerClickedListener(OnServerClickedListener onServerClickedListener) {
-		this.onServerClickedListener = onServerClickedListener;
-		return this;
-	}
+    /**
+     * Set a listener that will be notified of click events on this preference
+     *
+     * @param onServerClickedListener The click listener to register
+     * @return Itself, for method chaining
+     */
+    public ServerPreference setOnServerClickedListener(OnServerClickedListener onServerClickedListener) {
+        this.onServerClickedListener = onServerClickedListener;
+        return this;
+    }
 
-	private OnPreferenceClickListener onPreferenceClicked = new OnPreferenceClickListener() {
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			if (onServerClickedListener != null)
-				onServerClickedListener.onServerClicked(serverSetting);
-			return true;
-		}
-	};
-
-	public interface OnServerClickedListener {
-		public void onServerClicked(ServerSetting serverSetting);
-	}
+    public interface OnServerClickedListener {
+        void onServerClicked(ServerSetting serverSetting);
+    }
 
 }

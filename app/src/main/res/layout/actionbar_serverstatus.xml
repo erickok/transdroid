@@ -1,122 +1,124 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="?android:attr/actionBarSize"
-	tools:background="@android:color/white"
-	android:orientation="horizontal">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/actionBarSize"
+    android:orientation="horizontal"
+    tools:background="@android:color/white">
 
-	<View
-		android:layout_width="0dp"
-		android:layout_height="0dp"
-		android:layout_weight="1" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-	<RelativeLayout
-		android:id="@+id/speedswrapper_layout"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_vertical|end"
-		android:background="?attr/activatable_background"
-		android:clickable="true"
-		android:focusable="true"
-		android:padding="@dimen/ui_serverstatus_margin">
+    <RelativeLayout
+        android:id="@+id/speedswrapper_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:background="?attr/activatable_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/ui_serverstatus_margin">
 
-		<TextView
-			android:id="@+id/downcount_text"
-			android:layout_width="@dimen/ui_serverstatus_width"
-			android:layout_height="wrap_content"
-			android:fontFamily="sans-serif-light"
-			android:gravity="end"
-			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_bignumber"
-			tools:text="7"/>
+        <TextView
+            android:id="@+id/downcount_text"
+            android:layout_width="@dimen/ui_serverstatus_width"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="?attr/text_actionbar"
+            android:textSize="@dimen/ui_serverstatus_bignumber"
+            app:fontFamily="sans-serif-light"
+            tools:text="7" />
 
-		<TextView
-			android:id="@+id/downcount_sign"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/downcount_text"
-			android:layout_toEndOf="@id/downcount_text"
-			android:fontFamily="sans-serif-light"
-			android:text="↓"
-			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_sign"
-			android:visibility="invisible"
-			tools:ignore="HardcodedText"
-			tools:visibility="visible"/>
+        <TextView
+            android:id="@+id/downcount_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/downcount_text"
+            android:layout_toRightOf="@id/downcount_text"
+            android:text="↓"
+            android:textColor="?attr/text_actionbar"
+            android:textSize="@dimen/ui_serverstatus_sign"
+            android:visibility="invisible"
+            app:fontFamily="sans-serif-light"
+            tools:ignore="HardcodedText"
+            tools:visibility="visible" />
 
-		<TextView
-			android:id="@+id/upcount_text"
-			android:layout_width="@dimen/ui_serverstatus_width"
-			android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/downcount_sign"
-			android:layout_toEndOf="@id/downcount_sign"
-			android:fontFamily="sans-serif-light"
-			android:gravity="end"
-			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_bignumber"
-			tools:text="128"/>
+        <TextView
+            android:id="@+id/upcount_text"
+            android:layout_width="@dimen/ui_serverstatus_width"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/downcount_sign"
+            android:layout_toRightOf="@id/downcount_sign"
+            android:gravity="end"
+            android:textColor="?attr/text_actionbar"
+            android:textSize="@dimen/ui_serverstatus_bignumber"
+            app:fontFamily="sans-serif-light"
+            tools:text="128" />
 
-		<TextView
-			android:id="@+id/upcount_sign"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/upcount_text"
-			android:layout_toEndOf="@id/upcount_text"
-			android:fontFamily="sans-serif-light"
-			android:text="↑"
-			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_sign"
-			android:visibility="invisible"
-			tools:ignore="HardcodedText"
-			tools:visibility="visible"/>
+        <TextView
+            android:id="@+id/upcount_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/upcount_text"
+            android:layout_toRightOf="@id/upcount_text"
+            android:text="↑"
+            android:textColor="?attr/text_actionbar"
+            android:textSize="@dimen/ui_serverstatus_sign"
+            android:visibility="invisible"
+            app:fontFamily="sans-serif-light"
+            tools:ignore="HardcodedText"
+            tools:visibility="visible" />
 
-		<TextView
-			android:id="@+id/downspeed_text"
-			android:layout_width="@dimen/ui_serverstatus_width"
-			android:layout_height="wrap_content"
-			android:layout_alignLeft="@id/downcount_text"
-			android:layout_alignRight="@id/downcount_sign"
-			android:layout_below="@id/downcount_text"
-			android:layout_marginTop="-4dip"
-			android:fontFamily="sans-serif-light"
-			android:gravity="end"
-			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_smallnumber"
-			tools:text="1.2 MB/s"/>
+        <TextView
+            android:id="@+id/downspeed_text"
+            android:layout_width="@dimen/ui_serverstatus_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/downcount_text"
+            android:layout_alignStart="@id/downcount_text"
+            android:layout_alignLeft="@id/downcount_text"
+            android:layout_alignEnd="@id/downcount_sign"
+            android:layout_alignRight="@id/downcount_sign"
+            android:layout_marginTop="-4dip"
+            android:gravity="end"
+            android:textColor="?attr/text_actionbar"
+            android:textSize="@dimen/ui_serverstatus_smallnumber"
+            app:fontFamily="sans-serif-light"
+            tools:text="1.2 MB/s" />
 
-		<TextView
-			android:id="@+id/upspeed_text"
-			android:layout_width="@dimen/ui_serverstatus_width"
-			android:layout_height="wrap_content"
-			android:layout_alignLeft="@id/upcount_text"
-			android:layout_alignStart="@id/upcount_text"
-			android:layout_alignRight="@id/upcount_sign"
-			android:layout_alignEnd="@id/upcount_sign"
-			android:layout_below="@id/upcount_text"
-			android:layout_marginTop="-4dip"
-			android:fontFamily="sans-serif-light"
-			android:gravity="end"
-			android:textColor="?attr/text_actionbar"
-			android:textSize="@dimen/ui_serverstatus_smallnumber"
-			tools:text="678 KB/s"/>
+        <TextView
+            android:id="@+id/upspeed_text"
+            android:layout_width="@dimen/ui_serverstatus_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/upcount_text"
+            android:layout_alignStart="@id/upcount_text"
+            android:layout_alignLeft="@id/upcount_text"
+            android:layout_alignEnd="@id/upcount_sign"
+            android:layout_alignRight="@id/upcount_sign"
+            android:layout_marginTop="-4dip"
+            android:gravity="end"
+            android:textColor="?attr/text_actionbar"
+            android:textSize="@dimen/ui_serverstatus_smallnumber"
+            app:fontFamily="sans-serif-light"
+            tools:text="678 KB/s" />
 
-	</RelativeLayout>
+    </RelativeLayout>
 
 </LinearLayout>

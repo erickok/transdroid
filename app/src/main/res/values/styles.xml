@@ -1,108 +1,108 @@
 <!--
   Copyright 2010-2018 Eric Kok et al.
-  
+
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   Transdroid is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<style name="TransdroidTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-		<item name="drawer_background">@color/transdroid_background</item>
-		<item name="activatable_background">@drawable/activatable_background</item>
+    <style name="TransdroidTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="drawer_background">@color/transdroid_background</item>
+        <item name="activatable_background">@drawable/activatable_background</item>
 
-		<item name="colorPrimary">@color/green</item>
-		<item name="colorPrimaryDark">@color/green_dark</item>
-		<item name="colorControlHighlight">@color/green_light</item>
-		<item name="colorAccent">@color/green</item>
-		<item name="windowActionModeOverlay">true</item>
-		<item name="actionModeBackground">@color/grey</item>
-		<item name="android:textViewStyle">@style/DefaultTextView</item>
-		<item name="android:windowBackground">@color/transdroid_background</item>
-		<item name="loading_progress">@drawable/loading_progress</item>
-		<item name="text_bright">@color/transdroid_text_bright</item>
-		<item name="text_actionbar">@color/transdroid_text_actionbar</item>
-		<item name="text_actionbar_secondary">@color/transdroid_text_actionbar</item>
-	</style>
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryDark">@color/green_dark</item>
+        <item name="colorControlHighlight">@color/green_light</item>
+        <item name="colorAccent">@color/green</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/grey</item>
+        <item name="android:textViewStyle">@style/DefaultTextView</item>
+        <item name="android:windowBackground">@color/transdroid_background</item>
+        <item name="loading_progress">@drawable/loading_progress</item>
+        <item name="text_bright">@color/transdroid_text_bright</item>
+        <item name="text_actionbar">@color/transdroid_text_actionbar</item>
+        <item name="text_actionbar_secondary">@color/transdroid_text_actionbar</item>
+    </style>
 
-	<style name="TransdroidTheme.Settings" parent="Theme.AppCompat.DayNight.DarkActionBar">
-		<item name="colorPrimary">@color/green</item>
-		<item name="colorPrimaryDark">@color/green_dark</item>
-		<item name="colorControlHighlight">@color/green_light</item>
-		<item name="colorAccent">@color/green</item>
-		<item name="android:windowBackground">@color/transdroid_background</item>
-	</style>
+    <style name="TransdroidTheme.Settings" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryDark">@color/green_dark</item>
+        <item name="colorControlHighlight">@color/green_light</item>
+        <item name="colorAccent">@color/green</item>
+        <item name="android:windowBackground">@color/transdroid_background</item>
+    </style>
 
-	<!-- No theme background to let the user's wall paper shine through -->
-	<!-- Inspired by NoNonsenseNotes's ThemeWidgetConfig -->
-	<style name="TransdroidTheme.WidgetConfig" parent="@style/TransdroidTheme">
-		<item name="android:background">@null</item>
-		<item name="android:colorBackgroundCacheHint">@null</item>
-		<item name="android:windowContentOverlay">@null</item>
-		<item name="android:windowShowWallpaper">true</item>
-		<item name="android:windowBackground">@android:color/transparent</item>
-		<item name="windowActionBar">true</item>
-		<item name="windowNoTitle">false</item>
-	</style>
+    <!-- No theme background to let the user's wall paper shine through -->
+    <!-- Inspired by NoNonsenseNotes's ThemeWidgetConfig -->
+    <style name="TransdroidTheme.WidgetConfig" parent="@style/TransdroidTheme">
+        <item name="android:background">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+    </style>
 
-	<style name="DefaultToolbar">
-		<item name="android:background">?attr/colorPrimary</item>
-		<item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-		<item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-	</style>
+    <style name="DefaultToolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
 
-	<style name="DefaultToolbarShadow">
-		<item name="android:background">@drawable/elevation_shadow</item>
-		<item name="android:layout_height">3dp</item>
-		<item name="android:layout_width">match_parent</item>
-	</style>
+    <style name="DefaultToolbarShadow">
+        <item name="android:background">@drawable/elevation_shadow</item>
+        <item name="android:layout_height">3dp</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
 
-	<style name="SplitToolbar">
-		<item name="android:background">@color/grey</item>
-		<item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-		<item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-	</style>
+    <style name="SplitToolbar">
+        <item name="android:background">@color/grey</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
 
-	<style name="SplitToolbarShadow">
-		<item name="android:background">@drawable/elevation_shadow_reverse</item>
-		<item name="android:layout_height">3dp</item>
-		<item name="android:layout_width">match_parent</item>
-	</style>
+    <style name="SplitToolbarShadow">
+        <item name="android:background">@drawable/elevation_shadow_reverse</item>
+        <item name="android:layout_height">3dp</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
 
-	<style name="SectionHeader" parent="TextAppearance.AppCompat">
-		<item name="android:drawablePadding">4dp</item>
-		<item name="android:layout_marginTop">@dimen/margin_default</item>
-		<item name="android:textColor">@color/green</item>
-		<item name="android:textSize">13sp</item>
-	</style>
-	
-	<style name="DefaultTextView" parent="TextAppearance.AppCompat">
-		<item name="android:textSize">@dimen/text_default</item>
-	</style>
+    <style name="SectionHeader" parent="TextAppearance.AppCompat">
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:layout_marginTop">@dimen/margin_default</item>
+        <item name="android:textColor">@color/green</item>
+        <item name="android:textSize">13sp</item>
+    </style>
 
-	<style name="LabelTextView" parent="TextAppearance.AppCompat">
-		<item name="android:textSize">@dimen/text_label</item>
-		<item name="android:background">#333</item>
-		<item name="android:textColor">#fff</item>
-		<item name="android:paddingLeft">4dip</item>
-		<item name="android:paddingRight">4dip</item>
-		<item name="android:paddingTop">2dip</item>
-		<item name="android:paddingBottom">2dip</item>
-	</style>
-	
-	<style name="BigNumberButton">
-		<item name="android:background">?android:attr/selectableItemBackground</item>
-		<item name="android:padding">@dimen/ui_bignumber_padding</item>
-		<item name="android:textSize">@dimen/ui_bignumber_size</item>
-	</style>
-	
+    <style name="DefaultTextView" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_default</item>
+    </style>
+
+    <style name="LabelTextView" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_label</item>
+        <item name="android:background">#333</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:paddingLeft">4dip</item>
+        <item name="android:paddingRight">4dip</item>
+        <item name="android:paddingTop">2dip</item>
+        <item name="android:paddingBottom">2dip</item>
+    </style>
+
+    <style name="BigNumberButton">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:padding">@dimen/ui_bignumber_padding</item>
+        <item name="android:textSize">@dimen/ui_bignumber_size</item>
+    </style>
+
 </resources>

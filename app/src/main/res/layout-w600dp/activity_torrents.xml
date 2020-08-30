@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2010-2018 Eric Kok et al.
 
   Transdroid is free software: you can redistribute it and/or modify
@@ -17,102 +16,102 @@
 -->
 <!-- This layout is for 7" and 10" tablets in portrait and shows torrents and filters. -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical"
-	tools:context=".core.gui.TorrentsActivity_">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".core.gui.TorrentsActivity_">
 
-	<!-- Invisible view to steal focus from SearchView -->
-	<View
-		android:layout_width="0dp"
-		android:layout_height="0dp"
-		android:focusable="true"
-		android:focusableInTouchMode="true"/>
+    <!-- Invisible view to steal focus from SearchView -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
-	<androidx.appcompat.widget.Toolbar
-		android:id="@+id/torrents_toolbar"
-		style="@style/DefaultToolbar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:minHeight="?attr/actionBarSize" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/torrents_toolbar"
+        style="@style/DefaultToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize" />
 
-	<androidx.appcompat.widget.Toolbar
-		android:id="@+id/actions_toolbar"
-		style="@style/SplitToolbar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:minHeight="?attr/actionBarSize"
-		android:paddingEnd="@dimen/ui_actions_padding"
-		android:paddingRight="@dimen/ui_actions_padding" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/actions_toolbar"
+        style="@style/SplitToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:minHeight="?attr/actionBarSize"
+        android:paddingEnd="@dimen/ui_actions_padding"
+        android:paddingRight="@dimen/ui_actions_padding" />
 
-	<androidx.appcompat.widget.ActionMenuView
-		android:id="@+id/contextual_menu"
-		style="@style/SplitToolbar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:minHeight="?attr/actionBarSize"
-		android:visibility="gone"
-		tools:visibility="visible" />
+    <androidx.appcompat.widget.ActionMenuView
+        android:id="@+id/contextual_menu"
+        style="@style/SplitToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:minHeight="?attr/actionBarSize"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-	<androidx.appcompat.widget.SearchView
-		android:id="@+id/filter_search"
-		android:layout_width="@dimen/ui_filters_list"
-		android:layout_height="wrap_content"
-		android:layout_above="@id/actions_toolbar"
-		android:layout_alignParentLeft="true"
-		android:layout_alignParentStart="true"
-		android:layout_marginBottom="5dp"
-		android:layout_marginEnd="5dp"
-		android:layout_marginRight="5dp"
-		android:layout_marginTop="5dp"
-		app:searchIcon="@drawable/ic_action_filter"
-		app:queryHint="@string/action_filter"
-		app:iconifiedByDefault="false" />
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/filter_search"
+        android:layout_width="@dimen/ui_filters_list"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/actions_toolbar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        app:iconifiedByDefault="false"
+        app:queryHint="@string/action_filter"
+        app:searchIcon="@drawable/ic_action_filter" />
 
-	<ListView
-		android:id="@+id/filters_list"
-		android:layout_width="@dimen/ui_filters_list"
-		android:layout_height="match_parent"
-		android:layout_above="@id/filter_search"
-		android:layout_alignParentLeft="true"
-		android:layout_alignParentStart="true"
-		android:layout_below="@id/torrents_toolbar"
-		android:choiceMode="singleChoice"
-		tools:listitem="@layout/list_item_filter" />
+    <ListView
+        android:id="@+id/filters_list"
+        android:layout_width="@dimen/ui_filters_list"
+        android:layout_height="match_parent"
+        android:layout_above="@id/filter_search"
+        android:layout_below="@id/torrents_toolbar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:choiceMode="singleChoice"
+        tools:listitem="@layout/list_item_filter" />
 
-	<fragment
-		android:id="@+id/torrents_fragment"
-		class="org.transdroid.core.gui.TorrentsFragment_"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_above="@id/actions_toolbar"
-		android:layout_below="@id/torrents_toolbar"
-		android:layout_toEndOf="@id/filter_search"
-		android:layout_toRightOf="@id/filter_search"
-		tools:layout="@layout/fragment_torrents" />
+    <fragment
+        android:id="@+id/torrents_fragment"
+        class="org.transdroid.core.gui.TorrentsFragment_"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/actions_toolbar"
+        android:layout_below="@id/torrents_toolbar"
+        android:layout_toEndOf="@id/filter_search"
+        android:layout_toRightOf="@id/filter_search"
+        tools:layout="@layout/fragment_torrents" />
 
-	<View
-		style="@style/DefaultToolbarShadow"
-		android:layout_below="@id/torrents_toolbar" />
+    <View
+        style="@style/DefaultToolbarShadow"
+        android:layout_below="@id/torrents_toolbar" />
 
-	<View
-		style="@style/SplitToolbarShadow"
-		android:layout_above="@id/actions_toolbar" />
+    <View
+        style="@style/SplitToolbarShadow"
+        android:layout_above="@id/actions_toolbar" />
 
-	<include
-		layout="@layout/actionbar_addbutton"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignEnd="@+id/torrents_fragment"
-		android:layout_alignParentBottom="true"
-		android:layout_alignRight="@+id/torrents_fragment"
-		android:layout_gravity="bottom|end"
-		android:layout_marginBottom="20dp"
-		android:layout_marginEnd="10dp"
-		android:layout_marginRight="10dp" />
+    <include
+        layout="@layout/actionbar_addbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/torrents_fragment"
+        android:layout_alignRight="@+id/torrents_fragment"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp" />
 
 </RelativeLayout>
