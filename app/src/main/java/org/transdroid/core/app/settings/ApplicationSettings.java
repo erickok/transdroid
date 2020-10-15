@@ -734,44 +734,44 @@ public class ApplicationSettings {
         prefs.edit().putString(server.getUniqueIdentifier(), lastStats.toString()).apply();
     }
 
-    /**
-     * Returns the user configuration for some specific app widget, if the widget is known at all.
-     *
-     * @param appWidgetId The unique ID of the app widget to retrieve settings for, as supplied by the AppWidgetManager
-     * @return A widget configuration object, or null if no settings were stored for the widget ID
-     */
-    public ListWidgetConfig getWidgetConfig(int appWidgetId) {
-        if (!prefs.contains("widget_server_" + appWidgetId))
-            return null;
-        // @formatter:off
-        return new ListWidgetConfig(
-                prefs.getInt("widget_server_" + appWidgetId, -1),
-                StatusType.valueOf(prefs.getString("widget_status_" + appWidgetId, StatusType.ShowAll.name())),
-                TorrentsSortBy.valueOf(prefs.getString("widget_sortby_" + appWidgetId, TorrentsSortBy.Alphanumeric.name())),
-                prefs.getBoolean("widget_reverse_" + appWidgetId, false),
-                prefs.getBoolean("widget_showstatus_" + appWidgetId, false));
-        // @formatter:on
-    }
+	/**
+	 * Returns the user configuration for some specific app widget, if the widget is known at all.
+	 * @param appWidgetId The unique ID of the app widget to retrieve settings for, as supplied by the AppWidgetManager
+	 * @return A widget configuration object, or null if no settings were stored for the widget ID
+	 */
+	public ListWidgetConfig getWidgetConfig(int appWidgetId) {
+		if (!prefs.contains("widget_server_" + appWidgetId))
+			return null;
+		// @formatter:off
+		return new ListWidgetConfig(
+				prefs.getInt("widget_server_" + appWidgetId, -1),
+				StatusType.valueOf(prefs.getString("widget_status_" + appWidgetId, StatusType.ShowAll.name())),
+				TorrentsSortBy.valueOf(prefs.getString("widget_sortby_" + appWidgetId, TorrentsSortBy.Alphanumeric.name())),
+				prefs.getBoolean("widget_reverse_" + appWidgetId, false),
+				prefs.getBoolean("widget_showstatus_" + appWidgetId, false),
+				prefs.getBoolean("widget_darktheme_" + appWidgetId, false));
+		// @formatter:on
+	}
 
-    /**
-     * Stores the user settings for some specific app widget. Existing settings for the supplied app widget ID will be
-     * overridden.
-     *
-     * @param appWidgetId The unique ID of the app widget to store settings for, as supplied by the AppWidgetManager
-     * @param settings    A widget configuration object, which may not be null
-     */
-    public void setWidgetConfig(int appWidgetId, ListWidgetConfig settings) {
-        if (settings == null)
-            throw new InvalidParameterException(
-                    "The widget setting may not be null. Use removeWidgetConfig instead to remove existing settings for some app widget.");
-        Editor edit = prefs.edit();
-        edit.putInt("widget_server_" + appWidgetId, settings.getServerId());
-        edit.putString("widget_status_" + appWidgetId, settings.getStatusType().name());
-        edit.putString("widget_sortby_" + appWidgetId, settings.getSortBy().name());
-        edit.putBoolean("widget_reverse_" + appWidgetId, settings.shouldReserveSort());
-        edit.putBoolean("widget_showstatus_" + appWidgetId, settings.shouldShowStatusView());
-        edit.apply();
-    }
+	/**
+	 * Stores the user settings for some specific app widget. Existing settings for the supplied app widget ID will be
+	 * overridden.
+	 * @param appWidgetId The unique ID of the app widget to store settings for, as supplied by the AppWidgetManager
+	 * @param settings A widget configuration object, which may not be null
+	 */
+	public void setWidgetConfig(int appWidgetId, ListWidgetConfig settings) {
+		if (settings == null)
+			throw new InvalidParameterException(
+					"The widget setting may not be null. Use removeWidgetConfig instead to remove existing settings for some app widget.");
+		Editor edit = prefs.edit();
+		edit.putInt("widget_server_" + appWidgetId, settings.getServerId());
+		edit.putString("widget_status_" + appWidgetId, settings.getStatusType().name());
+		edit.putString("widget_sortby_" + appWidgetId, settings.getSortBy().name());
+		edit.putBoolean("widget_reverse_" + appWidgetId, settings.shouldReserveSort());
+		edit.putBoolean("widget_showstatus_" + appWidgetId, settings.shouldShowStatusView());
+		edit.putBoolean("widget_darktheme_" + appWidgetId, settings.shouldUseDarkTheme());
+		edit.apply();
+	}
 
     /**
      * Remove the setting for some specific app widget.
