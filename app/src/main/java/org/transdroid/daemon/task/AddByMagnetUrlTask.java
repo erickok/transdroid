@@ -23,17 +23,15 @@ import org.transdroid.daemon.DaemonMethod;
 import org.transdroid.daemon.IDaemonAdapter;
 
 public class AddByMagnetUrlTask extends DaemonTask {
-    protected AddByMagnetUrlTask(IDaemonAdapter adapter, Bundle data) {
-        super(adapter, DaemonMethod.AddByMagnetUrl, null, data);
-    }
-
-    public static AddByMagnetUrlTask create(IDaemonAdapter adapter, String url) {
-        Bundle data = new Bundle();
-        data.putString("URL", url);
-        return new AddByMagnetUrlTask(adapter, data);
-    }
-
-    public String getUrl() {
-        return extras.getString("URL");
-    }
+	protected AddByMagnetUrlTask(IDaemonAdapter adapter, Bundle data) {
+		super(adapter, DaemonMethod.AddByMagnetUrl, null, data);
+	}
+	public static AddByMagnetUrlTask create(IDaemonAdapter adapter, String url) {
+		Bundle data = new Bundle();
+		data.putString("URL", url);
+		return new AddByMagnetUrlTask(adapter, data);
+	}
+	public String getUrl() {
+		return extras.getString("URL").replaceAll("\\s", "");
+	}
 }

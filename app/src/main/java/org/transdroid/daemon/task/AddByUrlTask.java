@@ -23,22 +23,19 @@ import org.transdroid.daemon.DaemonMethod;
 import org.transdroid.daemon.IDaemonAdapter;
 
 public class AddByUrlTask extends DaemonTask {
-    protected AddByUrlTask(IDaemonAdapter adapter, Bundle data) {
-        super(adapter, DaemonMethod.AddByUrl, null, data);
-    }
-
-    public static AddByUrlTask create(IDaemonAdapter adapter, String url, String title) {
-        Bundle data = new Bundle();
-        data.putString("URL", url);
-        data.putString("TITLE", title);
-        return new AddByUrlTask(adapter, data);
-    }
-
-    public String getUrl() {
-        return extras.getString("URL");
-    }
-
-    public String getTitle() {
-        return extras.getString("TITLE");
-    }
+	protected AddByUrlTask(IDaemonAdapter adapter, Bundle data) {
+		super(adapter, DaemonMethod.AddByUrl, null, data);
+	}
+	public static AddByUrlTask create(IDaemonAdapter adapter, String url, String title) {
+		Bundle data = new Bundle();
+		data.putString("URL", url);
+		data.putString("TITLE", title);
+		return new AddByUrlTask(adapter, data);
+	}
+	public String getUrl() {
+		return extras.getString("URL").replaceAll("\\s", "");
+	}
+	public String getTitle() {
+		return extras.getString("TITLE");
+	}
 }
