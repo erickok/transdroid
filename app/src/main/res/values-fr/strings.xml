@@ -300,7 +300,6 @@
     <string name="pref_seedbox_xirvikhint2">Comme semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Comme desharedgbit001.xirvik.com</string>
     <string name="pref_seedbox_xirviknofolder">Impossible de récupérer le paramètre dossier de Xirvik SCGI ; Veuillez réessayer ultérieurement ou corriger le réglage d\'adresse de votre serveur</string>
-    <string name="pref_seedbox_seedstuffhint">Comme 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minutes</item>
         <item>30 minutes</item>

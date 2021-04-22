@@ -32,12 +32,6 @@ public enum SeedboxProvider {
             return new DediseedboxSettings();
         }
     },
-    Seedstuff {
-        @Override
-        public SeedboxSettings getSettings() {
-            return new SeedstuffSettings();
-        }
-    },
     XirvikShared {
         @Override
         public SeedboxSettings getSettings() {

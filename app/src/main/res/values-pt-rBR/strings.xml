@@ -316,7 +316,6 @@
     <string name="pref_seedbox_xirvikhint2">Como semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Como desharedgbit001.xirvik.com</string>
     <string name="pref_seedbox_xirviknofolder">Não foi possível recuperar a pasta de configuração do Xirvik SCGI; por favor, tente novamente mais tarde ou corrija a configuração de endereço do servidor</string>
-    <string name="pref_seedbox_seedstuffhint">Como 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minutos</item>
         <item>30 minutos</item>

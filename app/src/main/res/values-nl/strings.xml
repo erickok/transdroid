@@ -203,7 +203,7 @@
     <string name="pref_servers">Servers</string>
     <string name="pref_addserver">Nieuwe server toevoegen</string>
     <string name="pref_addseedbox">Seedbox toevoegen</string>
-    <string name="pref_defaultserver">Standaardserver</string>
+    <string name="pref_defaultserver">Standaardserver kiezen</string>
     <string name="pref_defaultserver_lastused">Laatstgebruikte</string>
     <string name="pref_defaultserver_askonadd">Vraag bij toevoegen van torrent</string>
     <string name="pref_searchsites">Zoeksites</string>
@@ -312,7 +312,6 @@
     <string name="pref_seedbox_xirvikhint2">Zoals semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Zoals desharedgbit001.xirvik.com</string>
     <string name="pref_seedbox_xirviknofolder">Kan de Xirvik SCGI mount instelling niet laden; probeer later nog eens en controleer je serveradres</string>
-    <string name="pref_seedbox_seedstuffhint">Zoals 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minuten</item>
         <item>30 minuten</item>

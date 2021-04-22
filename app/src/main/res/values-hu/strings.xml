@@ -316,7 +316,6 @@
     <string name="pref_seedbox_xirvikhint2">Például semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Például desharedgbit001.xirvik.com</string>
     <string name="pref_seedbox_xirviknofolder">Nem lehet letölteni a Xirvik SCGI mappa beállításait;  próbálja meg újra később, vagy javítsa ki a szerver címének beállításait</string>
-    <string name="pref_seedbox_seedstuffhint">Például 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 perc</item>
         <item>30 perc</item>

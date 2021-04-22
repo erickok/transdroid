@@ -281,7 +281,6 @@
     <string name="pref_seedbox_xirvikhint">Jak eplus001.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint2">Jak semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Jak desharedgbit001.xirvik.com</string>
-    <string name="pref_seedbox_seedstuffhint">Jak 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minut</item>
         <item>30 minut</item>

@@ -300,7 +300,6 @@
     <string name="pref_seedbox_xirvikhint2">Eks. semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Eks. desharedgbit001.xirvik.com</string>
     <string name="pref_seedbox_xirviknofolder">Kan ikke hente indstillingen for Xirvik SCGI; Prøv igen senere, eller ret din server adresseindstilling</string>
-    <string name="pref_seedbox_seedstuffhint">Eks. 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minutter</item>
         <item>30 minutter</item>

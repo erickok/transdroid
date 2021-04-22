@@ -332,7 +332,6 @@
     <string name="pref_seedbox_xirvikhint2">Npr. semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Npr. desharedgbit001.xirvik.com</string>
     <string name="pref_seedbox_xirviknofolder">Ne morem pridobiti Xirvik SCGI nastavitev map; poskusite pozneje ali popravite naslov strežnika</string>
-    <string name="pref_seedbox_seedstuffhint">Npr. 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minut</item>
         <item>30 minut</item>

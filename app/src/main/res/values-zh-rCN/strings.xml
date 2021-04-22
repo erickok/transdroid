@@ -292,7 +292,6 @@
     <string name="pref_seedbox_xirvikhint2">例如：semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">例如：desharedgbit001.xirvik.com</string>
     <string name="pref_seedbox_xirviknofolder">无法检索Xirvik SCGI的文件夹设置，请稍后再试或更正您的服务器地址</string>
-    <string name="pref_seedbox_seedstuffhint">例如：001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>每15分钟</item>
         <item>每30分钟</item>

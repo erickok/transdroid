@@ -308,7 +308,6 @@
     <string name="pref_seedbox_xirvikhint2">예) semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">예) desharedgbit001.xirvik.com</string>
     <string name="pref_seedbox_xirviknofolder">Xirvik SCGI 폴더 설정을 받아오지 못했습니다; 다음에 다시 시도해 보시거나 서버 주소 설정을 고쳐보세요</string>
-    <string name="pref_seedbox_seedstuffhint">예) 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15분</item>
         <item>30분</item>

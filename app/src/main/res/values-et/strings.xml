@@ -183,7 +183,6 @@
     <string name="pref_seedbox_xirvikhint">Nagu eplus001.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint2">Nagu semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Nagu desharedgbit001.xirvik.com</string>
-    <string name="pref_seedbox_seedstuffhint">Nagu 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minutit</item>
         <item>30 minutit</item>

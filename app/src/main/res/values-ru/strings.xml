@@ -333,7 +333,6 @@
     <string name="pref_seedbox_xirvikhint2">Как semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Как desharedgbit001.xirvik.com</string>
     <string name="pref_seedbox_xirviknofolder">Не удается получить настройки папок Xirvik SCGI. Пожалуйста, повторите попытку позже или измените адрес сервера.</string>
-    <string name="pref_seedbox_seedstuffhint">Как 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 минут</item>
         <item>30 минут</item>

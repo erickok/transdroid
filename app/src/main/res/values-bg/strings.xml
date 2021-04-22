@@ -220,7 +220,6 @@
     <string name="pref_seedbox_xirvikhint">Като eplus001.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint2">Като semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Като desharedgbit001.xirvik.com</string>
-    <string name="pref_seedbox_seedstuffhint">Като 001.seedstuff.ca</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 минути</item>
         <item>30 минути</item>
