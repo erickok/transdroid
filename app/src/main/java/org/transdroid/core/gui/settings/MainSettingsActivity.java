@@ -30,8 +30,13 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.Preference.OnPreferenceClickListener;
 
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.enums.SnackbarType;
+
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
 import org.transdroid.R;
 import org.transdroid.core.app.search.SearchHelper;
@@ -41,13 +46,19 @@ import org.transdroid.core.app.settings.RssfeedSetting;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.WebsearchSetting;
 import org.transdroid.core.gui.TorrentsActivity_;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.NavigationHelper;
+import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.settings.RssfeedPreference.OnRssfeedClickedListener;
 import org.transdroid.core.gui.settings.ServerPreference.OnServerClickedListener;
 import org.transdroid.core.gui.settings.WebsearchPreference.OnWebsearchClickedListener;
 import org.transdroid.core.seedbox.SeedboxPreference;
 import org.transdroid.core.seedbox.SeedboxPreference.OnSeedboxClickedListener;
 import org.transdroid.core.seedbox.SeedboxProvider;
+import org.transdroid.core.seedbox.XirvikDediSettings;
+import org.transdroid.core.seedbox.XirvikSemiSettings;
+import org.transdroid.core.seedbox.XirvikSharedSettings;
+import org.transdroid.core.seedbox.XirvikSharedSettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +79,8 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
     protected ApplicationSettings applicationSettings;
     @Bean
     protected SearchHelper searchHelper;
+    @Bean
+    protected Log log;
     protected SharedPreferences prefs;
     private OnPreferenceClickListener onAddServer = new OnPreferenceClickListener() {
         @Override
@@ -115,6 +128,8 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
         // Start the configuration activity for this specific chosen seedbox
         if (which == 0)
             ServerSettingsActivity_.intent(MainSettingsActivity.this).start();
+        else if (which == SeedboxProvider.values().length + 1)
+            BarcodeHelper.startBarcodeScanner(this, BarcodeHelper.ACTIVITY_BARCODE_ADDSERVER);
         else
             startActivity(SeedboxProvider.values()[which - 1].getSettings().getSettingsActivityIntent(MainSettingsActivity.this));
     };
@@ -251,14 +266,63 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_ADDSEEDBOX) {
             // Open dialog to pick one of the supported seedbox providers (or a normal server)
-            String[] seedboxes = new String[SeedboxProvider.values().length + 1];
+            String[] seedboxes = new String[SeedboxProvider.values().length + 2];
             seedboxes[0] = getString(R.string.pref_addserver_normal);
-            for (int i = 0; i < seedboxes.length - 1; i++) {
+            for (int i = 0; i < seedboxes.length - 2; i++) {
                 seedboxes[i + 1] = getString(R.string.pref_seedbox_addseedbox, SeedboxProvider.values()[i].getSettings().getName());
             }
+            seedboxes[seedboxes.length - 1] = getString(R.string.pref_seedbox_xirvikviaqr);
             return new AlertDialog.Builder(this).setItems(seedboxes, onAddSeedbox).create();
         }
         return null;
     }
+
+    @OnActivityResult(BarcodeHelper.ACTIVITY_BARCODE_ADDSERVER)
+    public void onServerBarcodeScanned(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            final String result = data.getStringExtra("SCAN_RESULT");
+            final String format = data.getStringExtra("SCAN_RESULT_FORMAT");
+            if (format == null || !format.equals("QR_CODE") || result == null || result.split("\n").length < 3) {
+                SnackbarManager.show(Snackbar.with(this).text(R.string.pref_seedbox_xirvikscanerror).colorResource(R.color.red)
+                        .type(SnackbarType.MULTI_LINE));
+                return;
+            }
+            onServerBarcodeScanHandled(result.split("\n"));
+        }
+    }
+
+    protected void onServerBarcodeScanHandled(String[] qrResult) {
+        final String server = qrResult[0];
+        final String token = qrResult[2];
+        switch (qrResult[1]) {
+            case "P":
+                XirvikDediSettings xirvikDediSettings = new XirvikDediSettings();
+                xirvikDediSettings.saveServerSetting(this, server, token);
+                onResume();
+                break;
+            case "N":
+                XirvikSemiSettings xirvikSemiSettings = new XirvikSemiSettings();
+                xirvikSemiSettings.saveServerSetting(this, server, token);
+                onResume();
+                break;
+            case "RG":
+                new XirvikSharedSettingsActivity.RetrieveXirvikAutoConfTask(server, "", "", token) {
+                    @Override
+                    protected void onPostExecute(String result) {
+                        if (result == null) {
+                            log.d(MainSettingsActivity.this, "Could not retrieve the Xirvik shared seedbox RPC mount point setting");
+                        }
+                        XirvikSharedSettings xirvikSharedSettings = new XirvikSharedSettings();
+                        xirvikSharedSettings.saveServerSetting(getApplicationContext(), server, token, result);
+                        onResume();
+                    }
+                }.execute();
+                break;
+            default:
+                SnackbarManager.show(Snackbar.with(this).text(R.string.pref_seedbox_xirvikscanerror).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
+                break;
+        }
+    }
+
 
 }

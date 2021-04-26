@@ -31,6 +31,7 @@ public class BarcodeHelper {
 
     // A 'random' ID to identify QR-encoded settings scan intents
     public static final int ACTIVITY_BARCODE_QRSETTINGS = 0x0000c0df;
+    public static final int ACTIVITY_BARCODE_ADDSERVER = 0x0000c0e0;
     private static final Uri SCANNER_MARKET_URI = Uri.parse("market://search?q=pname:com.google.zxing.client.android");
 
     /**

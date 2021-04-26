@@ -22,6 +22,7 @@ import android.net.Uri;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.auth.AuthScope;
@@ -37,6 +38,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HttpContext;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
@@ -64,6 +66,7 @@ public class HttpHelper {
      * The 'User-Agent' name to send to the server
      */
     public static String userAgent = "Transdroid Torrent Connect";
+
     /**
      * HTTP request interceptor to allow for GZip-encoded data transfer
      */
@@ -101,7 +104,7 @@ public class HttpHelper {
     public static DefaultHttpClient createStandardHttpClient(DaemonSettings settings, boolean userBasicAuth)
             throws DaemonException {
         return createStandardHttpClient(userBasicAuth && settings.shouldUseAuthentication(), settings.getUsername(),
-                settings.getPassword(), settings.getSslTrustAll(), settings.getSslTrustKey(),
+                settings.getPassword(), settings.getAuthToken(), settings.getSslTrustAll(), settings.getSslTrustKey(),
                 settings.getTimeoutInMilliseconds(), settings.getAddress(), settings.getPort());
     }
 
@@ -117,7 +120,7 @@ public class HttpHelper {
      * @return An HttpClient that should be stored locally and reused for every new request
      * @throws DaemonException Thrown when information (such as username/password) is missing
      */
-    public static DefaultHttpClient createStandardHttpClient(boolean userBasicAuth, String username, String password,
+    public static DefaultHttpClient createStandardHttpClient(boolean userBasicAuth, String username, String password, String authToken,
                                                              boolean sslTrustAll, String sslTrustKey, int timeout,
                                                              String authAddress, int authPort) throws DaemonException {
 
@@ -154,6 +157,16 @@ public class HttpHelper {
             httpclient.getCredentialsProvider()
                     .setCredentials(new AuthScope(authAddress, authPort, AuthScope.ANY_REALM),
                             new UsernamePasswordCredentials(username, password));
+        }
+
+        // Auth token header
+        if (authToken != null) {
+            httpclient.addRequestInterceptor(new HttpRequestInterceptor() {
+                @Override
+                public void process(HttpRequest httpRequest, HttpContext httpContext) {
+                    httpRequest.addHeader("X-QR-Auth", authToken);
+                }
+            });
         }
 
         return httpclient;

@@ -1077,7 +1077,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
         try {
             // Cookies are taken from the websearchSetting that we already matched against this target URL
-            DefaultHttpClient httpclient = HttpHelper.createStandardHttpClient(false, null, null, true, null, 10000, null, -1);
+            DefaultHttpClient httpclient = HttpHelper.createStandardHttpClient(false, null, null, null, true, null, 10000, null, -1);
             Map<String, String> cookies = HttpHelper.parseCookiePairs(websearchSetting.getCookies());
             String domain = Uri.parse(url).getHost();
             for (Entry<String, String> pair : cookies.entrySet()) {

@@ -188,6 +188,7 @@ public class ApplicationSettings {
                 prefs.getString("server_user_" + order, null),
                 prefs.getString("server_pass_" + order, null),
                 prefs.getString("server_extrapass_" + order, null),
+                null,
                 OS.fromCode(prefs.getString("server_os_" + order, "type_linux")),
                 prefs.getString("server_downloaddir_" + order, null),
                 prefs.getString("server_ftpurl_" + order, null),

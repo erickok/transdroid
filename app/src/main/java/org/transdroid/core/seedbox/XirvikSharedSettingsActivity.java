@@ -90,38 +90,13 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
         excludeFilter.setEnabled(alarmNew || alarmFinished);
         includeFilter.setEnabled(alarmNew || alarmFinished);
 
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                try {
+        // When the shared server settings change, we also have to update the RPC mount point to use
+        String server = prefs.getString("seedbox_xirvikshared_server_" + key, null);
+        String user = prefs.getString("seedbox_xirvikshared_user_" + key, null);
+        String pass = prefs.getString("seedbox_xirvikshared_pass_" + key, null);
+        String token = prefs.getString("seedbox_xirvikshared_token_" + key, null);
 
-                    // When the shared server settings change, we also have to update the RPC mount point to use
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(XirvikSharedSettingsActivity.this);
-                    String server = prefs.getString("seedbox_xirvikshared_server_" + key, null);
-                    String user = prefs.getString("seedbox_xirvikshared_user_" + key, null);
-                    String pass = prefs.getString("seedbox_xirvikshared_pass_" + key, null);
-
-                    // Retrieve the RPC mount point setting from the server itself
-                    DefaultHttpClient httpclient =
-                            HttpHelper.createStandardHttpClient(true, user, pass, true, null, HttpHelper.DEFAULT_CONNECTION_TIMEOUT, server, 443);
-                    String url = "https://" + server + ":443/browsers_addons/transdroid_autoconf.txt";
-                    HttpResponse request = httpclient.execute(new HttpGet(url));
-                    InputStream stream = request.getEntity().getContent();
-                    String folder = HttpHelper.convertStreamToString(stream).trim();
-                    if (folder.startsWith("<?xml")) {
-                        folder = null;
-                    }
-                    stream.close();
-                    return folder;
-
-                } catch (Exception e) {
-
-                    log.d(XirvikSharedSettingsActivity.this, "Could not retrieve the Xirvik shared seedbox RPC mount point setting: " + e.toString());
-                    return null;
-
-                }
-            }
-
+        new RetrieveXirvikAutoConfTask(server, user, pass, token) {
             @Override
             protected void onPostExecute(String result) {
                 storeScgiMountFolder(result);
@@ -134,6 +109,7 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
         Editor edit = PreferenceManager.getDefaultSharedPreferences(XirvikSharedSettingsActivity.this).edit();
         EditTextPreference pref = (EditTextPreference) findPreference("seedbox_xirvikshared_rpc_" + key);
         if (result == null) {
+            log.d(this, "Could not retrieve the Xirvik shared seedbox RPC mount point setting");
             SnackbarManager.show(Snackbar.with(this).text(R.string.pref_seedbox_xirviknofolder).colorResource(R.color.red));
             edit.remove("seedbox_xirvikshared_rpc_" + key);
             pref.setSummary("");
@@ -155,6 +131,41 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SeedboxProvider.XirvikShared.getSettings().removeServerSetting(prefs, key);
         finish();
+    }
+
+    public static abstract class RetrieveXirvikAutoConfTask extends AsyncTask<Void, Void, String> {
+        final String server;
+        final String user;
+        final String pass;
+        final String token;
+
+        public RetrieveXirvikAutoConfTask(String server, String user, String pass, String token) {
+            this.server = server;
+            this.user = user;
+            this.pass = pass;
+            this.token = token;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                // Retrieve the RPC mount point setting from the server itself
+                DefaultHttpClient httpclient =
+                        HttpHelper.createStandardHttpClient(true, user, pass, token, true, null, HttpHelper.DEFAULT_CONNECTION_TIMEOUT, server, 443);
+                String url = "https://" + server + ":443/browsers_addons/transdroid_autoconf.txt";
+                HttpResponse request = httpclient.execute(new HttpGet(url));
+                InputStream stream = request.getEntity().getContent();
+                String folder = HttpHelper.convertStreamToString(stream).trim();
+                if (folder.startsWith("<?xml")) {
+                    folder = null;
+                }
+                stream.close();
+                return folder;
+
+            } catch (Exception e) {
+                return null;
+            }
+        }
     }
 
 }

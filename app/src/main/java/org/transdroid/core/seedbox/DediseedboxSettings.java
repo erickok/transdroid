@@ -63,6 +63,7 @@ public class DediseedboxSettings extends SeedboxSettingsImpl implements SeedboxS
                 user,
                 pass,
                 null,
+                null,
                 OS.Linux,
                 "/",
                 "ftp://" + user + "@" + server + "/",
