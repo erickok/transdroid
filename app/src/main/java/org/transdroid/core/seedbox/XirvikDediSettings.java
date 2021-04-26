@@ -62,7 +62,7 @@ public class XirvikDediSettings extends SeedboxSettingsImpl implements SeedboxSe
                 type != Daemon.uTorrent,
                 false,
                 null,
-                type == Daemon.Deluge ? "/deluge" : null,
+                type == Daemon.Deluge ? "/deluge" : "/RPC2-aAoWTED8ngLqZyKnZ7FFEAgfz5lejcof",
                 true,
                 user,
                 pass,

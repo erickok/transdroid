@@ -294,34 +294,35 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
     protected void onServerBarcodeScanHandled(String[] qrResult) {
         final String server = qrResult[0];
         final String token = qrResult[2];
-        switch (qrResult[1]) {
-            case "P":
-                XirvikDediSettings xirvikDediSettings = new XirvikDediSettings();
-                xirvikDediSettings.saveServerSetting(this, server, token);
-                onResume();
-                break;
-            case "N":
-                XirvikSemiSettings xirvikSemiSettings = new XirvikSemiSettings();
-                xirvikSemiSettings.saveServerSetting(this, server, token);
-                onResume();
-                break;
-            case "RG":
-                new XirvikSharedSettingsActivity.RetrieveXirvikAutoConfTask(server, "", "", token) {
-                    @Override
-                    protected void onPostExecute(String result) {
-                        if (result == null) {
-                            log.d(MainSettingsActivity.this, "Could not retrieve the Xirvik shared seedbox RPC mount point setting");
-                        }
+
+        new XirvikSharedSettingsActivity.RetrieveXirvikAutoConfTask(server, "", "", token) {
+            @Override
+            protected void onPostExecute(String result) {
+                if (result == null) {
+                    log.d(MainSettingsActivity.this, "Could not retrieve the Xirvik shared seedbox RPC mount point setting");
+                }
+                switch (qrResult[1]) {
+                    case "P":
+                        XirvikDediSettings xirvikDediSettings = new XirvikDediSettings();
+                        xirvikDediSettings.saveServerSetting(getApplicationContext(), server, token);
+                        onResume();
+                        break;
+                    case "N":
+                        XirvikSemiSettings xirvikSemiSettings = new XirvikSemiSettings();
+                        xirvikSemiSettings.saveServerSetting(getApplicationContext(), server, token);
+                        onResume();
+                        break;
+                    case "RG":
                         XirvikSharedSettings xirvikSharedSettings = new XirvikSharedSettings();
                         xirvikSharedSettings.saveServerSetting(getApplicationContext(), server, token, result);
                         onResume();
-                    }
-                }.execute();
-                break;
-            default:
-                SnackbarManager.show(Snackbar.with(this).text(R.string.pref_seedbox_xirvikscanerror).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
-                break;
-        }
+                        break;
+                    default:
+                        SnackbarManager.show(Snackbar.with(MainSettingsActivity.this).text(R.string.pref_seedbox_xirvikscanerror).colorResource(R.color.red).type(SnackbarType.MULTI_LINE));
+                        break;
+                }
+            }
+        }.execute();
     }
 
 

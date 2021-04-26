@@ -43,6 +43,9 @@ public class PreferenceCompatActivity extends AppCompatActivity implements AppCo
 
         private int preferencesResId;
 
+        public RootPreferencesFragment() {
+        }
+
         public RootPreferencesFragment(int preferencesResId) {
             this.preferencesResId = preferencesResId;
         }
