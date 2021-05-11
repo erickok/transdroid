@@ -47,6 +47,10 @@
         android:name="android.software.leanback"
         android:required="false" />
 
+    <queries>
+        <package android:name="org.transdroid.search" />
+    </queries>
+
     <application
         android:name=".core.gui.TransdroidApp_"
         android:allowBackup="true"
