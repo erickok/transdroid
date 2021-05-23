@@ -96,7 +96,7 @@ public class XirvikSemiSettings extends SeedboxSettingsImpl implements SeedboxSe
                 "seedbox_xirviksemi_server_", "seedbox_xirviksemi_user_", "seedbox_xirviksemi_pass_", "seedbox_xirviksemi_token_"}, order);
     }
 
-    public void saveServerSetting(Context context, String server, String token) {
+    public void saveServerSetting(Context context, String server, String token, String name) {
         // Get server order
         int key = SeedboxProvider.XirvikSemi.getSettings().getMaxSeedboxOrder(PreferenceManager.getDefaultSharedPreferences(context)) + 1;
 
@@ -113,7 +113,7 @@ public class XirvikSemiSettings extends SeedboxSettingsImpl implements SeedboxSe
         // Store new seedbox pref
         prefs.edit()
                 .putString("seedbox_xirviksemi_client_" + key, Daemon.toCode(Daemon.rTorrent))
-                .putString("seedbox_xirviksemi_name" + key, "QR Server " + key)
+                .putString("seedbox_xirviksemi_name_" + key, name)
                 .putString("seedbox_xirviksemi_server_" + key, server)
                 .putString("seedbox_xirviksemi_user_" + key, "")
                 .putString("seedbox_xirviksemi_pass_" + key, "")

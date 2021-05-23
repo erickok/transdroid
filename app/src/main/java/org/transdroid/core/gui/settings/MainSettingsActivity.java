@@ -294,6 +294,7 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
     protected void onServerBarcodeScanHandled(String[] qrResult) {
         final String server = qrResult[0];
         final String token = qrResult[2];
+        final String name = server.replace(".xirvik.com", "");
 
         new XirvikSharedSettingsActivity.RetrieveXirvikAutoConfTask(server, "", "", token) {
             @Override
@@ -304,17 +305,17 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
                 switch (qrResult[1]) {
                     case "P":
                         XirvikDediSettings xirvikDediSettings = new XirvikDediSettings();
-                        xirvikDediSettings.saveServerSetting(getApplicationContext(), server, token);
+                        xirvikDediSettings.saveServerSetting(getApplicationContext(), server, token, name);
                         onResume();
                         break;
                     case "N":
                         XirvikSemiSettings xirvikSemiSettings = new XirvikSemiSettings();
-                        xirvikSemiSettings.saveServerSetting(getApplicationContext(), server, token);
+                        xirvikSemiSettings.saveServerSetting(getApplicationContext(), server, token, name);
                         onResume();
                         break;
                     case "RG":
                         XirvikSharedSettings xirvikSharedSettings = new XirvikSharedSettings();
-                        xirvikSharedSettings.saveServerSetting(getApplicationContext(), server, token, result);
+                        xirvikSharedSettings.saveServerSetting(getApplicationContext(), server, token, result, name);
                         onResume();
                         break;
                     default:
