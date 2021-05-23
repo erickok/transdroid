@@ -370,7 +370,8 @@ public class RTorrentAdapter implements IDaemonAdapter {
     private void initialise() throws DaemonException, MalformedURLException {
 
         int flags = XMLRPCClient.FLAGS_8BYTE_INT;
-        this.rpcclient = new XMLRPCClient(HttpHelper.createStandardHttpClient(settings, true), buildWebUIUrl(), flags);
+        this.rpcclient = new XMLRPCClient(HttpHelper.createStandardHttpClient(settings, true),
+                settings.getAddress(), buildWebUIUrl(), flags);
 
     }
 

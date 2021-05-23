@@ -146,6 +146,8 @@ public class XMLRPCClient {
 
 	private DefaultHttpClient httpclient;
 
+	private String hostname;
+
 	private String url;
 
 	private Map<Long,Caller> backgroundCalls = new ConcurrentHashMap<Long, Caller>();
@@ -161,11 +163,12 @@ public class XMLRPCClient {
 	 * @param url The URL to send the requests to.
 	 * @param flags A combination of flags to be set.
 	 */
-	public XMLRPCClient(DefaultHttpClient httpclient, String url, int flags) {
+	public XMLRPCClient(DefaultHttpClient httpclient, String hostname, String url, int flags) {
 
 		this.serializerHandler = new SerializerHandler(flags);
 
 		this.httpclient = httpclient;
+		this.hostname = hostname;
 		this.url = url;
 		this.flags = flags;
 
@@ -181,8 +184,8 @@ public class XMLRPCClient {
 	 * @param httpclient The already-initialized Apache HttpClient to use for connection.
 	 * @param url The url to send the requests to.
 	 */
-	public XMLRPCClient(DefaultHttpClient httpclient, String url) {
-		this(httpclient, url, FLAGS_NONE);
+	public XMLRPCClient(DefaultHttpClient httpclient, String hostname, String url) {
+		this(httpclient, hostname, url, FLAGS_NONE);
 	}
 
 	/**
@@ -381,6 +384,7 @@ public class XMLRPCClient {
 				HttpPost post = new HttpPost(url);
 				post.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, false);
 				post.setHeader(CONTENT_TYPE, TYPE_XML);
+				post.setHeader(HOST, hostname);
 				StringEntity entity = new StringEntity(c.getXML(), HTTP.UTF_8);
 				entity.setContentType(TYPE_XML);
 				post.setEntity(entity);
