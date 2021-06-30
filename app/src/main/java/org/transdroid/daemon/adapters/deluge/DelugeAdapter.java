@@ -595,8 +595,15 @@ public class DelugeAdapter implements IDaemonAdapter {
      * @return The URL of the RPC API
      */
     private String buildWebUIUrl() {
-        return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + (settings.getFolder() == null ? ""
-                : settings.getFolder());
+        String folder = "";
+        if (settings.getFolder() != null) {
+            folder = settings.getFolder().trim();
+            // Strip any trailing slashes
+            if (folder.endsWith("/")) {
+                folder = folder.substring(0, folder.length() - 1);
+            }
+        }
+        return (settings.getSsl() ? "https://" : "http://") + settings.getAddress() + ":" + settings.getPort() + folder;
     }
 
     private ArrayList<Torrent> parseJsonRetrieveTorrents(JSONObject response) throws JSONException, DaemonException {
