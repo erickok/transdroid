@@ -32,7 +32,7 @@ public enum SeedboxProvider {
             return new DediseedboxSettings();
         }
     },
-    XirvikShared {
+    Xirvik {
         @Override
         public SeedboxSettings getSettings() {
             return new XirvikSharedSettings();
@@ -50,6 +50,10 @@ public enum SeedboxProvider {
             return new XirvikDediSettings();
         }
     };
+
+    public static SeedboxProvider[] activeProviders() {
+        return new SeedboxProvider[]{SeedboxProvider.Dediseedbox, SeedboxProvider.Xirvik};
+    }
 
     public abstract SeedboxSettings getSettings();
 

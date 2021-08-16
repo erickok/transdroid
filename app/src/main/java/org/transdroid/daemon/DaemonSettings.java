@@ -17,14 +17,14 @@
  */
 package org.transdroid.daemon;
 
+import org.transdroid.core.app.settings.ServerSetting;
+
 /**
  * A class that contains all the settings for a server daemon to connect.
  *
  * @author erickok
  */
 public final class DaemonSettings {
-
-    private static final String DEFAULT_NAME = "Default";
 
     final private String name;
     final private Daemon type;
@@ -102,7 +102,7 @@ public final class DaemonSettings {
     }
 
     public String getName() {
-        return (name == null || name.equals("") ? DEFAULT_NAME : name);
+        return ServerSetting.getServerName(name, address);
     }
 
     public Daemon getType() {

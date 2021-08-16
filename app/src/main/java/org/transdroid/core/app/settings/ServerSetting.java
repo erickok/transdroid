@@ -17,7 +17,6 @@
 package org.transdroid.core.app.settings;
 
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
 
 import org.transdroid.core.gui.lists.SimpleListItem;
@@ -124,12 +123,24 @@ public class ServerSetting implements SimpleListItem {
 
     @Override
     public String getName() {
-        if (!TextUtils.isEmpty(name)) {
-            return name;
+        return ServerSetting.getServerName(name, address);
+    }
+
+    public static String getServerName(String giveName, String givenAddress) {
+        if (giveName != null && !giveName.isEmpty()) {
+            return giveName;
         }
-        if (!TextUtils.isEmpty(address)) {
-            String host = Uri.parse(address).getHost();
-            return host == null ? DEFAULT_NAME : host;
+        if (givenAddress != null) {
+            int dot = givenAddress.lastIndexOf(".");
+            if (dot > 0) {
+                try {
+                    Integer.parseInt(givenAddress.substring(dot));
+                    // Last bit is numeric: looks like an IP, so better use the default fallback name
+                } catch (NumberFormatException e) {
+                    // Not numeric, looks like a domain name we can use
+                    return givenAddress;
+                }
+            }
         }
         return DEFAULT_NAME;
     }

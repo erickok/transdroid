@@ -230,7 +230,7 @@
             android:name="org.transdroid.core.seedbox.DediseedboxSettingsActivity_"
             android:theme="@style/TransdroidTheme.Settings" />
         <activity
-            android:name="org.transdroid.core.seedbox.XirvikSharedSettingsActivity_"
+            android:name="org.transdroid.core.seedbox.XirvikSettingsActivity_"
             android:theme="@style/TransdroidTheme.Settings" />
         <activity
             android:name="org.transdroid.core.seedbox.XirvikSemiSettingsActivity_"

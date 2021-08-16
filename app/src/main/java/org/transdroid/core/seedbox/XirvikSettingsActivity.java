@@ -53,7 +53,7 @@ import java.io.InputStream;
  */
 @EActivity
 @OptionsMenu(resName = "activity_deleteableprefs")
-public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
+public class XirvikSettingsActivity extends KeyBoundPreferencesActivity {
 
     @Bean
     protected Log log;
@@ -67,12 +67,11 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 
         // Load the raw preferences to show in this screen
         init(R.xml.pref_seedbox_xirvikshared,
-                SeedboxProvider.XirvikShared.getSettings().getMaxSeedboxOrder(PreferenceManager.getDefaultSharedPreferences(this)));
+                SeedboxProvider.Xirvik.getSettings().getMaxSeedboxOrder(PreferenceManager.getDefaultSharedPreferences(this)));
         initTextPreference("seedbox_xirvikshared_name");
         initTextPreference("seedbox_xirvikshared_server");
         initTextPreference("seedbox_xirvikshared_user");
         initTextPreference("seedbox_xirvikshared_pass");
-        initTextPreference("seedbox_xirvikshared_rpc");
         initBooleanPreference("seedbox_xirvikshared_alarmfinished", true);
         initBooleanPreference("seedbox_xirvikshared_alarmnew", true);
         excludeFilter = initTextPreference("seedbox_xirvikshared_alarmexclude");
@@ -82,7 +81,6 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
 
     @Override
     protected void onPreferencesChanged() {
-
         // Show the exclude and the include filters if notifying
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean alarmFinished = prefs.getBoolean("seedbox_xirvikshared_alarmfinished_" + key, true);
@@ -96,26 +94,28 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
         String pass = prefs.getString("seedbox_xirvikshared_pass_" + key, null);
         String token = prefs.getString("seedbox_xirvikshared_token_" + key, null);
 
-        new RetrieveXirvikAutoConfTask(server, user, pass, token) {
-            @Override
-            protected void onPostExecute(String result) {
-                storeScgiMountFolder(result);
-            }
-        }.execute();
+        boolean enteredServerName = server != null && !server.isEmpty();
+        boolean enteredUserCredentials = user != null && !user.isEmpty() && pass != null && !pass.isEmpty();
+        boolean hasToken = token != null && !token.isEmpty();
+        if (enteredServerName && (enteredUserCredentials || hasToken)) {
+            new RetrieveXirvikAutoConfTask(server, user, pass, token) {
+                @Override
+                protected void onPostExecute(String result) {
+                    storeScgiMountFolder(result);
+                }
+            }.execute();
+        }
 
     }
 
     protected void storeScgiMountFolder(String result) {
-        Editor edit = PreferenceManager.getDefaultSharedPreferences(XirvikSharedSettingsActivity.this).edit();
-        EditTextPreference pref = (EditTextPreference) findPreference("seedbox_xirvikshared_rpc_" + key);
+        Editor edit = PreferenceManager.getDefaultSharedPreferences(XirvikSettingsActivity.this).edit();
         if (result == null) {
             log.d(this, "Could not retrieve the Xirvik shared seedbox RPC mount point setting");
-            SnackbarManager.show(Snackbar.with(this).text(R.string.pref_seedbox_xirviknofolder).colorResource(R.color.red));
-            edit.remove("seedbox_xirvikshared_rpc_" + key);
-            pref.setSummary("");
+            SnackbarManager.show(Snackbar.with(this).text(R.string.pref_seedbox_xirvikfolderfallback).colorResource(R.color.red));
+            edit.putString("seedbox_xirvikshared_rpc_" + key, null);
         } else {
             edit.putString("seedbox_xirvikshared_rpc_" + key, result);
-            pref.setSummary(result);
         }
         edit.apply();
     }
@@ -129,7 +129,7 @@ public class XirvikSharedSettingsActivity extends KeyBoundPreferencesActivity {
     @OptionsItem(resName = "action_removesettings")
     protected void removeSettings() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SeedboxProvider.XirvikShared.getSettings().removeServerSetting(prefs, key);
+        SeedboxProvider.Xirvik.getSettings().removeServerSetting(prefs, key);
         finish();
     }
 

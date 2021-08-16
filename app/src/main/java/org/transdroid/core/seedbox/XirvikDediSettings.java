@@ -45,7 +45,7 @@ public class XirvikDediSettings extends SeedboxSettingsImpl implements SeedboxSe
         if (server == null) {
             return null;
         }
-        Daemon type = Daemon.fromCode(prefs.getString("seedbox_xirvikdedi_client_" + order, null));
+        Daemon type = Daemon.fromCode(prefs.getString("seedbox_xirvikdedi_client_" + order, Daemon.toCode(Daemon.rTorrent)));
         String user = prefs.getString("seedbox_xirvikdedi_user_" + order, null);
         String pass = prefs.getString("seedbox_xirvikdedi_pass_" + order, null);
         String authToken = prefs.getString("seedbox_xirvikdedi_token_" + order, null);
@@ -62,7 +62,7 @@ public class XirvikDediSettings extends SeedboxSettingsImpl implements SeedboxSe
                 type != Daemon.uTorrent,
                 false,
                 null,
-                type == Daemon.Deluge ? "/deluge" : "/RPC2-aAoWTED8ngLqZyKnZ7FFEAgfz5lejcof",
+                type == Daemon.Deluge ? "/deluge" : null,
                 true,
                 user,
                 pass,
@@ -106,21 +106,21 @@ public class XirvikDediSettings extends SeedboxSettingsImpl implements SeedboxSe
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Check server already exists to replace token
-        for(int i = 0 ; i <= SeedboxProvider.XirvikDedi.getSettings().getMaxSeedboxOrder(PreferenceManager.getDefaultSharedPreferences(context)) ; i++) {
-            if(prefs.getString("seedbox_xirvikdedi_server_" + i, "").equals(server)) {
+        for (int i = 0; i <= SeedboxProvider.XirvikDedi.getSettings().getMaxSeedboxOrder(PreferenceManager.getDefaultSharedPreferences(context)); i++) {
+            if (prefs.getString("seedbox_xirvikdedi_server_" + i, "").equals(server)) {
                 key = i;
             }
         }
 
         // Store new seedbox pref
         prefs.edit()
-        .putString("seedbox_xirvikdedi_client_" + key, Daemon.toCode(Daemon.rTorrent))
-        .putString("seedbox_xirvikdedi_name_" + key, name)
-        .putString("seedbox_xirvikdedi_server_" + key, server)
-        .putString("seedbox_xirvikdedi_user_" + key, "")
-        .putString("seedbox_xirvikdedi_pass_" + key, "")
-        .putString("seedbox_xirvikdedi_token_" + key, token)
-        .apply();
+                .putString("seedbox_xirvikdedi_client_" + key, Daemon.toCode(Daemon.rTorrent))
+                .putString("seedbox_xirvikdedi_name_" + key, name)
+                .putString("seedbox_xirvikdedi_server_" + key, server)
+                .putString("seedbox_xirvikdedi_user_" + key, "")
+                .putString("seedbox_xirvikdedi_pass_" + key, "")
+                .putString("seedbox_xirvikdedi_token_" + key, token)
+                .apply();
 
     }
 

@@ -35,7 +35,7 @@ public class XirvikSharedSettings extends SeedboxSettingsImpl implements Seedbox
 
     @Override
     public String getName() {
-        return "Xirvik shared";
+        return "Xirvik";
     }
 
     @Override
@@ -45,7 +45,7 @@ public class XirvikSharedSettings extends SeedboxSettingsImpl implements Seedbox
         if (server == null) {
             return null;
         }
-        Daemon type = Daemon.fromCode(prefs.getString("seedbox_xirvikshared_client_" + order, null));
+        Daemon type = Daemon.fromCode(prefs.getString("seedbox_xirvikshared_client_" + order, Daemon.toCode(Daemon.rTorrent)));
         String user = prefs.getString("seedbox_xirvikshared_user_" + order, null);
         String pass = prefs.getString("seedbox_xirvikshared_pass_" + order, null);
         String rpc = prefs.getString("seedbox_xirvikshared_rpc_" + order, null);
@@ -84,7 +84,7 @@ public class XirvikSharedSettings extends SeedboxSettingsImpl implements Seedbox
 
     @Override
     public Intent getSettingsActivityIntent(Context context) {
-        return XirvikSharedSettingsActivity_.intent(context).get();
+        return XirvikSettingsActivity_.intent(context).get();
     }
 
     @Override
@@ -101,13 +101,13 @@ public class XirvikSharedSettings extends SeedboxSettingsImpl implements Seedbox
 
     public void saveServerSetting(final Context context, String server, String token, String rcp, String name) {
         // Get server order
-        int key = SeedboxProvider.XirvikShared.getSettings().getMaxSeedboxOrder(PreferenceManager.getDefaultSharedPreferences(context)) + 1;
+        int key = SeedboxProvider.Xirvik.getSettings().getMaxSeedboxOrder(PreferenceManager.getDefaultSharedPreferences(context)) + 1;
 
         // Shared preferences
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Check server already exists to replace token
-        for (int i = 0; i <= SeedboxProvider.XirvikShared.getSettings().getMaxSeedboxOrder(PreferenceManager.getDefaultSharedPreferences(context)); i++) {
+        for (int i = 0; i <= SeedboxProvider.Xirvik.getSettings().getMaxSeedboxOrder(PreferenceManager.getDefaultSharedPreferences(context)); i++) {
             if (prefs.getString("seedbox_xirvikshared_server_" + i, "").equals(server)) {
                 key = i;
             }

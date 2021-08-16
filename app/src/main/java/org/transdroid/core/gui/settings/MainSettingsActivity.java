@@ -57,8 +57,8 @@ import org.transdroid.core.seedbox.SeedboxPreference.OnSeedboxClickedListener;
 import org.transdroid.core.seedbox.SeedboxProvider;
 import org.transdroid.core.seedbox.XirvikDediSettings;
 import org.transdroid.core.seedbox.XirvikSemiSettings;
+import org.transdroid.core.seedbox.XirvikSettingsActivity;
 import org.transdroid.core.seedbox.XirvikSharedSettings;
-import org.transdroid.core.seedbox.XirvikSharedSettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +128,7 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
         // Start the configuration activity for this specific chosen seedbox
         if (which == 0)
             ServerSettingsActivity_.intent(MainSettingsActivity.this).start();
-        else if (which == SeedboxProvider.values().length + 1)
+        else if (which == SeedboxProvider.activeProviders().length + 1)
             BarcodeHelper.startBarcodeScanner(this, BarcodeHelper.ACTIVITY_BARCODE_ADDSERVER);
         else
             startActivity(SeedboxProvider.values()[which - 1].getSettings().getSettingsActivityIntent(MainSettingsActivity.this));
@@ -266,10 +266,10 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_ADDSEEDBOX) {
             // Open dialog to pick one of the supported seedbox providers (or a normal server)
-            String[] seedboxes = new String[SeedboxProvider.values().length + 2];
+            String[] seedboxes = new String[SeedboxProvider.activeProviders().length + 2];
             seedboxes[0] = getString(R.string.pref_addserver_normal);
             for (int i = 0; i < seedboxes.length - 2; i++) {
-                seedboxes[i + 1] = getString(R.string.pref_seedbox_addseedbox, SeedboxProvider.values()[i].getSettings().getName());
+                seedboxes[i + 1] = getString(R.string.pref_seedbox_addseedbox, SeedboxProvider.activeProviders()[i].getSettings().getName());
             }
             seedboxes[seedboxes.length - 1] = getString(R.string.pref_seedbox_xirvikviaqr);
             return new AlertDialog.Builder(this).setItems(seedboxes, onAddSeedbox).create();
@@ -296,7 +296,7 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
         final String token = qrResult[2];
         final String name = server.replace(".xirvik.com", "");
 
-        new XirvikSharedSettingsActivity.RetrieveXirvikAutoConfTask(server, "", "", token) {
+        new XirvikSettingsActivity.RetrieveXirvikAutoConfTask(server, "", "", token) {
             @Override
             protected void onPostExecute(String result) {
                 if (result == null) {
