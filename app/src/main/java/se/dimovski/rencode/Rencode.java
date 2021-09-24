@@ -5,11 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Rencode
-{
+public class Rencode {
 
-    public static Object decode(byte[] data) throws IOException
-    {
+    public static Object decode(byte[] data) throws IOException {
         final InputStream is = new ByteArrayInputStream(data);
         final RencodeInputStream inputStream = new RencodeInputStream(is);
 
@@ -19,8 +17,7 @@ public class Rencode
         return decoded;
     }
 
-    public static byte[] encode(Object obj) throws IOException
-    {
+    public static byte[] encode(Object obj) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final RencodeOutputStream output = new RencodeOutputStream(baos);
         output.writeObject(obj);
