@@ -17,11 +17,12 @@
 package org.transdroid.core.gui.settings;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AlertDialog;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
@@ -73,11 +74,14 @@ public class RssfeedSettingsActivity extends KeyBoundPreferencesActivity {
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_CONFIRMREMOVE) {
-            return new AlertDialog.Builder(this).setMessage(R.string.pref_confirmremove)
+            return new AlertDialog.Builder(this)
+                    .setMessage(R.string.pref_confirmremove)
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                         ApplicationSettings_.getInstance_(RssfeedSettingsActivity.this).removeRssfeedSettings(key);
                         finish();
-                    }).setNegativeButton(android.R.string.cancel, null).create();
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create();
         }
         return null;
     }

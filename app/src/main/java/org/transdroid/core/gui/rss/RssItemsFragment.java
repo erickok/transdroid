@@ -16,7 +16,6 @@
  */
 package org.transdroid.core.gui.rss;
 
-import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -33,6 +32,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -151,8 +151,10 @@ public class RssItemsFragment extends Fragment {
                 final Item first = checked.get(0);
                 if (itemId == R.id.action_showdetails) {
                     // Show a dialog box with the RSS item description text
-                    new AlertDialog.Builder(getActivity()).setMessage(first.getDescription())
-                            .setPositiveButton(R.string.action_close, null).show();
+                    new AlertDialog.Builder(getActivity())
+                            .setMessage(first.getDescription())
+                            .setPositiveButton(R.string.action_close, null)
+                            .show();
                 } else if (itemId == R.id.action_openwebsite) {
                     // Open the browser to show the website contained in the item's link tag
                     Toast.makeText(getActivity(), getString(R.string.search_openingdetails, first.getTitle()), Toast.LENGTH_LONG).show();

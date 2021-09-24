@@ -17,7 +17,6 @@
 package org.transdroid.core.gui.settings;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -26,6 +25,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.Preference.OnPreferenceClickListener;
@@ -272,7 +272,9 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
                 seedboxes[i + 1] = getString(R.string.pref_seedbox_addseedbox, SeedboxProvider.activeProviders()[i].getSettings().getName());
             }
             seedboxes[seedboxes.length - 1] = getString(R.string.pref_seedbox_xirvikviaqr);
-            return new AlertDialog.Builder(this).setItems(seedboxes, onAddSeedbox).create();
+            return new AlertDialog.Builder(this)
+                    .setItems(seedboxes, onAddSeedbox)
+                    .create();
         }
         return null;
     }

@@ -16,10 +16,11 @@
  */
 package org.transdroid.core.gui;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import org.transdroid.R;
@@ -49,14 +50,17 @@ public class ServerPickerDialog extends DialogFragment {
         dialog.show(activity.getSupportFragmentManager(), "serverpicker");
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String[] serverNames = getArguments().getStringArray("serverNames");
-        return new AlertDialog.Builder(getActivity()).setTitle(R.string.navigation_pickserver)
+        return new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.navigation_pickserver)
                 .setItems(serverNames, (dialog, which) -> {
                     if (getActivity() != null && getActivity() instanceof TorrentsActivity)
                         ((TorrentsActivity) getActivity()).switchServerAndAddFromIntent(which);
-                }).create();
+                })
+                .create();
     }
 
 }
