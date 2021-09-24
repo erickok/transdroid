@@ -18,10 +18,11 @@ package org.transdroid.core.gui.search;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+
+import androidx.appcompat.app.AlertDialog;
 
 import org.transdroid.R;
 
@@ -52,12 +53,15 @@ public class FilePickerHelper {
             } catch (Exception e2) {
                 // Can't start the file manager, for example with a SecurityException or when IO File Manager is not present
                 final WeakReference<Context> intentStartContext = new WeakReference<>(activity);
-                new AlertDialog.Builder(activity).setIcon(android.R.drawable.ic_dialog_alert)
+                new AlertDialog.Builder(activity)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
                         .setMessage(activity.getString(R.string.search_filemanagernotfound))
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             if (intentStartContext.get() != null)
                                 intentStartContext.get().startActivity(new Intent(Intent.ACTION_VIEW, FILEMANAGER_MARKET_URI));
-                        }).setNegativeButton(android.R.string.no, null).show();
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
             }
         }
     }

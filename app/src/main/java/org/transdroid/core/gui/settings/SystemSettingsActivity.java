@@ -17,7 +17,6 @@
 package org.transdroid.core.gui.settings;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -28,6 +27,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference.OnPreferenceClickListener;
 import androidx.preference.PreferenceManager;
 
@@ -263,7 +263,8 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
                                         SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
                         .setPositiveButton(R.string.pref_import_fromfile, importSettingsFromFile)
                         .setNeutralButton(R.string.pref_import_fromqr, importSettingsFromQr)
-                        .setNegativeButton(android.R.string.cancel, null).create();
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .create();
             // @formatter:on
             case DIALOG_EXPORTSETTINGS:
                 // @formatter:off
@@ -276,7 +277,8 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
                                         SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
                         .setPositiveButton(R.string.pref_export_tofile, exportSettingsToFile)
                         .setNeutralButton(R.string.pref_export_toqr, exportSettingsToQr)
-                        .setNegativeButton(android.R.string.cancel, null).create();
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .create();
             // @formatter:on
         }
         return null;

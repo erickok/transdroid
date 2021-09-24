@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion '29.0.3'
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         minSdkVersion 15
@@ -90,7 +90,6 @@ dependencies {
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.nispok:snackbar:2.11.0'
-    implementation 'com.github.aegnor:rencode-java:cb628e824e'
     implementation 'org.apache.openjpa:openjpa-lib:3.1.1'
     implementation 'net.iharder:base64:2.3.9'
     implementation('com.github.afollestad.material-dialogs:core:0.9.6.0@aar') {
