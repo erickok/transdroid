@@ -212,7 +212,7 @@ public class RencodeOutputStream extends FilterOutputStream implements DataOutpu
      * Writes a {@link String}
      */
     public void writeString(String value) throws IOException {
-        int len = value.length();
+        int len = value.getBytes().length;
         if (len < TypeCode.EMBEDDED.STR_COUNT) {
             write(TypeCode.EMBEDDED.STR_START + len);
         } else {
