@@ -658,35 +658,36 @@ public class QBittorrentAdapter implements IDaemonAdapter {
         for (int i = 0; i < response.length(); i++) {
             JSONObject tor = response.getJSONObject(i);
             double progress = tor.getDouble("progress");
-            int[] leechers;
-            int[] seeders;
             double ratio;
             long size;
             long uploaded;
             int dlspeed;
             int upspeed;
-            boolean dlseq = false;
-            boolean dlflp = false;
-            Date addedOn = null;
-            Date completionOn = null;
-            String label = null;
+
+            Torrent.Builder torrentBuilder = new Torrent.Builder()
+                    .setId(i)
+                    .setHash(tor.getString("hash"))
+                    .setName(tor.getString("name"))
+                    .setStatusCode(parseStatus(tor.getString("state")))
+                    .setDaemon(settings.getType())
+                    .setPartDone((float) progress);
 
             if (version >= 30200) {
-                leechers = new int[2];
-                leechers[0] = tor.getInt("num_leechs");
-                leechers[1] = tor.getInt("num_complete") + tor.getInt("num_incomplete");
-                seeders = new int[2];
-                seeders[0] = tor.getInt("num_seeds");
-                seeders[1] = tor.getInt("num_complete");
+                torrentBuilder
+                        .setLeechersConnected(tor.getInt("num_leechs"))
+                        .setLeechersKnown(tor.getInt("num_complete") + tor.getInt("num_incomplete"))
+                        .setSeedersConnected(tor.getInt("num_seeds"))
+                        .setSeedersKnown(tor.getInt("num_complete"));
+
                 size = tor.getLong("size");
                 ratio = tor.getDouble("ratio");
                 dlspeed = tor.getInt("dlspeed");
                 upspeed = tor.getInt("upspeed");
                 if (tor.has("seq_dl")) {
-                    dlseq = tor.getBoolean("seq_dl");
+                    torrentBuilder.setSequentialDownload(tor.getBoolean("seq_dl"));
                 }
                 if (tor.has("f_l_piece_prio")) {
-                    dlflp = tor.getBoolean("f_l_piece_prio");
+                    torrentBuilder.setFirstLastPieceDownload(tor.getBoolean("f_l_piece_prio"));
                 }
                 if (tor.has("uploaded")) {
                     uploaded = tor.getLong("uploaded");
@@ -694,16 +695,27 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                     uploaded = (long) (size * ratio);
                 }
                 final long addedOnTime = tor.optLong("added_on");
-                addedOn = (addedOnTime > 0) ? new Date(addedOnTime * 1000L) : null;
+                if(addedOnTime > 0) {
+                    torrentBuilder.setDateAdded(new Date(addedOnTime * 1000L));
+                }
                 final long completionOnTime = tor.optLong("completion_on");
-                completionOn = (completionOnTime > 0) ? new Date(completionOnTime * 1000L) : null;
-                label = tor.optString("category");
-                if (label.length() == 0) {
-                    label = null;
+                if(completionOnTime > 0) {
+                    torrentBuilder.setRealDateDone(new Date(completionOnTime * 1000L));
+                }
+
+                String label = tor.optString("category");
+                if (!label.isEmpty()) {
+                    torrentBuilder.setLabel(label);
                 }
             } else {
-                leechers = parsePeers(tor.getString("num_leechs"));
-                seeders = parsePeers(tor.getString("num_seeds"));
+                int[] leechers = parsePeers(tor.getString("num_leechs"));
+                int[] seeders = parsePeers(tor.getString("num_seeds"));
+                torrentBuilder
+                        .setSeedersConnected(seeders[0])
+                        .setSeedersKnown(seeders[1])
+                        .setLeechersConnected(leechers[0])
+                        .setLeechersKnown(leechers[1]);
+
                 size = parseSize(tor.getString("size"));
                 ratio = parseRatio(tor.getString("ratio"));
                 uploaded = (long) (size * ratio);
@@ -712,42 +724,26 @@ public class QBittorrentAdapter implements IDaemonAdapter {
             }
 
             long eta = -1L;
-            if (dlspeed > 0)
+            if (dlspeed > 0) {
                 eta = (long) (size - (size * progress)) / dlspeed;
+            }
+
+            Torrent torrent = torrentBuilder
+                    .setRateDownload(dlspeed)
+                    .setRateUpload(upspeed)
+                    .setEta((int) eta)
+                    .setDownloadedEver((long) (size * progress))
+                    .setUploadedEver(uploaded)
+                    .setTotalSize(size)
+                    .setAvailable(0f)
+                    .createTorrent();
+
             // Add the parsed torrent to the list
-            // @formatter:off
-            Torrent torrent = new Torrent(
-                    (long) i,
-                    tor.getString("hash"),
-                    tor.getString("name"),
-                    parseStatus(tor.getString("state")),
-                    null,
-                    dlspeed,
-                    upspeed,
-                    seeders[0],
-                    seeders[1],
-                    leechers[0],
-                    leechers[1],
-                    (int) eta,
-                    (long) (size * progress),
-                    uploaded,
-                    size,
-                    (float) progress,
-                    0f,
-                    label,
-                    addedOn,
-                    completionOn,
-                    null,
-                    settings.getType());
-            torrent.mimicSequentialDownload(dlseq);
-            torrent.mimicFirstLastPieceDownload(dlflp);
             torrents.add(torrent);
-            // @formatter:on
         }
 
         // Return the list
         return torrents;
-
     }
 
     private double parseRatio(String string) {

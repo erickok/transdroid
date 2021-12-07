@@ -64,6 +64,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
     private boolean sequentialDownload;
     private boolean firstLastPieceDownload;
 
+
     private Torrent(Parcel in) {
         this.id = in.readLong();
         this.hash = in.readString();
@@ -144,6 +145,54 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
         }
         this.error = error;
         this.daemon = daemon;
+    }
+
+    Torrent(Builder builder) {
+        this.id = builder.id;
+        this.hash = builder.hash;
+        this.name = builder.name;
+        this.statusCode = builder.statusCode;
+        this.locationDir = builder.locationDir;
+
+        this.rateDownload = builder.rateDownload;
+        this.rateUpload = builder.rateUpload;
+        this.seedersConnected = builder.seedersConnected;
+        this.seedersKnown = builder.seedersKnown;
+        this.leechersConnected = builder.leechersConnected;
+        this.leechersKnown = builder.leechersKnown;
+        this.eta = builder.eta;
+
+        this.downloadedEver = builder.downloadedEver;
+        this.uploadedEver = builder.uploadedEver;
+        this.totalSize = builder.totalSize;
+        this.partDone = builder.partDone;
+        this.available = builder.available;
+        this.label = builder.label;
+
+        this.dateAdded = builder.dateAdded;
+        if (builder.realDateDone != null) {
+            this.dateDone = builder.realDateDone;
+        } else {
+            if (this.partDone == 1) {
+                // Finished but no finished date: set so move to bottom of list
+                Calendar cal = Calendar.getInstance();
+                cal.clear();
+                cal.set(1900, Calendar.DECEMBER, 31);
+                this.dateDone = cal.getTime();
+            } else if (eta == -1 || eta == -2) {
+                // UNknown eta: move to the top of the list
+                this.dateDone = new Date(Long.MAX_VALUE);
+            } else {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.SECOND, eta);
+                this.dateDone = cal.getTime();
+            }
+        }
+        this.error = builder.error;
+        this.daemon = builder.daemon;
+        this.sequentialDownload = builder.sequentialDownload;
+        this.firstLastPieceDownload = builder.firstLastPieceDownload;
+
     }
 
     public String getName() {
@@ -436,4 +485,155 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
         dest.writeString(daemon.name());
     }
 
+    public static class Builder {
+
+        private long id;
+        private String hash;
+        private String name;
+        private TorrentStatus statusCode;
+        private String locationDir;
+        private int rateDownload;
+        private int rateUpload;
+        private int seedersConnected;
+        private int seedersKnown;
+        private int leechersConnected;
+        private int leechersKnown;
+        private int eta;
+        private long downloadedEver;
+        private long uploadedEver;
+        private long totalSize;
+        private float partDone;
+        private float available;
+        private String label;
+        private Date dateAdded;
+        private Date realDateDone;
+        private String error;
+        private Daemon daemon;
+        private boolean sequentialDownload;
+        private boolean firstLastPieceDownload;
+
+        public Builder setId(long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setHash(String hash) {
+            this.hash = hash;
+            return this;
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setStatusCode(TorrentStatus statusCode) {
+            this.statusCode = statusCode;
+            return this;
+        }
+
+        public Builder setLocationDir(String locationDir) {
+            this.locationDir = locationDir;
+            return this;
+        }
+
+        public Builder setRateDownload(int rateDownload) {
+            this.rateDownload = rateDownload;
+            return this;
+        }
+
+        public Builder setRateUpload(int rateUpload) {
+            this.rateUpload = rateUpload;
+            return this;
+        }
+
+        public Builder setSeedersConnected(int seedersConnected) {
+            this.seedersConnected = seedersConnected;
+            return this;
+        }
+
+        public Builder setSeedersKnown(int seedersKnown) {
+            this.seedersKnown = seedersKnown;
+            return this;
+        }
+
+        public Builder setLeechersConnected(int leechersConnected) {
+            this.leechersConnected = leechersConnected;
+            return this;
+        }
+
+        public Builder setLeechersKnown(int leechersKnown) {
+            this.leechersKnown = leechersKnown;
+            return this;
+        }
+
+        public Builder setEta(int eta) {
+            this.eta = eta;
+            return this;
+        }
+
+        public Builder setDownloadedEver(long downloadedEver) {
+            this.downloadedEver = downloadedEver;
+            return this;
+        }
+
+        public Builder setUploadedEver(long uploadedEver) {
+            this.uploadedEver = uploadedEver;
+            return this;
+        }
+
+        public Builder setTotalSize(long totalSize) {
+            this.totalSize = totalSize;
+            return this;
+        }
+
+        public Builder setPartDone(float partDone) {
+            this.partDone = partDone;
+            return this;
+        }
+
+        public Builder setAvailable(float available) {
+            this.available = available;
+            return this;
+        }
+
+        public Builder setLabel(String label) {
+            this.label = label;
+            return this;
+        }
+
+        public Builder setDateAdded(Date dateAdded) {
+            this.dateAdded = dateAdded;
+            return this;
+        }
+
+        public Builder setRealDateDone(Date realDateDone) {
+            this.realDateDone = realDateDone;
+            return this;
+        }
+
+        public Builder setError(String error) {
+            this.error = error;
+            return this;
+        }
+
+        public Builder setDaemon(Daemon daemon) {
+            this.daemon = daemon;
+            return this;
+        }
+
+        public Builder setSequentialDownload(boolean sequentialDownload) {
+            this.sequentialDownload = sequentialDownload;
+            return this;
+        }
+
+        public Builder setFirstLastPieceDownload(boolean firstLastPieceDownload) {
+            this.firstLastPieceDownload = firstLastPieceDownload;
+            return this;
+        }
+
+        public Torrent createTorrent() {
+            return new Torrent(this);
+        }
+    }
 }
