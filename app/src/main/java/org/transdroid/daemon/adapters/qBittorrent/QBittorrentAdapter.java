@@ -674,6 +674,7 @@ public class QBittorrentAdapter implements IDaemonAdapter {
 
             if (version >= 30200) {
                 torrentBuilder
+                        .setLocationDir(tor.getString("save_path"))
                         .setLeechersConnected(tor.getInt("num_leechs"))
                         .setLeechersKnown(tor.getInt("num_complete") + tor.getInt("num_incomplete"))
                         .setSeedersConnected(tor.getInt("num_seeds"))
