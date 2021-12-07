@@ -25,19 +25,16 @@ import android.os.Parcel;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
 import com.google.android.material.tabs.TabLayout;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.enums.SnackbarType;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
@@ -269,7 +266,7 @@ public class RssFeedsActivity extends AppCompatActivity {
 
     protected IDaemonAdapter getCurrentConnection() {
         ServerSetting lastUsed = applicationSettings.getLastUsedServer();
-        return lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+        return lastUsed.getServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
     }
 
     // @Background

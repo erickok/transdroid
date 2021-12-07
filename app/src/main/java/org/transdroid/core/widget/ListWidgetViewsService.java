@@ -24,7 +24,6 @@ import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-
 import org.androidannotations.annotations.EService;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
@@ -109,7 +108,7 @@ class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
         // Load the torrents; synchronously
         IDaemonAdapter connection =
-                server.createServerAdapter(ConnectivityHelper_.getInstance_(context).getConnectedNetworkName(),
+                server.getServerAdapter(ConnectivityHelper_.getInstance_(context).getConnectedNetworkName(),
                         context);
         DaemonTaskResult result = RetrieveTask.create(connection).execute(log);
         if (!(result instanceof RetrieveTaskSuccessResult)) {

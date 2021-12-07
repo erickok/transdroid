@@ -20,7 +20,6 @@ package org.transdroid.daemon.adapters.buffaloNas;
 import com.android.internal.http.multipart.FilePart;
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -174,9 +173,7 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
         try {
 
             // Initialise the HTTP client
-            if (httpclient == null) {
-                initialise();
-            }
+            initialise();
 
             // Add the parameters to the query string
             boolean first = true;
@@ -251,9 +248,10 @@ public class BuffaloNasAdapter implements IDaemonAdapter {
      *
      * @throws DaemonException On conflicting or missing settings
      */
-    private void initialise() throws DaemonException {
-
-        httpclient = HttpHelper.createStandardHttpClient(settings, true);
+    private synchronized void initialise() throws DaemonException {
+        if(httpclient == null) {
+            httpclient = HttpHelper.createStandardHttpClient(settings, true);
+        }
 
     }
 

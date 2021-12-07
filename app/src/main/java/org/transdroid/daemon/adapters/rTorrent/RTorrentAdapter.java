@@ -18,7 +18,9 @@
 package org.transdroid.daemon.adapters.rTorrent;
 
 import android.text.TextUtils;
-
+import de.timroes.axmlrpc.XMLRPCClient;
+import de.timroes.axmlrpc.XMLRPCClient.UnauthorizdException;
+import de.timroes.axmlrpc.XMLRPCException;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
@@ -65,10 +67,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import de.timroes.axmlrpc.XMLRPCClient;
-import de.timroes.axmlrpc.XMLRPCClient.UnauthorizdException;
-import de.timroes.axmlrpc.XMLRPCException;
 
 /**
  * An adapter that allows for easy access to rTorrent torrent data. Communication is handled via the XML-RPC protocol as
@@ -328,9 +326,7 @@ public class RTorrentAdapter implements IDaemonAdapter {
             throws DaemonException, MalformedURLException {
 
         // Initialise the HTTP client
-        if (rpcclient == null) {
-            initialise();
-        }
+        initialise();
 
         StringBuilder paramsBuilder = new StringBuilder();
         for (Object arg : arguments) {
@@ -365,14 +361,13 @@ public class RTorrentAdapter implements IDaemonAdapter {
      * Instantiates a XML-RPC client with proper credentials.
      *
      * @throws DaemonException       On conflicting settings (i.e. user authentication but no password or username provided)
-     * @throws MalformedURLException Thrown when the URL could not be properly constructed
      */
-    private void initialise() throws DaemonException, MalformedURLException {
-
-        int flags = XMLRPCClient.FLAGS_8BYTE_INT;
-        this.rpcclient = new XMLRPCClient(HttpHelper.createStandardHttpClient(settings, true),
-                settings.getAddress(), buildWebUIUrl(), flags);
-
+    private synchronized void initialise() throws DaemonException {
+        if(rpcclient == null) {
+            int flags = XMLRPCClient.FLAGS_8BYTE_INT;
+            this.rpcclient = new XMLRPCClient(HttpHelper.createStandardHttpClient(settings, true),
+                    settings.getAddress(), buildWebUIUrl(), flags);
+        }
     }
 
     /**

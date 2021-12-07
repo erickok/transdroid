@@ -30,10 +30,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
@@ -209,7 +207,7 @@ public class ListWidgetConfigActivity extends AppCompatActivity {
 
         // Create a connection object and retrieve the live torrents
         IDaemonAdapter connection =
-                ((ServerSetting) serverSpinner.getSelectedItem()).createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+                ((ServerSetting) serverSpinner.getSelectedItem()).getServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
         DaemonTaskResult result = RetrieveTask.create(connection).execute(log);
         if (result instanceof RetrieveTaskSuccessResult) {
             // Success; show the active torrents in the widget preview

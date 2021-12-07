@@ -19,7 +19,6 @@ package org.transdroid.daemon.adapters.transmission;
 
 import net.iharder.Base64;
 import net.iharder.Base64.InputStream;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -403,9 +402,7 @@ public class TransmissionAdapter implements IDaemonAdapter {
         try {
 
             // Initialise the HTTP client
-            if (httpclient == null) {
-                initialise();
-            }
+            initialise();
             final String sessionHeader = "X-Transmission-Session-Id";
 
             // Setup request using POST stream with URL and data
@@ -477,8 +474,10 @@ public class TransmissionAdapter implements IDaemonAdapter {
      *
      * @throws DaemonException On conflicting or missing settings
      */
-    private void initialise() throws DaemonException {
-        httpclient = HttpHelper.createStandardHttpClient(settings, true);
+    private synchronized void initialise() throws DaemonException {
+        if(httpclient == null) {
+            httpclient = HttpHelper.createStandardHttpClient(settings, true);
+        }
     }
 
     /**

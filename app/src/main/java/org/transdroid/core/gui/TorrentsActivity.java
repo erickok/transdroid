@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,13 +38,11 @@ import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.enums.SnackbarType;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
@@ -337,7 +334,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         } else {
             // Resume after instead of fully loading the torrents list; create connection and set action bar title
             ServerSetting lastUsed = applicationSettings.getLastUsedServer();
-            currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+            currentConnection = lastUsed.getServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
             serverSelectionView.updateCurrentServer(currentConnection);
             serverSelectionView.updateCurrentFilter(currentFilter);
         }
@@ -380,7 +377,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         if (currentConnection == null) {
             filterSelected(lastUsed, true);
         } else {
-            currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+            currentConnection = lastUsed.getServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
         }
 
         // Start auto refresh
@@ -564,7 +561,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
             }
 
             // Update connection to the newly selected server and refresh
-            currentConnection = server.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+            currentConnection = server.getServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
             applicationSettings.setLastUsedServer(server);
             serverSelectionView.updateCurrentServer(currentConnection);
             if (forceNewConnection) {

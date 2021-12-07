@@ -20,7 +20,6 @@ package org.transdroid.daemon.adapters.dLinkRouterBT;
 import com.android.internal.http.multipart.FilePart;
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -234,9 +233,7 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
         try {
 
             // Initialise the HTTP client
-            if (httpclient == null) {
-                initialise();
-            }
+            initialise();
 
             // Setup request using POST stream with URL and data
             HttpPost httppost = new HttpPost(buildWebUIUrl() + requestUrl);
@@ -304,8 +301,10 @@ public class DLinkRouterBTAdapter implements IDaemonAdapter {
      *
      * @throws DaemonException On conflicting or missing settings
      */
-    private void initialise() throws DaemonException {
-        httpclient = HttpHelper.createStandardHttpClient(settings, true);
+    private synchronized void initialise() throws DaemonException {
+        if(httpclient == null) {
+            httpclient = HttpHelper.createStandardHttpClient(settings, true);
+        }
     }
 
     /**

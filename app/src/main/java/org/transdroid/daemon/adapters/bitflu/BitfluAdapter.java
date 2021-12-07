@@ -140,9 +140,7 @@ public class BitfluAdapter implements IDaemonAdapter {
         try {
 
             // Initialise the HTTP client
-            if (httpclient == null) {
-                initialise();
-            }
+            initialise();
 
             // TLog.d(LOG_NAME, "Request to: "+ buildWebUIUrl() + addToUrl);
 
@@ -268,9 +266,10 @@ public class BitfluAdapter implements IDaemonAdapter {
      *
      * @throws DaemonException On conflicting or missing settings
      */
-    private void initialise() throws DaemonException {
-
-        httpclient = HttpHelper.createStandardHttpClient(settings, true);
+    private synchronized void initialise() throws DaemonException {
+        if(httpclient == null) {
+            httpclient = HttpHelper.createStandardHttpClient(settings, true);
+        }
     }
 
     /**

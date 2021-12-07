@@ -20,7 +20,6 @@ package org.transdroid.daemon.adapters.kTorrent;
 import com.android.internal.http.multipart.FilePart;
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.ProtocolException;
@@ -464,12 +463,10 @@ public class KTorrentAdapter implements IDaemonAdapter {
      *
      * @throws DaemonException Thrown on settings error
      */
-    private void initialise() throws DaemonException {
-
-        if (httpclient != null) {
-            httpclient = null;
+    private synchronized void initialise() throws DaemonException {
+        if (httpclient == null) {
+            httpclient = HttpHelper.createStandardHttpClient(settings, false);
         }
-        httpclient = HttpHelper.createStandardHttpClient(settings, false);
     }
 
     /**
