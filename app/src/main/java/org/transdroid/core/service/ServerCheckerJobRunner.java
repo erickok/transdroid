@@ -21,11 +21,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-
 import androidx.core.app.NotificationCompat;
-
 import com.evernote.android.job.Job;
-
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
@@ -85,7 +82,7 @@ public class ServerCheckerJobRunner {
             JSONArray lastStats = applicationSettings.getServerLastStats(server);
 
             // Synchronously retrieve torrents listing
-            IDaemonAdapter adapter = server.createServerAdapter(connectivityHelper.getConnectedNetworkName(), context);
+            IDaemonAdapter adapter = server.getServerAdapter(connectivityHelper.getConnectedNetworkName(), context);
             DaemonTaskResult result = RetrieveTask.create(adapter).execute(log);
             if (!(result instanceof RetrieveTaskSuccessResult)) {
                 // Cannot retrieve torrents at this time

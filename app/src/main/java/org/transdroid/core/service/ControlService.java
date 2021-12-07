@@ -3,7 +3,6 @@ package org.transdroid.core.service;
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EService;
 import org.transdroid.core.app.settings.ApplicationSettings;
@@ -100,7 +99,7 @@ public class ControlService extends IntentService {
         }
 
         // See which action should be performed on the server
-        IDaemonAdapter adapter = server.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+        IDaemonAdapter adapter = server.getServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
         DaemonTask task = null;
         switch (intent.getAction()) {
             case INTENT_RESUMEALL:

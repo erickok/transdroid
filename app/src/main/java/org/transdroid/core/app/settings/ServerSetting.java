@@ -18,10 +18,10 @@ package org.transdroid.core.app.settings;
 
 import android.content.Context;
 import android.text.TextUtils;
-
 import org.transdroid.core.gui.lists.SimpleListItem;
 import org.transdroid.core.gui.log.Log_;
 import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.DaemonFactory;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.OS;
@@ -308,8 +308,8 @@ public class ServerSetting implements SimpleListItem {
      * @param context            A context to access the logger
      * @return An IDaemonAdapter instance of the specific torrent client daemon type
      */
-    public IDaemonAdapter createServerAdapter(String connectedToNetwork, Context context) {
-        return type.createAdapter(convertToDaemonSettings(connectedToNetwork, context));
+    public IDaemonAdapter getServerAdapter(String connectedToNetwork, Context context) {
+        return DaemonFactory.getServerAdapter(convertToDaemonSettings(connectedToNetwork, context));
     }
 
     /**

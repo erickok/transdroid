@@ -20,13 +20,10 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
@@ -136,7 +133,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
         // Connect to the last used server
         ServerSetting lastUsed = applicationSettings.getLastUsedServer();
         fragmentDetails.setCurrentServerSettings(lastUsed);
-        currentConnection = lastUsed.createServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+        currentConnection = lastUsed.getServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
 
         // Show details and load fine stats and torrent files
         fragmentDetails.updateTorrent(torrent);
