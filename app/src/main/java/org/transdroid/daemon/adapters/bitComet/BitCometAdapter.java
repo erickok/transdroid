@@ -19,7 +19,6 @@ package org.transdroid.daemon.adapters.bitComet;
 
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -253,8 +252,10 @@ public class BitCometAdapter implements IDaemonAdapter {
      *
      * @throws DaemonException On conflicting or missing settings
      */
-    private void initialise() throws DaemonException {
-        httpclient = HttpHelper.createStandardHttpClient(settings, true);
+    private synchronized void initialise() throws DaemonException {
+        if(httpclient == null) {
+            httpclient = HttpHelper.createStandardHttpClient(settings, true);
+        }
     }
 
     /**
@@ -271,9 +272,7 @@ public class BitCometAdapter implements IDaemonAdapter {
         try {
 
             // Initialize the HTTP client
-            if (httpclient == null) {
-                initialise();
-            }
+            initialise();
 
             // Add the parameters to the query string
             boolean first = true;

@@ -20,7 +20,6 @@ package org.transdroid.daemon.adapters.deluge;
 import com.android.internal.http.multipart.FilePart;
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -163,9 +162,7 @@ public class DelugeAdapter implements IDaemonAdapter {
         log.d(LOG_NAME, "Uploading a file to the Deluge daemon: " + url);
 
         // Initialise the HTTP client
-        if (httpclient == null) {
-            initialise();
-        }
+        initialise();
 
         // Setup client using POST
         HttpPost httppost = new HttpPost(url);
@@ -437,9 +434,7 @@ public class DelugeAdapter implements IDaemonAdapter {
         // We still need to retrieve the version number from the server
         // Do this by getting the web interface main html page and trying to parse the version number
         // Format is something like '<title>Deluge: Web UI 1.3.6</title>'
-        if (httpclient == null) {
-            initialise();
-        }
+        initialise();
         try {
             HttpResponse response = httpclient.execute(new HttpGet(buildWebUIUrl() + "/"));
             String main = HttpHelper.convertStreamToString(response.getEntity().getContent());
@@ -478,9 +473,7 @@ public class DelugeAdapter implements IDaemonAdapter {
         try {
 
             // Initialise the HTTP client
-            if (httpclient == null) {
-                initialise();
-            }
+            initialise();
 
             // Login first?
             if (sessionCookie == null) {
@@ -582,11 +575,11 @@ public class DelugeAdapter implements IDaemonAdapter {
      * @throws DaemonException On missing settings
      */
     private void initialise() throws DaemonException {
-
-        httpclient = HttpHelper.createStandardHttpClient(settings, settings.getUsername() != null && !settings.getUsername().equals(""));
-        httpclient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
-        httpclient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
-
+        if(httpclient == null) {
+            httpclient = HttpHelper.createStandardHttpClient(settings, settings.getUsername() != null && !settings.getUsername().equals(""));
+            httpclient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
+            httpclient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
+        }
     }
 
     /**

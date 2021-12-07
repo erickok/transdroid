@@ -20,12 +20,9 @@ package org.transdroid.daemon.adapters.uTorrent;
 import com.android.internal.http.multipart.FilePart;
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
-
 import org.apache.http.HttpResponse;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -117,12 +114,10 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
     private static final int RPC_FILESIZE_IDX = 1;
     private static final int RPC_FILEDOWNLOADED_IDX = 2;
     private static final int RPC_FILEPRIORITY_IDX = 3;
-    private static String authtoken;
+    private String authtoken;
     private static ArrayList<RemoteRssChannel> remoteRssChannels = new ArrayList<>();
     private DaemonSettings settings;
     private DefaultHttpClient httpclient;
-    private static CookieStore cookieStore;
-
 
     /**
      * Initialises an adapter that provides operations to the uTorrent web daemon
@@ -368,11 +363,8 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
         try {
 
             // Initialise the HTTP client
-            if (httpclient == null) {
-                initialise();
-            }
-
-            ensureToken();
+            initialise();
+            ensureToken(retried > 0);
 
             // Make request
             HttpGet httpget = new HttpGet(buildWebUIUrl() + "?token=" + authtoken + addToUrl);
@@ -383,7 +375,6 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
             String result = HttpHelper.convertStreamToString(instream);
             if ((result.equals("") || result.trim().equals("invalid request"))) {
                 // Auth token was invalidated; retry at max 3 times
-                authtoken = null; // So that ensureToken() will request a new token on the next try
                 if (retried < 2) {
                     return makeUtorrentRequest(log, addToUrl, ++retried);
                 }
@@ -407,10 +398,10 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
 
     }
 
-    private synchronized void ensureToken() throws IOException, DaemonException {
+    private synchronized void ensureToken(boolean forceReload) throws IOException, DaemonException {
 
-        // Make sure we have a valid token
-        if (authtoken == null) {
+        // Make sure we have a valid token or we're regenerating it
+        if (authtoken == null || forceReload) {
 
             // Make a request to /gui/token.html
             // See https://github.com/bittorrent/webui/wiki/TokenSystem
@@ -437,11 +428,8 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
     public JSONObject uploadTorrentFile(String file) throws DaemonException, IOException, JSONException {
 
         // Initialise the HTTP client
-        if (httpclient == null) {
-            initialise();
-        }
-
-        ensureToken();
+        initialise();
+        ensureToken(false);
 
         // Build and make request
         HttpPost httppost = new HttpPost(buildWebUIUrl() + "?token=" + authtoken + "&action=add-file");
@@ -464,13 +452,10 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
      *
      * @throws DaemonException On conflicting or missing settings
      */
-    private void initialise() throws DaemonException {
-        if (this.cookieStore == null) {
-            this.cookieStore = new BasicCookieStore();
+    private synchronized void initialise() throws DaemonException {
+        if(httpclient == null) {
+            httpclient = HttpHelper.createStandardHttpClient(settings, true);
         }
-
-        this.httpclient = HttpHelper.createStandardHttpClient(settings, true);
-        this.httpclient.setCookieStore(this.cookieStore);
     }
 
     /**

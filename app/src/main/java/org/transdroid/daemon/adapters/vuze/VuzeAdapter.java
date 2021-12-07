@@ -226,9 +226,7 @@ public class VuzeAdapter implements IDaemonAdapter {
         // TODO: It would be nicer to now split each of these steps into separate makeVuzeCalls when there are multiple logical steps such as stopping a torrent before removing it
 
         // Initialise the HTTP client
-        if (rpcclient == null) {
-            initialise();
-        }
+        initialise();
         if (settings.getAddress() == null || settings.getAddress().equals("")) {
             throw new DaemonException(DaemonException.ExceptionType.AuthenticationFailure, "No host name specified.");
         }
@@ -329,10 +327,10 @@ public class VuzeAdapter implements IDaemonAdapter {
      *
      * @throws DaemonException On conflicting settings (i.e. user authentication but no password or username provided)
      */
-    private void initialise() throws DaemonException {
-
-        this.rpcclient = new VuzeXmlOverHttpClient(settings, buildWebUIUrl());
-
+    private synchronized void initialise() throws DaemonException {
+        if(rpcclient == null) {
+            rpcclient = new VuzeXmlOverHttpClient(settings, buildWebUIUrl());
+        }
     }
 
     /**

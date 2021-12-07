@@ -20,7 +20,6 @@ package org.transdroid.daemon.adapters.synology;
 import com.android.internal.http.multipart.FilePart;
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -84,10 +83,17 @@ public class SynologyAdapter implements IDaemonAdapter {
         this.settings = settings;
     }
 
+    private synchronized void initialise() throws DaemonException {
+        if (httpClient == null) {
+            httpClient = HttpHelper.createStandardHttpClient(settings, true);
+        }
+    }
+
     @Override
     public DaemonTaskResult executeTask(Log log, DaemonTask task) {
         String tid;
         try {
+            initialise();
             switch (task.getMethod()) {
                 case Retrieve:
                     return new RetrieveTaskSuccessResult((RetrieveTask) task, tasksList(log), null);
@@ -425,13 +431,6 @@ public class SynologyAdapter implements IDaemonAdapter {
         return new SynoRequest(path, api, version).post(sid, params);
     }
 
-    private DefaultHttpClient getHttpClient() throws DaemonException {
-        if (httpClient == null) {
-            httpClient = HttpHelper.createStandardHttpClient(settings, true);
-        }
-        return httpClient;
-    }
-
     private static class SynoResponse {
 
         private final HttpResponse response;
@@ -502,7 +501,7 @@ public class SynologyAdapter implements IDaemonAdapter {
 
         public SynoResponse get(String params) throws DaemonException {
             try {
-                return new SynoResponse(getHttpClient().execute(new HttpGet(buildURL(params))));
+                return new SynoResponse(httpClient.execute(new HttpGet(buildURL(params))));
             } catch (IOException e) {
                 throw new DaemonException(ExceptionType.ConnectionError, e.toString());
             }
@@ -523,7 +522,7 @@ public class SynologyAdapter implements IDaemonAdapter {
                 System.arraycopy(params, 0, allParams, baseParams.length, params.length);
 
                 request.setEntity(new MultipartEntity(allParams));
-                return new SynoResponse(getHttpClient().execute(request));
+                return new SynoResponse(httpClient.execute(request));
             } catch (IOException e) {
                 throw new DaemonException(ExceptionType.ConnectionError, e.toString());
             }

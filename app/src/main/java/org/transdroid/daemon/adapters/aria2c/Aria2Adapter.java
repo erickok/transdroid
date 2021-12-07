@@ -19,9 +19,7 @@ package org.transdroid.daemon.adapters.aria2c;
 
 import android.net.Uri;
 import android.text.TextUtils;
-
 import net.iharder.Base64;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -84,6 +82,14 @@ public class Aria2Adapter implements IDaemonAdapter {
 
     public Aria2Adapter(DaemonSettings settings) {
         this.settings = settings;
+    }
+
+    private synchronized void initialise() throws DaemonException {
+        if (httpclient == null) {
+            httpclient = HttpHelper.createStandardHttpClient(settings, !TextUtils.isEmpty(settings.getUsername()));
+            httpclient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
+            httpclient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
+        }
     }
 
     @Override
@@ -282,13 +288,8 @@ public class Aria2Adapter implements IDaemonAdapter {
     private synchronized String makeRawRequest(Log log, String data) throws DaemonException {
 
         try {
-
             // Initialise the HTTP client
-            if (httpclient == null) {
-                httpclient = HttpHelper.createStandardHttpClient(settings, !TextUtils.isEmpty(settings.getUsername()));
-                httpclient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
-                httpclient.addResponseInterceptor(HttpHelper.gzipResponseInterceptor);
-            }
+            initialise();
 
             // Set POST URL and data
             String url =

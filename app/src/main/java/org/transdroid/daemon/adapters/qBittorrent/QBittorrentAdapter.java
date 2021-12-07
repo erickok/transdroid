@@ -20,7 +20,6 @@ package org.transdroid.daemon.adapters.qBittorrent;
 import com.android.internal.http.multipart.FilePart;
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -587,7 +586,7 @@ public class QBittorrentAdapter implements IDaemonAdapter {
      *
      * @throws DaemonException On conflicting or missing settings
      */
-    private void initialise() throws DaemonException {
+    private synchronized void initialise() throws DaemonException {
         if (httpclient == null) {
             httpclient = HttpHelper.createStandardHttpClient(settings, true);
         }

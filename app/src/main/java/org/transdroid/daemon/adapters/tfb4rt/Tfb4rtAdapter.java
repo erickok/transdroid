@@ -20,7 +20,6 @@ package org.transdroid.daemon.adapters.tfb4rt;
 import com.android.internal.http.multipart.FilePart;
 import com.android.internal.http.multipart.MultipartEntity;
 import com.android.internal.http.multipart.Part;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -176,9 +175,7 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
         try {
 
             // Initialise the HTTP client
-            if (httpclient == null) {
-                initialise();
-            }
+            initialise();
 
             // Make request
             HttpGet httpget = new HttpGet(buildWebUIUrl(RPC_URL_STATS));
@@ -205,9 +202,7 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
         try {
 
             // Initialise the HTTP client
-            if (httpclient == null) {
-                initialise();
-            }
+            initialise();
 
             // Make request
             HttpGet httpget = new HttpGet(buildWebUIUrl(RPC_URL_DISPATCH + action + RPC_URL_DISPATCH2 + RPC_URL_AID
@@ -239,9 +234,7 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
         try {
 
             // Initialise the HTTP client
-            if (httpclient == null) {
-                initialise();
-            }
+            initialise();
 
             // Make request
             HttpPost httppost = new HttpPost(buildWebUIUrl(RPC_URL_DISPATCH + action + RPC_URL_DISPATCH2 + RPC_URL_AID));
@@ -276,8 +269,10 @@ public class Tfb4rtAdapter implements IDaemonAdapter {
      *
      * @throws DaemonException On conflicting or missing settings
      */
-    private void initialise() throws DaemonException {
-        httpclient = HttpHelper.createStandardHttpClient(settings, true);
+    private synchronized void initialise() throws DaemonException {
+        if(httpclient == null) {
+            httpclient = HttpHelper.createStandardHttpClient(settings, true);
+        }
     }
 
     /**
