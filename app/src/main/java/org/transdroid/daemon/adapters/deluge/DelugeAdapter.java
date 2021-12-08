@@ -574,7 +574,7 @@ public class DelugeAdapter implements IDaemonAdapter {
      *
      * @throws DaemonException On missing settings
      */
-    private void initialise() throws DaemonException {
+    private synchronized void initialise() throws DaemonException {
         if(httpclient == null) {
             httpclient = HttpHelper.createStandardHttpClient(settings, settings.getUsername() != null && !settings.getUsername().equals(""));
             httpclient.addRequestInterceptor(HttpHelper.gzipRequestInterceptor);
