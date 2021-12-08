@@ -73,6 +73,8 @@ public class LocalTorrent {
                 return R.string.error_401;
             case FileAccessError:
                 return R.string.error_torrentfile;
+            case MalformedUri:
+                return R.string.error_parsinguri;
             case ConnectionError:
             default:
                 return R.string.error_httperror;

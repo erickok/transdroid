@@ -56,7 +56,8 @@ public class DaemonException extends Exception {
         ParsingFailed,
         AuthenticationFailure,
         NotConnected,
-        FileAccessError
+        FileAccessError,
+        MalformedUri
     }
 
 }

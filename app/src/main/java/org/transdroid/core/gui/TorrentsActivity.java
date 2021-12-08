@@ -1002,7 +1002,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         } catch (IllegalArgumentException e) {
             // Illegal character or escape sequence; fail task to show error
             onCommunicationError(new DaemonTaskFailureResult(AddByMagnetUrlTask.create(currentConnection, url),
-                    new DaemonException(DaemonException.ExceptionType.FileAccessError, "Invalid characters in magnet link")), false);
+                    new DaemonException(DaemonException.ExceptionType.MalformedUri, "Invalid characters in magnet uri")), false);
             return;
         }
 

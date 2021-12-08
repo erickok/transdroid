@@ -476,6 +476,7 @@
     <string name="error_daemonnotconnected">Web interface not connected to a running daemon</string>
     <string name="error_401">Access denied (please check your settings)</string>
     <string name="error_torrentfile">Can\'t read .torrent file</string>
+    <string name="error_parsinguri">Link is not a valid uri</string>
     <string name="error_parsingrss">Error while parsing the RSS feed</string>
     <string name="error_invalid_url_form">This URL is not well-formed</string>
     <string name="error_invalid_search_url">Your web search URL is invalid:</string>
