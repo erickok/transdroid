@@ -321,7 +321,7 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
         }
     }
 
-    private void parseJsonRemoteRssLists(JSONArray results) {
+    private synchronized void parseJsonRemoteRssLists(JSONArray results) {
         remoteRssChannels = new ArrayList<>();
         RemoteRssChannel item;
 
