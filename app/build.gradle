@@ -1,14 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '30.0.3'
+    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 30
-        versionCode 240
-        versionName '2.5.20'
+        targetSdkVersion 31
+        versionCode 241
+        versionName '2.5.21'
 
         javaCompileOptions {
             annotationProcessorOptions {

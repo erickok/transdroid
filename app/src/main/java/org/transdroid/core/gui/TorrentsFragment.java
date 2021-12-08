@@ -385,7 +385,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
         // Sort the list of filtered torrents
         Collections.sort(filteredTorrents, new TorrentsComparator(daemonType, this.currentSortOrder, this.currentSortDescending));
 
-        if (torrentsList.getAdapter() != null) {
+        if (torrentsList != null && torrentsList.getAdapter() != null) {
             ((TorrentsAdapter) torrentsList.getAdapter()).update(filteredTorrents);
         }
         updateViewVisibility();
