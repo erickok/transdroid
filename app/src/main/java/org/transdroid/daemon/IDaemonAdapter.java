@@ -35,4 +35,6 @@ public interface IDaemonAdapter {
 
     DaemonSettings getSettings();
 
+    long MAX_SESSION_TIME = 30 * 60 * 1000;  // 30 minutes
+
 }

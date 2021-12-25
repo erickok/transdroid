@@ -150,6 +150,7 @@ public class DelugeAdapter implements IDaemonAdapter {
     private DefaultHttpClient httpclient;
     private Cookie sessionCookie;
     private int version = -1;
+    private long lastAuthTime = -1;
 
     public DelugeAdapter(DaemonSettings settings) {
         this.settings = settings;
@@ -476,8 +477,9 @@ public class DelugeAdapter implements IDaemonAdapter {
             initialise();
 
             // Login first?
-            if (sessionCookie == null) {
+            if (sessionCookie == null || System.currentTimeMillis() - lastAuthTime > MAX_SESSION_TIME) {
 
+                sessionCookie = null;
                 // Build login object
                 String extraPass = settings.getExtraPassword();
                 if (extraPass == null) {
@@ -503,6 +505,7 @@ public class DelugeAdapter implements IDaemonAdapter {
                     for (Cookie cookie : httpclient.getCookieStore().getCookies()) {
                         if (cookie.getName().equals(RPC_SESSION_ID)) {
                             sessionCookie = cookie;
+                            lastAuthTime = System.currentTimeMillis();
                             break;
                         }
                     }
