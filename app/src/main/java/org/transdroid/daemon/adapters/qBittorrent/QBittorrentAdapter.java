@@ -89,6 +89,7 @@ public class QBittorrentAdapter implements IDaemonAdapter {
     private DaemonSettings settings;
     private DefaultHttpClient httpclient;
     private int version = -1;
+    private long lastAuthTime = -1;
 
     public QBittorrentAdapter(DaemonSettings settings) {
         this.settings = settings;
@@ -171,12 +172,14 @@ public class QBittorrentAdapter implements IDaemonAdapter {
         // Try qBittorrent 4.1 API v2 first
         try {
             makeRequest(log, "/api/v2/auth/login", usernameParam, passwordParam);
+            lastAuthTime = System.currentTimeMillis();
         } catch (DaemonException ignored) {
         }
         // If still not authenticated, try the qBittorrent 3.2 API v1 endpoint
         if (!isAuthenticated()) {
             try {
                 makeRequest(log, "/login", usernameParam, passwordParam);
+                lastAuthTime = System.currentTimeMillis();
             } catch (DaemonException ignored) {
             }
         }
@@ -187,6 +190,9 @@ public class QBittorrentAdapter implements IDaemonAdapter {
     }
 
     private boolean isAuthenticated() {
+        if (System.currentTimeMillis() - lastAuthTime > MAX_SESSION_TIME) {
+            return false;
+        }
         List<Cookie> cookies = httpclient.getCookieStore().getCookies();
         for (Cookie c : cookies) {
             if (c.getName().equals("SID")) {
