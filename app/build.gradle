@@ -39,11 +39,14 @@ android {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            versionNameSuffix '.debug'
+            resValue 'string', 'app_version', "${defaultConfig.versionName}${versionNameSuffix} (${defaultConfig.versionCode})"
         }
         release {
             signingConfig signingConfigs.releaseConfig
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue 'string', 'app_version', "${defaultConfig.versionName} (${defaultConfig.versionCode})"
         }
     }
 
