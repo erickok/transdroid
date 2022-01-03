@@ -314,7 +314,6 @@
     <string name="pref_seedbox_xirvikhint">eplus001.xirvik.com gibi</string>
     <string name="pref_seedbox_xirvikhint2">semixl001a.xirvik.com gibi</string>
     <string name="pref_seedbox_xirvikhint3">desharedgbit001.xirvik.com gibi</string>
-    <string name="pref_seedbox_xirviknofolder">Xirvik SCGI klasör ayarı alınamıyor; Lütfen daha sonra yeniden deneyin veya sunucu adresi ayarını doğrulayın</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 dakika</item>
         <item>30 dakika</item>

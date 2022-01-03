@@ -307,7 +307,6 @@
     <string name="pref_seedbox_xirvikhint">eplus001.xirvik.com のように</string>
     <string name="pref_seedbox_xirvikhint2">semixl001a.xirvik.com のように</string>
     <string name="pref_seedbox_xirvikhint3">desharedgbit001.xirvik.com のように</string>
-    <string name="pref_seedbox_xirviknofolder">Xirvik SCGI フォルダー設定を読み取りできません。後で再度実行するか、サーバー･アドレス設定を確認してください</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 分</item>
         <item>30 分</item>

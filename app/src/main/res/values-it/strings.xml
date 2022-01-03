@@ -315,7 +315,6 @@
     <string name="pref_seedbox_xirvikhint">Esempio: eplus001.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint2">Esempio: semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Esempio: desharedgbit001.xirvik.com</string>
-    <string name="pref_seedbox_xirviknofolder">Impossibile recuperare la cartella Xirvik SCGI; riprovare più tardi o correggere l\'indirizzo del server</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minuto</item>
         <item>30 minuto</item>
