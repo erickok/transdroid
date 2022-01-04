@@ -304,7 +304,6 @@
     <string name="pref_seedbox_xirvikhint">مانند eplus001.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint2">مانند semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">مانند desharedgbit001.xirvik.com</string>
-    <string name="pref_seedbox_xirviknofolder">نمی‌توان تنظیمات پوشه‌ی SCGIی Xirvik را دریافت کرد؛ لطفا ً بعدا ً دوباره امتحان کنید یا تنظیمات نشانی کارگزار را درست کنید</string>
     <string-array name="pref_notifyinterval_types">
         <item> 15 دقیقه </item>
         <item> 30 دقیقه </item>

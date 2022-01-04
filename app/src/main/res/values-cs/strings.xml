@@ -283,7 +283,6 @@
     <string name="pref_seedbox_xirvikhint">Např.: eplus001.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint2">Např.: semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Např.: desharedgbit001.xirvik.com</string>
-    <string name="pref_seedbox_xirviknofolder">Nelze načíst nastavení složky Xirvik SCGI; opakujte akci později nebo zkontrolujte nastavení adresy vašeho serveru</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minut</item>
         <item>30 minut</item>

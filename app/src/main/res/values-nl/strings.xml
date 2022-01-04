@@ -311,7 +311,6 @@
     <string name="pref_seedbox_xirvikhint">Zoals eplus001.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint2">Zoals semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Zoals desharedgbit001.xirvik.com</string>
-    <string name="pref_seedbox_xirviknofolder">Kan de Xirvik SCGI mount instelling niet laden; probeer later nog eens en controleer je serveradres</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minuten</item>
         <item>30 minuten</item>

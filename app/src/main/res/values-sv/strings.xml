@@ -315,7 +315,6 @@
     <string name="pref_seedbox_xirvikhint">Som eplus001.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint2">Som semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Som desharedgbit001.xirvik.com</string>
-    <string name="pref_seedbox_xirviknofolder">Går inte att hämta Xirvik SCGI mappinställningen. Försök igen senare eller korrigera din serveradress</string>
     <string-array name="pref_notifyinterval_types">
         <item>15 minuter</item>
         <item>30 minuter</item>
