@@ -16,6 +16,11 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.5.22\n
+- Re-authentication on qBittorrent for lingering connections\n
+- Fix background notifications not showing\n
+- Fix adding the widget on Android 12\n
+\n
 Transdroid 2.5.21\n
 - Improved connection stability (thanks ImperatorPrime!)\n
 - Fixed qBittorrent path parsing\n
