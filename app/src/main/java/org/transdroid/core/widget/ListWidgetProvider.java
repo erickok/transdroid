@@ -91,7 +91,8 @@ public class ListWidgetProvider extends AppWidgetProvider {
         rv.setRemoteAdapter(appWidgetId, R.id.torrents_list, data);
         Intent open = new Intent(context, TorrentsActivity_.class);
         open.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        rv.setPendingIntentTemplate(R.id.torrents_list, PendingIntent.getActivity(context, appWidgetId, open, PendingIntent.FLAG_UPDATE_CURRENT));
+        rv.setPendingIntentTemplate(R.id.torrents_list, PendingIntent.getActivity(context, appWidgetId, open,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
         rv.setEmptyView(R.id.torrents_list, R.id.error_text);
         rv.setTextViewText(R.id.error_text, context.getString(R.string.widget_loading));
 
@@ -107,8 +108,10 @@ public class ListWidgetProvider extends AppWidgetProvider {
         start.setAction(INTENT_STARTSERVER);
         start.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         start.putExtra(EXTRA_SERVER, config.getServerId());
-        rv.setOnClickPendingIntent(R.id.icon_image, PendingIntent.getActivity(context, appWidgetId, start, PendingIntent.FLAG_UPDATE_CURRENT));
-        rv.setOnClickPendingIntent(R.id.navigation_view, PendingIntent.getActivity(context, appWidgetId, start, PendingIntent.FLAG_UPDATE_CURRENT));
+        rv.setOnClickPendingIntent(R.id.icon_image, PendingIntent.getActivity(context, appWidgetId, start,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+        rv.setOnClickPendingIntent(R.id.navigation_view, PendingIntent.getActivity(context, appWidgetId, start,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
         // Set up the widgets refresh button pending intent (calling this WidgetProvider itself)
         // Make sure that the intent is unique using a custom data path (rather than just the extras)
@@ -116,7 +119,8 @@ public class ListWidgetProvider extends AppWidgetProvider {
         refresh.setData(Uri.parse("intent://widget/" + appWidgetId + "/refresh"));
         refresh.putExtra(EXTRA_REFRESH, appWidgetId);
         refresh.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        rv.setOnClickPendingIntent(R.id.refresh_button, PendingIntent.getBroadcast(context, appWidgetId, refresh, PendingIntent.FLAG_UPDATE_CURRENT));
+        rv.setOnClickPendingIntent(R.id.refresh_button, PendingIntent.getBroadcast(context, appWidgetId, refresh,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
         // Set up the control (pause and resume) buttons (calling the WidgetProvider itself)
         Intent pauseall = new Intent(context, ListWidgetProvider_.class);
@@ -124,13 +128,15 @@ public class ListWidgetProvider extends AppWidgetProvider {
         pauseall.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         pauseall.setAction(ControlService.INTENT_PAUSEALL);
         rv.setOnClickPendingIntent(R.id.pauseall_button,
-                PendingIntent.getBroadcast(context, appWidgetId, pauseall, PendingIntent.FLAG_UPDATE_CURRENT));
+                PendingIntent.getBroadcast(context, appWidgetId, pauseall,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
         Intent resumeall = new Intent(context, ListWidgetProvider_.class);
         resumeall.setData(Uri.parse("intent://widget/" + appWidgetId + "/resumeall"));
         resumeall.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         resumeall.setAction(ControlService.INTENT_RESUMEALL);
         rv.setOnClickPendingIntent(R.id.resumeall_button,
-                PendingIntent.getBroadcast(context, appWidgetId, resumeall, PendingIntent.FLAG_UPDATE_CURRENT));
+                PendingIntent.getBroadcast(context, appWidgetId, resumeall,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
         return rv;
 

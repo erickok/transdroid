@@ -122,7 +122,8 @@ public class RssCheckerJobRunner {
 
         // Provide a notification, since there are new RSS items
         PendingIntent pi = PendingIntent
-                .getActivity(context, 80000, new Intent(context, RssFeedsActivity_.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                .getActivity(context, 80000, new Intent(context, RssFeedsActivity_.class),
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         String title = context.getResources().getQuantityString(R.plurals.rss_service_new, unread, Integer.toString(unread));
         String forString = Collections2.joinString(hasUnread, ", ");
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationChannels.CHANNEL_RSS_CHECKER)

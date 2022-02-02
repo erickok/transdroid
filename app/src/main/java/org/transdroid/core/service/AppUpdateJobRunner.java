@@ -171,7 +171,8 @@ public class AppUpdateJobRunner {
 
     private void newNotification(String ticker, String title, String text, String downloadUrl, int notifyID) {
         PendingIntent pi = PendingIntent.getActivity(context, notifyID,
-                new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)), PendingIntent.FLAG_UPDATE_CURRENT);
+                new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)),
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationChannels.CHANNEL_APP_UPDATE)
                 .setSmallIcon(R.drawable.ic_stat_notification)
                 .setTicker(ticker)

@@ -147,7 +147,7 @@ public class ServerCheckerJobRunner {
             i.putExtra("org.transdroid.START_SERVER", server.getOrder());
             // Should start the main activity directly into this server
             PendingIntent pi = PendingIntent.getActivity(context, notifyBase + server.getOrder(), i,
-                    PendingIntent.FLAG_CANCEL_CURRENT);
+                    PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             ArrayList<Torrent> affectedTorrents = new ArrayList<>(newTorrents.size() + doneTorrents.size());
             affectedTorrents.addAll(newTorrents);
             affectedTorrents.addAll(doneTorrents);
