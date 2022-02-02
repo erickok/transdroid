@@ -11,9 +11,9 @@ import org.transdroid.core.app.settings.NotificationSettings;
 
 class NotificationChannels {
 
-    public static final String CHANNEL_APP_UPDATE = "channel_app_update";
-    public static final String CHANNEL_RSS_CHECKER = "channel_rss_checker";
-    public static final String CHANNEL_SERVER_CHECKER = "channel_server_checker";
+    public static final String CHANNEL_APP_UPDATE = "channel_app_update2";
+    public static final String CHANNEL_RSS_CHECKER = "channel_rss_checker2";
+    public static final String CHANNEL_SERVER_CHECKER = "channel_server_checker2";
 
     static void ensureAppUpdateChannel(final Context context, NotificationSettings notificationSettings) {
         createChannel(context, CHANNEL_APP_UPDATE, R.string.pref_checkupdates, R.string.pref_checkupdates_info, notificationSettings);
