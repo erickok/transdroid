@@ -1,4 +1,4 @@
-/*
+﻿/*
  *	This file is part of Transdroid <http://www.transdroid.org>
  *
  *	Transdroid is free software: you can redistribute it and/or modify
@@ -592,6 +592,12 @@ public class BitCometAdapter implements IDaemonAdapter {
 
                     // End of a 'transfer' item, add gathered torrent data
                     sizeDone = (long) (totalSize * progress);
+
+                    // Fix seeding status for completed torrents
+                    if (status == TorrentStatus.Downloading && progress >= 1) {
+                        status = TorrentStatus.Seeding;
+                    }
+
                     // @formatter:off
                     torrents.add(new Torrent(
                             id,
@@ -656,10 +662,10 @@ public class BitCometAdapter implements IDaemonAdapter {
                                 status = convertStatus(xpp.getText());
                                 break;
                             case "bytes_downloaded":
-                                sizeDone = Integer.parseInt(xpp.getText());
+                                sizeDone = Long.parseLong(xpp.getText());
                                 break;
                             case "bytes_uploaded":
-                                sizeUp = Integer.parseInt(xpp.getText());
+                                sizeUp = Long.parseLong(xpp.getText());
                                 break;
                             case "size":
                                 totalSize = Long.parseLong(xpp.getText());
@@ -778,6 +784,10 @@ public class BitCometAdapter implements IDaemonAdapter {
             return TorrentStatus.Paused;
         } else if (state.equals("running")) {
             return TorrentStatus.Downloading;
+        } else if (state.equals("hashing")) {
+            return TorrentStatus.Checking;
+        } else if (state.equals("queued")) {
+            return TorrentStatus.Queued;
         }
         return TorrentStatus.Unknown;
     }
