@@ -90,6 +90,10 @@ public class QBittorrentAdapter implements IDaemonAdapter {
     private DefaultHttpClient httpclient;
     private int version = -1;
     private long lastAuthTime = -1;
+    private int qbNoPriority = 0;
+    private int qbLowPriority = 1;
+    private int qbNormalPriority = 2;
+    private int qbHighPriority = 7;
 
     public QBittorrentAdapter(DaemonSettings settings) {
         this.settings = settings;
@@ -124,10 +128,14 @@ public class QBittorrentAdapter implements IDaemonAdapter {
             }
 
             version = parseVersionNumber(versionText);
+            if (version >= 30200) {
+              qbNormalPriority = 6;
+            }
 
         } catch (Exception e) {
             // Unable to establish version number; assume an old version by setting it to version 1
             version = 10000;
+            qbNormalPriority = 2;
         }
 
     }
@@ -371,13 +379,13 @@ public class QBittorrentAdapter implements IDaemonAdapter {
 
                     // Update the priorities to a set of files
                     SetFilePriorityTask setPrio = (SetFilePriorityTask) task;
-                    String newPrio = "0";
+                    int newPrio = qbNoPriority;
                     if (setPrio.getNewPriority() == Priority.Low) {
-                        newPrio = "1";
+                        newPrio = qbLowPriority;
                     } else if (setPrio.getNewPriority() == Priority.Normal) {
-                        newPrio = "2";
+                        newPrio = qbNormalPriority;
                     } else if (setPrio.getNewPriority() == Priority.High) {
-                        newPrio = "7";
+                        newPrio = qbHighPriority;
                     }
                     // We have to make a separate request per file, it seems
                     for (TorrentFile file : setPrio.getForFiles()) {
@@ -387,7 +395,7 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                             path = "/command/setFilePrio";
                         }
                         makeRequest(log, path, new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()),
-                                new BasicNameValuePair("id", file.getKey()), new BasicNameValuePair("priority", newPrio));
+                                new BasicNameValuePair("id", file.getKey()), new BasicNameValuePair("priority", Integer.toString(newPrio)));
 
                     }
                     return new DaemonTaskSuccessResult(task);
@@ -891,11 +899,11 @@ public class QBittorrentAdapter implements IDaemonAdapter {
     private Priority parsePriority(int priority) {
         // Priority is an integer
         // Actually 1 = Normal, 2 = High, 7 = Maximum, but adjust this to Transdroid values
-        if (priority == 0) {
+        if (priority == qbNoPriority) {
             return Priority.Off;
-        } else if (priority == 1) {
+        } else if (priority == qbLowPriority) {
             return Priority.Low;
-        } else if (priority == 2) {
+        } else if (priority == qbNormalPriority) {
             return Priority.Normal;
         }
         return Priority.High;
