@@ -234,9 +234,17 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                         path = "/json/events";
                     }
 
-                    JSONArray result = new JSONArray(makeRequest(log, path));
+                    JSONArray allTorrentsResult = new JSONArray(makeRequest(log, path));
+                    final List<Torrent> torrentsList = parseJsonTorrents(allTorrentsResult);
 
-                    return new RetrieveTaskSuccessResult((RetrieveTask) task, parseJsonTorrents(result), parseJsonLabels(result));
+                    JSONArray allLabelsResult;
+                    if (version >= 40100) {
+                        allLabelsResult = new JSONObject(makeRequest(log, "/api/v2/torrents/categories")).names();
+                    } else {
+                        allLabelsResult = new JSONArray();
+                    }
+                    final List<Label> labelList = parseJsonLabels(allLabelsResult, allTorrentsResult);
+                    return new RetrieveTaskSuccessResult((RetrieveTask) task, torrentsList, labelList);
 
                 case GetTorrentDetails:
 
@@ -648,16 +656,23 @@ public class QBittorrentAdapter implements IDaemonAdapter {
 
     }
 
-    private List<Label> parseJsonLabels(JSONArray response) throws JSONException {
+    private List<Label> parseJsonLabels(JSONArray allLabelsResponse, JSONArray allTorrentsResponse) throws JSONException {
 
-        // Collect used labels from response
+        // Collect used labels from torrents response
         Map<String, Label> labels = new HashMap<>();
-        for (int i = 0; i < response.length(); i++) {
-            JSONObject tor = response.getJSONObject(i);
+        for (int i = 0; i < allTorrentsResponse.length(); i++) {
+            JSONObject tor = allTorrentsResponse.getJSONObject(i);
             if (tor.has("category")) {
                 String label = tor.optString("category");
                 final Label labelObject = labels.get(label);
                 labels.put(label, new Label(label, (labelObject != null) ? labelObject.getCount() + 1 : 1));
+            }
+        }
+        // add unused labels
+        for (int i = 0; i < allLabelsResponse.length(); i++) {
+            String label = allLabelsResponse.getString(i);
+            if (!labels.containsKey(label)) {
+                labels.put(label, new Label(label, 0));
             }
         }
         return new ArrayList<>(labels.values());
