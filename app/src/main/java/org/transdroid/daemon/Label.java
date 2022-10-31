@@ -70,6 +70,12 @@ public final class Label implements Parcelable, Comparable<Label> {
     }
 
     @Override
+    public boolean equals(Object another) {
+        // compare names
+        return name.equals(((Label) another).getName());
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
