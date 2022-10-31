@@ -1,4 +1,4 @@
-﻿/*
+/*
  *	This file is part of Transdroid <http://www.transdroid.org>
  *
  *	Transdroid is free software: you can redistribute it and/or modify
