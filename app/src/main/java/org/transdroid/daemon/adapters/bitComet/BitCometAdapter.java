@@ -163,14 +163,14 @@ public class BitCometAdapter implements IDaemonAdapter {
 
                     // Request to add a torrent by URL
                     String url = ((AddByUrlTask) task).getUrl();
-                    makeUploadUrlRequest(log, "/panel/task_add_httpftp_result", url);
+                    makeUploadUrlRequest(log, "/panel/task_add_magnet_result", url);
                     return new DaemonTaskSuccessResult(task);
 
                 case AddByMagnetUrl:
 
                     // Request to add a torrent by URL
                     String magnetUrl = ((AddByMagnetUrlTask) task).getUrl();
-                    makeUploadUrlRequest(log, "/panel/task_add_httpftp_result", magnetUrl);
+                    makeUploadUrlRequest(log, "/panel/task_add_magnet_result", magnetUrl);
                     return new DaemonTaskSuccessResult(task);
 
                 case Remove:
