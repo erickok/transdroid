@@ -469,8 +469,8 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                     String ul = (ratesTask.getUploadRate() == null ? "NaN" : Long.toString(ratesTask.getUploadRate() * 1024));
 
                     if (version >= 40100) {
-                        pathDL = "/api/v2/torrents/setDownloadLimit";
-                        pathUL = "/api/v2/torrents/setUploadLimit";
+                        pathDL = "/api/v2/transfer/setDownloadLimit";
+                        pathUL = "/api/v2/transfer/setUploadLimit";
                     } else {
                         pathDL = "/command/setGlobalDlLimit";
                         pathUL = "/command/setGlobalUpLimit";
