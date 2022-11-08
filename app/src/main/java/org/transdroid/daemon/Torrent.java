@@ -359,7 +359,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
      */
     public boolean canPause() {
         // Can pause when it is downloading or seeding
-        return statusCode == TorrentStatus.Downloading || statusCode == TorrentStatus.Seeding;
+        return statusCode == TorrentStatus.Downloading || statusCode == TorrentStatus.Seeding || statusCode == TorrentStatus.Queued;
     }
 
     /**
