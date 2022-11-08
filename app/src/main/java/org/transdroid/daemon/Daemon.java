@@ -337,7 +337,7 @@ public enum Daemon {
     }
 
     public static boolean supportsStoppingStarting(Daemon type) {
-        return type == uTorrent || type == rTorrent || type == BitTorrent || type == BitComet || type == Dummy;
+        return type == uTorrent || type == rTorrent || type == BitTorrent || type == Dummy;
     }
 
     public static boolean supportsForcedStarting(Daemon type) {
