@@ -64,9 +64,6 @@ android {
         }
     }
 
-    lintOptions {
-        disable 'MissingTranslation', 'ExtraTranslation', 'StringFormatInvalid', 'ValidFragment', 'Registered'
-    }
 
     compileOptions {
         encoding = 'UTF-8'
@@ -75,6 +72,10 @@ android {
     }
 
     useLibrary 'org.apache.http.legacy'
+    lint {
+        disable 'MissingTranslation', 'ExtraTranslation', 'StringFormatInvalid', 'ValidFragment', 'Registered'
+    }
+    namespace 'org.transdroid'
 }
 
 dependencies {

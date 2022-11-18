@@ -15,8 +15,7 @@
   along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.transdroid">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk />
 
@@ -52,7 +51,7 @@
     </queries>
 
     <application
-        android:name=".core.gui.TransdroidApp_"
+        android:name="org.transdroid.core.gui.TransdroidApp_"
         android:allowBackup="true"
         android:banner="@drawable/banner"
         android:hardwareAccelerated="true"
