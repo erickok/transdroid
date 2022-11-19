@@ -237,10 +237,12 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                     JSONArray allTorrentsResult = new JSONArray(makeRequest(log, path));
                     final List<Torrent> torrentsList = parseJsonTorrents(allTorrentsResult);
 
-                    JSONArray allLabelsResult;
+                    JSONArray allLabelsResult = null;
                     if (version >= 40100) {
                         allLabelsResult = new JSONObject(makeRequest(log, "/api/v2/torrents/categories")).names();
-                    } else {
+                    }
+                    // either version < 40100 or no labels
+                    if (allLabelsResult == null) {
                         allLabelsResult = new JSONArray();
                     }
                     final List<Label> labelList = parseJsonLabels(allLabelsResult, allTorrentsResult);
