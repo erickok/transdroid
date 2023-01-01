@@ -26,7 +26,8 @@ import android.net.Uri;
 
 import androidx.core.app.NotificationCompat;
 
-import com.evernote.android.job.Job;
+import androidx.work.ListenableWorker;
+import androidx.work.Worker;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -73,16 +74,16 @@ public class AppUpdateJobRunner {
     @SystemService
     protected NotificationManager notificationManager;
 
-    Job.Result run() {
+    Worker.Result run() {
 
         // Only run this service if app updates are handled via transdroid.org at all
         if (!navigationHelper.enableUpdateChecker())
-            return Job.Result.FAILURE;
+            return Worker.Result.failure();
 
         if (!connectivityHelper.shouldPerformBackgroundActions() || !systemSettings.checkForUpdates()) {
             log.d(this, "Skip the app update service, as background data is disabled, the service is explicitly " +
                     "disabled or we are not connected.");
-            return Job.Result.RESCHEDULE;
+            return Worker.Result.retry();
         }
 
         Date lastChecked = systemSettings.getLastCheckedForAppUpdates();
@@ -91,7 +92,7 @@ public class AppUpdateJobRunner {
         if (lastChecked != null && lastChecked.after(lastDay.getTime())) {
             log.d(this, "Skip the update service, as we already checked the last 24 hours (or to be exact at "
                     + lastChecked.toString() + ").");
-            return Job.Result.RESCHEDULE;
+            return Worker.Result.retry();
         }
 
         DefaultHttpClient httpclient = new DefaultHttpClient();
@@ -124,7 +125,7 @@ public class AppUpdateJobRunner {
             // New version of the search module?
             try {
                 PackageInfo searchPackage = context.getPackageManager().getPackageInfo("org.transdroid.search", 0);
-                log.d(this, "Local Transdroid Seach is at " + searchPackage.getLongVersionCode()
+                log.d(this, "Local Transdroid Search is at " + searchPackage.getLongVersionCode()
                         + " and the reported latest version is " + searchVersion);
                 if (searchPackage.getLongVersionCode() < searchVersion) {
                     // New version available! Notify the user.
@@ -145,10 +146,10 @@ public class AppUpdateJobRunner {
         } catch (Exception e) {
             // Cannot check right now for some reason; log and ignore
             log.d(this, "Cannot retrieve latest app or search module version code from the site: " + e.toString());
-            return Job.Result.FAILURE;
+            return Worker.Result.failure();
         }
 
-        return Job.Result.SUCCESS;
+        return Worker.Result.success();
     }
 
     /**

@@ -98,7 +98,7 @@ dependencies {
     implementation('com.github.afollestad.material-dialogs:core:0.9.6.0@aar') {
         transitive = true
     }
-    implementation 'com.evernote:android-job:1.2.6'
+    implementation 'androidx.work:work-runtime:2.7.1'
 
     annotationProcessor 'org.androidannotations:androidannotations:4.7.0'
     annotationProcessor 'org.androidannotations:ormlite:4.7.0'

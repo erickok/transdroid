@@ -22,8 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.core.app.NotificationCompat;
-
-import com.evernote.android.job.Job;
+import androidx.work.Worker;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -59,12 +58,12 @@ public class RssCheckerJobRunner {
     @SystemService
     protected NotificationManager notificationManager;
 
-    Job.Result run() {
+    Worker.Result run() {
 
         if (!connectivityHelper.shouldPerformBackgroundActions() || !notificationSettings.isEnabledForRss()) {
             log.d(this,
                     "Skip the RSS checker service, as background data is disabled, the service is disabled or we are not connected.");
-            return Job.Result.RESCHEDULE;
+            return Worker.Result.retry();
         }
 
         // Check every RSS feed for new items
@@ -117,7 +116,7 @@ public class RssCheckerJobRunner {
 
         if (unread == 0) {
             // No new items; just exit
-            return Job.Result.SUCCESS;
+            return Worker.Result.success();
         }
 
         // Provide a notification, since there are new RSS items
@@ -140,7 +139,7 @@ public class RssCheckerJobRunner {
         }
         notificationManager.notify(80001, builder.build());
 
-        return Job.Result.SUCCESS;
+        return Worker.Result.success();
     }
 
 }
