@@ -136,6 +136,8 @@ public class BitCometAdapter implements IDaemonAdapter {
                             return new RetrieveTaskSuccessResult((RetrieveTask) task, parseXmlTorrents(xmlResult),
                                     null);
                         }
+                    } catch (DaemonException e) {
+                        throw e;
                     } catch (Exception e) {
                         // it's probably an old client, parse HTML instead
                         String htmlResult = makeRequest(log, "/panel/task_list");
@@ -243,7 +245,7 @@ public class BitCometAdapter implements IDaemonAdapter {
                             task.getMethod() + " is not supported by " + getType()));
             }
         } catch (DaemonException e) {
-            return new DaemonTaskFailureResult(task, new DaemonException(ExceptionType.ParsingFailed, e.toString()));
+            return new DaemonTaskFailureResult(task, e);
         }
     }
 
@@ -290,6 +292,10 @@ public class BitCometAdapter implements IDaemonAdapter {
 
             // Make the request
             HttpResponse response = httpclient.execute(new HttpGet(buildWebUIUrl(url)));
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 401 || statusCode == 403) {
+                throw new DaemonException(ExceptionType.AuthenticationFailure, "Response code " + statusCode);
+            }
             HttpEntity entity = response.getEntity();
             if (entity != null) {
 
@@ -309,6 +315,9 @@ public class BitCometAdapter implements IDaemonAdapter {
             throw new DaemonException(ExceptionType.ConnectionError, e.toString());
         } catch (Exception e) {
             log.d(LOG_NAME, "Error: " + e.toString());
+            if (e instanceof DaemonException) {
+                throw (DaemonException) e;
+            }
             throw new DaemonException(ExceptionType.ConnectionError, e.toString());
         }
 
