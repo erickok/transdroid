@@ -100,6 +100,11 @@ dependencies {
     }
     implementation 'com.evernote:android-job:1.2.6'
 
+    // Copied From androidSdkPath/platforms/android-31/optional/org.apache.http.legacy.jar
+    // Using it as a compileOnly so this helps while developing, but is not compiled into the final
+    // app, see https://developer.android.com/studio/build/dependencies#dependency_configurations
+    compileOnly files('libs/org.apache.http.legacy.jar')
+
     annotationProcessor 'org.androidannotations:androidannotations:4.7.0'
     annotationProcessor 'org.androidannotations:ormlite:4.7.0'
 }
