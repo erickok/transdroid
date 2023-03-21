@@ -219,6 +219,8 @@ public class RTorrentAdapter implements IDaemonAdapter {
                     if (removeTask.includingData()) {
                         makeRtorrentCall(log, "d.custom5.set",
                                 new String[]{task.getTargetTorrent().getUniqueID(), "1"});
+                        makeRtorrentCall(log, "d.delete_tied",
+                                new String[]{task.getTargetTorrent().getUniqueID()});
                     }
                     makeRtorrentCall(log, "d.erase", new String[]{task.getTargetTorrent().getUniqueID()});
                     return new DaemonTaskSuccessResult(task);
