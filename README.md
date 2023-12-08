@@ -45,8 +45,7 @@ However, larger and new features will be developed in their own branch.
 Code structure
 ==============
 
-Starting with version 2.3.0, Transdroid is developed in Android Studio, fully integrating with the Gradle build system.
-It is (since version 2.5.21) compiled against Android 12 (API level 31) and (since version 2.2.0) supporting Android ICS (API level 15) and up only.
+Transdroid is (since version 2.5.23) compiled against Android 14 (API level 34) and (since version 2.5.23) supporting Android 5 (API level 21) and up only.
 To support lite (Transdrone, specially for the Play Store) and full (Transdroid) versions of the app, build flavours are defined in gradle, which contain version-specific resources.
 Dependencies are managed via JCentral et al. in the app's build.gradle file.
 
@@ -59,7 +58,7 @@ Contributions by various others (see commit log).
 License
 =======
 
-    Copyright 2010-2022 Eric Kok et al.
+    Copyright 2010-2023 Eric Kok et al.
 
     Transdroid is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

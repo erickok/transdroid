@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright 2010-2018 Eric Kok et al.
+  Copyright 2010-2023 Eric Kok et al.
 
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -16,6 +16,12 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.5.23\n
+- Updated min (Android 5) and target API for Play Store compatibility\n
+- Updated dependencies and tooling\n
+- qBittorrent add label and fixed updating of label\n
+- Vanilla rTorrent delete with data fix\n
+\n
 Transdroid 2.5.22\n
 - Re-authentication on qBittorrent for lingering connections\n
 - Fix background notifications not showing\n
