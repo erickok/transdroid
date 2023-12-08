@@ -97,7 +97,7 @@ dependencies {
     implementation('com.github.afollestad.material-dialogs:core:0.9.6.0@aar') {
         transitive = true
     }
-    implementation 'com.evernote:android-job:1.4.3'
+    implementation 'androidx.work:work-runtime:2.7.1'
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
 

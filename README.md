@@ -108,9 +108,6 @@ Some code/libraries/resources are used in the project:
 *  [Material Dialogs](https://github.com/afollestad/material-dialogs)
     Aidan Follestad
     Apache License, Version 2.0
-*  [Android-Job](https://github.com/evernote/android-job)
-    Evernote Corporation
-    Apache License, Version 2.0
 *  [android-ColorPickerPreference](https://github.com/attenzione/android-ColorPickerPreference)
     Daniel Nilsson and Sergey Margaritov
     Apache License, Version 2.0
