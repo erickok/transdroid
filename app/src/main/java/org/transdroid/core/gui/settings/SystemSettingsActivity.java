@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference.OnPreferenceClickListener;
 import androidx.preference.PreferenceManager;
@@ -64,6 +65,7 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
     protected ErrorLogSender errorLogSender;
     @Bean
     protected SettingsPersistence settingsPersistence;
+
     private OnPreferenceClickListener onImportSettingsClick = preference -> {
         showDialog(DIALOG_IMPORTSETTINGS);
         return true;
@@ -73,7 +75,10 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
         return true;
     };
     private OnPreferenceClickListener onCheckUpdatesClick = preference -> {
-        AppUpdateJob.schedule(getApplicationContext());
+        if (!navigationHelper.checkOrRequestNotificationPermission(this)) {
+            // Already have permission: continue
+            AppUpdateJob.schedule(getApplicationContext());
+        }
         return true;
     };
     private OnPreferenceClickListener onClearSearchClick = preference -> {
@@ -135,6 +140,15 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
     @OptionsItem(android.R.id.home)
     protected void navigateUp() {
         MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (navigationHelper.handleNotificationPermissionResult(requestCode, grantResults)) {
+            // Now that we have permission, schedule the job
+            AppUpdateJob.schedule(getApplicationContext());
+        }
     }
 
     private void importSettingsFromFile() {

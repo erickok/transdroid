@@ -462,9 +462,7 @@
         <item>86400</item>
     </string-array>
 
-    <string name="permission_readtorrent">Transdroid requires read access to your file storage in order to read local .torrent files</string>
-    <string name="permission_readsettings">Transdroid requires read access to your file storage if you want to read from a local settings file</string>
-    <string name="permission_writesettings">Transdroid requires write access to your file storage to write the local settings file</string>
+    <string name="permission_notifications">Transdroid requires permission if you want to receive notifications</string>
 
     <string name="error_httperror">Error during communication; check your connection</string>
     <string name="error_unsupported">Your torrent client does not support this operation</string>

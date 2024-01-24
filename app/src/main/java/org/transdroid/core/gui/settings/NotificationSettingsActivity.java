@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.androidannotations.annotations.Bean;
@@ -28,12 +29,15 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.NotificationSettings;
+import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.service.RssCheckerJob;
 import org.transdroid.core.service.ServerCheckerJob;
 
 @EActivity
 public class NotificationSettingsActivity extends PreferenceCompatActivity implements OnSharedPreferenceChangeListener {
 
+    @Bean
+    protected NavigationHelper navigationHelper;
     @Bean
     protected NotificationSettings notificationSettings;
 
@@ -45,9 +49,19 @@ public class NotificationSettingsActivity extends PreferenceCompatActivity imple
 
         // Load the notification-related preferences from XML and update availability thereof
         addPreferencesFromResource(R.xml.pref_notifications);
-        boolean disabled = !notificationSettings.isEnabledForRss() && !notificationSettings.isEnabledForTorrents();
-        updatePrefsEnabled(disabled);
+        updatePrefsEnabled();
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (navigationHelper.handleNotificationPermissionResult(requestCode, grantResults)) {
+            // Now that we have permission, schedule the jobs
+            ServerCheckerJob.schedule(getApplicationContext());
+            RssCheckerJob.schedule(getApplicationContext());
+            updatePrefsEnabled();
+        }
     }
 
     @Override
@@ -76,11 +90,18 @@ public class NotificationSettingsActivity extends PreferenceCompatActivity imple
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        boolean needsPermission = notificationSettings.isEnabledForRss() || notificationSettings.isEnabledForTorrents();
+        if (needsPermission && !navigationHelper.checkOrRequestNotificationPermission(this)) {
+            return;
+        }
+        // Already have permission to show notifications, so update the jobs now
         ServerCheckerJob.schedule(getApplicationContext());
         RssCheckerJob.schedule(getApplicationContext());
+        updatePrefsEnabled();
     }
 
-    private void updatePrefsEnabled(boolean disabled) {
+    private void updatePrefsEnabled() {
+        boolean disabled = !notificationSettings.isEnabledForRss() && !notificationSettings.isEnabledForTorrents();
         findPreference("notifications_interval").setEnabled(!disabled);
         findPreference("notifications_sound").setEnabled(!disabled);
         findPreference("notifications_vibrate").setEnabled(!disabled);
