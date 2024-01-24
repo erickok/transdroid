@@ -65,7 +65,6 @@ public class DediseedboxSettingsActivity extends KeyBoundPreferencesActivity {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @OptionsItem(android.R.id.home)
     protected void navigateUp() {
         MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();

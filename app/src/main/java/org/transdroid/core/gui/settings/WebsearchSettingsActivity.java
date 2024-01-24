@@ -16,10 +16,8 @@
  */
 package org.transdroid.core.gui.settings;
 
-import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -56,7 +54,6 @@ public class WebsearchSettingsActivity extends KeyBoundPreferencesActivity {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @OptionsItem(android.R.id.home)
     protected void navigateUp() {
         MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();

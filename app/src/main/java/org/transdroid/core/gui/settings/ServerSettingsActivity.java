@@ -16,11 +16,9 @@
  */
 package org.transdroid.core.gui.settings;
 
-import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -95,7 +93,6 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
         });
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @OptionsItem(android.R.id.home)
     protected void navigateUp() {
         MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
@@ -123,6 +120,7 @@ public class ServerSettingsActivity extends KeyBoundPreferencesActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (connectivityHelper.requestedPermissionWasGranted(requestCode, permissions, grantResults)) {
             localNetworkPreference.getOnPreferenceClickListener().onPreferenceClick(localNetworkPreference);
         }

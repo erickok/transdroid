@@ -100,7 +100,6 @@ public class TlsSniSocketFactory implements LayeredSocketFactory {
     // TLS layer
 
     @Override
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public Socket createSocket(Socket plainSocket, String host, int port, boolean autoClose) throws IOException {
         if (autoClose) {
             // we don't need the plainSocket

@@ -45,7 +45,6 @@ import org.transdroid.core.service.ControlService_;
  *
  * @author Eric Kok
  */
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EReceiver
 public class ListWidgetProvider extends AppWidgetProvider {
 

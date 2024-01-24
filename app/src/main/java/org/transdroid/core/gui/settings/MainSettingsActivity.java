@@ -16,13 +16,11 @@
  */
 package org.transdroid.core.gui.settings;
 
-import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -256,7 +254,6 @@ public class MainSettingsActivity extends PreferenceCompatActivity {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @OptionsItem(android.R.id.home)
     protected void navigateUp() {
         TorrentsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();

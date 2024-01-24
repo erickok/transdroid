@@ -54,7 +54,6 @@ import java.util.List;
  *
  * @author Eric Kok
  */
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EService
 public class ListWidgetViewsService extends RemoteViewsService {
 
@@ -65,7 +64,6 @@ public class ListWidgetViewsService extends RemoteViewsService {
 
 }
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private final Context context;

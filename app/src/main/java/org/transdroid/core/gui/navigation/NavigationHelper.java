@@ -134,24 +134,6 @@ public class NavigationHelper {
         return null;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public boolean checkTorrentReadPermission(final Activity activity) {
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ||
-                checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_TORRENT_READ_PERMISSION);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public boolean checkSettingsReadPermission(final Activity activity) {
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ||
-                checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_SETTINGS_READ_PERMISSION);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public boolean checkSettingsWritePermission(final Activity activity) {
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ||
-                checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_SETTINGS_WRITE_PERMISSION);
-    }
-
     private boolean checkPermission(final Activity activity, final String permission, final int requestCode) {
         if (hasPermission(permission))
             // Permission already granted

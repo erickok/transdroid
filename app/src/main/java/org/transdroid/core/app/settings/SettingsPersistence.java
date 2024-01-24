@@ -44,10 +44,7 @@ import java.io.OutputStream;
 @EBean(scope = Scope.Singleton)
 public class SettingsPersistence {
 
-    public static final String DEFAULT_SETTINGS_DIR = Environment.getExternalStorageDirectory().toString()
-            + "/Transdroid/";
     public static final String DEFAULT_SETTINGS_FILENAME = "settings.json";
-    public static final File DEFAULT_SETTINGS_FILE = new File(DEFAULT_SETTINGS_DIR + DEFAULT_SETTINGS_FILENAME);
     @Bean
     protected ApplicationSettings applicationSettings;
     @Bean

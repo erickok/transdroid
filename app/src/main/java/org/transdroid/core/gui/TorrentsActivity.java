@@ -395,7 +395,6 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void startAutoRefresh() {
         // Check if already running
         if (autoRefreshTask != null || stopRefresh || systemSettings.getRefreshIntervalMilliseconds() == 0) {
@@ -1026,12 +1025,13 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
     @Background
     protected void addTorrentByFile(String localFile, String title) {
-        if (!navigationHelper.checkTorrentReadPermission(this)) {
-            // No read permission yet (which we get the result of in onRequestPermissionsResult)
-            awaitingAddLocalFile = localFile;
-            awaitingAddTitle = title;
-            return;
-        }
+        // TODO EKO
+//        if (!navigationHelper.checkTorrentReadPermission(this)) {
+//            // No read permission yet (which we get the result of in onRequestPermissionsResult)
+//            awaitingAddLocalFile = localFile;
+//            awaitingAddTitle = title;
+//            return;
+//        }
         DaemonTaskResult result = AddByFileTask.create(currentConnection, localFile).execute(log);
         if (result instanceof DaemonTaskSuccessResult) {
             onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));

@@ -64,7 +64,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EActivity(resName = "activity_widgetconfig")
 public class ListWidgetConfigActivity extends AppCompatActivity {
 

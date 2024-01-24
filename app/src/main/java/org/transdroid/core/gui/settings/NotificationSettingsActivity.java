@@ -16,11 +16,9 @@
  */
 package org.transdroid.core.gui.settings;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -71,7 +69,6 @@ public class NotificationSettingsActivity extends PreferenceCompatActivity imple
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @OptionsItem(android.R.id.home)
     protected void navigateUp() {
         MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();

@@ -16,17 +16,14 @@
  */
 package org.transdroid.core.gui.settings;
 
-import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference.OnPreferenceClickListener;
 import androidx.preference.PreferenceManager;
@@ -48,7 +45,6 @@ import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.SearchHistoryProvider;
 import org.transdroid.core.service.AppUpdateJob;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -88,9 +84,6 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
     private OnClickListener importSettingsFromFile = new OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
-                    && !navigationHelper.checkSettingsReadPermission(SystemSettingsActivity.this))
-                return; // We are requesting permission to access file storage
             importSettingsFromFile();
         }
     };
@@ -101,9 +94,6 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
     private OnClickListener exportSettingsToFile = new OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
-                    && !navigationHelper.checkSettingsWritePermission(SystemSettingsActivity.this))
-                return; // We are requesting permission to access file storage
             exportSettingsToFile();
         }
     };
@@ -142,40 +132,16 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
         findPreference("system_exportsettings").setOnPreferenceClickListener(onExportSettingsClick);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @OptionsItem(android.R.id.home)
     protected void navigateUp() {
         MainSettingsActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (Boolean.TRUE.equals(navigationHelper.handleSettingsReadPermissionResult(requestCode, grantResults))) {
-            importSettingsFromFile();
-        } else if (Boolean.TRUE.equals(navigationHelper.handleSettingsWritePermissionResult(requestCode, grantResults))) {
-            exportSettingsToFile();
-        }
-    }
-
     private void importSettingsFromFile() {
-        try {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
-                settingsPersistence.importSettingsFromFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
-                SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_import_success));
-            } else {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("application/json");
-                startActivityForResult(intent, ACTIVITY_IMPORT_SETTINGS);
-            }
-        } catch (FileNotFoundException e) {
-            SnackbarManager
-                    .show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_file_not_found).colorResource(R.color.red));
-        } catch (JSONException e) {
-            SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this)
-                    .text(getString(R.string.error_no_valid_settings_file, getString(R.string.app_name))).colorResource(R.color.red));
-        }
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/json");
+        startActivityForResult(intent, ACTIVITY_IMPORT_SETTINGS);
     }
 
     @OnActivityResult(ACTIVITY_IMPORT_SETTINGS)
@@ -196,22 +162,11 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
     }
 
     private void exportSettingsToFile() {
-        try {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SystemSettingsActivity.this);
-                settingsPersistence.exportSettingsToFile(prefs, SettingsPersistence.DEFAULT_SETTINGS_FILE);
-                SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_export_success));
-            } else {
-                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("application/json");
-                intent.putExtra(Intent.EXTRA_TITLE, SettingsPersistence.DEFAULT_SETTINGS_FILENAME);
-                startActivityForResult(intent, ACTIVITY_EXPORT_SETTINGS);
-            }
-        } catch (JSONException | IOException e) {
-            SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.error_cant_write_settings_file)
-                    .colorResource(R.color.red));
-        }
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/json");
+        intent.putExtra(Intent.EXTRA_TITLE, SettingsPersistence.DEFAULT_SETTINGS_FILENAME);
+        startActivityForResult(intent, ACTIVITY_EXPORT_SETTINGS);
     }
 
     @OnActivityResult(ACTIVITY_EXPORT_SETTINGS)
@@ -255,12 +210,7 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
             case DIALOG_IMPORTSETTINGS:
                 // @formatter:off
                 return new AlertDialog.Builder(this)
-                        .setMessage(
-                                getString(
-                                        Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
-                                                ? R.string.pref_import_dialog : R.string.pref_import_dialog_android10,
-                                        getString(R.string.app_name),
-                                        SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
+                        .setMessage(getString(R.string.pref_import_dialog_android10))
                         .setPositiveButton(R.string.pref_import_fromfile, importSettingsFromFile)
                         .setNeutralButton(R.string.pref_import_fromqr, importSettingsFromQr)
                         .setNegativeButton(android.R.string.cancel, null)
@@ -269,12 +219,7 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
             case DIALOG_EXPORTSETTINGS:
                 // @formatter:off
                 return new AlertDialog.Builder(this)
-                        .setMessage(
-                                getString(
-                                        Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT
-                                                ? R.string.pref_export_dialog : R.string.pref_export_dialog_android10,
-                                        getString(R.string.app_name),
-                                        SettingsPersistence.DEFAULT_SETTINGS_FILE.toString()))
+                        .setMessage(getString(R.string.pref_export_dialog_android10))
                         .setPositiveButton(R.string.pref_export_tofile, exportSettingsToFile)
                         .setNeutralButton(R.string.pref_export_toqr, exportSettingsToQr)
                         .setNegativeButton(android.R.string.cancel, null)

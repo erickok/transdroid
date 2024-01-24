@@ -355,13 +355,11 @@
     <string name="pref_clearsearch">Clear search history</string>
     <string name="pref_clearsearch_success">Search history is cleared</string>
     <string name="pref_import">Import settings</string>
-    <string name="pref_import_dialog">%1$s will try to import server, web search, RSS and system settings from: %2$s</string>
     <string name="pref_import_dialog_android10">%1$s will try to import server, web search, RSS and system settings</string>
     <string name="pref_import_fromfile">Use file</string>
     <string name="pref_import_fromqr">Use QR code</string>
     <string name="pref_import_success">Settings successfully imported</string>
     <string name="pref_export">Export settings</string>
-    <string name="pref_export_dialog">%1$s will export server (including passwords), web search, RSS and system settings to the following plain text JSON file: %2$s</string>
     <string name="pref_export_dialog_android10">%1$s will export server (including passwords), web search, RSS and system settings</string>
     <string name="pref_export_tofile">To file</string>
     <string name="pref_export_toqr">To QR code</string>
