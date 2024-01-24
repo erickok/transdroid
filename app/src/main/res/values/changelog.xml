@@ -17,7 +17,8 @@
 <resources>
 <string name="system_changelog">
 Transdroid 2.5.24\n
-- Fixes for Android 14 permissions\n
+- Fixes for Android 14 notification permission\n
+- Fixes adding by .torrent file\n
 \n
 Transdroid 2.5.23\n
 - Updated min (Android 5) and target API for Play Store compatibility\n
