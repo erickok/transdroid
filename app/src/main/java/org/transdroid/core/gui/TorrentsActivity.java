@@ -214,8 +214,6 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
     // Auto refresh task
     private AsyncTask<Void, Void, Void> autoRefreshTask;
 
-    private String awaitingAddLocalFile;
-    private String awaitingAddTitle;
     /**
      * Handles item selections on the dedicated list of filter items
      */
@@ -750,14 +748,6 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         return true;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (awaitingAddLocalFile != null && awaitingAddTitle != null &&
-                Boolean.TRUE.equals(navigationHelper.handleTorrentReadPermissionResult(requestCode, grantResults))) {
-            addTorrentByFile(awaitingAddLocalFile, awaitingAddTitle);
-        }
-    }
-
     @Click(R.id.addmenu_link_button)
     protected void startUrlEntryDialog() {
         addmenuButton.collapse();
@@ -1025,13 +1015,6 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
     @Background
     protected void addTorrentByFile(String localFile, String title) {
-        // TODO EKO
-//        if (!navigationHelper.checkTorrentReadPermission(this)) {
-//            // No read permission yet (which we get the result of in onRequestPermissionsResult)
-//            awaitingAddLocalFile = localFile;
-//            awaitingAddTitle = title;
-//            return;
-//        }
         DaemonTaskResult result = AddByFileTask.create(currentConnection, localFile).execute(log);
         if (result instanceof DaemonTaskSuccessResult) {
             onTaskSucceeded((DaemonTaskSuccessResult) result, getString(R.string.result_added, title));
