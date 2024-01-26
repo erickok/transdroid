@@ -26,7 +26,6 @@ import android.net.Uri;
 
 import androidx.core.app.NotificationCompat;
 
-import androidx.work.ListenableWorker;
 import androidx.work.Worker;
 
 import org.androidannotations.annotations.Bean;
@@ -91,7 +90,7 @@ public class AppUpdateJobRunner {
         lastDay.add(Calendar.DAY_OF_MONTH, -1);
         if (lastChecked != null && lastChecked.after(lastDay.getTime())) {
             log.d(this, "Skip the update service, as we already checked the last 24 hours (or to be exact at "
-                    + lastChecked.toString() + ").");
+                    + lastChecked + ").");
             return Worker.Result.retry();
         }
 
@@ -109,9 +108,9 @@ public class AppUpdateJobRunner {
             // New version of the app?
             try {
                 PackageInfo appPackage = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-                log.d(this, "Local Transdroid is at " + appPackage.getLongVersionCode() + " and the reported latest version is "
+                log.d(this, "Local Transdroid is at " + appPackage.versionCode + " and the reported latest version is "
                         + appVersion);
-                if (appPackage.getLongVersionCode() < appVersion) {
+                if (appPackage.versionCode < appVersion) {
                     // New version available! Notify the user.
                     newNotification(context.getString(R.string.update_app_newversion),
                             context.getString(R.string.update_app_newversion),
@@ -125,9 +124,9 @@ public class AppUpdateJobRunner {
             // New version of the search module?
             try {
                 PackageInfo searchPackage = context.getPackageManager().getPackageInfo("org.transdroid.search", 0);
-                log.d(this, "Local Transdroid Search is at " + searchPackage.getLongVersionCode()
+                log.d(this, "Local Transdroid Search is at " + searchPackage.versionCode
                         + " and the reported latest version is " + searchVersion);
-                if (searchPackage.getLongVersionCode() < searchVersion) {
+                if (searchPackage.versionCode < searchVersion) {
                     // New version available! Notify the user.
                     newNotification(context.getString(R.string.update_search_newversion),
                             context.getString(R.string.update_search_newversion),
