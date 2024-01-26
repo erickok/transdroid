@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 Eric Kok et al.
+ * Copyright 2010-2024 Eric Kok et al.
  *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,6 @@ import org.transdroid.core.service.ControlService_;
  *
  * @author Eric Kok
  */
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EReceiver
 public class ListWidgetProvider extends AppWidgetProvider {
 

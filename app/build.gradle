@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 31
+    compileSdk 34
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 31
-        versionCode 242
-        versionName '2.5.22'
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode 244
+        versionName '2.5.24'
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -80,31 +80,32 @@ android {
 
 dependencies {
     // Android support
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'com.google.android.material:material:1.10.0'
 
     // Other
-    implementation 'org.androidannotations:androidannotations-api:4.7.0'
-    implementation 'org.androidannotations:ormlite-api:4.7.0'
-    implementation 'com.j256.ormlite:ormlite-core:5.1'
-    implementation 'com.j256.ormlite:ormlite-android:5.1'
+    implementation 'org.androidannotations:androidannotations-api:4.8.0'
+    implementation 'org.androidannotations:ormlite-api:4.8.0'
+    implementation 'com.j256.ormlite:ormlite-android:6.1'
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.nispok:snackbar:2.11.0'
-    implementation 'org.apache.openjpa:openjpa-lib:3.1.1'
+    implementation 'org.apache.openjpa:openjpa-lib:3.2.2'
     implementation 'net.iharder:base64:2.3.9'
     implementation('com.github.afollestad.material-dialogs:core:0.9.6.0@aar') {
         transitive = true
     }
-    implementation 'com.evernote:android-job:1.2.6'
+    implementation 'androidx.work:work-runtime:2.9.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
+
+    annotationProcessor 'org.androidannotations:androidannotations:4.8.0'
+    annotationProcessor 'org.androidannotations:ormlite:4.8.0'
 
     // Copied From androidSdkPath/platforms/android-31/optional/org.apache.http.legacy.jar
     // Using it as a compileOnly so this helps while developing, but is not compiled into the final
     // app, see https://developer.android.com/studio/build/dependencies#dependency_configurations
     compileOnly files('libs/org.apache.http.legacy.jar')
-
-    annotationProcessor 'org.androidannotations:androidannotations:4.7.0'
-    annotationProcessor 'org.androidannotations:ormlite:4.7.0'
 }

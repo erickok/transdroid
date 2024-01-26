@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 Eric Kok et al.
+ * Copyright 2010-2024 Eric Kok et al.
  *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,6 @@ import java.util.List;
  *
  * @author Eric Kok
  */
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EService
 public class ListWidgetViewsService extends RemoteViewsService {
 
@@ -65,7 +64,6 @@ public class ListWidgetViewsService extends RemoteViewsService {
 
 }
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private final Context context;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 Eric Kok et al.
+ * Copyright 2010-2024 Eric Kok et al.
  *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,45 +16,62 @@
  */
 package org.transdroid.core.service;
 
+import static java.security.AccessController.getContext;
+
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.evernote.android.job.Job;
-import com.evernote.android.job.JobManager;
-import com.evernote.android.job.JobRequest;
+import androidx.work.Constraints;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.Worker;
+import androidx.work.WorkManager;
+import androidx.work.NetworkType;
+import androidx.work.WorkerParameters;
 
 import org.transdroid.core.app.settings.NotificationSettings;
 import org.transdroid.core.app.settings.NotificationSettings_;
 import org.transdroid.core.gui.log.Log_;
 
-public class RssCheckerJob extends Job {
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+public class RssCheckerJob extends Worker {
 
     static final String TAG = "rss_checker";
 
-    private static Integer scheduledJobId;
+    private static UUID scheduledJobId;
+
+    public RssCheckerJob(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
 
     public static void schedule(Context context) {
         NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
         if (notificationSettings.isEnabledForRss()) {
             Log_.getInstance_(context).d(TAG, "Schedule rss checker job");
             NotificationChannels.ensureRssCheckerChannel(context, notificationSettings);
-            scheduledJobId = new JobRequest.Builder(RssCheckerJob.TAG)
-                    .setPeriodic(notificationSettings.getInvervalInMilliseconds())
-                    .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-                    .setUpdateCurrent(true)
-                    .build()
-                    .schedule();
+            Constraints constraints = new Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build();
+            PeriodicWorkRequest rssChecker = new PeriodicWorkRequest.Builder(RssCheckerJob.class, notificationSettings.getInvervalInMilliseconds(), TimeUnit.MILLISECONDS)
+                    .addTag(RssCheckerJob.TAG)
+                    .setConstraints(constraints)
+                    .build();
+            WorkManager.getInstance(context).cancelAllWorkByTag(RssCheckerJob.TAG);
+            WorkManager.getInstance(context).enqueue(rssChecker);
+            scheduledJobId = rssChecker.getId();
         } else if (scheduledJobId != null) {
             Log_.getInstance_(context).d(TAG, "Cancel rss checker job");
-            JobManager.instance().cancel(scheduledJobId);
+            WorkManager.getInstance(context).cancelWorkById(scheduledJobId);
+            scheduledJobId = null;
         }
     }
 
     @NonNull
     @Override
-    protected Result onRunJob(@NonNull Params params) {
-        return RssCheckerJobRunner_.getInstance_(getContext()).run();
+    public Result doWork() {
+        return RssCheckerJobRunner_.getInstance_(getApplicationContext()).run();
     }
 
 }

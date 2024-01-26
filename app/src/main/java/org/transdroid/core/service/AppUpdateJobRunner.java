@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 Eric Kok et al.
+ * Copyright 2010-2024 Eric Kok et al.
  *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import android.net.Uri;
 
 import androidx.core.app.NotificationCompat;
 
-import com.evernote.android.job.Job;
+import androidx.work.Worker;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -73,16 +73,16 @@ public class AppUpdateJobRunner {
     @SystemService
     protected NotificationManager notificationManager;
 
-    Job.Result run() {
+    Worker.Result run() {
 
         // Only run this service if app updates are handled via transdroid.org at all
         if (!navigationHelper.enableUpdateChecker())
-            return Job.Result.FAILURE;
+            return Worker.Result.failure();
 
         if (!connectivityHelper.shouldPerformBackgroundActions() || !systemSettings.checkForUpdates()) {
             log.d(this, "Skip the app update service, as background data is disabled, the service is explicitly " +
                     "disabled or we are not connected.");
-            return Job.Result.RESCHEDULE;
+            return Worker.Result.retry();
         }
 
         Date lastChecked = systemSettings.getLastCheckedForAppUpdates();
@@ -90,8 +90,8 @@ public class AppUpdateJobRunner {
         lastDay.add(Calendar.DAY_OF_MONTH, -1);
         if (lastChecked != null && lastChecked.after(lastDay.getTime())) {
             log.d(this, "Skip the update service, as we already checked the last 24 hours (or to be exact at "
-                    + lastChecked.toString() + ").");
-            return Job.Result.RESCHEDULE;
+                    + lastChecked + ").");
+            return Worker.Result.retry();
         }
 
         DefaultHttpClient httpclient = new DefaultHttpClient();
@@ -108,9 +108,9 @@ public class AppUpdateJobRunner {
             // New version of the app?
             try {
                 PackageInfo appPackage = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-                log.d(this, "Local Transdroid is at " + appPackage.getLongVersionCode() + " and the reported latest version is "
+                log.d(this, "Local Transdroid is at " + appPackage.versionCode + " and the reported latest version is "
                         + appVersion);
-                if (appPackage.getLongVersionCode() < appVersion) {
+                if (appPackage.versionCode < appVersion) {
                     // New version available! Notify the user.
                     newNotification(context.getString(R.string.update_app_newversion),
                             context.getString(R.string.update_app_newversion),
@@ -124,9 +124,9 @@ public class AppUpdateJobRunner {
             // New version of the search module?
             try {
                 PackageInfo searchPackage = context.getPackageManager().getPackageInfo("org.transdroid.search", 0);
-                log.d(this, "Local Transdroid Seach is at " + searchPackage.getLongVersionCode()
+                log.d(this, "Local Transdroid Search is at " + searchPackage.versionCode
                         + " and the reported latest version is " + searchVersion);
-                if (searchPackage.getLongVersionCode() < searchVersion) {
+                if (searchPackage.versionCode < searchVersion) {
                     // New version available! Notify the user.
                     newNotification(context.getString(R.string.update_search_newversion),
                             context.getString(R.string.update_search_newversion),
@@ -145,10 +145,10 @@ public class AppUpdateJobRunner {
         } catch (Exception e) {
             // Cannot check right now for some reason; log and ignore
             log.d(this, "Cannot retrieve latest app or search module version code from the site: " + e.toString());
-            return Job.Result.FAILURE;
+            return Worker.Result.failure();
         }
 
-        return Job.Result.SUCCESS;
+        return Worker.Result.success();
     }
 
     /**

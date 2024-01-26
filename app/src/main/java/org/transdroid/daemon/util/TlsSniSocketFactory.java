@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 Eric Kok et al.
+ * Copyright 2010-2024 Eric Kok et al.
  *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,6 @@ public class TlsSniSocketFactory implements LayeredSocketFactory {
     // TLS layer
 
     @Override
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public Socket createSocket(Socket plainSocket, String host, int port, boolean autoClose) throws IOException {
         if (autoClose) {
             // we don't need the plainSocket

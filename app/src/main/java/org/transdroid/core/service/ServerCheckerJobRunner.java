@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 Eric Kok et al.
+ * Copyright 2010-2024 Eric Kok et al.
  *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import androidx.core.app.NotificationCompat;
-import com.evernote.android.job.Job;
+import androidx.work.Worker;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
@@ -61,12 +61,12 @@ public class ServerCheckerJobRunner {
     @SystemService
     protected NotificationManager notificationManager;
 
-    Job.Result run() {
+    Worker.Result run() {
 
         if (!connectivityHelper.shouldPerformBackgroundActions() || !notificationSettings.isEnabledForTorrents()) {
             log.d(this,
                     "Skip the server checker service, as background data is disabled, the service is disabled or we are not connected.");
-            return Job.Result.RESCHEDULE;
+            return Worker.Result.retry();
         }
 
         int notifyBase = 10000;
@@ -207,7 +207,7 @@ public class ServerCheckerJobRunner {
 
         }
 
-        return Job.Result.SUCCESS;
+        return Worker.Result.success();
     }
 
     private Boolean findLastDoneStat(JSONArray lastStats, Torrent torrent) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 Eric Kok et al.
+ * Copyright 2010-2024 Eric Kok et al.
  *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,10 +44,7 @@ import java.io.OutputStream;
 @EBean(scope = Scope.Singleton)
 public class SettingsPersistence {
 
-    public static final String DEFAULT_SETTINGS_DIR = Environment.getExternalStorageDirectory().toString()
-            + "/Transdroid/";
     public static final String DEFAULT_SETTINGS_FILENAME = "settings.json";
-    public static final File DEFAULT_SETTINGS_FILE = new File(DEFAULT_SETTINGS_DIR + DEFAULT_SETTINGS_FILENAME);
     @Bean
     protected ApplicationSettings applicationSettings;
     @Bean

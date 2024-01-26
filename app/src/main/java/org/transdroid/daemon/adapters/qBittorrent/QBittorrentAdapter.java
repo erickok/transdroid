@@ -94,6 +94,8 @@ public class QBittorrentAdapter implements IDaemonAdapter {
     private int qbLowPriority = 1;
     private int qbNormalPriority = 2;
     private int qbHighPriority = 7;
+    // a cache of all labels on the server
+    private List<Label> labelList;
 
     public QBittorrentAdapter(DaemonSettings settings) {
         this.settings = settings;
@@ -245,7 +247,7 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                     if (allLabelsResult == null) {
                         allLabelsResult = new JSONArray();
                     }
-                    final List<Label> labelList = parseJsonLabels(allLabelsResult, allTorrentsResult);
+                    labelList = parseJsonLabels(allLabelsResult, allTorrentsResult);
                     return new RetrieveTaskSuccessResult((RetrieveTask) task, torrentsList, labelList);
 
                 case GetTorrentDetails:
@@ -446,6 +448,20 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                 case SetLabel:
 
                     SetLabelTask labelTask = (SetLabelTask) task;
+                    String newLabel = labelTask.getNewLabel();
+                    if (version >= 30200) {
+                        if (!labelList.contains(new Label(newLabel, 0))) {
+                            // create new label on server side
+                            if (version >= 40100) {
+                                path = "/api/v2/torrents/createCategory";
+                            } else {
+                                path = "/command/addCategory";
+                            }
+                            makeRequest(log, path,
+                                    new BasicNameValuePair("category", newLabel));
+                        }
+                    }
+
                     if (version >= 40100) {
                         path = "/api/v2/torrents/setCategory";
                     } else {
@@ -453,7 +469,7 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                     }
                     makeRequest(log, path,
                             new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()),
-                            new BasicNameValuePair("category", labelTask.getNewLabel()));
+                            new BasicNameValuePair("category", newLabel));
                     return new DaemonTaskSuccessResult(task);
 
                 case SetDownloadLocation:

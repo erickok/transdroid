@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 Eric Kok et al.
+ * Copyright 2010-2024 Eric Kok et al.
  *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @EActivity(resName = "activity_widgetconfig")
 public class ListWidgetConfigActivity extends AppCompatActivity {
 

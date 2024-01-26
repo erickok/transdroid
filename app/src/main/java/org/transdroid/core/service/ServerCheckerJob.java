@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 Eric Kok et al.
+ * Copyright 2010-2024 Eric Kok et al.
  *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,41 +20,58 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.evernote.android.job.Job;
-import com.evernote.android.job.JobManager;
-import com.evernote.android.job.JobRequest;
+import androidx.annotation.WorkerThread;
+import androidx.work.Constraints;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.Worker;
+import androidx.work.WorkManager;
+import androidx.work.NetworkType;
+import androidx.work.WorkerParameters;
 
 import org.transdroid.core.app.settings.NotificationSettings;
 import org.transdroid.core.app.settings.NotificationSettings_;
 import org.transdroid.core.gui.log.Log_;
 
-public class ServerCheckerJob extends Job {
+import java.time.Period;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+public class ServerCheckerJob extends Worker {
 
     static final String TAG = "server_checker";
 
-    private static Integer scheduledJobId;
+    private static UUID scheduledJobId;
+
+    public ServerCheckerJob(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
 
     public static void schedule(Context context) {
         NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
         if (notificationSettings.isEnabledForTorrents()) {
             Log_.getInstance_(context).d(TAG, "Schedule server checker job");
             NotificationChannels.ensureServerCheckerChannel(context, notificationSettings);
-            scheduledJobId = new JobRequest.Builder(ServerCheckerJob.TAG)
-                    .setPeriodic(notificationSettings.getInvervalInMilliseconds())
-                    .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-                    .setUpdateCurrent(true)
-                    .build()
-                    .schedule();
+            Constraints constraints = new Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build();
+            PeriodicWorkRequest serverChecker = new PeriodicWorkRequest.Builder(ServerCheckerJob.class, notificationSettings.getInvervalInMilliseconds(), TimeUnit.MILLISECONDS)
+                    .addTag(ServerCheckerJob.TAG)
+                    .setConstraints(constraints)
+                    .build();
+            WorkManager.getInstance(context).cancelAllWorkByTag(ServerCheckerJob.TAG);
+            WorkManager.getInstance(context).enqueue(serverChecker);
+            scheduledJobId = serverChecker.getId();
         } else if (scheduledJobId != null) {
             Log_.getInstance_(context).d(TAG, "Cancel server checker job");
-            JobManager.instance().cancel(scheduledJobId);
+            WorkManager.getInstance(context).cancelWorkById(scheduledJobId);
+            scheduledJobId = null;
         }
     }
 
     @NonNull
     @Override
-    protected Result onRunJob(@NonNull Params params) {
-        return ServerCheckerJobRunner_.getInstance_(getContext()).run();
+    public Result doWork() {
+        return ServerCheckerJobRunner_.getInstance_(getApplicationContext()).run();
     }
 
 }

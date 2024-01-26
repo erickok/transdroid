@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright 2010-2018 Eric Kok et al.
+  Copyright 2010-2024 Eric Kok et al.
 
   Transdroid is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -355,13 +355,11 @@
     <string name="pref_clearsearch">Clear search history</string>
     <string name="pref_clearsearch_success">Search history is cleared</string>
     <string name="pref_import">Import settings</string>
-    <string name="pref_import_dialog">%1$s will try to import server, web search, RSS and system settings from: %2$s</string>
     <string name="pref_import_dialog_android10">%1$s will try to import server, web search, RSS and system settings</string>
     <string name="pref_import_fromfile">Use file</string>
     <string name="pref_import_fromqr">Use QR code</string>
     <string name="pref_import_success">Settings successfully imported</string>
     <string name="pref_export">Export settings</string>
-    <string name="pref_export_dialog">%1$s will export server (including passwords), web search, RSS and system settings to the following plain text JSON file: %2$s</string>
     <string name="pref_export_dialog_android10">%1$s will export server (including passwords), web search, RSS and system settings</string>
     <string name="pref_export_tofile">To file</string>
     <string name="pref_export_toqr">To QR code</string>
@@ -464,9 +462,7 @@
         <item>86400</item>
     </string-array>
 
-    <string name="permission_readtorrent">Transdroid requires read access to your file storage in order to read local .torrent files</string>
-    <string name="permission_readsettings">Transdroid requires read access to your file storage if you want to read from a local settings file</string>
-    <string name="permission_writesettings">Transdroid requires write access to your file storage to write the local settings file</string>
+    <string name="permission_notifications">Transdroid requires permission if you want to receive notifications</string>
 
     <string name="error_httperror">Error during communication; check your connection</string>
     <string name="error_unsupported">Your torrent client does not support this operation</string>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 Eric Kok et al.
+ * Copyright 2010-2024 Eric Kok et al.
  *
  * Transdroid is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,12 @@ package org.transdroid.core.gui.navigation;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.TypefaceSpan;
@@ -60,9 +58,7 @@ import java.util.List;
 @EBean
 public class NavigationHelper {
 
-    private static final int REQUEST_TORRENT_READ_PERMISSION = 0;
-    private static final int REQUEST_SETTINGS_READ_PERMISSION = 1;
-    private static final int REQUEST_SETTINGS_WRITE_PERMISSION = 2;
+    private static final int REQUEST_NOTIFICATIONS_PERMISSION = 0;
 
     private static ImageLoader imageCache;
     @RootContext
@@ -134,25 +130,11 @@ public class NavigationHelper {
         return null;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public boolean checkTorrentReadPermission(final Activity activity) {
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ||
-                checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_TORRENT_READ_PERMISSION);
+    public boolean checkOrRequestNotificationPermission(final Activity activity) {
+        return checkPermission(activity, Manifest.permission.POST_NOTIFICATIONS, REQUEST_NOTIFICATIONS_PERMISSION, R.string.permission_notifications);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public boolean checkSettingsReadPermission(final Activity activity) {
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ||
-                checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_SETTINGS_READ_PERMISSION);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public boolean checkSettingsWritePermission(final Activity activity) {
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ||
-                checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_SETTINGS_WRITE_PERMISSION);
-    }
-
-    private boolean checkPermission(final Activity activity, final String permission, final int requestCode) {
+    private boolean checkPermission(final Activity activity, final String permission, final int requestCode, final int explainer) {
         if (hasPermission(permission))
             // Permission already granted
             return true;
@@ -160,43 +142,27 @@ public class NavigationHelper {
             // Never asked again: show a dialog with an explanation
             activity.runOnUiThread(() ->
                     new AlertDialog.Builder(context)
-                            .setMessage(R.string.permission_readtorrent)
+                            .setMessage(explainer)
                             .setPositiveButton(android.R.string.ok, (dialog, which) ->
                                     ActivityCompat.requestPermissions(activity, new String[]{permission}, requestCode))
                             .show());
             return false;
         }
         // Permission not granted (and we asked for it already before)
-        ActivityCompat.requestPermissions(activity, new String[]{permission}, REQUEST_TORRENT_READ_PERMISSION);
+        ActivityCompat.requestPermissions(activity, new String[]{permission}, requestCode);
         return false;
     }
 
-    private boolean hasPermission(String requiredPermission) {
+    public boolean hasPermission(String requiredPermission) {
         return ContextCompat.checkSelfPermission(context, requiredPermission) == PackageManager.PERMISSION_GRANTED;
     }
 
-    public Boolean handleTorrentReadPermissionResult(int requestCode, int[] grantResults) {
-        if (requestCode == REQUEST_TORRENT_READ_PERMISSION) {
+    public Boolean handleNotificationPermissionResult(int requestCode, int[] grantResults) {
+        if (requestCode == REQUEST_NOTIFICATIONS_PERMISSION) {
             // Return permission granting result
             return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
         }
-        return null;
-    }
-
-    public Boolean handleSettingsReadPermissionResult(int requestCode, int[] grantResults) {
-        if (requestCode == REQUEST_SETTINGS_READ_PERMISSION) {
-            // Return permission granting result
-            return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
-        }
-        return null;
-    }
-
-    public Boolean handleSettingsWritePermissionResult(int requestCode, int[] grantResults) {
-        if (requestCode == REQUEST_SETTINGS_WRITE_PERMISSION) {
-            // Return permission granting result
-            return grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
-        }
-        return null;
+        return false;
     }
 
     /**
