@@ -32,6 +32,6 @@ public class AddByMagnetUrlTask extends DaemonTask {
 		return new AddByMagnetUrlTask(adapter, data);
 	}
 	public String getUrl() {
-		return extras.getString("URL").replaceAll("\\s", "");
+		return extras.getString("URL");
 	}
 }
