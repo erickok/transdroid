@@ -985,7 +985,8 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
         // Since v39 Chrome sends application/x-www-form-urlencoded magnet links and most torrent clients do not understand those, so decode first
         try {
-            url = URLDecoder.decode(url, "UTF-8");
+            url = URLDecoder.decode(url.replaceAll("\\s", ""), "UTF-8");
+            title = URLDecoder.decode(title, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             // Ignore: UTF-8 is always available on Android devices
         } catch (IllegalArgumentException e) {
