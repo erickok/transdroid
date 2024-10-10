@@ -345,7 +345,9 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                 case Pause:
 
                     // Pause a torrent
-                    if (version >= 40100) {
+                    if (version >= 50000) {
+                        makeRequest(log, "/api/v2/torrents/stop", new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
+                    } else if (version >= 40100) {
                         makeRequest(log, "/api/v2/torrents/pause", new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
                     } else {
                         makeRequest(log, "/command/pause", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
@@ -355,8 +357,10 @@ public class QBittorrentAdapter implements IDaemonAdapter {
 
                 case PauseAll:
 
-                    // Resume all torrents
-                    if (version >= 40100) {
+                    // Pause all torrents
+                    if (version >= 50000) {
+                        makeRequest(log, "/api/v2/torrents/stop", new BasicNameValuePair("hashes", "all"));
+                    } else if (version >= 40100) {
                         makeRequest(log, "/api/v2/torrents/pause", new BasicNameValuePair("hashes", "all"));
                     } else {
                         makeRequest(log, "/command/pauseall");
@@ -367,7 +371,9 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                 case Resume:
 
                     // Resume a torrent
-                    if (version >= 40100) {
+                    if (version >= 50000) {
+                        makeRequest(log, "/api/v2/torrents/start", new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
+                    } else if (version >= 40100) {
                         makeRequest(log, "/api/v2/torrents/resume", new BasicNameValuePair("hashes", task.getTargetTorrent().getUniqueID()));
                     } else {
                         makeRequest(log, "/command/resume", new BasicNameValuePair("hash", task.getTargetTorrent().getUniqueID()));
@@ -378,9 +384,10 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                 case ResumeAll:
 
                     // Resume all torrents
-                    if (version >= 40100) {
-                        path = "/api/v2/torrents/resume";
-                        makeRequest(log, path, new BasicNameValuePair("hashes", "all"));
+                    if (version >= 50000) {
+                        makeRequest(log, "/api/v2/torrents/start", new BasicNameValuePair("hashes", "all"));
+                    } else if (version >= 40100) {
+                        makeRequest(log, "/api/v2/torrents/resume", new BasicNameValuePair("hashes", "all"));
                     } else {
                         makeRequest(log, "/command/resumeall");
                     }
