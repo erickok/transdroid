@@ -890,23 +890,20 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                 return TorrentStatus.Error;
             case "downloading":
             case "metaDL":
-                return TorrentStatus.Downloading;
-            case "uploading":
-                return TorrentStatus.Seeding;
-            case "pausedDL":
-                return TorrentStatus.Paused;
-            case "pausedUP":
-                return TorrentStatus.Paused;
-            case "stalledUP":
-                return TorrentStatus.Seeding;
             case "stalledDL":
                 return TorrentStatus.Downloading;
+            case "uploading":
+            case "stalledUP":
+                return TorrentStatus.Seeding;
+            case "pausedDL":
+            case "pausedUP":
+            case "stoppedDL":
+            case "stoppedUP":
+                return TorrentStatus.Paused;
+            case "checkingDL":
             case "checkingUP":
                 return TorrentStatus.Checking;
-            case "checkingDL":
-                return TorrentStatus.Checking;
             case "queuedDL":
-                return TorrentStatus.Queued;
             case "queuedUP":
                 return TorrentStatus.Queued;
         }
