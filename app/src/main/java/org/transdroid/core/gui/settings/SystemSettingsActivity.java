@@ -224,7 +224,7 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
             case DIALOG_IMPORTSETTINGS:
                 // @formatter:off
                 return new AlertDialog.Builder(this)
-                        .setMessage(getString(R.string.pref_import_dialog_android10))
+                        .setMessage(getString(R.string.pref_import_dialog_android10, getString(R.string.app_name)))
                         .setPositiveButton(R.string.pref_import_fromfile, importSettingsFromFile)
                         .setNeutralButton(R.string.pref_import_fromqr, importSettingsFromQr)
                         .setNegativeButton(android.R.string.cancel, null)
@@ -233,7 +233,7 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
             case DIALOG_EXPORTSETTINGS:
                 // @formatter:off
                 return new AlertDialog.Builder(this)
-                        .setMessage(getString(R.string.pref_export_dialog_android10))
+                        .setMessage(getString(R.string.pref_export_dialog_android10, getString(R.string.app_name)))
                         .setPositiveButton(R.string.pref_export_tofile, exportSettingsToFile)
                         .setNeutralButton(R.string.pref_export_toqr, exportSettingsToQr)
                         .setNegativeButton(android.R.string.cancel, null)
