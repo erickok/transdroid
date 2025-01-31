@@ -1,0 +1,17 @@
+Позволяет вам управлять своими торрентами. Все популярные клиенты поддерживаются:
+<ul>
+<li>μTorrent</li>
+<li>Transmission</li>
+<li>RTorrent</li>
+<li>BiglyBT and Vuze</li>
+<li>Deluge</li>
+<li>BitTorrent 6</li>
+<li>qBittorrent</li>
+</ul>
+
+Вы можете просматривать и управлять запущенными торрентами и отдельными файлами.
+Добавление сделать легко через интегрированный поиск, RSS каналы или сканируя QR код.
+Отслеживайте прогресс с помощью виджета на домашнем экране или фоновой службы оповещения.
+
+Смотрите также <a href="https://f-droid.org/packages/org.transdroid.search">Transdroid Поисковик Torrent</a>
+and <a href="https://f-droid.org/packages/org.transdroid.lite">Transdrone</a> - облегчённая версия без RSS.
