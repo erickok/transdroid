@@ -252,7 +252,7 @@
     <string name="pref_disableauth_info">نام‌کاربری و گذرواژه را نفرست</string>
     <string name="pref_sslenable">استفاده از اس اس ال	</string>
     <string name="pref_sslenable_info">اتصال با استفاده از HTTPS	</string>
-    <string name="pref_sslkey">انگشت زدن پای سفارشی TSL (SHA-1)	</string>
+    <string name="pref_sslkey">انگشت زدن پای سفارشی TLS (SHA-1)	</string>
     <string name="pref_sslkey_info">فقط اجازه اتصال به این گواهی خاص	</string>
     <string name="pref_sslacceptall">قبول همه گواهینامه های اس اس ال	</string>
     <string name="pref_sslacceptall_info">اجازه به تمام اتصالات از هر اثر انگشت</string>

@@ -259,11 +259,11 @@
     <string name="pref_ftppass">(S) FTP-Passwort</string>
     <string name="pref_disableauth">Authentifizierung deaktivieren</string>
     <string name="pref_disableauth_info">Keinen Benutzernamen oder Passwort übertragen</string>
-    <string name="pref_sslenable">TSL verwenden</string>
+    <string name="pref_sslenable">TLS verwenden</string>
     <string name="pref_sslenable_info">Verbinden über https</string>
-    <string name="pref_sslkey">Benutzerdefinierten TSL Fingerabdruck (SHA-1)</string>
+    <string name="pref_sslkey">Benutzerdefinierten TLS Fingerabdruck (SHA-1)</string>
     <string name="pref_sslkey_info">Erlaube nur Verbindungen zu diesem bestimmten Zertifikat</string>
-    <string name="pref_sslacceptall">Alle TSL-Zertifikate zu akzeptieren</string>
+    <string name="pref_sslacceptall">Alle TLS-Zertifikate zu akzeptieren</string>
     <string name="pref_sslacceptall_info">Alle Verbindungen von jeder Fingerabdruck zulassen</string>
     <string name="pref_background">Hintergrund-Benachrichtigungen</string>
     <string name="pref_notifications_rss">RSS-Benachrichtigungen aktivieren</string>

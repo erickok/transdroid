@@ -275,11 +275,11 @@
     <string name="pref_ftppass">Geslo za FTP(S)</string>
     <string name="pref_disableauth">Onemogoči avtentikacijo</string>
     <string name="pref_disableauth_info">Ne pošlji uporabniškega imena in gesla</string>
-    <string name="pref_sslenable">Uporaba TSL</string>
+    <string name="pref_sslenable">Uporaba TLS</string>
     <string name="pref_sslenable_info">Poveži se z uporabo https</string>
-    <string name="pref_sslkey">Lastni TSL odtis (SHA-1 thumbprint)</string>
+    <string name="pref_sslkey">Lastni TLS odtis (SHA-1 thumbprint)</string>
     <string name="pref_sslkey_info">Dovoli le povezave na točno ta certifikat</string>
-    <string name="pref_sslacceptall">Sprejmi vse TSL certifikate</string>
+    <string name="pref_sslacceptall">Sprejmi vse TLS certifikate</string>
     <string name="pref_sslacceptall_info">Dovoli povezave s kateregakoli odtisa (thumbprinta)</string>
     <string name="pref_background">Obvestila iz ozadja</string>
     <string name="pref_notifications_rss">Omogoči RSS obvestila</string>

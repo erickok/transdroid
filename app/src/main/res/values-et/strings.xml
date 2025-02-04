@@ -157,7 +157,7 @@
     <string name="pref_folder_info">Tavaliselt tühi</string>
     <string name="pref_optional">Vabatahtlikud sätted</string>
     <string name="pref_os">Serveri OS</string>
-    <string name="pref_sslenable">Kasuta TSL-i</string>
+    <string name="pref_sslenable">Kasuta TLS-i</string>
     <string name="pref_notifysound">Heli</string>
     <string name="pref_system">Süsteem</string>
     <string name="pref_autorefresh">Automaatne uuendus</string>

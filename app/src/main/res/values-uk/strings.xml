@@ -136,9 +136,9 @@
     <string name="pref_advanced">Розширені параметри</string>
     <string name="pref_disableauth">Вимкнути авторизацію</string>
     <string name="pref_disableauth_info">Не надсилати ім\'я користувача та пароль</string>
-    <string name="pref_sslenable">Використовувати TSL</string>
+    <string name="pref_sslenable">Використовувати TLS</string>
     <string name="pref_sslenable_info">З\'єднуватись через https</string>
-    <string name="pref_sslacceptall">Приймати всі TSL сертифікати</string>
+    <string name="pref_sslacceptall">Приймати всі TLS сертифікати</string>
     <string name="pref_notifysound">Звук</string>
     <string name="pref_notifyvibrate">Вібрація</string>
     <string-array name="pref_autorefresh_intervals">

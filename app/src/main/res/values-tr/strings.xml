@@ -258,11 +258,11 @@
     <string name="pref_ftppass">FTP şifresi</string>
     <string name="pref_disableauth">Kimlik doğrulamasını devre dışı bırak</string>
     <string name="pref_disableauth_info">Kullanıcı adını ve şifreyi gönderme</string>
-    <string name="pref_sslenable">TSL kullan</string>
+    <string name="pref_sslenable">TLS kullan</string>
     <string name="pref_sslenable_info">HTTPS kullanarak bağlan</string>
-    <string name="pref_sslkey">Özel TSL parmak izi (SHA-1)</string>
+    <string name="pref_sslkey">Özel TLS parmak izi (SHA-1)</string>
     <string name="pref_sslkey_info">Sadece bu sertifika bağlantılarına izin ver</string>
-    <string name="pref_sslacceptall">Tüm TSL sertifikalarını kabul et</string>
+    <string name="pref_sslacceptall">Tüm TLS sertifikalarını kabul et</string>
     <string name="pref_sslacceptall_info">Herhangi bir parmak izinden gelen tüm bağlantılara izin ver</string>
     <string name="pref_background">Arka plan bildirimleri</string>
     <string name="pref_notifications_rss">RSS bildirimleri etkinleştir</string>
