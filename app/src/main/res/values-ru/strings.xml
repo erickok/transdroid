@@ -20,10 +20,11 @@
     <string name="action_addall">Добавить все</string>
     <string name="action_addfromfile">Из файла</string>
     <string name="action_addfromurl">Из URL-адреса</string>
-    <string name="action_scanbarcode">Сканировать штрих-код</string>
+    <string name="action_scanbarcode">Сканировать QR-код</string>
     <string name="action_search">Поиск</string>
     <string name="action_refresh">Обновить</string>
     <string name="action_rss">RSS-ленты</string>
+    <string name="action_remoterss">Удалённые RSS</string>
     <string name="action_enableturtle">Включить режим ограничения скорости</string>
     <string name="action_disableturtle">Отключить режим ограничения скорости</string>
     <string name="action_sort">Сортировать список</string>
@@ -72,6 +73,9 @@
     <string name="action_removesettings">Удалить сервер</string>
     <string name="action_visitwebsite">Посетить transdroid.org</string>
     <string name="action_close">Закрыть</string>
+
+    <string name="navigation_opendrawer">Выберите сервер и фильтр</string>
+    <string name="navigation_closedrawer">Закрыть список фильтров</string>
     <string name="navigation_nosettings">%1$s позволяет отслеживать и управлять вашими торрент-клиентами запущенными дома или на ваших сидбоксах. Установка и настройка приложения может вызвать некоторые затруднения, но мы предлагаем вам пошаговую инструкцию и обещаем, что все, приложенные вами, усилия будут того стоить!</string>
     <string name="navigation_emptytorrents">Соединение установлено, но нет загрузок соответствующих текущему фильтру</string>
     <string name="navigation_emptydetails">Выберите загрузку для просмотра подробной информации</string>
@@ -97,6 +101,8 @@
     <string name="navigation_selectfinished">Выбор готовой</string>
     <string name="navigation_invertselection">Инвертировать выделение</string>
     <string name="navigation_pickserver">Добавить торрент в...</string>
+    <string name="navigation_rss_tabs_remote">Сервер</string>
+
     <string name="status_status">СТАТУС: %1$s</string>
     <string name="status_waiting">Ожидание проверки&#8230;</string>
     <string name="status_checking">Проверка хэша...</string>
@@ -212,6 +218,11 @@
         <item quantity="other">В RSS-ленте доступно %1$s новых торрентов</item>
     </plurals>
     <string name="rss_service_newfor">Новые торренты от %1$s</string>
+
+    <string name="remoterss_filter_allrecent">(Все недавние)</string>
+    <string name="remoterss_no_files">На найдено торент файлов.\n\nВаша RSS лента настроена правильно?</string>
+    <string name="remoterss_loading">Загрузка RSS потока…</string>
+
     <string name="widget_loading">Загрузка&#8230;</string>
     <string name="widget_opentransdroid">Открыть Transdroid</string>
     <string name="widget_filter">ПРОСМОТР СЕРВЕРА</string>
@@ -221,8 +232,10 @@
     <string name="widget_showstatusview">Статистика сервера вместо названия</string>
     <string name="widget_usedarktheme">Использовать темную тему (без предпросмотра)</string>
     <string name="widget_done">ГОТОВО</string>
+
     <string name="pref_servers">Серверы</string>
     <string name="pref_addserver">Добавить новый сервер</string>
+    <string name="pref_addserver_normal">Добавить обычный, свой сервер</string>
     <string name="pref_addseedbox">Добавить сидбокс</string>
     <string name="pref_defaultserver">Сервер по умолчанию</string>
     <string name="pref_defaultserver_lastused">Последний используемый</string>
@@ -234,8 +247,9 @@
     <string name="pref_addrssfeed">Добавить RSS-ленту</string>
     <string name="pref_others">Дополнительно</string>
     <string name="pref_confirmremove">Вы уверены, что хотите удалить эти настройки?</string>
-    <string name="pref_name">Имя</string>
-    <string name="pref_name_optional">Необязательно. Имя поискового сайта</string>
+
+    <string name="pref_name">Название</string>
+    <string name="pref_name_optional">Необязательно. Название поискового сайта</string>
     <string name="pref_searchurl">URL-адрес прямого поиска</string>
     <string name="pref_searchurl_info">поисковый запрос будет заменен на %s</string>
     <string name="pref_cookies">Куки</string>
@@ -245,8 +259,13 @@
     <string name="pref_reqauth_info">Открывает ссылки в веб-браузере для входа пользователя в систему</string>
     <string name="pref_alarmrssnew">Уведомлять о новых раздачах</string>
     <string name="pref_alarmrssnew_info">Уведомление при появлении новых торрентов</string>
+    <string name="pref_alarmrssexclude">Фильтр на исключение</string>
+    <string name="pref_alarmrssexclude_info">Не показывать если название торрента содержит эти слова разделённые через |</string>
+    <string name="pref_alarmrssinclude">Фильтр на включение</string>
+    <string name="pref_alarmrssinclude_info">Показывать только если название торрента содержит эти слова разделённые через |</string>
+
     <string name="pref_servertype">Тип сервера</string>
-    <string name="pref_address">IP или имя хоста</string>
+    <string name="pref_address">IP или хост</string>
     <string name="pref_port">Номер порта</string>
     <string name="pref_user">Имя пользователя</string>
     <string name="pref_pass">Пароль</string>
@@ -258,6 +277,8 @@
     <string name="pref_localport">Номер локального порта</string>
     <string name="pref_localnetwork">Локальная сеть</string>
     <string name="pref_localnetwork_info">SSID локальной сети сервера</string>
+    <string name="pref_local_permission_title">Разрешение знать местоположение</string>
+    <string name="pref_local_permission_rationale">Чтобы знать SSID подключённой Wifi сети, для %1$s требуется разрешение на запрос местоположения</string>
     <string name="pref_folder">Папка</string>
     <string name="pref_folder_info">Обычно не указывается</string>
     <string name="pref_scgifolder">Точка монтирования SCGI</string>
@@ -266,6 +287,10 @@
     <string name="pref_alarmdone_info">Уведомлять при завершении загрузки торрента</string>
     <string name="pref_alarmnew">Уведомление о новом торренте</string>
     <string name="pref_alarmnew_info">Уведомлять при добавлении торрента</string>
+    <string name="pref_alarmexclude">Фильтр на исключение</string>
+    <string name="pref_alarmexclude_info">Уведомлять только если название торрента не содержит эти слова разделённые через |</string>
+    <string name="pref_alarminclude">Фильтр на включение</string>
+    <string name="pref_alarminclude_info">Уведомлять только если название торрента не содержит эти слова разделённые через |</string>
     <string name="pref_os">Операционная система сервера</string>
     <string name="pref_downdir">Папка загрузок</string>
     <string name="pref_downdir_info">Вручную задать абсолютный путь для удаленных подключений</string>
@@ -281,7 +306,12 @@
     <string name="pref_sslkey">Пользовательское хеш-значение TLS (SHA-1)</string>
     <string name="pref_sslkey_info">Разрешить только подключения к указанному сертификату</string>
     <string name="pref_sslacceptall">Принимать все TLS-сертификаты</string>
+    <string name="pref_sslenable">Использовать TLS</string>
+    <string name="pref_local_sslenable">Использовать TLS в локальной сети</string>
+    <string name="pref_local_sslenable_info">Подключение с помощью HTTPS</string>
+    <string name="pref_sslkey">Пользовательское хеш-значение TLS (SHA-1)</string>
     <string name="pref_sslacceptall_info">Разрешить все подключения от любых хеш-значений</string>
+
     <string name="pref_background">Фоновые уведомления</string>
     <string name="pref_notifications_rss">Включить уведомления RSS-лент</string>
     <string name="pref_notifications_torrent">Включить уведомления торрентов</string>
@@ -318,6 +348,7 @@
     <string name="pref_export">Экспортировать настройки</string>
     <string name="pref_export_dialog">%1$s экспортирует настройки сервера (включая пароли), веб-поиска, RSS-лент и системы в файл формата JSON: %2$s</string>
     <string name="pref_export_success">Настройки успешно экспортированы</string>
+
     <string name="pref_help">Помощь по Transdroid</string>
     <string name="pref_sendlog">Отправить журнал ошибок</string>
     <string name="pref_sendlog_info">Обратиться в поддержку или сообщить об ошибке</string>
@@ -325,10 +356,12 @@
     <string name="pref_installhelp_info">Доступны по адресу www.transdroid.org/download</string>
     <string name="pref_changelog">Последние изменения</string>
     <string name="pref_about">О программе %1$s</string>
+
     <string name="pref_seedbox_addseedbox">Добавить сидбокс %1$s</string>
     <string name="pref_seedbox_client">Торрент-клиент</string>
     <string name="pref_seedbox_client_info">Клиент к которому будет выполнено подключение</string>
     <string name="pref_seedbox_server">Адрес сервера</string>
+    <string name="pref_seedbox_xirvikviaqr">Добавить Xirvik сидбокс с помощью QR кода</string>
     <string name="pref_seedbox_xirvikhint">Как eplus001.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint2">Как semixl001a.xirvik.com</string>
     <string name="pref_seedbox_xirvikhint3">Как desharedgbit001.xirvik.com</string>
@@ -340,6 +373,9 @@
         <item>12 часов</item>
         <item>1 день</item>
     </string-array>
+
+    <string name="permission_notifications">Transdroid нуждается в разрешении если вы хотите получать уведомления</string>
+
     <string name="error_httperror">Ошибка соединения. Проверьте подключение</string>
     <string name="error_jsonrequesterror">Внутренняя ошибка построения запроса</string>
     <string name="error_jsonresponseerror">Ошибка разбора ответа сервера. Пожалуйста, проверьте настройки</string>
@@ -349,7 +385,7 @@
     <string name="error_parsingrss">Ошибка при разборе RSS-ленты</string>
     <string name="error_invalid_url_form">Этот URL-адрес имеет ошибочный фрмат</string>
     <string name="error_invalid_search_url">URL-адрес поисковика является недопустимым:</string>
-    <string name="error_invalid_ip_or_hostname">Введен неверный IP адрес или имя хоста</string>
+    <string name="error_invalid_ip_or_hostname">Введен неверный IP адрес или хост</string>
     <string name="error_invalid_port_number">Номер порта должен быть числом</string>
     <string name="error_invalid_directory">Путь каталога заканчивается символами \"/\" или \"\"</string>
     <string name="error_invalid_timeout">Время ожидания должно быть заполнено и быть больше 0</string>
