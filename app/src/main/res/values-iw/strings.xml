@@ -198,11 +198,11 @@
     <string name="pref_ftppass">סיסמת השרת FTP/S</string>
     <string name="pref_disableauth">ללא אימות</string>
     <string name="pref_disableauth_info">התחברות אנונומית</string>
-    <string name="pref_sslenable">השתמש בSSL</string>
+    <string name="pref_sslenable">השתמש בTSL</string>
     <string name="pref_sslenable_info">התחבר באמצעות HTTPS</string>
-    <string name="pref_sslkey">חתימת SSL מותאמת אישית (SHA-1)</string>
+    <string name="pref_sslkey">חתימת TSL מותאמת אישית (SHA-1)</string>
     <string name="pref_sslkey_info">אפשר חיבורים רק עם מפתח זה</string>
-    <string name="pref_sslacceptall">אפשר את כל התעודות SSL</string>
+    <string name="pref_sslacceptall">אפשר את כל התעודות TSL</string>
     <string name="pref_sslacceptall_info">אפשר את כל החיבורים</string>
     <string name="pref_background">התרעות ברקע</string>
     <string name="pref_notifications_rss">אפשר התרעות RSS</string>

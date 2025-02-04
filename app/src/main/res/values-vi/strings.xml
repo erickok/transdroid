@@ -198,9 +198,9 @@
     <string name="pref_ftppass">Mật mã FPT(S)</string>
     <string name="pref_disableauth">Không dùng đăng nhập</string>
     <string name="pref_disableauth_info">Không gửi đi tên và mật khẩu</string>
-    <string name="pref_sslenable">Sử dụng SSL</string>
+    <string name="pref_sslenable">Sử dụng TSL</string>
     <string name="pref_sslenable_info">Kết nối bằng https</string>
-    <string name="pref_sslacceptall">Chấp nhận các chứng chỉ SSL</string>
+    <string name="pref_sslacceptall">Chấp nhận các chứng chỉ TSL</string>
     <string name="pref_background">Thông báo chạy nền</string>
     <string name="pref_notifications_rss">Bật thông báo RSS</string>
     <string name="pref_notifications_torrent">Bật thông báo torrent</string>

@@ -174,11 +174,11 @@
     <string name="pref_ftppass">FTP(S) парола</string>
     <string name="pref_disableauth">Без удостоверяване</string>
     <string name="pref_disableauth_info">Няма да бъдат изпращани данни за потребител и парола</string>
-    <string name="pref_sslenable">Позване на SSL</string>
+    <string name="pref_sslenable">Позване на TSL</string>
     <string name="pref_sslenable_info">Ще осъществява връзките посредством HTTPS</string>
-    <string name="pref_sslkey">Персонален SSL отпечатък (SHA-1)</string>
+    <string name="pref_sslkey">Персонален TSL отпечатък (SHA-1)</string>
     <string name="pref_sslkey_info">Разрешава само връзките към този конкретен сертификат</string>
-    <string name="pref_sslacceptall">Приемане на всеки SSL сертификат</string>
+    <string name="pref_sslacceptall">Приемане на всеки TSL сертификат</string>
     <string name="pref_sslacceptall_info">Разрешава всяка връзка</string>
     <string name="pref_notifyinterval">Интервал</string>
     <string name="pref_notifysound">Звук</string>

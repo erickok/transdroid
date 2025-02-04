@@ -259,11 +259,11 @@
     <string name="pref_ftppass">Password (S) FTP</string>
     <string name="pref_disableauth">Disabilita autenticazione</string>
     <string name="pref_disableauth_info">Non inviare username e password</string>
-    <string name="pref_sslenable">Usa SSL</string>
+    <string name="pref_sslenable">Usa TSL</string>
     <string name="pref_sslenable_info">Connetti utilizzando https</string>
-    <string name="pref_sslkey">Identificazione personalizzata per SSL (SHA-1)</string>
+    <string name="pref_sslkey">Identificazione personalizzata per TSL (SHA-1)</string>
     <string name="pref_sslkey_info">Permetti solo connessioni con questo certificato</string>
-    <string name="pref_sslacceptall">Accetta tutti i certificati SSL</string>
+    <string name="pref_sslacceptall">Accetta tutti i certificati TSL</string>
     <string name="pref_sslacceptall_info">Consenti tutte le connessioni da qualsiasi identificazione personale</string>
     <string name="pref_background">Notifiche in backgroud</string>
     <string name="pref_notifications_rss">Abilita notifiche RSS</string>
