@@ -83,11 +83,10 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
     @InstanceState
     protected ArrayList<Label> currentLabels;
     @InstanceState
-    protected NavigationFilter currentNavigationFilter = null;
-    @InstanceState
+    protected NavigationFilter currentNavigationFilter = null;    @InstanceState
     protected TorrentsSortBy currentSortOrder = TorrentsSortBy.Alphanumeric;
     @InstanceState
-    protected boolean currentSortDescending = false;
+    protected boolean currentSortDescending = true; // Default to descending
     @InstanceState
     protected String currentTextFilter = null;
     @InstanceState
@@ -327,13 +326,12 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
      *
      * @param newSortOrder The sort order that the user selected.
      */
-    public void sortBy(TorrentsSortBy newSortOrder) {
-        // Update the sort order property and direction and store this last used setting
+    public void sortBy(TorrentsSortBy newSortOrder) {        // Update the sort order property and direction and store this last used setting
         if (this.currentSortOrder == newSortOrder) {
             this.currentSortDescending = !this.currentSortDescending;
         } else {
             this.currentSortOrder = newSortOrder;
-            this.currentSortDescending = false;
+            this.currentSortDescending = true; // Default to descending when changing sort order
         }
         applicationSettings.setLastUsedSortOrder(this.currentSortOrder, this.currentSortDescending);
         applyAllFilters();
@@ -496,6 +494,24 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
     private TorrentTasksExecutor getTasksExecutor() {
         // NOTE: Assumes the activity implements all the required torrent tasks
         return (TorrentTasksExecutor) getActivity();
+    }
+
+    /**
+     * Gets the current sort order being used for the torrents list
+     *
+     * @return The current sort order
+     */
+    public TorrentsSortBy getCurrentSortOrder() {
+        return currentSortOrder;
+    }
+
+    /**
+     * Gets whether the current sort order is descending
+     *
+     * @return True if the current sort direction is descending, false if ascending
+     */
+    public boolean isCurrentSortDescending() {
+        return currentSortDescending;
     }
 
 }
