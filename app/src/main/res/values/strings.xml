@@ -74,6 +74,7 @@
     <string name="action_removesettings">Remove settings</string>
     <string name="action_visitwebsite">Visit transdroid.org</string>
     <string name="action_close">Close</string>
+    <string name="action_scroll_to_top">Scroll to top</string>
 
     <string name="navigation_opendrawer">Select server and filter</string>
     <string name="navigation_closedrawer">Close filters list</string>

@@ -21,7 +21,9 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -109,9 +111,10 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
     @ViewById
     protected TextView nosettingsText;
     @ViewById
-    protected TextView errorText;
-    @ViewById
+    protected TextView errorText;    @ViewById
     protected ProgressBar loadingProgress;
+    @ViewById
+    protected ImageButton scrollToTopButton;
     private MultiChoiceModeListener onTorrentsSelected = new MultiChoiceModeListener() {
 
         private SelectionManagerMode selectionManagerMode;
@@ -233,9 +236,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
             addmenuButton.setVisibility(View.VISIBLE);
         }
 
-    };
-
-    @AfterViews
+    };    @AfterViews
     protected void init() {
 
         // Load the requested sort order from the user settings
@@ -258,6 +259,59 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
         }
         nosettingsText.setText(getString(R.string.navigation_nosettings, getString(R.string.app_name)));
 
+        // Set up the scroll to top button
+        scrollToTopButton.setOnClickListener(v -> scrollToTop());
+        // Add scroll listener to show/hide scroll to top button
+        torrentsList.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // No implementation needed
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                // Show button when scrolling down, hide when at top
+                if (totalItemCount > 0) {
+                    if (firstVisibleItem > 1) {
+                        // User has scrolled down, show the button with animation
+                        if (scrollToTopButton.getVisibility() != View.VISIBLE) {
+                            scrollToTopButton.setVisibility(View.VISIBLE);
+                            scrollToTopButton.startAnimation(android.view.animation.AnimationUtils.loadAnimation(
+                                    getActivity(), R.anim.fade_in));
+                        }
+                    } else {
+                        // User is at the top, hide the button with animation
+                        if (scrollToTopButton.getVisibility() == View.VISIBLE) {
+                            android.view.animation.Animation fadeOut = android.view.animation.AnimationUtils.loadAnimation(
+                                    getActivity(), R.anim.fade_out);
+                            fadeOut.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(android.view.animation.Animation animation) {}
+
+                                @Override
+                                public void onAnimationEnd(android.view.animation.Animation animation) {
+                                    scrollToTopButton.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(android.view.animation.Animation animation) {}
+                            });
+                            scrollToTopButton.startAnimation(fadeOut);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Scrolls the torrents list to the top position
+     */
+    private void scrollToTop() {
+        if (torrentsList != null) {
+            torrentsList.smoothScrollToPosition(0);
+        }
     }
 
     /**
@@ -472,9 +526,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
         } else {
             updateViewVisibility();
         }
-    }
-
-    private void updateViewVisibility() {
+    }    private void updateViewVisibility() {
         if (!hasAConnection) {
             return;
         }
@@ -486,6 +538,11 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
         loadingProgress.setVisibility(!hasError && isLoading ? View.VISIBLE : View.GONE);
         emptyText.setVisibility(!hasError && !isLoading && isEmpty ? View.VISIBLE : View.GONE);
         swipeRefreshLayout.setEnabled(true);
+
+        // If list is not visible, ensure scroll to top button is also hidden
+        if (torrentsList.getVisibility() != View.VISIBLE) {
+            scrollToTopButton.setVisibility(View.GONE);
+        }
     }
 
     /**
