@@ -205,12 +205,17 @@ public class QBittorrentAdapter implements IDaemonAdapter {
         }
         List<Cookie> cookies = httpclient.getCookieStore().getCookies();
         for (Cookie c : cookies) {
-            if (c.getName().equals("SID")) {
+            if (isSessionCookie(c)) {
                 // And here it is!  Okay, no need authenticate again.
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isSessionCookie(Cookie cookie) {
+        String name = cookie.getName();
+        return name.equals("SID") || name.startsWith("QBT_SID_");
     }
 
     @Override
