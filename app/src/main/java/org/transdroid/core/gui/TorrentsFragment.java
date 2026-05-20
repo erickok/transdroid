@@ -43,9 +43,11 @@ import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.gui.lists.TorrentsAdapter;
 import org.transdroid.core.gui.lists.TorrentsAdapter_;
+import org.transdroid.core.gui.log.Log;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationFilter;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
@@ -53,14 +55,28 @@ import org.transdroid.core.gui.navigation.SelectionManagerMode;
 import org.transdroid.core.gui.navigation.SetLabelDialog;
 import org.transdroid.core.gui.navigation.SetLabelDialog.OnLabelPickedListener;
 import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Torrent;
+import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentsComparator;
 import org.transdroid.daemon.TorrentsSortBy;
+import org.transdroid.daemon.task.DaemonTaskResult;
+import org.transdroid.daemon.task.GetTorrentDetailsTask;
+import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Fragment that shows a list of torrents that are active on the server. It supports sorting and filtering and can show connection progress and
@@ -78,6 +94,8 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
     protected ApplicationSettings applicationSettings;
     @Bean
     protected SystemSettings systemSettings;
+    @Bean
+    protected Log log;
     @InstanceState
     protected ArrayList<Torrent> lastMultiSelectedTorrents;
     @InstanceState
@@ -112,6 +130,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
     protected TextView errorText;
     @ViewById
     protected ProgressBar loadingProgress;
+    private static final String LOG_NAME = "Transdroid daemon";
     private MultiChoiceModeListener onTorrentsSelected = new MultiChoiceModeListener() {
 
         private SelectionManagerMode selectionManagerMode;
@@ -270,7 +289,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
             return;
         }
 
-        torrents = newTorrents;
+        torrents = updateTorrentsWithTrackers(newTorrents);
         this.currentLabels = currentLabels;
         applyAllFilters();
     }
@@ -496,6 +515,40 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
     private TorrentTasksExecutor getTasksExecutor() {
         // NOTE: Assumes the activity implements all the required torrent tasks
         return (TorrentTasksExecutor) getActivity();
+    }
+
+    private ArrayList<Torrent> updateTorrentsWithTrackers(ArrayList<Torrent> torrents) {
+        ServerSetting lastUsed = applicationSettings.getLastUsedServer();
+        IDaemonAdapter currentConnection = lastUsed.getServerAdapter("", getActivity());
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        Map<Torrent, Future<?>> futureMap = new HashMap<>(); //using a map here in-case we want a list of failed torrents in the future
+
+        for(Torrent torrent: torrents) {
+            Future<?> future = executor.submit(() -> {
+                DaemonTaskResult result = GetTorrentDetailsTask.create(currentConnection, torrent).execute(new Log());
+
+                if (result instanceof GetTorrentDetailsTaskSuccessResult) {
+                    int numOfTrackers = ((GetTorrentDetailsTaskSuccessResult) result).getTorrentDetails().getTrackers().size();
+                    torrent.setNumberOfTrackers(numOfTrackers);
+                }
+            });
+            futureMap.put(torrent, future);
+        }
+
+        for (Map.Entry<Torrent, Future<?>> entry : futureMap.entrySet()) {
+            Torrent torrent = entry.getKey();
+            Future<?> future = entry.getValue();
+
+            try {
+                //wait 1 sec max to get result
+                future.get(1, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                future.cancel(true);
+                log.d(LOG_NAME, "Unable to fetch number of trackers for: " + torrent.getName() + " -> " + e.getMessage());
+            }
+        }
+        executor.shutdown();
+        return torrents;
     }
 
 }

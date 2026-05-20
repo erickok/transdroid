@@ -38,6 +38,7 @@
     <string name="action_sort_upspeed">Upload speed</string>
     <string name="action_sort_ratio">Ratio</string>
     <string name="action_sort_size">Size</string>
+    <string name="action_sort_numTrackers">Number of trackers</string>
     <string name="action_filter">Filter list</string>
     <string name="action_settings">Settings</string>
     <string name="action_help">Help</string>

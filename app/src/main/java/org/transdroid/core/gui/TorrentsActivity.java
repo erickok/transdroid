@@ -864,6 +864,11 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         fragmentTorrents.sortBy(TorrentsSortBy.Size);
     }
 
+    @OptionsItem(R.id.action_sort_numTrackers)
+    protected void sortByNumberOfTrackers() {
+        fragmentTorrents.sortBy(TorrentsSortBy.NumberOfTrackers);
+    }
+
     /**
      * Redirect the newly entered list filter to the torrents fragment.
      *

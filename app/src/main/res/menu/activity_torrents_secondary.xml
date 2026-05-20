@@ -66,6 +66,9 @@
                 <item
                     android:id="@+id/action_sort_size"
                     android:title="@string/action_sort_size" />
+                <item
+                    android:id="@+id/action_sort_numTrackers"
+                    android:title="@string/action_sort_numTrackers" />
             </group>
         </menu>
     </item>

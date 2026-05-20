@@ -63,7 +63,7 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
     private String label;
     private boolean sequentialDownload;
     private boolean firstLastPieceDownload;
-
+    private int numberOfTrackers;
 
     private Torrent(Parcel in) {
         this.id = in.readLong();
@@ -281,6 +281,14 @@ public final class Torrent implements Parcelable, Comparable<Torrent>, Finishabl
 
     public Daemon getDaemon() {
         return daemon;
+    }
+
+    public int getNumberOfTrackers() {
+        return this.numberOfTrackers;
+    }
+
+    public void setNumberOfTrackers(int numberOfTrackers) {
+        this.numberOfTrackers = numberOfTrackers;
     }
 
     /**
