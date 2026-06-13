@@ -420,7 +420,7 @@ public enum Daemon {
     }
 
     public static boolean supportsExtraPassword(Daemon type) {
-        return type == Deluge || type == Aria2;
+        return type == Deluge || type == Aria2 || type == qBittorrent;
     }
 
     public static boolean supportsRemoteRssManagement(Daemon type) {

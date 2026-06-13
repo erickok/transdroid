@@ -171,6 +171,10 @@ public class QBittorrentAdapter implements IDaemonAdapter {
     }
 
     private synchronized void ensureAuthenticated(Log log) throws DaemonException {
+        if (hasApiKey()) {
+            return;
+        }
+
         // Have we already authenticated?  Check if we have the cookie that we need
         if (isAuthenticated()) {
             return;
@@ -216,6 +220,19 @@ public class QBittorrentAdapter implements IDaemonAdapter {
     private boolean isSessionCookie(Cookie cookie) {
         String name = cookie.getName();
         return name.equals("SID") || name.startsWith("QBT_SID_");
+    }
+
+    private boolean hasApiKey() {
+        return getApiKey() != null;
+    }
+
+    private String getApiKey() {
+        String apiKey = settings.getExtraPassword();
+        if (apiKey == null) {
+            return null;
+        }
+        apiKey = apiKey.trim();
+        return apiKey.length() == 0 ? null : apiKey;
     }
 
     @Override
@@ -595,12 +612,18 @@ public class QBittorrentAdapter implements IDaemonAdapter {
     private String makeWebRequest(HttpPost httppost, Log log) throws DaemonException {
 
         try {
+            String apiKey = getApiKey();
+            if (apiKey != null) {
+                httppost.setHeader("Authorization", "Bearer " + apiKey);
+            }
+
             // Execute
             HttpResponse response = httpclient.execute(httppost);
 
-            // Throw exception on 403
-            if (response.getStatusLine().getStatusCode() == 403) {
-                throw new DaemonException(ExceptionType.AuthenticationFailure, "Response code 403");
+            // Throw exception on authentication failure
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 401 || statusCode == 403) {
+                throw new DaemonException(ExceptionType.AuthenticationFailure, "Response code " + statusCode);
             }
 
             HttpEntity entity = response.getEntity();
