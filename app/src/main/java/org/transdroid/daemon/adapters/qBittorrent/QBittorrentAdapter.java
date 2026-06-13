@@ -919,9 +919,12 @@ public class QBittorrentAdapter implements IDaemonAdapter {
             case "downloading":
             case "metaDL":
             case "stalledDL":
+            case "forcedDL":
+            case "forcedMetaDL":
                 return TorrentStatus.Downloading;
             case "uploading":
             case "stalledUP":
+            case "forcedUP":
                 return TorrentStatus.Seeding;
             case "pausedDL":
             case "pausedUP":
