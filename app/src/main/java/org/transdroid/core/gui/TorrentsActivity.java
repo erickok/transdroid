@@ -430,15 +430,17 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
             autoRefreshTask.cancel(true);
         }
         autoRefreshTask = null;
-    }
-
-    @Override
+    }    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         // Manually insert the actions into the main torrent and secondary actions toolbars
-        torrentsToolbar.inflateMenu(R.menu.activity_torrents_main);
-        if (actionsToolbar.getMenu().size() == 0) {
+        torrentsToolbar.inflateMenu(R.menu.activity_torrents_main);        if (actionsToolbar.getMenu().size() == 0) {
             actionsToolbar.inflateMenu(R.menu.activity_torrents_secondary);
+
+            // Initially check the current sort order in the menu
+            if (applicationSettings != null) {
+                updateSortMenuSelection(applicationSettings.getLastUsedSortOrder(), applicationSettings.getLastUsedSortDescending());
+            }
         }
         if (navigationHelper.enableSearchUi()) {
             // Add an expandable SearchView to the action bar
@@ -817,51 +819,115 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
     @OptionsItem(R.id.action_help)
     protected void openHelp() {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.transdroid.org/download/")));
-    }
-
-    @OptionsItem(R.id.action_sort_byname)
+    }    @OptionsItem(R.id.action_sort_byname)
     protected void sortByName() {
         fragmentTorrents.sortBy(TorrentsSortBy.Alphanumeric);
-    }
-
-    @OptionsItem(R.id.action_sort_status)
+        updateSortMenuSelection(TorrentsSortBy.Alphanumeric, getCurrentSortDirection(TorrentsSortBy.Alphanumeric));
+    }    @OptionsItem(R.id.action_sort_status)
     protected void sortByStatus() {
         fragmentTorrents.sortBy(TorrentsSortBy.Status);
-    }
-
-    @OptionsItem(R.id.action_sort_done)
+        updateSortMenuSelection(TorrentsSortBy.Status, getCurrentSortDirection(TorrentsSortBy.Status));
+    }    @OptionsItem(R.id.action_sort_done)
     protected void sortByDateDone() {
         fragmentTorrents.sortBy(TorrentsSortBy.DateDone);
-    }
-
-    @OptionsItem(R.id.action_sort_added)
+        updateSortMenuSelection(TorrentsSortBy.DateDone, getCurrentSortDirection(TorrentsSortBy.DateDone));
+    }    @OptionsItem(R.id.action_sort_added)
     protected void sortByDateAdded() {
         fragmentTorrents.sortBy(TorrentsSortBy.DateAdded);
-    }
-
-    @OptionsItem(R.id.action_sort_percent)
+        updateSortMenuSelection(TorrentsSortBy.DateAdded, getCurrentSortDirection(TorrentsSortBy.DateAdded));
+    }    @OptionsItem(R.id.action_sort_percent)
     protected void sortByPercent() {
         fragmentTorrents.sortBy(TorrentsSortBy.Percent);
-    }
-
-    @OptionsItem(R.id.action_sort_downspeed)
+        updateSortMenuSelection(TorrentsSortBy.Percent, getCurrentSortDirection(TorrentsSortBy.Percent));
+    }    @OptionsItem(R.id.action_sort_downspeed)
     protected void sortByDownspeed() {
         fragmentTorrents.sortBy(TorrentsSortBy.DownloadSpeed);
-    }
-
-    @OptionsItem(R.id.action_sort_upspeed)
+        updateSortMenuSelection(TorrentsSortBy.DownloadSpeed, getCurrentSortDirection(TorrentsSortBy.DownloadSpeed));
+    }    @OptionsItem(R.id.action_sort_upspeed)
     protected void sortByUpspeed() {
         fragmentTorrents.sortBy(TorrentsSortBy.UploadSpeed);
-    }
-
-    @OptionsItem(R.id.action_sort_ratio)
+        updateSortMenuSelection(TorrentsSortBy.UploadSpeed, getCurrentSortDirection(TorrentsSortBy.UploadSpeed));
+    }    @OptionsItem(R.id.action_sort_ratio)
     protected void sortByRatio() {
         fragmentTorrents.sortBy(TorrentsSortBy.Ratio);
-    }
-
-    @OptionsItem(R.id.action_sort_size)
+        updateSortMenuSelection(TorrentsSortBy.Ratio, getCurrentSortDirection(TorrentsSortBy.Ratio));
+    }    @OptionsItem(R.id.action_sort_size)
     protected void sortBySize() {
         fragmentTorrents.sortBy(TorrentsSortBy.Size);
+        updateSortMenuSelection(TorrentsSortBy.Size, getCurrentSortDirection(TorrentsSortBy.Size));
+    }/**
+     * Updates the checked state of sort order menu items based on current sort order
+     *
+     * @param sortOrder The currently applied sort order
+     * @param isDescending Whether the sort direction is descending
+     */
+    private void updateSortMenuSelection(TorrentsSortBy sortOrder, boolean isDescending) {
+        Menu menu = actionsToolbar.getMenu();
+        if (menu == null) return;
+        // First, uncheck all items
+        menu.findItem(R.id.action_sort_byname).setChecked(false);
+        menu.findItem(R.id.action_sort_status).setChecked(false);
+        menu.findItem(R.id.action_sort_done).setChecked(false);
+        menu.findItem(R.id.action_sort_added).setChecked(false);
+        menu.findItem(R.id.action_sort_percent).setChecked(false);
+        menu.findItem(R.id.action_sort_downspeed).setChecked(false);
+        menu.findItem(R.id.action_sort_upspeed).setChecked(false);
+        menu.findItem(R.id.action_sort_ratio).setChecked(false);
+        menu.findItem(R.id.action_sort_size).setChecked(false);
+        // Update the sort icon based on sort direction
+        MenuItem sortMenuItem = menu.findItem(R.id.action_sort);
+        if (sortMenuItem != null) {
+            // Set drawable level to indicate sort direction
+            // Using invalidateDrawable to ensure the drawable gets redrawn
+            sortMenuItem.setIcon(isDescending ?
+                    R.drawable.ic_action_sort :
+                    R.drawable.ic_action_sort_asc);
+        }
+
+        // Check the currently selected item
+        switch (sortOrder) {
+            case Alphanumeric:
+                menu.findItem(R.id.action_sort_byname).setChecked(true);
+                break;
+            case Status:
+                menu.findItem(R.id.action_sort_status).setChecked(true);
+                break;
+            case DateDone:
+                menu.findItem(R.id.action_sort_done).setChecked(true);
+                break;
+            case DateAdded:
+                menu.findItem(R.id.action_sort_added).setChecked(true);
+                break;
+            case Percent:
+                menu.findItem(R.id.action_sort_percent).setChecked(true);
+                break;
+            case DownloadSpeed:
+                menu.findItem(R.id.action_sort_downspeed).setChecked(true);
+                break;
+            case UploadSpeed:
+                menu.findItem(R.id.action_sort_upspeed).setChecked(true);
+                break;
+            case Ratio:
+                menu.findItem(R.id.action_sort_ratio).setChecked(true);
+                break;
+            case Size:
+                menu.findItem(R.id.action_sort_size).setChecked(true);
+                break;
+        }
+    }    /**
+     * Helper method to get the current sort direction for a specific sort order
+     * If the current sort is the same as the requested sort order, we use the current direction
+     * Otherwise, default to descending (true)
+     *
+     * @param sortOrder The sort order to check
+     * @return Whether the sort direction is descending
+     */
+    private boolean getCurrentSortDirection(TorrentsSortBy sortOrder) {
+        // Use applicationSettings to get the current sort direction
+        if (applicationSettings.getLastUsedSortOrder() == sortOrder) {
+            return applicationSettings.getLastUsedSortDescending();
+        }
+        return true; // Default to descending
     }
 
     /**
