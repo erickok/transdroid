@@ -430,7 +430,9 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
             autoRefreshTask.cancel(true);
         }
         autoRefreshTask = null;
-    }    @Override
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         // Manually insert the actions into the main torrent and secondary actions toolbars
@@ -819,43 +821,63 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
     @OptionsItem(R.id.action_help)
     protected void openHelp() {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.transdroid.org/download/")));
-    }    @OptionsItem(R.id.action_sort_byname)
+    }
+
+    @OptionsItem(R.id.action_sort_byname)
     protected void sortByName() {
         fragmentTorrents.sortBy(TorrentsSortBy.Alphanumeric);
         updateSortMenuSelection(TorrentsSortBy.Alphanumeric, getCurrentSortDirection(TorrentsSortBy.Alphanumeric));
-    }    @OptionsItem(R.id.action_sort_status)
+    }
+
+    @OptionsItem(R.id.action_sort_status)
     protected void sortByStatus() {
         fragmentTorrents.sortBy(TorrentsSortBy.Status);
         updateSortMenuSelection(TorrentsSortBy.Status, getCurrentSortDirection(TorrentsSortBy.Status));
-    }    @OptionsItem(R.id.action_sort_done)
+    }
+
+    @OptionsItem(R.id.action_sort_done)
     protected void sortByDateDone() {
         fragmentTorrents.sortBy(TorrentsSortBy.DateDone);
         updateSortMenuSelection(TorrentsSortBy.DateDone, getCurrentSortDirection(TorrentsSortBy.DateDone));
-    }    @OptionsItem(R.id.action_sort_added)
+    }
+
+    @OptionsItem(R.id.action_sort_added)
     protected void sortByDateAdded() {
         fragmentTorrents.sortBy(TorrentsSortBy.DateAdded);
         updateSortMenuSelection(TorrentsSortBy.DateAdded, getCurrentSortDirection(TorrentsSortBy.DateAdded));
-    }    @OptionsItem(R.id.action_sort_percent)
+    }
+
+    @OptionsItem(R.id.action_sort_percent)
     protected void sortByPercent() {
         fragmentTorrents.sortBy(TorrentsSortBy.Percent);
         updateSortMenuSelection(TorrentsSortBy.Percent, getCurrentSortDirection(TorrentsSortBy.Percent));
-    }    @OptionsItem(R.id.action_sort_downspeed)
+    }
+
+    @OptionsItem(R.id.action_sort_downspeed)
     protected void sortByDownspeed() {
         fragmentTorrents.sortBy(TorrentsSortBy.DownloadSpeed);
         updateSortMenuSelection(TorrentsSortBy.DownloadSpeed, getCurrentSortDirection(TorrentsSortBy.DownloadSpeed));
-    }    @OptionsItem(R.id.action_sort_upspeed)
+    }
+
+    @OptionsItem(R.id.action_sort_upspeed)
     protected void sortByUpspeed() {
         fragmentTorrents.sortBy(TorrentsSortBy.UploadSpeed);
         updateSortMenuSelection(TorrentsSortBy.UploadSpeed, getCurrentSortDirection(TorrentsSortBy.UploadSpeed));
-    }    @OptionsItem(R.id.action_sort_ratio)
+    }
+
+    @OptionsItem(R.id.action_sort_ratio)
     protected void sortByRatio() {
         fragmentTorrents.sortBy(TorrentsSortBy.Ratio);
         updateSortMenuSelection(TorrentsSortBy.Ratio, getCurrentSortDirection(TorrentsSortBy.Ratio));
-    }    @OptionsItem(R.id.action_sort_size)
+    }
+
+    @OptionsItem(R.id.action_sort_size)
     protected void sortBySize() {
         fragmentTorrents.sortBy(TorrentsSortBy.Size);
         updateSortMenuSelection(TorrentsSortBy.Size, getCurrentSortDirection(TorrentsSortBy.Size));
-    }/**
+    }
+
+    /**
      * Updates the checked state of sort order menu items based on current sort order
      *
      * @param sortOrder The currently applied sort order
