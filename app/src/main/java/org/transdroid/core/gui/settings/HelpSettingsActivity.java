@@ -80,7 +80,9 @@ public class HelpSettingsActivity extends PreferenceCompatActivity {
 
         // Handle outgoing links and preference changes
         findPreference("system_sendlog").setOnPreferenceClickListener(onSendLogClick);
-        findPreference("system_installhelp").setOnPreferenceClickListener(onInstallHelpClick);
+        if (findPreference("system_installhelp") != null) {
+            findPreference("system_installhelp").setOnPreferenceClickListener(onInstallHelpClick);
+        }
         findPreference("system_changelog").setOnPreferenceClickListener(onChangeLogClick);
         findPreference("system_about").setTitle(getString(R.string.pref_about, getString(R.string.app_name)));
         findPreference("system_about").setOnPreferenceClickListener(onAboutClick);
