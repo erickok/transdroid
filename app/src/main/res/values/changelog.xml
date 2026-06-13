@@ -16,6 +16,9 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.5.27\n
+- Target Android SDK 36\n
+\n
 Transdroid 2.5.26\n
 - Qbittorrent 5.2 support including secret key (thanks bwitt)\n
 - Fixed sort order radio and icon (thanks tejas-rkd)\n

@@ -16,8 +16,6 @@
  */
 package org.transdroid.core.service;
 
-import static java.security.AccessController.getContext;
-
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -51,7 +49,7 @@ public class AppUpdateJob extends Worker {
 
     }
 
-    public static <SimpleJob> void schedule(Context context) {
+    public static void schedule(Context context) {
         NotificationSettings notificationSettings = NotificationSettings_.getInstance_(context);
         SystemSettings systemSettings = SystemSettings_.getInstance_(context);
         NavigationHelper_ navigationHelper = NavigationHelper_.getInstance_(context);
