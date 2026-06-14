@@ -20,8 +20,16 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import org.androidannotations.annotations.AfterViews;
@@ -114,6 +122,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
     public void onCreate(Bundle savedInstanceState) {
         SettingsUtils.applyDayNightTheme(this);
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     }
 
     @AfterViews
@@ -129,6 +138,24 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
         setSupportActionBar(selectionToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(torrent.getName()));
+
+        // Extend toolbar into status bar; pad content above nav bar for edge-to-edge
+        ViewCompat.setOnApplyWindowInsetsListener(selectionToolbar, (v, insets) -> {
+            int statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            v.setPadding(v.getPaddingLeft(), statusBarHeight, v.getPaddingRight(), v.getPaddingBottom());
+            LayerDrawable bg = new LayerDrawable(new Drawable[]{
+                    new ColorDrawable(ContextCompat.getColor(v.getContext(), R.color.green_dark)),
+                    new ColorDrawable(ContextCompat.getColor(v.getContext(), R.color.green))
+            });
+            bg.setLayerInset(1, 0, statusBarHeight, 0, 0);
+            v.setBackground(bg);
+            return insets;
+        });
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
+                    insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom);
+            return insets;
+        });
 
         // Connect to the last used server
         ServerSetting lastUsed = applicationSettings.getLastUsedServer();

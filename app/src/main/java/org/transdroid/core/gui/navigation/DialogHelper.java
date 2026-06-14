@@ -21,13 +21,21 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.transdroid.R;
 import org.transdroid.core.gui.TorrentsActivity_;
 
 import java.io.Serializable;
@@ -40,7 +48,7 @@ import java.io.Serializable;
  * @author Eric Kok
  */
 @EActivity
-public class DialogHelper extends Activity {
+public class DialogHelper extends AppCompatActivity {
 
     @Extra
     protected DialogSpecification dialog;
@@ -70,7 +78,34 @@ public class DialogHelper extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(dialog.getDialogLayoutId());
-        // TODO getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        getWindow().getDecorView().post(this::applyEdgeToEdgeInsets);
+    }
+
+    private void applyEdgeToEdgeInsets() {
+        // The decor background shows through the transparent status bar in edge-to-edge mode.
+        // AppCompat's ActionBarOverlayLayout positions the action bar and content naturally without
+        // overlay mode as long as we do NOT call setDecorFitsSystemWindows(false) ourselves.
+        getWindow().getDecorView().setBackgroundColor(
+                ContextCompat.getColor(this, R.color.green_dark));
+        View content = getWindow().getDecorView().findViewById(android.R.id.content);
+        if (content != null) {
+            TypedValue windowBg = new TypedValue();
+            getTheme().resolveAttribute(android.R.attr.windowBackground, windowBg, true);
+            if (windowBg.resourceId != 0) {
+                content.setBackgroundResource(windowBg.resourceId);
+            } else {
+                content.setBackgroundColor(windowBg.data);
+            }
+            ViewCompat.setOnApplyWindowInsetsListener(content, (v, insets) -> {
+                v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
+                        insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom);
+                return insets;
+            });
+            ViewCompat.requestApplyInsets(content);
+        }
     }
 
     @Override

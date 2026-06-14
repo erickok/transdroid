@@ -16,6 +16,9 @@
 -->
 <resources>
 <string name="system_changelog">
+Transdroid 2.5.28\n
+- Fix status bar overlap on Android 16\n
+\n
 Transdroid 2.5.27\n
 - Target Android SDK 36\n
 \n

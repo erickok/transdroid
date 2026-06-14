@@ -24,6 +24,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +40,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -250,6 +257,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         // Catch any uncaught exception to log it
         Thread.setDefaultUncaughtExceptionHandler(new LogUncaughtExceptionHandler(this, Thread.getDefaultUncaughtExceptionHandler()));
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     }
 
     @AfterViews
@@ -268,6 +276,49 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         actionsToolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
         setSupportActionBar(torrentsToolbar); // For direct menu item inflation by the contained fragments
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        // Extend top toolbar(s) into the status bar area for edge-to-edge; status bar zone uses
+        // green_dark while the toolbar content zone stays green (colorPrimary)
+        ViewCompat.setOnApplyWindowInsetsListener(torrentsToolbar, (v, insets) -> {
+            int statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            v.setPadding(v.getPaddingLeft(), statusBarHeight, v.getPaddingRight(), v.getPaddingBottom());
+            LayerDrawable bg = new LayerDrawable(new Drawable[]{
+                    new ColorDrawable(ContextCompat.getColor(v.getContext(), R.color.green_dark)),
+                    new ColorDrawable(ContextCompat.getColor(v.getContext(), R.color.green))
+            });
+            bg.setLayerInset(1, 0, statusBarHeight, 0, 0);
+            v.setBackground(bg);
+            return insets;
+        });
+        if (selectionToolbar != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(selectionToolbar, (v, insets) -> {
+                int statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+                v.setPadding(v.getPaddingLeft(), statusBarHeight, v.getPaddingRight(), v.getPaddingBottom());
+                LayerDrawable bg = new LayerDrawable(new Drawable[]{
+                        new ColorDrawable(ContextCompat.getColor(v.getContext(), R.color.green_dark)),
+                        new ColorDrawable(ContextCompat.getColor(v.getContext(), R.color.green))
+                });
+                bg.setLayerInset(1, 0, statusBarHeight, 0, 0);
+                v.setBackground(bg);
+                return insets;
+            });
+        }
+        // Extend bottom toolbar(s) into the nav bar area (phone and portrait tablet only; on wide
+        // tablet selectionToolbar is non-null and actionsToolbar is at the top, not the bottom)
+        if (selectionToolbar == null) {
+            ViewCompat.setOnApplyWindowInsetsListener(actionsToolbar, (v, insets) -> {
+                v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
+                        insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom);
+                return insets;
+            });
+            if (contextualMenu != null) {
+                ViewCompat.setOnApplyWindowInsetsListener(contextualMenu, (v, insets) -> {
+                    v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
+                            insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom);
+                    return insets;
+                });
+            }
+        }
 
         // Construct the filters list, i.e. the list of servers, status types and labels
         navigationListAdapter = FilterListAdapter_.getInstance_(this);

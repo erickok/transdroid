@@ -21,8 +21,16 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -55,6 +63,7 @@ public class RssItemsActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         SettingsUtils.applyDayNightTheme(this);
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     }
 
     @AfterViews
@@ -69,6 +78,24 @@ public class RssItemsActivity extends AppCompatActivity {
         setSupportActionBar(rssfeedsToolbar);
         getSupportActionBar().setTitle(NavigationHelper.buildCondensedFontString(rssfeedName));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Extend toolbar into status bar; pad content above nav bar for edge-to-edge
+        ViewCompat.setOnApplyWindowInsetsListener(rssfeedsToolbar, (v, insets) -> {
+            int statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            v.setPadding(v.getPaddingLeft(), statusBarHeight, v.getPaddingRight(), v.getPaddingBottom());
+            LayerDrawable bg = new LayerDrawable(new Drawable[]{
+                    new ColorDrawable(ContextCompat.getColor(v.getContext(), R.color.green_dark)),
+                    new ColorDrawable(ContextCompat.getColor(v.getContext(), R.color.green))
+            });
+            bg.setLayerInset(1, 0, statusBarHeight, 0, 0);
+            v.setBackground(bg);
+            return insets;
+        });
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
+                    insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom);
+            return insets;
+        });
 
         // Get the intent extras and show them to the already loaded fragment
         fragmentItems.update(rssfeed, false, requiresExternalAuthentication);
