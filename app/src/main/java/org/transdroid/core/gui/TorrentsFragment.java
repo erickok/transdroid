@@ -126,7 +126,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
                 actionsToolbar = ((TorrentsActivity) getActivity()).actionsToolbar;
                 addmenuButton = ((TorrentsActivity) getActivity()).addmenuButton;
             }
-            actionsToolbar.setEnabled(false);
+            actionsToolbar.setVisibility(View.INVISIBLE);
             actionsMenu.setVisibility(View.VISIBLE);
             addmenuButton.setVisibility(View.GONE);
             actionsMenu.setOnMenuItemClickListener(menuItem -> onActionItemClicked(mode, menuItem));
@@ -227,8 +227,8 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
                 ((TorrentsActivity) getActivity()).startAutoRefresh();
             }
             selectionManagerMode.onDestroyActionMode(mode);
-            actionsMenu.setVisibility(View.GONE);
-            actionsToolbar.setEnabled(true);
+            actionsMenu.setVisibility(View.INVISIBLE);
+            actionsToolbar.setVisibility(View.VISIBLE);
             addmenuButton.setVisibility(View.VISIBLE);
         }
 

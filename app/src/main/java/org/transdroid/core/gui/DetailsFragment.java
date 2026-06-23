@@ -119,7 +119,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
         @Override
         public boolean onCreateActionMode(final ActionMode mode, Menu menu) {
             // Show contextual action bar to start/stop/remove/etc. torrents in batch mode
-            detailsMenu.setEnabled(false);
+            detailsMenu.setVisibility(View.INVISIBLE);
             contextualMenu.setVisibility(View.VISIBLE);
             contextualMenu.setOnMenuItemClickListener(menuItem -> onActionItemClicked(mode, menuItem));
             contextualMenu.getMenu().clear();
@@ -271,7 +271,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
             }
             selectionManagerMode.onDestroyActionMode(mode);
             contextualMenu.setVisibility(View.GONE);
-            detailsMenu.setEnabled(true);
+            detailsMenu.setVisibility(View.VISIBLE);
         }
 
     };

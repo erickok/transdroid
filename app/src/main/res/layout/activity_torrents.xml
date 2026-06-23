@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:minHeight="?attr/actionBarSize"
-            android:visibility="gone"
+            android:visibility="invisible"
             tools:visibility="visible" />
 
         <fragment

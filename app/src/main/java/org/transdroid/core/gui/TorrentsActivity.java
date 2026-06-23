@@ -313,11 +313,25 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
             });
             if (contextualMenu != null) {
                 ViewCompat.setOnApplyWindowInsetsListener(contextualMenu, (v, insets) -> {
-                    v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
-                            insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom);
+                    int navBarBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                    lp.bottomMargin = navBarBottom;
+                    v.setLayoutParams(lp);
                     return insets;
                 });
             }
+        }
+
+        // Apply status bar top and nav bar bottom padding to the navigation drawer so list items
+        // are not obscured. The drawer_background fills the status/nav bar zones behind the padding.
+        if (drawerContainer != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(drawerContainer, (v, insets) -> {
+                v.setPadding(v.getPaddingLeft(),
+                        insets.getInsets(WindowInsetsCompat.Type.statusBars()).top,
+                        v.getPaddingRight(),
+                        insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom);
+                return insets;
+            });
         }
 
         // Construct the filters list, i.e. the list of servers, status types and labels
