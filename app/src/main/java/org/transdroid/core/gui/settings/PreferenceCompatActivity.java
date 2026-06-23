@@ -3,6 +3,7 @@ package org.transdroid.core.gui.settings;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import androidx.annotation.XmlRes;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,21 +26,15 @@ public class PreferenceCompatActivity extends AppCompatActivity implements AppCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Defer until AppCompat finishes inflating the action bar into the decor view
         getWindow().getDecorView().post(this::applyEdgeToEdgeInsets);
     }
 
     private void applyEdgeToEdgeInsets() {
-        // AppCompat positions the action bar below the status bar, leaving a transparent gap above it.
-        // Setting the decor view background to green_dark fills that gap, which shows through the
-        // transparent status bar in edge-to-edge mode.
         getWindow().getDecorView().setBackgroundColor(
                 ContextCompat.getColor(this, R.color.green_dark));
 
         View content = getWindow().getDecorView().findViewById(android.R.id.content);
         if (content != null) {
-            // Restore the theme's window background on the content view so the preference list
-            // shows the correct background rather than the green_dark decor underneath.
             TypedValue windowBg = new TypedValue();
             getTheme().resolveAttribute(android.R.attr.windowBackground, windowBg, true);
             if (windowBg.resourceId != 0) {
@@ -54,6 +49,25 @@ public class PreferenceCompatActivity extends AppCompatActivity implements AppCo
                 return insets;
             });
             ViewCompat.requestApplyInsets(content);
+
+            // On API 35+, Android's forced edge-to-edge sets SYSTEM_UI_FLAG_LAYOUT_STABLE,
+            // which causes AppCompat's ActionBarOverlayLayout to omit the action bar height
+            // from the content frame's top margin. Detect and correct this after layout.
+            content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    content.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    View actionBarContainer = getWindow().getDecorView().findViewById(
+                            androidx.appcompat.R.id.action_bar_container);
+                    if (actionBarContainer != null) {
+                        int overlap = actionBarContainer.getBottom() - content.getTop();
+                        if (overlap > 0) {
+                            content.setPadding(content.getPaddingLeft(), overlap,
+                                    content.getPaddingRight(), content.getPaddingBottom());
+                        }
+                    }
+                }
+            });
         }
     }
 
