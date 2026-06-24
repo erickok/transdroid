@@ -225,11 +225,11 @@
     <string name="pref_ftppass">Hasło FTP(S)</string>
     <string name="pref_disableauth">Wyłącz uwierzytelnianie</string>
     <string name="pref_disableauth_info">Nie wysyłaj loginu i hasła</string>
-    <string name="pref_sslenable">Użyj SSL</string>
+    <string name="pref_sslenable">Użyj TLS</string>
     <string name="pref_sslenable_info">Połącz używając https</string>
-    <string name="pref_sslkey">Dostosuj podpis SSL (SHA-1)</string>
+    <string name="pref_sslkey">Dostosuj podpis TLS (SHA-1)</string>
     <string name="pref_sslkey_info">Zezwól tylko na połączenia z tym certyfikatem</string>
-    <string name="pref_sslacceptall">Akceptuj wszystkie certyfikaty SSL</string>
+    <string name="pref_sslacceptall">Akceptuj wszystkie certyfikaty TLS</string>
     <string name="pref_sslacceptall_info">Zezwalaj na wszystkie połączenia</string>
     <string name="pref_background">Powiadomienia w tle</string>
     <string name="pref_notifications_rss">Włącz powiadomienia RSS</string>

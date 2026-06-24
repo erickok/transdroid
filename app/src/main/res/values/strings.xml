@@ -20,7 +20,7 @@
     <string name="action_addall">Add all</string>
     <string name="action_addfromfile">From file</string>
     <string name="action_addfromurl">From URL</string>
-    <string name="action_scanbarcode">Scan barcode</string>
+    <string name="action_scanbarcode">Scan QR code</string>
     <string name="action_search">Search</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_rss">RSS</string>
@@ -101,7 +101,7 @@
     <string name="navigation_invertselection">Invert selection</string>
     <string name="navigation_pickserver">Add torrent to&#8230;</string>
     <string name="navigation_url_hint" translatable="false">http://…</string>
-    <string name="navigation_rss_tabs_local">Transdroid</string>
+    <string name="navigation_rss_tabs_local" translatable="false">Transdroid</string>
     <string name="navigation_rss_tabs_remote">Server</string>
 
     <string name="status_status">STATUS: %1$s</string>
@@ -305,13 +305,13 @@
     <string name="pref_ftppass">FTP(S) password</string>
     <string name="pref_disableauth">Disable authentication</string>
     <string name="pref_disableauth_info">Don\'t send username and password</string>
-    <string name="pref_sslenable">Use SSL</string>
-    <string name="pref_sslenable_info">Connect using https</string>
-    <string name="pref_local_sslenable">Use SSL on local network</string>
-    <string name="pref_local_sslenable_info">Connect using https</string>
-    <string name="pref_sslkey">Custom SSL thumbprint (SHA-1)</string>
+    <string name="pref_sslenable">Use TLS</string>
+    <string name="pref_sslenable_info">Connect using HTTPS</string>
+    <string name="pref_local_sslenable">Use TLS on local network</string>
+    <string name="pref_local_sslenable_info">Connect using HTTPS</string>
+    <string name="pref_sslkey">Custom TLS thumbprint (SHA-1)</string>
     <string name="pref_sslkey_info">Permit only connections to this specific certificate</string>
-    <string name="pref_sslacceptall">Accept all SSL certificates</string>
+    <string name="pref_sslacceptall">Accept all TLS certificates</string>
     <string name="pref_sslacceptall_info">Allow all connections from any thumbprint</string>
 
     <string name="pref_background">Background notifications</string>
