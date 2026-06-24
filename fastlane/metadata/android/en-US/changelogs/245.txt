@@ -1,0 +1,2 @@
+2.5.25
+  * Qbittorrent 5 support
