@@ -136,6 +136,13 @@
     <string name="status_trackers">TRACKERS</string>
     <string name="status_errors">ERRORS</string>
     <string name="status_files">FILES</string>
+    <string name="status_peers">PEERS</string>
+    <string name="status_nofiles">No files</string>
+    <string name="status_nopeers">No connected peers</string>
+    <string name="status_notrackers">No trackers</string>
+    <string name="status_peers_unsupported">Peer listing is not supported by this client</string>
+    <string name="status_percent">%1$d%%</string>
+    <string name="status_peer_speeds">▼ %1$s  ▲ %2$s</string>
     <string name="status_maxspeed">Maximum transfer speeds</string>
     <string name="status_maxspeed_down">MAX DOWNLOAD</string>
     <string name="status_maxspeed_up">MAX UPLOAD</string>
@@ -330,6 +337,8 @@
     <string name="pref_system">System</string>
     <string name="pref_autorefresh">Automatic refreshing</string>
     <string name="pref_autorefresh_info">Interval-based refresh of the main screen</string>
+    <string name="pref_details_autorefresh">Automatic refreshing of details</string>
+    <string name="pref_details_autorefresh_info">Interval-based refresh while viewing a torrent\'s details</string>
     <string-array name="pref_autorefresh_intervals">
         <item>Disabled</item>
         <item>2 seconds</item>
@@ -344,6 +353,22 @@
         <item>10</item>
         <item>30</item>
     </string-array>
+    <string-array name="pref_peersort_entries">
+        <item>Total speed</item>
+        <item>Download speed</item>
+        <item>Upload speed</item>
+        <item>IP address</item>
+        <item>Torrent client</item>
+    </string-array>
+    <string-array name="pref_peersort_values" translatable="false">
+        <item>totalspeed</item>
+        <item>downloadspeed</item>
+        <item>upspeed</item>
+        <item>address</item>
+        <item>client</item>
+    </string-array>
+    <string name="pref_peersort">Sort peers by</string>
+    <string name="pref_peersort_info">Order of peers shown when viewing a torrent</string>
     <string name="pref_dormantasinactive">Treat dormant torrents as inactive</string>
     <string name="pref_dormantasinactive_info">Torrents at 0KB/s (no data transfer) will be filtered as being inactive</string>
     <string name="pref_checkupdates">Check for updates</string>
@@ -354,6 +379,15 @@
     <string name="pref_usedarktheme_info">Requires a restart to take effect</string>
     <string name="pref_clearsearch">Clear search history</string>
     <string name="pref_clearsearch_success">Search history is cleared</string>
+    <string name="pref_geoip_download">Download country database</string>
+    <string name="pref_geoip_download_info">Download an offline GeoIP database to show peer country flags for all clients</string>
+    <string name="pref_geoip_download_info_downloaded">Country database downloaded. Tap to re-download</string>
+    <string name="pref_geoip_downloading">Downloading country database…</string>
+    <string name="pref_geoip_download_success">Country database downloaded</string>
+    <string name="pref_geoip_download_failed">Could not download the country database</string>
+    <string name="pref_geoip_clear">Clear country database</string>
+    <string name="pref_geoip_clear_info">Remove the downloaded database and fall back to client-provided country data</string>
+    <string name="pref_geoip_clear_success">Country database removed</string>
     <string name="pref_import">Import settings</string>
     <string name="pref_import_dialog_android10">%1$s will try to import server, web search, RSS and system settings</string>
     <string name="pref_import_fromfile">Use file</string>

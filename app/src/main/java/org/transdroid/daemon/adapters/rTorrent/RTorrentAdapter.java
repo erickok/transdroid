@@ -29,10 +29,13 @@ import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Label;
 import org.transdroid.daemon.Priority;
+import org.transdroid.daemon.Peer;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
+import org.transdroid.daemon.Tracker;
+import org.transdroid.daemon.TrackerStatus;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -44,6 +47,8 @@ import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
+import org.transdroid.daemon.task.GetTorrentPeersTask;
+import org.transdroid.daemon.task.GetTorrentPeersTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
@@ -146,10 +151,30 @@ public class RTorrentAdapter implements IDaemonAdapter {
                     Object dresult = makeRtorrentCall(log, "t.multicall", new String[]{
                             task.getTargetTorrent().getUniqueID(),
                             "",
-                            "t.url="});
+                            "t.url=",
+                            "t.is_enabled=",
+                            "t.is_usable=",
+                            "t.success_counter=",
+                            "t.failed_counter="});
                     // @formatter:on
                     return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
                             onTorrentDetailsRetrieved(log, dresult));
+
+                case GetTorrentPeers:
+
+                    // @formatter:off
+                    Object presult = makeRtorrentCall(log, "p.multicall", new String[]{
+                            task.getTargetTorrent().getUniqueID(),
+                            "",
+                            "p.address=",
+                            "p.client_version=",
+                            "p.down_rate=",
+                            "p.up_rate=",
+                            "p.is_encrypted=",
+                            "p.completed_percent="});
+                    // @formatter:on
+                    return new GetTorrentPeersTaskSuccessResult((GetTorrentPeersTask) task,
+                            onTorrentPeersRetrieved(log, presult));
 
                 case GetFileList:
 
@@ -649,19 +674,82 @@ public class RTorrentAdapter implements IDaemonAdapter {
             // Parse a torrent's trackers from response
             // Formatted as Object[][], see http://libtorrent.rakshasa.no/wiki/RTorrentCommands#Download
             List<String> trackers = new ArrayList<>();
+            List<Tracker> trackerDetails = new ArrayList<>();
             Object[] responseList = (Object[]) response;
             try {
                 for (Object aResponseList : responseList) {
                     Object[] info = (Object[]) aResponseList;
-                    trackers.add((String) info[0]);
+                    String url = (String) info[0];
+                    trackers.add(url);
+                    // info: url, is_enabled, is_usable, success_counter, failed_counter
+                    TrackerStatus status = TrackerStatus.UNKNOWN;
+                    if (info.length >= 5) {
+                        long enabled = toLong(info[1]);
+                        long usable = toLong(info[2]);
+                        long success = toLong(info[3]);
+                        long failed = toLong(info[4]);
+                        if (enabled == 0) {
+                            status = TrackerStatus.DISABLED;
+                        } else if (usable == 1 && success > 0) {
+                            status = TrackerStatus.WORKING;
+                        } else if (failed > 0) {
+                            status = TrackerStatus.ERROR;
+                        }
+                    }
+                    trackerDetails.add(new Tracker(url, status, null));
                 }
             } catch (Exception e) {
                 log.e(LOG_NAME, e.toString());
             }
-            return new TorrentDetails(trackers, null);
+            return new TorrentDetails(trackers, null, null, trackerDetails);
 
         }
 
+    }
+
+    private List<Peer> onTorrentPeersRetrieved(Log log, Object response) throws DaemonException {
+
+        if (!(response instanceof Object[])) {
+            throw new DaemonException(ExceptionType.ParsingFailed,
+                    "Response on retrieving peers did not return a list of objects");
+        }
+
+        // Parse a torrent's peers from response, formatted as Object[][]
+        List<Peer> peers = new ArrayList<>();
+        Object[] responseList = (Object[]) response;
+        try {
+            for (Object aResponseList : responseList) {
+                Object[] info = (Object[]) aResponseList;
+                String address = (String) info[0];
+                String client = (String) info[1];
+                int down = (int) toLong(info[2]);
+                int up = (int) toLong(info[3]);
+                Boolean encrypted = info.length > 4 ? toLong(info[4]) == 1 : null;
+                float progress = info.length > 5 ? toLong(info[5]) / 100f : -1f;
+                peers.add(new Peer(address, client, down, up, progress, encrypted, null));
+            }
+        } catch (Exception e) {
+            log.e(LOG_NAME, e.toString());
+        }
+        return peers;
+
+    }
+
+    /**
+     * rTorrent returns either 32-bit Integer or (in the i8 dialect) 64-bit Long values; normalise to long.
+     */
+    private long toLong(Object value) {
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+        }
+        if (value instanceof String) {
+            try {
+                return Long.parseLong(((String) value).trim());
+            } catch (NumberFormatException ignored) {
+                return 0;
+            }
+        }
+        return 0;
     }
 
     @Override

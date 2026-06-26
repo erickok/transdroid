@@ -34,10 +34,13 @@ import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Label;
+import org.transdroid.daemon.Peer;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
+import org.transdroid.daemon.Tracker;
+import org.transdroid.daemon.TrackerStatus;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -50,6 +53,8 @@ import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
+import org.transdroid.daemon.task.GetTorrentPeersTask;
+import org.transdroid.daemon.task.GetTorrentPeersTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
@@ -119,6 +124,14 @@ import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_METHOD_STAT
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_MOVE_COMPLETED;
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_MOVE_COMPLETED_PATH;
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_NAME;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEERS;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEERS_FIELDS_ARRAY;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_CLIENT;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_COUNTRY;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_DOWNSPEED;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_IP;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_PROGRESS;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_UPSPEED;
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_NUMPEERS;
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_NUMSEEDS;
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PARTDONE;
@@ -195,6 +208,8 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
                     return doSetDownloadLocation(client, (SetDownloadLocationTask) task);
                 case GetTorrentDetails:
                     return doGetTorrentDetails(client, (GetTorrentDetailsTask) task);
+                case GetTorrentPeers:
+                    return doGetTorrentPeers(client, (GetTorrentPeersTask) task);
                 case SetTrackers:
                     return doSetTrackers(client, (SetTrackersTask) task);
                 case ForceRecheck:
@@ -336,14 +351,47 @@ public class DelugeRpcAdapter implements IDaemonAdapter, RemoteRssSupplier {
         //noinspection unchecked
         final List<Map<String, Object>> trackerResponses = (List<Map<String, Object>>) response.get(RPC_TRACKERS);
         final List<String> trackers = new ArrayList<>();
+        final List<Tracker> trackerDetails = new ArrayList<>();
+        final String trackerStatus = (String) response.get(RPC_TRACKER_STATUS);
         if (trackerResponses != null) {
             for (Map<String, Object> trackerResponse : trackerResponses) {
-                trackers.add((String) trackerResponse.get(RPC_URL));
+                final String url = (String) trackerResponse.get(RPC_URL);
+                trackers.add(url);
+                // Deluge only exposes a single, global tracker status string (not per-tracker)
+                trackerDetails.add(new Tracker(url, TrackerStatus.UNKNOWN, trackerStatus));
             }
         }
 
-        return new GetTorrentDetailsTaskSuccessResult(task, new TorrentDetails(trackers, Collections.singletonList((String) response.get
-                (RPC_TRACKER_STATUS))));
+        return new GetTorrentDetailsTaskSuccessResult(task, new TorrentDetails(trackers,
+                Collections.singletonList(trackerStatus), null, trackerDetails));
+    }
+
+    private GetTorrentPeersTaskSuccessResult doGetTorrentPeers(DelugeRpcClient client, GetTorrentPeersTask task) throws DaemonException {
+        //noinspection unchecked
+        final Map<String, Object> response = (Map<String, Object>) client.sendRequest(RPC_METHOD_STATUS,
+                task.getTargetTorrent().getUniqueID(), RPC_PEERS_FIELDS_ARRAY);
+
+        //noinspection unchecked
+        final List<Map<String, Object>> peerResponses = (List<Map<String, Object>>) response.get(RPC_PEERS);
+        final List<Peer> peers = new ArrayList<>();
+        if (peerResponses != null) {
+            for (Map<String, Object> peerResponse : peerResponses) {
+                final Number down = (Number) peerResponse.get(RPC_PEER_DOWNSPEED);
+                final Number up = (Number) peerResponse.get(RPC_PEER_UPSPEED);
+                final Number progress = (Number) peerResponse.get(RPC_PEER_PROGRESS);
+                String country = (String) peerResponse.get(RPC_PEER_COUNTRY);
+                if (country != null) {
+                    country = country.trim().toUpperCase(java.util.Locale.US);
+                    if (country.isEmpty()) {
+                        country = null;
+                    }
+                }
+                peers.add(new Peer((String) peerResponse.get(RPC_PEER_IP), (String) peerResponse.get(RPC_PEER_CLIENT),
+                        down == null ? 0 : down.intValue(), up == null ? 0 : up.intValue(),
+                        progress == null ? -1f : progress.floatValue(), null, country));
+            }
+        }
+        return new GetTorrentPeersTaskSuccessResult(task, peers);
     }
 
     private GetFileListTaskSuccessResult doGetFileList(DelugeRpcClient client, GetFileListTask task) throws DaemonException {

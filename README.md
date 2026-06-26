@@ -110,6 +110,11 @@ Some code/libraries/resources are used in the project:
 *  [android-ColorPickerPreference](https://github.com/attenzione/android-ColorPickerPreference)
     Daniel Nilsson and Sergey Margaritov
     Apache License, Version 2.0
+*  [MaxMind DB Reader for Java](https://github.com/maxmind/MaxMind-DB-Reader-java)
+    MaxMind, Inc.
+    Apache License, Version 2.0
+*  [IP66 GeoIP database](https://ip66.dev/) (optional, downloaded in-app for peer country flags)
+    ip66.dev
 *  RssParser ([learning-android](https://github.com/tanepiper/learning-android))
     Tane Piper
     Public Domain

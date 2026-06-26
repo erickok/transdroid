@@ -10,7 +10,7 @@ import org.transdroid.R;
 import java.util.ArrayList;
 import java.util.List;
 
-class PiecesMapView extends View {
+public class PiecesMapView extends View {
 
     private final float scale = getContext().getResources().getDisplayMetrics().density;
     private final int MINIMUM_HEIGHT = (int) (25 * scale);
