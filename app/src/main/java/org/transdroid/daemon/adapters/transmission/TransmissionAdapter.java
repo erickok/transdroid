@@ -33,11 +33,14 @@ import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.Peer;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
+import org.transdroid.daemon.Tracker;
+import org.transdroid.daemon.TrackerStatus;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -52,6 +55,8 @@ import org.transdroid.daemon.task.GetStatsTask;
 import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
+import org.transdroid.daemon.task.GetTorrentPeersTask;
+import org.transdroid.daemon.task.GetTorrentPeersTaskSuccessResult;
 import org.transdroid.daemon.task.PauseTask;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.ResumeTask;
@@ -172,6 +177,18 @@ public class TransmissionAdapter implements IDaemonAdapter {
                     JSONObject getDResult = makeRequest(log, buildRequestObject("torrent-get", buildDGet));
                     return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
                             parseJsonTorrentDetails(getDResult.getJSONObject("arguments")));
+
+                case GetTorrentPeers:
+
+                    // Request the connected peers of a specific torrent
+                    JSONArray pfields = new JSONArray();
+                    pfields.put("peers");
+                    JSONObject buildPGet =
+                            buildTorrentRequestObject(task.getTargetTorrent().getUniqueID(), null, false);
+                    buildPGet.put("fields", pfields);
+                    JSONObject getPResult = makeRequest(log, buildRequestObject("torrent-get", buildPGet));
+                    return new GetTorrentPeersTaskSuccessResult((GetTorrentPeersTask) task,
+                            parseJsonPeers(getPResult.getJSONObject("arguments")));
 
                 case GetFileList:
 
@@ -648,17 +665,49 @@ public class TransmissionAdapter implements IDaemonAdapter {
             }
             JSONArray trackerStatsList = rarray.getJSONObject(0).getJSONArray("trackerStats");
             List<String> errors = new ArrayList<>();
+            List<Tracker> trackerDetails = new ArrayList<>();
             for (int i = 0; i < trackerStatsList.length(); i++) {
+                JSONObject stats = trackerStatsList.getJSONObject(i);
                 // Get the tracker response and if it was an error then add it
-                String lar = trackerStatsList.getJSONObject(i).getString("lastAnnounceResult");
+                String lar = stats.optString("lastAnnounceResult");
                 if (lar != null && !lar.equals("") && !lar.equals("Success")) {
                     errors.add(lar);
                 }
+                String url = stats.optString("announce", stats.optString("host"));
+                TrackerStatus status;
+                if (!stats.optBoolean("hasAnnounced", false)) {
+                    status = TrackerStatus.UNKNOWN;
+                } else if (stats.optBoolean("lastAnnounceSucceeded", false)) {
+                    status = TrackerStatus.WORKING;
+                } else {
+                    status = TrackerStatus.ERROR;
+                }
+                trackerDetails.add(new Tracker(url, status, lar));
             }
-            return new TorrentDetails(trackers, errors);
+            return new TorrentDetails(trackers, errors, null, trackerDetails);
         }
 
         return null;
+
+    }
+
+    private List<Peer> parseJsonPeers(JSONObject response) throws JSONException {
+
+        List<Peer> peerList = new ArrayList<>();
+        JSONArray rarray = response.getJSONArray("torrents");
+        if (rarray.length() > 0) {
+            JSONArray peers = rarray.getJSONObject(0).optJSONArray("peers");
+            if (peers != null) {
+                for (int i = 0; i < peers.length(); i++) {
+                    JSONObject peer = peers.getJSONObject(i);
+                    Boolean encrypted = peer.has("isEncrypted") ? peer.optBoolean("isEncrypted") : null;
+                    peerList.add(new Peer(peer.optString("address"), peer.optString("clientName"),
+                            peer.optInt("rateToClient"), peer.optInt("rateToPeer"),
+                            (float) peer.optDouble("progress", -1d), encrypted, null));
+                }
+            }
+        }
+        return peerList;
 
     }
 

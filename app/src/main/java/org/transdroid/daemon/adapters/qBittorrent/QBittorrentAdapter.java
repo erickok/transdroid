@@ -39,11 +39,14 @@ import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Label;
+import org.transdroid.daemon.Peer;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
+import org.transdroid.daemon.Tracker;
+import org.transdroid.daemon.TrackerStatus;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -57,6 +60,8 @@ import org.transdroid.daemon.task.GetStatsTask;
 import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
+import org.transdroid.daemon.task.GetTorrentPeersTask;
+import org.transdroid.daemon.task.GetTorrentPeersTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
@@ -74,7 +79,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -287,6 +294,17 @@ public class QBittorrentAdapter implements IDaemonAdapter {
                     }
 
                     return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, parseJsonTorrentDetails(messages, pieces));
+
+                case GetTorrentPeers:
+
+                    // Request the connected peers for a specific torrent (only on the v2 API)
+                    String phash = task.getTargetTorrent().getUniqueID();
+                    if (version < 40100) {
+                        return new GetTorrentPeersTaskSuccessResult((GetTorrentPeersTask) task, new ArrayList<Peer>());
+                    }
+                    JSONObject peersResult = new JSONObject(makeRequest(log, "/api/v2/sync/torrentPeers",
+                            new BasicNameValuePair("hash", phash), new BasicNameValuePair("rid", "0")));
+                    return new GetTorrentPeersTaskSuccessResult((GetTorrentPeersTask) task, parseJsonPeers(peersResult));
 
                 case GetFileList:
 
@@ -685,15 +703,19 @@ public class QBittorrentAdapter implements IDaemonAdapter {
 
         ArrayList<String> trackers = new ArrayList<>();
         ArrayList<String> errors = new ArrayList<>();
+        ArrayList<Tracker> trackerDetails = new ArrayList<>();
 
         // Parse response
         if (messages.length() > 0) {
             for (int i = 0; i < messages.length(); i++) {
                 JSONObject tor = messages.getJSONObject(i);
-                trackers.add(tor.getString("url"));
-                String msg = tor.getString("msg");
+                String url = tor.getString("url");
+                trackers.add(url);
+                String msg = tor.optString("msg");
                 if (msg != null && !msg.equals(""))
                     errors.add(msg);
+                // qBittorrent v2 status: 0=disabled, 1=not contacted, 2=working, 3=updating, 4=not working
+                trackerDetails.add(new Tracker(url, qbTrackerStatus(tor.optInt("status", -1)), msg));
             }
         }
 
@@ -705,7 +727,54 @@ public class QBittorrentAdapter implements IDaemonAdapter {
         }
 
         // Return the list
-        return new TorrentDetails(trackers, errors, pieces);
+        return new TorrentDetails(trackers, errors, pieces, trackerDetails);
+
+    }
+
+    private TrackerStatus qbTrackerStatus(int status) {
+        switch (status) {
+            case 0:
+                return TrackerStatus.DISABLED;
+            case 2:
+                return TrackerStatus.WORKING;
+            case 4:
+                return TrackerStatus.ERROR;
+            case 1: // not contacted yet
+            case 3: // updating
+            default:
+                return TrackerStatus.UNKNOWN;
+        }
+    }
+
+    private List<Peer> parseJsonPeers(JSONObject response) throws JSONException {
+
+        List<Peer> peerList = new ArrayList<>();
+        JSONObject peers = response.optJSONObject("peers");
+        if (peers == null) {
+            return peerList;
+        }
+        for (Iterator<String> it = peers.keys(); it.hasNext(); ) {
+            String key = it.next();
+            JSONObject peer = peers.getJSONObject(key);
+            String address = peer.optString("ip");
+            int port = peer.optInt("port", 0);
+            if (port > 0) {
+                address = address + ":" + port;
+            }
+            String flags = peer.optString("flags");
+            Boolean encrypted = (flags == null || flags.isEmpty()) ? null
+                    : (flags.contains("E") || flags.contains("e"));
+            String country = peer.optString("country_code");
+            if (country != null) {
+                country = country.toUpperCase(Locale.US);
+                if (country.isEmpty()) {
+                    country = null;
+                }
+            }
+            peerList.add(new Peer(address, peer.optString("client"), peer.optInt("dl_speed"),
+                    peer.optInt("up_speed"), (float) peer.optDouble("progress", -1d), encrypted, country));
+        }
+        return peerList;
 
     }
 

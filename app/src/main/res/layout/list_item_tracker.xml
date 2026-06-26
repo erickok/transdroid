@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright 2010-2024 Eric Kok et al.
+
+  Transdroid is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Transdroid is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Transdroid.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<org.transdroid.core.gui.lists.StatusBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/margin_default"
+    android:paddingTop="@dimen/margin_half"
+    android:paddingRight="@dimen/margin_default"
+    android:paddingBottom="@dimen/margin_half">
+
+    <TextView
+        android:id="@+id/url_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/text_bright"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_default"
+        app:fontFamily="sans-serif-condensed"
+        tools:text="udp://tracker.example.org:1337/announce" />
+
+    <TextView
+        android:id="@+id/message_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/url_text"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_small"
+        android:visibility="gone"
+        tools:text="Working"
+        tools:visibility="visible" />
+
+</org.transdroid.core.gui.lists.StatusBarLayout>

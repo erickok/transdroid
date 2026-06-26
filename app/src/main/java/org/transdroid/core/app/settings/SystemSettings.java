@@ -24,6 +24,7 @@ import androidx.preference.PreferenceManager;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EBean.Scope;
 import org.androidannotations.annotations.RootContext;
+import org.transdroid.daemon.PeersSortBy;
 
 import java.util.Date;
 
@@ -56,6 +57,16 @@ public class SystemSettings {
         return Integer.parseInt(prefs.getString("system_autorefresh", "0")) * 1000;
     }
 
+    /**
+     * Returns the interval at which the torrent details screen (files, peers, trackers) should
+     * automatically refresh while a torrent is being viewed.
+     *
+     * @return The selected interval in milliseconds, or 0 if details auto-refresh is disabled
+     */
+    public long getDetailsRefreshIntervalMilliseconds() {
+        return Integer.parseInt(prefs.getString("details_autorefresh", "0")) * 1000;
+    }
+
     public boolean checkForUpdates() {
         return prefs.getBoolean("system_checkupdates", true);
     }
@@ -66,6 +77,15 @@ public class SystemSettings {
 
     public boolean useDarkTheme() {
         return prefs.getBoolean("system_usedarktheme", false);
+    }
+
+    /**
+     * Returns the criterion by which a torrent's connected peers should be sorted in the details view.
+     *
+     * @return The selected peer sort order, defaulting to total (down + up) speed
+     */
+    public PeersSortBy getPeerSortBy() {
+        return PeersSortBy.fromValue(prefs.getString("peer_sort", PeersSortBy.TotalSpeed.getValue()));
     }
 
     /**
