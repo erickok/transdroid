@@ -21,6 +21,13 @@ import android.text.TextUtils;
 import de.timroes.axmlrpc.XMLRPCClient;
 import de.timroes.axmlrpc.XMLRPCClient.UnauthorizdException;
 import de.timroes.axmlrpc.XMLRPCException;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
@@ -62,6 +69,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -216,13 +224,27 @@ public class RTorrentAdapter implements IDaemonAdapter {
 
                     // Remove a torrent
                     RemoveTask removeTask = (RemoveTask) task;
+                    String removeHash = task.getTargetTorrent().getUniqueID();
                     if (removeTask.includingData()) {
-                        makeRtorrentCall(log, "d.custom5.set",
-                                new String[]{task.getTargetTorrent().getUniqueID(), "1"});
-                        makeRtorrentCall(log, "d.delete_tied",
-                                new String[]{task.getTargetTorrent().getUniqueID()});
+                        // Try the ruTorrent PHP handler if it exists and fallback if not.
+                        String rpcUrl = buildWebUIUrl();
+                        if (rpcUrl.endsWith(".php")) {
+                            try {
+                                postRutorrentAction(log, rpcUrl,
+                                        new BasicNameValuePair("mode", "removewithdata"),
+                                        new BasicNameValuePair("hash", removeHash),
+                                        new BasicNameValuePair("v", "1"));
+                            } catch (IOException | DaemonException e) {
+                                log.d(LOG_NAME, "ruTorrent removewithdata request failed, " +
+                                        "falling back to XML-RPC: " + e);
+                                eraseWithDataViaXmlrpc(log, removeHash);
+                            }
+                        } else {
+                            eraseWithDataViaXmlrpc(log, removeHash);
+                        }
+                    } else {
+                        makeRtorrentCall(log, "d.erase", new String[]{removeHash});
                     }
-                    makeRtorrentCall(log, "d.erase", new String[]{task.getTargetTorrent().getUniqueID()});
                     return new DaemonTaskSuccessResult(task);
 
                 case Pause:
@@ -357,6 +379,34 @@ public class RTorrentAdapter implements IDaemonAdapter {
                             e.toString());
         }
 
+    }
+
+    /**
+     * Sends a form-encoded POST to a ruTorrent plugin endpoint (typically the
+     * httprpc {@code action.php}) so plugins that consume the request in PHP
+     * (such as erasedata's {@code removewithdata}) are actually triggered.
+     */
+    private void postRutorrentAction(Log log, String url, NameValuePair... params) throws IOException, DaemonException {
+        DefaultHttpClient client = HttpHelper.createStandardHttpClient(settings, true);
+        HttpPost post = new HttpPost(url);
+        post.setEntity(new UrlEncodedFormEntity(new ArrayList<>(Arrays.asList(params)), HTTP.UTF_8));
+        log.d(LOG_NAME, "POST " + url + " " + Arrays.toString(params));
+        HttpResponse response = client.execute(post);
+        int status = response.getStatusLine().getStatusCode();
+        if (response.getEntity() != null) {
+            response.getEntity().getContent().close();
+        }
+        if (status < 200 || status >= 300) {
+            throw new DaemonException(ExceptionType.UnexpectedResponse,
+                    "ruTorrent action returned HTTP " + status);
+        }
+    }
+
+    /** Legacy erase-with-data path honoured by older ruTorrent versions. */
+    private void eraseWithDataViaXmlrpc(Log log, String hash) throws DaemonException, MalformedURLException {
+        makeRtorrentCall(log, "d.custom5.set", new String[]{hash, "1"});
+        makeRtorrentCall(log, "d.delete_tied", new String[]{hash});
+        makeRtorrentCall(log, "d.erase", new String[]{hash});
     }
 
     /**
