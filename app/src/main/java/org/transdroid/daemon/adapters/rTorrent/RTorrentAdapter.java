@@ -286,6 +286,9 @@ public class RTorrentAdapter implements IDaemonAdapter {
                                 new String[]{task.getTargetTorrent().getUniqueID() + ":f" + forFile.getKey(),
                                         newPriority});
                     }
+                    // Force rTorrent to re-evaluate its chunk selector so newly-disabled files actually stop
+                    // downloading (and newly-enabled files start); without this, pieces already queued keep going.
+                    makeRtorrentCall(log, "d.update_priorities", new String[]{task.getTargetTorrent().getUniqueID()});
                     return new DaemonTaskSuccessResult(task);
 
                 case SetTransferRates:
