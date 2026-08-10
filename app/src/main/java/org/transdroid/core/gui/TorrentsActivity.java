@@ -364,6 +364,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         ServerSetting defaultServer = applicationSettings.getDefaultServer();
         if (defaultServer == null) {
             // No server settings yet
+            updateFragmentVisibility(false);
             return;
         }
         Torrent openTorrent = null;
@@ -855,6 +856,7 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
     @OptionsItem(R.id.action_refresh)
     public void refreshScreen() {
+        if (currentConnection == null) return;
         if (fragmentTorrents.isAdded())
             fragmentTorrents.updateIsLoading(true);
         refreshTorrents();
@@ -865,11 +867,13 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
 
     @OptionsItem(R.id.action_enableturtle)
     protected void enableTurtleMode() {
+        if (currentConnection == null) return;
         updateTurtleMode(true);
     }
 
     @OptionsItem(R.id.action_disableturtle)
     protected void disableTurtleMode() {
+        if (currentConnection == null) return;
         updateTurtleMode(false);
     }
 
