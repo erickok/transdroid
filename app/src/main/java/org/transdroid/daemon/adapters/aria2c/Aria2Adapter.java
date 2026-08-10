@@ -374,7 +374,7 @@ public class Aria2Adapter implements IDaemonAdapter {
                     numSeeders,
                     tor.getInt("connections"),
                     numSeeders,
-                    (downloadSpeed > 0 ? (int) (totalLength / downloadSpeed) : -1),
+                    (downloadSpeed > 0 ? (int) ((totalLength - completedLength) / downloadSpeed) : -1),
                     completedLength,
                     tor.getLong("uploadLength"),
                     totalLength,
