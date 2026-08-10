@@ -146,6 +146,7 @@ public class TorrentsFragment extends Fragment implements OnLabelPickedListener 
                 actionsMenu.getMenu().findItem(R.id.action_start).setVisible(Daemon.supportsStoppingStarting(daemonType));
                 actionsMenu.getMenu().findItem(R.id.action_stop).setVisible(Daemon.supportsStoppingStarting(daemonType));
                 actionsMenu.getMenu().findItem(R.id.action_setlabel).setVisible(Daemon.supportsSetLabel(daemonType));
+                actionsMenu.getMenu().findItem(R.id.action_remove_withdata).setVisible(Daemon.supportsRemoveWithData(daemonType));
             }
             // Pause autorefresh
             if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
