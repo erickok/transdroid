@@ -441,6 +441,10 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
             filterSelected(lastUsed, true);
         } else {
             currentConnection = lastUsed.getServerAdapter(connectivityHelper.getConnectedNetworkName(), this);
+            refreshTorrents();
+            if (Daemon.supportsStats(currentConnection.getType())) {
+                getAdditionalStats();
+            }
         }
 
         // Start auto refresh
