@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transdroid · Material 3 Expressive (v6)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0" rel="stylesheet">
+<style>
+:root{
+  --surface:#f8faf0;
+  --surface-low:#f2f5ea;
+  --surface-container:#eceee2;
+  --surface-high:#e6e9dd;
+  --surface-highest:#e0e3d7;
+  --on-surface:#1a1c15;
+  --on-surface-var:#44483b;
+  --muted:#5c6053;
+  --outline:#75796a;
+  --outline-variant:#c5c8b8;
+  --primary:#3f6a1e;
+  --on-primary:#ffffff;
+  --primary-container:#c0f39a;
+  --on-primary-container:#0b2100;
+
+  --dl:#3f68b8;      --dl-track:#d3ddf2;
+  --seed:#4d7d2a;    --seed-track:#d3e6be;
+  --idle:#8a8d80;    --idle-track:#d6d9cb;
+  --wait:#9a7b33;    --wait-track:#e7ddc6;
+
+  --shadow-2:0 3px 8px rgba(31,35,22,.16), 0 1px 3px rgba(31,35,22,.10);
+  --shadow-fab:0 6px 16px rgba(35,64,10,.32), 0 2px 5px rgba(35,64,10,.26);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;height:100%;}
+body{
+  font-family:"Roboto",system-ui,sans-serif;
+  background:radial-gradient(120% 90% at 50% 0%, #2c3227 0%, #1a1e16 60%, #12140f 100%);
+  min-height:100%; display:flex; align-items:center; justify-content:center; padding:32px 16px;
+}
+.msr{
+  font-family:"Material Symbols Rounded"; font-weight:normal; font-style:normal; line-height:1;
+  letter-spacing:normal; text-transform:none; white-space:nowrap; display:inline-block; direction:ltr;
+  -webkit-font-smoothing:antialiased; font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24; user-select:none;
+}
+.fill{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
+
+.phone{
+  width:390px; max-width:100%; height:820px; max-height:calc(100vh - 40px);
+  background:#0c0d0a; border-radius:46px; padding:8px;
+  box-shadow:0 30px 70px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.screen{
+  position:relative; height:100%; width:100%; background:var(--surface); border-radius:39px;
+  overflow:hidden; display:flex; flex-direction:column; color:var(--on-surface); isolation:isolate;
+}
+
+.statusbar{
+  height:34px; flex:none; display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px 0 28px; font-size:14px; font-weight:600; letter-spacing:.2px;
+}
+.statusbar .sys{display:flex; align-items:center; gap:7px;}
+.statusbar .sys .msr{font-size:18px;}
+
+.appbar{flex:none; padding:6px 8px 10px 8px; display:flex; align-items:flex-start; gap:4px;}
+.iconbtn{
+  border:none; background:transparent; cursor:pointer; width:44px; height:44px; border-radius:50%;
+  display:grid; place-items:center; color:var(--on-surface-var); transition:background .15s;
+}
+.iconbtn:hover{background:var(--surface-high);}
+.iconbtn:focus-visible{outline:2px solid var(--primary); outline-offset:2px;}
+.iconbtn .msr{font-size:24px;}
+.titlewrap{flex:1; min-width:0; padding:5px 4px 0 2px;}
+.titlewrap h1{margin:0; font-size:23px; font-weight:500; line-height:1.1;}
+.server{
+  display:inline-flex; align-items:center; gap:5px; margin-top:7px; padding:4px 11px 4px 8px;
+  background:var(--surface-high); border-radius:999px; font-size:12.5px; font-weight:500; color:var(--on-surface-var);
+}
+.server .msr{font-size:16px; color:var(--muted);}
+.actions{display:flex; gap:2px; padding-top:2px;}
+
+.list{flex:1; overflow-y:auto; padding:0 6px 118px 6px; scrollbar-width:none;}
+.list::-webkit-scrollbar{display:none;}
+
+/* Leading column tightened (30px + 8px gap) so column 2 lines up with the
+   app-bar title. Content column start = 6(list) + 14(row) + 30 + 8 = 58px,
+   matching "All torrents" at 8(bar) + 44(menu) + 4 + 2 = 58px. */
+.row{
+  position:relative; display:grid; grid-template-columns:30px 1fr; gap:0 8px;
+  padding:14px 12px 15px 14px;
+}
+.row + .row::before{
+  content:""; position:absolute; top:0; left:52px; right:12px; height:1px;
+  background:var(--outline-variant); opacity:.55;
+}
+
+.lead{display:flex; align-items:flex-start; justify-content:center; padding-top:1px;}
+.lead .msr{font-size:22px; color:var(--muted);}
+
+/* colour-coded accent line, centred under the icon (row-x 14 + 15 = 29 → left 27.5) */
+.stripe{
+  position:absolute; left:27.5px; width:3px; top:44px; bottom:16px;
+  border-radius:2px; pointer-events:none;
+}
+.stripe.down{background:var(--dl);}
+.stripe.seed{background:var(--seed);}
+.stripe.idle{background:var(--idle);}
+.stripe.wait{background:var(--wait);}
+
+.titlerow{display:flex; align-items:baseline; gap:10px; min-width:0;}
+.name{
+  flex:1; min-width:0; font-size:15.5px; font-weight:600; letter-spacing:.1px; color:var(--on-surface);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.tag{flex:none; font-size:12px; font-weight:500; letter-spacing:.2px; color:var(--muted);}
+.detail{
+  font-size:12.5px; color:var(--muted); margin-top:2px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.detail b{font-weight:600; color:var(--on-surface-var); font-variant-numeric:tabular-nums;}
+
+.progress{margin:10px 0 9px; height:14px;}
+.progress svg{display:block; width:100%; height:14px; overflow:visible;}
+@keyframes wavemove{to{transform:translateX(-13px);}}
+.wave{animation:wavemove .95s linear infinite;}
+@media (prefers-reduced-motion:reduce){.wave{animation:none;}}
+
+.meta{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums;
+}
+.meta .left{display:inline-flex; align-items:center; gap:5px; white-space:nowrap;}
+.meta .left .msr{font-size:14px; color:var(--outline);}
+.speeds{display:flex; align-items:center; gap:12px; white-space:nowrap;}
+.speeds .msr{font-size:13px; vertical-align:-1px; color:var(--outline);}
+
+.bottom{position:absolute; left:12px; right:12px; bottom:20px; z-index:5; pointer-events:none;}
+.toolbar{
+  pointer-events:auto; height:62px; background:var(--surface-container); border-radius:31px;
+  box-shadow:var(--shadow-2); display:flex; align-items:center; padding:0 8px 0 16px; gap:4px;
+}
+.stat{display:flex; align-items:center; gap:8px; padding-right:4px;}
+.stat .dot{width:30px; height:30px; border-radius:10px; display:grid; place-items:center; flex:none; background:var(--surface-highest); color:var(--muted);}
+.stat .dot .msr{font-size:18px;}
+.stat .num{line-height:1.05;}
+.stat .num b{font-size:14px; font-weight:700; color:var(--on-surface); font-variant-numeric:tabular-nums;}
+.stat .num small{display:block; font-size:10.5px; font-weight:500; color:var(--muted); letter-spacing:.2px;}
+.tsep{width:1px; height:26px; background:var(--outline-variant); margin:0 4px;}
+.toolbar .grow{flex:1;}
+.tbtn{border:none; background:transparent; cursor:pointer; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; color:var(--on-surface-var); transition:background .15s;}
+.tbtn:hover{background:var(--surface-high);}
+.tbtn:focus-visible{outline:2px solid var(--primary); outline-offset:2px;}
+.tbtn.on{background:var(--surface-highest); color:var(--on-surface);}
+.tbtn .msr{font-size:22px;}
+
+.fab{
+  pointer-events:auto; position:absolute; right:6px; bottom:78px; width:66px; height:66px;
+  border-radius:22px; border:none; cursor:pointer; background:var(--primary); color:var(--on-primary);
+  display:grid; place-items:center; box-shadow:var(--shadow-fab);
+  transition:transform .12s cubic-bezier(.2,.8,.2,1), border-radius .2s;
+}
+.fab .msr{font-size:30px;}
+.fab:hover{transform:translateY(-1px);}
+.fab:active{transform:scale(.94); border-radius:30px;}
+.fab:focus-visible{outline:3px solid #fff; outline-offset:2px;}
+
+.gesture{flex:none; height:26px; display:grid; place-items:center;}
+.gesture i{width:132px; height:5px; border-radius:3px; background:var(--on-surface); opacity:.35;}
+</style>
+</head>
+<body>
+  <div class="phone"><div class="screen">
+
+    <div class="statusbar">
+      <span>4:52</span>
+      <span class="sys">
+        <span class="msr">network_wifi</span>
+        <span class="msr">signal_cellular_alt</span>
+        <span class="msr fill">battery_5_bar</span>
+      </span>
+    </div>
+
+    <header class="appbar">
+      <button class="iconbtn" aria-label="Menu"><span class="msr">menu</span></button>
+      <div class="titlewrap">
+        <h1>All torrents</h1>
+        <span class="server"><span class="msr fill">dns</span> Xirvik</span>
+      </div>
+      <div class="actions">
+        <button class="iconbtn" aria-label="Search"><span class="msr">search</span></button>
+        <button class="iconbtn" aria-label="Feeds"><span class="msr">rss_feed</span></button>
+        <button class="iconbtn" aria-label="More"><span class="msr">more_vert</span></button>
+      </div>
+    </header>
+
+    <main class="list" id="list"></main>
+
+    <div class="bottom">
+      <div class="toolbar">
+        <div class="stat">
+          <span class="dot"><span class="msr fill">arrow_downward</span></span>
+          <span class="num"><b>4.4 MB/s</b><small>8 active</small></span>
+        </div>
+        <div class="tsep"></div>
+        <div class="stat">
+          <span class="dot"><span class="msr fill">arrow_upward</span></span>
+          <span class="num"><b>8.2 MB/s</b><small>14 sharing</small></span>
+        </div>
+        <span class="grow"></span>
+        <button class="tbtn on" aria-label="Speed limit on" title="Speed limit"><span class="msr">speed</span></button>
+        <button class="tbtn" aria-label="Refresh" title="Refresh"><span class="msr">refresh</span></button>
+        <button class="tbtn" aria-label="Sort" title="Sort"><span class="msr">sort</span></button>
+      </div>
+      <button class="fab" aria-label="Add torrent"><span class="msr">add</span></button>
+    </div>
+
+    <div class="gesture"><i></i></div>
+
+  </div></div>
+
+<script>
+const items = [
+  { name:'Book 1', state:'down', pct:38.3,
+    detail:'80.1 MB of 209.3 MB · <b>38.3%</b>', tag:'1h 8m left',
+    left:{icon:'group', text:'12 / 6 seeders'}, speeds:{dl:'32.0 KB/s', ul:'88.5 KB/s'} },
+  { name:'CD Image 2', state:'seed', pct:100,
+    detail:'194.1 MB · complete', tag:'Seeding',
+    left:{icon:'sync_alt', text:'Ratio 1.6'}, note:'Uploaded 311.7 MB' },
+  { name:'Mix tape 3', state:'idle', pct:100,
+    detail:'474.3 MB · complete', tag:'Paused',
+    left:{icon:'sync_alt', text:'Ratio 0.0'}, note:'Uploaded 3.8 MB' },
+  { name:'App 4', state:'down', pct:47.8,
+    detail:'1.8 GB of 3.8 GB · <b>47.8%</b>', tag:'1d 8h left',
+    left:{icon:'group', text:'60 / 24 seeders'}, speeds:{dl:'17.8 KB/s', ul:'329.7 KB/s'} },
+  { name:'Documentary 5', state:'seed', pct:100,
+    detail:'2.3 GB · complete', tag:'Seeding',
+    left:{icon:'sync_alt', text:'Ratio 0.8'}, note:'↑ 122.7 KB/s' },
+  { name:'Book 6', state:'wait', pct:0,
+    detail:'4.6 GB', tag:'Queued',
+    left:{icon:'schedule', text:'In queue'}, note:'Waiting to download' },
+];
+
+const ICON = { down:'download', seed:'upload', idle:'pause', wait:'schedule' };
+const list = document.getElementById('list');
+
+items.forEach(it=>{
+  const row = document.createElement('div');
+  row.className = 'row';
+  let right = '';
+  if (it.speeds){
+    right = `<span class="speeds">
+        <span><span class="msr">south</span> ${it.speeds.dl}</span>
+        <span><span class="msr">north</span> ${it.speeds.ul}</span></span>`;
+  } else if (it.note){ right = `<span>${it.note}</span>`; }
+
+  row.innerHTML = `
+    <span class="stripe ${it.state}"></span>
+    <div class="lead"><span class="msr">${ICON[it.state]}</span></div>
+    <div class="titlerow"><div class="name">${it.name}</div><div class="tag">${it.tag}</div></div>
+    <div class="detail">${it.detail}</div>
+    <div class="progress" data-state="${it.state}" data-pct="${it.pct}"></div>
+    <div class="meta"><span class="left"><span class="msr">${it.left.icon}</span>${it.left.text}</span>${right}</div>`;
+  row.querySelectorAll('.titlerow,.detail,.progress,.meta').forEach(n=>n.style.gridColumn='2');
+  list.appendChild(row);
+});
+
+const COLOR = {
+  down:{ active:'var(--dl)',   track:'var(--dl-track)' },
+  seed:{ active:'var(--seed)', track:'var(--seed-track)' },
+  idle:{ active:'var(--idle)', track:'var(--idle-track)' },
+  wait:{ active:'var(--wait)', track:'var(--wait-track)' },
+};
+
+let waveId = 0;
+function drawProgress(el){
+  const w = el.clientWidth; if (!w) return;
+  const pct = parseFloat(el.dataset.pct), state = el.dataset.state, c = COLOR[state];
+  const yMid = 7, gap = 7, wl = 13, amp = 2.1, dotR = 2.2;
+  const sw = state === 'down' ? 4 : 3;
+  const activeW = Math.max(0, Math.min(w, w * pct / 100));
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS,'svg');
+  svg.setAttribute('viewBox', `0 0 ${w} 14`); svg.setAttribute('preserveAspectRatio','none');
+  const line = (x1,x2,color,width)=>{
+    const p = document.createElementNS(NS,'line');
+    p.setAttribute('x1',x1); p.setAttribute('x2',x2); p.setAttribute('y1',yMid); p.setAttribute('y2',yMid);
+    p.setAttribute('stroke',color); p.setAttribute('stroke-width',width||sw); p.setAttribute('stroke-linecap','round'); return p;
+  };
+  const dot = (x,color)=>{
+    const d = document.createElementNS(NS,'circle');
+    d.setAttribute('cx',x); d.setAttribute('cy',yMid); d.setAttribute('r',dotR); d.setAttribute('fill',color); return d;
+  };
+  if (pct <= 0){ svg.appendChild(line(sw, w-sw, c.track)); }
+  else if (pct >= 100){ svg.appendChild(line(sw, w-sw, c.active)); svg.appendChild(dot(w-sw, c.active)); }
+  else if (state === 'down'){
+    svg.appendChild(line(activeW + gap, w-sw, c.track));
+    const clipId = 'wc'+(waveId++);
+    const clip = document.createElementNS(NS,'clipPath'); clip.setAttribute('id',clipId);
+    const r = document.createElementNS(NS,'rect');
+    r.setAttribute('x',0); r.setAttribute('y',0); r.setAttribute('width',activeW); r.setAttribute('height',14);
+    clip.appendChild(r); svg.appendChild(clip);
+    let d='';
+    for (let x=-wl; x<=activeW+wl; x+=1.5){ const y = yMid + amp*Math.sin((x/wl)*2*Math.PI); d += (d===''?'M':'L') + x.toFixed(2) + ' ' + y.toFixed(2) + ' '; }
+    const g = document.createElementNS(NS,'g'); g.setAttribute('clip-path',`url(#${clipId})`);
+    const path = document.createElementNS(NS,'path');
+    path.setAttribute('d',d); path.setAttribute('fill','none'); path.setAttribute('stroke',c.active);
+    path.setAttribute('stroke-width',sw); path.setAttribute('stroke-linecap','round'); path.setAttribute('class','wave');
+    g.appendChild(path); svg.appendChild(g); svg.appendChild(dot(w-sw, c.track));
+  } else { svg.appendChild(line(sw, activeW, c.active)); svg.appendChild(line(activeW + gap, w-sw, c.track)); }
+  el.replaceChildren(svg);
+}
+function drawAll(){ document.querySelectorAll('.progress').forEach(drawProgress); }
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>requestAnimationFrame(drawAll));
+window.addEventListener('load', ()=>requestAnimationFrame(drawAll));
+let rt; window.addEventListener('resize', ()=>{ clearTimeout(rt); rt=setTimeout(drawAll,120); });
+document.querySelector('.fab').addEventListener('click', e=>{
+  e.currentTarget.animate([{transform:'scale(1)'},{transform:'scale(.9)'},{transform:'scale(1)'}],{duration:220, easing:'cubic-bezier(.2,.8,.2,1)'});
+});
+document.querySelector('.tbtn.on')?.addEventListener('click', e=>e.currentTarget.classList.toggle('on'));
+</script>
+</body>
+</html>

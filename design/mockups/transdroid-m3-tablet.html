@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transdroid · Tablet dual-pane (M3 Expressive)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0" rel="stylesheet">
+<style>
+:root{
+  --surface:#f8faf0;
+  --surface-low:#f2f5ea;
+  --surface-container:#eceee2;
+  --surface-high:#e6e9dd;
+  --surface-highest:#e0e3d7;
+  --on-surface:#1a1c15;
+  --on-surface-var:#44483b;
+  --muted:#5c6053;
+  --outline:#75796a;
+  --outline-variant:#c5c8b8;
+  --primary:#3f6a1e;
+  --on-primary:#ffffff;
+  --primary-container:#c0f39a;
+  --on-primary-container:#0b2100;
+  --sel-bg:#dcecce; --sel-fg:#2b3b1c;
+
+  --dl:#3f68b8; --dl-track:#d3ddf2;
+  --seed:#4d7d2a; --seed-track:#d3e6be;
+  --idle:#8a8d80; --idle-track:#d6d9cb;
+  --wait:#9a7b33; --wait-track:#e7ddc6;
+
+  --shadow-1:0 1px 2px rgba(31,35,22,.14), 0 1px 3px rgba(31,35,22,.10);
+  --shadow-fab:0 6px 16px rgba(35,64,10,.30), 0 2px 5px rgba(35,64,10,.24);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;height:100%;}
+body{
+  font-family:"Roboto",system-ui,sans-serif;
+  background:radial-gradient(120% 120% at 50% 0%, #333a2d 0%, #21261d 60%, #171a13 100%);
+  min-height:100%; display:flex; align-items:center; justify-content:center; padding:24px;
+}
+.msr{
+  font-family:"Material Symbols Rounded"; font-weight:normal; font-style:normal; line-height:1;
+  letter-spacing:normal; text-transform:none; white-space:nowrap; display:inline-block; direction:ltr;
+  -webkit-font-smoothing:antialiased; font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24; user-select:none;
+}
+.fill{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
+
+.tablet{
+  width:min(1200px, 100%); aspect-ratio:16/10; max-height:calc(100vh - 48px);
+  background:#0c0d0a; border-radius:34px; padding:10px;
+  box-shadow:0 40px 90px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.05);
+}
+.screen{
+  position:relative; height:100%; width:100%; background:var(--surface); border-radius:26px;
+  overflow:hidden; display:flex; flex-direction:column; color:var(--on-surface);
+}
+
+.statusbar{
+  height:28px; flex:none; display:flex; align-items:center; justify-content:space-between;
+  padding:0 20px; font-size:13px; font-weight:600; letter-spacing:.2px;
+}
+.statusbar .sys{display:flex; align-items:center; gap:8px;}
+.statusbar .sys .msr{font-size:17px;}
+
+/* top app bar (spans both panes) */
+.appbar{
+  flex:none; height:60px; display:flex; align-items:center; gap:6px; padding:0 10px 0 6px;
+  border-bottom:1px solid var(--outline-variant);
+}
+.iconbtn{border:none; background:transparent; cursor:pointer; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; color:var(--on-surface-var); transition:background .15s;}
+.iconbtn:hover{background:var(--surface-high);}
+.iconbtn.on{background:var(--surface-highest); color:var(--on-surface);}
+.iconbtn .msr{font-size:23px;}
+.appbar .title{display:flex; align-items:baseline; gap:10px; padding-left:4px;}
+.appbar .title h1{margin:0; font-size:20px; font-weight:600;}
+.appbar .server{display:inline-flex; align-items:center; gap:5px; padding:4px 11px 4px 8px; background:var(--surface-high); border-radius:999px; font-size:12px; font-weight:500; color:var(--on-surface-var);}
+.appbar .server .msr{font-size:15px; color:var(--muted);}
+.appbar .grow{flex:1;}
+.tstats{display:flex; align-items:center; gap:16px; padding:0 8px 0 4px; font-variant-numeric:tabular-nums;}
+.tstats .ts{display:flex; align-items:center; gap:8px;}
+.tstats .ts .msr{font-size:18px;}
+.tstats .ts.dn .msr{color:var(--dl);} .tstats .ts.up .msr{color:var(--seed);}
+.tstats .tnum{display:flex; flex-direction:column; line-height:1.05;}
+.tstats .tnum b{font-size:13px; font-weight:700; color:var(--on-surface);}
+.tstats .tnum small{font-size:10.5px; font-weight:500; color:var(--muted); letter-spacing:.2px;}
+.tsep{width:1px; height:26px; background:var(--outline-variant); margin:0 2px;}
+
+.body{display:flex; flex:1; min-height:0;}
+
+/* list pane */
+.listpane{width:392px; flex:none; display:flex; flex-direction:column; min-height:0; border-right:1px solid var(--outline-variant); position:relative;}
+.chips{display:flex; gap:8px; padding:12px 14px 6px; overflow-x:auto; scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.fchip{flex:none; border:1px solid var(--outline-variant); background:transparent; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:600; color:var(--on-surface-var); padding:7px 14px; border-radius:999px; transition:.12s;}
+.fchip:hover{background:var(--surface-high);}
+.fchip.sel{background:var(--sel-bg); color:var(--sel-fg); border-color:transparent;}
+
+.list{flex:1; overflow-y:auto; padding:4px 8px 96px; scrollbar-width:none;}
+.list::-webkit-scrollbar{display:none;}
+
+.row{
+  position:relative; display:grid; grid-template-columns:30px 1fr; gap:0 8px;
+  padding:13px 14px 14px; border-radius:22px; cursor:pointer; transition:background .12s; margin-bottom:2px;
+}
+.row:hover{background:var(--surface-low);}
+.row.sel{background:var(--sel-bg);}
+.lead{display:flex; align-items:flex-start; justify-content:center; padding-top:1px;}
+.lead .msr{font-size:22px; color:var(--muted);}
+.row.sel .lead .msr{color:var(--sel-fg);}
+.stripe{position:absolute; left:27.5px; width:3px; top:42px; bottom:15px; border-radius:2px; pointer-events:none;}
+.stripe.down{background:var(--dl);} .stripe.seed{background:var(--seed);} .stripe.idle{background:var(--idle);} .stripe.wait{background:var(--wait);}
+.titlerow{display:flex; align-items:baseline; gap:10px; min-width:0;}
+.name{flex:1; min-width:0; font-size:15px; font-weight:600; letter-spacing:.1px; color:var(--on-surface); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.tag{flex:none; font-size:12px; font-weight:500; color:var(--muted);}
+.detail{font-size:12.5px; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.detail b{font-weight:600; color:var(--on-surface-var); font-variant-numeric:tabular-nums;}
+.progress{min-height:14px; margin:9px 0 8px;}
+.progress svg{display:block; width:100%;}
+@keyframes wavemove{to{transform:translateX(-13px);}}
+.wave{animation:wavemove .95s linear infinite;}
+@media (prefers-reduced-motion:reduce){.wave{animation:none;}}
+.meta{display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums;}
+.meta .left{display:inline-flex; align-items:center; gap:5px; white-space:nowrap;}
+.meta .left .msr{font-size:14px; color:var(--outline);}
+.speeds{display:flex; align-items:center; gap:12px; white-space:nowrap;}
+.speeds .msr{font-size:13px; vertical-align:-1px; color:var(--outline);}
+
+.fab{position:absolute; right:18px; bottom:18px; width:60px; height:60px; border-radius:20px; border:none; cursor:pointer; background:var(--primary); color:var(--on-primary); display:grid; place-items:center; box-shadow:var(--shadow-fab); transition:transform .12s, border-radius .2s;}
+.fab .msr{font-size:28px;}
+.fab:active{transform:scale(.94); border-radius:28px;}
+
+/* detail pane */
+.detailpane{flex:1; min-width:0; overflow-y:auto; scrollbar-width:none;}
+.detailpane::-webkit-scrollbar{display:none;}
+.detail-inner{padding:22px 26px 40px; max-width:760px;}
+
+.d-head{display:flex; align-items:flex-start; gap:16px;}
+.d-badge{width:52px; height:52px; border-radius:18px; display:grid; place-items:center; flex:none;}
+.d-badge.down{background:var(--dl-track); color:var(--dl);}
+.d-badge.seed{background:var(--primary-container); color:var(--seed);}
+.d-badge.idle{background:var(--surface-highest); color:var(--idle);}
+.d-badge.wait{background:var(--wait-track); color:var(--wait);}
+.d-badge .msr{font-size:27px;}
+.d-htext{flex:1; min-width:0;}
+.d-htext h2{margin:0; font-size:22px; font-weight:600; line-height:1.2; word-break:break-word;}
+.d-htext .sub{display:flex; align-items:center; gap:8px; margin-top:5px; font-size:13px; color:var(--muted); flex-wrap:wrap;}
+.d-htext .pill{display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:999px; background:var(--surface-container); font-weight:600; font-size:12px; color:var(--on-surface-var);}
+
+.d-actions{display:flex; align-items:center; gap:10px; margin:20px 0 4px; flex-wrap:wrap;}
+.btn{border:none; cursor:pointer; font-family:inherit; font-weight:600; display:inline-flex; align-items:center; gap:8px; transition:.12s;}
+.btn-primary{height:44px; padding:0 22px; border-radius:22px; background:var(--primary); color:var(--on-primary); font-size:14.5px;}
+.btn-primary:hover{filter:brightness(1.08);}
+.btn-tonal{height:44px; padding:0 18px; border-radius:22px; background:var(--surface-high); color:var(--on-surface); font-size:14px;}
+.btn-tonal:hover{background:var(--surface-highest);}
+.btn-ic{width:44px; height:44px; border-radius:50%; background:transparent; color:var(--on-surface-var); display:grid; place-items:center;}
+.btn-ic:hover{background:var(--surface-high);}
+.btn .msr{font-size:20px;}
+
+.d-progress{margin:22px 0 6px;}
+.d-progress .progress{min-height:20px; margin:0;}
+.d-progline{display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); margin-top:8px; font-variant-numeric:tabular-nums;}
+.d-progline b{color:var(--on-surface); font-weight:600;}
+
+/* tabs */
+.tabs{display:flex; gap:6px; margin:22px 0 16px; border-bottom:1px solid var(--outline-variant);}
+.dtab{border:none; background:transparent; cursor:pointer; font-family:inherit; font-size:14px; font-weight:600; color:var(--muted); padding:10px 14px; border-radius:12px 12px 0 0; position:relative; transition:.12s;}
+.dtab:hover{color:var(--on-surface-var); background:var(--surface-low);}
+.dtab.sel{color:var(--primary);}
+.dtab.sel::after{content:""; position:absolute; left:12px; right:12px; bottom:-1px; height:3px; border-radius:3px 3px 0 0; background:var(--primary);}
+.panel{display:none;}
+.panel.sel{display:block;}
+
+/* overview stat tiles */
+.stat-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px;}
+.stile{background:var(--surface-low); border-radius:18px; padding:12px 15px;}
+.stile .sk{display:flex; align-items:center; gap:6px; font-size:12px; font-weight:500; color:var(--muted);}
+.stile .sk .msr{font-size:16px;}
+.stile .sv{font-size:17px; font-weight:600; margin-top:4px; font-variant-numeric:tabular-nums;}
+
+/* split download / upload overview */
+.ov2{display:flex; gap:12px;}
+.ovcol{flex:1; min-width:0; border-radius:22px; padding:14px 17px 12px;}
+.ovcol.dl{background:var(--dl-track);}
+.ovcol.ul{background:var(--seed-track);}
+.ovhead{display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--on-surface-var);}
+.ovhead .msr{font-size:19px;}
+.ovcol.dl .ovhead .msr, .ovcol.dl .ovhero{color:var(--dl);}
+.ovcol.ul .ovhead .msr, .ovcol.ul .ovhero{color:var(--seed);}
+.ovhero{font-size:23px; font-weight:700; font-variant-numeric:tabular-nums; margin:9px 0 6px; line-height:1;}
+.ovrow{display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding:8px 0;}
+.ovrow + .ovrow{border-top:1px solid var(--outline-variant);}
+.ovrow .k{font-size:12.5px; color:var(--muted);}
+.ovrow .v{font-size:14px; font-weight:600; color:var(--on-surface); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.ovshared{display:grid; grid-template-columns:repeat(auto-fill, minmax(130px,1fr)); gap:10px; margin-top:12px;}
+
+/* files */
+.fitem{display:grid; grid-template-columns:24px 1fr auto; gap:0 12px; align-items:center; padding:11px 6px;}
+.fitem + .fitem{border-top:1px solid var(--outline-variant);}
+.fitem > .msr{font-size:20px; color:var(--muted);}
+.fmeta{min-width:0;}
+.fmeta b{display:block; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.fmeta small{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums;}
+.fbar{grid-column:2; height:4px; background:var(--surface-high); border-radius:2px; overflow:hidden; margin-top:7px;}
+.fbar i{display:block; height:100%; border-radius:2px;}
+.fprio{grid-row:1 / span 2; align-self:center; font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px;}
+.fprio.high{background:var(--dl-track); color:var(--dl);}
+.fprio.normal{background:var(--surface-container); color:var(--muted);}
+.fprio.skip{background:var(--surface-container); color:var(--outline); text-decoration:line-through;}
+
+/* trackers */
+.titem{display:flex; align-items:center; gap:12px; padding:12px 6px;}
+.titem + .titem{border-top:1px solid var(--outline-variant);}
+.titem > .msr{font-size:20px; color:var(--muted);}
+.tmeta{flex:1; min-width:0;}
+.tmeta b{display:block; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.tmeta small{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums;}
+.ok{font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--primary-container); color:var(--on-seed, #2b3b1c);}
+</style>
+</head>
+<body>
+  <div class="tablet"><div class="screen">
+
+    <div class="statusbar">
+      <span>4:52</span>
+      <span class="sys">
+        <span class="msr">network_wifi</span>
+        <span class="msr">signal_cellular_alt</span>
+        <span class="msr fill">battery_5_bar</span>
+      </span>
+    </div>
+
+    <header class="appbar">
+      <button class="iconbtn" aria-label="Menu"><span class="msr">menu</span></button>
+      <div class="title"><h1>All torrents</h1><span class="server"><span class="msr fill">dns</span> Xirvik</span></div>
+      <span class="grow"></span>
+      <div class="tstats">
+        <span class="ts dn"><span class="msr fill">arrow_downward</span><span class="tnum"><b>4.4 MB/s</b><small>8 active</small></span></span>
+        <span class="ts up"><span class="msr fill">arrow_upward</span><span class="tnum"><b>8.2 MB/s</b><small>14 sharing</small></span></span>
+      </div>
+      <span class="tsep"></span>
+      <button class="iconbtn on" id="speedBtn" aria-label="Speed limit" title="Speed limit"><span class="msr">speed</span></button>
+      <button class="iconbtn" aria-label="Search"><span class="msr">search</span></button>
+      <button class="iconbtn" aria-label="Refresh"><span class="msr">refresh</span></button>
+      <button class="iconbtn" aria-label="Sort"><span class="msr">sort</span></button>
+      <button class="iconbtn" aria-label="More"><span class="msr">more_vert</span></button>
+    </header>
+
+    <div class="body">
+      <section class="listpane">
+        <div class="chips">
+          <button class="fchip sel">All</button>
+          <button class="fchip">Downloading</button>
+          <button class="fchip">Seeding</button>
+          <button class="fchip">Completed</button>
+          <button class="fchip">Errors</button>
+        </div>
+        <div class="list" id="list"></div>
+        <button class="fab" aria-label="Add torrent"><span class="msr">add</span></button>
+      </section>
+
+      <section class="detailpane"><div class="detail-inner" id="detail"></div></section>
+    </div>
+
+  </div></div>
+
+<script>
+const ICON = { down:'download', seed:'upload', idle:'pause', wait:'schedule' };
+const STATUS = { down:'Downloading', seed:'Seeding', idle:'Paused', wait:'Queued' };
+
+const items = [
+  { name:'Book 1', state:'down', pct:38.3, tag:'1h 8m left',
+    detail:'80.1 MB of 209.3 MB · <b>38.3%</b>',
+    left:{icon:'group', text:'12 / 6 seeders'}, speeds:{dl:'32.0 KB/s', ul:'88.5 KB/s'},
+    label:'Books',
+    stats:{ Downloaded:'80.1 MB', Uploaded:'32.5 MB', Ratio:'0.41', 'Down speed':'32.0 KB/s', 'Up speed':'88.5 KB/s', 'Seeders':'12 / 6', 'Peers':'3 / 40', 'ETA':'1h 8m', 'Size':'209.3 MB', 'Added':'2 days ago' },
+    files:[ {n:'book1-audio.m4b', s:'168.0 MB', p:34, prio:'high'}, {n:'book1.epub', s:'4.2 MB', p:100, prio:'high'}, {n:'cover.jpg', s:'0.8 MB', p:100, prio:'normal'}, {n:'notes.pdf', s:'2.1 MB', p:0, prio:'skip'} ],
+    trackers:[ {h:'tracker.example.org', d:'6 seeds · 40 peers'}, {h:'open.tracker.net', d:'4 seeds · 12 peers'} ] },
+
+  { name:'CD Image 2', state:'seed', pct:100, tag:'Seeding',
+    detail:'194.1 MB · complete',
+    left:{icon:'sync_alt', text:'Ratio 1.6'}, note:'Uploaded 311.7 MB',
+    label:'Software',
+    stats:{ Downloaded:'194.1 MB', Uploaded:'311.7 MB', Ratio:'1.60', 'Down speed':'0 KB/s', 'Up speed':'0 KB/s', 'Seeders':'0 / 2', 'Peers':'0', 'Size':'194.1 MB', 'Added':'3 weeks ago' },
+    files:[ {n:'distro-live.iso', s:'194.1 MB', p:100, prio:'normal'} ],
+    trackers:[ {h:'linuxtracker.org', d:'2 seeds · 0 peers'} ] },
+
+  { name:'Mix tape 3', state:'idle', pct:100, tag:'Paused',
+    detail:'474.3 MB · complete',
+    left:{icon:'sync_alt', text:'Ratio 0.0'}, note:'Uploaded 3.8 MB',
+    label:'Music',
+    stats:{ Downloaded:'474.3 MB', Uploaded:'3.8 MB', Ratio:'0.01', 'Down speed':'0 KB/s', 'Up speed':'0 KB/s', 'Size':'474.3 MB', 'Added':'1 month ago' },
+    files:[ {n:'01 - intro.flac', s:'42.1 MB', p:100, prio:'normal'}, {n:'02 - side a.flac', s:'201.6 MB', p:100, prio:'normal'}, {n:'03 - side b.flac', s:'230.6 MB', p:100, prio:'normal'} ],
+    trackers:[ {h:'private.tracker.me', d:'paused'} ] },
+
+  { name:'App 4', state:'down', pct:47.8, tag:'1d 8h left',
+    detail:'1.8 GB of 3.8 GB · <b>47.8%</b>',
+    left:{icon:'group', text:'60 / 24 seeders'}, speeds:{dl:'17.8 KB/s', ul:'329.7 KB/s'},
+    label:'Software',
+    stats:{ Downloaded:'1.8 GB', Uploaded:'1.1 GB', Ratio:'0.61', 'Down speed':'17.8 KB/s', 'Up speed':'329.7 KB/s', 'Seeders':'60 / 24', 'Peers':'18 / 120', 'ETA':'1d 8h', 'Size':'3.8 GB', 'Added':'5 hours ago' },
+    files:[ {n:'installer.bin', s:'3.6 GB', p:48, prio:'high'}, {n:'checksums.txt', s:'0.1 MB', p:100, prio:'normal'}, {n:'license.txt', s:'0.1 MB', p:100, prio:'normal'} ],
+    trackers:[ {h:'tracker.example.org', d:'60 seeds · 120 peers'}, {h:'udp.opentrackr.org', d:'22 seeds · 44 peers'} ] },
+
+  { name:'Documentary 5', state:'seed', pct:100, tag:'Seeding',
+    detail:'2.3 GB · complete',
+    left:{icon:'sync_alt', text:'Ratio 0.8'}, note:'↑ 122.7 KB/s',
+    label:'Video',
+    stats:{ Downloaded:'2.3 GB', Uploaded:'1.8 GB', Ratio:'0.80', 'Down speed':'0 KB/s', 'Up speed':'122.7 KB/s', 'Seeders':'0 / 0', 'Peers':'0 / 3', 'Size':'2.3 GB', 'Added':'6 days ago' },
+    files:[ {n:'documentary.mkv', s:'2.28 GB', p:100, prio:'normal'}, {n:'subtitles.srt', s:'0.1 MB', p:100, prio:'normal'} ],
+    trackers:[ {h:'tracker.example.org', d:'0 seeds · 3 peers'} ] },
+
+  { name:'Book 6', state:'wait', pct:0, tag:'Queued',
+    detail:'4.6 GB',
+    left:{icon:'schedule', text:'In queue'}, note:'Waiting to download',
+    label:'Books',
+    stats:{ Downloaded:'0 B', Uploaded:'0 B', Ratio:'0.00', 'Size':'4.6 GB', 'Added':'just now' },
+    files:[ {n:'collection.zip', s:'4.6 GB', p:0, prio:'normal'} ],
+    trackers:[ {h:'tracker.example.org', d:'queued'} ] },
+];
+
+/* ---- list ---- */
+const list = document.getElementById('list');
+items.forEach((it,i)=>{
+  const row = document.createElement('div');
+  row.className = 'row'; row.dataset.i = i;
+  let right = it.speeds
+    ? `<span class="speeds"><span><span class="msr">south</span> ${it.speeds.dl}</span><span><span class="msr">north</span> ${it.speeds.ul}</span></span>`
+    : (it.note ? `<span>${it.note}</span>` : '');
+  row.innerHTML = `
+    <span class="stripe ${it.state}"></span>
+    <div class="lead"><span class="msr">${ICON[it.state]}</span></div>
+    <div class="titlerow"><div class="name">${it.name}</div><div class="tag">${it.tag}</div></div>
+    <div class="detail">${it.detail}</div>
+    <div class="progress" data-state="${it.state}" data-pct="${it.pct}"></div>
+    <div class="meta"><span class="left"><span class="msr">${it.left.icon}</span>${it.left.text}</span>${right}</div>`;
+  row.querySelectorAll('.titlerow,.detail,.progress,.meta').forEach(n=>n.style.gridColumn='2');
+  row.addEventListener('click', ()=>select(i));
+  list.appendChild(row);
+});
+
+/* ---- detail ---- */
+const detail = document.getElementById('detail');
+let current = 0;
+
+function select(i){
+  current = i;
+  document.querySelectorAll('.row').forEach(r=>r.classList.toggle('sel', +r.dataset.i===i));
+  renderDetail(items[i]);
+}
+
+function renderDetail(it){
+  const paused = it.state==='idle' || it.state==='wait';
+  const primary = paused
+    ? `<button class="btn btn-primary"><span class="msr fill">play_arrow</span> ${it.state==='wait'?'Start now':'Resume'}</button>`
+    : `<button class="btn btn-primary"><span class="msr fill">pause</span> Pause</button>`;
+
+  const g = k => (it.stats[k] ?? '—');
+  const overview = `
+    <div class="ov2">
+      <div class="ovcol dl">
+        <div class="ovhead"><span class="msr fill">arrow_downward</span> Download</div>
+        <div class="ovhero">${g('Down speed')}</div>
+        <div class="ovrow"><span class="k">Downloaded</span><span class="v">${g('Downloaded')}</span></div>
+        <div class="ovrow"><span class="k">Seeders</span><span class="v">${g('Seeders')}</span></div>
+      </div>
+      <div class="ovcol ul">
+        <div class="ovhead"><span class="msr fill">arrow_upward</span> Upload</div>
+        <div class="ovhero">${g('Up speed')}</div>
+        <div class="ovrow"><span class="k">Uploaded</span><span class="v">${g('Uploaded')}</span></div>
+        <div class="ovrow"><span class="k">Peers</span><span class="v">${g('Peers')}</span></div>
+      </div>
+    </div>
+    <div class="ovshared">
+      <div class="stile"><span class="sk">Ratio</span><span class="sv">${g('Ratio')}</span></div>
+      <div class="stile"><span class="sk">Size</span><span class="sv">${g('Size')}</span></div>
+      ${it.stats['ETA'] ? `<div class="stile"><span class="sk">ETA</span><span class="sv">${g('ETA')}</span></div>` : ''}
+      <div class="stile"><span class="sk">Added</span><span class="sv">${g('Added')}</span></div>
+    </div>`;
+
+  const files = it.files.map(f=>{
+    const col = f.p>=100 ? 'var(--seed)' : (f.p>0 ? 'var(--dl)' : 'var(--outline-variant)');
+    return `<div class="fitem">
+      <span class="msr">${f.p>=100?'task_alt':'description'}</span>
+      <span class="fmeta"><b>${f.n}</b><small>${f.s} · ${f.p}%</small></span>
+      <span class="fprio ${f.prio}">${f.prio==='high'?'High':f.prio==='skip'?'Skip':'Normal'}</span>
+      <div class="fbar"><i style="width:${f.p}%; background:${col}"></i></div>
+    </div>`;
+  }).join('');
+
+  const trackers = it.trackers.map(t=>`
+    <div class="titem"><span class="msr">lan</span>
+      <span class="tmeta"><b>${t.h}</b><small>${t.d}</small></span>
+      <span class="ok">${paused?'Idle':'Working'}</span></div>`).join('');
+
+  const progLine = it.state==='down'
+    ? `<div class="d-progline"><span><b>${it.stats.Downloaded}</b> of ${it.stats.Size}</span><span>${it.tag}</span></div>`
+    : it.state==='wait'
+      ? `<div class="d-progline"><span>Not started</span><span>${it.tag}</span></div>`
+      : `<div class="d-progline"><span><b>Complete</b> · ${it.stats.Size}</span><span>Ratio ${it.stats.Ratio}</span></div>`;
+
+  detail.innerHTML = `
+    <div class="d-head">
+      <div class="d-badge ${it.state}"><span class="msr fill">${ICON[it.state]}</span></div>
+      <div class="d-htext">
+        <h2>${it.name}</h2>
+        <div class="sub"><span class="pill"><span class="msr" style="font-size:15px">${it.state==='down'?'download':it.state==='seed'?'upload':it.state==='idle'?'pause':'schedule'}</span>${STATUS[it.state]}</span>
+          <span class="pill"><span class="msr" style="font-size:15px">label</span>${it.label}</span></div>
+      </div>
+    </div>
+
+    <div class="d-actions">
+      ${primary}
+      <button class="btn btn-tonal"><span class="msr">delete</span> Remove</button>
+      <button class="btn btn-ic" title="Force recheck"><span class="msr">checklist</span></button>
+      <button class="btn btn-ic" title="Set label"><span class="msr">sell</span></button>
+      <button class="btn btn-ic" title="More"><span class="msr">more_vert</span></button>
+    </div>
+
+    <div class="d-progress">
+      <div class="progress" data-h="20" data-state="${it.state}" data-pct="${it.pct}"></div>
+      ${progLine}
+    </div>
+
+    <div class="tabs">
+      <button class="dtab sel" data-tab="overview">Overview</button>
+      <button class="dtab" data-tab="files">Files <span style="opacity:.6">(${it.files.length})</span></button>
+      <button class="dtab" data-tab="trackers">Trackers <span style="opacity:.6">(${it.trackers.length})</span></button>
+    </div>
+
+    <div class="panel sel" data-panel="overview">${overview}</div>
+    <div class="panel" data-panel="files">${files}</div>
+    <div class="panel" data-panel="trackers">${trackers}</div>`;
+
+  detail.querySelectorAll('.dtab').forEach(t=>t.addEventListener('click', ()=>{
+    detail.querySelectorAll('.dtab').forEach(x=>x.classList.toggle('sel', x===t));
+    detail.querySelectorAll('.panel').forEach(p=>p.classList.toggle('sel', p.dataset.panel===t.dataset.tab));
+  }));
+
+  drawProgress(detail.querySelector('.progress'));
+}
+
+/* ---- progress rendering (wavy for active downloads) ---- */
+const COLOR = {
+  down:{ active:'var(--dl)',   track:'var(--dl-track)' },
+  seed:{ active:'var(--seed)', track:'var(--seed-track)' },
+  idle:{ active:'var(--idle)', track:'var(--idle-track)' },
+  wait:{ active:'var(--wait)', track:'var(--wait-track)' },
+};
+let waveId = 0;
+function drawProgress(el){
+  if(!el) return;
+  const w = el.clientWidth; if(!w) return;
+  const h = +(el.dataset.h || 14);
+  const pct = parseFloat(el.dataset.pct), state = el.dataset.state, c = COLOR[state];
+  const yMid = h/2, gap = 7, wl = 13, amp = h>16?2.8:2.1, dotR = h>16?3:2.2;
+  const sw = state==='down' ? (h>16?5:4) : (h>16?4:3);
+  const activeW = Math.max(0, Math.min(w, w*pct/100));
+  const NS='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(NS,'svg');
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`); svg.setAttribute('preserveAspectRatio','none');
+  svg.style.width='100%'; svg.style.height=h+'px'; svg.style.display='block';
+  const line=(x1,x2,color,width)=>{const p=document.createElementNS(NS,'line');p.setAttribute('x1',x1);p.setAttribute('x2',x2);p.setAttribute('y1',yMid);p.setAttribute('y2',yMid);p.setAttribute('stroke',color);p.setAttribute('stroke-width',width||sw);p.setAttribute('stroke-linecap','round');return p;};
+  const dot=(x,color)=>{const d=document.createElementNS(NS,'circle');d.setAttribute('cx',x);d.setAttribute('cy',yMid);d.setAttribute('r',dotR);d.setAttribute('fill',color);return d;};
+  if(pct<=0){ svg.appendChild(line(sw,w-sw,c.track)); }
+  else if(pct>=100){ svg.appendChild(line(sw,w-sw,c.active)); svg.appendChild(dot(w-sw,c.active)); }
+  else if(state==='down'){
+    svg.appendChild(line(activeW+gap,w-sw,c.track));
+    const clipId='wc'+(waveId++);
+    const clip=document.createElementNS(NS,'clipPath'); clip.setAttribute('id',clipId);
+    const r=document.createElementNS(NS,'rect'); r.setAttribute('x',0);r.setAttribute('y',0);r.setAttribute('width',activeW);r.setAttribute('height',h);
+    clip.appendChild(r); svg.appendChild(clip);
+    let d=''; for(let x=-wl;x<=activeW+wl;x+=1.5){const y=yMid+amp*Math.sin((x/wl)*2*Math.PI); d+=(d===''?'M':'L')+x.toFixed(2)+' '+y.toFixed(2)+' ';}
+    const g=document.createElementNS(NS,'g'); g.setAttribute('clip-path',`url(#${clipId})`);
+    const path=document.createElementNS(NS,'path'); path.setAttribute('d',d); path.setAttribute('fill','none'); path.setAttribute('stroke',c.active); path.setAttribute('stroke-width',sw); path.setAttribute('stroke-linecap','round'); path.setAttribute('class','wave');
+    g.appendChild(path); svg.appendChild(g); svg.appendChild(dot(w-sw,c.track));
+  } else { svg.appendChild(line(sw,activeW,c.active)); svg.appendChild(line(activeW+gap,w-sw,c.track)); }
+  el.replaceChildren(svg);
+}
+function drawList(){ document.querySelectorAll('.list .progress').forEach(drawProgress); }
+function drawAll(){ drawList(); drawProgress(detail.querySelector('.progress')); }
+
+// filter chips (cosmetic)
+document.querySelectorAll('.fchip').forEach(c=>c.addEventListener('click', ()=>{
+  document.querySelectorAll('.fchip').forEach(x=>x.classList.remove('sel')); c.classList.add('sel');
+}));
+document.querySelector('.fab').addEventListener('click', e=>e.currentTarget.animate([{transform:'scale(1)'},{transform:'scale(.9)'},{transform:'scale(1)'}],{duration:220,easing:'cubic-bezier(.2,.8,.2,1)'}));
+document.getElementById('speedBtn').addEventListener('click', e=>e.currentTarget.classList.toggle('on'));
+
+function init(){ select(0); drawList(); }
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>requestAnimationFrame(init));
+window.addEventListener('load', ()=>requestAnimationFrame(init));
+let rt; window.addEventListener('resize', ()=>{ clearTimeout(rt); rt=setTimeout(drawAll,120); });
+</script>
+</body>
+</html>

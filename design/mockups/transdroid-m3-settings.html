@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transdroid · Settings (M3 Expressive)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0" rel="stylesheet">
+<style>
+:root{
+  --surface:#f8faf0;
+  --surface-low:#f2f5ea;
+  --surface-container:#eceee2;
+  --surface-high:#e6e9dd;
+  --surface-highest:#e0e3d7;
+  --group:#ffffff;
+  --on-surface:#1a1c15;
+  --on-surface-var:#44483b;
+  --muted:#5c6053;
+  --outline:#75796a;
+  --outline-variant:#c5c8b8;
+  --primary:#3f6a1e;
+  --on-primary:#ffffff;
+  --primary-container:#c0f39a;
+  --on-primary-container:#0b2100;
+  --seed:#4d7d2a;
+  --donate-bg:#e9f3da;
+  --shadow-fab:0 6px 16px rgba(35,64,10,.32), 0 2px 5px rgba(35,64,10,.26);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;height:100%;}
+body{
+  font-family:"Roboto",system-ui,sans-serif;
+  background:radial-gradient(120% 90% at 50% 0%, #2c3227 0%, #1a1e16 60%, #12140f 100%);
+  min-height:100%; display:flex; align-items:center; justify-content:center; padding:32px 16px;
+}
+.msr{
+  font-family:"Material Symbols Rounded"; font-weight:normal; font-style:normal; line-height:1;
+  letter-spacing:normal; text-transform:none; white-space:nowrap; display:inline-block; direction:ltr;
+  -webkit-font-smoothing:antialiased; font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24; user-select:none;
+}
+.fill{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
+
+.phone{
+  width:390px; max-width:100%; height:820px; max-height:calc(100vh - 40px);
+  background:#0c0d0a; border-radius:46px; padding:8px;
+  box-shadow:0 30px 70px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.screen{
+  position:relative; height:100%; width:100%; background:var(--surface); border-radius:39px;
+  overflow:hidden; display:flex; flex-direction:column; color:var(--on-surface); isolation:isolate;
+}
+
+.statusbar{
+  height:34px; flex:none; display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px 0 28px; font-size:14px; font-weight:600; letter-spacing:.2px;
+}
+.statusbar .sys{display:flex; align-items:center; gap:7px;}
+.statusbar .sys .msr{font-size:18px;}
+
+/* large top app bar */
+.appbar{flex:none; padding:2px 6px 6px;}
+.appbar-top{height:48px; display:flex; align-items:center;}
+.iconbtn{
+  border:none; background:transparent; cursor:pointer; width:44px; height:44px; border-radius:50%;
+  display:grid; place-items:center; color:var(--on-surface-var); transition:background .15s;
+}
+.iconbtn:hover{background:var(--surface-high);}
+.iconbtn .msr{font-size:24px;}
+.appbar h1{margin:0; padding:2px 18px 6px; font-size:28px; font-weight:500; letter-spacing:0;}
+
+.content{flex:1; overflow-y:auto; padding:0 16px 40px; scrollbar-width:none;}
+.content::-webkit-scrollbar{display:none;}
+
+.section{margin-top:16px;}
+.section-title{font-size:13px; font-weight:600; color:var(--on-surface-var); padding:4px 14px 8px;}
+.group{background:var(--group); border-radius:24px; overflow:hidden;}
+
+.row{
+  position:relative; display:flex; align-items:center; gap:16px;
+  padding:12px 18px; min-height:62px; cursor:pointer; transition:background .12s;
+}
+.row:hover{background:var(--surface-low);}
+.row + .row::before{
+  content:""; position:absolute; top:0; left:58px; right:0; height:1px;
+  background:var(--outline-variant); opacity:.5;
+}
+.row .ic{width:24px; display:grid; place-items:center; color:var(--on-surface-var); flex:none;}
+.row .ic .msr{font-size:23px;}
+.row .txt{flex:1; min-width:0;}
+.row .txt b{display:block; font-size:15px; font-weight:600; color:var(--on-surface); line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.row .txt small{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.row .txt small .sd{width:7px; height:7px; border-radius:50%; background:var(--seed); flex:none;}
+.row .tr{flex:none; display:flex; align-items:center; gap:8px; color:var(--muted);}
+.row .tr .msr{font-size:22px;}
+.chip{
+  font-size:11px; font-weight:700; letter-spacing:.2px; color:var(--primary);
+  background:var(--primary-container); padding:3px 9px; border-radius:999px;
+}
+
+/* add rows */
+.row.add .plus{
+  width:36px; height:36px; border-radius:12px; background:var(--primary-container); color:var(--primary);
+  display:grid; place-items:center; flex:none; margin-left:-6px;
+}
+.row.add .plus .msr{font-size:22px;}
+.row.add .txt b{color:var(--primary);}
+
+/* donate CTA */
+.row.donate{background:var(--donate-bg);}
+.row.donate:hover{background:#e0eecd;}
+.row.donate .ic{color:var(--primary);}
+.row.donate + .row::before, .row.donate::before{display:none;}
+
+.footer-note{text-align:center; font-size:11.5px; color:var(--outline); padding:20px 0 4px;}
+</style>
+</head>
+<body>
+  <div class="phone"><div class="screen">
+
+    <div class="statusbar">
+      <span>4:52</span>
+      <span class="sys">
+        <span class="msr">network_wifi</span>
+        <span class="msr">signal_cellular_alt</span>
+        <span class="msr fill">battery_5_bar</span>
+      </span>
+    </div>
+
+    <header class="appbar">
+      <div class="appbar-top">
+        <button class="iconbtn" aria-label="Back"><span class="msr">arrow_back</span></button>
+      </div>
+      <h1>Settings</h1>
+    </header>
+
+    <main class="content">
+
+      <!-- Servers -->
+      <section class="section">
+        <div class="section-title">Servers</div>
+        <div class="group">
+          <div class="row">
+            <span class="ic"><span class="msr">dns</span></span>
+            <span class="txt"><b>Xirvik</b><small><span class="sd"></span> Seedbox · Connected</small></span>
+            <span class="tr"><span class="chip">Default</span><span class="msr">chevron_right</span></span>
+          </div>
+          <div class="row">
+            <span class="ic"><span class="msr">storage</span></span>
+            <span class="txt"><b>Home NAS</b><small>Transmission · 192.168.1.10:9091</small></span>
+            <span class="tr"><span class="msr">chevron_right</span></span>
+          </div>
+          <div class="row add">
+            <span class="plus"><span class="msr">add</span></span>
+            <span class="txt"><b>Add server</b></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RSS feeds -->
+      <section class="section">
+        <div class="section-title">RSS feeds</div>
+        <div class="group">
+          <div class="row">
+            <span class="ic"><span class="msr">rss_feed</span></span>
+            <span class="txt"><b>Ubuntu Releases</b><small>3 new · checked 5 min ago</small></span>
+            <span class="tr"><span class="msr">chevron_right</span></span>
+          </div>
+          <div class="row">
+            <span class="ic"><span class="msr">rss_feed</span></span>
+            <span class="txt"><b>Debian CD Images</b><small>Checked 1 h ago</small></span>
+            <span class="tr"><span class="msr">chevron_right</span></span>
+          </div>
+          <div class="row">
+            <span class="ic"><span class="msr">rss_feed</span></span>
+            <span class="txt"><b>LinuxTracker</b><small>12 new · checked 20 min ago</small></span>
+            <span class="tr"><span class="msr">chevron_right</span></span>
+          </div>
+          <div class="row add">
+            <span class="plus"><span class="msr">add</span></span>
+            <span class="txt"><b>Add feed</b></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Preferences -->
+      <section class="section">
+        <div class="section-title">Preferences</div>
+        <div class="group">
+          <div class="row">
+            <span class="ic"><span class="msr">notifications</span></span>
+            <span class="txt"><b>Notifications</b><small>Finished downloads, errors, alarms</small></span>
+            <span class="tr"><span class="msr">chevron_right</span></span>
+          </div>
+          <div class="row">
+            <span class="ic"><span class="msr">tune</span></span>
+            <span class="txt"><b>System</b><small>Background polling, data saver, storage</small></span>
+            <span class="tr"><span class="msr">chevron_right</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Support -->
+      <section class="section">
+        <div class="section-title">Support</div>
+        <div class="group">
+          <div class="row">
+            <span class="ic"><span class="msr">help</span></span>
+            <span class="txt"><b>Help</b><small>Guides and troubleshooting</small></span>
+            <span class="tr"><span class="msr">chevron_right</span></span>
+          </div>
+          <div class="row donate">
+            <span class="ic"><span class="msr fill">volunteer_activism</span></span>
+            <span class="txt"><b>Donate</b><small>Support Transdroid development</small></span>
+            <span class="tr"><span class="msr">open_in_new</span></span>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer-note">Transdroid 2.6.0</div>
+
+    </main>
+
+  </div></div>
+</body>
+</html>

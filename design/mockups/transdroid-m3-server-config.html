@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transdroid · Server settings (M3 Expressive)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0" rel="stylesheet">
+<style>
+:root{
+  --surface:#f8faf0;
+  --surface-low:#f2f5ea;
+  --surface-container:#eceee2;
+  --surface-high:#e6e9dd;
+  --surface-highest:#e0e3d7;
+  --field:#edf0e4;
+  --on-surface:#1a1c15;
+  --on-surface-var:#44483b;
+  --muted:#5c6053;
+  --outline:#75796a;
+  --outline-variant:#c5c8b8;
+  --primary:#3f6a1e;
+  --on-primary:#ffffff;
+  --primary-container:#c0f39a;
+  --on-primary-container:#0b2100;
+  --sel-bg:#d8e8c9; --sel-fg:#2b3b1c;
+  --seed:#4d7d2a;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;height:100%;}
+body{
+  font-family:"Roboto",system-ui,sans-serif;
+  background:radial-gradient(120% 90% at 50% 0%, #2c3227 0%, #1a1e16 60%, #12140f 100%);
+  min-height:100%; display:flex; align-items:center; justify-content:center; padding:32px 16px;
+}
+.msr{
+  font-family:"Material Symbols Rounded"; font-weight:normal; font-style:normal; line-height:1;
+  letter-spacing:normal; text-transform:none; white-space:nowrap; display:inline-block; direction:ltr;
+  -webkit-font-smoothing:antialiased; font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24; user-select:none;
+}
+.fill{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
+
+.phone{
+  width:390px; max-width:100%; height:820px; max-height:calc(100vh - 40px);
+  background:#0c0d0a; border-radius:46px; padding:8px;
+  box-shadow:0 30px 70px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.screen{
+  position:relative; height:100%; width:100%; background:var(--surface); border-radius:39px;
+  overflow:hidden; display:flex; flex-direction:column; color:var(--on-surface); isolation:isolate;
+}
+
+.statusbar{
+  height:34px; flex:none; display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px 0 28px; font-size:14px; font-weight:600; letter-spacing:.2px;
+}
+.statusbar .sys{display:flex; align-items:center; gap:7px;}
+.statusbar .sys .msr{font-size:18px;}
+
+.appbar{flex:none; display:flex; align-items:center; gap:2px; padding:4px 12px 8px 4px;}
+.iconbtn{
+  border:none; background:transparent; cursor:pointer; width:44px; height:44px; border-radius:50%;
+  display:grid; place-items:center; color:var(--on-surface-var); transition:background .15s;
+}
+.iconbtn:hover{background:var(--surface-high);}
+.iconbtn .msr{font-size:24px;}
+.appbar h1{flex:1; margin:0; font-size:20px; font-weight:600; padding-left:4px;}
+.save{
+  height:40px; padding:0 20px; border:none; border-radius:20px; cursor:pointer;
+  background:var(--primary); color:var(--on-primary); font-family:inherit; font-size:14px; font-weight:600;
+}
+.save:hover{filter:brightness(1.08);}
+
+.content{flex:1; overflow-y:auto; padding:2px 16px 36px; scrollbar-width:none;}
+.content::-webkit-scrollbar{display:none;}
+
+.section{margin-top:20px;}
+.section-title{font-size:13px; font-weight:600; color:var(--on-surface-var); padding:0 4px 10px;}
+.sublabel{font-size:12.5px; font-weight:600; color:var(--muted); padding:2px 4px 8px;}
+
+/* text fields */
+.field{background:var(--field); border-radius:16px; padding:9px 14px 10px; border:1.5px solid transparent; transition:border-color .15s, background .15s; margin-bottom:10px;}
+.field:focus-within{border-color:var(--primary); background:var(--surface-high);}
+.flabel{display:block; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:2px;}
+.field:focus-within .flabel{color:var(--primary);}
+.frow{display:flex; align-items:center; gap:12px;}
+.frow .fic{font-size:20px; color:var(--muted); flex:none;}
+.frow input{flex:1; min-width:0; border:none; background:transparent; outline:none; font-family:inherit; font-size:15px; color:var(--on-surface);}
+.frow input::placeholder{color:var(--outline);}
+.ftrail{border:none; background:transparent; cursor:pointer; color:var(--muted); width:34px; height:34px; border-radius:50%; display:grid; place-items:center; margin:-6px -6px -6px 0; flex:none;}
+.ftrail:hover{background:var(--surface-highest);}
+.ftrail .msr{font-size:20px;}
+.helper{font-size:12px; color:var(--muted); padding:0 6px 2px; margin:-2px 0 10px;}
+
+/* segmented / toggle group */
+.seg{display:flex; background:var(--surface-container); border-radius:999px; padding:4px; gap:4px; margin-bottom:8px;}
+.seg button{
+  flex:1; height:42px; border:none; background:transparent; border-radius:999px; cursor:pointer;
+  font-family:inherit; font-size:13px; font-weight:600; color:var(--on-surface-var);
+  display:flex; align-items:center; justify-content:center; gap:6px; transition:background .15s, color .15s; white-space:nowrap;
+}
+.seg button.sel{background:var(--sel-bg); color:var(--sel-fg);}
+.seg button .msr{font-size:18px;}
+
+/* exposed dropdown menu */
+.select{position:relative; margin-bottom:10px;}
+.select-trigger{
+  width:100%; display:block; text-align:left; cursor:pointer; font-family:inherit;
+  background:var(--field); border-radius:16px; padding:9px 14px 10px; border:1.5px solid transparent;
+  transition:border-color .15s, background .15s;
+}
+.select-trigger:hover{background:var(--surface-high);}
+.select.open .select-trigger{border-color:var(--primary); background:var(--surface-high);}
+.select .flabel{margin-bottom:2px;}
+.select.open .flabel{color:var(--primary);}
+.select-val{flex:1; min-width:0; font-size:15px; font-weight:500; color:var(--on-surface);}
+.select .chev{color:var(--muted); transition:transform .2s; flex:none;}
+.select.open .chev{transform:rotate(180deg); color:var(--primary);}
+.menu{
+  position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:20;
+  background:#fbfdf6; border-radius:18px; padding:6px;
+  box-shadow:0 8px 24px rgba(31,35,22,.22), 0 2px 6px rgba(31,35,22,.14);
+  display:none;
+}
+.select.open .menu{display:block; animation:menupop .14s ease-out;}
+@keyframes menupop{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+.menu-item{
+  width:100%; text-align:left; border:none; background:transparent; cursor:pointer; font-family:inherit;
+  display:flex; align-items:center; gap:12px; padding:12px; border-radius:13px;
+  font-size:14.5px; font-weight:500; color:var(--on-surface); transition:background .12s;
+}
+.menu-item:hover{background:var(--surface-container);}
+.menu-item .ck{font-size:20px; color:var(--primary); visibility:hidden; flex:none;}
+.menu-item.sel{background:var(--sel-bg); color:var(--sel-fg);}
+.menu-item.sel .ck{visibility:visible; color:var(--sel-fg);}
+
+/* detected panel */
+.detected{background:var(--surface-container); border-radius:20px; padding:4px 4px 6px; margin-bottom:6px;}
+.dhead{font-size:12.5px; font-weight:600; color:var(--on-surface-var); padding:10px 14px 4px;}
+.drow{display:flex; align-items:center; gap:12px; padding:8px 14px;}
+.drow .msr{font-size:20px; color:var(--muted); flex:none;}
+.drow .dk{flex:1; font-size:13.5px; color:var(--on-surface-var);}
+.drow .dv{font-size:13.5px; font-weight:600; color:var(--on-surface); font-variant-numeric:tabular-nums; white-space:nowrap; max-width:52%; overflow:hidden; text-overflow:ellipsis;}
+.drow .dv.yes{color:var(--seed);}
+.linkbtn{
+  border:none; background:transparent; cursor:pointer; color:var(--primary); font-family:inherit;
+  font-size:13px; font-weight:600; padding:8px 14px 2px;
+}
+
+.btn-outline{
+  width:100%; height:52px; margin-top:16px; border:1.5px solid var(--outline-variant); border-radius:26px;
+  background:transparent; color:var(--on-surface); font-family:inherit; font-size:15px; font-weight:600;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.btn-outline:hover{background:var(--surface-high);}
+.btn-outline .msr{font-size:20px; color:var(--primary);}
+
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+  <div class="phone"><div class="screen">
+
+    <div class="statusbar">
+      <span>4:52</span>
+      <span class="sys">
+        <span class="msr">network_wifi</span>
+        <span class="msr">signal_cellular_alt</span>
+        <span class="msr fill">battery_5_bar</span>
+      </span>
+    </div>
+
+    <header class="appbar">
+      <button class="iconbtn" aria-label="Back"><span class="msr">arrow_back</span></button>
+      <h1>Edit server</h1>
+      <button class="save">Save</button>
+    </header>
+
+    <main class="content">
+
+      <!-- Server basics -->
+      <section class="section">
+        <div class="section-title">Server</div>
+
+        <div class="field">
+          <span class="flabel">Server name</span>
+          <div class="frow"><span class="msr fic">badge</span><input type="text" value="Xirvik" placeholder="Optional label"></div>
+        </div>
+
+        <div class="select" id="typeSelect">
+          <button class="select-trigger" id="typeTrigger" aria-haspopup="listbox" aria-expanded="false">
+            <span class="flabel">Server type</span>
+            <span class="frow">
+              <span class="msr fic">dns</span>
+              <span class="select-val" id="typeVal">qBittorrent</span>
+              <span class="msr chev">arrow_drop_down</span>
+            </span>
+          </button>
+          <div class="menu" id="typeMenu" role="listbox">
+            <button class="menu-item" data-type="transmission" role="option"><span class="msr ck">check</span>Transmission</button>
+            <button class="menu-item" data-type="rtorrent" role="option"><span class="msr ck">check</span>rTorrent</button>
+            <button class="menu-item sel" data-type="qbittorrent" role="option"><span class="msr ck">check</span>qBittorrent</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Connection -->
+      <section class="section">
+        <div class="section-title">Connection</div>
+
+        <!-- Web UI clients: Transmission / qBittorrent -->
+        <div id="web">
+          <div class="field">
+            <span class="flabel">Web interface URL</span>
+            <div class="frow"><span class="msr fic">link</span><input id="url" type="url" value="https://mars.seedbox.io/qbittorrent" placeholder="https://host:port/path"></div>
+          </div>
+          <div class="helper" id="urlHelp">Full qBittorrent Web UI address — Transdroid works out the rest.</div>
+
+          <div class="detected">
+            <div class="dhead">Detected settings</div>
+            <div class="drow"><span class="msr" id="dLockIc">lock</span><span class="dk">Secure connection</span><span class="dv yes" id="dSsl">Yes</span></div>
+            <div class="drow"><span class="msr">dns</span><span class="dk">Host</span><span class="dv" id="dHost">mars.seedbox.io</span></div>
+            <div class="drow"><span class="msr">tag</span><span class="dk">Port</span><span class="dv" id="dPort">443</span></div>
+            <div class="drow"><span class="msr">folder</span><span class="dk">Folder</span><span class="dv" id="dPath">/qbittorrent</span></div>
+          </div>
+          <button class="linkbtn">Override individual parts</button>
+        </div>
+
+        <!-- rTorrent -->
+        <div id="rt" class="hidden">
+          <div class="sublabel">How to connect</div>
+          <div class="seg" id="rtSeg">
+            <button data-mode="url" class="sel"><span class="msr">link</span> ruTorrent URL</button>
+            <button data-mode="scgi"><span class="msr">terminal</span> Manual (SCGI)</button>
+          </div>
+
+          <!-- ruTorrent URL sub-mode -->
+          <div id="rtUrl">
+            <div class="field">
+              <span class="flabel">ruTorrent URL</span>
+              <div class="frow"><span class="msr fic">link</span><input id="rturl" type="url" placeholder="https://host/rutorrent"></div>
+            </div>
+            <div class="helper">Point to your ruTorrent install — same idea as the other clients.</div>
+
+            <div class="detected">
+              <div class="dhead">Detected settings</div>
+              <div class="drow"><span class="msr" id="rLockIc">lock_open</span><span class="dk">Secure connection</span><span class="dv" id="rSsl">—</span></div>
+              <div class="drow"><span class="msr">dns</span><span class="dk">Host</span><span class="dv" id="rHost">—</span></div>
+              <div class="drow"><span class="msr">tag</span><span class="dk">Port</span><span class="dv" id="rPort">—</span></div>
+              <div class="drow"><span class="msr">folder</span><span class="dk">Folder</span><span class="dv" id="rPath">—</span></div>
+            </div>
+          </div>
+
+          <!-- SCGI manual sub-mode -->
+          <div id="rtScgi" class="hidden">
+            <div class="field">
+              <span class="flabel">Hostname / IP</span>
+              <div class="frow"><span class="msr fic">dns</span><input type="text" placeholder="192.168.1.10"></div>
+            </div>
+            <div class="field">
+              <span class="flabel">SCGI port</span>
+              <div class="frow"><span class="msr fic">tag</span><input type="text" inputmode="numeric" placeholder="5000"></div>
+            </div>
+            <div class="field">
+              <span class="flabel">SCGI mount path (optional)</span>
+              <div class="frow"><span class="msr fic">folder</span><input type="text" placeholder="/RPC2"></div>
+            </div>
+            <div class="helper">Connects straight to rTorrent's SCGI socket, bypassing a web server.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Authentication -->
+      <section class="section">
+        <div class="section-title">Authentication</div>
+        <div class="field">
+          <span class="flabel">Username</span>
+          <div class="frow"><span class="msr fic">person</span><input type="text" value="myuser" placeholder="Optional"></div>
+        </div>
+        <div class="field">
+          <span class="flabel">Password</span>
+          <div class="frow">
+            <span class="msr fic">lock</span>
+            <input id="pw" type="password" value="supersecret" placeholder="Optional">
+            <button class="ftrail" id="eye" aria-label="Show password"><span class="msr">visibility</span></button>
+          </div>
+        </div>
+      </section>
+
+      <button class="btn-outline"><span class="msr">network_check</span> Test connection</button>
+
+    </main>
+
+  </div></div>
+
+<script>
+const CLIENT = { transmission:'Transmission', rtorrent:'rTorrent', qbittorrent:'qBittorrent' };
+
+/* URL parsing → detected fields */
+function parse(v){
+  v = (v||'').trim();
+  if(!v) return null;
+  const hadHttps = /^https:\/\//i.test(v);
+  let s = /^https?:\/\//i.test(v) ? v : 'http://' + v;
+  try{
+    const u = new URL(s);
+    if(!u.hostname) return null;
+    const secure = hadHttps;
+    const port = u.port || (secure ? '443' : '80');
+    let path = u.pathname; if(path === '/' || path === '') path = '—';
+    return { secure, host:u.hostname, port, path };
+  }catch(e){ return null; }
+}
+function wire(inputId, ids){
+  const input = document.getElementById(inputId);
+  const el = k => document.getElementById(ids[k]);
+  function update(){
+    const p = parse(input.value);
+    if(!p){
+      el('ssl').textContent='—'; el('ssl').classList.remove('yes');
+      el('host').textContent='—'; el('port').textContent='—'; el('path').textContent='—';
+      el('lock').textContent='lock_open';
+      return;
+    }
+    el('ssl').textContent = p.secure ? 'Yes' : 'No';
+    el('ssl').classList.toggle('yes', p.secure);
+    el('lock').textContent = p.secure ? 'lock' : 'lock_open';
+    el('host').textContent = p.host;
+    el('port').textContent = p.port;
+    el('path').textContent = p.path;
+  }
+  input.addEventListener('input', update);
+  update();
+}
+wire('url',   {ssl:'dSsl', lock:'dLockIc', host:'dHost', port:'dPort', path:'dPath'});
+wire('rturl', {ssl:'rSsl', lock:'rLockIc', host:'rHost', port:'rPort', path:'rPath'});
+
+/* client type switch */
+const web = document.getElementById('web'), rt = document.getElementById('rt');
+const urlHelp = document.getElementById('urlHelp');
+const typeSelect = document.getElementById('typeSelect');
+const typeTrigger = document.getElementById('typeTrigger');
+const typeVal = document.getElementById('typeVal');
+
+function openMenu(o){ typeSelect.classList.toggle('open', o); typeTrigger.setAttribute('aria-expanded', o); }
+typeTrigger.addEventListener('click', e=>{ e.stopPropagation(); openMenu(!typeSelect.classList.contains('open')); });
+document.getElementById('typeMenu').addEventListener('click', e=> e.stopPropagation());
+document.addEventListener('click', ()=> openMenu(false));
+
+function selectType(t){
+  document.querySelectorAll('#typeMenu .menu-item').forEach(x=>x.classList.toggle('sel', x.dataset.type===t));
+  typeVal.textContent = CLIENT[t];
+  const isRt = t === 'rtorrent';
+  web.classList.toggle('hidden', isRt);
+  rt.classList.toggle('hidden', !isRt);
+  if(!isRt) urlHelp.textContent = `Full ${CLIENT[t]} Web UI address — Transdroid works out the rest.`;
+}
+document.querySelectorAll('#typeMenu .menu-item').forEach(b=>{
+  b.addEventListener('click', ()=>{ selectType(b.dataset.type); openMenu(false); });
+});
+
+/* rTorrent sub-mode switch */
+const rtUrl = document.getElementById('rtUrl'), rtScgi = document.getElementById('rtScgi');
+document.querySelectorAll('#rtSeg button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#rtSeg button').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');
+    const scgi = b.dataset.mode === 'scgi';
+    rtUrl.classList.toggle('hidden', scgi);
+    rtScgi.classList.toggle('hidden', !scgi);
+  });
+});
+
+/* password reveal */
+const pw = document.getElementById('pw'), eye = document.getElementById('eye');
+eye.addEventListener('click', ()=>{
+  const show = pw.type === 'password';
+  pw.type = show ? 'text' : 'password';
+  eye.querySelector('.msr').textContent = show ? 'visibility_off' : 'visibility';
+});
+</script>
+</body>
+</html>
