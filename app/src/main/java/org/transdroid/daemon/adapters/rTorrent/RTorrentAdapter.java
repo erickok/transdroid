@@ -216,13 +216,34 @@ public class RTorrentAdapter implements IDaemonAdapter {
 
                     // Remove a torrent
                     RemoveTask removeTask = (RemoveTask) task;
+                    String removeHash = task.getTargetTorrent().getUniqueID();
+                    String basePath = null;
                     if (removeTask.includingData()) {
+                        // Resolve the payload path now; d.base_path is unavailable after d.erase.
+                        try {
+                            Object basePathResult = makeRtorrentCall(log, "d.base_path", new String[]{removeHash});
+                            if (basePathResult != null) {
+                                basePath = basePathResult.toString();
+                            }
+                        } catch (DaemonException e) {
+                            log.d(LOG_NAME, "Could not resolve d.base_path for " + removeHash + ": " + e.toString());
+                        }
+                        // custom5=1 + d.delete_tied is the ruTorrent erasedata contract; harmless on vanilla rTorrent.
                         makeRtorrentCall(log, "d.custom5.set",
-                                new String[]{task.getTargetTorrent().getUniqueID(), "1"});
+                                new String[]{removeHash, "1"});
                         makeRtorrentCall(log, "d.delete_tied",
-                                new String[]{task.getTargetTorrent().getUniqueID()});
+                                new String[]{removeHash});
                     }
-                    makeRtorrentCall(log, "d.erase", new String[]{task.getTargetTorrent().getUniqueID()});
+                    makeRtorrentCall(log, "d.erase", new String[]{removeHash});
+                    if (removeTask.includingData() && basePath != null && basePath.startsWith("/") && basePath.length() > 1) {
+                        // Vanilla rTorrent has no built-in "erase with data"; explicitly rm the payload.
+                        try {
+                            makeRtorrentCall(log, "execute2",
+                                    new String[]{"", "rm", "-rf", "--", basePath});
+                        } catch (DaemonException e) {
+                            log.d(LOG_NAME, "execute2 rm -rf failed for " + basePath + ": " + e.toString());
+                        }
+                    }
                     return new DaemonTaskSuccessResult(task);
 
                 case Pause:
