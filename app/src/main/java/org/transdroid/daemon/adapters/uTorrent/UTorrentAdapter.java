@@ -37,6 +37,7 @@ import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Label;
+import org.transdroid.daemon.Peer;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
@@ -54,6 +55,8 @@ import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
+import org.transdroid.daemon.task.GetTorrentPeersTask;
+import org.transdroid.daemon.task.GetTorrentPeersTaskSuccessResult;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.RetrieveTask;
 import org.transdroid.daemon.task.RetrieveTaskSuccessResult;
@@ -151,6 +154,14 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
                             "&action=getprops" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID());
                     return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task,
                             parseJsonTorrentDetails(dresult.getJSONArray("props")));
+
+                case GetTorrentPeers:
+
+                    // Request the connected peers of a specific torrent
+                    JSONObject presult = makeUtorrentRequest(log,
+                            "&action=getpeers" + RPC_URL_HASH + task.getTargetTorrent().getUniqueID());
+                    return new GetTorrentPeersTaskSuccessResult((GetTorrentPeersTask) task,
+                            parseJsonPeers(presult.getJSONArray("peers")));
 
                 case GetFileList:
 
@@ -594,6 +605,40 @@ public class UTorrentAdapter implements IDaemonAdapter, RemoteRssSupplier {
         }
 
         return null;
+
+    }
+
+    private List<Peer> parseJsonPeers(JSONArray results) throws JSONException {
+
+        // The getpeers response is [hash, [ [peer fields], ... ]] for the single requested torrent.
+        // Peer field indices follow the uTorrent Web UI constants.
+        List<Peer> peers = new ArrayList<>();
+        if (results.length() < 2) {
+            return peers;
+        }
+        JSONArray peerList = results.getJSONArray(1);
+        for (int i = 0; i < peerList.length(); i++) {
+            JSONArray peer = peerList.getJSONArray(i);
+            String country = peer.optString(0);
+            if (country != null) {
+                country = country.trim().toUpperCase(java.util.Locale.US);
+                if (country.isEmpty() || country.equals("00") || country.equals("XX")) {
+                    country = null;
+                }
+            }
+            String address = peer.optString(1);
+            int port = peer.optInt(4, 0);
+            if (port > 0) {
+                address = address + ":" + port;
+            }
+            String flags = peer.optString(6);
+            Boolean encrypted = (flags == null || flags.isEmpty()) ? null
+                    : (flags.contains("E") || flags.contains("e"));
+            float progress = peer.optInt(7, -1) / 1000f; // promille
+            peers.add(new Peer(address, peer.optString(5), peer.optInt(8), peer.optInt(9), progress, encrypted,
+                    country));
+        }
+        return peers;
 
     }
 

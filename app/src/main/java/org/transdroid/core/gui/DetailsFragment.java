@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,23 +35,29 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ActionMenuView;
 import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.enums.SnackbarType;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.InstanceState;
-import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ServerSetting;
-import org.transdroid.core.gui.lists.DetailsAdapter;
-import org.transdroid.core.gui.lists.SimpleListItemAdapter;
+import org.transdroid.core.app.settings.SystemSettings;
+import org.transdroid.core.gui.lists.DetailsPagerAdapter;
+import org.transdroid.core.gui.lists.GeoIpHelper;
+import org.transdroid.core.gui.lists.PiecesMapView;
+import org.transdroid.core.gui.lists.TorrentDetailsView;
+import org.transdroid.core.gui.lists.TorrentDetailsView_;
 import org.transdroid.core.gui.navigation.Label;
 import org.transdroid.core.gui.navigation.NavigationHelper_;
 import org.transdroid.core.gui.navigation.RefreshableActivity;
@@ -62,10 +69,13 @@ import org.transdroid.core.gui.navigation.SetStorageLocationDialog.OnStorageLoca
 import org.transdroid.core.gui.navigation.SetTrackersDialog;
 import org.transdroid.core.gui.navigation.SetTrackersDialog.OnTrackersUpdatedListener;
 import org.transdroid.daemon.Daemon;
+import org.transdroid.daemon.Peer;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
+import org.transdroid.daemon.Tracker;
+import org.transdroid.daemon.TrackerStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,6 +101,8 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
     @InstanceState
     protected ArrayList<TorrentFile> torrentFiles = null;
     @InstanceState
+    protected ArrayList<Peer> torrentPeers = null;
+    @InstanceState
     protected ArrayList<Label> currentLabels = null;
     @InstanceState
     protected boolean isLoadingTorrent = false;
@@ -104,13 +116,25 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
     @ViewById(R.id.contextual_menu)
     protected ActionMenuView contextualMenu;
     @ViewById
-    protected SwipeRefreshLayout swipeRefreshLayout;
+    protected View detailsContent;
     @ViewById
-    protected ListView detailsList;
+    protected LinearLayout detailsHeader;
+    @ViewById
+    protected TabLayout detailsTabs;
+    @ViewById
+    protected ViewPager2 detailsPager;
     @ViewById
     protected TextView emptyText, errorText;
     @ViewById
     protected ProgressBar loadingProgress;
+    @Bean
+    protected GeoIpHelper geoIpHelper;
+    @Bean
+    protected SystemSettings systemSettings;
+    private DetailsPagerAdapter pagerAdapter = null;
+    private ListView filesList = null;
+    private TorrentDetailsView torrentDetailsView = null;
+    private PiecesMapView piecesMapView = null;
     private ServerSetting currentServerSettings = null;
     private MultiChoiceModeListener onDetailsSelected = new MultiChoiceModeListener() {
 
@@ -126,7 +150,7 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
             getActivity().getMenuInflater().inflate(R.menu.fragment_details_cab_main, contextualMenu.getMenu());
             Context themedContext = ((AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext();
             mode.getMenuInflater().inflate(R.menu.fragment_details_cab_secondary, menu);
-            selectionManagerMode = new SelectionManagerMode(themedContext, detailsList, R.plurals.navigation_filesselected);
+            selectionManagerMode = new SelectionManagerMode(themedContext, filesList, R.plurals.navigation_filesselected);
             selectionManagerMode.setOnlyCheckClass(TorrentFile.class);
             selectionManagerMode.onCreateActionMode(mode, menu);
             return true;
@@ -139,6 +163,10 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
             if (getActivity() != null && getActivity() instanceof TorrentsActivity) {
                 ((TorrentsActivity) getActivity()).stopRefresh = true;
                 ((TorrentsActivity) getActivity()).stopAutoRefresh();
+            }
+            if (getActivity() instanceof DetailsActivity) {
+                ((DetailsActivity) getActivity()).stopRefresh = true;
+                ((DetailsActivity) getActivity()).stopAutoRefresh();
             }
             boolean filePaths = currentServerSettings != null && Daemon.supportsFilePaths(currentServerSettings.getType());
             contextualMenu.getMenu().findItem(R.id.action_download).setVisible(filePaths);
@@ -156,10 +184,10 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
             // Get checked torrents
             List<TorrentFile> checked = new ArrayList<>();
-            for (int i = 0; i < detailsList.getCheckedItemPositions().size(); i++) {
-                if (detailsList.getCheckedItemPositions().valueAt(i) && i < detailsList.getAdapter().getCount() &&
-                        detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)) instanceof TorrentFile) {
-                    checked.add((TorrentFile) detailsList.getAdapter().getItem(detailsList.getCheckedItemPositions().keyAt(i)));
+            for (int i = 0; i < filesList.getCheckedItemPositions().size(); i++) {
+                if (filesList.getCheckedItemPositions().valueAt(i) && i < filesList.getAdapter().getCount() &&
+                        filesList.getAdapter().getItem(filesList.getCheckedItemPositions().keyAt(i)) instanceof TorrentFile) {
+                    checked.add((TorrentFile) filesList.getAdapter().getItem(filesList.getCheckedItemPositions().keyAt(i)));
                 }
             }
 
@@ -269,6 +297,10 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
                 ((TorrentsActivity) getActivity()).stopRefresh = false;
                 ((TorrentsActivity) getActivity()).startAutoRefresh();
             }
+            if (getActivity() instanceof DetailsActivity) {
+                ((DetailsActivity) getActivity()).stopRefresh = false;
+                ((DetailsActivity) getActivity()).startAutoRefresh();
+            }
             selectionManagerMode.onDestroyActionMode(mode);
             contextualMenu.setVisibility(View.GONE);
             detailsMenu.setVisibility(View.VISIBLE);
@@ -290,17 +322,43 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
 
         createMenuOptions();
 
-        // Set up details adapter (itself containing the actual lists to show), which allows multi-select and fast
-        // scrolling
-        detailsList.setAdapter(new DetailsAdapter(getActivity()));
-        detailsList.setMultiChoiceModeListener(onDetailsSelected);
-        detailsList.setFastScrollEnabled(true);
-        if (getActivity() != null && getActivity() instanceof RefreshableActivity) {
-            swipeRefreshLayout.setOnRefreshListener(() -> {
+        // Build the fixed summary header (torrent stats and an optional pieces map)
+        torrentDetailsView = TorrentDetailsView_.build(getActivity());
+        torrentDetailsView.setVisibility(View.GONE);
+        detailsHeader.addView(torrentDetailsView);
+        piecesMapView = new PiecesMapView(getActivity());
+        piecesMapView.setVisibility(View.GONE);
+        detailsHeader.addView(piecesMapView);
+
+        // Set up the swipeable Files / Peers / Trackers pager below the header
+        Runnable refresh = () -> {
+            if (getActivity() instanceof RefreshableActivity) {
                 ((RefreshableActivity) getActivity()).refreshScreen();
-                swipeRefreshLayout.setRefreshing(false); // Use our custom indicator
-            });
-        }
+            }
+        };
+        pagerAdapter = new DetailsPagerAdapter(getActivity(), geoIpHelper, refresh);
+        detailsPager.setAdapter(pagerAdapter);
+        detailsPager.setOffscreenPageLimit(2); // Keep all three pages alive
+        new TabLayoutMediator(detailsTabs, detailsPager, (tab, position) -> {
+            switch (position) {
+                case DetailsPagerAdapter.PAGE_PEERS:
+                    tab.setText(R.string.status_peers);
+                    break;
+                case DetailsPagerAdapter.PAGE_TRACKERS:
+                    tab.setText(R.string.status_trackers);
+                    break;
+                case DetailsPagerAdapter.PAGE_FILES:
+                default:
+                    tab.setText(R.string.status_files);
+                    break;
+            }
+        }).attach();
+
+        // The Files list keeps the multi-select priority contextual action bar
+        filesList = pagerAdapter.getFilesList();
+        filesList.setMultiChoiceModeListener(onDetailsSelected);
+        filesList.setFastScrollEnabled(true);
+        filesList.setOnItemClickListener((parent, view, position, id) -> filesList.setItemChecked(position, false));
 
         // Restore the fragment state (on orientation changes et al.)
         if (torrent != null) {
@@ -311,6 +369,9 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
         }
         if (torrent != null && torrentFiles != null) {
             updateTorrentFiles(torrent, torrentFiles);
+        }
+        if (torrent != null && torrentPeers != null) {
+            updateTorrentPeers(torrent, torrentPeers);
         }
 
     }
@@ -328,20 +389,27 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
         this.torrent = newTorrent;
         this.torrentId = newTorrent.getUniqueID();
         this.hasCriticalError = false;
-        ((DetailsAdapter) detailsList.getAdapter()).updateTorrent(newTorrent);
-        // Make the list (with details header) visible
-        detailsList.setVisibility(View.VISIBLE);
+        torrentDetailsView.update(newTorrent);
+        torrentDetailsView.setVisibility(newTorrent == null ? View.GONE : View.VISIBLE);
+        // Make the content (header + swipeable pages) visible
+        detailsContent.setVisibility(View.VISIBLE);
         emptyText.setVisibility(View.GONE);
         errorText.setVisibility(View.GONE);
         loadingProgress.setVisibility(View.GONE);
         // Also update the available actions in the action bar
         updateMenuOptions();
-        // Refresh the detailed statistics (errors) and list of files
+        // Refresh the detailed statistics (trackers), peers and list of files
         torrentDetails = null;
         torrentFiles = null;
+        torrentPeers = null;
         if (getTasksExecutor() != null) {
             getTasksExecutor().refreshTorrentDetails(torrent);
             getTasksExecutor().refreshTorrentFiles(torrent);
+            if (Daemon.supportsExtraPeers(torrent.getDaemon())) {
+                getTasksExecutor().refreshTorrentPeers(torrent);
+            } else {
+                updateTorrentPeers(torrent, new ArrayList<>());
+            }
         }
     }
 
@@ -357,12 +425,25 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
             return;
         }
         this.torrentDetails = newTorrentDetails;
-        ((DetailsAdapter) detailsList.getAdapter())
-                .updateTrackers(SimpleListItemAdapter.SimpleStringItem.wrapStringsList(newTorrentDetails.getTrackers()));
-        ((DetailsAdapter) detailsList.getAdapter())
-                .updateErrors(SimpleListItemAdapter.SimpleStringItem.wrapStringsList(newTorrentDetails.getErrors()));
-        ((DetailsAdapter) detailsList.getAdapter())
-                .updatePieces(newTorrentDetails.getPieces());
+
+        // Prefer the structured tracker details; fall back to the plain tracker URLs (status unknown)
+        List<Tracker> trackers = newTorrentDetails.getTrackerDetails();
+        if ((trackers == null || trackers.isEmpty()) && newTorrentDetails.getTrackers() != null) {
+            trackers = new ArrayList<>();
+            for (String url : newTorrentDetails.getTrackers()) {
+                trackers.add(new Tracker(url, TrackerStatus.UNKNOWN, null));
+            }
+        }
+        pagerAdapter.setTrackers(trackers);
+
+        // Update the optional pieces map in the fixed header
+        List<Integer> pieces = newTorrentDetails.getPieces();
+        if (pieces == null || pieces.isEmpty()) {
+            piecesMapView.setVisibility(View.GONE);
+        } else {
+            piecesMapView.setPieces(pieces);
+            piecesMapView.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -378,7 +459,24 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
         }
         Collections.sort(newTorrentFiles);
         this.torrentFiles = newTorrentFiles;
-        ((DetailsAdapter) detailsList.getAdapter()).updateTorrentFiles(newTorrentFiles);
+        pagerAdapter.setFiles(newTorrentFiles);
+    }
+
+    /**
+     * Updates the list adapter to show a new list of connected peers, replacing the old peers list.
+     *
+     * @param checkTorrent    The torrent for which the peers were retrieved
+     * @param newTorrentPeers The new, updated list of peer objects
+     */
+    public void updateTorrentPeers(Torrent checkTorrent, ArrayList<Peer> newTorrentPeers) {
+        // Check if these are actually the peers of the torrent we are now showing
+        if (torrentId == null || !torrentId.equals(checkTorrent.getUniqueID())) {
+            return;
+        }
+        Collections.sort(newTorrentPeers, systemSettings.getPeerSortBy().comparator());
+        this.torrentPeers = newTorrentPeers;
+        boolean supported = currentServerSettings == null || Daemon.supportsExtraPeers(currentServerSettings.getType());
+        pagerAdapter.setPeers(newTorrentPeers, supported);
     }
 
     /**
@@ -414,14 +512,25 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
      * Clear the screen by fully clearing the internal merge list (with header and other lists)
      */
     public void clear() {
-        detailsList.setAdapter(new DetailsAdapter(getActivity()));
-        detailsList.setVisibility(View.GONE);
+        if (pagerAdapter != null) {
+            pagerAdapter.setFiles(new ArrayList<>());
+            pagerAdapter.setPeers(new ArrayList<>(), true);
+            pagerAdapter.setTrackers(new ArrayList<>());
+        }
+        if (torrentDetailsView != null) {
+            torrentDetailsView.setVisibility(View.GONE);
+        }
+        if (piecesMapView != null) {
+            piecesMapView.setVisibility(View.GONE);
+        }
+        detailsContent.setVisibility(View.GONE);
         emptyText.setVisibility(!isLoadingTorrent && !hasCriticalError ? View.VISIBLE : View.GONE);
         errorText.setVisibility(!isLoadingTorrent && hasCriticalError ? View.VISIBLE : View.GONE);
         loadingProgress.setVisibility(isLoadingTorrent ? View.VISIBLE : View.GONE);
         torrent = null;
         torrentDetails = null;
         torrentFiles = null;
+        torrentPeers = null;
     }
 
     /**
@@ -437,11 +546,6 @@ public class DetailsFragment extends Fragment implements OnTrackersUpdatedListen
         if (isLoading || hasCriticalError) {
             clear();
         }
-    }
-
-    @ItemClick(resName = "details_list")
-    protected void detailsListClicked(int position) {
-        detailsList.setItemChecked(position, false);
     }
 
     public void createMenuOptions() {

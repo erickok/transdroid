@@ -17,9 +17,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_default"
-    android:layout_marginBottom="@dimen/margin_default">
+    android:layout_marginBottom="0dp">
 
     <LinearLayout
         android:id="@+id/date_label_wrapper"
@@ -199,12 +199,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/separator"
-        android:layout_marginBottom="@dimen/margin_half"
         android:orientation="vertical"
         android:paddingLeft="@dimen/margin_default"
         android:paddingTop="@dimen/margin_half"
         android:paddingRight="@dimen/margin_default"
-        android:paddingBottom="@dimen/margin_half">
+        android:paddingBottom="0dp">
 
         <TextView
             android:id="@+id/status_text"

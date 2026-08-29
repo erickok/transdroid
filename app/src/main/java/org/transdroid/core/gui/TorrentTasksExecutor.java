@@ -54,5 +54,7 @@ public interface TorrentTasksExecutor {
 
     void refreshTorrentFiles(Torrent torrent);
 
+    void refreshTorrentPeers(Torrent torrent);
+
     void updatePriority(Torrent torrent, List<TorrentFile> files, Priority priority);
 }

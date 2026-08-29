@@ -97,6 +97,7 @@ import org.transdroid.core.widget.ListWidgetProvider;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
 import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.Peer;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
@@ -115,6 +116,8 @@ import org.transdroid.daemon.task.GetStatsTask;
 import org.transdroid.daemon.task.GetStatsTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
+import org.transdroid.daemon.task.GetTorrentPeersTask;
+import org.transdroid.daemon.task.GetTorrentPeersTaskSuccessResult;
 import org.transdroid.daemon.task.PauseTask;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.ResumeTask;
@@ -1092,6 +1095,25 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
     }
 
     @Background
+    @Override
+    public void refreshTorrentPeers(Torrent torrent) {
+        if (!Daemon.supportsExtraPeers(currentConnection.getType())) {
+            return;
+        }
+        String startConnectionId = currentConnection.getSettings().getIdString();
+        DaemonTaskResult result = GetTorrentPeersTask.create(currentConnection, torrent).execute(log);
+        if (!startConnectionId.equals(currentConnection.getSettings().getIdString())) {
+            // During the command execution the user changed the server, so we are no longer interested in the result
+            return;
+        }
+        if (result instanceof GetTorrentPeersTaskSuccessResult) {
+            onTorrentPeersRetrieved(torrent, ((GetTorrentPeersTaskSuccessResult) result).getPeers());
+        } else {
+            onCommunicationError((DaemonTaskFailureResult) result, false);
+        }
+    }
+
+    @Background
     protected void getAdditionalStats() {
         String startConnectionId = currentConnection.getSettings().getIdString();
         DaemonTaskResult result = GetStatsTask.create(currentConnection).execute(log);
@@ -1500,6 +1522,14 @@ public class TorrentsActivity extends AppCompatActivity implements TorrentTasksE
         // Update the details fragment with the newly retrieved list of files
         if (fragmentDetails != null && fragmentDetails.isResumed()) {
             fragmentDetails.updateTorrentFiles(torrent, new ArrayList<>(torrentFiles));
+        }
+    }
+
+    @UiThread
+    protected void onTorrentPeersRetrieved(Torrent torrent, List<Peer> torrentPeers) {
+        // Update the details fragment with the newly retrieved list of peers
+        if (fragmentDetails != null && fragmentDetails.isResumed()) {
+            fragmentDetails.updateTorrentPeers(torrent, new ArrayList<>(torrentPeers));
         }
     }
 

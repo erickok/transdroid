@@ -38,11 +38,14 @@ import org.transdroid.daemon.DaemonException.ExceptionType;
 import org.transdroid.daemon.DaemonSettings;
 import org.transdroid.daemon.IDaemonAdapter;
 import org.transdroid.daemon.Label;
+import org.transdroid.daemon.Peer;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
 import org.transdroid.daemon.TorrentFile;
 import org.transdroid.daemon.TorrentStatus;
+import org.transdroid.daemon.Tracker;
+import org.transdroid.daemon.TrackerStatus;
 import org.transdroid.daemon.task.AddByFileTask;
 import org.transdroid.daemon.task.AddByMagnetUrlTask;
 import org.transdroid.daemon.task.AddByUrlTask;
@@ -54,6 +57,8 @@ import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
+import org.transdroid.daemon.task.GetTorrentPeersTask;
+import org.transdroid.daemon.task.GetTorrentPeersTaskSuccessResult;
 import org.transdroid.daemon.task.PauseTask;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.ResumeTask;
@@ -107,6 +112,14 @@ import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_METHOD_SETL
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_METHOD_SETTRACKERS;
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_METHOD_STATUS;
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_NAME;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEERS;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEERS_FIELDS_ARRAY;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_CLIENT;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_COUNTRY;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_DOWNSPEED;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_IP;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_PROGRESS;
+import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PEER_UPSPEED;
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_NUMPEERS;
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_NUMSEEDS;
 import static org.transdroid.daemon.adapters.deluge.DelugeCommon.RPC_PARAMS;
@@ -239,6 +252,22 @@ public class DelugeAdapter implements IDaemonAdapter {
                     JSONObject dinfo = makeRequest(buildRequest(RPC_METHOD_STATUS, params), log);
                     return new GetTorrentDetailsTaskSuccessResult((GetTorrentDetailsTask) task, parseJsonTorrentDetails(dinfo.getJSONObject
                             (RPC_RESULT)));
+
+                case GetTorrentPeers:
+
+                    // Array of the fields needed for the peer listing
+                    JSONArray peerFields = new JSONArray();
+                    for (String field : RPC_PEERS_FIELDS_ARRAY) {
+                        peerFields.put(field);
+                    }
+
+                    // Request the peer listing of a torrent
+                    params.put(task.getTargetTorrent().getUniqueID()); // torrent_id
+                    params.put(peerFields); // keys
+
+                    JSONObject peerInfo = makeRequest(buildRequest(RPC_METHOD_STATUS, params), log);
+                    return new GetTorrentPeersTaskSuccessResult((GetTorrentPeersTask) task,
+                            parseJsonPeers(peerInfo.getJSONObject(RPC_RESULT)));
 
                 case GetFileList:
 
@@ -714,17 +743,45 @@ public class DelugeAdapter implements IDaemonAdapter {
 
         // Parse response
         List<String> trackers = new ArrayList<>();
+        List<Tracker> trackerDetails = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+        // Deluge only exposes a single, global tracker status string (not per-tracker)
+        String trackerStatus = response.getString(RPC_TRACKER_STATUS);
+        errors.add(trackerStatus);
         JSONArray trackerObjects = response.getJSONArray(RPC_TRACKERS);
         if (trackerObjects != null && trackerObjects.length() > 0) {
             for (int i = 0; i < trackerObjects.length(); i++) {
-                trackers.add(trackerObjects.getJSONObject(i).getString("url"));
+                String url = trackerObjects.getJSONObject(i).getString("url");
+                trackers.add(url);
+                // Per-tracker status is unavailable; apply the global status as the (unknown) message
+                trackerDetails.add(new Tracker(url, TrackerStatus.UNKNOWN, trackerStatus));
             }
         }
-        List<String> errors = new ArrayList<>();
-        String trackerStatus = response.getString(RPC_TRACKER_STATUS);
-        errors.add(trackerStatus);
 
-        return new TorrentDetails(trackers, errors);
+        return new TorrentDetails(trackers, errors, null, trackerDetails);
+
+    }
+
+    private List<Peer> parseJsonPeers(JSONObject response) throws JSONException {
+
+        List<Peer> peerList = new ArrayList<>();
+        JSONArray peers = response.optJSONArray(RPC_PEERS);
+        if (peers != null) {
+            for (int i = 0; i < peers.length(); i++) {
+                JSONObject peer = peers.getJSONObject(i);
+                String country = peer.optString(RPC_PEER_COUNTRY);
+                if (country != null) {
+                    country = country.trim().toUpperCase(java.util.Locale.US);
+                    if (country.isEmpty()) {
+                        country = null;
+                    }
+                }
+                peerList.add(new Peer(peer.optString(RPC_PEER_IP), peer.optString(RPC_PEER_CLIENT),
+                        peer.optInt(RPC_PEER_DOWNSPEED), peer.optInt(RPC_PEER_UPSPEED),
+                        (float) peer.optDouble(RPC_PEER_PROGRESS, -1d), null, country));
+            }
+        }
+        return peerList;
 
     }
 

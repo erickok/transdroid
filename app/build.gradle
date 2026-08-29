@@ -100,6 +100,12 @@ dependencies {
     implementation 'androidx.work:work-runtime:2.9.0'
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.6.2"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    // GeoIP country lookup for the peer list. NOTE: maxmind-db 4.x requires Java 17; this project
+    // targets Java 8, so we pin to the last Java-8 compatible line (2.x), whose generic decoder
+    // (Reader.get(InetAddress, Class)) returns the record as a nested Map.
+    implementation 'com.maxmind.db:maxmind-db:2.1.0'
 
     annotationProcessor 'org.androidannotations:androidannotations:4.8.0'
     annotationProcessor 'org.androidannotations:ormlite:4.8.0'

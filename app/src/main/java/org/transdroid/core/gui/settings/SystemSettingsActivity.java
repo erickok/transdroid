@@ -32,15 +32,18 @@ import androidx.preference.PreferenceManager;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.UiThread;
 import org.json.JSONException;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
 import org.transdroid.core.app.settings.SettingsPersistence;
 import org.transdroid.core.gui.log.ErrorLogSender;
+import org.transdroid.core.gui.lists.GeoIpHelper;
 import org.transdroid.core.gui.navigation.NavigationHelper;
 import org.transdroid.core.gui.search.BarcodeHelper;
 import org.transdroid.core.gui.search.SearchHistoryProvider;
@@ -65,6 +68,20 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
     protected ErrorLogSender errorLogSender;
     @Bean
     protected SettingsPersistence settingsPersistence;
+    @Bean
+    protected GeoIpHelper geoIpHelper;
+
+    private OnPreferenceClickListener onGeoIpDownloadClick = preference -> {
+        SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_geoip_downloading));
+        downloadGeoIpDatabase();
+        return true;
+    };
+    private OnPreferenceClickListener onGeoIpClearClick = preference -> {
+        geoIpHelper.clear();
+        updateGeoIpSummary();
+        SnackbarManager.show(Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_geoip_clear_success));
+        return true;
+    };
 
     private OnPreferenceClickListener onImportSettingsClick = preference -> {
         showDialog(DIALOG_IMPORTSETTINGS);
@@ -133,8 +150,37 @@ public class SystemSettingsActivity extends PreferenceCompatActivity {
             getPreferenceScreen().removePreference(findPreference("system_checkupdates"));
         }
         findPreference("system_clearsearch").setOnPreferenceClickListener(onClearSearchClick);
+        findPreference("system_geoip_download").setOnPreferenceClickListener(onGeoIpDownloadClick);
+        findPreference("system_geoip_clear").setOnPreferenceClickListener(onGeoIpClearClick);
         findPreference("system_importsettings").setOnPreferenceClickListener(onImportSettingsClick);
         findPreference("system_exportsettings").setOnPreferenceClickListener(onExportSettingsClick);
+        updateGeoIpSummary();
+    }
+
+    private void updateGeoIpSummary() {
+        findPreference("system_geoip_download").setSummary(geoIpHelper.isDownloaded()
+                ? R.string.pref_geoip_download_info_downloaded : R.string.pref_geoip_download_info);
+    }
+
+    @Background
+    protected void downloadGeoIpDatabase() {
+        boolean success;
+        try {
+            geoIpHelper.download();
+            success = true;
+        } catch (IOException e) {
+            success = false;
+        }
+        onGeoIpDownloadComplete(success);
+    }
+
+    @UiThread
+    protected void onGeoIpDownloadComplete(boolean success) {
+        updateGeoIpSummary();
+        SnackbarManager.show(success
+                ? Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_geoip_download_success)
+                : Snackbar.with(SystemSettingsActivity.this).text(R.string.pref_geoip_download_failed)
+                .colorResource(R.color.red));
     }
 
     @OptionsItem(android.R.id.home)

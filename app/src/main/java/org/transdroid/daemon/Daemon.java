@@ -427,6 +427,23 @@ public enum Daemon {
         return type == uTorrent || type == DelugeRpc || type == Deluge2Rpc;
     }
 
+    /**
+     * Whether the client exposes a per-torrent peer list (address, client, speeds, encryption, …).
+     */
+    public static boolean supportsExtraPeers(Daemon type) {
+        return type == qBittorrent || type == Transmission || type == Deluge || type == DelugeRpc || type == Deluge2Rpc
+                || type == rTorrent || type == uTorrent || type == BitTorrent || type == Dummy;
+    }
+
+    /**
+     * Whether the client itself reports a per-peer country code (used as a fallback when no local
+     * GeoIP database has been downloaded).
+     */
+    public static boolean supportsClientProvidedCountry(Daemon type) {
+        return type == qBittorrent || type == Deluge || type == DelugeRpc || type == Deluge2Rpc
+                || type == uTorrent || type == BitTorrent;
+    }
+
     public abstract IDaemonAdapter createAdapter(DaemonSettings settings);
 
 }

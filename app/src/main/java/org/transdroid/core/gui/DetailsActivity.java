@@ -20,6 +20,8 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -45,6 +47,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.transdroid.R;
 import org.transdroid.core.app.settings.ApplicationSettings;
+import org.transdroid.core.app.settings.SystemSettings;
 import org.transdroid.core.app.settings.ServerSetting;
 import org.transdroid.core.app.settings.SettingsUtils;
 import org.transdroid.core.gui.lists.LocalTorrent;
@@ -55,6 +58,7 @@ import org.transdroid.core.gui.navigation.RefreshableActivity;
 import org.transdroid.core.service.ConnectivityHelper;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.IDaemonAdapter;
+import org.transdroid.daemon.Peer;
 import org.transdroid.daemon.Priority;
 import org.transdroid.daemon.Torrent;
 import org.transdroid.daemon.TorrentDetails;
@@ -67,6 +71,8 @@ import org.transdroid.daemon.task.GetFileListTask;
 import org.transdroid.daemon.task.GetFileListTaskSuccessResult;
 import org.transdroid.daemon.task.GetTorrentDetailsTask;
 import org.transdroid.daemon.task.GetTorrentDetailsTaskSuccessResult;
+import org.transdroid.daemon.task.GetTorrentPeersTask;
+import org.transdroid.daemon.task.GetTorrentPeersTaskSuccessResult;
 import org.transdroid.daemon.task.PauseTask;
 import org.transdroid.daemon.task.RemoveTask;
 import org.transdroid.daemon.task.ResumeTask;
@@ -111,18 +117,69 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
     protected ConnectivityHelper connectivityHelper;
     @Bean
     protected ApplicationSettings applicationSettings;
+    @Bean
+    protected SystemSettings systemSettings;
     // Details view components
     @ViewById
     protected Toolbar selectionToolbar;
     @FragmentById(R.id.torrentdetails_fragment)
     protected DetailsFragment fragmentDetails;
     private IDaemonAdapter currentConnection = null;
+    // Optional interval-based refresh of the details screen (files, peers, trackers)
+    public boolean stopRefresh = false;
+    private Handler autoRefreshHandler = null;
+    private Runnable autoRefreshRunnable = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SettingsUtils.applyDayNightTheme(this);
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startAutoRefresh();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopAutoRefresh();
+    }
+
+    /**
+     * Starts interval-based refreshing of the details screen, if enabled in the settings and not
+     * currently suppressed (e.g. during a multi-select action). Each tick silently re-fetches the
+     * torrent (which cascades into refreshing its details, files and peers).
+     */
+    public void startAutoRefresh() {
+        long interval = systemSettings.getDetailsRefreshIntervalMilliseconds();
+        if (autoRefreshHandler != null || stopRefresh || interval == 0 || torrent == null) {
+            return;
+        }
+        autoRefreshHandler = new Handler(Looper.getMainLooper());
+        autoRefreshRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Silent refresh: no loading spinner, just re-fetch data in place
+                refreshTorrent();
+                long next = systemSettings.getDetailsRefreshIntervalMilliseconds();
+                if (next > 0 && autoRefreshHandler != null) {
+                    autoRefreshHandler.postDelayed(this, next);
+                }
+            }
+        };
+        autoRefreshHandler.postDelayed(autoRefreshRunnable, interval);
+    }
+
+    public void stopAutoRefresh() {
+        if (autoRefreshHandler != null && autoRefreshRunnable != null) {
+            autoRefreshHandler.removeCallbacks(autoRefreshRunnable);
+        }
+        autoRefreshHandler = null;
+        autoRefreshRunnable = null;
     }
 
     @AfterViews
@@ -179,6 +236,7 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
         refreshTorrent();
         refreshTorrentDetails(torrent);
         refreshTorrentFiles(torrent);
+        refreshTorrentPeers(torrent);
     }
 
     @Background
@@ -214,6 +272,21 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
         DaemonTaskResult result = GetFileListTask.create(currentConnection, torrent).execute(log);
         if (result instanceof GetFileListTaskSuccessResult) {
             onTorrentFilesRetrieved(torrent, ((GetFileListTaskSuccessResult) result).getFiles());
+        } else {
+            onCommunicationError((DaemonTaskFailureResult) result, false);
+        }
+    }
+
+    @Background
+    @Override
+    public void refreshTorrentPeers(Torrent torrent) {
+        if (currentConnection == null) return;
+        if (!Daemon.supportsExtraPeers(torrent.getDaemon())) {
+            return;
+        }
+        DaemonTaskResult result = GetTorrentPeersTask.create(currentConnection, torrent).execute(log);
+        if (result instanceof GetTorrentPeersTaskSuccessResult) {
+            onTorrentPeersRetrieved(torrent, ((GetTorrentPeersTaskSuccessResult) result).getPeers());
         } else {
             onCommunicationError((DaemonTaskFailureResult) result, false);
         }
@@ -398,6 +471,13 @@ public class DetailsActivity extends AppCompatActivity implements TorrentTasksEx
         // Update the details fragment with the newly retrieved list of files
         if (fragmentDetails.isResumed())
             fragmentDetails.updateTorrentFiles(torrent, new ArrayList<>(torrentFiles));
+    }
+
+    @UiThread
+    protected void onTorrentPeersRetrieved(Torrent torrent, List<Peer> torrentPeers) {
+        // Update the details fragment with the newly retrieved list of peers
+        if (fragmentDetails.isResumed())
+            fragmentDetails.updateTorrentPeers(torrent, new ArrayList<>(torrentPeers));
     }
 
     @UiThread

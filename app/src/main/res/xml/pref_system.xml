@@ -33,6 +33,15 @@
         android:title="@string/pref_autorefresh"
         app:iconSpaceReserved="false" />
 
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/pref_autorefresh_intervals"
+        android:entryValues="@array/pref_autorefresh_intervalvalues"
+        android:key="details_autorefresh"
+        android:summary="@string/pref_details_autorefresh_info"
+        android:title="@string/pref_details_autorefresh"
+        app:iconSpaceReserved="false" />
+
     <CheckBoxPreference
         android:defaultValue="true"
         android:disableDependentsState="true"
@@ -49,6 +58,15 @@
         android:title="@string/pref_usedarktheme"
         app:iconSpaceReserved="false" />
 
+    <ListPreference
+        android:defaultValue="totalspeed"
+        android:entries="@array/pref_peersort_entries"
+        android:entryValues="@array/pref_peersort_values"
+        android:key="peer_sort"
+        android:title="@string/pref_peersort"
+        app:iconSpaceReserved="false"
+        app:useSimpleSummaryProvider="true" />
+
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="system_checkupdates"
@@ -59,6 +77,18 @@
     <Preference
         android:key="system_clearsearch"
         android:title="@string/pref_clearsearch"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="system_geoip_download"
+        android:summary="@string/pref_geoip_download_info"
+        android:title="@string/pref_geoip_download"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="system_geoip_clear"
+        android:summary="@string/pref_geoip_clear_info"
+        android:title="@string/pref_geoip_clear"
         app:iconSpaceReserved="false" />
 
     <Preference

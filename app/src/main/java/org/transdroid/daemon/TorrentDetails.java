@@ -42,17 +42,22 @@ public final class TorrentDetails implements Parcelable {
     private final List<String> trackers;
     private final List<String> errors;
     private final List<Integer> pieces;
+    private final List<Tracker> trackerDetails;
 
     public TorrentDetails(List<String> trackers, List<String> errors) {
-        this.trackers = trackers;
-        this.errors = errors;
-        this.pieces = new ArrayList<>();
+        this(trackers, errors, new ArrayList<Integer>(), null);
     }
 
     public TorrentDetails(List<String> trackers, List<String> errors, List<Integer> pieces) {
+        this(trackers, errors, pieces, null);
+    }
+
+    public TorrentDetails(List<String> trackers, List<String> errors, List<Integer> pieces,
+                          List<Tracker> trackerDetails) {
         this.trackers = trackers;
         this.errors = errors;
-        this.pieces = pieces;
+        this.pieces = pieces == null ? new ArrayList<Integer>() : pieces;
+        this.trackerDetails = trackerDetails == null ? new ArrayList<Tracker>() : trackerDetails;
     }
 
     private TorrentDetails(Parcel in) {
@@ -64,6 +69,8 @@ public final class TorrentDetails implements Parcelable {
         for (int i : piecesarray) {
             this.pieces.add(i);
         }
+
+        this.trackerDetails = in.createTypedArrayList(Tracker.CREATOR);
     }
 
     public List<String> getTrackers() {
@@ -106,6 +113,17 @@ public final class TorrentDetails implements Parcelable {
         return this.pieces;
     }
 
+    /**
+     * The per-tracker details (URL, connection status and optional message). May be empty if the
+     * client/adapter does not provide structured tracker information; callers should fall back to
+     * {@link #getTrackers()} in that case.
+     *
+     * @return The list of trackers with status, never null
+     */
+    public List<Tracker> getTrackerDetails() {
+        return this.trackerDetails;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -123,6 +141,7 @@ public final class TorrentDetails implements Parcelable {
             }
         }
         dest.writeIntArray(piecesarray);
+        dest.writeTypedList(trackerDetails);
     }
 
 }

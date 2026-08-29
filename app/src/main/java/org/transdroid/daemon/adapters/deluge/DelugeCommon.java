@@ -96,8 +96,16 @@ class DelugeCommon {
     static final String RPC_TRACKER_STATUS = "tracker_status";
     static final String RPC_URL = "url";
     static final String RPC_UPLOADEDEVER = "total_uploaded";
+    static final String RPC_PEERS = "peers";
+    static final String RPC_PEER_CLIENT = "client";
+    static final String RPC_PEER_COUNTRY = "country";
+    static final String RPC_PEER_DOWNSPEED = "down_speed";
+    static final String RPC_PEER_UPSPEED = "up_speed";
+    static final String RPC_PEER_IP = "ip";
+    static final String RPC_PEER_PROGRESS = "progress";
 
     static final String[] RPC_DETAILS_FIELDS_ARRAY = {RPC_TRACKERS, RPC_TRACKER_STATUS,};
+    static final String[] RPC_PEERS_FIELDS_ARRAY = {RPC_PEERS,};
     static final String[] RPC_FIELDS_ARRAY = {RPC_HASH, RPC_NAME, RPC_STATUS, RPC_SAVEPATH, RPC_RATEDOWNLOAD, RPC_RATEUPLOAD, RPC_NUMPEERS,
             RPC_NUMSEEDS, RPC_TOTALPEERS, RPC_TOTALSEEDS, RPC_ETA, RPC_DOWNLOADEDEVER, RPC_UPLOADEDEVER, RPC_TOTALSIZE, RPC_PARTDONE, RPC_LABEL,
             RPC_MESSAGE, RPC_TIMEADDED, RPC_TRACKER_STATUS,};
