@@ -369,7 +369,7 @@ public enum Daemon {
     public static boolean supportsRemoveWithData(Daemon type) {
         return type == uTorrent || type == Vuze || type == Transmission || type == Deluge || type == DelugeRpc || type == Deluge2Rpc
                 || type == BitTorrent || type == Tfb4rt || type == DLinkRouterBT || type == Bitflu || type == qBittorrent || type == BuffaloNas
-                || type == BitComet || type == rTorrent || type == Aria2 || type == tTorrent || type == Dummy;
+                || type == BitComet || type == rTorrent || type == tTorrent || type == Dummy;
     }
 
     public static boolean supportsFilePrioritySetting(Daemon type) {

@@ -178,11 +178,12 @@ public class Aria2Adapter implements IDaemonAdapter {
 
                 case Remove:
 
-                    // Remove a torrent
+                    // Remove a torrent; batch stop + purge so it works in any state
                     RemoveTask removeTask = (RemoveTask) task;
-                    makeRequest(log,
-                            buildRequest(removeTask.includingData() ? "aria2.removeDownloadResult" : "aria2.remove",
-                                    params.put(removeTask.getTargetTorrent().getUniqueID())).toString());
+                    String removeGid = removeTask.getTargetTorrent().getUniqueID();
+                    JSONObject stopReq = buildRequest("aria2.remove", new JSONArray().put(removeGid));
+                    JSONObject purgeReq = buildRequest("aria2.removeDownloadResult", new JSONArray().put(removeGid));
+                    makeRequestForArray(log, new JSONArray().put(stopReq).put(purgeReq).toString());
                     return new DaemonTaskSuccessResult(task);
 
                 case Pause:
