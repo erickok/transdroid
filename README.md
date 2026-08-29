@@ -42,6 +42,8 @@ Please respect the coding standards for easier merging.
 `master` contains the current release version of Transdroid while `dev` contains the active development version.
 However, larger and new features will be developed in their own branch.
 
+For translations use the https://translate.transdroid.org/project/transdroid
+
 Code structure
 ==============
 

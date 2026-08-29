@@ -1,0 +1,17 @@
+Allows you to manage your torrents. All popular clients are supported:
+<ul>
+<li>μTorrent</li>
+<li>Transmission</li>
+<li>RTorrent</li>
+<li>BiglyBT and Vuze</li>
+<li>Deluge</li>
+<li>BitTorrent 6</li>
+<li>qBittorrent</li>
+</ul>
+
+You can view and manage the running torrents and individual files.
+Adding is easy via the integrated search, RSS feeds or the QR code scanner.
+Monitor progress with the home screen widget or alarm background service.
+
+See also <a href="https://f-droid.org/packages/org.transdroid.search">Transdroid Torrent Search</a>
+and <a href="https://f-droid.org/packages/org.transdroid.lite">Transdrone</a> - a lite version without RSS.
