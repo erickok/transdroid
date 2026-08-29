@@ -227,11 +227,11 @@
     <string name="pref_ftppass">FTP heslo</string>
     <string name="pref_disableauth">Zakázat ověřování</string>
     <string name="pref_disableauth_info">Neposílat uživatelské jméno a heslo</string>
-    <string name="pref_sslenable">Používat SSL</string>
+    <string name="pref_sslenable">Používat TLS</string>
     <string name="pref_sslenable_info">Připojit pomocí https</string>
-    <string name="pref_sslkey">Vlastní SSL otisk (SHA-1)</string>
+    <string name="pref_sslkey">Vlastní TLS otisk (SHA-1)</string>
     <string name="pref_sslkey_info">Povolit připojení pouze s tímto certifikátem</string>
-    <string name="pref_sslacceptall">Přijmout všechny SSL certifikáty</string>
+    <string name="pref_sslacceptall">Přijmout všechny TLS certifikáty</string>
     <string name="pref_sslacceptall_info">Povolit připojení se všemi otisky</string>
     <string name="pref_background">Upozornění na pozadí</string>
     <string name="pref_notifications_rss">Povolit RSS upozornění</string>

@@ -235,11 +235,11 @@
     <string name="pref_ftppass">FTP(S) 密码</string>
     <string name="pref_disableauth">禁止认证</string>
     <string name="pref_disableauth_info">不发送用户名和密码</string>
-    <string name="pref_sslenable">SSL连接</string>
+    <string name="pref_sslenable">TLS连接</string>
     <string name="pref_sslenable_info">使用https连接</string>
-    <string name="pref_sslkey">自定义SSL指纹 (SHA-1)</string>
+    <string name="pref_sslkey">自定义TLS指纹 (SHA-1)</string>
     <string name="pref_sslkey_info">只允许连接到这个特定的证书</string>
-    <string name="pref_sslacceptall">接受所有SSL证书</string>
+    <string name="pref_sslacceptall">接受所有TLS证书</string>
     <string name="pref_sslacceptall_info">允许来自任何指纹的所有连接</string>
     <string name="pref_background">后台通知</string>
     <string name="pref_notifications_rss">启用 RSS 通知</string>
