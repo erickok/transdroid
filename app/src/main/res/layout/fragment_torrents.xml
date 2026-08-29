@@ -37,6 +37,20 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <ImageButton
+        android:id="@+id/scroll_to_top_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:background="@drawable/scroll_to_top_background"
+        android:contentDescription="@string/action_scroll_to_top"
+        android:elevation="6dp"
+        android:src="@drawable/ic_arrow_up"
+        android:translationY="-16dp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <ProgressBar
         android:id="@+id/loading_progress"
         android:layout_width="128dp"
