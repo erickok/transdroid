@@ -88,6 +88,14 @@ data class Torrent(
     val uploadedBytes: Long,
     val ratio: Float,
     val peersConnected: Int = 0,
+    /**
+     * Connected peers currently acting as seeders (i.e. sending us data / already complete),
+     * as best approximated by each daemon's API - see the adapter implementations for the
+     * exact per-daemon meaning. Not a tracker-wide swarm count, just this client's connections.
+     */
+    val seedersConnected: Int = 0,
+    /** Connected peers currently acting as leechers (still downloading), the complement of [seedersConnected]. */
+    val leechersConnected: Int = 0,
     /** Unix timestamp (seconds) the torrent was added, or null when unknown. */
     val addedTimestamp: Long? = null,
     val downloadDir: String? = null,
@@ -123,6 +131,19 @@ data class TorrentFile(
     val progress: Float
         get() = if (sizeBytes <= 0) 1f else (downloadedBytes.toFloat() / sizeBytes).coerceIn(0f, 1f)
 }
+
+enum class TrackerStatus { WORKING, IDLE, ERROR }
+
+/** One tracker a torrent announces to, normalized across client types. */
+data class Tracker(
+    val url: String,
+    val status: TrackerStatus,
+    /** Seeders/leechers as last reported by this tracker's scrape, or null when not reported. */
+    val seeders: Int? = null,
+    val leechers: Int? = null,
+    /** The daemon's status/error message for this tracker, or null when none. */
+    val message: String? = null,
+)
 
 /** Errors thrown by daemon adapters, so the UI can give targeted feedback. */
 sealed class DaemonException(message: String, cause: Throwable? = null) : Exception(message, cause) {

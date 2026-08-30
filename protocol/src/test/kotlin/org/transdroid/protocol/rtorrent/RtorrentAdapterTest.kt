@@ -32,6 +32,7 @@ import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.TorrentStatus
+import org.transdroid.protocol.TrackerStatus
 
 class RtorrentAdapterTest {
 
@@ -94,6 +95,8 @@ class RtorrentAdapterTest {
         assertEquals("eta computed from remaining bytes and rate", 2804L, downloading.etaSeconds)
         assertEquals("per-mille ratio normalized", 0.04f, downloading.ratio, 0.001f)
         assertEquals(34, downloading.peersConnected)
+        assertEquals("d.peers_complete is the connected-seeder count", 6, downloading.seedersConnected)
+        assertEquals(28, downloading.leechersConnected)
         assertEquals("urlencoded ruTorrent label decoded", listOf("Linux ISOs"), downloading.labels)
 
         val seeding = torrents[1]
@@ -120,6 +123,26 @@ class RtorrentAdapterTest {
         assertEquals(FilePriority.NORMAL, files[1].priority)
         assertEquals(0.25f, files[1].progress, 0.001f)
         assertEquals(FilePriority.OFF, files[2].priority)
+    }
+
+    @Test
+    fun `list trackers maps enabled state and scrape counts`() = runTest {
+        server.enqueue(MockResponse().setBody(fixture("t-multicall.xml")))
+
+        val trackers = adapter.listTrackers("8C212779B4ABDE7C6BC608063A0D008B7E40CE32")
+
+        assertEquals(3, trackers.size)
+        val working = trackers[0]
+        assertEquals("https://tracker.example.org/announce", working.url)
+        assertEquals(TrackerStatus.WORKING, working.status)
+        assertEquals(6, working.seeders)
+        assertEquals(40, working.leechers)
+
+        val errored = trackers[1]
+        assertEquals(TrackerStatus.ERROR, errored.status)
+        assertNull("scrape count -1 must normalize to null", errored.seeders)
+
+        assertEquals("disabled tracker reads as idle", TrackerStatus.IDLE, trackers[2].status)
     }
 
     @Test

@@ -1,0 +1,38 @@
+{
+  "arguments": {
+    "torrents": [
+      {
+        "trackerStats": [
+          {
+            "announce": "https://tracker.example.org/announce",
+            "host": "tracker.example.org",
+            "hasAnnounced": true,
+            "lastAnnounceSucceeded": true,
+            "lastAnnounceResult": "Success",
+            "seederCount": 6,
+            "leecherCount": 40
+          },
+          {
+            "announce": "udp://open.tracker.net:80/announce",
+            "host": "open.tracker.net",
+            "hasAnnounced": true,
+            "lastAnnounceSucceeded": false,
+            "lastAnnounceResult": "Unregistered torrent",
+            "seederCount": -1,
+            "leecherCount": -1
+          },
+          {
+            "announce": "https://backup.example.org/announce",
+            "host": "backup.example.org",
+            "hasAnnounced": false,
+            "lastAnnounceSucceeded": false,
+            "lastAnnounceResult": "",
+            "seederCount": -1,
+            "leecherCount": -1
+          }
+        ]
+      }
+    ]
+  },
+  "result": "success"
+}

@@ -41,6 +41,7 @@ import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
+import org.transdroid.protocol.Tracker
 
 /** User-facing error kinds; mapped to localized strings in the UI layer. */
 sealed class UiError {
@@ -58,16 +59,19 @@ internal fun Throwable.toUiError(host: String): UiError = when (this) {
     else -> UiError.Unexpected()
 }
 
+/** Sentinel [TorrentsUiState.labelFilters] entry for the drawer's "No label" bucket; never a real torrent label. */
+const val NO_LABEL = "\u0000no-label"
+
 enum class TorrentFilter {
-    ALL, DOWNLOADING, SEEDING, PAUSED, ERROR;
+    ALL, DOWNLOADING, SEEDING, COMPLETED, PAUSED;
 
     fun matches(torrent: Torrent): Boolean = when (this) {
         ALL -> true
         DOWNLOADING -> torrent.status == TorrentStatus.DOWNLOADING || torrent.status == TorrentStatus.QUEUED ||
             torrent.status == TorrentStatus.CHECKING
         SEEDING -> torrent.status == TorrentStatus.SEEDING
+        COMPLETED -> torrent.isFinished
         PAUSED -> torrent.status == TorrentStatus.PAUSED
-        ERROR -> torrent.status == TorrentStatus.ERROR
     }
 }
 
@@ -84,6 +88,8 @@ enum class TorrentSort {
 
 data class TorrentsUiState(
     val activeProfile: ServerProfile? = null,
+    /** All configured servers, for the drawer's server switcher. */
+    val allProfiles: List<ServerProfile> = emptyList(),
     /** False until the profile store has emitted, so we don't flash the welcome screen. */
     val profilesLoaded: Boolean = false,
     /** Number of configured servers; single-server flows can skip confirmation steps. */
@@ -94,21 +100,54 @@ data class TorrentsUiState(
     val refreshing: Boolean = false,
     val error: UiError? = null,
     val filter: TorrentFilter = TorrentFilter.ALL,
-    val labelFilter: String? = null,
+    /** OR semantics: a torrent matches if it carries any of the selected labels. */
+    val labelFilters: Set<String> = emptySet(),
+    /** Free-text filter over torrent names, from the drawer's filter field. */
+    val nameQuery: String = "",
     val sort: TorrentSort = TorrentSort.DATE_ADDED,
     val selectedTorrentId: String? = null,
     val files: Map<String, List<TorrentFile>> = emptyMap(),
+    val trackers: Map<String, List<Tracker>> = emptyMap(),
 ) {
     val availableLabels: List<String>
         get() = torrents.flatMap { it.labels }.distinct().sorted()
 
+    /** Whether any torrent carries no label at all, i.e. whether the drawer's "No label" bucket applies. */
+    val hasUnlabeledTorrents: Boolean
+        get() = torrents.any { it.labels.isEmpty() }
+
     val visibleTorrents: List<Torrent>
         get() = torrents
-            .filter { filter.matches(it) && (labelFilter == null || labelFilter in it.labels) }
+            .filter {
+                filter.matches(it) &&
+                    (
+                        labelFilters.isEmpty() ||
+                            it.labels.any { label -> label in labelFilters } ||
+                            (NO_LABEL in labelFilters && it.labels.isEmpty())
+                        ) &&
+                    (nameQuery.isBlank() || it.name.contains(nameQuery, ignoreCase = true))
+            }
             .sortedWith(sort.comparator().thenBy { it.name.lowercase() })
 
     val selectedTorrent: Torrent?
         get() = torrents.firstOrNull { it.id == selectedTorrentId }
+
+    fun countFor(filter: TorrentFilter): Int = torrents.count { filter.matches(it) }
+
+    fun countForLabel(label: String): Int =
+        if (label == NO_LABEL) torrents.count { it.labels.isEmpty() } else torrents.count { label in it.labels }
+
+    val totalDownloadRate: Long
+        get() = torrents.sumOf { it.downloadRate }
+
+    val totalUploadRate: Long
+        get() = torrents.sumOf { it.uploadRate }
+
+    val activeCount: Int
+        get() = torrents.count { it.status == TorrentStatus.DOWNLOADING }
+
+    val sharingCount: Int
+        get() = torrents.count { it.status == TorrentStatus.SEEDING }
 }
 
 class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
@@ -119,17 +158,19 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
     init {
         viewModelScope.launch {
             combine(container.activeProfile, container.profilesRepository.profiles) { active, all ->
-                active to all.size
-            }.collect { (profile, count) ->
+                active to all
+            }.collect { (profile, all) ->
                 _ui.update { state ->
                     val switched = profile?.id != state.activeProfile?.id
                     state.copy(
                         activeProfile = profile,
+                        allProfiles = all,
                         profilesLoaded = true,
-                        profileCount = count,
+                        profileCount = all.size,
                         torrents = if (switched) emptyList() else state.torrents,
                         hasLoaded = if (switched) false else state.hasLoaded,
                         files = if (switched) emptyMap() else state.files,
+                        trackers = if (switched) emptyMap() else state.trackers,
                         error = if (switched) null else state.error,
                     )
                 }
@@ -179,8 +220,18 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         _ui.update { it.copy(sort = sort) }
     }
 
-    fun setLabelFilter(label: String?) {
-        _ui.update { it.copy(labelFilter = if (it.labelFilter == label) null else label) }
+    fun toggleLabelFilter(label: String) {
+        _ui.update {
+            it.copy(labelFilters = if (label in it.labelFilters) it.labelFilters - label else it.labelFilters + label)
+        }
+    }
+
+    fun setNameQuery(query: String) {
+        _ui.update { it.copy(nameQuery = query) }
+    }
+
+    fun switchProfile(profileId: String) {
+        viewModelScope.launch { container.settingsRepository.setActiveServer(profileId) }
     }
 
     fun setFilePriority(torrentId: String, file: TorrentFile, priority: FilePriority) {
@@ -223,6 +274,20 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
                 throw e
             } catch (e: Exception) {
                 // Leave the files section empty; the list-level error banner covers connectivity
+            }
+        }
+    }
+
+    fun loadTrackers(torrentId: String) {
+        val profile = _ui.value.activeProfile ?: return
+        viewModelScope.launch {
+            try {
+                val trackers = container.adapterFor(profile).listTrackers(torrentId)
+                _ui.update { it.copy(trackers = it.trackers + (torrentId to trackers)) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // Leave the trackers section empty; the list-level error banner covers connectivity
             }
         }
     }

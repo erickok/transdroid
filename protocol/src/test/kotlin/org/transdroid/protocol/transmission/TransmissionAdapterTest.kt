@@ -32,6 +32,7 @@ import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.TorrentStatus
+import org.transdroid.protocol.TrackerStatus
 
 class TransmissionAdapterTest {
 
@@ -95,6 +96,8 @@ class TransmissionAdapterTest {
         assertEquals(1250000L, downloading.downloadRate)
         assertEquals(1220L, downloading.etaSeconds)
         assertEquals(34, downloading.peersConnected)
+        assertEquals("peersSendingToUs maps to seeders", 12, downloading.seedersConnected)
+        assertEquals("peersGettingFromUs maps to leechers", 22, downloading.leechersConnected)
         assertEquals(listOf("isos"), downloading.labels)
 
         val seeding = torrents[1]
@@ -130,6 +133,28 @@ class TransmissionAdapterTest {
         assertEquals(FilePriority.NORMAL, files[1].priority)
         assertEquals(0.25f, files[1].progress, 0.0001f)
         assertEquals(FilePriority.OFF, files[2].priority)
+    }
+
+    @Test
+    fun `list trackers maps announce state and scrape counts`() = runTest {
+        server.enqueue(MockResponse().setBody(fixture("torrent-get-trackers.json")))
+
+        val trackers = adapter.listTrackers("1")
+
+        assertEquals(3, trackers.size)
+        val working = trackers[0]
+        assertEquals("https://tracker.example.org/announce", working.url)
+        assertEquals(TrackerStatus.WORKING, working.status)
+        assertEquals(6, working.seeders)
+        assertEquals(40, working.leechers)
+
+        val errored = trackers[1]
+        assertEquals(TrackerStatus.ERROR, errored.status)
+        assertEquals("Unregistered torrent", errored.message)
+        assertNull("scrape count -1 must normalize to null", errored.seeders)
+
+        val notYetAnnounced = trackers[2]
+        assertEquals("never announced reads as idle, not error", TrackerStatus.IDLE, notYetAnnounced.status)
     }
 
     @Test

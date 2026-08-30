@@ -14,6 +14,8 @@
         "uploadedEver": 104857600,
         "uploadRatio": 0.0402,
         "peersConnected": 34,
+        "peersSendingToUs": 12,
+        "peersGettingFromUs": 22,
         "addedDate": 1753526401,
         "downloadDir": "/downloads/complete",
         "errorString": "",

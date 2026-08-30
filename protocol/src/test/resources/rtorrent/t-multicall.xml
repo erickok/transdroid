@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+  <params><param><value><array><data>
+    <value><array><data>
+      <value><string>https://tracker.example.org/announce</string></value>
+      <value><i8>1</i8></value>
+      <value><i8>4</i8></value>
+      <value><i8>0</i8></value>
+      <value><i8>6</i8></value>
+      <value><i8>40</i8></value>
+    </data></array></value>
+    <value><array><data>
+      <value><string>udp://open.tracker.net:80/announce</string></value>
+      <value><i8>1</i8></value>
+      <value><i8>0</i8></value>
+      <value><i8>3</i8></value>
+      <value><i8>-1</i8></value>
+      <value><i8>-1</i8></value>
+    </data></array></value>
+    <value><array><data>
+      <value><string>https://disabled.example.org/announce</string></value>
+      <value><i8>0</i8></value>
+      <value><i8>0</i8></value>
+      <value><i8>0</i8></value>
+      <value><i8>-1</i8></value>
+      <value><i8>-1</i8></value>
+    </data></array></value>
+  </data></array></value></param></params>
+</methodResponse>

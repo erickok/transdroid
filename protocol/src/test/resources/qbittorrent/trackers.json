@@ -1,0 +1,24 @@
+[
+  { "url": "** [DHT] **", "status": 2, "num_seeds": -1, "num_leeches": -1, "msg": "" },
+  {
+    "url": "https://tracker.example.org/announce",
+    "status": 2,
+    "num_seeds": 6,
+    "num_leeches": 40,
+    "msg": ""
+  },
+  {
+    "url": "udp://open.tracker.net:80/announce",
+    "status": 4,
+    "num_seeds": -1,
+    "num_leeches": -1,
+    "msg": "Unregistered torrent"
+  },
+  {
+    "url": "https://backup.example.org/announce",
+    "status": 1,
+    "num_seeds": -1,
+    "num_leeches": -1,
+    "msg": ""
+  }
+]

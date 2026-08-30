@@ -58,6 +58,8 @@ interface DaemonAdapter {
      * NORMAL; OFF always means "do not download".
      */
     suspend fun setFilePriority(torrentId: String, fileIndex: Int, priority: FilePriority)
+
+    suspend fun listTrackers(torrentId: String): List<Tracker>
 }
 
 object DaemonAdapterFactory {

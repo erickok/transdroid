@@ -16,14 +16,21 @@
  */
 package org.transdroid.protocol.transmission
 
+import java.io.InputStream
+import java.io.PushbackInputStream
 import java.util.Base64
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
+import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.encodeToStream
 import kotlinx.serialization.json.float
 import kotlinx.serialization.json.floatOrNull
 import kotlinx.serialization.json.int
@@ -37,7 +44,9 @@ import okhttp3.Credentials
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.RequestBody
+import okio.Buffer
+import okio.BufferedSink
 import org.transdroid.protocol.DaemonAdapter
 import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
@@ -46,6 +55,8 @@ import org.transdroid.protocol.internal.executeOnIo
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
+import org.transdroid.protocol.Tracker
+import org.transdroid.protocol.TrackerStatus
 
 /**
  * Adapter for the Transmission RPC protocol (JSON over HTTP POST), as documented in
@@ -157,6 +168,35 @@ class TransmissionAdapter(
         }
     }
 
+    override suspend fun listTrackers(torrentId: String): List<Tracker> {
+        val arguments = request("torrent-get") {
+            putIds(torrentId)
+            put("fields", buildJsonArray { add("trackerStats") })
+        }
+        val torrent = arguments["torrents"]?.jsonArray?.firstOrNull()?.jsonObject
+            ?: throw DaemonException.UnexpectedResponse("Torrent $torrentId not found")
+        val stats = torrent["trackerStats"]?.jsonArray ?: return emptyList()
+        return stats.map { element ->
+            val obj = element.jsonObject
+            val announced = obj["hasAnnounced"]?.jsonPrimitive?.booleanOrNull ?: false
+            val succeeded = obj["lastAnnounceSucceeded"]?.jsonPrimitive?.booleanOrNull ?: false
+            val status = when {
+                !announced -> TrackerStatus.IDLE
+                succeeded -> TrackerStatus.WORKING
+                else -> TrackerStatus.ERROR
+            }
+            Tracker(
+                url = obj["announce"]?.jsonPrimitive?.contentOrNull
+                    ?: obj["host"]?.jsonPrimitive?.contentOrNull ?: "",
+                status = status,
+                seeders = obj["seederCount"]?.jsonPrimitive?.int?.takeIf { it >= 0 },
+                leechers = obj["leecherCount"]?.jsonPrimitive?.int?.takeIf { it >= 0 },
+                message = obj["lastAnnounceResult"]?.jsonPrimitive?.contentOrNull
+                    ?.takeIf { announced && !succeeded && it.isNotBlank() },
+            )
+        }
+    }
+
     private fun kotlinx.serialization.json.JsonObjectBuilder.putIds(torrentId: String) {
         val id = torrentId.toIntOrNull()
             ?: throw DaemonException.UnexpectedResponse("Not a Transmission torrent id: $torrentId")
@@ -168,16 +208,16 @@ class TransmissionAdapter(
         method: String,
         argumentsBuilder: (kotlinx.serialization.json.JsonObjectBuilder.() -> Unit)? = null,
     ): JsonObject {
-        val body = buildJsonObject {
+        val payload = buildJsonObject {
             put("method", method)
             if (argumentsBuilder != null) putJsonObject("arguments", argumentsBuilder)
-        }.toString()
+        }
 
-        var response = send(body)
+        var response = send(payload)
         if (response.code == 409) {
             sessionId = response.header(SESSION_ID_HEADER)
             response.close()
-            response = send(body)
+            response = send(payload)
         }
         response.use {
             when {
@@ -186,20 +226,8 @@ class TransmissionAdapter(
                 !it.isSuccessful ->
                     throw DaemonException.UnexpectedResponse("Transmission returned HTTP ${it.code}")
             }
-            val text = it.body?.string().orEmpty()
-            val root = try {
-                json.parseToJsonElement(text).jsonObject
-            } catch (e: Exception) {
-                // A reverse proxy or access portal (e.g. Cloudflare Access) commonly answers
-                // with an HTML login page; make that diagnosable instead of a generic error
-                val hint = if (text.trimStart().startsWith("<")) {
-                    "Transmission's address answered with a web page instead of RPC — " +
-                        "a login portal (such as Cloudflare Access) may be in front of it"
-                } else {
-                    "Not a Transmission RPC response"
-                }
-                throw DaemonException.UnexpectedResponse(hint, e)
-            }
+            val body = it.body ?: throw DaemonException.UnexpectedResponse("Empty Transmission response")
+            val root = decodeResponse(body.byteStream())
             val result = root["result"]?.jsonPrimitive?.contentOrNull
             if (result != "success") {
                 throw DaemonException.UnexpectedResponse("Transmission error: ${result ?: "no result"}")
@@ -208,16 +236,65 @@ class TransmissionAdapter(
         }
     }
 
-    private suspend fun send(body: String): okhttp3.Response {
+    /**
+     * Decodes the response directly off the stream (no intermediate String covering the
+     * whole body — matters for a `torrent-get` reply listing thousands of torrents), while
+     * still peeking a few bytes for the HTML-login-portal diagnostic below.
+     *
+     * [executeOnIo] only wraps the network round-trip up to receiving headers; the body
+     * still streams off the same connection, and reading it (whichever way) can still block
+     * on the socket, so that must stay on IO too or it risks a NetworkOnMainThreadException
+     * on whatever dispatcher called the adapter.
+     */
+    private suspend fun decodeResponse(stream: InputStream): JsonObject = withContext(Dispatchers.IO) {
+        val pushback = PushbackInputStream(stream, PEEK_BYTES)
+        val peek = ByteArray(PEEK_BYTES)
+        val peeked = pushback.read(peek)
+        if (peeked > 0) pushback.unread(peek, 0, peeked)
+        try {
+            json.decodeFromStream<JsonObject>(pushback)
+        } catch (e: Exception) {
+            // A reverse proxy or access portal (e.g. Cloudflare Access) commonly answers
+            // with an HTML login page; make that diagnosable instead of a generic error
+            val looksLikeHtml = peeked > 0 && String(peek, 0, peeked, Charsets.UTF_8).trimStart().startsWith("<")
+            val hint = if (looksLikeHtml) {
+                "Transmission's address answered with a web page instead of RPC — " +
+                    "a login portal (such as Cloudflare Access) may be in front of it"
+            } else {
+                "Not a Transmission RPC response"
+            }
+            throw DaemonException.UnexpectedResponse(hint, e)
+        }
+    }
+
+    private suspend fun send(payload: JsonObject): okhttp3.Response {
         val builder = Request.Builder()
             .url(rpcUrl)
-            .post(body.toRequestBody("application/json".toMediaType()))
+            .post(jsonRequestBody(payload))
         sessionId?.let { builder.header(SESSION_ID_HEADER, it) }
         val username = config.username
         if (!username.isNullOrEmpty()) {
             builder.header("Authorization", Credentials.basic(username, config.password.orEmpty()))
         }
         return httpClient.executeOnIo(builder.build())
+    }
+
+    /**
+     * Encodes straight into an Okio buffer (no intermediate Kotlin String) while still
+     * declaring a real Content-Length: request payloads here are tiny regardless of torrent
+     * count, and some servers (embedded/minimal HTTP stacks) don't handle a chunked request
+     * body with no Content-Length at all.
+     */
+    private fun jsonRequestBody(value: JsonObject): RequestBody {
+        val buffer = Buffer()
+        json.encodeToStream(value, buffer.outputStream())
+        return object : RequestBody() {
+            override fun contentType() = JSON_MEDIA_TYPE
+            override fun contentLength() = buffer.size
+            override fun writeTo(sink: BufferedSink) {
+                sink.write(buffer.clone(), buffer.size)
+            }
+        }
     }
 
     private fun parseTorrent(obj: JsonObject): Torrent {
@@ -249,6 +326,11 @@ class TransmissionAdapter(
             uploadedBytes = obj["uploadedEver"]?.jsonPrimitive?.long ?: 0L,
             ratio = (obj["uploadRatio"]?.jsonPrimitive?.float ?: 0f).coerceAtLeast(0f),
             peersConnected = obj["peersConnected"]?.jsonPrimitive?.int ?: 0,
+            // Transmission has no direct seeders/leechers split; a peer sending us data has
+            // pieces we lack (seed-like role for us), one we're sending to is missing pieces
+            // (leech-like role) - the closest approximation its RPC exposes.
+            seedersConnected = obj["peersSendingToUs"]?.jsonPrimitive?.int ?: 0,
+            leechersConnected = obj["peersGettingFromUs"]?.jsonPrimitive?.int ?: 0,
             addedTimestamp = obj["addedDate"]?.jsonPrimitive?.long?.takeIf { it > 0 },
             downloadDir = obj["downloadDir"]?.jsonPrimitive?.contentOrNull,
             error = error,
@@ -264,9 +346,15 @@ class TransmissionAdapter(
     private companion object {
         const val SESSION_ID_HEADER = "X-Transmission-Session-Id"
 
+        /** Bytes peeked (without consuming) to sniff an HTML error page before decoding JSON. */
+        const val PEEK_BYTES = 256
+
+        val JSON_MEDIA_TYPE = "application/json".toMediaType()
+
         val TORRENT_FIELDS = listOf(
             "id", "name", "status", "percentDone", "rateDownload", "rateUpload", "eta",
             "totalSize", "downloadedEver", "uploadedEver", "uploadRatio", "peersConnected",
+            "peersSendingToUs", "peersGettingFromUs",
             "addedDate", "downloadDir", "errorString", "labels", "metadataPercentComplete",
         )
     }

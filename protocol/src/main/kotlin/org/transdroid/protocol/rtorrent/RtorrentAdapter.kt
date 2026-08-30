@@ -17,6 +17,8 @@
 package org.transdroid.protocol.rtorrent
 
 import java.net.URLDecoder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.Credentials
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -29,6 +31,8 @@ import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
+import org.transdroid.protocol.Tracker
+import org.transdroid.protocol.TrackerStatus
 import org.transdroid.protocol.internal.executeOnIo
 
 /**
@@ -57,7 +61,7 @@ class RtorrentAdapter(
             "d.hash=", "d.name=", "d.state=", "d.complete=", "d.is_active=", "d.hashing=",
             "d.down.rate=", "d.up.rate=", "d.size_bytes=", "d.completed_bytes=", "d.up.total=",
             "d.ratio=", "d.peers_connected=", "d.timestamp.started=", "d.directory=", "d.message=",
-            "d.custom1=",
+            "d.custom1=", "d.peers_complete=",
         ) as? List<*> ?: throw DaemonException.UnexpectedResponse("Unexpected d.multicall2 reply")
         return rows.map { row ->
             val fields = row as? List<*> ?: throw DaemonException.UnexpectedResponse("Bad multicall row")
@@ -104,6 +108,9 @@ class RtorrentAdapter(
             // d.ratio is reported in per-mille
             ratio = num(11) / 1000f,
             peersConnected = num(12).toInt(),
+            // d.peers_complete is the number of connected peers that are seeding (complete)
+            seedersConnected = num(17).toInt(),
+            leechersConnected = (num(12) - num(17)).toInt().coerceAtLeast(0),
             addedTimestamp = num(13).takeIf { it > 0 },
             downloadDir = str(14).takeIf { it.isNotBlank() },
             error = message,
@@ -183,6 +190,33 @@ class RtorrentAdapter(
         call("d.update_priorities", torrentId)
     }
 
+    override suspend fun listTrackers(torrentId: String): List<Tracker> {
+        val rows = call(
+            "t.multicall",
+            torrentId, "",
+            "t.url=", "t.is_enabled=", "t.success_counter=", "t.failed_counter=",
+            "t.scrape_complete=", "t.scrape_incomplete=",
+        ) as? List<*> ?: throw DaemonException.UnexpectedResponse("Unexpected t.multicall reply")
+        return rows.map { row ->
+            val fields = row as? List<*> ?: throw DaemonException.UnexpectedResponse("Bad multicall row")
+            fun str(index: Int) = fields.getOrNull(index)?.toString().orEmpty()
+            fun num(index: Int) = (fields.getOrNull(index) as? Long) ?: 0L
+            val enabled = num(1) != 0L
+            val status = when {
+                !enabled -> TrackerStatus.IDLE
+                num(2) > 0L -> TrackerStatus.WORKING
+                num(3) > 0L -> TrackerStatus.ERROR
+                else -> TrackerStatus.IDLE
+            }
+            Tracker(
+                url = str(0),
+                status = status,
+                seeders = num(4).toInt().takeIf { it >= 0 },
+                leechers = num(5).toInt().takeIf { it >= 0 },
+            )
+        }
+    }
+
     private suspend fun call(method: String, vararg params: Any?): Any? {
         val builder = Request.Builder()
             .url(rpcUrl)
@@ -198,7 +232,12 @@ class RtorrentAdapter(
                 !response.isSuccessful ->
                     throw DaemonException.UnexpectedResponse("rTorrent returned HTTP ${response.code}")
             }
-            return XmlRpc.parseResponse(response.body?.string().orEmpty())
+            val body = response.body ?: throw DaemonException.UnexpectedResponse("Empty rTorrent response")
+            // executeOnIo only wraps the round-trip up to receiving headers; the body still
+            // streams off the same connection, so parsing it can still block on the socket
+            // and must stay on IO too, or it risks a NetworkOnMainThreadException on whatever
+            // dispatcher called the adapter.
+            return withContext(Dispatchers.IO) { XmlRpc.parseResponse(body.byteStream()) }
         }
     }
 }

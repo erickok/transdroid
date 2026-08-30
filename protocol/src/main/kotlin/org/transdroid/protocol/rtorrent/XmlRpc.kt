@@ -16,10 +16,12 @@
  */
 package org.transdroid.protocol.rtorrent
 
+import java.io.InputStream
 import java.util.Base64
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.internal.childElements
 import org.transdroid.protocol.internal.parseXmlSafely
+import org.w3c.dom.Document
 import org.w3c.dom.Element
 
 /**
@@ -63,9 +65,17 @@ internal object XmlRpc {
     }
 
     /** Parses a methodResponse, returning its single value; XML-RPC faults become exceptions. */
-    fun parseResponse(xml: String): Any? {
+    fun parseResponse(xml: String): Any? = parseResponse { parseXmlSafely(xml) }
+
+    /**
+     * Same as [parseResponse], parsing directly off the response body stream instead of a
+     * pre-buffered String — matters for a large multicall reply (e.g. thousands of torrents).
+     */
+    fun parseResponse(stream: InputStream): Any? = parseResponse { parseXmlSafely(stream) }
+
+    private inline fun parseResponse(parseDocument: () -> Document): Any? {
         val document = try {
-            parseXmlSafely(xml)
+            parseDocument()
         } catch (e: Exception) {
             throw DaemonException.UnexpectedResponse("Not an XML-RPC response", e)
         }

@@ -16,8 +16,29 @@
     <string name="filter_all">All</string>
     <string name="filter_downloading">Downloading</string>
     <string name="filter_seeding">Seeding</string>
+    <string name="filter_completed">Completed</string>
     <string name="filter_paused">Paused</string>
-    <string name="filter_error">Error</string>
+
+    <!-- Navigation / filter drawer -->
+    <string name="drawer_open">Open menu</string>
+    <string name="drawer_filter_hint">Filter by name</string>
+    <string name="drawer_clear_filter">Clear filter</string>
+    <string name="drawer_status_header">Status</string>
+    <string name="drawer_labels_header">Labels</string>
+    <string name="drawer_no_label">No label</string>
+    <string name="drawer_connected_count">Connected · %1$d torrents</string>
+    <string name="drawer_connecting">Connecting…</string>
+    <string name="drawer_connection_error">Connection error</string>
+
+    <!-- Torrents bottom toolbar -->
+    <string name="toolbar_download_active">%d active</string>
+    <string name="toolbar_upload_sharing">%d sharing</string>
+
+    <!-- Torrent row -->
+    <string name="torrent_row_eta_left">%s left</string>
+    <string name="torrent_row_complete">%1$s · complete</string>
+    <string name="torrent_row_progress">%1$s of %2$s · %3$d%%</string>
+    <string name="torrent_row_peers">%d peers</string>
 
     <!-- Torrent statuses -->
     <string name="status_downloading">Downloading</string>
@@ -39,19 +60,27 @@
     <string name="details_remove_also_data">Also delete downloaded data</string>
     <string name="details_remove_confirm">Remove</string>
     <string name="details_cancel">Cancel</string>
-    <string name="details_section_transfer">Transfer</string>
-    <string name="details_section_files">Files</string>
-    <string name="details_progress">Progress</string>
+    <string name="details_tab_overview">Overview</string>
+    <string name="details_tab_files">Files (%d)</string>
+    <string name="details_tab_trackers">Trackers (%d)</string>
+    <string name="details_section_download">Download</string>
+    <string name="details_section_upload">Upload</string>
     <string name="details_size">Size</string>
     <string name="details_downloaded">Downloaded</string>
     <string name="details_uploaded">Uploaded</string>
     <string name="details_ratio">Ratio</string>
-    <string name="details_peers">Peers</string>
+    <string name="details_seeders">Seeders</string>
+    <string name="details_leechers">Leechers</string>
     <string name="details_eta">ETA</string>
     <string name="details_added">Added</string>
     <string name="details_location">Location</string>
     <string name="details_labels">Labels</string>
     <string name="details_files_empty">No file details available</string>
+    <string name="details_trackers_empty">No tracker details available</string>
+    <string name="details_tracker_working">Working</string>
+    <string name="details_tracker_idle">Idle</string>
+    <string name="details_tracker_error">Error</string>
+    <string name="details_tracker_stats">%1$d seeds · %2$d peers</string>
     <string name="details_not_found">This torrent is no longer in the list</string>
     <string name="priority_off">Skipped</string>
     <string name="priority_low">Low priority</string>
@@ -122,6 +151,7 @@
     <string name="settings_invalid_host">Enter a host name</string>
     <string name="settings_invalid_port">Enter a valid port number (1–65535)</string>
     <string name="settings_about">Transdroid %1$s — GNU GPL v3</string>
+    <string name="settings_preferences">Preferences</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notify_finished">Notify when torrents finish</string>
     <string name="settings_notify_finished_summary">Checks the active server about every 15 minutes</string>
@@ -146,6 +176,25 @@
     <string name="settings_custom_headers_hint">CF-Access-Client-Id: xxx.access\nCF-Access-Client-Secret: yyy</string>
     <string name="settings_custom_headers_summary">One \"Name: Value\" per line; sent with every request. Needed for Cloudflare Access service tokens and similar portals.</string>
     <string name="settings_port_hint">Client\'s own port on your LAN; 443 for an HTTPS domain via reverse proxy or tunnel</string>
+    <string name="settings_url_label">Web interface URL</string>
+    <string name="settings_url_placeholder">https://host:port/path</string>
+    <string name="settings_url_hint">Full %1$s Web UI address — Transdroid works out the rest.</string>
+    <string name="settings_detected_title">Detected settings</string>
+    <string name="settings_detected_ssl">Secure connection</string>
+    <string name="settings_yes">Yes</string>
+    <string name="settings_no">No</string>
+    <string name="settings_detected_host">Host</string>
+    <string name="settings_detected_folder">Folder</string>
+    <string name="settings_override_parts">Override individual parts</string>
+    <string name="settings_rtorrent_how">How to connect</string>
+    <string name="settings_rtorrent_mode_url">ruTorrent URL</string>
+    <string name="settings_rtorrent_mode_scgi">Manual (SCGI)</string>
+    <string name="settings_rturl_label">ruTorrent URL</string>
+    <string name="settings_rturl_hint">Point to your ruTorrent install — same idea as the other clients.</string>
+    <string name="settings_scgi_host">Hostname / IP</string>
+    <string name="settings_scgi_port">SCGI port</string>
+    <string name="settings_scgi_path">SCGI mount path (optional)</string>
+    <string name="settings_scgi_hint">Connects straight to rTorrent\'s SCGI socket, bypassing a web server.</string>
     <string name="settings_connection_help">Connection help</string>
     <string name="settings_help_close">Got it</string>
     <string name="settings_help_lan_title">Direct on your home network</string>

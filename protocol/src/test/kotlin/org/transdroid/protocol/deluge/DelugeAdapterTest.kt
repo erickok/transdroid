@@ -31,6 +31,7 @@ import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.TorrentStatus
+import org.transdroid.protocol.TrackerStatus
 
 class DelugeAdapterTest {
 
@@ -107,6 +108,8 @@ class DelugeAdapterTest {
         assertEquals("percent scale normalized to 0..1", 0.4266f, downloading.progress, 0.001f)
         assertEquals(1220L, downloading.etaSeconds)
         assertEquals(34, downloading.peersConnected)
+        assertEquals(22, downloading.seedersConnected)
+        assertEquals("num_peers already excludes seeds", 12, downloading.leechersConnected)
         assertEquals("Label plugin value maps to a label", listOf("linux-isos"), downloading.labels)
 
         val seeding = torrents[1]
@@ -135,6 +138,52 @@ class DelugeAdapterTest {
 
         assertEquals(4, torrents.size)
         assertEquals(4, server.requestCount)
+    }
+
+    @Test
+    fun `list trackers marks only the active tracker with live status`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(
+            MockResponse().setBody(
+                """{"result": {
+                    "trackers": [
+                        {"url": "https://tracker.example.org/announce", "tier": 0},
+                        {"url": "udp://backup.tracker.net:80/announce", "tier": 1}
+                    ],
+                    "tracker_status": "Announce OK",
+                    "tracker_host": "tracker.example.org"
+                }, "error": null, "id": 2}"""
+            )
+        )
+
+        val trackers = adapter.listTrackers("abcdef")
+
+        assertEquals(2, trackers.size)
+        val active = trackers[0]
+        assertEquals(TrackerStatus.WORKING, active.status)
+        assertEquals("Announce OK", active.message)
+
+        val inactive = trackers[1]
+        assertEquals("Deluge only reports live status for the active tracker", TrackerStatus.IDLE, inactive.status)
+        assertNull(inactive.message)
+    }
+
+    @Test
+    fun `list trackers reads tracker errors as error status`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(
+            MockResponse().setBody(
+                """{"result": {
+                    "trackers": [{"url": "https://tracker.example.org/announce", "tier": 0}],
+                    "tracker_status": "Error: Unregistered torrent",
+                    "tracker_host": "tracker.example.org"
+                }, "error": null, "id": 2}"""
+            )
+        )
+
+        val trackers = adapter.listTrackers("abcdef")
+
+        assertEquals(TrackerStatus.ERROR, trackers[0].status)
     }
 
     @Test

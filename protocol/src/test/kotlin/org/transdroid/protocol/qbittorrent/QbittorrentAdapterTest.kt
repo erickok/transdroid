@@ -31,6 +31,7 @@ import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.TorrentStatus
+import org.transdroid.protocol.TrackerStatus
 
 class QbittorrentAdapterTest {
 
@@ -105,6 +106,8 @@ class QbittorrentAdapterTest {
         assertEquals(TorrentStatus.DOWNLOADING, downloading.status)
         assertEquals(1220L, downloading.etaSeconds)
         assertEquals("seeds and leeches sum to connected peers", 34, downloading.peersConnected)
+        assertEquals(22, downloading.seedersConnected)
+        assertEquals(12, downloading.leechersConnected)
         assertEquals("category maps to a label", listOf("linux"), downloading.labels)
 
         val seeding = torrents[1]
@@ -123,6 +126,26 @@ class QbittorrentAdapterTest {
 
         assertEquals(4, torrents.size)
         assertEquals("/api/v2/torrents/info", server.takeRequest().path)
+    }
+
+    @Test
+    fun `list trackers filters pseudo-trackers and maps status`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody(fixture("trackers.json")))
+
+        val trackers = adapter().listTrackers("abcdef")
+
+        assertEquals("DHT pseudo-tracker excluded", 3, trackers.size)
+        val working = trackers[0]
+        assertEquals(TrackerStatus.WORKING, working.status)
+        assertEquals(6, working.seeders)
+        assertEquals(40, working.leechers)
+
+        val notWorking = trackers[1]
+        assertEquals(TrackerStatus.ERROR, notWorking.status)
+        assertEquals("Unregistered torrent", notWorking.message)
+
+        assertEquals("not-contacted status maps to idle", TrackerStatus.IDLE, trackers[2].status)
     }
 
     @Test

@@ -17,6 +17,8 @@
 package org.transdroid.protocol.deluge
 
 import java.util.Base64
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -28,7 +30,9 @@ import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.encodeToStream
 import kotlinx.serialization.json.floatOrNull
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonArray
@@ -39,7 +43,9 @@ import kotlinx.serialization.json.putJsonObject
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.RequestBody
+import okio.Buffer
+import okio.BufferedSink
 import org.transdroid.protocol.DaemonAdapter
 import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
@@ -47,6 +53,8 @@ import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
+import org.transdroid.protocol.Tracker
+import org.transdroid.protocol.TrackerStatus
 import org.transdroid.protocol.internal.executeOnIo
 import org.transdroid.protocol.internal.joinPath
 
@@ -125,6 +133,9 @@ class DelugeAdapter(
             uploadedBytes = long("total_uploaded"),
             ratio = (obj["ratio"]?.jsonPrimitive?.floatOrNull ?: 0f).coerceAtLeast(0f),
             peersConnected = int("num_peers") + int("num_seeds"),
+            seedersConnected = int("num_seeds"),
+            // Deluge's own "num_peers" already excludes seeds (it's total connections minus num_seeds)
+            leechersConnected = int("num_peers"),
             addedTimestamp = long("time_added").takeIf { it > 0 },
             downloadDir = obj["save_path"]?.jsonPrimitive?.contentOrNull,
             error = if (status == TorrentStatus.ERROR) {
@@ -229,6 +240,32 @@ class DelugeAdapter(
         )
     }
 
+    override suspend fun listTrackers(torrentId: String): List<Tracker> {
+        ensureAuthenticated()
+        val result = call(
+            "core.get_torrent_status",
+            torrentId,
+            buildJsonArray { listOf("trackers", "tracker_status", "tracker_host").forEach { add(it) } },
+        )
+        val obj = result as? JsonObject
+            ?: throw DaemonException.UnexpectedResponse("Unexpected core.get_torrent_status reply")
+        val trackers = obj["trackers"]?.jsonArray ?: return emptyList()
+        // Deluge's core only reports live announce status/errors for the currently-active
+        // tracker (via tracker_status/tracker_host); the rest just sit in the tracker list
+        val activeHost = obj["tracker_host"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }
+        val activeStatusText = obj["tracker_status"]?.jsonPrimitive?.contentOrNull
+        return trackers.map { element ->
+            val url = element.jsonObject["url"]?.jsonPrimitive?.contentOrNull ?: ""
+            val isActive = activeHost != null && url.contains(activeHost)
+            val status = when {
+                !isActive || activeStatusText == null -> TrackerStatus.IDLE
+                activeStatusText.startsWith("Error", ignoreCase = true) -> TrackerStatus.ERROR
+                else -> TrackerStatus.WORKING
+            }
+            Tracker(url = url, status = status, message = if (isActive) activeStatusText else null)
+        }
+    }
+
     private suspend fun ensureAuthenticated() {
         if (sessionCookie == null) login()
     }
@@ -283,10 +320,10 @@ class DelugeAdapter(
                 }
             })
             put("id", ++requestId)
-        }.toString()
+        }
         val builder = Request.Builder()
             .url(jsonUrl)
-            .post(payload.toRequestBody("application/json".toMediaType()))
+            .post(jsonRequestBody(payload))
         sessionCookie?.let { builder.header("Cookie", it) }
         val response = httpClient.executeOnIo(builder.build())
         if (!response.isSuccessful) {
@@ -297,14 +334,47 @@ class DelugeAdapter(
         return response
     }
 
-    private fun parseBody(response: okhttp3.Response): JsonObject = try {
-        json.parseToJsonElement(response.body?.string().orEmpty()).jsonObject
-    } catch (e: Exception) {
-        throw DaemonException.UnexpectedResponse("Not a Deluge JSON response", e)
+    /**
+     * Encodes straight into an Okio buffer (no intermediate Kotlin String) while still
+     * declaring a real Content-Length: request payloads here are tiny regardless of torrent
+     * count, and some servers (embedded/minimal HTTP stacks) don't handle a chunked request
+     * body with no Content-Length at all.
+     */
+    private fun jsonRequestBody(value: JsonObject): RequestBody {
+        val buffer = Buffer()
+        json.encodeToStream(value, buffer.outputStream())
+        return object : RequestBody() {
+            override fun contentType() = JSON_MEDIA_TYPE
+            override fun contentLength() = buffer.size
+            override fun writeTo(sink: BufferedSink) {
+                sink.write(buffer.clone(), buffer.size)
+            }
+        }
+    }
+
+    /**
+     * Decodes the response directly off the body stream, without first buffering the whole
+     * reply into a String — matters for a `core.get_torrents_status` call listing thousands
+     * of torrents. [executeOnIo] only wraps the network round-trip up to receiving headers;
+     * the body still streams off the same connection, and reading it can still block on the
+     * socket, so that must stay on IO too or it risks a NetworkOnMainThreadException on
+     * whatever dispatcher called the adapter.
+     */
+    private suspend fun parseBody(response: okhttp3.Response): JsonObject {
+        val body = response.body ?: throw DaemonException.UnexpectedResponse("Empty Deluge response")
+        return withContext(Dispatchers.IO) {
+            try {
+                json.decodeFromStream<JsonObject>(body.byteStream())
+            } catch (e: Exception) {
+                throw DaemonException.UnexpectedResponse("Not a Deluge JSON response", e)
+            }
+        }
     }
 
     private companion object {
         const val NOT_AUTHENTICATED_CODE = 1
+
+        val JSON_MEDIA_TYPE = "application/json".toMediaType()
 
         val TORRENT_KEYS = listOf(
             "name", "state", "progress", "download_payload_rate", "upload_payload_rate", "eta",

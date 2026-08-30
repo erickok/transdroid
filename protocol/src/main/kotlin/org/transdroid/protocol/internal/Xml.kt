@@ -16,7 +16,9 @@
  */
 package org.transdroid.protocol.internal
 
+import java.io.InputStream
 import java.io.StringReader
+import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -24,11 +26,20 @@ import org.w3c.dom.Node
 import org.xml.sax.InputSource
 
 /** Parses XML from an untrusted server with DTDs disabled, ruling out XXE. */
-internal fun parseXmlSafely(xml: String): Document =
+internal fun parseXmlSafely(xml: String): Document = safeDocumentBuilder().parse(InputSource(StringReader(xml)))
+
+/**
+ * Parses XML directly off a response body stream, without first buffering the whole
+ * document into a String — the response-size-scaling case (e.g. a multicall reply
+ * listing thousands of torrents).
+ */
+internal fun parseXmlSafely(stream: InputStream): Document = safeDocumentBuilder().parse(stream)
+
+private fun safeDocumentBuilder(): DocumentBuilder =
     DocumentBuilderFactory.newInstance().apply {
         setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
         isExpandEntityReferences = false
-    }.newDocumentBuilder().parse(InputSource(StringReader(xml)))
+    }.newDocumentBuilder()
 
 internal fun Element.childElements(): List<Element> {
     val result = mutableListOf<Element>()

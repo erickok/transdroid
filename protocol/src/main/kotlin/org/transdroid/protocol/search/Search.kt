@@ -16,6 +16,8 @@
  */
 package org.transdroid.protocol.search
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -69,7 +71,11 @@ class TorznabProvider(
                 !response.isSuccessful ->
                     throw DaemonException.UnexpectedResponse("The indexer returned HTTP ${response.code}")
             }
-            response.body?.string().orEmpty()
+            // executeOnIo only wraps the round-trip up to receiving headers; the body still
+            // streams off the same connection, so reading it can still block on the socket
+            // and must stay on IO too, or it risks a NetworkOnMainThreadException on whatever
+            // dispatcher called this.
+            withContext(Dispatchers.IO) { response.body?.string().orEmpty() }
         }
         return parse(body)
     }

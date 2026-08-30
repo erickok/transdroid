@@ -19,6 +19,7 @@
       <value><string>/downloads/incomplete</string></value>
       <value><string></string></value>
       <value><string>Linux%20ISOs</string></value>
+      <value><i8>6</i8></value>
     </data></array></value>
     <value><array><data>
       <value><string>2AA4F5A7E209E54B32803D43670971C4C8CAAA05</string></value>
@@ -38,6 +39,7 @@
       <value><string>/downloads/complete</string></value>
       <value><string></string></value>
       <value><string></string></value>
+      <value><i8>2</i8></value>
     </data></array></value>
     <value><array><data>
       <value><string>9F292C93EB0DBDD7FF7A4AA551AEAEF1BBE11015</string></value>

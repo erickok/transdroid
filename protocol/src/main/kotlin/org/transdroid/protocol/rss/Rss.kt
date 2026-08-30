@@ -19,6 +19,8 @@ package org.transdroid.protocol.rss
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.transdroid.protocol.DaemonException
@@ -52,7 +54,11 @@ class RssFetcher(private val httpClient: OkHttpClient) {
             if (!response.isSuccessful) {
                 throw DaemonException.UnexpectedResponse("Feed returned HTTP ${response.code}")
             }
-            response.body?.string().orEmpty()
+            // executeOnIo only wraps the round-trip up to receiving headers; the body still
+            // streams off the same connection, so reading it can still block on the socket
+            // and must stay on IO too, or it risks a NetworkOnMainThreadException on whatever
+            // dispatcher called this.
+            withContext(Dispatchers.IO) { response.body?.string().orEmpty() }
         }
         return parse(body)
     }

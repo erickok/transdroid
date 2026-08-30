@@ -16,71 +16,101 @@
  */
 package org.transdroid.ui.torrents
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Label
-import androidx.compose.material.icons.automirrored.filled.Sort
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Dns
-import androidx.compose.material.icons.filled.RssFeed
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.automirrored.rounded.Sort
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.ArrowUpward
+import androidx.compose.material.icons.rounded.Dns
+import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.ErrorOutline
+import androidx.compose.material.icons.rounded.Group
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.North
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material.icons.rounded.RssFeed
+import androidx.compose.material.icons.rounded.Schedule
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.South
+import androidx.compose.material.icons.rounded.SyncAlt
+import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import org.transdroid.R
 import org.transdroid.protocol.Torrent
+import org.transdroid.protocol.TorrentStatus
 import org.transdroid.ui.message
-import org.transdroid.ui.label
 import org.transdroid.ui.statusLabel
 import org.transdroid.ui.theme.accentColor
+import org.transdroid.ui.theme.trackColor
+import org.transdroid.ui.components.TorrentProgressIndicator
 import org.transdroid.util.formatBytes
 import org.transdroid.util.formatEta
 import org.transdroid.util.formatRatio
@@ -100,6 +130,8 @@ fun TorrentsScreen(
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val rssAvailable = booleanResource(R.bool.rss_available)
     val searchAvailable = booleanResource(R.bool.search_available)
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
     // Poll the daemon while this screen is started; stops automatically when backgrounded
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -109,78 +141,193 @@ fun TorrentsScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(stringResource(R.string.torrents_title))
-                        ui.activeProfile?.let {
-                            Text(
-                                it.displayName,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
-                },
-                actions = {
-                    if (searchAvailable) {
-                        IconButton(onClick = onOpenSearch) {
-                            Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_title))
-                        }
-                    }
-                    if (rssAvailable) {
-                        IconButton(onClick = onOpenRss) {
-                            Icon(Icons.Default.RssFeed, contentDescription = stringResource(R.string.rss_title))
-                        }
-                    }
-                    SortMenuButton(current = ui.sort, onSelect = { viewModel.setSort(it) })
-                    IconButton(onClick = onOpenSettings) {
-                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.torrents_settings))
-                    }
-                },
-            )
-        },
-        floatingActionButton = {
-            if (ui.activeProfile != null) {
-                FloatingActionButton(onClick = onAddTorrent) {
-                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.torrents_add))
-                }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(drawerShape = RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp)) {
+                FilterDrawerContent(
+                    ui = ui,
+                    onSwitchProfile = { viewModel.switchProfile(it) },
+                    onSetFilter = { viewModel.setFilter(it) },
+                    onToggleLabel = { viewModel.toggleLabelFilter(it) },
+                    onSetNameQuery = { viewModel.setNameQuery(it) },
+                    onOpenSettings = {
+                        scope.launch { drawerState.close() }
+                        onOpenSettings()
+                    },
+                )
             }
         },
-    ) { padding ->
-        Box(Modifier.padding(padding).fillMaxSize()) {
-            when {
-                !ui.profilesLoaded -> {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+    ) {
+        Scaffold(
+            topBar = {
+                if (useTwoPane && ui.activeProfile != null) {
+                    TabletTopBar(
+                        ui = ui,
+                        searchAvailable = searchAvailable,
+                        onOpenDrawer = { scope.launch { drawerState.open() } },
+                        onOpenSearch = onOpenSearch,
+                        onRefresh = { viewModel.refresh() },
+                        onSortSelect = { viewModel.setSort(it) },
+                    )
+                } else {
+                    TopAppBar(
+                        navigationIcon = {
+                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                Icon(Icons.Rounded.Menu, contentDescription = stringResource(R.string.drawer_open))
+                            }
+                        },
+                        title = {
+                            Column {
+                                Text(stringResource(R.string.torrents_title))
+                                ui.activeProfile?.let {
+                                    Spacer(Modifier.height(7.dp))
+                                    ServerChip(it.displayName)
+                                }
+                            }
+                        },
+                        actions = {
+                            if (searchAvailable) {
+                                IconButton(onClick = onOpenSearch) {
+                                    Icon(Icons.Rounded.Search, contentDescription = stringResource(R.string.search_title))
+                                }
+                            }
+                            if (rssAvailable) {
+                                IconButton(onClick = onOpenRss) {
+                                    Icon(Icons.Rounded.RssFeed, contentDescription = stringResource(R.string.rss_title))
+                                }
+                            }
+                        },
+                    )
                 }
-                ui.activeProfile == null -> {
-                    WelcomeContent(onOpenSettings = onOpenSettings, modifier = Modifier.align(Alignment.Center))
-                }
-                useTwoPane -> {
-                    Row(Modifier.fillMaxSize()) {
-                        Box(Modifier.weight(0.42f)) {
-                            TorrentListContent(ui, viewModel, onOpenDetails)
-                        }
-                        VerticalDivider()
-                        Box(Modifier.weight(0.58f)) {
-                            val selected = ui.selectedTorrent
-                            if (selected != null) {
-                                TorrentDetailsContent(viewModel = viewModel, torrent = selected)
-                            } else {
-                                Text(
-                                    stringResource(R.string.torrents_empty),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.align(Alignment.Center),
+            },
+        ) { padding ->
+            Box(Modifier.padding(padding).fillMaxSize()) {
+                when {
+                    !ui.profilesLoaded -> {
+                        CircularProgressIndicator(Modifier.align(Alignment.Center))
+                    }
+                    ui.activeProfile == null -> {
+                        WelcomeContent(onOpenSettings = onOpenSettings, modifier = Modifier.align(Alignment.Center))
+                    }
+                    useTwoPane -> {
+                        Row(Modifier.fillMaxSize()) {
+                            Box(Modifier.width(392.dp)) {
+                                TorrentListContent(
+                                    ui = ui,
+                                    viewModel = viewModel,
+                                    onOpenDetails = onOpenDetails,
+                                    onAddTorrent = onAddTorrent,
+                                    showToolbar = false,
+                                    showFilterChips = true,
                                 )
+                            }
+                            VerticalDivider()
+                            Box(Modifier.weight(1f)) {
+                                val selected = ui.selectedTorrent
+                                if (selected != null) {
+                                    TorrentDetailsContent(viewModel = viewModel, torrent = selected)
+                                } else {
+                                    Text(
+                                        stringResource(R.string.torrents_empty),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.align(Alignment.Center),
+                                    )
+                                }
                             }
                         }
                     }
+                    else -> TorrentListContent(ui, viewModel, onOpenDetails, onAddTorrent)
                 }
-                else -> TorrentListContent(ui, viewModel, onOpenDetails)
             }
+        }
+    }
+}
+
+@Composable
+private fun TabletTopBar(
+    ui: TorrentsUiState,
+    searchAvailable: Boolean,
+    onOpenDrawer: () -> Unit,
+    onOpenSearch: () -> Unit,
+    onRefresh: () -> Unit,
+    onSortSelect: (TorrentSort) -> Unit,
+) {
+    Surface(color = MaterialTheme.colorScheme.surface) {
+        Column {
+            Row(
+                Modifier.fillMaxWidth().height(64.dp).padding(horizontal = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = onOpenDrawer) {
+                    Icon(Icons.Rounded.Menu, contentDescription = stringResource(R.string.drawer_open))
+                }
+                Spacer(Modifier.width(4.dp))
+                Text(stringResource(R.string.torrents_title), style = MaterialTheme.typography.titleLarge)
+                ui.activeProfile?.let {
+                    Spacer(Modifier.width(10.dp))
+                    ServerChip(it.displayName)
+                }
+                Spacer(Modifier.weight(1f))
+                TabletStat(
+                    icon = Icons.Rounded.ArrowDownward,
+                    value = formatSpeed(ui.totalDownloadRate),
+                    caption = stringResource(R.string.toolbar_download_active, ui.activeCount),
+                )
+                Spacer(Modifier.width(18.dp))
+                TabletStat(
+                    icon = Icons.Rounded.ArrowUpward,
+                    value = formatSpeed(ui.totalUploadRate),
+                    caption = stringResource(R.string.toolbar_upload_sharing, ui.sharingCount),
+                )
+                VerticalDivider(Modifier.height(26.dp).padding(horizontal = 10.dp))
+                if (searchAvailable) {
+                    IconButton(onClick = onOpenSearch) {
+                        Icon(Icons.Rounded.Search, contentDescription = stringResource(R.string.search_title))
+                    }
+                }
+                IconButton(onClick = onRefresh) {
+                    Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
+                }
+                SortMenuButton(current = ui.sort, onSelect = onSortSelect)
+            }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
+        }
+    }
+}
+
+@Composable
+private fun ServerChip(name: String) {
+    Surface(shape = MaterialTheme.shapes.extraLarge, color = MaterialTheme.colorScheme.surfaceContainerHigh) {
+        Row(
+            Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            Icon(
+                Icons.Rounded.Dns,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(15.dp),
+            )
+            Text(name, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun TabletStat(icon: ImageVector, value: String, caption: String) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Icon(
+            icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(17.dp),
+        )
+        Column {
+            Text(value, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+            Text(caption, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -191,79 +338,180 @@ private fun TorrentListContent(
     ui: TorrentsUiState,
     viewModel: TorrentsViewModel,
     onOpenDetails: (String) -> Unit,
+    onAddTorrent: () -> Unit,
+    showToolbar: Boolean = true,
+    showFilterChips: Boolean = false,
 ) {
-    Column(Modifier.fillMaxSize()) {
-        ui.error?.let { error ->
-            ErrorBanner(message = error.message(), onRetry = { viewModel.refresh() })
-        }
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            TorrentFilter.entries.forEach { filter ->
-                FilterChip(
-                    selected = ui.filter == filter,
-                    onClick = { viewModel.setFilter(filter) },
-                    label = { Text(filter.label()) },
+    Box(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            ui.error?.let { error ->
+                ErrorBanner(message = error.message(), onRetry = { viewModel.refresh() })
+            }
+            if (showFilterChips) {
+                FilterChipsRow(
+                    ui = ui,
+                    onSetFilter = { viewModel.setFilter(it) },
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                 )
             }
-        }
-        if (ui.availableLabels.isNotEmpty()) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            PullToRefreshBox(
+                isRefreshing = ui.refreshing,
+                onRefresh = { viewModel.refresh() },
+                modifier = Modifier.fillMaxSize(),
             ) {
-                ui.availableLabels.forEach { label ->
-                    FilterChip(
-                        selected = ui.labelFilter == label,
-                        onClick = { viewModel.setLabelFilter(label) },
-                        leadingIcon = {
-                            Icon(
-                                Icons.AutoMirrored.Filled.Label,
-                                contentDescription = null,
-                                modifier = Modifier.height(16.dp),
-                            )
-                        },
-                        label = { Text(label) },
-                    )
-                }
-            }
-        }
-        PullToRefreshBox(
-            isRefreshing = ui.refreshing,
-            onRefresh = { viewModel.refresh() },
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            if (ui.hasLoaded && ui.visibleTorrents.isEmpty()) {
-                Box(Modifier.fillMaxSize()) {
-                    Text(
-                        stringResource(R.string.torrents_empty),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.align(Alignment.Center),
-                    )
-                }
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    items(ui.visibleTorrents, key = { it.id }) { torrent ->
-                        TorrentCard(
-                            torrent = torrent,
-                            selected = torrent.id == ui.selectedTorrentId,
-                            onClick = { onOpenDetails(torrent.id) },
+                if (ui.hasLoaded && ui.visibleTorrents.isEmpty()) {
+                    Box(Modifier.fillMaxSize()) {
+                        Text(
+                            stringResource(R.string.torrents_empty),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.align(Alignment.Center),
                         )
+                    }
+                } else {
+                    LazyColumn(
+                        contentPadding = PaddingValues(start = 6.dp, end = 6.dp, top = 8.dp, bottom = 96.dp),
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        items(ui.visibleTorrents, key = { it.id }) { torrent ->
+                            TorrentRow(
+                                torrent = torrent,
+                                selected = torrent.id == ui.selectedTorrentId,
+                                onClick = { onOpenDetails(torrent.id) },
+                            )
+                            HorizontalDivider(
+                                modifier = Modifier.padding(start = 52.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
+                            )
+                        }
                     }
                 }
             }
+        }
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.End,
+        ) {
+            if (ui.activeProfile != null) {
+                AddTorrentFab(onClick = onAddTorrent)
+                Spacer(Modifier.height(10.dp))
+            }
+            if (showToolbar) {
+                TorrentsToolbar(
+                    downloadRate = ui.totalDownloadRate,
+                    activeCount = ui.activeCount,
+                    uploadRate = ui.totalUploadRate,
+                    sharingCount = ui.sharingCount,
+                    sort = ui.sort,
+                    onSortSelect = { viewModel.setSort(it) },
+                    onRefresh = { viewModel.refresh() },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterChipsRow(ui: TorrentsUiState, onSetFilter: (TorrentFilter) -> Unit, modifier: Modifier = Modifier) {
+    Row(
+        modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        TorrentFilter.entries.forEach { filter ->
+            FilterChip(
+                selected = ui.filter == filter,
+                onClick = { onSetFilter(filter) },
+                label = { Text(filter.label()) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun TorrentsToolbar(
+    downloadRate: Long,
+    activeCount: Int,
+    uploadRate: Long,
+    sharingCount: Int,
+    sort: TorrentSort,
+    onSortSelect: (TorrentSort) -> Unit,
+    onRefresh: () -> Unit,
+) {
+    Surface(
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shadowElevation = 3.dp,
+        modifier = Modifier.fillMaxWidth().height(62.dp),
+    ) {
+        Row(
+            Modifier.fillMaxSize().padding(start = 16.dp, end = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            ToolbarStat(
+                icon = Icons.Rounded.ArrowDownward,
+                value = formatSpeed(downloadRate),
+                caption = stringResource(R.string.toolbar_download_active, activeCount),
+            )
+            VerticalDivider(Modifier.height(26.dp).padding(horizontal = 8.dp))
+            ToolbarStat(
+                icon = Icons.Rounded.ArrowUpward,
+                value = formatSpeed(uploadRate),
+                caption = stringResource(R.string.toolbar_upload_sharing, sharingCount),
+            )
+            Spacer(Modifier.weight(1f))
+            IconButton(onClick = onRefresh) {
+                Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
+            }
+            SortMenuButton(current = sort, onSelect = onSortSelect)
+        }
+    }
+}
+
+@Composable
+private fun ToolbarStat(icon: ImageVector, value: String, caption: String) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Box(
+            Modifier
+                .size(30.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(18.dp),
+            )
+        }
+        Column {
+            Text(value, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+            Text(caption, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun AddTorrentFab(onClick: () -> Unit) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val corner by animateDpAsState(if (pressed) 30.dp else 22.dp, label = "fab-corner")
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(corner),
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        shadowElevation = 6.dp,
+        interactionSource = interactionSource,
+        modifier = Modifier.size(66.dp),
+    ) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.torrents_add))
         }
     }
 }
@@ -272,7 +520,7 @@ private fun TorrentListContent(
 private fun SortMenuButton(current: TorrentSort, onSelect: (TorrentSort) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     IconButton(onClick = { expanded = true }) {
-        Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(R.string.sort_title))
+        Icon(Icons.AutoMirrored.Rounded.Sort, contentDescription = stringResource(R.string.sort_title))
     }
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
         TorrentSort.entries.forEach { sort ->
@@ -291,7 +539,7 @@ private fun SortMenuButton(current: TorrentSort, onSelect: (TorrentSort) -> Unit
 }
 
 @Composable
-private fun TorrentSort.label(): String = stringResource(
+internal fun TorrentSort.label(): String = stringResource(
     when (this) {
         TorrentSort.DATE_ADDED -> R.string.sort_date_added
         TorrentSort.NAME -> R.string.sort_name
@@ -301,76 +549,171 @@ private fun TorrentSort.label(): String = stringResource(
 )
 
 @Composable
-private fun TorrentFilter.label(): String = stringResource(
+internal fun TorrentFilter.label(): String = stringResource(
     when (this) {
         TorrentFilter.ALL -> R.string.filter_all
         TorrentFilter.DOWNLOADING -> R.string.filter_downloading
         TorrentFilter.SEEDING -> R.string.filter_seeding
+        TorrentFilter.COMPLETED -> R.string.filter_completed
         TorrentFilter.PAUSED -> R.string.filter_paused
-        TorrentFilter.ERROR -> R.string.filter_error
     }
 )
 
+/** Leading icon for a torrent row, matching the mockup's down/seed/idle/wait state icons. */
+internal val TorrentStatus.leadingIcon: ImageVector
+    get() = when (this) {
+        TorrentStatus.DOWNLOADING -> Icons.Rounded.Download
+        TorrentStatus.SEEDING -> Icons.Rounded.Upload
+        TorrentStatus.QUEUED, TorrentStatus.CHECKING -> Icons.Rounded.Schedule
+        TorrentStatus.ERROR -> Icons.Rounded.ErrorOutline
+        TorrentStatus.PAUSED, TorrentStatus.UNKNOWN -> Icons.Rounded.Pause
+    }
+
 @Composable
-private fun TorrentCard(torrent: Torrent, selected: Boolean, onClick: () -> Unit) {
-    Card(
-        onClick = onClick,
-        colors = if (selected) {
-            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-        } else {
-            CardDefaults.cardColors()
-        },
-        modifier = Modifier.fillMaxWidth(),
+private fun TorrentRow(torrent: Torrent, selected: Boolean, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium)
+            .let {
+                if (selected) it.background(MaterialTheme.colorScheme.surfaceContainerHigh) else it
+            }
+            .clickable(onClick = onClick),
     ) {
-        Column(Modifier.padding(12.dp)) {
-            Text(
-                torrent.name,
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 12.dp),
+        ) {
+            Icon(
+                torrent.status.leadingIcon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(22.dp).padding(top = 1.dp),
             )
-            Spacer(Modifier.height(8.dp))
-            LinearProgressIndicator(
-                progress = { torrent.displayProgress },
-                color = torrent.status.accentColor,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(Modifier.height(6.dp))
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    torrent.statusLabel(),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = torrent.status.accentColor,
-                )
-                Text(
-                    " · ${(torrent.displayProgress * 100).toInt()}% · ${formatBytes(torrent.sizeBytes)}",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.weight(1f))
-                if (torrent.status.isActive) {
+            Spacer(Modifier.width(10.dp))
+            Column(Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        "↓ ${formatSpeed(torrent.downloadRate)}  ↑ ${formatSpeed(torrent.uploadRate)}",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        torrent.name,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        // fill (the default) so the name always claims the row's full
+                        // remaining width like the mockup's `.name{flex:1}` - otherwise a
+                        // short title only takes its natural width and the tag ends up sitting
+                        // right after it instead of pushed to the row's far right.
+                        modifier = Modifier.weight(1f),
                     )
-                } else {
+                    Spacer(Modifier.width(10.dp))
                     Text(
-                        stringResource(R.string.details_ratio) + " " + formatRatio(torrent.ratio),
-                        style = MaterialTheme.typography.labelMedium,
+                        rowTag(torrent),
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
                     )
                 }
-            }
-            formatEta(torrent.etaSeconds)?.let { eta ->
-                Spacer(Modifier.height(2.dp))
                 Text(
-                    stringResource(R.string.details_eta) + " " + eta,
-                    style = MaterialTheme.typography.labelSmall,
+                    rowDetail(torrent),
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
+                TorrentProgressIndicator(
+                    progress = torrent.displayProgress,
+                    active = torrent.status == TorrentStatus.DOWNLOADING,
+                    color = torrent.status.accentColor,
+                    trackColor = torrent.status.trackColor,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                )
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    RowMetaLeft(torrent)
+                    RowMetaRight(torrent)
+                }
             }
         }
+        // Colour-coded accent line centred under the leading icon (not a full-height gutter
+        // to its left): starts right below the icon (row top padding 12dp + icon's own 1dp
+        // inset + its 22dp size = 35dp) and ends flush with the bottom of the row's own
+        // content (the meta row, e.g. "Ratio …") rather than running into the row's own
+        // bottom padding — hence the matching bottom=12dp inset. matchParentSize() forces
+        // THIS node's own reported size to the full row bounds via tight constraints, which —
+        // if padding/width were chained right on it — get re-clamped back up past a smaller
+        // requested width, silently pushing the line off toward the middle of the row instead
+        // of shrinking it. Nesting a plain Box inside sidesteps that: the outer box's tight
+        // sizing is already resolved, so its own children (this inner one) get measured with
+        // normal loose (0..max) constraints, and width/padding behave as expected.
+        Box(Modifier.matchParentSize()) {
+            Box(
+                Modifier
+                    .padding(start = 17.5.dp, top = 35.dp, bottom = 12.dp)
+                    .width(3.dp)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(torrent.status.accentColor),
+            )
+        }
+    }
+}
+
+@Composable
+private fun rowTag(torrent: Torrent): String =
+    if (torrent.metadataProgress == null && torrent.status == TorrentStatus.DOWNLOADING) {
+        formatEta(torrent.etaSeconds)?.let {
+            stringResource(R.string.torrent_row_eta_left, it)
+        } ?: torrent.statusLabel()
+    } else {
+        torrent.statusLabel()
+    }
+
+@Composable
+private fun rowDetail(torrent: Torrent): String = when {
+    torrent.metadataProgress != null -> "${(torrent.displayProgress * 100).toInt()}%"
+    torrent.isFinished -> stringResource(R.string.torrent_row_complete, formatBytes(torrent.sizeBytes))
+    else -> stringResource(
+        R.string.torrent_row_progress,
+        formatBytes(torrent.downloadedBytes),
+        formatBytes(torrent.sizeBytes),
+        (torrent.displayProgress * 100).toInt(),
+    )
+}
+
+@Composable
+private fun RowMetaLeft(torrent: Torrent) {
+    val (icon, text) = when (torrent.status) {
+        TorrentStatus.DOWNLOADING -> Icons.Rounded.Group to stringResource(R.string.torrent_row_peers, torrent.peersConnected)
+        TorrentStatus.QUEUED, TorrentStatus.CHECKING -> Icons.Rounded.Schedule to torrent.statusLabel()
+        else -> Icons.Rounded.SyncAlt to (stringResource(R.string.details_ratio) + " " + formatRatio(torrent.ratio))
+    }
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.outline, modifier = Modifier.size(14.dp))
+        Text(text, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun RowMetaRight(torrent: Torrent) {
+    when (torrent.status) {
+        TorrentStatus.DOWNLOADING -> Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            SpeedChip(Icons.Rounded.South, formatSpeed(torrent.downloadRate))
+            SpeedChip(Icons.Rounded.North, formatSpeed(torrent.uploadRate))
+        }
+        TorrentStatus.SEEDING -> SpeedChip(Icons.Rounded.North, formatSpeed(torrent.uploadRate))
+        else -> {}
+    }
+}
+
+@Composable
+private fun SpeedChip(icon: ImageVector, text: String) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.outline, modifier = Modifier.size(13.dp))
+        Text(text, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -400,7 +743,7 @@ private fun ErrorBanner(message: String, onRetry: () -> Unit) {
 private fun WelcomeContent(onOpenSettings: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier.padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
-            Icons.Default.Dns,
+            Icons.Rounded.Dns,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.width(56.dp).height(56.dp),

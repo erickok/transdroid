@@ -21,32 +21,42 @@ import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Dns
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.SettingsBackupRestore
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.Dns
+import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.SettingsBackupRestore
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -63,11 +73,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -146,7 +161,7 @@ fun SettingsScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
+                            Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = stringResource(R.string.details_back),
                         )
                     }
@@ -155,155 +170,135 @@ fun SettingsScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { onEditServer(null) }) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.settings_add_server))
+                Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.settings_add_server))
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
-        LazyColumn(Modifier.padding(padding).fillMaxSize()) {
-            item { SectionHeader(stringResource(R.string.settings_servers)) }
-            items(profiles, key = { it.id }) { profile ->
-                val effectiveActiveId = activeId ?: profiles.firstOrNull()?.id
-                ListItem(
-                    headlineContent = { Text(profile.displayName) },
-                    supportingContent = {
-                        Text("${profile.type.name.lowercase().replaceFirstChar { it.uppercase() }} · ${profile.host}:${profile.port}")
-                    },
-                    leadingContent = {
-                        Icon(Icons.Default.Dns, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                    },
-                    trailingContent = {
-                        RadioButton(
-                            selected = profile.id == effectiveActiveId,
-                            onClick = { viewModel.setActive(profile.id) },
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onEditServer(profile.id) },
-                )
-            }
-
+        LazyColumn(
+            modifier = Modifier.padding(padding).fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        ) {
             item {
-                val pollInterval by viewModel.pollIntervalSeconds.collectAsStateWithLifecycle()
-                var intervalMenuOpen by remember { mutableStateOf(false) }
-                ListItem(
-                    headlineContent = { Text(stringResource(R.string.settings_poll_interval)) },
-                    supportingContent = { Text(stringResource(R.string.settings_poll_interval_value, pollInterval)) },
-                    leadingContent = {
-                        Icon(Icons.Default.Refresh, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                    },
-                    modifier = Modifier.fillMaxWidth().clickable { intervalMenuOpen = true },
-                )
-                DropdownMenu(expanded = intervalMenuOpen, onDismissRequest = { intervalMenuOpen = false }) {
-                    SettingsRepository.POLL_INTERVAL_OPTIONS.forEach { seconds ->
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.settings_poll_interval_value, seconds)) },
-                            leadingIcon = { RadioButton(selected = seconds == pollInterval, onClick = null) },
-                            onClick = {
-                                viewModel.setPollInterval(seconds)
-                                intervalMenuOpen = false
+                SettingsSection(stringResource(R.string.settings_servers)) {
+                    val effectiveActiveId = activeId ?: profiles.firstOrNull()?.id
+                    profiles.forEach { profile ->
+                        SettingsRow(
+                            icon = Icons.Rounded.Dns,
+                            title = profile.displayName,
+                            subtitle = "${profile.type.displayName()} · ${profile.host}:${profile.port}",
+                            onClick = { onEditServer(profile.id) },
+                            trailing = {
+                                if (profile.id == effectiveActiveId) {
+                                    SettingsChip(stringResource(R.string.settings_active_server))
+                                    Spacer(Modifier.width(4.dp))
+                                }
+                                Icon(Icons.Rounded.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                             },
                         )
                     }
+                    SettingsAddRow(
+                        title = stringResource(R.string.settings_add_server),
+                        onClick = { onEditServer(null) },
+                    )
                 }
             }
 
-            item { SectionHeader(stringResource(R.string.settings_notifications)) }
             item {
-                ListItem(
-                    headlineContent = { Text(stringResource(R.string.settings_notify_finished)) },
-                    supportingContent = { Text(stringResource(R.string.settings_notify_finished_summary)) },
-                    leadingContent = {
-                        Icon(
-                            Icons.Default.Notifications,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
+                SettingsSection(stringResource(R.string.settings_preferences)) {
+                    val pollInterval by viewModel.pollIntervalSeconds.collectAsStateWithLifecycle()
+                    var intervalMenuOpen by remember { mutableStateOf(false) }
+                    Box {
+                        SettingsRow(
+                            icon = Icons.Rounded.Refresh,
+                            title = stringResource(R.string.settings_poll_interval),
+                            subtitle = stringResource(R.string.settings_poll_interval_value, pollInterval),
+                            onClick = { intervalMenuOpen = true },
                         )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = notifyFinished,
-                            onCheckedChange = { enabled ->
-                                if (enabled && Build.VERSION.SDK_INT >= 33) {
-                                    notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                                } else {
-                                    viewModel.setNotifyFinished(context, enabled)
-                                }
-                            },
-                        )
-                    },
-                )
+                        DropdownMenu(expanded = intervalMenuOpen, onDismissRequest = { intervalMenuOpen = false }) {
+                            SettingsRepository.POLL_INTERVAL_OPTIONS.forEach { seconds ->
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.settings_poll_interval_value, seconds)) },
+                                    leadingIcon = { RadioButton(selected = seconds == pollInterval, onClick = null) },
+                                    onClick = {
+                                        viewModel.setPollInterval(seconds)
+                                        intervalMenuOpen = false
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    SettingsRow(
+                        icon = Icons.Rounded.Notifications,
+                        title = stringResource(R.string.settings_notify_finished),
+                        subtitle = stringResource(R.string.settings_notify_finished_summary),
+                        onClick = null,
+                        trailing = {
+                            Switch(
+                                checked = notifyFinished,
+                                onCheckedChange = { enabled ->
+                                    if (enabled && Build.VERSION.SDK_INT >= 33) {
+                                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                    } else {
+                                        viewModel.setNotifyFinished(context, enabled)
+                                    }
+                                },
+                            )
+                        },
+                    )
+                }
             }
 
             if (searchAvailable) {
-                item { SectionHeader(stringResource(R.string.settings_search_providers)) }
-                items(providers, key = { it.id }) { provider ->
-                    ListItem(
-                        headlineContent = { Text(provider.displayName) },
-                        supportingContent = { Text(provider.url, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                        leadingContent = {
-                            Icon(
-                                Icons.Default.Search,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth().clickable {
-                            editingProvider = provider
-                            showProviderDialog = true
-                        },
-                    )
-                }
                 item {
-                    TextButton(
-                        onClick = {
-                            editingProvider = null
-                            showProviderDialog = true
-                        },
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                    ) {
-                        Text(stringResource(R.string.settings_add_search_provider))
+                    SettingsSection(stringResource(R.string.settings_search_providers)) {
+                        providers.forEach { provider ->
+                            SettingsRow(
+                                icon = Icons.Rounded.Search,
+                                title = provider.displayName,
+                                subtitle = provider.url,
+                                onClick = {
+                                    editingProvider = provider
+                                    showProviderDialog = true
+                                },
+                            )
+                        }
+                        SettingsAddRow(
+                            title = stringResource(R.string.settings_add_search_provider),
+                            onClick = {
+                                editingProvider = null
+                                showProviderDialog = true
+                            },
+                        )
                     }
                 }
             }
 
-            item { SectionHeader(stringResource(R.string.settings_backup)) }
             item {
-                ListItem(
-                    headlineContent = { Text(stringResource(R.string.backup_export)) },
-                    supportingContent = { Text(stringResource(R.string.backup_export_summary)) },
-                    leadingContent = {
-                        Icon(Icons.Default.Save, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                    },
-                    modifier = Modifier.fillMaxWidth().clickable { showExportDialog = true },
-                )
-            }
-            item {
-                ListItem(
-                    headlineContent = { Text(stringResource(R.string.backup_import)) },
-                    supportingContent = { Text(stringResource(R.string.backup_import_summary)) },
-                    leadingContent = {
-                        Icon(
-                            Icons.Default.SettingsBackupRestore,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth().clickable {
-                        importPicker.launch(arrayOf("application/octet-stream", "*/*"))
-                    },
-                )
+                SettingsSection(stringResource(R.string.settings_backup)) {
+                    SettingsRow(
+                        icon = Icons.Rounded.Save,
+                        title = stringResource(R.string.backup_export),
+                        subtitle = stringResource(R.string.backup_export_summary),
+                        onClick = { showExportDialog = true },
+                    )
+                    SettingsRow(
+                        icon = Icons.Rounded.SettingsBackupRestore,
+                        title = stringResource(R.string.backup_import),
+                        subtitle = stringResource(R.string.backup_import_summary),
+                        onClick = { importPicker.launch(arrayOf("application/octet-stream", "*/*")) },
+                    )
+                }
             }
 
             item {
-                Column(Modifier.padding(16.dp)) {
-                    Text(
-                        stringResource(R.string.settings_about, BuildConfig.VERSION_NAME),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
+                Text(
+                    stringResource(R.string.settings_about, BuildConfig.VERSION_NAME),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    textAlign = TextAlign.Center,
+                )
             }
         }
     }
@@ -419,12 +414,91 @@ private fun PassphraseDialog(
 }
 
 @Composable
-private fun SectionHeader(text: String) {
+private fun SettingsSection(title: String, content: @Composable () -> Unit) {
+    Column(Modifier.padding(top = 8.dp)) {
+        Text(
+            title,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 2.dp, vertical = 8.dp),
+        )
+        Card(
+            shape = MaterialTheme.shapes.large,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(content = { content() })
+        }
+    }
+}
+
+@Composable
+private fun SettingsRow(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: (() -> Unit)?,
+    trailing: @Composable RowScope.() -> Unit = {
+        Icon(Icons.Rounded.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+    },
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .let { if (onClick != null) it.clickable(onClick = onClick) else it }
+            .padding(horizontal = 18.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(24.dp))
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        trailing()
+    }
+}
+
+@Composable
+private fun SettingsAddRow(title: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Box(
+            Modifier
+                .size(36.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(Icons.Rounded.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+        }
+        Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
+    }
+}
+
+@Composable
+private fun SettingsChip(text: String) {
     Text(
         text,
-        style = MaterialTheme.typography.titleSmall,
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier
+            .clip(RoundedCornerShape(percent = 50))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(horizontal = 9.dp, vertical = 3.dp),
     )
 }
 

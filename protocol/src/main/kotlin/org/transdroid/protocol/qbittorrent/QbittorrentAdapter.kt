@@ -16,8 +16,11 @@
  */
 package org.transdroid.protocol.qbittorrent
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
 import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -32,6 +35,8 @@ import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
+import org.transdroid.protocol.Tracker
+import org.transdroid.protocol.TrackerStatus
 import org.transdroid.protocol.internal.executeOnIo
 import org.transdroid.protocol.internal.joinPath
 
@@ -56,12 +61,7 @@ class QbittorrentAdapter(
     }
 
     override suspend fun listTorrents(): List<Torrent> {
-        val body = get("api/v2/torrents/info").use { it.readBodyOrThrow() }
-        val infos = try {
-            json.decodeFromString<List<TorrentInfo>>(body)
-        } catch (e: Exception) {
-            throw DaemonException.UnexpectedResponse("Cannot parse qBittorrent torrent list", e)
-        }
+        val infos = get("api/v2/torrents/info").use { it.decodeJsonListOrThrow<TorrentInfo>("torrent list") }
         return infos.map { it.toTorrent() }
     }
 
@@ -94,7 +94,7 @@ class QbittorrentAdapter(
     }
 
     /** torrents/add reports failure as HTTP 200 with the body "Fails." */
-    private fun Response.checkAddSucceeded() {
+    private suspend fun Response.checkAddSucceeded() {
         if (readBodyOrThrow().trim() == "Fails.") {
             throw DaemonException.UnexpectedResponse("qBittorrent could not add that torrent")
         }
@@ -117,12 +117,7 @@ class QbittorrentAdapter(
     }
 
     override suspend fun listFiles(torrentId: String): List<TorrentFile> {
-        val body = get("api/v2/torrents/files?hash=$torrentId").use { it.readBodyOrThrow() }
-        val files = try {
-            json.decodeFromString<List<FileInfo>>(body)
-        } catch (e: Exception) {
-            throw DaemonException.UnexpectedResponse("Cannot parse qBittorrent file list", e)
-        }
+        val files = get("api/v2/torrents/files?hash=$torrentId").use { it.decodeJsonListOrThrow<FileInfo>("file list") }
         return files.mapIndexed { listIndex, file ->
             TorrentFile(
                 // Newer qBittorrent reports the real file index; fall back to list position
@@ -152,6 +147,13 @@ class QbittorrentAdapter(
             .add("priority", value.toString())
             .build()
         post("api/v2/torrents/filePrio", form).use { it.readBodyOrThrow() }
+    }
+
+    override suspend fun listTrackers(torrentId: String): List<Tracker> {
+        val trackers = get("api/v2/torrents/trackers?hash=$torrentId")
+            .use { it.decodeJsonListOrThrow<TrackerInfo>("tracker list") }
+        // qBittorrent lists DHT/PeX/LSD as pseudo-trackers with urls like "** [DHT] **"
+        return trackers.filterNot { it.url.startsWith("**") }.map { it.toTracker() }
     }
 
     /** qBittorrent 5 renamed pause/resume to stop/start; try new name first, fall back on 404. */
@@ -184,7 +186,7 @@ class QbittorrentAdapter(
             if (response.code == 403) {
                 throw DaemonException.Authentication("qBittorrent blocked this address (too many failed logins)")
             }
-            val body = response.body?.string().orEmpty()
+            val body = withContext(Dispatchers.IO) { response.body?.string().orEmpty() }
             if (!response.isSuccessful || body.trim() != "Ok.") {
                 throw DaemonException.Authentication("qBittorrent rejected the username/password")
             }
@@ -234,7 +236,28 @@ class QbittorrentAdapter(
         return httpClient.executeOnIo(builder.build())
     }
 
-    private fun Response.readBodyOrThrow(): String = body?.string().orEmpty()
+    /**
+     * [executeOnIo] only wraps the network round-trip up to receiving headers; the body
+     * still streams off the same connection, and reading it can still block on the socket,
+     * so that must stay on IO too or it risks a NetworkOnMainThreadException on whatever
+     * dispatcher called the adapter.
+     */
+    private suspend fun Response.readBodyOrThrow(): String =
+        withContext(Dispatchers.IO) { body?.string().orEmpty() }
+
+    /**
+     * Decodes a JSON array response directly off the body stream, without first buffering
+     * the whole reply into a String — matters for a server with thousands of torrents.
+     */
+    private suspend inline fun <reified T> Response.decodeJsonListOrThrow(what: String): List<T> =
+        withContext(Dispatchers.IO) {
+            val stream = body?.byteStream() ?: return@withContext emptyList()
+            try {
+                json.decodeFromStream<List<T>>(stream)
+            } catch (e: Exception) {
+                throw DaemonException.UnexpectedResponse("Cannot parse qBittorrent $what", e)
+            }
+        }
 
     @Serializable
     private data class TorrentInfo(
@@ -276,12 +299,36 @@ class QbittorrentAdapter(
             uploadedBytes = uploaded,
             ratio = ratio.coerceAtLeast(0f),
             peersConnected = num_seeds + num_leechs,
+            seedersConnected = num_seeds,
+            leechersConnected = num_leechs,
             addedTimestamp = added_on.takeIf { it > 0 },
             downloadDir = save_path,
             error = if (state == "error" || state == "missingFiles") "Torrent in error state ($state)" else null,
             labels = listOf(category).filter { it.isNotBlank() },
             // qBittorrent flags the metadata phase by state but reports no percentage
             metadataProgress = if (state == "metaDL" || state == "forcedMetaDL") 0f else null,
+        )
+    }
+
+    @Serializable
+    private data class TrackerInfo(
+        val url: String,
+        // 0=disabled, 1=not contacted, 2=working, 3=updating, 4=not working
+        val status: Int = 0,
+        val num_seeds: Int = -1,
+        val num_leeches: Int = -1,
+        val msg: String = "",
+    ) {
+        fun toTracker() = Tracker(
+            url = url,
+            status = when (status) {
+                2 -> TrackerStatus.WORKING
+                4 -> TrackerStatus.ERROR
+                else -> TrackerStatus.IDLE
+            },
+            seeders = num_seeds.takeIf { it >= 0 },
+            leechers = num_leeches.takeIf { it >= 0 },
+            message = msg.takeIf { it.isNotBlank() },
         )
     }
 
