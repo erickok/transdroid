@@ -196,6 +196,15 @@
     <string name="settings_scgi_path">SCGI mount path (optional)</string>
     <string name="settings_scgi_hint">Connects straight to rTorrent\'s SCGI socket, bypassing a web server.</string>
     <string name="settings_connection_help">Connection help</string>
+    <string name="settings_xirvik_title">Xirvik seedbox</string>
+    <string name="settings_xirvik_summary">Detect your rTorrent connection settings automatically</string>
+    <string name="settings_xirvik_action">Set up automatically</string>
+    <string name="settings_xirvik_server">Xirvik hostname</string>
+    <string name="settings_xirvik_server_hint">Like eplus001.xirvik.com</string>
+    <string name="settings_xirvik_detect">Detect settings</string>
+    <string name="settings_xirvik_detecting">Detecting your seedbox…</string>
+    <string name="settings_xirvik_success">Mount point found — check the settings below</string>
+    <string name="settings_xirvik_failed">Could not detect the SCGI mount point automatically; using /RPC2 as a fallback. Check the host name and credentials, or edit the path manually below.</string>
     <string name="settings_help_close">Got it</string>
     <string name="settings_help_lan_title">Direct on your home network</string>
     <string name="settings_help_lan">Use the server\'s IP address (like 192.168.1.5) with the client\'s own port — Transmission 9091, qBittorrent 8080, Deluge 8112 — and leave HTTPS off. Adding a new server also scans your network and offers what it finds.</string>

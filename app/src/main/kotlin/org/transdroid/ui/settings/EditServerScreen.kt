@@ -96,6 +96,7 @@ fun EditServerScreen(
     val testState by viewModel.testState.collectAsStateWithLifecycle()
     val certificateState by viewModel.certificateState.collectAsStateWithLifecycle()
     val discovery by viewModel.discovery.collectAsStateWithLifecycle()
+    val xirvikState by viewModel.xirvikState.collectAsStateWithLifecycle()
     val existing = profiles.firstOrNull { it.id == serverId }
 
     var name by rememberSaveable(existing?.id) { mutableStateOf(existing?.name.orEmpty()) }
@@ -122,6 +123,36 @@ fun EditServerScreen(
     }
     var overridden by rememberSaveable(existing?.id) { mutableStateOf(false) }
     var rtorrentUseUrl by rememberSaveable(existing?.id) { mutableStateOf(true) }
+
+    // Xirvik seedbox quick setup (new servers only): a hostname + credentials probe against
+    // Xirvik's auto-config endpoint to discover the account's per-user SCGI mount path, mirroring
+    // Transdroid 2's XirvikSettingsActivity/RetrieveXirvikAutoConfTask. A hit or a miss both fill in
+    // the rest of the form below, exactly like picking a LAN-discovered daemon does.
+    var xirvikExpanded by rememberSaveable(existing?.id) { mutableStateOf(false) }
+    var xirvikServer by rememberSaveable(existing?.id) { mutableStateOf("") }
+    var xirvikUser by rememberSaveable(existing?.id) { mutableStateOf("") }
+    var xirvikPass by rememberSaveable(existing?.id) { mutableStateOf("") }
+
+    LaunchedEffect(xirvikState) {
+        val detectedPath = when (val state = xirvikState) {
+            is XirvikState.Success -> state.path
+            XirvikState.Failed -> ""
+            else -> return@LaunchedEffect
+        }
+        type = DaemonType.RTORRENT
+        host = xirvikServer.trim()
+        port = "443"
+        useSsl = true
+        path = detectedPath
+        username = xirvikUser.trim()
+        password = xirvikPass
+        overridden = false
+        rtorrentUseUrl = true
+        url = composeServerUrl(true, xirvikServer.trim(), 443, detectedPath)
+        if (name.isBlank()) name = "Xirvik"
+        hostError = false
+        xirvikExpanded = xirvikState is XirvikState.Failed
+    }
 
     fun applyParsedUrl(raw: String) {
         url = raw
@@ -246,6 +277,21 @@ fun EditServerScreen(
                         hostError = false
                         portError = false
                     },
+                )
+            }
+
+            if (serverId == null) {
+                XirvikSetupSection(
+                    expanded = xirvikExpanded,
+                    onExpandedChange = { xirvikExpanded = it },
+                    server = xirvikServer,
+                    onServerChange = { xirvikServer = it },
+                    username = xirvikUser,
+                    onUsernameChange = { xirvikUser = it },
+                    password = xirvikPass,
+                    onPasswordChange = { xirvikPass = it },
+                    state = xirvikState,
+                    onDetect = { viewModel.detectXirvik(xirvikServer.trim(), xirvikUser.trim(), xirvikPass) },
                 )
             }
 
@@ -742,6 +788,100 @@ private fun DiscoverySection(state: DiscoveryState, onPick: (DiscoveredDaemon) -
                     colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                     modifier = Modifier.fillMaxWidth().clickable { onPick(daemon) },
                 )
+            }
+        }
+    }
+}
+
+/**
+ * Collapsed: a prompt offering to fill in the form below from just a hostname and credentials.
+ * Expanded: those three fields plus a "Detect settings" action that probes Xirvik's auto-config
+ * endpoint for the account's SCGI mount path (see the [XirvikState] flow in [EditServerScreen]).
+ */
+@Composable
+private fun XirvikSetupSection(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    server: String,
+    onServerChange: (String) -> Unit,
+    username: String,
+    onUsernameChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    state: XirvikState,
+    onDetect: () -> Unit,
+) {
+    Card(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(12.dp)) {
+            Text(
+                stringResource(R.string.settings_xirvik_title),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Spacer(Modifier.height(4.dp))
+            if (!expanded) {
+                Text(stringResource(R.string.settings_xirvik_summary), style = MaterialTheme.typography.bodyMedium)
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(onClick = { onExpandedChange(true) }) {
+                    Text(stringResource(R.string.settings_xirvik_action))
+                }
+            } else {
+                OutlinedTextField(
+                    value = server,
+                    onValueChange = onServerChange,
+                    label = { Text(stringResource(R.string.settings_xirvik_server)) },
+                    placeholder = { Text(stringResource(R.string.settings_xirvik_server_hint)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = onUsernameChange,
+                    label = { Text(stringResource(R.string.settings_username)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = onPasswordChange,
+                    label = { Text(stringResource(R.string.settings_password)) },
+                    visualTransformation = PasswordVisualTransformation(),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Spacer(Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Button(
+                        onClick = onDetect,
+                        enabled = state != XirvikState.Detecting &&
+                            server.isNotBlank() && username.isNotBlank() && password.isNotBlank(),
+                    ) {
+                        Text(stringResource(R.string.settings_xirvik_detect))
+                    }
+                    if (state == XirvikState.Detecting) {
+                        Spacer(Modifier.width(12.dp))
+                        CircularProgressIndicator(Modifier.height(18.dp).width(18.dp), strokeWidth = 2.dp)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.settings_xirvik_detecting), style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+                when (state) {
+                    is XirvikState.Success -> Text(
+                        stringResource(R.string.settings_xirvik_success),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                    XirvikState.Failed -> Text(
+                        stringResource(R.string.settings_xirvik_failed),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                    else -> {}
+                }
             }
         }
     }

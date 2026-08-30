@@ -199,4 +199,42 @@ class RtorrentAdapterTest {
         } catch (expected: DaemonException.Authentication) {
         }
     }
+
+    @Test
+    fun `html login portal response is diagnosed instead of a generic parse error`() = runTest {
+        server.enqueue(
+            MockResponse().setBody("<!DOCTYPE html><html><head><title>Sign in</title></head><body>Please log in</body></html>")
+        )
+
+        try {
+            adapter.testConnection()
+            fail("Expected DaemonException.UnexpectedResponse")
+        } catch (expected: DaemonException.UnexpectedResponse) {
+            assertTrue(expected.message!!.contains("web page"))
+        }
+    }
+
+    @Test
+    fun `empty response is diagnosed as such`() = runTest {
+        server.enqueue(MockResponse().setBody(""))
+
+        try {
+            adapter.testConnection()
+            fail("Expected DaemonException.UnexpectedResponse")
+        } catch (expected: DaemonException.UnexpectedResponse) {
+            assertTrue(expected.message!!.contains("Empty response"))
+        }
+    }
+
+    @Test
+    fun `garbage response includes a snippet for diagnosis`() = runTest {
+        server.enqueue(MockResponse().setBody("Fatal error: out of memory in rtorrent.php on line 42"))
+
+        try {
+            adapter.testConnection()
+            fail("Expected DaemonException.UnexpectedResponse")
+        } catch (expected: DaemonException.UnexpectedResponse) {
+            assertTrue(expected.message!!.contains("Fatal error: out of memory"))
+        }
+    }
 }

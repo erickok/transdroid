@@ -42,6 +42,7 @@ import org.transdroid.data.SearchProviderConfig
 import org.transdroid.data.ServerProfile
 import org.transdroid.protocol.CertificateFingerprint
 import org.transdroid.protocol.Tls
+import org.transdroid.protocol.Xirvik
 import org.transdroid.protocol.discovery.DiscoveredDaemon
 import org.transdroid.ui.torrents.UiError
 import org.transdroid.ui.torrents.toUiError
@@ -65,6 +66,14 @@ data class DiscoveryState(
     val scanned: Boolean = false,
     val found: List<DiscoveredDaemon> = emptyList(),
 )
+
+sealed class XirvikState {
+    data object Idle : XirvikState()
+    data object Detecting : XirvikState()
+    data class Success(val path: String) : XirvikState()
+    /** The mount path couldn't be found; the caller falls back to the adapter's own /RPC2 default. */
+    data object Failed : XirvikState()
+}
 
 class SettingsViewModel(private val container: AppContainer) : ViewModel() {
 
@@ -96,10 +105,6 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
-    fun setActive(profileId: String) {
-        viewModelScope.launch { container.settingsRepository.setActiveServer(profileId) }
-    }
-
     fun testConnection(profile: ServerProfile) {
         _testState.value = TestState.Testing
         viewModelScope.launch {
@@ -114,6 +119,7 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
     fun resetTestState() {
         _testState.value = TestState.Idle
         _certificateState.value = CertificateState.Idle
+        _xirvikState.value = XirvikState.Idle
     }
 
     private val _certificateState = MutableStateFlow<CertificateState>(CertificateState.Idle)
@@ -133,6 +139,18 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
 
     fun dismissCertificate() {
         _certificateState.value = CertificateState.Idle
+    }
+
+    private val _xirvikState = MutableStateFlow<XirvikState>(XirvikState.Idle)
+    val xirvikState: StateFlow<XirvikState> = _xirvikState.asStateFlow()
+
+    /** Looks up a Xirvik seedbox's per-account SCGI mount path from its auto-config endpoint. */
+    fun detectXirvik(server: String, username: String, password: String) {
+        _xirvikState.value = XirvikState.Detecting
+        viewModelScope.launch {
+            val path = Xirvik.detectRpcPath(container.httpClient, server, username, password)
+            _xirvikState.value = if (path != null) XirvikState.Success(path) else XirvikState.Failed
+        }
     }
 
     private val _discovery = MutableStateFlow(DiscoveryState())

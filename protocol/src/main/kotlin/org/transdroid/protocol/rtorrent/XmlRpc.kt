@@ -17,6 +17,7 @@
 package org.transdroid.protocol.rtorrent
 
 import java.io.InputStream
+import java.io.PushbackInputStream
 import java.util.Base64
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.internal.childElements
@@ -64,20 +65,29 @@ internal object XmlRpc {
         }
     }
 
-    /** Parses a methodResponse, returning its single value; XML-RPC faults become exceptions. */
-    fun parseResponse(xml: String): Any? = parseResponse { parseXmlSafely(xml) }
-
     /**
-     * Same as [parseResponse], parsing directly off the response body stream instead of a
+     * Parses a methodResponse read directly off the response body stream, returning its single
+     * value; XML-RPC faults become exceptions. Parses straight off the stream rather than a
      * pre-buffered String — matters for a large multicall reply (e.g. thousands of torrents).
+     * Peeks a few bytes first (without consuming them) so a genuine parse failure can report
+     * what the server actually sent instead of a content-free "not XML" message — seedboxes
+     * (e.g. Xirvik/ruTorrent behind nginx) commonly answer a wrong mount path or an expired
+     * session with an HTML page instead of a fault response.
      */
-    fun parseResponse(stream: InputStream): Any? = parseResponse { parseXmlSafely(stream) }
+    fun parseResponse(stream: InputStream): Any? {
+        val pushback = PushbackInputStream(stream, PEEK_BYTES)
+        val peek = ByteArray(PEEK_BYTES)
+        val peeked = pushback.read(peek).coerceAtLeast(0)
+        if (peeked > 0) pushback.unread(peek, 0, peeked)
+        val snippet = String(peek, 0, peeked, Charsets.UTF_8)
+        return parseResponse(snippet) { parseXmlSafely(pushback) }
+    }
 
-    private inline fun parseResponse(parseDocument: () -> Document): Any? {
+    private inline fun parseResponse(peekedForDiagnosis: String, parseDocument: () -> Document): Any? {
         val document = try {
             parseDocument()
         } catch (e: Exception) {
-            throw DaemonException.UnexpectedResponse("Not an XML-RPC response", e)
+            throw DaemonException.UnexpectedResponse(parseFailureHint(peekedForDiagnosis, e), e)
         }
         val root = document.documentElement
         if (root.tagName != "methodResponse") {
@@ -116,8 +126,27 @@ internal object XmlRpc {
         }
     }
 
+    /** Turns whatever a genuinely unparseable response started with into an actionable message. */
+    private fun parseFailureHint(peeked: String, parseError: Exception): String {
+        val snippet = peeked.trim()
+        return when {
+            snippet.isEmpty() -> "Empty response from rTorrent"
+            Regex("^<!doctype html|^<html", RegexOption.IGNORE_CASE).containsMatchIn(snippet) ->
+                "The server answered with a web page instead of XML-RPC — a login portal may be " +
+                    "in front of it, or the SCGI/RPC mount path is wrong"
+            // Looks like XML-RPC but genuinely failed to parse - the underlying parser error
+            // (often with a line/column) plus a snippet is far more actionable than a flat
+            // "not XML" message for tracking down a malformed byte deep in a large response.
+            else -> "Not an XML-RPC response (${parseError.message}): " +
+                "${snippet.take(200).replace(Regex("\\s+"), " ")}"
+        }
+    }
+
     private fun escape(text: String): String = text
         .replace("&", "&amp;")
         .replace("<", "&lt;")
         .replace(">", "&gt;")
+
+    /** Bytes peeked (without consuming) to diagnose a non-XML response before parsing fails. */
+    private const val PEEK_BYTES = 512
 }

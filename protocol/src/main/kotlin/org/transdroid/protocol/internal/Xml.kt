@@ -20,6 +20,7 @@ import java.io.InputStream
 import java.io.StringReader
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.parsers.ParserConfigurationException
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -37,7 +38,17 @@ internal fun parseXmlSafely(stream: InputStream): Document = safeDocumentBuilder
 
 private fun safeDocumentBuilder(): DocumentBuilder =
     DocumentBuilderFactory.newInstance().apply {
-        setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+        // Xerces-specific feature name: the desktop JVM used by unit tests recognizes it, but
+        // Android's built-in DocumentBuilderFactory throws ParserConfigurationException on it -
+        // every on-device rTorrent response failed to parse before this was made best-effort,
+        // even though the fixture-based tests (which run on a desktop JVM) never caught it.
+        // isExpandEntityReferences below is the standard JAXP property both platforms honor, so
+        // XXE resistance holds either way.
+        try {
+            setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+        } catch (e: ParserConfigurationException) {
+            // Not recognized by this platform's JAXP provider - fall through.
+        }
         isExpandEntityReferences = false
     }.newDocumentBuilder()
 
