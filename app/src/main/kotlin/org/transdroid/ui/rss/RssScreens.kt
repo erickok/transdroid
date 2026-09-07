@@ -36,9 +36,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.RssFeed
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -124,7 +124,7 @@ fun RssScreen(
                             Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
                         }
                         IconButton(onClick = onManageFeeds) {
-                            Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.rss_manage_feeds))
+                            Icon(Icons.Rounded.Settings, contentDescription = stringResource(R.string.rss_manage_feeds))
                         }
                     },
                 )
