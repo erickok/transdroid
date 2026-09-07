@@ -63,7 +63,7 @@ internal fun Throwable.toUiError(host: String): UiError = when (this) {
 const val NO_LABEL = "\u0000no-label"
 
 enum class TorrentFilter {
-    ALL, DOWNLOADING, SEEDING, COMPLETED, PAUSED;
+    ALL, DOWNLOADING, SEEDING, COMPLETED, PAUSED, ERROR;
 
     fun matches(torrent: Torrent): Boolean = when (this) {
         ALL -> true
@@ -72,6 +72,7 @@ enum class TorrentFilter {
         SEEDING -> torrent.status == TorrentStatus.SEEDING
         COMPLETED -> torrent.isFinished
         PAUSED -> torrent.status == TorrentStatus.PAUSED
+        ERROR -> torrent.status == TorrentStatus.ERROR
     }
 }
 

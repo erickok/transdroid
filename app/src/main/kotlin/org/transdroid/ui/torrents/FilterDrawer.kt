@@ -38,6 +38,7 @@ import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.ListAlt
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.Search
@@ -428,4 +429,5 @@ private fun TorrentFilter.icon(): ImageVector = when (this) {
     TorrentFilter.SEEDING -> Icons.Rounded.Upload
     TorrentFilter.COMPLETED -> Icons.Rounded.CheckCircle
     TorrentFilter.PAUSED -> Icons.Rounded.Pause
+    TorrentFilter.ERROR -> Icons.Rounded.ErrorOutline
 }

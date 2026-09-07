@@ -18,6 +18,7 @@
     <string name="filter_seeding">Seeding</string>
     <string name="filter_completed">Completed</string>
     <string name="filter_paused">Paused</string>
+    <string name="filter_error">Error</string>
 
     <!-- Navigation / filter drawer -->
     <string name="drawer_open">Open menu</string>

@@ -36,7 +36,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -134,7 +136,9 @@ fun TorrentsScreen(
     val rssAvailable = booleanResource(R.bool.rss_available)
     val searchAvailable = booleanResource(R.bool.search_available)
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+    val scrollToTop: () -> Unit = { scope.launch { listState.animateScrollToItem(0) } }
 
     // Poll the daemon while this screen is started; stops automatically when backgrounded
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -151,7 +155,10 @@ fun TorrentsScreen(
                 FilterDrawerContent(
                     ui = ui,
                     onSwitchProfile = { viewModel.switchProfile(it) },
-                    onSetFilter = { viewModel.setFilter(it) },
+                    onSetFilter = {
+                        viewModel.setFilter(it)
+                        scope.launch { drawerState.close() }
+                    },
                     onToggleLabel = { viewModel.toggleLabelFilter(it) },
                     onSetNameQuery = { viewModel.setNameQuery(it) },
                     onOpenSettings = {
@@ -172,6 +179,7 @@ fun TorrentsScreen(
                         onOpenSearch = onOpenSearch,
                         onRefresh = { viewModel.refresh() },
                         onSortSelect = { viewModel.setSort(it) },
+                        onTitleClick = scrollToTop,
                     )
                 } else {
                     TopAppBar(
@@ -181,7 +189,13 @@ fun TorrentsScreen(
                             }
                         },
                         title = {
-                            Column {
+                            Column(
+                                modifier = Modifier.clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = scrollToTop,
+                                ),
+                            ) {
                                 Text(stringResource(R.string.torrents_title))
                                 ui.activeProfile?.let {
                                     Spacer(Modifier.height(7.dp))
@@ -221,6 +235,7 @@ fun TorrentsScreen(
                                     viewModel = viewModel,
                                     onOpenDetails = onOpenDetails,
                                     onAddTorrent = onAddTorrent,
+                                    listState = listState,
                                     showToolbar = false,
                                     showFilterChips = true,
                                 )
@@ -241,7 +256,7 @@ fun TorrentsScreen(
                             }
                         }
                     }
-                    else -> TorrentListContent(ui, viewModel, onOpenDetails, onAddTorrent)
+                    else -> TorrentListContent(ui, viewModel, onOpenDetails, onAddTorrent, listState = listState)
                 }
             }
         }
@@ -256,6 +271,7 @@ private fun TabletTopBar(
     onOpenSearch: () -> Unit,
     onRefresh: () -> Unit,
     onSortSelect: (TorrentSort) -> Unit,
+    onTitleClick: () -> Unit,
 ) {
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column {
@@ -267,7 +283,15 @@ private fun TabletTopBar(
                     Icon(Icons.Rounded.Menu, contentDescription = stringResource(R.string.drawer_open))
                 }
                 Spacer(Modifier.width(4.dp))
-                Text(stringResource(R.string.torrents_title), style = MaterialTheme.typography.titleLarge)
+                Text(
+                    stringResource(R.string.torrents_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = onTitleClick,
+                    ),
+                )
                 ui.activeProfile?.let {
                     Spacer(Modifier.width(10.dp))
                     ServerChip(it.displayName)
@@ -342,6 +366,7 @@ private fun TorrentListContent(
     viewModel: TorrentsViewModel,
     onOpenDetails: (String) -> Unit,
     onAddTorrent: () -> Unit,
+    listState: LazyListState = rememberLazyListState(),
     showToolbar: Boolean = true,
     showFilterChips: Boolean = false,
 ) {
@@ -373,6 +398,7 @@ private fun TorrentListContent(
                     }
                 } else {
                     LazyColumn(
+                        state = listState,
                         contentPadding = PaddingValues(start = 6.dp, end = 6.dp, top = 8.dp, bottom = 96.dp),
                         modifier = Modifier.fillMaxSize(),
                     ) {
@@ -575,6 +601,7 @@ internal fun TorrentFilter.label(): String = stringResource(
         TorrentFilter.SEEDING -> R.string.filter_seeding
         TorrentFilter.COMPLETED -> R.string.filter_completed
         TorrentFilter.PAUSED -> R.string.filter_paused
+        TorrentFilter.ERROR -> R.string.filter_error
     }
 )
 
