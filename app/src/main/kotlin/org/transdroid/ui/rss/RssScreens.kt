@@ -162,8 +162,9 @@ fun RssFeedsScreen(
     }
 }
 
+/** Also reused by [org.transdroid.ui.settings.SettingsScreen]'s RSS feeds section. */
 @Composable
-private fun EditFeedDialog(onDismiss: () -> Unit, onSave: (name: String, url: String) -> Unit) {
+internal fun EditFeedDialog(onDismiss: () -> Unit, onSave: (name: String, url: String) -> Unit) {
     var name by remember { mutableStateOf("") }
     var url by remember { mutableStateOf("") }
     AlertDialog(

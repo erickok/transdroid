@@ -156,6 +156,7 @@ fun TransdroidApp(
             SettingsScreen(
                 viewModel = settingsViewModel,
                 onEditServer = { id -> navController.navigate(Routes.editServer(id)) },
+                onOpenFeed = { feedId -> navController.navigate(Routes.rssItems(feedId)) },
                 onBack = { navController.popBackStack() },
             )
         }

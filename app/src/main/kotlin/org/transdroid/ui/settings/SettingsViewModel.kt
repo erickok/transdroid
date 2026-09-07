@@ -38,6 +38,7 @@ import org.transdroid.appContainer
 import org.transdroid.background.FinishedTorrentsWorker
 import org.transdroid.data.BackupCrypto
 import org.transdroid.data.ProfilesData
+import org.transdroid.data.RssFeed
 import org.transdroid.data.SearchProviderConfig
 import org.transdroid.data.ServerProfile
 import org.transdroid.protocol.CertificateFingerprint
@@ -179,6 +180,19 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
 
     fun deleteSearchProvider(providerId: String) {
         viewModelScope.launch { container.profilesRepository.deleteSearchProvider(providerId) }
+    }
+
+    val feeds: StateFlow<List<RssFeed>> = container.profilesRepository.feeds
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    fun newFeedId(): String = UUID.randomUUID().toString()
+
+    fun saveFeed(feed: RssFeed) {
+        viewModelScope.launch { container.profilesRepository.saveFeed(feed) }
+    }
+
+    fun deleteFeed(feedId: String) {
+        viewModelScope.launch { container.profilesRepository.deleteFeed(feedId) }
     }
 
     val notifyFinished: StateFlow<Boolean> = container.settingsRepository.notifyFinished

@@ -44,7 +44,9 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SettingsBackupRestore
@@ -92,25 +94,32 @@ import kotlinx.coroutines.withContext
 import java.util.UUID
 import org.transdroid.BuildConfig
 import org.transdroid.R
+import org.transdroid.data.RssFeed
 import org.transdroid.data.SearchProviderConfig
 import org.transdroid.data.SettingsRepository
+import org.transdroid.ui.rss.EditFeedDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     onEditServer: (String?) -> Unit,
+    onOpenFeed: (String) -> Unit,
     onBack: () -> Unit,
 ) {
     val profiles by viewModel.profiles.collectAsStateWithLifecycle()
     val activeId by viewModel.activeServerId.collectAsStateWithLifecycle()
     val providers by viewModel.searchProviders.collectAsStateWithLifecycle()
+    val feeds by viewModel.feeds.collectAsStateWithLifecycle()
     val notifyFinished by viewModel.notifyFinished.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val searchAvailable = booleanResource(R.bool.search_available)
+    val rssAvailable = booleanResource(R.bool.rss_available)
 
     var editingProvider by remember { mutableStateOf<SearchProviderConfig?>(null) }
     var showProviderDialog by remember { mutableStateOf(false) }
+    var showAddFeedDialog by remember { mutableStateOf(false) }
+    var deletingFeed by remember { mutableStateOf<RssFeed?>(null) }
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -201,6 +210,34 @@ fun SettingsScreen(
                         title = stringResource(R.string.settings_add_server),
                         onClick = { onEditServer(null) },
                     )
+                }
+            }
+
+            if (rssAvailable) {
+                item {
+                    SettingsSection(stringResource(R.string.rss_title)) {
+                        feeds.forEach { feed ->
+                            SettingsRow(
+                                icon = Icons.Rounded.RssFeed,
+                                title = feed.displayName,
+                                subtitle = feed.url,
+                                onClick = { onOpenFeed(feed.id) },
+                                trailing = {
+                                    IconButton(onClick = { deletingFeed = feed }) {
+                                        Icon(
+                                            Icons.Rounded.Delete,
+                                            contentDescription = stringResource(R.string.rss_delete_feed),
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
+                                },
+                            )
+                        }
+                        SettingsAddRow(
+                            title = stringResource(R.string.rss_add_feed),
+                            onClick = { showAddFeedDialog = true },
+                        )
+                    }
                 }
             }
 
@@ -369,6 +406,33 @@ fun SettingsScreen(
                     viewModel.deleteSearchProvider(provider.id)
                     showProviderDialog = false
                 }
+            },
+        )
+    }
+
+    if (showAddFeedDialog) {
+        EditFeedDialog(
+            onDismiss = { showAddFeedDialog = false },
+            onSave = { name, url ->
+                viewModel.saveFeed(RssFeed(id = viewModel.newFeedId(), name = name, url = url))
+                showAddFeedDialog = false
+            },
+        )
+    }
+
+    deletingFeed?.let { feed ->
+        AlertDialog(
+            onDismissRequest = { deletingFeed = null },
+            title = { Text(stringResource(R.string.rss_delete_feed)) },
+            text = { Text(feed.displayName) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deleteFeed(feed.id)
+                    deletingFeed = null
+                }) { Text(stringResource(R.string.details_remove_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { deletingFeed = null }) { Text(stringResource(R.string.details_cancel)) }
             },
         )
     }

@@ -78,12 +78,22 @@ enum class TorrentFilter {
 enum class TorrentSort {
     DATE_ADDED, NAME, DOWNLOAD_SPEED, RATIO;
 
-    fun comparator(): Comparator<Torrent> = when (this) {
-        DATE_ADDED -> compareByDescending { it.addedTimestamp ?: Long.MIN_VALUE }
+    /**
+     * The direction a field starts in the first time it's selected - matches Transdroid 2's
+     * per-field defaults (newest/fastest/highest first; name A-to-Z).
+     */
+    val defaultDescending: Boolean
+        get() = this != NAME
+
+    private fun ascending(): Comparator<Torrent> = when (this) {
+        DATE_ADDED -> compareBy { it.addedTimestamp ?: Long.MIN_VALUE }
         NAME -> compareBy { it.name.lowercase() }
-        DOWNLOAD_SPEED -> compareByDescending { it.downloadRate }
-        RATIO -> compareByDescending { it.ratio }
+        DOWNLOAD_SPEED -> compareBy { it.downloadRate }
+        RATIO -> compareBy { it.ratio }
     }
+
+    fun comparator(descending: Boolean): Comparator<Torrent> =
+        ascending().let { if (descending) it.reversed() else it }
 }
 
 data class TorrentsUiState(
@@ -105,6 +115,7 @@ data class TorrentsUiState(
     /** Free-text filter over torrent names, from the drawer's filter field. */
     val nameQuery: String = "",
     val sort: TorrentSort = TorrentSort.DATE_ADDED,
+    val sortDescending: Boolean = TorrentSort.DATE_ADDED.defaultDescending,
     val selectedTorrentId: String? = null,
     val files: Map<String, List<TorrentFile>> = emptyMap(),
     val trackers: Map<String, List<Tracker>> = emptyMap(),
@@ -127,7 +138,7 @@ data class TorrentsUiState(
                         ) &&
                     (nameQuery.isBlank() || it.name.contains(nameQuery, ignoreCase = true))
             }
-            .sortedWith(sort.comparator().thenBy { it.name.lowercase() })
+            .sortedWith(sort.comparator(sortDescending).thenBy { it.name.lowercase() })
 
     val selectedTorrent: Torrent?
         get() = torrents.firstOrNull { it.id == selectedTorrentId }
@@ -216,8 +227,15 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         _ui.update { it.copy(filter = filter) }
     }
 
+    /** Picking the already-active sort field again reverses its direction instead of no-op'ing. */
     fun setSort(sort: TorrentSort) {
-        _ui.update { it.copy(sort = sort) }
+        _ui.update {
+            if (it.sort == sort) {
+                it.copy(sortDescending = !it.sortDescending)
+            } else {
+                it.copy(sort = sort, sortDescending = sort.defaultDescending)
+            }
+        }
     }
 
     fun toggleLabelFilter(label: String) {

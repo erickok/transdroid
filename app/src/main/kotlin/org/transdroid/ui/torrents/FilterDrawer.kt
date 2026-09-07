@@ -33,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Dns
@@ -43,6 +44,8 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.UnfoldMore
 import androidx.compose.material.icons.rounded.Upload
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +53,10 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -95,20 +102,14 @@ fun FilterDrawerContent(
                 modifier = Modifier.padding(start = 24.dp),
             )
             Spacer(Modifier.height(9.dp))
-            val shown = if (ui.allProfiles.isEmpty() && ui.activeProfile != null) {
-                listOfNotNull(ui.activeProfile)
-            } else {
-                ui.allProfiles
-            }
-            shown.forEachIndexed { index, profile ->
-                if (index > 0) Spacer(Modifier.height(6.dp))
-                ServerPill(
-                    profile = profile,
-                    isActive = profile.id == ui.activeProfile?.id,
+            ui.activeProfile?.let { activeProfile ->
+                ServerSelector(
+                    activeProfile = activeProfile,
+                    allProfiles = ui.allProfiles,
                     hasError = ui.error != null,
                     hasLoaded = ui.hasLoaded,
                     torrentCount = ui.torrents.size,
-                    onClick = { onSwitchProfile(profile.id) },
+                    onSwitchProfile = onSwitchProfile,
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
@@ -192,13 +193,67 @@ private fun DrawerDivider() {
     )
 }
 
+/**
+ * The active server as a pill, matching design/mockups/transdroid-m3-filter-drawer.html. With
+ * more than one configured server it's a dropdown: tapping it opens a menu to switch, and it
+ * carries the chevron affordance; with only one server there's nothing to select, so the chevron
+ * is dropped and the pill just displays the connection state.
+ */
 @Composable
-private fun ServerPill(
-    profile: ServerProfile,
-    isActive: Boolean,
+private fun ServerSelector(
+    activeProfile: ServerProfile,
+    allProfiles: List<ServerProfile>,
     hasError: Boolean,
     hasLoaded: Boolean,
     torrentCount: Int,
+    onSwitchProfile: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val canSwitch = allProfiles.size > 1
+    Box(modifier) {
+        ServerPill(
+            profile = activeProfile,
+            hasError = hasError,
+            hasLoaded = hasLoaded,
+            torrentCount = torrentCount,
+            showChevron = canSwitch,
+            onClick = { if (canSwitch) expanded = true },
+        )
+        if (canSwitch) {
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                allProfiles.forEach { profile ->
+                    val isActive = profile.id == activeProfile.id
+                    DropdownMenuItem(
+                        text = { Text(profile.displayName) },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Rounded.Dns,
+                                contentDescription = null,
+                                tint = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                        trailingIcon = {
+                            if (isActive) Icon(Icons.Rounded.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        },
+                        onClick = {
+                            expanded = false
+                            if (!isActive) onSwitchProfile(profile.id)
+                        },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ServerPill(
+    profile: ServerProfile,
+    hasError: Boolean,
+    hasLoaded: Boolean,
+    torrentCount: Int,
+    showChevron: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -207,7 +262,7 @@ private fun ServerPill(
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable(enabled = !isActive, onClick = onClick)
+            .clickable(enabled = showChevron, onClick = onClick)
             .padding(vertical = 9.dp, horizontal = 9.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -215,13 +270,13 @@ private fun ServerPill(
             Modifier
                 .size(42.dp)
                 .clip(RoundedCornerShape(15.dp))
-                .background(if (isActive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHighest),
+                .background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 Icons.Rounded.Dns,
                 contentDescription = null,
-                tint = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(23.dp),
             )
         }
@@ -234,27 +289,27 @@ private fun ServerPill(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            if (isActive) {
-                Spacer(Modifier.height(1.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    val (text, dotColor) = when {
-                        hasError -> stringResource(R.string.drawer_connection_error) to MaterialTheme.colorScheme.error
-                        hasLoaded -> stringResource(R.string.drawer_connected_count, torrentCount) to
-                            TorrentStatus.SEEDING.accentColor
-                        else -> stringResource(R.string.drawer_connecting) to MaterialTheme.colorScheme.onSurfaceVariant
-                    }
-                    Box(Modifier.size(7.dp).clip(RoundedCornerShape(50)).background(dotColor))
-                    Spacer(Modifier.width(6.dp))
-                    Text(text, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.height(1.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val (text, dotColor) = when {
+                    hasError -> stringResource(R.string.drawer_connection_error) to MaterialTheme.colorScheme.error
+                    hasLoaded -> stringResource(R.string.drawer_connected_count, torrentCount) to
+                        TorrentStatus.SEEDING.accentColor
+                    else -> stringResource(R.string.drawer_connecting) to MaterialTheme.colorScheme.onSurfaceVariant
                 }
+                Box(Modifier.size(7.dp).clip(RoundedCornerShape(50)).background(dotColor))
+                Spacer(Modifier.width(6.dp))
+                Text(text, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        Icon(
-            Icons.Rounded.UnfoldMore,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(22.dp),
-        )
+        if (showChevron) {
+            Icon(
+                Icons.Rounded.UnfoldMore,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(22.dp),
+            )
+        }
     }
 }
 

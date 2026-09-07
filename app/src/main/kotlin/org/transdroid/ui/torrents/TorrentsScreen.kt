@@ -40,7 +40,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
@@ -69,6 +68,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -95,6 +95,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -110,6 +112,7 @@ import org.transdroid.ui.message
 import org.transdroid.ui.statusLabel
 import org.transdroid.ui.theme.accentColor
 import org.transdroid.ui.theme.trackColor
+import org.transdroid.ui.components.SortDirectionIcon
 import org.transdroid.ui.components.TorrentProgressIndicator
 import org.transdroid.util.formatBytes
 import org.transdroid.util.formatEta
@@ -290,7 +293,7 @@ private fun TabletTopBar(
                 IconButton(onClick = onRefresh) {
                     Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
                 }
-                SortMenuButton(current = ui.sort, onSelect = onSortSelect)
+                SortMenuButton(current = ui.sort, descending = ui.sortDescending, onSelect = onSortSelect)
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
         }
@@ -406,6 +409,7 @@ private fun TorrentListContent(
                     uploadRate = ui.totalUploadRate,
                     sharingCount = ui.sharingCount,
                     sort = ui.sort,
+                    sortDescending = ui.sortDescending,
                     onSortSelect = { viewModel.setSort(it) },
                     onRefresh = { viewModel.refresh() },
                 )
@@ -439,6 +443,7 @@ private fun TorrentsToolbar(
     uploadRate: Long,
     sharingCount: Int,
     sort: TorrentSort,
+    sortDescending: Boolean,
     onSortSelect: (TorrentSort) -> Unit,
     onRefresh: () -> Unit,
 ) {
@@ -467,7 +472,7 @@ private fun TorrentsToolbar(
             IconButton(onClick = onRefresh) {
                 Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
             }
-            SortMenuButton(current = sort, onSelect = onSortSelect)
+            SortMenuButton(current = sort, descending = sortDescending, onSelect = onSortSelect)
         }
     }
 }
@@ -517,17 +522,31 @@ private fun AddTorrentFab(onClick: () -> Unit) {
 }
 
 @Composable
-private fun SortMenuButton(current: TorrentSort, onSelect: (TorrentSort) -> Unit) {
+private fun SortMenuButton(current: TorrentSort, descending: Boolean, onSelect: (TorrentSort) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    IconButton(onClick = { expanded = true }) {
-        Icon(Icons.AutoMirrored.Rounded.Sort, contentDescription = stringResource(R.string.sort_title))
+    val sortTitle = stringResource(R.string.sort_title)
+    IconButton(
+        onClick = { expanded = true },
+        modifier = Modifier.semantics { contentDescription = sortTitle },
+    ) {
+        SortDirectionIcon(descending = descending, tint = LocalContentColor.current)
     }
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
         TorrentSort.entries.forEach { sort ->
+            val selected = sort == current
             DropdownMenuItem(
                 text = { Text(sort.label()) },
                 leadingIcon = {
-                    RadioButton(selected = sort == current, onClick = null)
+                    RadioButton(selected = selected, onClick = null)
+                },
+                trailingIcon = {
+                    if (selected) {
+                        SortDirectionIcon(
+                            descending = descending,
+                            tint = LocalContentColor.current,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
                 },
                 onClick = {
                     onSelect(sort)
