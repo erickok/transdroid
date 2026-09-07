@@ -38,6 +38,8 @@ data class RssItem(
     val torrentUrl: String?,
     /** Publication time as unix seconds, or null when the feed doesn't provide one. */
     val timestamp: Long?,
+    /** From the enclosure's "length" attribute (RSS and Atom both define one), or null. */
+    val sizeBytes: Long?,
 )
 
 data class RssChannel(
@@ -87,28 +89,30 @@ class RssFetcher(private val httpClient: OkHttpClient) {
 
     private fun parseRssItem(item: Element): RssItem {
         val link = item.childText("link")
-        val enclosure = item.childElements()
-            .firstOrNull { it.tagName == "enclosure" }
-            ?.getAttribute("url")?.takeIf { it.isNotBlank() }
+        val enclosureElement = item.childElements().firstOrNull { it.tagName == "enclosure" }
+        val enclosure = enclosureElement?.getAttribute("url")?.takeIf { it.isNotBlank() }
         val magnet = item.childText("magnetURI")?.takeIf { it.startsWith("magnet:") }
         return RssItem(
             title = item.childText("title") ?: "",
             link = link,
             torrentUrl = magnet ?: enclosure ?: link,
             timestamp = parseRssDate(item.childText("pubDate") ?: item.childText("date")),
+            sizeBytes = enclosureElement?.getAttribute("length")?.toLongOrNull(),
         )
     }
 
     private fun parseAtom(root: Element): RssChannel {
         val items = root.childElements().filter { it.tagName == "entry" }.map { entry ->
             val links = entry.childElements().filter { it.tagName == "link" }
-            val enclosure = links.firstOrNull { it.getAttribute("rel") == "enclosure" }?.getAttribute("href")
+            val enclosureElement = links.firstOrNull { it.getAttribute("rel") == "enclosure" }
+            val enclosure = enclosureElement?.getAttribute("href")
             val alternate = links.firstOrNull { it.getAttribute("rel") in listOf("", "alternate") }?.getAttribute("href")
             RssItem(
                 title = entry.childText("title") ?: "",
                 link = alternate?.takeIf { it.isNotBlank() },
                 torrentUrl = (enclosure ?: alternate)?.takeIf { it.isNotBlank() },
                 timestamp = parseIsoDate(entry.childText("updated") ?: entry.childText("published")),
+                sizeBytes = enclosureElement?.getAttribute("length")?.toLongOrNull(),
             )
         }
         return RssChannel(title = root.childText("title") ?: "", items = items)

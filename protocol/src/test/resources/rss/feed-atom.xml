@@ -4,7 +4,7 @@
   <entry>
     <title>nightly-2026-07-26</title>
     <link rel="alternate" href="https://example.com/builds/2026-07-26" />
-    <link rel="enclosure" href="https://example.com/builds/2026-07-26.torrent" type="application/x-bittorrent" />
+    <link rel="enclosure" href="https://example.com/builds/2026-07-26.torrent" type="application/x-bittorrent" length="734003200" />
     <updated>2026-07-26T10:00:01Z</updated>
   </entry>
   <entry>

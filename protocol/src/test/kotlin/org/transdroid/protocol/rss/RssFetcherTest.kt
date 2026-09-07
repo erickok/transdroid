@@ -45,6 +45,7 @@ class RssFetcherTest {
         assertEquals("ubuntu-24.04.2-desktop-amd64.iso", enclosureItem.title)
         assertEquals("https://example.com/torrents/1.torrent", enclosureItem.torrentUrl)
         assertEquals(1785060001L, enclosureItem.timestamp)
+        assertEquals(6114656256L, enclosureItem.sizeBytes)
 
         val magnetItem = channel.items[1]
         assertEquals("magnet:?xt=urn:btih:2aa4f5a7e209e54b32803d43670971c4c8caaa05", magnetItem.torrentUrl)
@@ -62,6 +63,7 @@ class RssFetcherTest {
         assertEquals(2, channel.items.size)
         assertEquals("https://example.com/builds/2026-07-26.torrent", channel.items[0].torrentUrl)
         assertEquals(1785060001L, channel.items[0].timestamp)
+        assertEquals(734003200L, channel.items[0].sizeBytes)
         assertEquals("https://example.com/builds/2026-07-25", channel.items[1].torrentUrl)
     }
 

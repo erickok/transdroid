@@ -52,12 +52,16 @@ fun formatEta(seconds: Long?): String? {
 /** Formats a ratio like "2.04". */
 fun formatRatio(ratio: Float): String = String.format(Locale.getDefault(), "%.2f", ratio)
 
-/** Formats a unix-seconds timestamp like "2 days ago" or "3 weeks ago"; null for unknown. */
-fun formatRelativeAge(epochSeconds: Long?): String? {
+/**
+ * Formats a unix-seconds timestamp like "2 days ago" or "3 weeks ago"; null for unknown.
+ * [minResolutionMillis] is the smallest unit shown - day resolution for an item's publish age,
+ * but minute resolution reads better for a "last updated" marker from moments ago.
+ */
+fun formatRelativeAge(epochSeconds: Long?, minResolutionMillis: Long = DateUtils.DAY_IN_MILLIS): String? {
     if (epochSeconds == null) return null
     return DateUtils.getRelativeTimeSpanString(
         epochSeconds * 1000,
         System.currentTimeMillis(),
-        DateUtils.DAY_IN_MILLIS,
+        minResolutionMillis,
     ).toString()
 }

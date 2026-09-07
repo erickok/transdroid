@@ -25,6 +25,8 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import java.util.UUID
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -40,25 +42,44 @@ import org.transdroid.protocol.rss.RssItem
 import org.transdroid.ui.torrents.UiError
 import org.transdroid.ui.torrents.toUiError
 
-data class RssItemsUiState(
-    val feed: RssFeed? = null,
+/** One feed item merged into the all-feeds timeline, tagged with the feed it came from. */
+data class RssEntry(
+    val feed: RssFeed,
+    val item: RssItem,
+    /** Published after [feed]'s last-viewed marker, from before this fetch updated it. */
+    val isNew: Boolean,
+) {
+    /** Stable enough to track "already added this session" without a real item id. */
+    val key: String
+        get() = item.torrentUrl ?: item.link ?: (feed.id + item.title)
+}
+
+data class RssUiState(
     val loading: Boolean = false,
-    val items: List<RssItem> = emptyList(),
-    /** Items published after the feed was last opened are highlighted as new. */
-    val newSinceTimestamp: Long? = null,
+    val entries: List<RssEntry> = emptyList(),
     val error: UiError? = null,
-    /** Title of the item that was just sent to the server, for a confirmation message. */
+    /** Null means "all feeds". */
+    val selectedFeedId: String? = null,
+    val newOnly: Boolean = false,
+    val lastUpdatedTimestamp: Long? = null,
+    val addedKeys: Set<String> = emptySet(),
     val addedItemTitle: String? = null,
     val addError: UiError? = null,
-)
+) {
+    val visibleEntries: List<RssEntry>
+        get() = entries.filter { (selectedFeedId == null || it.feed.id == selectedFeedId) && (!newOnly || it.isNew) }
+
+    val newCount: Int
+        get() = visibleEntries.count { it.isNew }
+}
 
 class RssViewModel(private val container: AppContainer) : ViewModel() {
 
     val feeds: StateFlow<List<RssFeed>> = container.profilesRepository.feeds
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    private val _items = MutableStateFlow(RssItemsUiState())
-    val items: StateFlow<RssItemsUiState> = _items.asStateFlow()
+    private val _ui = MutableStateFlow(RssUiState())
+    val ui: StateFlow<RssUiState> = _ui.asStateFlow()
 
     private var fetchJob: Job? = null
 
@@ -72,62 +93,95 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
         viewModelScope.launch { container.profilesRepository.deleteFeed(feedId) }
     }
 
-    /** Loads a feed's items and remembers the previous last-viewed time for "new" badges. */
-    fun openFeed(feedId: String) {
-        val feed = feeds.value.firstOrNull { it.id == feedId }
-            ?: run {
-                // The feeds flow may not have emitted yet; resolve from the store
-                viewModelScope.launch {
-                    container.profilesRepository.feeds.first().firstOrNull { it.id == feedId }?.let { openFeed(it) }
-                }
-                return
-            }
-        openFeed(feed)
+    fun setSelectedFeed(feedId: String?) {
+        _ui.update { it.copy(selectedFeedId = feedId) }
     }
 
-    private fun openFeed(feed: RssFeed) {
-        // Cancel any still-running fetch so a slow previous feed cannot overwrite this one
+    fun setNewOnly(newOnly: Boolean) {
+        _ui.update { it.copy(newOnly = newOnly) }
+    }
+
+    /** Fetches every configured feed in parallel and merges their items into one timeline. */
+    fun refresh() {
         fetchJob?.cancel()
-        _items.value = RssItemsUiState(feed = feed, loading = true, newSinceTimestamp = feed.lastViewedTimestamp)
+        _ui.update { it.copy(loading = true, error = null) }
         fetchJob = viewModelScope.launch {
-            try {
-                val channel = container.rssFetcher.fetch(feed.url)
-                val items = channel.items.sortedByDescending { it.timestamp ?: Long.MIN_VALUE }
-                _items.update { it.copy(loading = false, items = items) }
-                val newest = items.firstNotNullOfOrNull { item -> item.timestamp }
-                if (newest != null && newest != feed.lastViewedTimestamp) {
-                    container.profilesRepository.markFeedViewed(feed.id, newest)
-                }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                _items.update { it.copy(loading = false, error = e.toUiError(feed.displayName)) }
+            // `feeds` is a stateIn StateFlow that may not have emitted yet on the very first
+            // collection (e.g. right after navigating here); fall back to the repository
+            // directly rather than racing it and treating a real feed list as empty.
+            val configuredFeeds = feeds.value.ifEmpty { container.profilesRepository.feeds.first() }
+            if (configuredFeeds.isEmpty()) {
+                _ui.update { it.copy(entries = emptyList(), loading = false, error = null) }
+                return@launch
+            }
+            val perFeedResults = coroutineScope {
+                configuredFeeds.map { feed ->
+                    async { fetchFeed(feed) }
+                }.map { it.await() }
+            }
+            val entries = perFeedResults.filterNotNull().flatten()
+                .sortedByDescending { it.item.timestamp ?: Long.MIN_VALUE }
+            _ui.update {
+                it.copy(
+                    loading = false,
+                    entries = entries,
+                    // Only surface an error if every feed failed - a partial fetch still has
+                    // something useful to show, so a single broken feed shouldn't blank the screen.
+                    error = if (entries.isEmpty() && perFeedResults.all { r -> r == null }) UiError.Unexpected() else null,
+                    lastUpdatedTimestamp = System.currentTimeMillis() / 1000,
+                )
             }
         }
     }
 
+    /** Null on failure - the caller treats that feed as skipped rather than failing the whole refresh. */
+    private suspend fun fetchFeed(feed: RssFeed): List<RssEntry>? {
+        val sinceTimestamp = feed.lastViewedTimestamp
+        return try {
+            val channel = container.rssFetcher.fetch(feed.url)
+            val newest = channel.items.firstNotNullOfOrNull { it.timestamp }
+            if (newest != null && newest != feed.lastViewedTimestamp) {
+                container.profilesRepository.markFeedViewed(feed.id, newest)
+            }
+            channel.items.map { item ->
+                val itemTimestamp = item.timestamp
+                RssEntry(
+                    feed = feed,
+                    item = item,
+                    isNew = sinceTimestamp != null && itemTimestamp != null && itemTimestamp > sinceTimestamp,
+                )
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     /** Sends an item's torrent link to the active server. */
-    fun addItem(item: RssItem) {
-        val url = item.torrentUrl ?: return
+    fun addItem(entry: RssEntry) {
+        val url = entry.item.torrentUrl ?: return
         viewModelScope.launch {
             val profile = container.activeProfile.first()
             if (profile == null) {
-                _items.update { it.copy(addError = UiError.Unexpected()) }
+                _ui.update { it.copy(addError = UiError.Unexpected()) }
                 return@launch
             }
             try {
                 container.adapterFor(profile).addByUrl(url)
-                _items.update { it.copy(addedItemTitle = item.title, addError = null) }
+                _ui.update {
+                    it.copy(addedKeys = it.addedKeys + entry.key, addedItemTitle = entry.item.title, addError = null)
+                }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _items.update { it.copy(addError = e.toUiError(profile.host), addedItemTitle = null) }
+                _ui.update { it.copy(addError = e.toUiError(profile.host), addedItemTitle = null) }
             }
         }
     }
 
     fun clearAddResult() {
-        _items.update { it.copy(addedItemTitle = null, addError = null) }
+        _ui.update { it.copy(addedItemTitle = null, addError = null) }
     }
 
     companion object {

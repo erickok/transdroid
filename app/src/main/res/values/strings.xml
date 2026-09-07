@@ -113,9 +113,15 @@
     <string name="rss_add_feed">Add feed</string>
     <string name="rss_delete_feed">Delete feed</string>
     <string name="rss_feed_url">Feed URL</string>
-    <string name="rss_no_items">No items in this feed</string>
+    <string name="rss_no_items">No items</string>
     <string name="rss_new">New</string>
     <string name="rss_add_item_title">Send to your torrent client?</string>
+    <string name="rss_all_feeds">All feeds</string>
+    <string name="rss_new_only">New only</string>
+    <string name="rss_summary">%1$d items · %2$d new · updated %3$s</string>
+    <string name="rss_added">Added</string>
+    <string name="rss_download">Download to server</string>
+    <string name="rss_manage_feeds">Manage feeds</string>
 
     <!-- Search -->
     <string name="search_title">Search</string>

@@ -28,8 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.transdroid.ui.add.AddTorrentScreen
-import org.transdroid.ui.rss.RssFeedsScreen
-import org.transdroid.ui.rss.RssItemsScreen
+import org.transdroid.ui.rss.RssScreen
 import org.transdroid.ui.rss.RssViewModel
 import org.transdroid.ui.search.SearchScreen
 import org.transdroid.ui.search.SearchViewModel
@@ -48,8 +47,7 @@ object Routes {
     const val SETTINGS = "settings"
     const val EDIT_SERVER = "settings/server/{id}"
     const val EDIT_SEARCH_INDEXER = "settings/search/{id}"
-    const val RSS = "rss"
-    const val RSS_ITEMS = "rss/{feedId}"
+    const val RSS = "rss?feedId={feedId}"
     const val SEARCH = "search"
 
     const val NEW_SERVER_ID = "new"
@@ -59,7 +57,7 @@ object Routes {
     fun add(url: String?) = if (url == null) "add" else "add?url=${Uri.encode(url)}"
     fun editServer(id: String?) = "settings/server/${Uri.encode(id ?: NEW_SERVER_ID)}"
     fun editSearchIndexer(id: String?) = "settings/search/${Uri.encode(id ?: NEW_SEARCH_INDEXER_ID)}"
-    fun rssItems(feedId: String) = "rss/${Uri.encode(feedId)}"
+    fun rss(feedId: String?) = if (feedId == null) "rss" else "rss?feedId=${Uri.encode(feedId)}"
 }
 
 @Composable
@@ -108,24 +106,18 @@ fun TransdroidApp(
                 },
                 onAddTorrent = { navController.navigate(Routes.add(null)) },
                 onOpenSettings = { navController.navigate(Routes.SETTINGS) },
-                onOpenRss = { navController.navigate(Routes.RSS) },
+                onOpenRss = { navController.navigate(Routes.rss(null)) },
                 onOpenSearch = { navController.navigate(Routes.SEARCH) },
             )
         }
-        composable(Routes.RSS) {
-            RssFeedsScreen(
-                viewModel = rssViewModel,
-                onOpenFeed = { feedId -> navController.navigate(Routes.rssItems(feedId)) },
-                onBack = { navController.popBackStack() },
-            )
-        }
         composable(
-            Routes.RSS_ITEMS,
-            arguments = listOf(navArgument("feedId") { type = NavType.StringType }),
+            Routes.RSS,
+            arguments = listOf(navArgument("feedId") { type = NavType.StringType; defaultValue = "" }),
         ) { entry ->
-            RssItemsScreen(
+            RssScreen(
                 viewModel = rssViewModel,
-                feedId = entry.arguments?.getString("feedId").orEmpty(),
+                initialFeedId = entry.arguments?.getString("feedId")?.takeIf { it.isNotEmpty() },
+                onManageFeeds = { navController.navigate(Routes.SETTINGS) },
                 onBack = { navController.popBackStack() },
             )
         }
@@ -161,7 +153,7 @@ fun TransdroidApp(
                 viewModel = settingsViewModel,
                 onEditServer = { id -> navController.navigate(Routes.editServer(id)) },
                 onEditSearchIndexer = { id -> navController.navigate(Routes.editSearchIndexer(id)) },
-                onOpenFeed = { feedId -> navController.navigate(Routes.rssItems(feedId)) },
+                onOpenFeed = { feedId -> navController.navigate(Routes.rss(feedId)) },
                 onBack = { navController.popBackStack() },
             )
         }

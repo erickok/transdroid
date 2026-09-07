@@ -17,7 +17,6 @@
 package org.transdroid.ui.search
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,16 +41,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.rounded.ArrowDownward
-import androidx.compose.material.icons.rounded.ArrowDropDown
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -87,6 +82,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.transdroid.R
 import org.transdroid.protocol.search.SearchResult
+import org.transdroid.ui.components.DropdownPill
 import org.transdroid.ui.message
 import org.transdroid.ui.theme.LocalStatusColors
 import org.transdroid.util.formatBytes
@@ -308,61 +304,6 @@ private fun ControlsRow(
             selected = sort,
             onSelect = onSortChange,
         )
-    }
-}
-
-@Composable
-private fun <T> DropdownPill(
-    icon: ImageVector,
-    label: String,
-    options: List<T>,
-    optionLabel: @Composable (T) -> String,
-    selected: T,
-    onSelect: (T) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    var expanded by remember { mutableStateOf(false) }
-    Box(modifier) {
-        Surface(
-            shape = RoundedCornerShape(50),
-            color = if (expanded) MaterialTheme.colorScheme.surfaceContainerHigh else Color.Transparent,
-            modifier = Modifier
-                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(50))
-                .clickable { expanded = true },
-        ) {
-            Row(
-                Modifier.padding(start = 12.dp, end = 8.dp).height(38.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(17.dp))
-                Text(
-                    label,
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Icon(Icons.Rounded.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-        }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(optionLabel(option)) },
-                    leadingIcon = {
-                        if (option == selected) {
-                            Icon(Icons.Rounded.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                        }
-                    },
-                    onClick = {
-                        onSelect(option)
-                        expanded = false
-                    },
-                )
-            }
-        }
     }
 }
 

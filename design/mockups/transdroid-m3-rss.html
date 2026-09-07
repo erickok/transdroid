@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transdroid · RSS feeds (M3 Expressive)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0" rel="stylesheet">
+<style>
+:root{
+  --surface:#f8faf0;
+  --surface-low:#f2f5ea;
+  --surface-container:#eceee2;
+  --surface-high:#e6e9dd;
+  --surface-highest:#e0e3d7;
+  --on-surface:#1a1c15;
+  --on-surface-var:#44483b;
+  --muted:#5c6053;
+  --outline:#75796a;
+  --outline-variant:#c5c8b8;
+  --primary:#3f6a1e;
+  --on-primary:#ffffff;
+  --primary-container:#c0f39a;
+  --on-primary-container:#0b2100;
+  --sel-bg:#dcecce; --sel-fg:#2b3b1c;
+  --seed:#4d7d2a;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;height:100%;}
+body{
+  font-family:"Roboto",system-ui,sans-serif;
+  background:radial-gradient(120% 90% at 50% 0%, #2c3227 0%, #1a1e16 60%, #12140f 100%);
+  min-height:100%; display:flex; align-items:center; justify-content:center; padding:32px 16px;
+}
+.msr{
+  font-family:"Material Symbols Rounded"; font-weight:normal; font-style:normal; line-height:1;
+  letter-spacing:normal; text-transform:none; white-space:nowrap; display:inline-block; direction:ltr;
+  -webkit-font-smoothing:antialiased; font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24; user-select:none;
+}
+.fill{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
+
+.phone{
+  width:390px; max-width:100%; height:820px; max-height:calc(100vh - 40px);
+  background:#0c0d0a; border-radius:46px; padding:8px;
+  box-shadow:0 30px 70px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.screen{
+  position:relative; height:100%; width:100%; background:var(--surface); border-radius:39px;
+  overflow:hidden; display:flex; flex-direction:column; color:var(--on-surface); isolation:isolate;
+}
+
+.statusbar{
+  height:34px; flex:none; display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px 0 28px; font-size:14px; font-weight:600; letter-spacing:.2px;
+}
+.statusbar .sys{display:flex; align-items:center; gap:7px;}
+.statusbar .sys .msr{font-size:18px;}
+
+.appbar{flex:none; height:56px; display:flex; align-items:center; gap:2px; padding:0 8px 0 4px;}
+.iconbtn{border:none; background:transparent; cursor:pointer; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; color:var(--on-surface-var); transition:background .15s;}
+.iconbtn:hover{background:var(--surface-high);}
+.iconbtn .msr{font-size:24px;}
+.appbar h1{flex:1; margin:0; font-size:20px; font-weight:600; padding-left:4px;}
+
+/* controls: feed dropdown + new-only filter */
+.controls{flex:none; display:flex; align-items:center; gap:10px; padding:4px 16px 2px;}
+.controls .grow{flex:1;}
+.dd{position:relative;}
+.dd-trigger{display:inline-flex; align-items:center; gap:6px; height:38px; padding:0 8px 0 12px; border-radius:999px; border:1px solid var(--outline-variant); background:transparent; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; color:var(--on-surface-var); transition:.12s;}
+.dd-trigger:hover{background:var(--surface-high);}
+.dd.open .dd-trigger{background:var(--surface-high); border-color:transparent;}
+.dd-trigger .lead{font-size:17px; color:var(--muted);}
+.dd-trigger .chev{font-size:19px; color:var(--muted); transition:transform .2s;}
+.dd.open .chev{transform:rotate(180deg);}
+.dd-menu{position:absolute; top:calc(100% + 6px); left:0; z-index:20; min-width:200px; background:#fbfdf6; border-radius:16px; padding:6px; box-shadow:0 8px 24px rgba(31,35,22,.22), 0 2px 6px rgba(31,35,22,.14); display:none;}
+.dd.open .dd-menu{display:block; animation:pop .14s ease-out;}
+@keyframes pop{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+.dd-item{width:100%; text-align:left; border:none; background:transparent; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:12px; font-size:14px; font-weight:500; color:var(--on-surface); transition:background .12s;}
+.dd-item:hover{background:var(--surface-container);}
+.dd-item .ck{font-size:19px; color:var(--primary); visibility:hidden;}
+.dd-item.sel{background:var(--sel-bg); color:var(--sel-fg);}
+.dd-item.sel .ck{visibility:visible; color:var(--sel-fg);}
+
+.fchip{height:38px; padding:0 14px; border-radius:999px; border:1px solid var(--outline-variant); background:transparent; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; color:var(--on-surface-var); display:inline-flex; align-items:center; transition:.12s;}
+.fchip:hover{background:var(--surface-high);}
+.fchip.on{background:var(--sel-bg); color:var(--sel-fg); border-color:transparent;}
+.fchip .ck{font-size:17px; width:0; opacity:0; overflow:hidden; transition:.15s;}
+.fchip.on .ck{width:18px; opacity:1; margin-right:3px;}
+
+.summary{flex:none; font-size:12.5px; color:var(--muted); padding:8px 18px 2px;}
+
+.list{flex:1; overflow-y:auto; padding:0 4px 20px; scrollbar-width:none;}
+.list::-webkit-scrollbar{display:none;}
+
+.item{display:grid; grid-template-columns:10px 1fr auto; gap:0 10px; align-items:center; padding:13px 14px;}
+.item + .item{border-top:1px solid var(--outline-variant);}
+.item:hover{background:var(--surface-low); border-radius:18px;}
+.idot{width:8px; height:8px; border-radius:50%; background:transparent;}
+.item.unread .idot{background:var(--primary);}
+.imain{min-width:0;}
+.ititle{font-size:14.5px; font-weight:600; line-height:1.32; color:var(--on-surface-var); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+.item.unread .ititle{font-weight:700; color:var(--on-surface);}
+.isub{font-size:12px; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums;}
+.radd{border:none; cursor:pointer; width:46px; height:46px; border-radius:15px; background:var(--primary-container); color:var(--on-primary-container); display:grid; place-items:center; transition:.12s;}
+.radd:hover{filter:brightness(.97);} .radd:active{transform:scale(.92);}
+.radd .msr{font-size:22px;}
+.added{display:inline-flex; align-items:center; gap:5px; padding:0 10px; font-size:12.5px; font-weight:600; color:var(--muted);}
+.added .msr{font-size:19px; color:var(--seed);}
+
+.gesture{flex:none; height:26px; display:grid; place-items:center;}
+.gesture i{width:132px; height:5px; border-radius:3px; background:var(--on-surface); opacity:.35;}
+</style>
+</head>
+<body>
+  <div class="phone"><div class="screen">
+
+    <div class="statusbar">
+      <span>4:52</span>
+      <span class="sys">
+        <span class="msr">network_wifi</span>
+        <span class="msr">signal_cellular_alt</span>
+        <span class="msr fill">battery_5_bar</span>
+      </span>
+    </div>
+
+    <header class="appbar">
+      <button class="iconbtn" aria-label="Back"><span class="msr">arrow_back</span></button>
+      <h1>RSS feeds</h1>
+      <button class="iconbtn" aria-label="Refresh"><span class="msr">refresh</span></button>
+      <button class="iconbtn" aria-label="More"><span class="msr">more_vert</span></button>
+    </header>
+
+    <div class="controls">
+      <div class="dd" id="feedDD">
+        <button class="dd-trigger"><span class="msr lead">rss_feed</span><span class="dd-val">All feeds</span><span class="msr chev">arrow_drop_down</span></button>
+        <div class="dd-menu">
+          <button class="dd-item sel" data-v="All feeds"><span class="msr ck">check</span>All feeds</button>
+          <button class="dd-item" data-v="Ubuntu Releases"><span class="msr ck">check</span>Ubuntu Releases</button>
+          <button class="dd-item" data-v="Debian CD Images"><span class="msr ck">check</span>Debian CD Images</button>
+          <button class="dd-item" data-v="LinuxTracker"><span class="msr ck">check</span>LinuxTracker</button>
+        </div>
+      </div>
+      <span class="grow"></span>
+      <button class="fchip" id="newChip"><span class="msr ck">check</span>New only</button>
+    </div>
+
+    <div class="summary" id="summary"></div>
+    <div class="list" id="list"></div>
+
+    <div class="gesture"><i></i></div>
+
+  </div></div>
+
+<script>
+const items = [
+  {t:'Ubuntu 24.04.1 LTS Desktop (amd64)',        feed:'Ubuntu Releases',  age:'2 days ago', days:2, sz:'5.9 GB', unread:true},
+  {t:'Ubuntu 24.04.1 LTS Server (amd64)',         feed:'Ubuntu Releases',  age:'2 days ago', days:2, sz:'2.7 GB', unread:true},
+  {t:'debian-12.7.0-amd64-DVD-1.iso',             feed:'Debian CD Images', age:'4 days ago', days:4, sz:'3.7 GB', unread:true},
+  {t:'debian-12.7.0-amd64-netinst.iso',           feed:'Debian CD Images', age:'4 days ago', days:4, sz:'631 MB', unread:false, added:true},
+  {t:'Linux Mint 22 "Wilma" Cinnamon Edition',    feed:'LinuxTracker',     age:'3 days ago', days:3, sz:'2.9 GB', unread:true},
+  {t:'Arch Linux 2025.01.01 (x86_64)',            feed:'LinuxTracker',     age:'6 days ago', days:6, sz:'1.1 GB', unread:false},
+  {t:'Fedora Workstation 40 (x86_64)',            feed:'LinuxTracker',     age:'1 week ago', days:7, sz:'2.1 GB', unread:false},
+  {t:'openSUSE Tumbleweed snapshot 20250102',     feed:'LinuxTracker',     age:'1 week ago', days:7, sz:'4.4 GB', unread:false},
+];
+
+const state = { feed:'All feeds', newOnly:false };
+const list = document.getElementById('list');
+const summary = document.getElementById('summary');
+
+function render(){
+  let rows = items.filter(r => (state.feed==='All feeds' || r.feed===state.feed) && (!state.newOnly || r.unread));
+  rows.sort((a,b)=>a.days-b.days);
+  const newCount = rows.filter(r=>r.unread).length;
+  summary.textContent = `${rows.length} item${rows.length===1?'':'s'} · ${newCount} new · updated 5 min ago`;
+  list.innerHTML = rows.map(r=>`
+    <div class="item ${r.unread?'unread':''}">
+      <span class="idot"></span>
+      <div class="imain">
+        <div class="ititle">${r.t}</div>
+        <div class="isub">${r.feed} · ${r.age} · ${r.sz}</div>
+      </div>
+      ${r.added
+        ? `<span class="added"><span class="msr">check_circle</span>Added</span>`
+        : `<button class="radd" title="Download to server"><span class="msr">download</span></button>`}
+    </div>`).join('');
+}
+render();
+
+/* feed dropdown */
+function closeAll(){ document.querySelectorAll('.dd').forEach(d=>d.classList.remove('open')); }
+document.querySelectorAll('.dd').forEach(dd=>{
+  const trigger = dd.querySelector('.dd-trigger');
+  trigger.addEventListener('click', e=>{ e.stopPropagation(); const open=dd.classList.contains('open'); closeAll(); if(!open) dd.classList.add('open'); });
+  dd.querySelector('.dd-menu').addEventListener('click', e=>e.stopPropagation());
+  dd.querySelectorAll('.dd-item').forEach(it=>it.addEventListener('click', ()=>{
+    dd.querySelectorAll('.dd-item').forEach(x=>x.classList.remove('sel')); it.classList.add('sel');
+    dd.querySelector('.dd-val').textContent = it.dataset.v;
+    dd.classList.remove('open'); state.feed = it.dataset.v; render();
+  }));
+});
+document.addEventListener('click', closeAll);
+
+/* new-only filter */
+const newChip = document.getElementById('newChip');
+newChip.addEventListener('click', ()=>{ state.newOnly = !state.newOnly; newChip.classList.toggle('on', state.newOnly); render(); });
+</script>
+</body>
+</html>
