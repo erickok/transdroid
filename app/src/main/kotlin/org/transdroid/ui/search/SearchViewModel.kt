@@ -79,8 +79,13 @@ class SearchViewModel(private val container: AppContainer) : ViewModel() {
         _ui.update { it.copy(searching = true, error = null) }
         searchJob = viewModelScope.launch {
             try {
-                val results = TorznabProvider(provider.url, provider.apiKey, container.httpClient)
-                    .search(query)
+                val results = TorznabProvider(
+                    endpointUrl = provider.url,
+                    apiKey = provider.apiKey,
+                    httpClient = container.httpClient,
+                    username = provider.username,
+                    password = provider.password,
+                ).search(query)
                     .sortedByDescending { it.seeders ?: -1 }
                 _ui.update { it.copy(searching = false, results = results, searched = true) }
             } catch (e: CancellationException) {

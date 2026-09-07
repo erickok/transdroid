@@ -45,6 +45,7 @@ import org.transdroid.protocol.CertificateFingerprint
 import org.transdroid.protocol.Tls
 import org.transdroid.protocol.Xirvik
 import org.transdroid.protocol.discovery.DiscoveredDaemon
+import org.transdroid.protocol.search.TorznabProvider
 import org.transdroid.ui.torrents.UiError
 import org.transdroid.ui.torrents.toUiError
 
@@ -53,6 +54,13 @@ sealed class TestState {
     data object Testing : TestState()
     data class Success(val versionInfo: String) : TestState()
     data class Failure(val error: UiError) : TestState()
+}
+
+sealed class SearchTestState {
+    data object Idle : SearchTestState()
+    data object Testing : SearchTestState()
+    data class Success(val resultCount: Int) : SearchTestState()
+    data class Failure(val error: UiError) : SearchTestState()
 }
 
 sealed class CertificateState {
@@ -174,12 +182,39 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
     val searchProviders: StateFlow<List<SearchProviderConfig>> = container.profilesRepository.searchProviders
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    fun newSearchProviderId(): String = UUID.randomUUID().toString()
+
     fun saveSearchProvider(provider: SearchProviderConfig) {
         viewModelScope.launch { container.profilesRepository.saveSearchProvider(provider) }
     }
 
     fun deleteSearchProvider(providerId: String) {
         viewModelScope.launch { container.profilesRepository.deleteSearchProvider(providerId) }
+    }
+
+    private val _searchTestState = MutableStateFlow<SearchTestState>(SearchTestState.Idle)
+    val searchTestState: StateFlow<SearchTestState> = _searchTestState.asStateFlow()
+
+    fun testSearchProvider(provider: SearchProviderConfig) {
+        _searchTestState.value = SearchTestState.Testing
+        viewModelScope.launch {
+            _searchTestState.value = try {
+                val results = TorznabProvider(
+                    endpointUrl = provider.url,
+                    apiKey = provider.apiKey,
+                    httpClient = container.httpClient,
+                    username = provider.username,
+                    password = provider.password,
+                ).search("test")
+                SearchTestState.Success(results.size)
+            } catch (e: Exception) {
+                SearchTestState.Failure(e.toUiError(provider.displayName))
+            }
+        }
+    }
+
+    fun resetSearchTestState() {
+        _searchTestState.value = SearchTestState.Idle
     }
 
     val feeds: StateFlow<List<RssFeed>> = container.profilesRepository.feeds

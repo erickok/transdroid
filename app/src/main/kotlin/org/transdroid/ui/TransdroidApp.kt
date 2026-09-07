@@ -33,6 +33,7 @@ import org.transdroid.ui.rss.RssItemsScreen
 import org.transdroid.ui.rss.RssViewModel
 import org.transdroid.ui.search.SearchScreen
 import org.transdroid.ui.search.SearchViewModel
+import org.transdroid.ui.settings.EditSearchIndexerScreen
 import org.transdroid.ui.settings.EditServerScreen
 import org.transdroid.ui.settings.SettingsScreen
 import org.transdroid.ui.settings.SettingsViewModel
@@ -46,15 +47,18 @@ object Routes {
     const val ADD = "add?url={url}"
     const val SETTINGS = "settings"
     const val EDIT_SERVER = "settings/server/{id}"
+    const val EDIT_SEARCH_INDEXER = "settings/search/{id}"
     const val RSS = "rss"
     const val RSS_ITEMS = "rss/{feedId}"
     const val SEARCH = "search"
 
     const val NEW_SERVER_ID = "new"
+    const val NEW_SEARCH_INDEXER_ID = "new"
 
     fun torrentDetails(id: String) = "torrent/${Uri.encode(id)}"
     fun add(url: String?) = if (url == null) "add" else "add?url=${Uri.encode(url)}"
     fun editServer(id: String?) = "settings/server/${Uri.encode(id ?: NEW_SERVER_ID)}"
+    fun editSearchIndexer(id: String?) = "settings/search/${Uri.encode(id ?: NEW_SEARCH_INDEXER_ID)}"
     fun rssItems(feedId: String) = "rss/${Uri.encode(feedId)}"
 }
 
@@ -156,6 +160,7 @@ fun TransdroidApp(
             SettingsScreen(
                 viewModel = settingsViewModel,
                 onEditServer = { id -> navController.navigate(Routes.editServer(id)) },
+                onEditSearchIndexer = { id -> navController.navigate(Routes.editSearchIndexer(id)) },
                 onOpenFeed = { feedId -> navController.navigate(Routes.rssItems(feedId)) },
                 onBack = { navController.popBackStack() },
             )
@@ -167,6 +172,16 @@ fun TransdroidApp(
             EditServerScreen(
                 viewModel = settingsViewModel,
                 serverId = entry.arguments?.getString("id")?.takeIf { it != Routes.NEW_SERVER_ID },
+                onBack = { navController.popBackStack() },
+            )
+        }
+        composable(
+            Routes.EDIT_SEARCH_INDEXER,
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
+        ) { entry ->
+            EditSearchIndexerScreen(
+                viewModel = settingsViewModel,
+                providerId = entry.arguments?.getString("id")?.takeIf { it != Routes.NEW_SEARCH_INDEXER_ID },
                 onBack = { navController.popBackStack() },
             )
         }

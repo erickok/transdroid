@@ -100,4 +100,30 @@ class TorznabProviderTest {
         } catch (expected: DaemonException.Authentication) {
         }
     }
+
+    @Test
+    fun `sends basic auth header when username and password are configured`() = runTest {
+        server.enqueue(MockResponse().setBody(fixture("torznab-results.xml")))
+
+        TorznabProvider(
+            endpointUrl = server.url("/api/v2.0/indexers/all/results/torznab").toString(),
+            apiKey = "key123",
+            httpClient = OkHttpClient(),
+            username = "member",
+            password = "secret",
+        ).search("linux iso")
+
+        val request = server.takeRequest()
+        assertEquals("Basic bWVtYmVyOnNlY3JldA==", request.getHeader("Authorization"))
+    }
+
+    @Test
+    fun `omits basic auth header when no username or password is configured`() = runTest {
+        server.enqueue(MockResponse().setBody(fixture("torznab-results.xml")))
+
+        provider().search("linux iso")
+
+        val request = server.takeRequest()
+        assertEquals(null, request.getHeader("Authorization"))
+    }
 }

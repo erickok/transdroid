@@ -83,13 +83,19 @@ data class RssFeed(
         get() = name.ifBlank { url }
 }
 
-/** One configured Torznab search endpoint (Jackett/Prowlarr). Stored encrypted (API key). */
+/**
+ * One configured Torznab search endpoint (Jackett/Prowlarr). Stored encrypted (API key).
+ * [username]/[password] are optional HTTP Basic Auth credentials for endpoints that sit behind
+ * their own reverse-proxy login (e.g. a seedbox's member area) in front of the indexer itself.
+ */
 @Serializable
 data class SearchProviderConfig(
     val id: String,
     val name: String,
     val url: String,
     val apiKey: String = "",
+    val username: String = "",
+    val password: String = "",
 ) {
     val displayName: String
         get() = name.ifBlank { url }

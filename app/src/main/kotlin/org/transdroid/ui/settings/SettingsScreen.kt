@@ -91,11 +91,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.UUID
 import org.transdroid.BuildConfig
 import org.transdroid.R
 import org.transdroid.data.RssFeed
-import org.transdroid.data.SearchProviderConfig
 import org.transdroid.data.SettingsRepository
 import org.transdroid.ui.rss.EditFeedDialog
 
@@ -104,6 +102,7 @@ import org.transdroid.ui.rss.EditFeedDialog
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     onEditServer: (String?) -> Unit,
+    onEditSearchIndexer: (String?) -> Unit,
     onOpenFeed: (String) -> Unit,
     onBack: () -> Unit,
 ) {
@@ -116,8 +115,6 @@ fun SettingsScreen(
     val searchAvailable = booleanResource(R.bool.search_available)
     val rssAvailable = booleanResource(R.bool.rss_available)
 
-    var editingProvider by remember { mutableStateOf<SearchProviderConfig?>(null) }
-    var showProviderDialog by remember { mutableStateOf(false) }
     var showAddFeedDialog by remember { mutableStateOf(false) }
     var deletingFeed by remember { mutableStateOf<RssFeed?>(null) }
 
@@ -294,18 +291,12 @@ fun SettingsScreen(
                                 icon = Icons.Rounded.Search,
                                 title = provider.displayName,
                                 subtitle = provider.url,
-                                onClick = {
-                                    editingProvider = provider
-                                    showProviderDialog = true
-                                },
+                                onClick = { onEditSearchIndexer(provider.id) },
                             )
                         }
                         SettingsAddRow(
                             title = stringResource(R.string.settings_add_search_provider),
-                            onClick = {
-                                editingProvider = null
-                                showProviderDialog = true
-                            },
+                            onClick = { onEditSearchIndexer(null) },
                         )
                     }
                 }
@@ -388,23 +379,6 @@ fun SettingsScreen(
                             )
                         }
                     }
-                }
-            },
-        )
-    }
-
-    if (showProviderDialog) {
-        SearchProviderDialog(
-            existing = editingProvider,
-            onDismiss = { showProviderDialog = false },
-            onSave = { provider ->
-                viewModel.saveSearchProvider(provider)
-                showProviderDialog = false
-            },
-            onDelete = editingProvider?.let { provider ->
-                {
-                    viewModel.deleteSearchProvider(provider.id)
-                    showProviderDialog = false
                 }
             },
         )
@@ -566,74 +540,3 @@ private fun SettingsChip(text: String) {
     )
 }
 
-@Composable
-private fun SearchProviderDialog(
-    existing: SearchProviderConfig?,
-    onDismiss: () -> Unit,
-    onSave: (SearchProviderConfig) -> Unit,
-    onDelete: (() -> Unit)?,
-) {
-    var name by remember { mutableStateOf(existing?.name.orEmpty()) }
-    var url by remember { mutableStateOf(existing?.url.orEmpty()) }
-    var apiKey by remember { mutableStateOf(existing?.apiKey.orEmpty()) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(
-                stringResource(
-                    if (existing == null) R.string.settings_add_search_provider
-                    else R.string.settings_edit_search_provider
-                )
-            )
-        },
-        text = {
-            Column {
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text(stringResource(R.string.settings_name)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                )
-                OutlinedTextField(
-                    value = url,
-                    onValueChange = { url = it },
-                    label = { Text(stringResource(R.string.settings_torznab_url)) },
-                    placeholder = { Text(stringResource(R.string.settings_torznab_url_hint)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                )
-                OutlinedTextField(
-                    value = apiKey,
-                    onValueChange = { apiKey = it },
-                    label = { Text(stringResource(R.string.settings_api_key)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onSave(
-                        SearchProviderConfig(
-                            id = existing?.id ?: UUID.randomUUID().toString(),
-                            name = name.trim(),
-                            url = url.trim(),
-                            apiKey = apiKey.trim(),
-                        )
-                    )
-                },
-                enabled = url.trim().startsWith("http"),
-            ) { Text(stringResource(R.string.settings_save)) }
-        },
-        dismissButton = {
-            if (onDelete != null) {
-                TextButton(onClick = onDelete) { Text(stringResource(R.string.details_remove_confirm)) }
-            } else {
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.details_cancel)) }
-            }
-        },
-    )
-}

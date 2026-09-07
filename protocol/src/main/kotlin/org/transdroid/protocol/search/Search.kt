@@ -18,6 +18,7 @@ package org.transdroid.protocol.search
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Credentials
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -49,11 +50,17 @@ interface SearchProvider {
  * A [SearchProvider] speaking the Torznab API — the de-facto standard served by Jackett,
  * Prowlarr and NZBHydra, which proxy hundreds of indexers behind one stable XML interface.
  * Point it at an endpoint like http://host:9117/api/v2.0/indexers/all/results/torznab.
+ *
+ * [username]/[password], when both given, are sent as HTTP Basic Auth - needed when the
+ * Torznab endpoint sits behind its own reverse-proxy login (e.g. a seedbox's member area)
+ * in front of the indexer's own apikey check.
  */
 class TorznabProvider(
     private val endpointUrl: String,
     private val apiKey: String?,
     private val httpClient: OkHttpClient,
+    private val username: String? = null,
+    private val password: String? = null,
 ) : SearchProvider {
 
     override suspend fun search(query: String): List<SearchResult> {
@@ -64,10 +71,20 @@ class TorznabProvider(
             ?.apply { if (!apiKey.isNullOrBlank()) addQueryParameter("apikey", apiKey) }
             ?.build()
             ?: throw DaemonException.UnexpectedResponse("Invalid Torznab endpoint URL")
-        val body = httpClient.executeOnIo(Request.Builder().url(url).get().build()).use { response ->
+        val requestBuilder = Request.Builder().url(url).get()
+        if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
+            requestBuilder.header("Authorization", Credentials.basic(username, password))
+        }
+        val body = httpClient.executeOnIo(requestBuilder.build()).use { response ->
             when {
                 response.code == 401 || response.code == 403 ->
-                    throw DaemonException.Authentication("The indexer rejected the API key")
+                    throw DaemonException.Authentication(
+                        if (!username.isNullOrBlank()) {
+                            "The indexer rejected the API key or login"
+                        } else {
+                            "The indexer rejected the API key"
+                        }
+                    )
                 !response.isSuccessful ->
                     throw DaemonException.UnexpectedResponse("The indexer returned HTTP ${response.code}")
             }

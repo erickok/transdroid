@@ -162,6 +162,9 @@
     <string name="settings_torznab_url">Torznab endpoint URL</string>
     <string name="settings_torznab_url_hint">http://host:9117/api/v2.0/indexers/all/results/torznab</string>
     <string name="settings_api_key">API key</string>
+    <string name="settings_basic_auth_summary">Only needed if the Torznab URL itself is behind a login (e.g. a seedbox member area), separate from the API key above.</string>
+    <string name="settings_delete_search_provider">Delete indexer</string>
+    <string name="settings_search_test_success">Connected — found %1$d result(s)</string>
     <string name="settings_poll_interval">Refresh interval</string>
     <string name="settings_poll_interval_value">%1$d seconds</string>
     <string name="settings_discovery_title">Found on your network</string>
