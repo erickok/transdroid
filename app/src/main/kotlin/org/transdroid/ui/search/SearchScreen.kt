@@ -125,12 +125,18 @@ fun SearchScreen(
                 label = { Text(stringResource(R.string.search_hint)) },
                 singleLine = true,
                 trailingIcon = {
-                    IconButton(onClick = { viewModel.search() }) {
+                    IconButton(onClick = {
+                        viewModel.search()
+                        keyboardController?.hide()
+                    }) {
                         Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_title))
                     }
                 },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { viewModel.search() }),
+                keyboardActions = KeyboardActions(onSearch = {
+                    viewModel.search()
+                    keyboardController?.hide()
+                }),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
