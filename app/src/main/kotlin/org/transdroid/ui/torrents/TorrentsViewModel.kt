@@ -46,14 +46,14 @@ import org.transdroid.protocol.Tracker
 /** User-facing error kinds; mapped to localized strings in the UI layer. */
 sealed class UiError {
     data class Connection(val host: String) : UiError()
-    data object Authentication : UiError()
+    data class Authentication(val detail: String? = null) : UiError()
     data object Ssl : UiError()
     data class Unexpected(val detail: String? = null) : UiError()
 }
 
 internal fun Throwable.toUiError(host: String): UiError = when (this) {
     is DaemonException.Connection -> UiError.Connection(host)
-    is DaemonException.Authentication -> UiError.Authentication
+    is DaemonException.Authentication -> UiError.Authentication(message)
     is DaemonException.UntrustedServer -> UiError.Ssl
     is DaemonException.UnexpectedResponse -> UiError.Unexpected(message)
     else -> UiError.Unexpected()
