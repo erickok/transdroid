@@ -52,6 +52,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardActions
@@ -74,6 +77,8 @@ fun SearchScreen(
     val providers by viewModel.providers.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var confirmResult by remember { mutableStateOf<SearchResult?>(null) }
+    val queryFocusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val addedMessage = ui.addedTitle?.let { stringResource(R.string.add_success) + ": " + it }
     val addErrorMessage = ui.addError?.message()
@@ -126,8 +131,15 @@ fun SearchScreen(
                 },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { viewModel.search() }),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .focusRequester(queryFocusRequester),
             )
+            LaunchedEffect(Unit) {
+                queryFocusRequester.requestFocus()
+                keyboardController?.show()
+            }
 
             if (providers.size > 1) {
                 var expanded by remember { mutableStateOf(false) }
