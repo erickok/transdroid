@@ -124,6 +124,15 @@
     <string name="search_no_providers">Add a Torznab indexer (Jackett or Prowlarr) in Settings to search</string>
     <string name="search_no_results">No results</string>
     <string name="search_seeders">%1$d seeders · %2$d leechers</string>
+    <string name="search_clear">Clear search</string>
+    <string name="search_all_indexers">All indexers</string>
+    <string name="search_sort_seeders">Seeders</string>
+    <string name="search_sort_leechers">Leechers</string>
+    <string name="search_sort_size">Size</string>
+    <string name="search_sort_newest">Newest</string>
+    <string name="search_result_count">%1$d results</string>
+    <string name="search_result_count_filtered">%1$d results · %2$s</string>
+    <string name="search_download">Download to server</string>
 
     <!-- Server settings -->
     <string name="settings_title">Settings</string>

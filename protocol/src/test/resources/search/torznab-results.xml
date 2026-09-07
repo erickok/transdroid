@@ -13,6 +13,7 @@
       <torznab:attr name="seeders" value="1200" />
       <torznab:attr name="peers" value="1250" />
       <torznab:attr name="magneturl" value="magnet:?xt=urn:btih:8c212779b4abde7c6bc608063a0d008b7e40ce32" />
+      <jackettindexer id="linuxtracker">LinuxTracker</jackettindexer>
     </item>
     <item>
       <title>debian-12.7.0-amd64-netinst.iso</title>

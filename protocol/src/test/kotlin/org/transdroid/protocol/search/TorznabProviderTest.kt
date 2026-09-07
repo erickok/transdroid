@@ -74,8 +74,11 @@ class TorznabProviderTest {
         assertEquals("leechers derived from peers minus seeders", 50, first.leechers)
         assertEquals(1785060001L, first.timestamp)
 
+        assertEquals("LinuxTracker", first.indexerName)
+
         val second = results[1]
         assertEquals("https://jackett.example.com/dl/1002.torrent", second.torrentUrl)
+        assertEquals("no <jackettindexer> tag on this item", null, second.indexerName)
     }
 
     @Test

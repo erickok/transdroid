@@ -16,6 +16,7 @@
  */
 package org.transdroid.util
 
+import android.text.format.DateUtils
 import java.util.Locale
 
 private val UNITS = arrayOf("B", "KB", "MB", "GB", "TB")
@@ -50,3 +51,13 @@ fun formatEta(seconds: Long?): String? {
 
 /** Formats a ratio like "2.04". */
 fun formatRatio(ratio: Float): String = String.format(Locale.getDefault(), "%.2f", ratio)
+
+/** Formats a unix-seconds timestamp like "2 days ago" or "3 weeks ago"; null for unknown. */
+fun formatRelativeAge(epochSeconds: Long?): String? {
+    if (epochSeconds == null) return null
+    return DateUtils.getRelativeTimeSpanString(
+        epochSeconds * 1000,
+        System.currentTimeMillis(),
+        DateUtils.DAY_IN_MILLIS,
+    ).toString()
+}

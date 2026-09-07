@@ -36,6 +36,9 @@ data class SearchResult(
     val seeders: Int?,
     val leechers: Int?,
     val timestamp: Long?,
+    /** The underlying tracker this result came from, e.g. Jackett's per-item <jackettindexer> tag
+     *  on an aggregated "all indexers" feed. Null for a single-tracker feed or a non-Jackett server. */
+    val indexerName: String? = null,
 )
 
 /**
@@ -139,6 +142,7 @@ class TorznabProvider(
                         null
                     }
                 },
+                indexerName = item.childText("jackettindexer"),
             )
         }
     }

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transdroid · Search (M3 Expressive · dark)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0" rel="stylesheet">
+<style>
+:root{
+  --surface:#12140e;
+  --surface-low:#191b14;
+  --surface-container:#1e201a;
+  --surface-high:#282b23;
+  --surface-highest:#33362d;
+  --on-surface:#e3e4d9;
+  --on-surface-var:#c6c9b9;
+  --muted:#a4a897;
+  --outline:#8e9284;
+  --outline-variant:#43473b;
+  --primary:#a6d67e;
+  --on-primary:#133800;
+  --primary-container:#284f10;
+  --on-primary-container:#c1f39b;
+  --sel-bg:#37482a; --sel-fg:#d6e8bf;
+  --seed:#a0cf72;
+  --error:#ffb4ab;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;height:100%;}
+body{
+  font-family:"Roboto",system-ui,sans-serif;
+  background:radial-gradient(120% 90% at 50% 0%, #454b3f 0%, #33372e 55%, #262a22 100%);
+  min-height:100%; display:flex; align-items:center; justify-content:center; padding:32px 16px;
+}
+.msr{
+  font-family:"Material Symbols Rounded"; font-weight:normal; font-style:normal; line-height:1;
+  letter-spacing:normal; text-transform:none; white-space:nowrap; display:inline-block; direction:ltr;
+  -webkit-font-smoothing:antialiased; font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24; user-select:none;
+}
+.fill{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
+
+.phone{
+  width:390px; max-width:100%; height:820px; max-height:calc(100vh - 40px);
+  background:#0c0d0a; border-radius:46px; padding:8px;
+  box-shadow:0 30px 70px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.screen{
+  position:relative; height:100%; width:100%; background:var(--surface); border-radius:39px;
+  overflow:hidden; display:flex; flex-direction:column; color:var(--on-surface); isolation:isolate;
+}
+
+.statusbar{
+  height:34px; flex:none; display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px 0 28px; font-size:14px; font-weight:600; letter-spacing:.2px;
+}
+.statusbar .sys{display:flex; align-items:center; gap:7px;}
+.statusbar .sys .msr{font-size:18px;}
+
+/* search bar */
+.searchbar{
+  flex:none; margin:4px 12px 6px; height:52px; border-radius:26px; background:var(--surface-high);
+  display:flex; align-items:center; gap:4px; padding:0 6px;
+}
+.sicon{border:none; background:transparent; cursor:pointer; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; color:var(--on-surface-var);}
+.sicon:hover{background:var(--surface-highest);}
+.sicon .msr{font-size:23px;}
+.searchbar input{flex:1; min-width:0; border:none; background:transparent; outline:none; font-family:inherit; font-size:16px; color:var(--on-surface);}
+.searchbar input::placeholder{color:var(--muted);}
+
+/* controls: indexer + sort dropdowns */
+.controls{flex:none; display:flex; align-items:center; gap:10px; padding:6px 16px 2px;}
+.controls .grow{flex:1;}
+.dd{position:relative;}
+.dd-trigger{display:inline-flex; align-items:center; gap:6px; height:38px; padding:0 8px 0 12px; border-radius:999px; border:1px solid var(--outline-variant); background:transparent; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; color:var(--on-surface-var); transition:.12s;}
+.dd-trigger:hover{background:var(--surface-high);}
+.dd.open .dd-trigger{background:var(--surface-high); border-color:transparent;}
+.dd-trigger .lead{font-size:17px; color:var(--muted);}
+.dd-trigger .chev{font-size:19px; color:var(--muted); transition:transform .2s;}
+.dd.open .chev{transform:rotate(180deg);}
+.dd-menu{position:absolute; top:calc(100% + 6px); left:0; z-index:20; min-width:190px; background:var(--surface-high); border-radius:16px; padding:6px; box-shadow:0 10px 26px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.4); display:none;}
+.dd-menu.right{left:auto; right:0;}
+.dd.open .dd-menu{display:block; animation:pop .14s ease-out;}
+@keyframes pop{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+.dd-item{width:100%; text-align:left; border:none; background:transparent; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:12px; font-size:14px; font-weight:500; color:var(--on-surface); transition:background .12s;}
+.dd-item:hover{background:var(--surface-highest);}
+.dd-item .ck{font-size:19px; color:var(--primary); visibility:hidden;}
+.dd-item.sel{background:var(--sel-bg); color:var(--sel-fg);}
+.dd-item.sel .ck{visibility:visible; color:var(--sel-fg);}
+
+.rescount{flex:none; font-size:12.5px; color:var(--muted); padding:8px 18px 2px;}
+
+.list{flex:1; overflow-y:auto; padding:0 4px 20px; scrollbar-width:none;}
+.list::-webkit-scrollbar{display:none;}
+
+.result{display:grid; grid-template-columns:1fr auto; gap:0 12px; align-items:center; padding:13px 14px;}
+.result + .result{border-top:1px solid var(--outline-variant);}
+.result:hover{background:var(--surface-low); border-radius:18px;}
+.rmain{grid-column:1; min-width:0;}
+.rtitle{font-size:14.5px; font-weight:600; line-height:1.32; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+.rsub{font-size:12px; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums;}
+.rstats{display:flex; align-items:center; gap:16px; margin-top:9px;}
+.stat{display:inline-flex; align-items:center; gap:4px; font-size:12.5px; font-weight:700; font-variant-numeric:tabular-nums;}
+.stat .msr{font-size:16px;}
+.stat.seed{color:var(--seed);}
+.stat.seed.dead{color:var(--error);}
+.stat.leech{color:var(--muted);}
+.radd{grid-column:2; border:none; cursor:pointer; width:46px; height:46px; border-radius:15px; background:var(--primary-container); color:var(--on-primary-container); display:grid; place-items:center; transition:.12s;}
+.radd:hover{filter:brightness(.97);}
+.radd:active{transform:scale(.92);}
+.radd .msr{font-size:22px;}
+
+.gesture{flex:none; height:26px; display:grid; place-items:center;}
+.gesture i{width:132px; height:5px; border-radius:3px; background:var(--on-surface); opacity:.35;}
+</style>
+</head>
+<body>
+  <div class="phone"><div class="screen">
+
+    <div class="statusbar">
+      <span>4:52</span>
+      <span class="sys">
+        <span class="msr">network_wifi</span>
+        <span class="msr">signal_cellular_alt</span>
+        <span class="msr fill">battery_5_bar</span>
+      </span>
+    </div>
+
+    <div class="searchbar">
+      <button class="sicon" aria-label="Back"><span class="msr">arrow_back</span></button>
+      <input id="q" type="text" value="ubuntu 24.04" placeholder="Search torrents" aria-label="Search">
+      <button class="sicon" id="clear" aria-label="Clear"><span class="msr">close</span></button>
+    </div>
+
+    <div class="controls">
+      <div class="dd" id="ixDD">
+        <button class="dd-trigger"><span class="msr lead">dns</span><span class="dd-val">All indexers</span><span class="msr chev">arrow_drop_down</span></button>
+        <div class="dd-menu">
+          <button class="dd-item sel" data-v="All indexers"><span class="msr ck">check</span>All indexers</button>
+          <button class="dd-item" data-v="LinuxTracker"><span class="msr ck">check</span>LinuxTracker</button>
+          <button class="dd-item" data-v="Distro Index"><span class="msr ck">check</span>Distro Index</button>
+        </div>
+      </div>
+      <span class="grow"></span>
+      <div class="dd" id="sortDD">
+        <button class="dd-trigger"><span class="msr lead">sort</span><span class="dd-val">Seeders</span><span class="msr chev">arrow_drop_down</span></button>
+        <div class="dd-menu right">
+          <button class="dd-item sel" data-v="seeders"><span class="msr ck">check</span>Seeders</button>
+          <button class="dd-item" data-v="leechers"><span class="msr ck">check</span>Leechers</button>
+          <button class="dd-item" data-v="size"><span class="msr ck">check</span>Size</button>
+          <button class="dd-item" data-v="newest"><span class="msr ck">check</span>Newest</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rescount" id="rescount"></div>
+    <div class="list" id="list"></div>
+
+    <div class="gesture"><i></i></div>
+
+  </div></div>
+
+<script>
+const results = [
+  {t:'ubuntu-24.04.1-desktop-amd64.iso',            sz:'5.9 GB',  mb:5940,  age:'2 days ago',  days:2,  ix:'LinuxTracker', s:1204, l:38},
+  {t:'ubuntu-24.04.1-live-server-amd64.iso',        sz:'2.7 GB',  mb:2760,  age:'2 days ago',  days:2,  ix:'LinuxTracker', s:642,  l:12},
+  {t:'Ubuntu 24.04 LTS (Noble Numbat) — All Editions', sz:'14.2 GB', mb:14540, age:'1 week ago', days:7,  ix:'Distro Index', s:318,  l:21},
+  {t:'kubuntu-24.04-desktop-amd64.iso',             sz:'4.1 GB',  mb:4100,  age:'5 days ago',  days:5,  ix:'LinuxTracker', s:96,   l:4},
+  {t:'xubuntu-24.04-desktop-amd64.iso',             sz:'3.3 GB',  mb:3300,  age:'5 days ago',  days:5,  ix:'Distro Index', s:41,   l:2},
+  {t:'lubuntu-24.04-desktop-amd64.iso',             sz:'2.9 GB',  mb:2900,  age:'6 days ago',  days:6,  ix:'Distro Index', s:12,   l:1},
+  {t:'ubuntu-24.04-mate-desktop-amd64.iso',         sz:'3.6 GB',  mb:3600,  age:'3 weeks ago', days:21, ix:'LinuxTracker', s:0,    l:0},
+];
+
+const state = { ix:'All indexers', sort:'seeders' };
+const SORTERS = {
+  seeders:(a,b)=>b.s-a.s, leechers:(a,b)=>b.l-a.l, size:(a,b)=>b.mb-a.mb, newest:(a,b)=>a.days-b.days,
+};
+const list = document.getElementById('list');
+const rescount = document.getElementById('rescount');
+
+function render(){
+  let rows = results.filter(r=> state.ix==='All indexers' || r.ix===state.ix).sort(SORTERS[state.sort]);
+  rescount.textContent = `${rows.length} result${rows.length===1?'':'s'}` + (state.ix==='All indexers' ? '' : ` · ${state.ix}`);
+  list.innerHTML = rows.map(r=>`
+    <div class="result">
+      <div class="rmain">
+        <div class="rtitle">${r.t}</div>
+        <div class="rsub">${r.sz} · ${r.age} · ${r.ix}</div>
+        <div class="rstats">
+          <span class="stat seed ${r.s===0?'dead':''}"><span class="msr fill">arrow_upward</span>${r.s.toLocaleString()}</span>
+          <span class="stat leech"><span class="msr fill">arrow_downward</span>${r.l.toLocaleString()}</span>
+        </div>
+      </div>
+      <button class="radd" title="Download to server"><span class="msr">download</span></button>
+    </div>`).join('');
+}
+render();
+
+/* dropdowns */
+function closeAll(){ document.querySelectorAll('.dd').forEach(d=>d.classList.remove('open')); }
+document.querySelectorAll('.dd').forEach(dd=>{
+  const trigger = dd.querySelector('.dd-trigger');
+  trigger.addEventListener('click', e=>{ e.stopPropagation(); const open=dd.classList.contains('open'); closeAll(); if(!open) dd.classList.add('open'); });
+  dd.querySelector('.dd-menu').addEventListener('click', e=>e.stopPropagation());
+  dd.querySelectorAll('.dd-item').forEach(it=>it.addEventListener('click', ()=>{
+    dd.querySelectorAll('.dd-item').forEach(x=>x.classList.remove('sel')); it.classList.add('sel');
+    dd.querySelector('.dd-val').textContent = it.dataset.v==='newest' ? 'Newest' : it.textContent.trim();
+    dd.classList.remove('open');
+    if(dd.id==='ixDD') state.ix = it.dataset.v; else state.sort = it.dataset.v;
+    render();
+  }));
+});
+document.addEventListener('click', closeAll);
+
+/* clear */
+const q = document.getElementById('q');
+document.getElementById('clear').addEventListener('click', ()=>{ q.value=''; q.focus(); });
+</script>
+</body>
+</html>
