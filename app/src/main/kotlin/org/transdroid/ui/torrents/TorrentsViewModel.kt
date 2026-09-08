@@ -211,12 +211,18 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         val profile = _ui.value.activeProfile ?: return
         if (showSpinner) _ui.update { it.copy(refreshing = true) }
         try {
-            val torrents = container.adapterFor(profile).listTorrents()
+            val adapter = container.adapterFor(profile)
+            val torrents = adapter.listTorrents()
             _ui.update {
                 if (it.activeProfile?.id != profile.id) it
                 else it.copy(torrents = torrents, hasLoaded = true, refreshing = false, error = null)
             }
             container.widgetStateRepository.update(profile.displayName, torrents)
+            // Keep an open torrent-details screen's Files/Trackers tabs current too, not just the
+            // main list - they're otherwise only ever loaded once, when the screen first opens.
+            _ui.value.selectedTorrentId
+                ?.takeIf { id -> torrents.any { it.id == id } }
+                ?.let { refreshDetails(adapter, it) }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -225,6 +231,25 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
                 if (it.activeProfile?.id != profile.id) it
                 else it.copy(refreshing = false, error = e.toUiError(profile.host))
             }
+        }
+    }
+
+    private suspend fun refreshDetails(adapter: org.transdroid.protocol.DaemonAdapter, torrentId: String) {
+        try {
+            val files = adapter.listFiles(torrentId)
+            _ui.update { it.copy(files = it.files + (torrentId to files)) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // Keep showing the last-known files rather than clearing them on a transient failure
+        }
+        try {
+            val trackers = adapter.listTrackers(torrentId)
+            _ui.update { it.copy(trackers = it.trackers + (torrentId to trackers)) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // Keep showing the last-known trackers rather than clearing them on a transient failure
         }
     }
 

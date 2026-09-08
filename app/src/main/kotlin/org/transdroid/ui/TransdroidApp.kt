@@ -21,6 +21,9 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -76,6 +79,18 @@ fun TransdroidApp(
         if (pendingTorrentUrl != null) {
             navController.navigate(Routes.add(pendingTorrentUrl))
             onPendingTorrentUrlConsumed()
+        }
+    }
+
+    // Poll the active daemon while the app is started, regardless of which screen is showing -
+    // hosted here rather than inside TorrentsScreen so it keeps running (and the torrent details
+    // screen keeps seeing fresh state) while the user has navigated to torrent details, which is
+    // its own NavHost destination on phones and would otherwise stop this when TorrentsScreen
+    // itself leaves the STARTED lifecycle state.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            torrentsViewModel.pollLoop()
         }
     }
 
