@@ -94,6 +94,30 @@ class QbittorrentAdapterTest {
     }
 
     @Test
+    fun `a banned login is not retried again within the cooldown window`() = runTest {
+        server.enqueue(MockResponse().setResponseCode(403))
+
+        val adapter = adapter()
+        try {
+            adapter.listTorrents()
+            fail("Expected DaemonException.Authentication")
+        } catch (expected: DaemonException.Authentication) {
+            assertTrue(expected.message!!.contains("too many failed logins"))
+        }
+
+        // A second call immediately after must not hit the login endpoint again - a poll loop
+        // calling this every few seconds should back off rather than keep re-triggering the ban.
+        try {
+            adapter.listTorrents()
+            fail("Expected DaemonException.Authentication")
+        } catch (expected: DaemonException.Authentication) {
+            assertTrue(expected.message!!.contains("too many failed logins"))
+        }
+
+        assertEquals(1, server.requestCount)
+    }
+
+    @Test
     fun `list torrents parses and normalizes fixture`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(MockResponse().setBody(fixture("torrents-info.json")))

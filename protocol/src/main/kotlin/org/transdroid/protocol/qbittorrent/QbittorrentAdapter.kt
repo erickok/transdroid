@@ -55,6 +55,15 @@ class QbittorrentAdapter(
     @Volatile
     private var sessionCookie: String? = null
 
+    // Backoff after a failed login, so a poll loop doesn't hammer qBittorrent's login endpoint
+    // every cycle - which not only wastes requests but keeps re-triggering (and likely renewing)
+    // qBittorrent's own "too many failed logins" IP ban, making it worse rather than letting it
+    // expire.
+    @Volatile
+    private var authRetryAfterMillis: Long = 0L
+    @Volatile
+    private var lastAuthFailureMessage: String? = null
+
     override suspend fun testConnection(): String {
         val version = get("api/v2/app/version").use { it.readBodyOrThrow() }
         return "qBittorrent $version"
@@ -170,7 +179,30 @@ class QbittorrentAdapter(
 
     private suspend fun ensureAuthenticated() {
         if (sessionCookie != null || config.username.isNullOrEmpty()) return
-        login()
+        loginWithBackoff()
+    }
+
+    /**
+     * Calls [login], but after a failure refuses to try again until [AUTH_RETRY_COOLDOWN_MILLIS]
+     * has passed - re-throwing the last failure instead. Without this, a poll loop calls this on
+     * every cycle (as often as every few seconds) whenever [sessionCookie] is null, which for a
+     * "too many failed logins" ban means continuously hammering the login endpoint and likely
+     * renewing the ban instead of letting it expire.
+     */
+    private suspend fun loginWithBackoff() {
+        val now = System.currentTimeMillis()
+        if (now < authRetryAfterMillis) {
+            throw DaemonException.Authentication(lastAuthFailureMessage ?: "qBittorrent authentication is temporarily unavailable")
+        }
+        try {
+            login()
+            authRetryAfterMillis = 0L
+            lastAuthFailureMessage = null
+        } catch (e: DaemonException.Authentication) {
+            authRetryAfterMillis = now + AUTH_RETRY_COOLDOWN_MILLIS
+            lastAuthFailureMessage = e.message
+            throw e
+        }
     }
 
     private suspend fun login() {
@@ -213,7 +245,7 @@ class QbittorrentAdapter(
         var response = send(build())
         if (response.code == 403 && !config.username.isNullOrEmpty()) {
             response.close()
-            login()
+            loginWithBackoff()
             response = send(build())
         }
         when {
@@ -344,5 +376,8 @@ class QbittorrentAdapter(
     private companion object {
         /** qBittorrent reports 8640000 seconds as "no ETA". */
         const val INFINITE_ETA = 8640000L
+
+        /** Minimum time between login attempts after a failure; see [loginWithBackoff]. */
+        const val AUTH_RETRY_COOLDOWN_MILLIS = 60_000L
     }
 }
