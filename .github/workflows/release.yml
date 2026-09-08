@@ -29,6 +29,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Set up release signing
+        id: signing
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -44,8 +45,10 @@ jobs:
               echo "keyPassword=$KEY_PASSWORD"
             } > keystore.properties
             echo "Release signing configured"
+            echo "signed=true" >> "$GITHUB_OUTPUT"
           else
             echo "No signing secrets; building unsigned APKs"
+            echo "signed=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Test
@@ -53,6 +56,29 @@ jobs:
 
       - name: Assemble APKs
         run: ./gradlew :app:assembleRelease :app:assembleFullDebug
+
+      - name: Write release notes
+        env:
+          SIGNED: ${{ steps.signing.outputs.signed }}
+        run: |
+          if [ "$SIGNED" = "true" ]; then
+            cat > release-body.md <<'EOF'
+          Transdroid 3 alpha. **To install, download `app-full-release.apk`** — it is
+          signed and installs directly (F-Droid/self-distributed builds). `app-lite-release.apk`
+          is the Play Store-oriented "lite" flavor (in-app search disabled). `app-full-debug.apk`
+          is a debug build kept for troubleshooting; note it's signed with a different (debug)
+          key than the release APKs, so switching between them on the same device requires
+          uninstalling the previous one first.
+          EOF
+          else
+            cat > release-body.md <<'EOF'
+          Transdroid 3 alpha. **To install, download `app-full-debug.apk`** — it is
+          debug-signed and installs directly. The `release` APKs are optimized builds
+          that are published unsigned until release signing keys are configured in the
+          repository secrets (`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`,
+          `KEY_PASSWORD`); unsigned APKs cannot be installed as-is.
+          EOF
+          fi
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
@@ -63,9 +89,4 @@ jobs:
             app/build/outputs/apk/lite/release/*.apk
             app/build/outputs/apk/full/debug/app-full-debug.apk
           generate_release_notes: true
-          body: |
-            Transdroid 3 alpha. **To install, download `app-full-debug.apk`** — it is
-            debug-signed and installs directly. The `release` APKs are optimized builds
-            that are published unsigned until release signing keys are configured in the
-            repository secrets (`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`,
-            `KEY_PASSWORD`); unsigned APKs cannot be installed as-is.
+          body_path: release-body.md
