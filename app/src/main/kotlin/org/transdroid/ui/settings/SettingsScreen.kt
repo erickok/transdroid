@@ -17,6 +17,7 @@
 package org.transdroid.ui.settings
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -43,6 +44,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Dns
+import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Refresh
@@ -95,6 +97,7 @@ import org.transdroid.BuildConfig
 import org.transdroid.R
 import org.transdroid.data.RssFeed
 import org.transdroid.data.SettingsRepository
+import org.transdroid.errorlog.ErrorLog
 import org.transdroid.ui.rss.EditFeedDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -117,6 +120,7 @@ fun SettingsScreen(
 
     var showAddFeedDialog by remember { mutableStateOf(false) }
     var deletingFeed by remember { mutableStateOf<RssFeed?>(null) }
+    var showSendReportDialog by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -128,6 +132,7 @@ fun SettingsScreen(
     val restoreWrongPassphrase = stringResource(R.string.backup_wrong_passphrase)
     val restoreInvalid = stringResource(R.string.backup_invalid_file)
     val restoredTemplate = stringResource(R.string.backup_restored)
+    val noEmailAppMessage = stringResource(R.string.pref_sendlog_no_app)
 
     val exportCreator = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/octet-stream")
@@ -140,6 +145,7 @@ fun SettingsScreen(
                     try {
                         context.contentResolver.openOutputStream(uri)?.use { it.write(bytes) } != null
                     } catch (e: Exception) {
+                        ErrorLog.log("Settings", "Backup export failed", e)
                         false
                     }
                 }
@@ -320,6 +326,17 @@ fun SettingsScreen(
             }
 
             item {
+                SettingsSection(stringResource(R.string.settings_help)) {
+                    SettingsRow(
+                        icon = Icons.Rounded.Email,
+                        title = stringResource(R.string.pref_sendlog),
+                        subtitle = stringResource(R.string.pref_sendlog_info),
+                        onClick = { showSendReportDialog = true },
+                    )
+                }
+            }
+
+            item {
                 Text(
                     stringResource(R.string.settings_about, BuildConfig.VERSION_NAME),
                     style = MaterialTheme.typography.bodySmall,
@@ -360,6 +377,7 @@ fun SettingsScreen(
                         try {
                             context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
                         } catch (e: Exception) {
+                            ErrorLog.log("Settings", "Backup import read failed", e)
                             null
                         }
                     }
@@ -410,6 +428,22 @@ fun SettingsScreen(
             },
         )
     }
+
+    if (showSendReportDialog) {
+        val activeProfile = profiles.firstOrNull { it.id == activeId }
+        SendReportDialog(
+            onDismiss = { showSendReportDialog = false },
+            onSend = { includeLog ->
+                showSendReportDialog = false
+                val intent = viewModel.buildErrorReportIntent(context, activeProfile, includeLog)
+                try {
+                    context.startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    scope.launch { snackbarHostState.showSnackbar(noEmailAppMessage) }
+                }
+            },
+        )
+    }
 }
 
 private const val MAX_BACKUP_BYTES = 10 * 1024 * 1024
@@ -444,6 +478,34 @@ private fun PassphraseDialog(
             TextButton(onClick = { onConfirm(passphrase) }, enabled = passphrase.length >= 4) {
                 Text(confirmLabel)
             }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.details_cancel)) }
+        },
+    )
+}
+
+@Composable
+private fun SendReportDialog(onDismiss: () -> Unit, onSend: (includeLog: Boolean) -> Unit) {
+    var includeLog by remember { mutableStateOf(true) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.pref_sendlog)) },
+        text = {
+            Column {
+                Text(stringResource(R.string.pref_sendlog_info))
+                Spacer(Modifier.height(12.dp))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(stringResource(R.string.pref_sendlog_include_log), modifier = Modifier.weight(1f))
+                    Switch(checked = includeLog, onCheckedChange = { includeLog = it })
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onSend(includeLog) }) { Text(stringResource(R.string.pref_sendlog_send)) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text(stringResource(R.string.details_cancel)) }

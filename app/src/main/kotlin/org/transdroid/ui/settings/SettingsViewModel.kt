@@ -34,6 +34,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.transdroid.AppContainer
+import org.transdroid.BuildConfig
+import org.transdroid.R
 import org.transdroid.appContainer
 import org.transdroid.background.FinishedTorrentsWorker
 import org.transdroid.data.BackupCrypto
@@ -41,6 +43,7 @@ import org.transdroid.data.ProfilesData
 import org.transdroid.data.RssFeed
 import org.transdroid.data.SearchProviderConfig
 import org.transdroid.data.ServerProfile
+import org.transdroid.errorlog.ErrorLog
 import org.transdroid.protocol.CertificateFingerprint
 import org.transdroid.protocol.Tls
 import org.transdroid.protocol.Xirvik
@@ -173,6 +176,7 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
             val found = try {
                 container.lanDiscovery.scan()
             } catch (e: Exception) {
+                ErrorLog.log("Settings", "LAN discovery scan failed", e)
                 emptyList()
             }
             _discovery.value = DiscoveryState(scanning = false, scanned = true, found = found)
@@ -285,12 +289,44 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
                 }
                 RestoreResult.Success(data.profiles.size)
             } catch (e: AEADBadTagException) {
+                // A mistyped passphrase is routine user input, not an app fault - not logged.
                 RestoreResult.WrongPassphrase
             } catch (e: Exception) {
+                ErrorLog.log("Settings", "Backup restore failed", e)
                 RestoreResult.InvalidFile
             }
             onResult(result)
         }
+    }
+
+    /**
+     * Builds a "Send error report" email intent. [activeProfile] is passed in already resolved
+     * from Compose state (not re-read from [container]) so this can stay a plain, synchronous
+     * function. Only [ServerProfile.type]/[ServerProfile.host] are included - never username,
+     * password, or custom headers.
+     */
+    fun buildErrorReportIntent(context: android.content.Context, activeProfile: ServerProfile?, includeLog: Boolean): android.content.Intent {
+        val body = buildString {
+            append(context.getString(R.string.pref_sendlog_body_prefix))
+            append("Transdroid ${BuildConfig.VERSION_NAME}\n")
+            append("${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}, Android ${android.os.Build.VERSION.RELEASE}")
+            if (activeProfile != null) {
+                append("\nServer: ${activeProfile.type} @ ${activeProfile.host}")
+            }
+            if (includeLog) {
+                append("\n\n")
+                append(context.getString(R.string.pref_sendlog_body_log_header))
+                append("\n")
+                append(ErrorLog.entries().joinToString("\n"))
+            }
+        }
+        val target = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+            type = "message/rfc822"
+            putExtra(android.content.Intent.EXTRA_EMAIL, arrayOf("transdroid@2312.nl"))
+            putExtra(android.content.Intent.EXTRA_SUBJECT, "Transdroid error report")
+            putExtra(android.content.Intent.EXTRA_TEXT, body)
+        }
+        return android.content.Intent.createChooser(target, null)
     }
 
     sealed class RestoreResult {

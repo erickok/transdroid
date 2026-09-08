@@ -251,6 +251,16 @@
     <string name="backup_invalid_file">That is not a readable Transdroid backup file</string>
     <string name="backup_restored">Restored %1$d server(s)</string>
 
+    <!-- Help & Support -->
+    <string name="settings_help">Help &amp; Support</string>
+    <string name="pref_sendlog">Send error report</string>
+    <string name="pref_sendlog_info">Get support or report a bug</string>
+    <string name="pref_sendlog_include_log">Include recent error log</string>
+    <string name="pref_sendlog_send">Send</string>
+    <string name="pref_sendlog_no_app">No email app found</string>
+    <string name="pref_sendlog_body_prefix">Please describe your problem:\n\n\n</string>
+    <string name="pref_sendlog_body_log_header">Connection and error log:</string>
+
     <!-- Notifications -->
     <string name="notification_channel_finished">Finished torrents</string>
 

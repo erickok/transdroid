@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.transdroid.background.FinishedTorrentsWorker
+import org.transdroid.errorlog.ErrorLog
 import org.transdroid.data.ServerProfile
 import org.transdroid.discovery.LanDiscovery
 import org.transdroid.data.ServerProfilesRepository
@@ -76,6 +77,12 @@ class TransdroidApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        ErrorLog.init(this)
+        val previousHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            ErrorLog.logCrash(throwable)
+            previousHandler?.uncaughtException(thread, throwable)
+        }
         container = AppContainer(this)
         // Re-arm the periodic finished-torrents check after updates/reboots; KEEP is idempotent
         CoroutineScope(Dispatchers.Default).launch {

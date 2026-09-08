@@ -80,6 +80,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import java.net.URI
 import org.transdroid.R
 import org.transdroid.data.ServerProfile
+import org.transdroid.errorlog.ErrorLog
 import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.discovery.DiscoveredDaemon
 import org.transdroid.ui.message
@@ -665,6 +666,8 @@ private fun parseServerUrl(raw: String): ParsedServerUrl? {
     val uri = try {
         URI(withScheme)
     } catch (e: Exception) {
+        // Never log the raw URL itself - a pasted server URL can embed credentials.
+        ErrorLog.log("EditServer", "Failed to parse server URL", e)
         return null
     }
     val host = uri.host?.takeIf { it.isNotBlank() } ?: return null

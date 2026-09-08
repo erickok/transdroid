@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 import org.transdroid.AppContainer
 import org.transdroid.appContainer
 import org.transdroid.data.ServerProfile
+import org.transdroid.errorlog.ErrorLog
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.Torrent
@@ -51,12 +52,15 @@ sealed class UiError {
     data class Unexpected(val detail: String? = null) : UiError()
 }
 
-internal fun Throwable.toUiError(host: String): UiError = when (this) {
-    is DaemonException.Connection -> UiError.Connection(host)
-    is DaemonException.Authentication -> UiError.Authentication(message)
-    is DaemonException.UntrustedServer -> UiError.Ssl
-    is DaemonException.UnexpectedResponse -> UiError.Unexpected(message)
-    else -> UiError.Unexpected()
+internal fun Throwable.toUiError(host: String): UiError {
+    ErrorLog.log("Daemon", "Error for $host", this)
+    return when (this) {
+        is DaemonException.Connection -> UiError.Connection(host)
+        is DaemonException.Authentication -> UiError.Authentication(message)
+        is DaemonException.UntrustedServer -> UiError.Ssl
+        is DaemonException.UnexpectedResponse -> UiError.Unexpected(message)
+        else -> UiError.Unexpected()
+    }
 }
 
 /** Sentinel [TorrentsUiState.labelFilters] entry for the drawer's "No label" bucket; never a real torrent label. */

@@ -65,6 +65,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.transdroid.R
+import org.transdroid.errorlog.ErrorLog
 import org.transdroid.ui.message
 import org.transdroid.ui.torrents.TorrentsViewModel
 import org.transdroid.ui.torrents.UiError
@@ -277,6 +278,7 @@ private fun readTorrentFile(context: Context, uri: Uri): Pair<String, ByteArray>
         if (contents.isEmpty()) null else displayName(context, uri) to contents
     }
 } catch (e: Exception) {
+    ErrorLog.log("AddTorrent", "Failed to read torrent file", e)
     null
 }
 
@@ -290,6 +292,7 @@ private fun displayName(context: Context, uri: Uri): String {
         }
     } catch (e: Exception) {
         // Fall through to the path-based name
+        ErrorLog.log("AddTorrent", "Failed to resolve display name", e)
     }
     return uri.lastPathSegment ?: "file.torrent"
 }
