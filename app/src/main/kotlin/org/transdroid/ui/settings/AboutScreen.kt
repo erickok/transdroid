@@ -56,9 +56,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.booleanResource
@@ -123,13 +122,13 @@ fun AboutScreen(onOpenChangelog: () -> Unit, onBack: () -> Unit) {
                         modifier = Modifier
                             .size(84.dp)
                             .clip(RoundedCornerShape(28.dp))
-                            .background(Brush.linearGradient(listOf(Color(0xFF5F9130), Color(0xFF2F5A17)))),
+                            .background(colorResource(R.color.ic_launcher_background)),
                         contentAlignment = Alignment.Center,
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            painter = painterResource(R.mipmap.ic_launcher_foreground),
                             contentDescription = null,
-                            modifier = Modifier.size(56.dp),
+                            modifier = Modifier.size(84.dp),
                         )
                     }
                     Text(

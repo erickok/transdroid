@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The Transdroid down-arrow, centered in the adaptive-icon safe zone -->
+<!-- Monochrome (themed-icon) layer: a simple arrow silhouette, since the full-color badge
+     foreground has no unclipped alpha shape the OS could usefully re-tint. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
