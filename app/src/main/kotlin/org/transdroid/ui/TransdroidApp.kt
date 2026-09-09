@@ -17,8 +17,6 @@
 package org.transdroid.ui
 
 import android.net.Uri
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.Lifecycle
@@ -94,22 +92,13 @@ fun TransdroidApp(
         }
     }
 
+    // No custom enter/exit transitions here - NavHost's own defaults are what correctly drive
+    // the predictive-back gesture's interactive preview; our previous hand-rolled slide
+    // transitions didn't participate in it, so swiping back showed no animation at all instead
+    // of the generic (but functional and gesture-synced) system default.
     NavHost(
         navController = navController,
         startDestination = Routes.TORRENTS,
-        // The standard Android push/pop slide, replacing Navigation-Compose's default cross-fade.
-        enterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))
-        },
-        exitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))
-        },
-        popEnterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(300))
-        },
-        popExitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(300))
-        },
     ) {
         composable(Routes.TORRENTS) {
             TorrentsScreen(
