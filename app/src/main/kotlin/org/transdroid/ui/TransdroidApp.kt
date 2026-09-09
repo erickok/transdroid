@@ -17,8 +17,11 @@
 package org.transdroid.ui
 
 import android.net.Uri
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
@@ -92,13 +95,20 @@ fun TransdroidApp(
         }
     }
 
-    // No custom enter/exit transitions here - NavHost's own defaults are what correctly drive
-    // the predictive-back gesture's interactive preview; our previous hand-rolled slide
-    // transitions didn't participate in it, so swiping back showed no animation at all instead
-    // of the generic (but functional and gesture-synced) system default.
+    // popExitTransition/popEnterTransition (not a separate "predictive" API - there isn't one in
+    // navigation-compose) are what NavHost animates interactively, frame-by-frame, while a
+    // predictive-back gesture is in progress. Leaving them unset (as before) makes NavHost fall
+    // back to a plain crossfade for the whole gesture instead of tracking the finger - this is
+    // the standard Material "shrink toward center, reveal the screen behind" look.
     NavHost(
         navController = navController,
         startDestination = Routes.TORRENTS,
+        popExitTransition = {
+            scaleOut(targetScale = 0.9f, transformOrigin = TransformOrigin(0.5f, 0.5f))
+        },
+        popEnterTransition = {
+            EnterTransition.None
+        },
     ) {
         composable(Routes.TORRENTS) {
             TorrentsScreen(
