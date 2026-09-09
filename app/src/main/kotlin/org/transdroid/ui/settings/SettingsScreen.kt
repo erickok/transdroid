@@ -42,7 +42,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Dns
@@ -55,7 +54,6 @@ import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SettingsBackupRestore
-import androidx.compose.material.icons.rounded.VolunteerActivism
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -121,7 +119,6 @@ fun SettingsScreen(
     val context = LocalContext.current
     val searchAvailable = booleanResource(R.bool.search_available)
     val rssAvailable = booleanResource(R.bool.rss_available)
-    val donateAvailable = booleanResource(R.bool.donate_available)
 
     var showAddFeedDialog by remember { mutableStateOf(false) }
     var deletingFeed by remember { mutableStateOf<RssFeed?>(null) }
@@ -138,7 +135,6 @@ fun SettingsScreen(
     val restoreInvalid = stringResource(R.string.backup_invalid_file)
     val restoredTemplate = stringResource(R.string.backup_restored)
     val noEmailAppMessage = stringResource(R.string.pref_sendlog_no_app)
-    val noBrowserAppMessage = stringResource(R.string.settings_no_browser_app)
 
     val exportCreator = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/octet-stream")
@@ -339,23 +335,6 @@ fun SettingsScreen(
                         subtitle = stringResource(R.string.pref_sendlog_info),
                         onClick = { showSendReportDialog = true },
                     )
-                    if (donateAvailable) {
-                        SettingsRow(
-                            icon = Icons.Rounded.VolunteerActivism,
-                            title = stringResource(R.string.settings_donate),
-                            subtitle = stringResource(R.string.settings_donate_subtitle),
-                            onClick = {
-                                try {
-                                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.donate_url))))
-                                } catch (e: ActivityNotFoundException) {
-                                    scope.launch { snackbarHostState.showSnackbar(noBrowserAppMessage) }
-                                }
-                            },
-                            trailing = {
-                                Icon(Icons.AutoMirrored.Rounded.OpenInNew, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                            },
-                        )
-                    }
                 }
             }
 
