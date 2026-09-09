@@ -260,6 +260,9 @@
     <string name="pref_sendlog_no_app">No email app found</string>
     <string name="pref_sendlog_body_prefix">Please describe your problem:\n\n\n</string>
     <string name="pref_sendlog_body_log_header">Connection and error log:</string>
+    <string name="settings_donate">Donate</string>
+    <string name="settings_donate_subtitle">Support Transdroid development</string>
+    <string name="settings_no_browser_app">No app found to open this link</string>
 
     <!-- Notifications -->
     <string name="notification_channel_finished">Finished torrents</string>

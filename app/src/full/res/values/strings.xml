@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Full flavor only: shown when donate_available (bools.xml) is true -->
+    <string name="donate_url" translatable="false">https://paypal.me/erickoknl</string>
+</resources>

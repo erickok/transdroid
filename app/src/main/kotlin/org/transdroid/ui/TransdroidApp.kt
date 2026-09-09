@@ -95,11 +95,6 @@ fun TransdroidApp(
         }
     }
 
-    // popExitTransition/popEnterTransition (not a separate "predictive" API - there isn't one in
-    // navigation-compose) are what NavHost animates interactively, frame-by-frame, while a
-    // predictive-back gesture is in progress. Leaving them unset (as before) makes NavHost fall
-    // back to a plain crossfade for the whole gesture instead of tracking the finger - this is
-    // the standard Material "shrink toward center, reveal the screen behind" look.
     NavHost(
         navController = navController,
         startDestination = Routes.TORRENTS,

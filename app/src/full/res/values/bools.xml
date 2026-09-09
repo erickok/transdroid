@@ -4,4 +4,5 @@
     <bool name="updatecheck_available">true</bool>
     <bool name="search_available">true</bool>
     <bool name="rss_available">true</bool>
+    <bool name="donate_available">true</bool>
 </resources>
