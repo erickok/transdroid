@@ -36,6 +36,8 @@ import org.transdroid.ui.rss.RssScreen
 import org.transdroid.ui.rss.RssViewModel
 import org.transdroid.ui.search.SearchScreen
 import org.transdroid.ui.search.SearchViewModel
+import org.transdroid.ui.settings.AboutScreen
+import org.transdroid.ui.settings.ChangelogScreen
 import org.transdroid.ui.settings.EditSearchIndexerScreen
 import org.transdroid.ui.settings.EditServerScreen
 import org.transdroid.ui.settings.SettingsScreen
@@ -53,6 +55,8 @@ object Routes {
     const val EDIT_SEARCH_INDEXER = "settings/search/{id}"
     const val RSS = "rss?feedId={feedId}"
     const val SEARCH = "search"
+    const val ABOUT = "settings/about"
+    const val CHANGELOG = "settings/about/changelog"
 
     const val NEW_SERVER_ID = "new"
     const val NEW_SEARCH_INDEXER_ID = "new"
@@ -163,8 +167,18 @@ fun TransdroidApp(
                 onEditServer = { id -> navController.navigate(Routes.editServer(id)) },
                 onEditSearchIndexer = { id -> navController.navigate(Routes.editSearchIndexer(id)) },
                 onOpenFeed = { feedId -> navController.navigate(Routes.rss(feedId)) },
+                onOpenAbout = { navController.navigate(Routes.ABOUT) },
                 onBack = { navController.popBackStack() },
             )
+        }
+        composable(Routes.ABOUT) {
+            AboutScreen(
+                onOpenChangelog = { navController.navigate(Routes.CHANGELOG) },
+                onBack = { navController.popBackStack() },
+            )
+        }
+        composable(Routes.CHANGELOG) {
+            ChangelogScreen(onBack = { navController.popBackStack() })
         }
         composable(
             Routes.EDIT_SERVER,

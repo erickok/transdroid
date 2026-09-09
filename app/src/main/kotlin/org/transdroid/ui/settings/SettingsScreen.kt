@@ -47,6 +47,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Email
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Refresh
@@ -89,7 +90,6 @@ import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -110,6 +110,7 @@ fun SettingsScreen(
     onEditServer: (String?) -> Unit,
     onEditSearchIndexer: (String?) -> Unit,
     onOpenFeed: (String) -> Unit,
+    onOpenAbout: () -> Unit,
     onBack: () -> Unit,
 ) {
     val profiles by viewModel.profiles.collectAsStateWithLifecycle()
@@ -359,13 +360,14 @@ fun SettingsScreen(
             }
 
             item {
-                Text(
-                    stringResource(R.string.settings_about, BuildConfig.VERSION_NAME),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    textAlign = TextAlign.Center,
-                )
+                SettingsSection(stringResource(R.string.settings_about_section)) {
+                    SettingsRow(
+                        icon = Icons.Rounded.Info,
+                        title = stringResource(R.string.settings_about_title),
+                        subtitle = stringResource(R.string.settings_about, BuildConfig.VERSION_NAME),
+                        onClick = onOpenAbout,
+                    )
+                }
             }
         }
     }
@@ -536,7 +538,7 @@ private fun SendReportDialog(onDismiss: () -> Unit, onSend: (includeLog: Boolean
 }
 
 @Composable
-private fun SettingsSection(title: String, content: @Composable () -> Unit) {
+internal fun SettingsSection(title: String, content: @Composable () -> Unit) {
     Column(Modifier.padding(top = 8.dp)) {
         Text(
             title,
@@ -555,7 +557,7 @@ private fun SettingsSection(title: String, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun SettingsRow(
+internal fun SettingsRow(
     icon: ImageVector,
     title: String,
     subtitle: String,
@@ -611,7 +613,7 @@ private fun SettingsAddRow(title: String, onClick: () -> Unit) {
 }
 
 @Composable
-private fun SettingsChip(text: String) {
+internal fun SettingsChip(text: String) {
     Text(
         text,
         style = MaterialTheme.typography.labelSmall,
