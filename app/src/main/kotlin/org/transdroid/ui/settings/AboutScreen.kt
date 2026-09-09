@@ -74,6 +74,7 @@ import org.transdroid.R
 fun AboutScreen(onOpenChangelog: () -> Unit, onBack: () -> Unit) {
     val context = LocalContext.current
     val donateAvailable = booleanResource(R.bool.donate_available)
+    val websiteLinkAvailable = booleanResource(R.bool.website_link_available)
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val noBrowserAppMessage = stringResource(R.string.settings_no_browser_app)
@@ -180,13 +181,15 @@ fun AboutScreen(onOpenChangelog: () -> Unit, onBack: () -> Unit) {
                         onClick = { openUrl(githubUrl) },
                         trailing = externalLinkIcon,
                     )
-                    SettingsRow(
-                        icon = Icons.Rounded.Language,
-                        title = stringResource(R.string.about_website),
-                        subtitle = stringResource(R.string.about_website_subtitle),
-                        onClick = { openUrl(websiteUrl) },
-                        trailing = externalLinkIcon,
-                    )
+                    if (websiteLinkAvailable) {
+                        SettingsRow(
+                            icon = Icons.Rounded.Language,
+                            title = stringResource(R.string.about_website),
+                            subtitle = stringResource(R.string.about_website_subtitle),
+                            onClick = { openUrl(websiteUrl) },
+                            trailing = externalLinkIcon,
+                        )
+                    }
                     SettingsRow(
                         icon = Icons.Rounded.Group,
                         title = stringResource(R.string.about_contributors),
