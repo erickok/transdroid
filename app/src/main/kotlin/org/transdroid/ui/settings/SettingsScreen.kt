@@ -42,6 +42,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Dns
@@ -348,6 +349,9 @@ fun SettingsScreen(
                                 } catch (e: ActivityNotFoundException) {
                                     scope.launch { snackbarHostState.showSnackbar(noBrowserAppMessage) }
                                 }
+                            },
+                            trailing = {
+                                Icon(Icons.AutoMirrored.Rounded.OpenInNew, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                             },
                         )
                     }
