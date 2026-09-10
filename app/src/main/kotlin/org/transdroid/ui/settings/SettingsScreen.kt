@@ -246,6 +246,25 @@ fun SettingsScreen(
                 }
             }
 
+            if (searchAvailable) {
+                item {
+                    SettingsSection(stringResource(R.string.settings_search_providers)) {
+                        providers.forEach { provider ->
+                            SettingsRow(
+                                icon = Icons.Rounded.Search,
+                                title = provider.displayName,
+                                subtitle = provider.url,
+                                onClick = { onEditSearchIndexer(provider.id) },
+                            )
+                        }
+                        SettingsAddRow(
+                            title = stringResource(R.string.settings_add_search_provider),
+                            onClick = { onEditSearchIndexer(null) },
+                        )
+                    }
+                }
+            }
+
             item {
                 SettingsSection(stringResource(R.string.settings_preferences)) {
                     val pollInterval by viewModel.pollIntervalSeconds.collectAsStateWithLifecycle()
@@ -288,25 +307,6 @@ fun SettingsScreen(
                             )
                         },
                     )
-                }
-            }
-
-            if (searchAvailable) {
-                item {
-                    SettingsSection(stringResource(R.string.settings_search_providers)) {
-                        providers.forEach { provider ->
-                            SettingsRow(
-                                icon = Icons.Rounded.Search,
-                                title = provider.displayName,
-                                subtitle = provider.url,
-                                onClick = { onEditSearchIndexer(provider.id) },
-                            )
-                        }
-                        SettingsAddRow(
-                            title = stringResource(R.string.settings_add_search_provider),
-                            onClick = { onEditSearchIndexer(null) },
-                        )
-                    }
                 }
             }
 
