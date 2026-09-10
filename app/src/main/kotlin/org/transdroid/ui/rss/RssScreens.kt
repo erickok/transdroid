@@ -29,17 +29,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -72,6 +75,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.transdroid.R
 import org.transdroid.data.RssFeed
 import org.transdroid.ui.components.DropdownPill
+import org.transdroid.ui.components.EmptyState
 import org.transdroid.ui.message
 import org.transdroid.ui.theme.LocalStatusColors
 import org.transdroid.util.formatBytes
@@ -93,6 +97,7 @@ fun RssScreen(
     val feeds by viewModel.feeds.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var confirmEntry by remember { mutableStateOf<RssEntry?>(null) }
+    var showAddFeedDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(initialFeedId) {
         if (initialFeedId != null) viewModel.setSelectedFeed(initialFeedId)
@@ -173,11 +178,18 @@ fun RssScreen(
     ) { padding ->
         Box(Modifier.padding(padding).fillMaxSize()) {
             when {
-                feeds.isEmpty() -> Text(
-                    stringResource(R.string.rss_empty),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.align(Alignment.Center).padding(32.dp),
+                feeds.isEmpty() -> EmptyState(
+                    icon = Icons.Rounded.RssFeed,
+                    title = stringResource(R.string.rss_no_feeds_title),
+                    message = stringResource(R.string.rss_no_feeds_message),
+                    modifier = Modifier.fillMaxSize().wrapContentSize(),
+                    actions = {
+                        Button(onClick = { showAddFeedDialog = true }) {
+                            Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.rss_add_feed))
+                        }
+                    },
                 )
                 ui.loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 ui.error != null -> Text(
@@ -219,6 +231,16 @@ fun RssScreen(
             },
             dismissButton = {
                 TextButton(onClick = { confirmEntry = null }) { Text(stringResource(R.string.details_cancel)) }
+            },
+        )
+    }
+
+    if (showAddFeedDialog) {
+        EditFeedDialog(
+            onDismiss = { showAddFeedDialog = false },
+            onSave = { name, url ->
+                viewModel.saveFeed(RssFeed(id = viewModel.newFeedId(), name = name, url = url))
+                showAddFeedDialog = false
             },
         )
     }

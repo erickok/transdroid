@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,12 +41,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.Sort
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.TravelExplore
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -83,6 +87,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.transdroid.R
 import org.transdroid.protocol.search.SearchResult
 import org.transdroid.ui.components.DropdownPill
+import org.transdroid.ui.components.EmptyState
 import org.transdroid.ui.message
 import org.transdroid.ui.theme.LocalStatusColors
 import org.transdroid.util.formatBytes
@@ -92,6 +97,7 @@ import org.transdroid.util.formatRelativeAge
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
+    onAddIndexer: () -> Unit,
     onBack: () -> Unit,
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
@@ -174,11 +180,18 @@ fun SearchScreen(
     ) { padding ->
         Box(Modifier.padding(padding).fillMaxSize()) {
             when {
-                providers.isEmpty() -> Text(
-                    stringResource(R.string.search_no_providers),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.align(Alignment.Center).padding(32.dp),
+                providers.isEmpty() -> EmptyState(
+                    icon = Icons.Rounded.TravelExplore,
+                    title = stringResource(R.string.search_no_indexers_title),
+                    message = stringResource(R.string.search_no_indexers_message),
+                    modifier = Modifier.fillMaxSize().wrapContentSize(),
+                    actions = {
+                        Button(onClick = onAddIndexer) {
+                            Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.search_add_indexer))
+                        }
+                    },
                 )
                 ui.searching -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 ui.error != null -> Text(

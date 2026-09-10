@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -48,7 +49,10 @@ import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.ErrorOutline
+import androidx.compose.material.icons.rounded.FilterAlt
+import androidx.compose.material.icons.rounded.FilterAltOff
 import androidx.compose.material.icons.rounded.Group
+import androidx.compose.material.icons.rounded.Inbox
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.North
 import androidx.compose.material.icons.rounded.Pause
@@ -66,6 +70,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -110,6 +115,7 @@ import org.transdroid.ui.message
 import org.transdroid.ui.statusLabel
 import org.transdroid.ui.theme.accentColor
 import org.transdroid.ui.theme.trackColor
+import org.transdroid.ui.components.EmptyState
 import org.transdroid.ui.components.SortDirectionIcon
 import org.transdroid.ui.components.TorrentProgressIndicator
 import org.transdroid.util.formatBytes
@@ -125,6 +131,7 @@ fun TorrentsScreen(
     onOpenDetails: (String) -> Unit,
     onAddTorrent: () -> Unit,
     onOpenSettings: () -> Unit,
+    onAddServer: () -> Unit,
     onOpenRss: () -> Unit,
     onOpenSearch: () -> Unit,
 ) {
@@ -213,7 +220,7 @@ fun TorrentsScreen(
                         CircularProgressIndicator(Modifier.align(Alignment.Center))
                     }
                     ui.activeProfile == null -> {
-                        WelcomeContent(onOpenSettings = onOpenSettings, modifier = Modifier.align(Alignment.Center))
+                        WelcomeContent(onAddServer = onAddServer, modifier = Modifier.align(Alignment.Center))
                     }
                     useTwoPane -> {
                         Row(Modifier.fillMaxSize()) {
@@ -223,6 +230,10 @@ fun TorrentsScreen(
                                     viewModel = viewModel,
                                     onOpenDetails = onOpenDetails,
                                     onAddTorrent = onAddTorrent,
+                                    searchAvailable = searchAvailable,
+                                    rssAvailable = rssAvailable,
+                                    onOpenSearch = onOpenSearch,
+                                    onOpenRss = onOpenRss,
                                     listState = listState,
                                     showToolbar = false,
                                     showFilterChips = true,
@@ -235,7 +246,7 @@ fun TorrentsScreen(
                                     TorrentDetailsContent(viewModel = viewModel, torrent = selected)
                                 } else {
                                     Text(
-                                        stringResource(R.string.torrents_empty),
+                                        stringResource(R.string.torrents_select_prompt),
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         modifier = Modifier.align(Alignment.Center),
@@ -244,7 +255,17 @@ fun TorrentsScreen(
                             }
                         }
                     }
-                    else -> TorrentListContent(ui, viewModel, onOpenDetails, onAddTorrent, listState = listState)
+                    else -> TorrentListContent(
+                        ui = ui,
+                        viewModel = viewModel,
+                        onOpenDetails = onOpenDetails,
+                        onAddTorrent = onAddTorrent,
+                        searchAvailable = searchAvailable,
+                        rssAvailable = rssAvailable,
+                        onOpenSearch = onOpenSearch,
+                        onOpenRss = onOpenRss,
+                        listState = listState,
+                    )
                 }
             }
         }
@@ -354,6 +375,10 @@ private fun TorrentListContent(
     viewModel: TorrentsViewModel,
     onOpenDetails: (String) -> Unit,
     onAddTorrent: () -> Unit,
+    searchAvailable: Boolean = false,
+    rssAvailable: Boolean = false,
+    onOpenSearch: () -> Unit = {},
+    onOpenRss: () -> Unit = {},
     listState: LazyListState = rememberLazyListState(),
     showToolbar: Boolean = true,
     showFilterChips: Boolean = false,
@@ -375,15 +400,46 @@ private fun TorrentListContent(
                 onRefresh = { viewModel.refresh() },
                 modifier = Modifier.fillMaxSize(),
             ) {
-                if (ui.hasLoaded && ui.visibleTorrents.isEmpty()) {
-                    Box(Modifier.fillMaxSize()) {
-                        Text(
-                            stringResource(R.string.torrents_empty),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.align(Alignment.Center),
-                        )
-                    }
+                if (ui.hasLoaded && ui.torrents.isEmpty()) {
+                    val showShortcuts = searchAvailable || rssAvailable
+                    EmptyState(
+                        icon = Icons.Rounded.Inbox,
+                        title = stringResource(R.string.torrents_no_torrents_title),
+                        message = stringResource(R.string.torrents_no_torrents_message),
+                        modifier = Modifier.fillMaxSize().wrapContentSize(),
+                        actions = if (!showShortcuts) null else {
+                            {
+                                if (searchAvailable) {
+                                    FilledTonalButton(onClick = onOpenSearch) {
+                                        Icon(Icons.Rounded.Search, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        Spacer(Modifier.width(8.dp))
+                                        Text(stringResource(R.string.search_title))
+                                    }
+                                }
+                                if (rssAvailable) {
+                                    FilledTonalButton(onClick = onOpenRss) {
+                                        Icon(Icons.Rounded.RssFeed, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        Spacer(Modifier.width(8.dp))
+                                        Text(stringResource(R.string.rss_short_title))
+                                    }
+                                }
+                            }
+                        },
+                    )
+                } else if (ui.hasLoaded && ui.visibleTorrents.isEmpty()) {
+                    EmptyState(
+                        icon = Icons.Rounded.FilterAltOff,
+                        title = stringResource(R.string.torrents_no_filter_title),
+                        message = stringResource(R.string.torrents_no_filter_message, ui.filter.label()),
+                        modifier = Modifier.fillMaxSize().wrapContentSize(),
+                        actions = {
+                            FilledTonalButton(onClick = { viewModel.setFilter(TorrentFilter.ALL) }) {
+                                Icon(Icons.Rounded.FilterAlt, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(Modifier.width(8.dp))
+                                Text(stringResource(R.string.torrents_show_all))
+                            }
+                        },
+                    )
                 } else {
                     LazyColumn(
                         state = listState,
@@ -774,25 +830,18 @@ private fun ErrorBanner(message: String, onRetry: () -> Unit) {
 }
 
 @Composable
-private fun WelcomeContent(onOpenSettings: () -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier.padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(
-            Icons.Rounded.Dns,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.width(56.dp).height(56.dp),
-        )
-        Spacer(Modifier.height(16.dp))
-        Text(stringResource(R.string.torrents_no_server_title), style = MaterialTheme.typography.headlineSmall)
-        Spacer(Modifier.height(8.dp))
-        Text(
-            stringResource(R.string.torrents_no_server_message),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Spacer(Modifier.height(24.dp))
-        Button(onClick = onOpenSettings) {
-            Text(stringResource(R.string.torrents_no_server_button))
-        }
-    }
+private fun WelcomeContent(onAddServer: () -> Unit, modifier: Modifier = Modifier) {
+    EmptyState(
+        icon = Icons.Rounded.Dns,
+        title = stringResource(R.string.torrents_no_server_title),
+        message = stringResource(R.string.torrents_no_server_message),
+        modifier = modifier,
+        actions = {
+            Button(onClick = onAddServer) {
+                Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.torrents_no_server_button))
+            }
+        },
+    )
 }

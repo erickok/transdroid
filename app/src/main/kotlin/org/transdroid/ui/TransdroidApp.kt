@@ -119,6 +119,7 @@ fun TransdroidApp(
                 },
                 onAddTorrent = { navController.navigate(Routes.add(null)) },
                 onOpenSettings = { navController.navigate(Routes.SETTINGS) },
+                onAddServer = { navController.navigate(Routes.editServer(null)) },
                 onOpenRss = { navController.navigate(Routes.rss(null)) },
                 onOpenSearch = { navController.navigate(Routes.SEARCH) },
             )
@@ -137,6 +138,7 @@ fun TransdroidApp(
         composable(Routes.SEARCH) {
             SearchScreen(
                 viewModel = searchViewModel,
+                onAddIndexer = { navController.navigate(Routes.editSearchIndexer(null)) },
                 onBack = { navController.popBackStack() },
             )
         }
