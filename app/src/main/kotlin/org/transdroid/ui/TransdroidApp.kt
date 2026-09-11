@@ -73,6 +73,8 @@ fun TransdroidApp(
     useTwoPane: Boolean,
     pendingTorrentUrl: String?,
     onPendingTorrentUrlConsumed: () -> Unit,
+    pendingOpenAddTorrent: Boolean = false,
+    onPendingOpenAddTorrentConsumed: () -> Unit = {},
 ) {
     val navController = rememberNavController()
     val torrentsViewModel: TorrentsViewModel = viewModel(factory = TorrentsViewModel.Factory)
@@ -80,10 +82,15 @@ fun TransdroidApp(
     val rssViewModel: RssViewModel = viewModel(factory = RssViewModel.Factory)
     val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModel.Factory)
 
-    LaunchedEffect(pendingTorrentUrl) {
+    // The widget's Add button opens a blank add screen (Routes.add(null)); an actual shared
+    // magnet/torrent URL always takes priority if somehow both arrive on the same intent.
+    LaunchedEffect(pendingTorrentUrl, pendingOpenAddTorrent) {
         if (pendingTorrentUrl != null) {
             navController.navigate(Routes.add(pendingTorrentUrl))
             onPendingTorrentUrlConsumed()
+        } else if (pendingOpenAddTorrent) {
+            navController.navigate(Routes.add(null))
+            onPendingOpenAddTorrentConsumed()
         }
     }
 

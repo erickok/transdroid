@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transdroid · Home screen widget (M3 Expressive)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0" rel="stylesheet">
+<style>
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;}
+body{
+  font-family:"Roboto",system-ui,sans-serif;
+  background:radial-gradient(120% 80% at 50% 0%, #333a2d 0%, #21261d 55%, #171a13 100%);
+  min-height:100vh; padding:40px 24px 60px; color:#e6e9dd;
+}
+.msr{font-family:"Material Symbols Rounded"; font-weight:normal; line-height:1; display:inline-block; -webkit-font-smoothing:antialiased; font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24; user-select:none;}
+.fill{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
+
+.board-title{max-width:1000px; margin:0 auto 30px;}
+.board-title h1{margin:0; font-size:22px; font-weight:600; color:#f1f3e8;}
+.board-title p{margin:6px 0 0; font-size:13.5px; color:#a9ad9e;}
+.board{display:flex; flex-wrap:wrap; gap:36px; justify-content:center; max-width:1000px; margin:0 auto;}
+.case{display:flex; flex-direction:column; align-items:center; gap:14px;}
+.cap{font-size:13px; font-weight:600; color:#eef0e5;}
+
+.phone{width:352px; height:734px; background:#0c0d0a; border-radius:42px; padding:8px; flex:none; box-shadow:0 24px 56px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06);}
+.screen{position:relative; height:100%; width:100%; border-radius:35px; overflow:hidden; display:flex; flex-direction:column;}
+
+/* wallpapers */
+.screen.light{background:linear-gradient(158deg,#e9efd8 0%,#d3e2cf 46%,#bcd4d9 100%);}
+.screen.dark{background:linear-gradient(158deg,#1c2a1e 0%,#101609 55%,#0a0d08 100%);}
+.screen.light{--htext:#23281c;}
+.screen.dark{--htext:#eef0e5;}
+
+.statusbar{height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 22px 0 26px; font-size:13px; font-weight:600; color:var(--htext);}
+.statusbar .sys{display:flex; align-items:center; gap:7px;}
+.statusbar .sys .msr{font-size:17px;}
+
+.clock{padding:22px 26px 20px; color:var(--htext);}
+.clock .time{font-size:52px; font-weight:400; line-height:.95; letter-spacing:-1.5px;}
+.clock .date{font-size:14px; font-weight:600; margin-top:8px; opacity:.85;}
+
+.wwrap{padding:0 18px;}
+
+/* ---------- WIDGET ---------- */
+.widget{
+  width:100%; border-radius:26px; padding:13px 15px 11px;
+  background:var(--w-bg); -webkit-backdrop-filter:blur(24px); backdrop-filter:blur(24px);
+  border:1px solid var(--w-border); box-shadow:0 10px 26px rgba(0,0,0,.22);
+}
+.tl{ --on:#1a1c15; --muted:#5c6053; --dl:#3f68b8; --seed:#4d7d2a; --track:rgba(0,0,0,.12);
+     --w-bg:rgba(248,250,240,.86); --w-border:rgba(0,0,0,.06); --chip:rgba(0,0,0,.05); }
+.td{ --on:#e6e7dc; --muted:#a4a897; --dl:#adc7ff; --seed:#a0cf72; --track:rgba(255,255,255,.15);
+     --w-bg:rgba(19,21,14,.72); --w-border:rgba(255,255,255,.09); --chip:rgba(255,255,255,.08); }
+
+.w-head{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+.w-icon{width:30px; height:30px; border-radius:10px; background:linear-gradient(150deg,#5f9130,#2f5a17); display:grid; place-items:center; color:#fff; flex:none;}
+.w-icon .msr{font-size:19px;}
+.w-title{flex:1; min-width:0;}
+.w-title b{display:block; font-size:13.5px; font-weight:700; color:var(--on); line-height:1.15;}
+.w-title small{font-size:11px; color:var(--muted); font-weight:500;}
+.w-stats{font-size:11.5px; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; text-align:right; line-height:1.3;}
+.w-stats .dn{color:var(--dl);} .w-stats .up{color:var(--seed);}
+.w-refresh{width:32px; height:32px; border-radius:50%; border:none; background:var(--chip); color:var(--muted); display:grid; place-items:center; flex:none; cursor:pointer;}
+.w-refresh .msr{font-size:18px;}
+
+.w-list{display:flex; flex-direction:column;}
+.w-row{display:grid; grid-template-columns:8px 1fr; gap:0 11px; padding:8px 0;}
+.w-row + .w-row{border-top:1px solid var(--w-border);}
+.w-dot{width:8px; height:8px; border-radius:50%; margin-top:5px;}
+.w-dot.down{background:var(--dl);} .w-dot.up{background:var(--seed);}
+.w-main{min-width:0;}
+.w-top{display:flex; align-items:baseline; gap:8px;}
+.w-name{flex:1; min-width:0; font-size:13px; font-weight:600; color:var(--on); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.w-spd{font-size:11.5px; font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.w-spd.down{color:var(--dl);} .w-spd.up{color:var(--seed);}
+.w-barrow{display:flex; align-items:center; gap:9px; margin-top:6px;}
+.w-bar{flex:1; height:5px; border-radius:3px; background:var(--track); overflow:hidden;}
+.w-bar i{display:block; height:100%; border-radius:3px;}
+.w-pct{font-size:10.5px; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums; width:38px; text-align:right;}
+
+.w-foot{display:flex; align-items:center; justify-content:space-between; margin-top:10px;}
+.w-foot .cnt{font-size:11px; font-weight:600; color:var(--muted); font-variant-numeric:tabular-nums;}
+.w-add{width:30px; height:30px; border-radius:10px; border:none; background:var(--chip); color:var(--on); display:grid; place-items:center; cursor:pointer;}
+.w-add .msr{font-size:19px;}
+
+/* dock */
+.dock-wrap{margin-top:auto; padding:0 18px 6px;}
+.dock{height:70px; border-radius:26px; display:flex; align-items:center; justify-content:space-around; padding:0 14px;
+  background:var(--dock-bg); -webkit-backdrop-filter:blur(18px); backdrop-filter:blur(18px);}
+.screen.light .dock{--dock-bg:rgba(255,255,255,.34);}
+.screen.dark .dock{--dock-bg:rgba(255,255,255,.08);}
+.app{width:48px; height:48px; border-radius:15px;}
+.app.a{background:linear-gradient(160deg,#4f86e0,#2b5bb0);}
+.app.b{background:linear-gradient(160deg,#e07a4f,#b0472b);}
+.app.c{background:linear-gradient(160deg,#5faf6a,#2f7a3c);}
+.app.d{background:linear-gradient(160deg,#c86fb0,#8a3a72);}
+
+.gesture{flex:none; height:24px; display:grid; place-items:center;}
+.gesture i{width:126px; height:5px; border-radius:3px; background:var(--htext); opacity:.4;}
+/* size variants */
+.sizes-title{max-width:1000px; margin:46px auto 22px;}
+.sizes-title h2{margin:0; font-size:18px; font-weight:600; color:#f1f3e8;}
+.sizes-title p{margin:5px 0 0; font-size:13px; color:#a9ad9e;}
+.swatch{border-radius:30px; padding:22px; display:flex; align-items:center; justify-content:center;}
+.swatch.light{background:linear-gradient(158deg,#e9efd8 0%,#d3e2cf 46%,#bcd4d9 100%);}
+.swatch.dark{background:linear-gradient(158deg,#1c2a1e 0%,#101609 55%,#0a0d08 100%);}
+.swatch .widget{width:328px;}
+
+/* 4x1 strip */
+.widget.strip{padding:12px 14px;}
+.wstrip{display:flex; align-items:center; gap:13px;}
+.s-title{min-width:0;}
+.s-title b{display:block; font-size:13.5px; font-weight:700; color:var(--on); line-height:1.1;}
+.s-title small{font-size:11px; color:var(--muted);}
+.s-sep{flex:1;}
+.s-stats{display:flex; align-items:center; gap:16px;}
+.s-stat{line-height:1.05; text-align:right;}
+.s-stat b{font-size:13.5px; font-weight:700; font-variant-numeric:tabular-nums;}
+.s-stat.dn b{color:var(--dl);} .s-stat.up b{color:var(--seed);}
+.s-stat small{display:block; font-size:9.5px; font-weight:600; color:var(--muted); letter-spacing:.2px;}
+
+</style>
+</head>
+<body>
+
+<div class="board-title">
+  <h1>Home screen widget</h1>
+  <p>A list of the running torrents — each with its own progress and transfer speed — not just server totals. Adapts to the system light/dark theme.</p>
+</div>
+
+<div class="board">
+
+  <!-- LIGHT -->
+  <div class="case">
+    <div class="cap">Light theme</div>
+    <div class="phone"><div class="screen light">
+      <div class="statusbar"><span>9:41</span><span class="sys"><span class="msr">network_wifi</span><span class="msr">signal_cellular_alt</span><span class="msr fill">battery_5_bar</span></span></div>
+      <div class="clock"><div class="time">9:41</div><div class="date">Monday, September 8</div></div>
+
+      <div class="wwrap">
+        <div class="widget tl">
+          <div class="w-head">
+            <div class="w-icon"><span class="msr fill">swap_vert</span></div>
+            <div class="w-title"><b>Transdroid</b><small>Xirvik</small></div>
+            <div class="w-stats"><span class="dn">↓ 4.4</span> <span class="up">↑ 8.2</span> MB/s</div>
+            <button class="w-refresh"><span class="msr">refresh</span></button>
+          </div>
+          <div class="w-list">
+            <div class="w-row"><span class="w-dot down"></span><div class="w-main">
+              <div class="w-top"><span class="w-name">Book 1</span><span class="w-spd down">↓ 32 KB/s</span></div>
+              <div class="w-barrow"><div class="w-bar"><i style="width:38%;background:var(--dl)"></i></div><span class="w-pct">38%</span></div>
+            </div></div>
+            <div class="w-row"><span class="w-dot down"></span><div class="w-main">
+              <div class="w-top"><span class="w-name">App 4</span><span class="w-spd down">↓ 18 KB/s</span></div>
+              <div class="w-barrow"><div class="w-bar"><i style="width:48%;background:var(--dl)"></i></div><span class="w-pct">48%</span></div>
+            </div></div>
+            <div class="w-row"><span class="w-dot up"></span><div class="w-main">
+              <div class="w-top"><span class="w-name">Documentary 5</span><span class="w-spd up">↑ 123 KB/s</span></div>
+              <div class="w-barrow"><div class="w-bar"><i style="width:100%;background:var(--seed)"></i></div><span class="w-pct">Seed</span></div>
+            </div></div>
+          </div>
+          <div class="w-foot"><span class="cnt">8 active · 14 total</span><button class="w-add"><span class="msr">add</span></button></div>
+        </div>
+      </div>
+
+      <div class="dock-wrap"><div class="dock"><span class="app a"></span><span class="app b"></span><span class="app c"></span><span class="app d"></span></div></div>
+      <div class="gesture"><i></i></div>
+    </div></div>
+  </div>
+
+  <!-- DARK -->
+  <div class="case">
+    <div class="cap">Dark theme</div>
+    <div class="phone"><div class="screen dark">
+      <div class="statusbar"><span>9:41</span><span class="sys"><span class="msr">network_wifi</span><span class="msr">signal_cellular_alt</span><span class="msr fill">battery_5_bar</span></span></div>
+      <div class="clock"><div class="time">9:41</div><div class="date">Monday, September 8</div></div>
+
+      <div class="wwrap">
+        <div class="widget td">
+          <div class="w-head">
+            <div class="w-icon"><span class="msr fill">swap_vert</span></div>
+            <div class="w-title"><b>Transdroid</b><small>Xirvik</small></div>
+            <div class="w-stats"><span class="dn">↓ 4.4</span> <span class="up">↑ 8.2</span> MB/s</div>
+            <button class="w-refresh"><span class="msr">refresh</span></button>
+          </div>
+          <div class="w-list">
+            <div class="w-row"><span class="w-dot down"></span><div class="w-main">
+              <div class="w-top"><span class="w-name">Book 1</span><span class="w-spd down">↓ 32 KB/s</span></div>
+              <div class="w-barrow"><div class="w-bar"><i style="width:38%;background:var(--dl)"></i></div><span class="w-pct">38%</span></div>
+            </div></div>
+            <div class="w-row"><span class="w-dot down"></span><div class="w-main">
+              <div class="w-top"><span class="w-name">App 4</span><span class="w-spd down">↓ 18 KB/s</span></div>
+              <div class="w-barrow"><div class="w-bar"><i style="width:48%;background:var(--dl)"></i></div><span class="w-pct">48%</span></div>
+            </div></div>
+            <div class="w-row"><span class="w-dot up"></span><div class="w-main">
+              <div class="w-top"><span class="w-name">Documentary 5</span><span class="w-spd up">↑ 123 KB/s</span></div>
+              <div class="w-barrow"><div class="w-bar"><i style="width:100%;background:var(--seed)"></i></div><span class="w-pct">Seed</span></div>
+            </div></div>
+          </div>
+          <div class="w-foot"><span class="cnt">8 active · 14 total</span><button class="w-add"><span class="msr">add</span></button></div>
+        </div>
+      </div>
+
+      <div class="dock-wrap"><div class="dock"><span class="app a"></span><span class="app b"></span><span class="app c"></span><span class="app d"></span></div></div>
+      <div class="gesture"><i></i></div>
+    </div></div>
+  </div>
+
+</div>
+
+<div class="sizes-title">
+  <h2>Other sizes</h2>
+  <p>4×2 keeps the list compact (header + two torrents); 4×1 drops to a single server-stats strip.</p>
+</div>
+
+<div class="board">
+
+  <!-- 4x2 light -->
+  <div class="case">
+    <div class="cap">4×2 · light</div>
+    <div class="swatch light">
+      <div class="widget tl">
+        <div class="w-head">
+          <div class="w-icon"><span class="msr fill">swap_vert</span></div>
+          <div class="w-title"><b>Transdroid</b><small>Xirvik</small></div>
+          <div class="w-stats"><span class="dn">↓ 4.4</span> <span class="up">↑ 8.2</span> MB/s</div>
+          <button class="w-refresh"><span class="msr">refresh</span></button>
+        </div>
+        <div class="w-list">
+          <div class="w-row"><span class="w-dot down"></span><div class="w-main">
+            <div class="w-top"><span class="w-name">Book 1</span><span class="w-spd down">↓ 32 KB/s</span></div>
+            <div class="w-barrow"><div class="w-bar"><i style="width:38%;background:var(--dl)"></i></div><span class="w-pct">38%</span></div>
+          </div></div>
+          <div class="w-row"><span class="w-dot down"></span><div class="w-main">
+            <div class="w-top"><span class="w-name">App 4</span><span class="w-spd down">↓ 18 KB/s</span></div>
+            <div class="w-barrow"><div class="w-bar"><i style="width:48%;background:var(--dl)"></i></div><span class="w-pct">48%</span></div>
+          </div></div>
+        </div>
+        <div class="w-foot"><span class="cnt">+6 more active · 14 total</span><button class="w-add"><span class="msr">add</span></button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4x2 dark -->
+  <div class="case">
+    <div class="cap">4×2 · dark</div>
+    <div class="swatch dark">
+      <div class="widget td">
+        <div class="w-head">
+          <div class="w-icon"><span class="msr fill">swap_vert</span></div>
+          <div class="w-title"><b>Transdroid</b><small>Xirvik</small></div>
+          <div class="w-stats"><span class="dn">↓ 4.4</span> <span class="up">↑ 8.2</span> MB/s</div>
+          <button class="w-refresh"><span class="msr">refresh</span></button>
+        </div>
+        <div class="w-list">
+          <div class="w-row"><span class="w-dot down"></span><div class="w-main">
+            <div class="w-top"><span class="w-name">Book 1</span><span class="w-spd down">↓ 32 KB/s</span></div>
+            <div class="w-barrow"><div class="w-bar"><i style="width:38%;background:var(--dl)"></i></div><span class="w-pct">38%</span></div>
+          </div></div>
+          <div class="w-row"><span class="w-dot down"></span><div class="w-main">
+            <div class="w-top"><span class="w-name">App 4</span><span class="w-spd down">↓ 18 KB/s</span></div>
+            <div class="w-barrow"><div class="w-bar"><i style="width:48%;background:var(--dl)"></i></div><span class="w-pct">48%</span></div>
+          </div></div>
+        </div>
+        <div class="w-foot"><span class="cnt">+6 more active · 14 total</span><button class="w-add"><span class="msr">add</span></button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4x1 light -->
+  <div class="case">
+    <div class="cap">4×1 · light · stats only</div>
+    <div class="swatch light">
+      <div class="widget tl strip">
+        <div class="wstrip">
+          <div class="w-icon"><span class="msr fill">swap_vert</span></div>
+          <div class="s-title"><b>Xirvik</b><small>Connected</small></div>
+          <div class="s-sep"></div>
+          <div class="s-stats">
+            <div class="s-stat dn"><b>↓ 4.4 MB/s</b><small>8 active</small></div>
+            <div class="s-stat up"><b>↑ 8.2 MB/s</b><small>14 sharing</small></div>
+          </div>
+          <button class="w-refresh"><span class="msr">refresh</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4x1 dark -->
+  <div class="case">
+    <div class="cap">4×1 · dark · stats only</div>
+    <div class="swatch dark">
+      <div class="widget td strip">
+        <div class="wstrip">
+          <div class="w-icon"><span class="msr fill">swap_vert</span></div>
+          <div class="s-title"><b>Xirvik</b><small>Connected</small></div>
+          <div class="s-sep"></div>
+          <div class="s-stats">
+            <div class="s-stat dn"><b>↓ 4.4 MB/s</b><small>8 active</small></div>
+            <div class="s-stat up"><b>↑ 8.2 MB/s</b><small>14 sharing</small></div>
+          </div>
+          <button class="w-refresh"><span class="msr">refresh</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
