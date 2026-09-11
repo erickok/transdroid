@@ -52,12 +52,11 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.PrimaryTabRow
@@ -198,27 +197,22 @@ fun TorrentDetailsContent(
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.details_remove))
             }
-            FilledIconButton(
+            IconButton(
                 onClick = { viewModel.checkData(torrent) },
-                shape = MaterialTheme.shapes.large,
                 modifier = Modifier.size(48.dp),
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                colors = IconButtonDefaults.iconButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),
             ) {
                 Icon(Icons.Rounded.Checklist, contentDescription = stringResource(R.string.details_check_data))
             }
-            FilledIconToggleButton(
+            IconToggleButton(
                 checked = torrent.labels.isNotEmpty(),
                 onCheckedChange = { showLabelSheet = true },
-                shape = MaterialTheme.shapes.large,
                 modifier = Modifier.size(48.dp),
-                colors = IconButtonDefaults.filledIconToggleButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                colors = IconButtonDefaults.iconToggleButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    checkedContentColor = MaterialTheme.colorScheme.primary,
                 ),
             ) {
                 Icon(Icons.Rounded.Sell, contentDescription = stringResource(R.string.details_set_label))
