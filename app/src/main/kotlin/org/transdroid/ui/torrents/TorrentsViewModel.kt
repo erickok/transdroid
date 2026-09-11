@@ -124,6 +124,9 @@ data class TorrentsUiState(
     val selectedTorrentId: String? = null,
     val files: Map<String, List<TorrentFile>> = emptyMap(),
     val trackers: Map<String, List<Tracker>> = emptyMap(),
+    /** Whether the active server's client exposes an alternative ("turtle") speed limits toggle. */
+    val altSpeedSupported: Boolean = false,
+    val altSpeedEnabled: Boolean = false,
 ) {
     val availableLabels: List<String>
         get() = torrents.flatMap { it.labels }.distinct().sorted()
@@ -213,9 +216,28 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         try {
             val adapter = container.adapterFor(profile)
             val torrents = adapter.listTorrents()
+            val altSpeedEnabled = if (adapter.supportsAltSpeedLimits) {
+                // A transient failure here shouldn't blank the whole list; just keep the last-known state.
+                try {
+                    adapter.isAltSpeedLimitsEnabled()
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    _ui.value.altSpeedEnabled
+                }
+            } else {
+                false
+            }
             _ui.update {
                 if (it.activeProfile?.id != profile.id) it
-                else it.copy(torrents = torrents, hasLoaded = true, refreshing = false, error = null)
+                else it.copy(
+                    torrents = torrents,
+                    hasLoaded = true,
+                    refreshing = false,
+                    error = null,
+                    altSpeedSupported = adapter.supportsAltSpeedLimits,
+                    altSpeedEnabled = altSpeedEnabled,
+                )
             }
             container.widgetStateRepository.update(profile.displayName, torrents)
             // Keep an open torrent-details screen's Files/Trackers tabs current too, not just the
@@ -310,6 +332,25 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
 
     fun remove(torrent: Torrent, deleteData: Boolean) {
         runAction { adapter -> adapter.remove(torrent.id, deleteData) }
+    }
+
+    /** Flips alternative ("turtle") speed limits; optimistic, since a poll cycle would confirm it anyway. */
+    fun toggleAltSpeed() {
+        val profile = _ui.value.activeProfile ?: return
+        val target = !_ui.value.altSpeedEnabled
+        _ui.update { it.copy(altSpeedEnabled = target) }
+        viewModelScope.launch {
+            try {
+                container.adapterFor(profile).setAltSpeedLimitsEnabled(target)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _ui.update {
+                    if (it.activeProfile?.id == profile.id) it.copy(altSpeedEnabled = !target, error = e.toUiError(profile.host))
+                    else it
+                }
+            }
+        }
     }
 
     fun loadFiles(torrentId: String) {

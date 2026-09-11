@@ -62,6 +62,7 @@ import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.South
+import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.material.icons.rounded.SyncAlt
 import androidx.compose.material.icons.rounded.UnfoldMore
 import androidx.compose.material.icons.rounded.Upload
@@ -179,6 +180,7 @@ fun TorrentsScreen(
                         onSortSelect = { viewModel.setSort(it) },
                         onTitleClick = scrollToTop,
                         onSwitchProfile = { viewModel.switchProfile(it) },
+                        onToggleAltSpeed = { viewModel.toggleAltSpeed() },
                     )
                 } else {
                     TopAppBar(
@@ -207,6 +209,9 @@ fun TorrentsScreen(
                             }
                         },
                         actions = {
+                            if (ui.altSpeedSupported) {
+                                AltSpeedButton(enabled = ui.altSpeedEnabled, onClick = { viewModel.toggleAltSpeed() })
+                            }
                             if (searchAvailable) {
                                 IconButton(onClick = onOpenSearch) {
                                     Icon(Icons.Rounded.Search, contentDescription = stringResource(R.string.search_title))
@@ -290,6 +295,7 @@ private fun TabletTopBar(
     onSortSelect: (TorrentSort) -> Unit,
     onTitleClick: () -> Unit,
     onSwitchProfile: (String) -> Unit,
+    onToggleAltSpeed: () -> Unit,
 ) {
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column {
@@ -331,6 +337,9 @@ private fun TabletTopBar(
                     caption = stringResource(R.string.toolbar_upload_sharing, ui.sharingCount),
                 )
                 VerticalDivider(Modifier.height(26.dp).padding(horizontal = 10.dp))
+                if (ui.altSpeedSupported) {
+                    AltSpeedButton(enabled = ui.altSpeedEnabled, onClick = onToggleAltSpeed)
+                }
                 if (searchAvailable) {
                     IconButton(onClick = onOpenSearch) {
                         Icon(Icons.Rounded.Search, contentDescription = stringResource(R.string.search_title))
@@ -352,6 +361,20 @@ private fun TabletTopBar(
  * opens a switcher, same idea as the filter drawer's [ServerSelector] - just compact enough for
  * the app bar.
  */
+/** Toggles the daemon's alternative ("turtle") speed limits; tinted when active. */
+@Composable
+private fun AltSpeedButton(enabled: Boolean, onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(
+            Icons.Rounded.Speed,
+            contentDescription = stringResource(
+                if (enabled) R.string.torrents_alt_speed_on else R.string.torrents_alt_speed_off
+            ),
+            tint = if (enabled) MaterialTheme.colorScheme.primary else LocalContentColor.current,
+        )
+    }
+}
+
 @Composable
 private fun ServerChip(activeProfile: ServerProfile, allProfiles: List<ServerProfile>, onSwitchProfile: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }

@@ -165,6 +165,18 @@ class QbittorrentAdapter(
         return trackers.filterNot { it.url.startsWith("**") }.map { it.toTracker() }
     }
 
+    override val supportsAltSpeedLimits: Boolean get() = true
+
+    override suspend fun isAltSpeedLimitsEnabled(): Boolean =
+        get("api/v2/transfer/speedLimitsMode").use { it.readBodyOrThrow() }.trim() == "1"
+
+    /** There's no "set" endpoint, only a toggle - so only flip it if it's not already at [enabled]. */
+    override suspend fun setAltSpeedLimitsEnabled(enabled: Boolean) {
+        if (isAltSpeedLimitsEnabled() != enabled) {
+            post("api/v2/transfer/toggleSpeedLimitsMode", FormBody.Builder().build()).use { it.readBodyOrThrow() }
+        }
+    }
+
     /** qBittorrent 5 renamed pause/resume to stop/start; try new name first, fall back on 404. */
     private suspend fun hashesActionWithFallback(newEndpoint: String, legacyEndpoint: String, hash: String) {
         val form = { FormBody.Builder().add("hashes", hash).build() }

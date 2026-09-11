@@ -60,6 +60,15 @@ interface DaemonAdapter {
     suspend fun setFilePriority(torrentId: String, fileIndex: Int, priority: FilePriority)
 
     suspend fun listTrackers(torrentId: String): List<Tracker>
+
+    /** Whether this client exposes an alternative ("turtle") speed limits toggle at all. */
+    val supportsAltSpeedLimits: Boolean get() = false
+
+    /** Whether alternative speed limits are currently active. Only meaningful when [supportsAltSpeedLimits]. */
+    suspend fun isAltSpeedLimitsEnabled(): Boolean = false
+
+    /** Enables or disables alternative ("turtle") speed limits. No-op where unsupported. */
+    suspend fun setAltSpeedLimitsEnabled(enabled: Boolean) {}
 }
 
 object DaemonAdapterFactory {

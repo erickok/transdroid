@@ -237,4 +237,41 @@ class QbittorrentAdapterTest {
         assertEquals("/api/v2/torrents/delete", delete.path)
         assertEquals("hashes=abcdef&deleteFiles=true", delete.body.readUtf8())
     }
+
+    @Test
+    fun `reads alt speed limits mode`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody("1"))
+
+        val enabled = adapter().isAltSpeedLimitsEnabled()
+
+        assertTrue(enabled)
+        server.takeRequest() // login
+        assertEquals("/api/v2/transfer/speedLimitsMode", server.takeRequest().path)
+    }
+
+    @Test
+    fun `setting alt speed limits only toggles when the mode actually differs`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody("0"))
+        server.enqueue(MockResponse().setBody(""))
+
+        adapter().setAltSpeedLimitsEnabled(true)
+
+        server.takeRequest() // login
+        assertEquals("/api/v2/transfer/speedLimitsMode", server.takeRequest().path)
+        assertEquals("/api/v2/transfer/toggleSpeedLimitsMode", server.takeRequest().path)
+    }
+
+    @Test
+    fun `setting alt speed limits to the current mode does not toggle`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody("1"))
+
+        adapter().setAltSpeedLimitsEnabled(true)
+
+        server.takeRequest() // login
+        assertEquals("/api/v2/transfer/speedLimitsMode", server.takeRequest().path)
+        assertEquals(2, server.requestCount)
+    }
 }

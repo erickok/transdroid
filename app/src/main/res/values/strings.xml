@@ -18,6 +18,9 @@
     <string name="torrents_add">Add torrent</string>
     <string name="torrents_settings">Settings</string>
     <string name="torrents_retry">Retry</string>
+    <string name="torrents_alt_speed">Alternative speed limits</string>
+    <string name="torrents_alt_speed_on">Alternative speed limits on</string>
+    <string name="torrents_alt_speed_off">Alternative speed limits off</string>
     <string name="filter_all">All</string>
     <string name="filter_downloading">Downloading</string>
     <string name="filter_seeding">Seeding</string>
