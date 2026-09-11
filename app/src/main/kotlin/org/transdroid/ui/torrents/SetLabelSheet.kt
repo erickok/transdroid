@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,6 +32,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
@@ -41,7 +43,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -55,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -91,7 +93,9 @@ fun SetLabelSheet(
     val exactMatch = availableLabels.any { it.equals(trimmedFilter, ignoreCase = true) }
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
-        Column(Modifier.padding(horizontal = 20.dp)) {
+        // Matches the mockup's .sheet-head: its own horizontal inset (22dp), distinct from the
+        // field below (16dp) - the field is deliberately a touch wider than the title/subtitle.
+        Column(Modifier.padding(horizontal = 22.dp)) {
             Text(stringResource(R.string.details_set_label), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Text(
                 stringResource(R.string.details_set_label_subtitle, torrentName),
@@ -99,18 +103,14 @@ fun SetLabelSheet(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = 2.dp, bottom = 14.dp),
-            )
-            OutlinedTextField(
-                value = filterText,
-                onValueChange = { filterText = it },
-                leadingIcon = { Icon(Icons.Rounded.Label, contentDescription = null) },
-                placeholder = { Text(stringResource(R.string.details_label_filter_hint)) },
-                singleLine = true,
-                shape = MaterialTheme.shapes.extraLarge,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.padding(top = 2.dp, bottom = 12.dp),
             )
         }
+        LabelFilterField(
+            value = filterText,
+            onValueChange = { filterText = it },
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
+        )
 
         LazyColumn(Modifier.heightIn(max = 340.dp).padding(horizontal = 8.dp, vertical = 4.dp)) {
             if (trimmedFilter.isEmpty()) {
@@ -120,7 +120,7 @@ fun SetLabelSheet(
                         name = stringResource(R.string.drawer_no_label),
                         count = null,
                         selected = selected == null,
-                        onClick = { selected = null },
+                        onClick = { selected = null; filterText = "" },
                     )
                 }
             }
@@ -130,7 +130,7 @@ fun SetLabelSheet(
                     name = label,
                     count = countForLabel(label),
                     selected = selected == label,
-                    onClick = { selected = label },
+                    onClick = { selected = label; filterText = "" },
                 )
             }
             if (trimmedFilter.isNotEmpty() && !exactMatch) {
@@ -158,9 +158,51 @@ fun SetLabelSheet(
             TextButton(onClick = onDismiss) { Text(stringResource(R.string.details_cancel)) }
             Spacer(Modifier.width(8.dp))
             Button(onClick = {
-                onSetLabel(selected)
+                // Whatever is still typed wins over a previous row tap - so typing a brand-new
+                // name and tapping this button directly creates it, without first requiring a
+                // separate tap on the "Create …" row below.
+                onSetLabel(if (trimmedFilter.isNotEmpty()) trimmedFilter else selected)
                 onDismiss()
             }) { Text(stringResource(R.string.details_set_label)) }
+        }
+    }
+}
+
+/**
+ * Matches the mockup's `.sheet-field`: a fixed-height pill (grey fill, no border/label) with a
+ * leading icon and a plain placeholder - the same shape as [org.transdroid.ui.search.SearchScreen]'s
+ * search bar, not the boxed/labeled [org.transdroid.ui.components.TransdroidTextField] used for
+ * actual form fields elsewhere.
+ */
+@Composable
+private fun LabelFilterField(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
+    Row(
+        modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .clip(RoundedCornerShape(25.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Icon(Icons.Rounded.Label, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+        Box(Modifier.weight(1f)) {
+            if (value.isEmpty()) {
+                Text(
+                    stringResource(R.string.details_label_filter_hint),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                singleLine = true,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
     }
 }
