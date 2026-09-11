@@ -60,7 +60,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -181,11 +180,6 @@ fun SettingsScreen(
                     }
                 },
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { onEditServer(null) }) {
-                Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.settings_add_server))
-            }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
