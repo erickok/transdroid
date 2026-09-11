@@ -1,0 +1,7 @@
+* About screen with license, project links, a changelog and a donate link
+* Set or create a torrent label, and force a data recheck, from the details screen
+* Alternative ("turtle") speed limits toggle for qBittorrent and Transmission
+* Switch servers directly from the torrents list; redesigned app icon and empty states
+* "Send error report" to get support or report a bug
+* Fixed Deluge servers failing to load torrents with an "Unknown method" error
+* Fixed qBittorrent getting itself banned by retrying a failed login every poll
