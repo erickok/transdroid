@@ -248,9 +248,9 @@
 
     <!-- Backup -->
     <string name="settings_backup">Backup</string>
-    <string name="backup_export">Export settings…</string>
+    <string name="backup_export">Export settings</string>
     <string name="backup_export_summary">Save servers, feeds and indexers to an encrypted file that survives reinstalling</string>
-    <string name="backup_import">Import settings…</string>
+    <string name="backup_import">Import settings</string>
     <string name="backup_import_summary">Restore from a previously exported backup file</string>
     <string name="backup_passphrase">Passphrase</string>
     <string name="backup_export_message">The file is encrypted with this passphrase. You\'ll need it to import, so store it safely — it cannot be recovered.</string>
