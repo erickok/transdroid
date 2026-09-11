@@ -164,7 +164,7 @@ fun SettingsScreen(
     ) { granted ->
         // Enable regardless; without permission the worker simply cannot post, and the
         // system settings remain the source of truth the user controls.
-        viewModel.setNotifyFinished(context, true)
+        viewModel.setNotifyFinished(true)
     }
 
     Scaffold(
@@ -295,7 +295,7 @@ fun SettingsScreen(
                                     if (enabled && Build.VERSION.SDK_INT >= 33) {
                                         notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                                     } else {
-                                        viewModel.setNotifyFinished(context, enabled)
+                                        viewModel.setNotifyFinished(enabled)
                                     }
                                 },
                             )

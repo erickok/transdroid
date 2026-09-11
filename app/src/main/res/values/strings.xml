@@ -322,13 +322,15 @@
     <string name="notification_channel_finished">Finished torrents</string>
 
     <!-- Widget -->
-    <string name="widget_description">A list of running torrents, and counts and speeds of your active server</string>
+    <string name="widget_description">A list of running torrents, and counts and speeds of a server you pick</string>
     <string name="widget_no_data">Open the app to load torrents</string>
     <string name="widget_connected">Connected</string>
     <string name="widget_no_active_torrents">No active torrents</string>
     <string name="widget_seeding_label">Seed</string>
     <string name="widget_footer_summary">%1$d active · %2$d total</string>
     <string name="widget_refresh">Refresh</string>
+    <string name="widget_configure_title">Choose a server</string>
+    <string name="widget_configure_subtitle">This widget will show torrents from the server you pick</string>
 
     <!-- Errors -->
     <string name="error_connection">Cannot connect to %1$s</string>

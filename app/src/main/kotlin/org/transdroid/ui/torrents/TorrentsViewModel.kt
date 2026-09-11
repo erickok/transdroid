@@ -239,7 +239,7 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
                     altSpeedEnabled = altSpeedEnabled,
                 )
             }
-            container.widgetStateRepository.update(profile.displayName, torrents)
+            container.widgetStateRepository.update(profile.id, profile.displayName, torrents)
             // Keep an open torrent-details screen's Files/Trackers tabs current too, not just the
             // main list - they're otherwise only ever loaded once, when the screen first opens.
             _ui.value.selectedTorrentId

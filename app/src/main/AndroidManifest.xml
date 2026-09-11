@@ -57,6 +57,16 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
+        <!-- Lets the user pick which server a newly placed widget instance shows -->
+        <activity
+            android:name=".widget.WidgetConfigureActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Transdroid">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

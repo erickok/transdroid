@@ -37,7 +37,6 @@ import org.transdroid.AppContainer
 import org.transdroid.BuildConfig
 import org.transdroid.R
 import org.transdroid.appContainer
-import org.transdroid.background.FinishedTorrentsWorker
 import org.transdroid.data.BackupCrypto
 import org.transdroid.data.ProfilesData
 import org.transdroid.data.RssFeed
@@ -248,16 +247,13 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         viewModelScope.launch { container.settingsRepository.setPollIntervalSeconds(seconds) }
     }
 
-    /** Persists the toggle and (un)schedules the background check accordingly. */
-    fun setNotifyFinished(context: android.content.Context, enabled: Boolean) {
-        viewModelScope.launch {
-            container.settingsRepository.setNotifyFinished(enabled)
-            if (enabled) {
-                FinishedTorrentsWorker.schedule(context.applicationContext)
-            } else {
-                FinishedTorrentsWorker.cancel(context.applicationContext)
-            }
-        }
+    /**
+     * Persists the toggle. The periodic background check itself is always scheduled (it also
+     * keeps a widget pointed at a non-active server fresh) - this only controls whether that
+     * check sends a finished-torrent notification, checked live on each run.
+     */
+    fun setNotifyFinished(enabled: Boolean) {
+        viewModelScope.launch { container.settingsRepository.setNotifyFinished(enabled) }
     }
 
     /** Serializes and encrypts the whole settings store with the given passphrase. */

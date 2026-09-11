@@ -9,4 +9,5 @@
     android:updatePeriodMillis="1800000"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
+    android:configure="org.transdroid.widget.WidgetConfigureActivity"
     android:description="@string/widget_description" />

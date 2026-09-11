@@ -17,8 +17,6 @@
 package org.transdroid.widget
 
 import android.content.Context
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -44,6 +42,7 @@ data class WidgetTorrent(
     val uploadRate: Long,
 )
 
+@Serializable
 data class WidgetState(
     val serverName: String? = null,
     val downloadingCount: Int = 0,
@@ -52,7 +51,7 @@ data class WidgetState(
     val totalCount: Int = 0,
     val downloadRate: Long = 0,
     val uploadRate: Long = 0,
-    /** Only currently-active (downloading/seeding) torrents - see [MAX_WIDGET_TORRENTS]. */
+    /** Only currently-active (downloading/seeding) torrents, most recently added first. */
     val torrents: List<WidgetTorrent> = emptyList(),
     val updatedAtMillis: Long? = null,
 )
@@ -61,54 +60,41 @@ data class WidgetState(
 private const val MAX_WIDGET_TORRENTS = 30
 
 /**
- * A small snapshot of the last successful torrent list, written on every refresh (foreground
- * or background) and read by the home screen widget. No credentials are stored here - it is
- * unencrypted preference data - and the torrent list is capped and limited to active torrents
- * so a large library doesn't bloat every write.
+ * A small snapshot of the last successful torrent list per server, written on every refresh
+ * (foreground poll, the widget's own refresh button, or the background worker) and read by the
+ * home screen widget - each widget instance picks which server's snapshot it shows via
+ * [WidgetConfigureActivity]. No credentials are stored here - it is unencrypted preference data -
+ * and each server's torrent list is capped and limited to active torrents so a large library
+ * doesn't bloat every write.
  */
 class WidgetStateRepository(private val context: Context) {
 
-    private val serverKey = stringPreferencesKey("server_name")
-    private val downloadingKey = intPreferencesKey("downloading_count")
-    private val seedingKey = intPreferencesKey("seeding_count")
-    private val pausedKey = intPreferencesKey("paused_count")
-    private val totalKey = intPreferencesKey("total_count")
-    private val downRateKey = longPreferencesKey("download_rate")
-    private val upRateKey = longPreferencesKey("upload_rate")
-    private val torrentsKey = stringPreferencesKey("torrents_json")
-    private val updatedKey = longPreferencesKey("updated_at")
+    private val statesKey = stringPreferencesKey("widget_states_json")
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    val state: Flow<WidgetState> = context.widgetDataStore.data.map { prefs ->
-        WidgetState(
-            serverName = prefs[serverKey],
-            downloadingCount = prefs[downloadingKey] ?: 0,
-            seedingCount = prefs[seedingKey] ?: 0,
-            pausedCount = prefs[pausedKey] ?: 0,
-            totalCount = prefs[totalKey] ?: 0,
-            downloadRate = prefs[downRateKey] ?: 0,
-            uploadRate = prefs[upRateKey] ?: 0,
-            torrents = prefs[torrentsKey]?.let { raw ->
-                try {
-                    json.decodeFromString<List<WidgetTorrent>>(raw)
-                } catch (e: Exception) {
-                    emptyList()
-                }
-            } ?: emptyList(),
-            updatedAtMillis = prefs[updatedKey],
-        )
+    /** All servers' snapshots, keyed by server (profile) id. */
+    val states: Flow<Map<String, WidgetState>> = context.widgetDataStore.data.map { prefs ->
+        prefs[statesKey]?.let { raw ->
+            try {
+                json.decodeFromString<Map<String, WidgetState>>(raw)
+            } catch (e: Exception) {
+                emptyMap()
+            }
+        } ?: emptyMap()
     }
 
-    suspend fun current(): WidgetState = state.first()
+    /** The given server's snapshot, or an empty (no-data) state when [serverId] is null or unknown. */
+    suspend fun stateFor(serverId: String?): WidgetState =
+        serverId?.let { states.first()[it] } ?: WidgetState()
 
     @Volatile
-    private var lastWritten: WidgetState? = null
+    private var lastWritten: Map<String, WidgetState> = emptyMap()
 
-    suspend fun update(serverName: String, torrents: List<Torrent>) {
+    suspend fun update(serverId: String, serverName: String, torrents: List<Torrent>) {
         val widgetTorrents = torrents
             .filter { it.status.isActive }
-            .sortedByDescending { it.downloadRate + it.uploadRate }
+            .sortedByDescending { it.addedTimestamp ?: 0L }
             .take(MAX_WIDGET_TORRENTS)
             .map { WidgetTorrent(it.id, it.name, it.status, it.progress, it.downloadRate, it.uploadRate) }
         val snapshot = WidgetState(
@@ -120,21 +106,15 @@ class WidgetStateRepository(private val context: Context) {
             downloadRate = torrents.sumOf { it.downloadRate },
             uploadRate = torrents.sumOf { it.uploadRate },
             torrents = widgetTorrents,
+            updatedAtMillis = System.currentTimeMillis(),
         )
-        // The list refreshes every few seconds; skip the write when nothing changed
-        if (snapshot == lastWritten) return
-        lastWritten = snapshot
-        context.widgetDataStore.edit { prefs ->
-            prefs[serverKey] = snapshot.serverName!!
-            prefs[downloadingKey] = snapshot.downloadingCount
-            prefs[seedingKey] = snapshot.seedingCount
-            prefs[pausedKey] = snapshot.pausedCount
-            prefs[totalKey] = snapshot.totalCount
-            prefs[downRateKey] = snapshot.downloadRate
-            prefs[upRateKey] = snapshot.uploadRate
-            prefs[torrentsKey] = json.encodeToString(snapshot.torrents)
-            prefs[updatedKey] = System.currentTimeMillis()
-        }
+        val current = lastWritten.ifEmpty { states.first() }
+        // Each server's list refreshes every few seconds while its app screen is open; skip the
+        // write when nothing changed (comparing without the timestamp, which always differs).
+        if (current[serverId]?.copy(updatedAtMillis = null) == snapshot.copy(updatedAtMillis = null)) return
+        val updated = current + (serverId to snapshot)
+        lastWritten = updated
+        context.widgetDataStore.edit { prefs -> prefs[statesKey] = json.encodeToString(updated) }
         TransdroidWidget().updateAll(context)
     }
 }

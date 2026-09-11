@@ -18,12 +18,8 @@ package org.transdroid
 
 import android.app.Application
 import android.content.Context
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import org.transdroid.background.FinishedTorrentsWorker
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.data.ServerProfile
@@ -84,12 +80,10 @@ class TransdroidApplication : Application() {
             previousHandler?.uncaughtException(thread, throwable)
         }
         container = AppContainer(this)
-        // Re-arm the periodic finished-torrents check after updates/reboots; KEEP is idempotent
-        CoroutineScope(Dispatchers.Default).launch {
-            if (container.settingsRepository.notifyFinished.first()) {
-                FinishedTorrentsWorker.schedule(this@TransdroidApplication)
-            }
-        }
+        // Re-arm after updates/reboots; KEEP is idempotent. Always scheduled, not just when
+        // finished-torrent notifications are on: it's also what keeps a widget pointed at a
+        // non-active server fresh in the background - see FinishedTorrentsWorker.doWork().
+        FinishedTorrentsWorker.schedule(this)
     }
 }
 

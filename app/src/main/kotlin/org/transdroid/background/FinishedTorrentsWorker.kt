@@ -37,13 +37,19 @@ import androidx.work.WorkerParameters
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
+import org.transdroid.AppContainer
 import org.transdroid.MainActivity
 import org.transdroid.R
 import org.transdroid.appContainer
+import org.transdroid.data.ServerProfile
+import org.transdroid.protocol.Torrent
+import org.transdroid.widget.widgetConfiguredServerIds
 
 /**
  * Periodically checks the active server and notifies for torrents that finished since the
- * previous check. Also refreshes the home screen widget snapshot as a side effect.
+ * previous check. Also refreshes the home screen widget snapshot for the active server and,
+ * since this is otherwise the only thing that ever runs in the background, for any other server
+ * a placed widget instance is configured to show.
  */
 class FinishedTorrentsWorker(
     context: Context,
@@ -52,18 +58,38 @@ class FinishedTorrentsWorker(
 
     override suspend fun doWork(): Result {
         val container = applicationContext.appContainer
-        val profile = container.activeProfile.first() ?: return Result.success()
+        val profiles = container.profilesRepository.profiles.first()
+        val activeProfile = container.activeProfile.first()
+
+        activeProfile?.let { profile ->
+            val torrents = fetchAndStore(container, profile) ?: return@let
+            if (container.settingsRepository.notifyFinished.first()) {
+                checkFinished(container, profile, torrents)
+            }
+        }
+
+        widgetConfiguredServerIds(applicationContext)
+            .filterNot { it == activeProfile?.id }
+            .mapNotNull { serverId -> profiles.firstOrNull { it.id == serverId } }
+            .forEach { profile -> fetchAndStore(container, profile) }
+
+        return Result.success()
+    }
+
+    /** Fetches [profile]'s torrents and stores them for its widgets; null (and untouched) if unreachable. */
+    private suspend fun fetchAndStore(container: AppContainer, profile: ServerProfile): List<Torrent>? {
         val torrents = try {
             container.adapterFor(profile).listTorrents()
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            // Server unreachable right now; try again on the next periodic run
-            return Result.success()
+            return null
         }
+        container.widgetStateRepository.update(profile.id, profile.displayName, torrents)
+        return torrents
+    }
 
-        container.widgetStateRepository.update(profile.displayName, torrents)
-
+    private suspend fun checkFinished(container: AppContainer, profile: ServerProfile, torrents: List<Torrent>) {
         val previouslyUnfinished = container.settingsRepository.unfinishedTorrentIds(profile.id).first()
         val newlyFinished = torrents.filter { it.isFinished && it.id in previouslyUnfinished }
         if (newlyFinished.isNotEmpty()) {
@@ -73,7 +99,6 @@ class FinishedTorrentsWorker(
             profile.id,
             torrents.filterNot { it.isFinished }.map { it.id }.toSet(),
         )
-        return Result.success()
     }
 
     // Permission is checked just below; lint cannot follow the SDK_INT-guarded early return
@@ -121,17 +146,13 @@ class FinishedTorrentsWorker(
         private const val CHANNEL_ID = "torrents_finished"
         private const val NOTIFICATION_ID = 1
 
-        /** Idempotent; safe to call on every app start while the setting is enabled. */
+        /** Idempotent; safe to call on every app start. */
         fun schedule(context: Context) {
             val request = PeriodicWorkRequestBuilder<FinishedTorrentsWorker>(15, TimeUnit.MINUTES)
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .build()
             WorkManager.getInstance(context)
                 .enqueueUniquePeriodicWork(WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, request)
-        }
-
-        fun cancel(context: Context) {
-            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
         }
     }
 }

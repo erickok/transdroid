@@ -88,7 +88,8 @@ class TransdroidWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val state = context.appContainer.widgetStateRepository.current()
+        val serverId = resolveWidgetServerId(context, id)
+        val state = context.appContainer.widgetStateRepository.stateFor(serverId)
         val strings = WidgetStrings(
             appName = context.getString(R.string.app_name),
             noData = context.getString(R.string.widget_no_data),

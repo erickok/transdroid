@@ -21,19 +21,20 @@ import androidx.glance.GlanceId
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.action.ActionCallback
 import kotlinx.coroutines.CancellationException
-import org.transdroid.appContainer
 import kotlinx.coroutines.flow.first
+import org.transdroid.appContainer
 
 /**
- * Runs when the widget's own refresh button is tapped: a one-off poll of the active server,
- * independent of the app's foreground poll loop or the 15-minute background worker. Mirrors
- * [org.transdroid.background.FinishedTorrentsWorker]'s fetch-and-store pattern, minus the
- * finished-torrent notification (that stays the worker's job).
+ * Runs when the widget's own refresh button is tapped: a one-off poll of this widget instance's
+ * configured server, independent of the app's foreground poll loop or the 15-minute background
+ * worker. Mirrors [org.transdroid.background.FinishedTorrentsWorker]'s fetch-and-store pattern,
+ * minus the finished-torrent notification (that stays the worker's job).
  */
 class RefreshWidgetAction : ActionCallback {
     override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
         val container = context.appContainer
-        val profile = container.activeProfile.first() ?: return
+        val serverId = resolveWidgetServerId(context, glanceId) ?: return
+        val profile = container.profilesRepository.profiles.first().firstOrNull { it.id == serverId } ?: return
         val torrents = try {
             container.adapterFor(profile).listTorrents()
         } catch (e: CancellationException) {
@@ -43,6 +44,6 @@ class RefreshWidgetAction : ActionCallback {
             return
         }
         // update() also triggers TransdroidWidget().updateAll(context)
-        container.widgetStateRepository.update(profile.displayName, torrents)
+        container.widgetStateRepository.update(profile.id, profile.displayName, torrents)
     }
 }
