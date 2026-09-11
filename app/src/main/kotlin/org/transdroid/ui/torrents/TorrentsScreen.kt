@@ -46,6 +46,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.ErrorOutline
@@ -62,6 +63,7 @@ import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.South
 import androidx.compose.material.icons.rounded.SyncAlt
+import androidx.compose.material.icons.rounded.UnfoldMore
 import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -109,6 +111,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import org.transdroid.R
+import org.transdroid.data.ServerProfile
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentStatus
 import org.transdroid.ui.message
@@ -175,6 +178,7 @@ fun TorrentsScreen(
                         onRefresh = { viewModel.refresh() },
                         onSortSelect = { viewModel.setSort(it) },
                         onTitleClick = scrollToTop,
+                        onSwitchProfile = { viewModel.switchProfile(it) },
                     )
                 } else {
                     TopAppBar(
@@ -194,7 +198,11 @@ fun TorrentsScreen(
                                 Text(stringResource(R.string.torrents_title))
                                 ui.activeProfile?.let {
                                     Spacer(Modifier.height(7.dp))
-                                    ServerChip(it.displayName)
+                                    ServerChip(
+                                        activeProfile = it,
+                                        allProfiles = ui.allProfiles,
+                                        onSwitchProfile = { id -> viewModel.switchProfile(id) },
+                                    )
                                 }
                             }
                         },
@@ -281,6 +289,7 @@ private fun TabletTopBar(
     onRefresh: () -> Unit,
     onSortSelect: (TorrentSort) -> Unit,
     onTitleClick: () -> Unit,
+    onSwitchProfile: (String) -> Unit,
 ) {
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column {
@@ -303,7 +312,11 @@ private fun TabletTopBar(
                 )
                 ui.activeProfile?.let {
                     Spacer(Modifier.width(10.dp))
-                    ServerChip(it.displayName)
+                    ServerChip(
+                        activeProfile = it,
+                        allProfiles = ui.allProfiles,
+                        onSwitchProfile = onSwitchProfile,
+                    )
                 }
                 Spacer(Modifier.weight(1f))
                 TabletStat(
@@ -333,21 +346,67 @@ private fun TabletTopBar(
     }
 }
 
+/**
+ * The active server as a small pill in the torrents list's header. Tapping the header text still
+ * scrolls to top (its own clickable, further up the tree); tapping specifically this pill instead
+ * opens a switcher, same idea as the filter drawer's [ServerSelector] - just compact enough for
+ * the app bar.
+ */
 @Composable
-private fun ServerChip(name: String) {
-    Surface(shape = MaterialTheme.shapes.extraLarge, color = MaterialTheme.colorScheme.surfaceContainerHigh) {
-        Row(
-            Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
+private fun ServerChip(activeProfile: ServerProfile, allProfiles: List<ServerProfile>, onSwitchProfile: (String) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val canSwitch = allProfiles.size > 1
+    Box {
+        Surface(
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            modifier = Modifier.clickable(enabled = canSwitch, onClick = { expanded = true }),
         ) {
-            Icon(
-                Icons.Rounded.Dns,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(15.dp),
-            )
-            Text(name, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Row(
+                Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+            ) {
+                Icon(
+                    Icons.Rounded.Dns,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(15.dp),
+                )
+                Text(activeProfile.displayName, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (canSwitch) {
+                    Icon(
+                        Icons.Rounded.UnfoldMore,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(14.dp),
+                    )
+                }
+            }
+        }
+        if (canSwitch) {
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                allProfiles.forEach { profile ->
+                    val isActive = profile.id == activeProfile.id
+                    DropdownMenuItem(
+                        text = { Text(profile.displayName) },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Rounded.Dns,
+                                contentDescription = null,
+                                tint = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                        trailingIcon = {
+                            if (isActive) Icon(Icons.Rounded.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        },
+                        onClick = {
+                            expanded = false
+                            if (!isActive) onSwitchProfile(profile.id)
+                        },
+                    )
+                }
+            }
         }
     }
 }
