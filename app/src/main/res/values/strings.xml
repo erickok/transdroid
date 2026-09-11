@@ -69,7 +69,7 @@
     <string name="details_remove_also_data">Also delete downloaded data</string>
     <string name="details_remove_confirm">Remove</string>
     <string name="details_cancel">Cancel</string>
-    <string name="details_check_data">Check data</string>
+    <string name="details_check_data">Verify data</string>
     <string name="details_set_label">Set label</string>
     <string name="details_set_label_subtitle">for “%1$s”</string>
     <string name="details_label_filter_hint">Filter or create a label</string>
