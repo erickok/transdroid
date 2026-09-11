@@ -53,7 +53,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -85,6 +84,7 @@ import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.discovery.DiscoveredDaemon
 import org.transdroid.ui.message
 import org.transdroid.ui.torrents.UiError
+import org.transdroid.ui.components.TransdroidTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -296,7 +296,7 @@ fun EditServerScreen(
                 )
             }
 
-            OutlinedTextField(
+            TransdroidTextField(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text(stringResource(R.string.settings_name)) },
@@ -309,7 +309,7 @@ fun EditServerScreen(
                 expanded = typeMenuExpanded,
                 onExpandedChange = { typeMenuExpanded = it },
             ) {
-                OutlinedTextField(
+                TransdroidTextField(
                     value = type.displayName(),
                     onValueChange = {},
                     readOnly = true,
@@ -369,7 +369,7 @@ fun EditServerScreen(
 
             val showUrlSection = type != DaemonType.RTORRENT || rtorrentUseUrl
             if (showUrlSection) {
-                OutlinedTextField(
+                TransdroidTextField(
                     value = url,
                     onValueChange = ::applyParsedUrl,
                     label = {
@@ -404,7 +404,7 @@ fun EditServerScreen(
 
             val showManualFields = overridden || (type == DaemonType.RTORRENT && !rtorrentUseUrl)
             if (showManualFields) {
-                OutlinedTextField(
+                TransdroidTextField(
                     value = host,
                     onValueChange = {
                         host = it
@@ -428,7 +428,7 @@ fun EditServerScreen(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
-                OutlinedTextField(
+                TransdroidTextField(
                     value = port,
                     onValueChange = {
                         port = it
@@ -468,7 +468,7 @@ fun EditServerScreen(
                         Text(stringResource(R.string.settings_use_ssl))
                     }
                 }
-                OutlinedTextField(
+                TransdroidTextField(
                     value = path,
                     onValueChange = { path = it },
                     label = {
@@ -503,14 +503,14 @@ fun EditServerScreen(
                 }
             }
 
-            OutlinedTextField(
+            TransdroidTextField(
                 value = username,
                 onValueChange = { username = it },
                 label = { Text(stringResource(R.string.settings_username)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
-            OutlinedTextField(
+            TransdroidTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text(stringResource(R.string.settings_password)) },
@@ -518,7 +518,7 @@ fun EditServerScreen(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
-            OutlinedTextField(
+            TransdroidTextField(
                 value = customHeaders,
                 onValueChange = { customHeaders = it },
                 label = { Text(stringResource(R.string.settings_custom_headers)) },
@@ -829,7 +829,7 @@ private fun XirvikSetupSection(
                     Text(stringResource(R.string.settings_xirvik_action))
                 }
             } else {
-                OutlinedTextField(
+                TransdroidTextField(
                     value = server,
                     onValueChange = onServerChange,
                     label = { Text(stringResource(R.string.settings_xirvik_server)) },
@@ -838,7 +838,7 @@ private fun XirvikSetupSection(
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(Modifier.height(8.dp))
-                OutlinedTextField(
+                TransdroidTextField(
                     value = username,
                     onValueChange = onUsernameChange,
                     label = { Text(stringResource(R.string.settings_username)) },
@@ -846,7 +846,7 @@ private fun XirvikSetupSection(
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(Modifier.height(8.dp))
-                OutlinedTextField(
+                TransdroidTextField(
                     value = password,
                     onValueChange = onPasswordChange,
                     label = { Text(stringResource(R.string.settings_password)) },

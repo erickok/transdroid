@@ -63,7 +63,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -99,6 +98,7 @@ import org.transdroid.data.RssFeed
 import org.transdroid.data.SettingsRepository
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.ui.rss.EditFeedDialog
+import org.transdroid.ui.components.TransdroidTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -461,7 +461,7 @@ private fun PassphraseDialog(
             Column {
                 Text(message)
                 Spacer(Modifier.height(12.dp))
-                OutlinedTextField(
+                TransdroidTextField(
                     value = passphrase,
                     onValueChange = { passphrase = it },
                     label = { Text(stringResource(R.string.backup_passphrase)) },

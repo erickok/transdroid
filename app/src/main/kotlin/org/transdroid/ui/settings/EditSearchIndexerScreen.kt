@@ -37,7 +37,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -55,6 +54,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.transdroid.R
 import org.transdroid.data.SearchProviderConfig
 import org.transdroid.ui.message
+import org.transdroid.ui.components.TransdroidTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -126,14 +126,14 @@ fun EditSearchIndexerScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            OutlinedTextField(
+            TransdroidTextField(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text(stringResource(R.string.settings_name)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
-            OutlinedTextField(
+            TransdroidTextField(
                 value = url,
                 onValueChange = { url = it },
                 label = { Text(stringResource(R.string.settings_torznab_url)) },
@@ -141,7 +141,7 @@ fun EditSearchIndexerScreen(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
-            OutlinedTextField(
+            TransdroidTextField(
                 value = apiKey,
                 onValueChange = { apiKey = it },
                 label = { Text(stringResource(R.string.settings_api_key)) },
@@ -155,14 +155,14 @@ fun EditSearchIndexerScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            OutlinedTextField(
+            TransdroidTextField(
                 value = username,
                 onValueChange = { username = it },
                 label = { Text(stringResource(R.string.settings_username)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
-            OutlinedTextField(
+            TransdroidTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text(stringResource(R.string.settings_password)) },

@@ -50,7 +50,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -80,6 +79,7 @@ import org.transdroid.ui.message
 import org.transdroid.ui.theme.LocalStatusColors
 import org.transdroid.util.formatBytes
 import org.transdroid.util.formatRelativeAge
+import org.transdroid.ui.components.TransdroidTextField
 
 /**
  * All configured feeds merged into one timeline, filterable to a single feed and/or "new only".
@@ -327,14 +327,14 @@ internal fun EditFeedDialog(onDismiss: () -> Unit, onSave: (name: String, url: S
         title = { Text(stringResource(R.string.rss_add_feed)) },
         text = {
             Column {
-                OutlinedTextField(
+                TransdroidTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(stringResource(R.string.settings_name)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
                 )
-                OutlinedTextField(
+                TransdroidTextField(
                     value = url,
                     onValueChange = { url = it },
                     label = { Text(stringResource(R.string.rss_feed_url)) },

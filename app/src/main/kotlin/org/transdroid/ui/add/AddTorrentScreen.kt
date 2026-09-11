@@ -43,7 +43,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -66,6 +65,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.transdroid.R
 import org.transdroid.errorlog.ErrorLog
+import org.transdroid.ui.components.TransdroidTextField
 import org.transdroid.ui.message
 import org.transdroid.ui.torrents.TorrentsViewModel
 import org.transdroid.ui.torrents.UiError
@@ -170,7 +170,7 @@ fun AddTorrentScreen(
         ) {
             val pickedFile = fileUri
             if (pickedFile == null) {
-                OutlinedTextField(
+                TransdroidTextField(
                     value = url,
                     onValueChange = {
                         url = it
