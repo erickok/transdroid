@@ -111,8 +111,10 @@
     <!-- Add torrent -->
     <string name="add_title">Add torrent</string>
     <string name="add_url_label">Magnet link or torrent URL</string>
-    <string name="add_url_hint">magnet:?xt=urn:btih:…</string>
-    <string name="add_pick_file">Choose a .torrent file…</string>
+    <string name="add_url_hint">magnet:?xt=… or https://…/file.torrent</string>
+    <string name="add_paste">Paste</string>
+    <string name="add_or">or</string>
+    <string name="add_pick_file">Choose a .torrent file</string>
     <string name="add_file_read_failed">Could not read that file</string>
     <string name="add_paused">Add paused</string>
     <string name="add_paused_summary">Choose which files to download first, then start it from the details screen</string>
