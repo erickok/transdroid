@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transdroid · Set label (M3 Expressive)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0" rel="stylesheet">
+<style>
+:root{
+  --surface:#f8faf0;
+  --surface-low:#f2f5ea;
+  --surface-container:#eceee2;
+  --surface-high:#e6e9dd;
+  --surface-highest:#e0e3d7;
+  --on-surface:#1a1c15;
+  --on-surface-var:#44483b;
+  --muted:#5c6053;
+  --outline:#75796a;
+  --outline-variant:#c5c8b8;
+  --primary:#3f6a1e;
+  --on-primary:#ffffff;
+  --primary-container:#c0f39a;
+  --on-primary-container:#0b2100;
+  --sel-bg:#dcecce; --sel-fg:#2b3b1c;
+  --dl:#3f68b8; --dl-track:#d3ddf2;
+  --l-books:#c0871c; --l-music:#7a5bd0; --l-soft:#3f68b8; --l-video:#1f8f86;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;height:100%;}
+body{
+  font-family:"Roboto",system-ui,sans-serif;
+  background:radial-gradient(120% 90% at 50% 0%, #2c3227 0%, #1a1e16 60%, #12140f 100%);
+  min-height:100%; display:flex; align-items:center; justify-content:center; padding:32px 16px;
+}
+.msr{
+  font-family:"Material Symbols Rounded"; font-weight:normal; font-style:normal; line-height:1;
+  letter-spacing:normal; text-transform:none; white-space:nowrap; display:inline-block; direction:ltr;
+  -webkit-font-smoothing:antialiased; font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24; user-select:none;
+}
+.fill{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
+
+.phone{
+  width:390px; max-width:100%; height:820px; max-height:calc(100vh - 40px);
+  background:#0c0d0a; border-radius:46px; padding:8px;
+  box-shadow:0 30px 70px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.screen{
+  position:relative; height:100%; width:100%; background:var(--surface); border-radius:39px;
+  overflow:hidden; display:flex; flex-direction:column; color:var(--on-surface); isolation:isolate;
+}
+
+/* ---- details backdrop ---- */
+.statusbar{height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 24px 0 28px; font-size:14px; font-weight:600; letter-spacing:.2px;}
+.statusbar .sys{display:flex; align-items:center; gap:7px;}
+.statusbar .sys .msr{font-size:18px;}
+.appbar{flex:none; height:52px; display:flex; align-items:center; padding:0 6px;}
+.iconbtn{border:none; background:transparent; cursor:pointer; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; color:var(--on-surface-var);}
+.iconbtn .msr{font-size:24px;}
+.grow{flex:1;}
+.dcontent{padding:2px 16px;}
+.d-head{display:flex; align-items:flex-start; gap:14px;}
+.d-badge{width:48px; height:48px; border-radius:16px; display:grid; place-items:center; flex:none; background:var(--dl-track); color:var(--dl);}
+.d-badge .msr{font-size:25px;}
+.d-htext h2{margin:0; font-size:21px; font-weight:600; line-height:1.2;}
+.d-htext .sub{display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap;}
+.pill{display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:999px; background:var(--surface-container); font-weight:600; font-size:12px; color:var(--on-surface-var);}
+.pill .msr{font-size:15px;}
+.d-actions{display:flex; align-items:center; gap:8px; margin:18px 0 4px;}
+.btn-primary{flex:1; height:46px; border-radius:23px; background:var(--primary); color:var(--on-primary); border:none; font-family:inherit; font-size:14.5px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:8px;}
+.btn-ic{width:46px; height:46px; border-radius:15px; background:var(--surface-container); color:var(--on-surface-var); border:none; display:grid; place-items:center; cursor:pointer;}
+.btn-ic.on{background:var(--sel-bg); color:var(--sel-fg);}
+.btn-primary .msr, .btn-ic .msr{font-size:20px;}
+.pbar{height:6px; background:var(--dl-track); border-radius:3px; overflow:hidden; margin:20px 0 8px;}
+.pbar span{display:block; height:100%; width:38%; background:var(--dl); border-radius:3px;}
+.pline{display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); font-variant-numeric:tabular-nums;}
+.pline b{color:var(--on-surface); font-weight:600;}
+
+/* ---- overlay + bottom sheet ---- */
+.overlay{position:absolute; inset:0; z-index:5; pointer-events:none; opacity:0; transition:opacity .22s;}
+.overlay.open{pointer-events:auto; opacity:1;}
+.scrim{position:absolute; inset:0; background:rgba(18,22,13,.5);}
+.sheet{
+  position:absolute; left:0; right:0; bottom:0; max-height:74%;
+  background:var(--surface); border-radius:28px 28px 0 0; box-shadow:0 -10px 30px rgba(0,0,0,.3);
+  display:flex; flex-direction:column;
+  transform:translateY(100%); transition:transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.overlay.open .sheet{transform:translateY(0);}
+.handle{width:34px; height:4px; border-radius:2px; background:var(--outline-variant); margin:12px auto 2px;}
+.sheet-head{padding:6px 22px 10px;}
+.sheet-head h3{margin:0; font-size:20px; font-weight:600;}
+.sheet-head p{margin:3px 0 0; font-size:13px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+.sheet-field{margin:2px 16px 6px; height:50px; border-radius:25px; background:var(--surface-container); display:flex; align-items:center; gap:12px; padding:0 16px;}
+.sheet-field > .msr{font-size:21px; color:var(--muted); flex:none;}
+.sheet-field input{flex:1; min-width:0; border:none; background:transparent; outline:none; font-family:inherit; font-size:15px; color:var(--on-surface);}
+.sheet-field input::placeholder{color:var(--muted);}
+
+.sheet-list{flex:1; overflow-y:auto; padding:2px 8px; min-height:130px; scrollbar-width:none;}
+.sheet-list::-webkit-scrollbar{display:none;}
+.lrow{width:100%; text-align:left; border:none; background:transparent; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:14px; padding:12px 16px; margin:2px 0; border-radius:16px; color:var(--on-surface); transition:background .12s;}
+.lrow:hover{background:var(--surface-high);}
+.lrow.sel{background:var(--sel-bg); color:var(--sel-fg);}
+.ldot{width:13px; height:13px; border-radius:4px; flex:none;}
+.ldot.books{background:var(--l-books);} .ldot.music{background:var(--l-music);} .ldot.soft{background:var(--l-soft);} .ldot.video{background:var(--l-video);} .ldot.new{background:var(--outline);}
+.lnone{font-size:20px; color:var(--muted);}
+.lname{flex:1; min-width:0; font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.lcount{font-size:12.5px; font-weight:600; color:var(--muted); font-variant-numeric:tabular-nums;}
+.lrow.sel .lcount{color:var(--sel-fg);}
+.lcheck{font-size:20px; color:var(--sel-fg); visibility:hidden;}
+.lrow.sel .lcheck{visibility:visible;}
+.lrow.create{color:var(--primary);}
+.lrow.create .lname{color:var(--primary);}
+.lplus{font-size:21px; color:var(--primary);}
+
+.sheet-actions{display:flex; justify-content:flex-end; gap:8px; padding:10px 16px 18px;}
+.btn-text{height:46px; padding:0 20px; border:none; background:transparent; color:var(--primary); font-family:inherit; font-weight:600; border-radius:23px; cursor:pointer; font-size:15px;}
+.btn-text:hover{background:var(--surface-high);}
+.btn-save{height:46px; padding:0 26px; border:none; background:var(--primary); color:var(--on-primary); font-family:inherit; font-weight:600; border-radius:23px; cursor:pointer; font-size:15px;}
+.btn-save:hover{filter:brightness(1.08);}
+
+.gesture{flex:none; height:26px; display:grid; place-items:center;}
+.gesture i{width:132px; height:5px; border-radius:3px; background:var(--on-surface); opacity:.35;}
+</style>
+</head>
+<body>
+  <div class="phone"><div class="screen">
+
+    <!-- details backdrop -->
+    <div class="statusbar">
+      <span>4:52</span>
+      <span class="sys"><span class="msr">network_wifi</span><span class="msr">signal_cellular_alt</span><span class="msr fill">battery_5_bar</span></span>
+    </div>
+    <header class="appbar">
+      <button class="iconbtn"><span class="msr">arrow_back</span></button>
+      <span class="grow"></span>
+      <button class="iconbtn"><span class="msr">share</span></button>
+      <button class="iconbtn"><span class="msr">more_vert</span></button>
+    </header>
+    <div class="dcontent">
+      <div class="d-head">
+        <div class="d-badge"><span class="msr fill">download</span></div>
+        <div class="d-htext">
+          <h2>Book 1</h2>
+          <div class="sub">
+            <span class="pill"><span class="msr">download</span>Downloading</span>
+            <span class="pill" id="labelPill"><span class="msr">label</span>Books</span>
+          </div>
+        </div>
+      </div>
+      <div class="d-actions">
+        <button class="btn-primary"><span class="msr fill">pause</span> Pause</button>
+        <button class="btn-ic"><span class="msr">delete</span></button>
+        <button class="btn-ic"><span class="msr">checklist</span></button>
+        <button class="btn-ic on" id="labelBtn" title="Set label"><span class="msr">sell</span></button>
+      </div>
+      <div class="pbar"><span></span></div>
+      <div class="pline"><span><b>80.1 MB</b> of 209.3 MB</span><span>1h 8m left</span></div>
+    </div>
+
+    <div class="gesture"><i></i></div>
+
+    <!-- Set label bottom sheet -->
+    <div class="overlay open" id="overlay">
+      <div class="scrim" id="scrim"></div>
+      <div class="sheet">
+        <div class="handle"></div>
+        <div class="sheet-head">
+          <h3>Set label</h3>
+          <p>for &ldquo;Book 1&rdquo;</p>
+        </div>
+        <div class="sheet-field">
+          <span class="msr">label</span>
+          <input id="filter" type="text" placeholder="Filter or create a label" aria-label="Filter or create a label">
+        </div>
+        <div class="sheet-list" id="labelList"></div>
+        <div class="sheet-actions">
+          <button class="btn-text" id="cancel">Cancel</button>
+          <button class="btn-save" id="save">Set label</button>
+        </div>
+      </div>
+    </div>
+
+  </div></div>
+
+<script>
+const LABELS = [
+  {name:'Books',    count:3, cls:'books'},
+  {name:'Music',    count:2, cls:'music'},
+  {name:'Software', count:1, cls:'soft'},
+  {name:'Video',    count:4, cls:'video'},
+];
+let selected = 'Books';   // current label; null = No label
+
+const filter = document.getElementById('filter');
+
+function render(){
+  const f = filter.value.trim();
+  const fl = f.toLowerCase();
+  let html = '';
+  if(!f){
+    const sel = selected===null ? 'sel' : '';
+    html += `<button class="lrow ${sel}" data-none="1"><span class="msr lnone">label_off</span><span class="lname">No label</span><span class="msr lcheck">check</span></button>`;
+  }
+  const matches = LABELS.filter(l=>l.name.toLowerCase().includes(fl));
+  matches.forEach(l=>{
+    const sel = selected===l.name ? 'sel' : '';
+    html += `<button class="lrow ${sel}" data-name="${l.name}"><span class="ldot ${l.cls}"></span><span class="lname">${l.name}</span><span class="lcount">${l.count}</span><span class="msr lcheck">check</span></button>`;
+  });
+  const exact = LABELS.some(l=>l.name.toLowerCase()===fl);
+  if(f && !exact){
+    html += `<button class="lrow create" data-create="${f.replace(/"/g,'&quot;')}"><span class="msr lplus">add</span><span class="lname">Create &ldquo;${f}&rdquo;</span></button>`;
+  }
+  document.getElementById('labelList').innerHTML = html;
+
+  document.querySelectorAll('.lrow').forEach(r=>r.addEventListener('click', ()=>{
+    if(r.dataset.create !== undefined){
+      const name = r.dataset.create;
+      LABELS.push({name, count:0, cls:'new'});
+      selected = name; filter.value=''; render();
+    } else if(r.dataset.none){
+      selected = null; render();
+    } else {
+      selected = r.dataset.name; render();
+    }
+  }));
+}
+render();
+filter.addEventListener('input', render);
+
+// open / close
+const overlay = document.getElementById('overlay');
+const labelPill = document.getElementById('labelPill');
+function close(){ overlay.classList.remove('open'); }
+document.getElementById('cancel').addEventListener('click', close);
+document.getElementById('scrim').addEventListener('click', close);
+document.getElementById('labelBtn').addEventListener('click', ()=>{ overlay.classList.add('open'); });
+document.getElementById('save').addEventListener('click', ()=>{
+  labelPill.innerHTML = selected===null
+    ? '<span class="msr">label_off</span>No label'
+    : `<span class="msr">label</span>${selected}`;
+  close();
+});
+</script>
+</body>
+</html>

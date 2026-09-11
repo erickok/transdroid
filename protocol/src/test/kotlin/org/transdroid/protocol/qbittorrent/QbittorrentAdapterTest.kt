@@ -239,6 +239,51 @@ class QbittorrentAdapterTest {
     }
 
     @Test
+    fun `set label creates the category then assigns it`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody(""))
+        server.enqueue(MockResponse().setBody(""))
+
+        adapter().setLabel("abcdef", "Movies")
+
+        server.takeRequest() // login
+        val create = server.takeRequest()
+        assertEquals("/api/v2/torrents/createCategory", create.path)
+        assertEquals("category=Movies", create.body.readUtf8())
+        val set = server.takeRequest()
+        assertEquals("/api/v2/torrents/setCategory", set.path)
+        assertEquals("hashes=abcdef&category=Movies", set.body.readUtf8())
+    }
+
+    @Test
+    fun `set label survives createCategory failing because it already exists`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setResponseCode(409))
+        server.enqueue(MockResponse().setBody(""))
+
+        adapter().setLabel("abcdef", "Movies")
+
+        server.takeRequest() // login
+        server.takeRequest() // createCategory (409)
+        val set = server.takeRequest()
+        assertEquals("/api/v2/torrents/setCategory", set.path)
+    }
+
+    @Test
+    fun `set label with a blank string clears the category without creating one`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody(""))
+
+        adapter().setLabel("abcdef", "")
+
+        server.takeRequest() // login
+        val set = server.takeRequest()
+        assertEquals("/api/v2/torrents/setCategory", set.path)
+        assertEquals("hashes=abcdef&category=", set.body.readUtf8())
+        assertEquals(2, server.requestCount)
+    }
+
+    @Test
     fun `reads alt speed limits mode`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(MockResponse().setBody("1"))

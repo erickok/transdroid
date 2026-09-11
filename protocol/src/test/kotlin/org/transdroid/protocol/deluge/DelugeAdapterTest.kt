@@ -269,6 +269,58 @@ class DelugeAdapterTest {
     }
 
     @Test
+    fun `set label adds the label then assigns it`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(connectedOk())
+        server.enqueue(MockResponse().setBody("""{"result": null, "error": null, "id": 3}"""))
+        server.enqueue(MockResponse().setBody("""{"result": null, "error": null, "id": 4}"""))
+
+        adapter.setLabel("abcdef", "Movies")
+
+        server.takeRequest() // login
+        server.takeRequest() // web.connected
+        val add = server.takeRequest().body.readUtf8()
+        assertTrue(add.contains("\"method\":\"label.add\""))
+        assertTrue(add.contains("Movies"))
+        val set = server.takeRequest().body.readUtf8()
+        assertTrue(set.contains("\"method\":\"label.set_torrent\""))
+        assertTrue(set.contains("abcdef"))
+    }
+
+    @Test
+    fun `set label survives label add failing because it already exists`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(connectedOk())
+        server.enqueue(
+            MockResponse().setBody("""{"result": null, "error": {"message": "Label already exists", "code": 5}, "id": 3}""")
+        )
+        server.enqueue(MockResponse().setBody("""{"result": null, "error": null, "id": 4}"""))
+
+        adapter.setLabel("abcdef", "Movies")
+
+        server.takeRequest() // login
+        server.takeRequest() // web.connected
+        server.takeRequest() // label.add (fails)
+        val set = server.takeRequest().body.readUtf8()
+        assertTrue(set.contains("\"method\":\"label.set_torrent\""))
+    }
+
+    @Test
+    fun `set label with a blank string clears it without adding a label`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(connectedOk())
+        server.enqueue(MockResponse().setBody("""{"result": null, "error": null, "id": 3}"""))
+
+        adapter.setLabel("abcdef", "")
+
+        server.takeRequest() // login
+        server.takeRequest() // web.connected
+        val set = server.takeRequest().body.readUtf8()
+        assertTrue(set.contains("\"method\":\"label.set_torrent\""))
+        assertEquals(3, server.requestCount)
+    }
+
+    @Test
     fun `daemon error maps to unexpected response`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(connectedOk())

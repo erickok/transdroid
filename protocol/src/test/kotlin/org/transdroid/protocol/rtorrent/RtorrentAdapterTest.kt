@@ -171,6 +171,17 @@ class RtorrentAdapterTest {
     }
 
     @Test
+    fun `set label encodes the value like encodeURIComponent`() = runTest {
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.setLabel("ABCDEF", "Linux ISOs & Extras")
+
+        val body = server.takeRequest().body.readUtf8()
+        assertTrue(body.contains("<methodName>d.custom1.set</methodName>"))
+        assertTrue("space encodes as %20, not +", body.contains("Linux%20ISOs%20%26%20Extras"))
+    }
+
+    @Test
     fun `xml-rpc fault maps to unexpected response`() = runTest {
         server.enqueue(
             MockResponse().setBody(

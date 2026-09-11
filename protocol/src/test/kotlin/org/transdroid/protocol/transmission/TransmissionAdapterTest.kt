@@ -226,6 +226,28 @@ class TransmissionAdapterTest {
     }
 
     @Test
+    fun `set label sends a single-element labels array`() = runTest {
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{}}"""))
+
+        adapter.setLabel("7", "Movies")
+
+        val body = server.takeRequest().body.readUtf8()
+        assertTrue(body.contains("\"method\":\"torrent-set\""))
+        assertTrue(body.contains("\"ids\":[7]"))
+        assertTrue(body.contains("\"labels\":[\"Movies\"]"))
+    }
+
+    @Test
+    fun `set label with a blank string sends an empty labels array`() = runTest {
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{}}"""))
+
+        adapter.setLabel("7", "")
+
+        val body = server.takeRequest().body.readUtf8()
+        assertTrue(body.contains("\"labels\":[]"))
+    }
+
+    @Test
     fun `reads alt speed enabled from session-get`() = runTest {
         server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{"alt-speed-enabled":true}}"""))
 

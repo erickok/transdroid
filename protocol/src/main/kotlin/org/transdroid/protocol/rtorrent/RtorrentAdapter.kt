@@ -17,6 +17,7 @@
 package org.transdroid.protocol.rtorrent
 
 import java.net.URLDecoder
+import java.net.URLEncoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Credentials
@@ -189,6 +190,15 @@ class RtorrentAdapter(
         call("f.priority.set", "$torrentId:f$fileIndex", value)
         call("d.update_priorities", torrentId)
     }
+
+    /** Mirrors the read side: ruTorrent stores its label encodeURIComponent-encoded in custom1. */
+    override suspend fun setLabel(torrentId: String, label: String) {
+        call("d.custom1.set", torrentId, encodeURIComponent(label))
+    }
+
+    /** Java's URLEncoder is form-encoding (space -> "+"); this matches JS's encodeURIComponent instead. */
+    private fun encodeURIComponent(value: String): String =
+        URLEncoder.encode(value, "UTF-8").replace("+", "%20")
 
     override suspend fun listTrackers(torrentId: String): List<Tracker> {
         val rows = call(

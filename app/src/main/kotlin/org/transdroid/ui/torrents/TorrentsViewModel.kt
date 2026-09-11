@@ -334,6 +334,11 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         runAction { adapter -> adapter.remove(torrent.id, deleteData) }
     }
 
+    /** [label] null or blank clears it. */
+    fun setLabel(torrent: Torrent, label: String?) {
+        runAction { adapter -> adapter.setLabel(torrent.id, label.orEmpty()) }
+    }
+
     /** Flips alternative ("turtle") speed limits; optimistic, since a poll cycle would confirm it anyway. */
     fun toggleAltSpeed() {
         val profile = _ui.value.activeProfile ?: return

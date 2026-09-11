@@ -267,6 +267,23 @@ class DelugeAdapter(
         }
     }
 
+    /**
+     * Requires the Label plugin; label.set_torrent requires the label to already exist in its
+     * registry, so a new one is created first (ignoring failure - most likely it already exists).
+     * An empty label clears it, mirroring how the read side treats a blank "label" as no label.
+     */
+    override suspend fun setLabel(torrentId: String, label: String) {
+        ensureAuthenticated()
+        if (label.isNotBlank()) {
+            try {
+                call("label.add", label)
+            } catch (e: DaemonException.UnexpectedResponse) {
+                // Most likely already exists; label.set_torrent below still works
+            }
+        }
+        call("label.set_torrent", torrentId, label)
+    }
+
     private suspend fun ensureAuthenticated() {
         if (sessionCookie == null) login()
     }

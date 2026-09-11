@@ -197,6 +197,13 @@ class TransmissionAdapter(
         }
     }
 
+    override suspend fun setLabel(torrentId: String, label: String) {
+        request("torrent-set") {
+            putIds(torrentId)
+            put("labels", buildJsonArray { if (label.isNotBlank()) add(label) })
+        }
+    }
+
     override val supportsAltSpeedLimits: Boolean get() = true
 
     override suspend fun isAltSpeedLimitsEnabled(): Boolean {

@@ -165,6 +165,20 @@ class QbittorrentAdapter(
         return trackers.filterNot { it.url.startsWith("**") }.map { it.toTracker() }
     }
 
+    /** qBittorrent calls this a "category"; a category must exist before it can be assigned. */
+    override suspend fun setLabel(torrentId: String, label: String) {
+        if (label.isNotBlank()) {
+            try {
+                val createForm = FormBody.Builder().add("category", label).build()
+                post("api/v2/torrents/createCategory", createForm).use { it.readBodyOrThrow() }
+            } catch (e: DaemonException.UnexpectedResponse) {
+                // Most likely already exists (qBittorrent answers 409); setCategory below still works
+            }
+        }
+        val form = FormBody.Builder().add("hashes", torrentId).add("category", label).build()
+        post("api/v2/torrents/setCategory", form).use { it.readBodyOrThrow() }
+    }
+
     override val supportsAltSpeedLimits: Boolean get() = true
 
     override suspend fun isAltSpeedLimitsEnabled(): Boolean =

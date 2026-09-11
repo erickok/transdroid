@@ -39,9 +39,11 @@ import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Label
+import androidx.compose.material.icons.rounded.LabelOff
 import androidx.compose.material.icons.rounded.Lan
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Sell
 import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -49,9 +51,11 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.PrimaryTabRow
@@ -152,6 +156,7 @@ fun TorrentDetailsContent(
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     var showRemoveDialog by remember { mutableStateOf(false) }
+    var showLabelSheet by remember { mutableStateOf(false) }
     var selectedTab by rememberSaveable(torrent.id) { mutableStateOf(0) }
 
     LaunchedEffect(torrent.id) {
@@ -190,6 +195,20 @@ fun TorrentDetailsContent(
                 Icon(Icons.Rounded.Delete, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.details_remove))
+            }
+            FilledIconToggleButton(
+                checked = torrent.labels.isNotEmpty(),
+                onCheckedChange = { showLabelSheet = true },
+                shape = MaterialTheme.shapes.large,
+                modifier = Modifier.size(48.dp),
+                colors = IconButtonDefaults.filledIconToggleButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                ),
+            ) {
+                Icon(Icons.Rounded.Sell, contentDescription = stringResource(R.string.details_set_label))
             }
         }
 
@@ -278,6 +297,17 @@ fun TorrentDetailsContent(
             },
         )
     }
+
+    if (showLabelSheet) {
+        SetLabelSheet(
+            torrentName = torrent.name,
+            currentLabel = torrent.labels.firstOrNull(),
+            availableLabels = ui.availableLabels,
+            countForLabel = { ui.countForLabel(it) },
+            onSetLabel = { label -> viewModel.setLabel(torrent, label) },
+            onDismiss = { showLabelSheet = false },
+        )
+    }
 }
 
 @Composable
@@ -313,7 +343,11 @@ private fun DetailsHeader(torrent: Torrent) {
             Spacer(Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 DetailPill(torrent.status.leadingIcon, torrent.statusLabel())
-                torrent.labels.firstOrNull()?.let { DetailPill(Icons.Rounded.Label, it) }
+                val label = torrent.labels.firstOrNull()
+                DetailPill(
+                    if (label != null) Icons.Rounded.Label else Icons.Rounded.LabelOff,
+                    label ?: stringResource(R.string.drawer_no_label),
+                )
             }
         }
     }

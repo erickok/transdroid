@@ -61,6 +61,14 @@ interface DaemonAdapter {
 
     suspend fun listTrackers(torrentId: String): List<Tracker>
 
+    /**
+     * Sets (replaces) the torrent's label; a blank string clears it. Every client supports some
+     * notion of a per-torrent label, but the exact model differs - qBittorrent and Deluge keep a
+     * server-side registry that a label must be created in before it can be assigned (handled
+     * internally here), while Transmission and rTorrent just accept an arbitrary string.
+     */
+    suspend fun setLabel(torrentId: String, label: String)
+
     /** Whether this client exposes an alternative ("turtle") speed limits toggle at all. */
     val supportsAltSpeedLimits: Boolean get() = false
 
