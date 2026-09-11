@@ -197,6 +197,17 @@ class TransmissionAdapter(
         }
     }
 
+    override val supportsAltSpeedLimits: Boolean get() = true
+
+    override suspend fun isAltSpeedLimitsEnabled(): Boolean {
+        val arguments = request("session-get")
+        return arguments["alt-speed-enabled"]?.jsonPrimitive?.booleanOrNull ?: false
+    }
+
+    override suspend fun setAltSpeedLimitsEnabled(enabled: Boolean) {
+        request("session-set") { put("alt-speed-enabled", enabled) }
+    }
+
     private fun kotlinx.serialization.json.JsonObjectBuilder.putIds(torrentId: String) {
         val id = torrentId.toIntOrNull()
             ?: throw DaemonException.UnexpectedResponse("Not a Transmission torrent id: $torrentId")

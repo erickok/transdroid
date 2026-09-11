@@ -224,4 +224,25 @@ class TransmissionAdapterTest {
             assertTrue(expected.message!!.contains("invalid or corrupt torrent file"))
         }
     }
+
+    @Test
+    fun `reads alt speed enabled from session-get`() = runTest {
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{"alt-speed-enabled":true}}"""))
+
+        val enabled = adapter.isAltSpeedLimitsEnabled()
+
+        assertTrue(enabled)
+        assertTrue(server.takeRequest().body.readUtf8().contains("\"method\":\"session-get\""))
+    }
+
+    @Test
+    fun `setting alt speed limits sends session-set directly`() = runTest {
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{}}"""))
+
+        adapter.setAltSpeedLimitsEnabled(true)
+
+        val body = server.takeRequest().body.readUtf8()
+        assertTrue(body.contains("\"method\":\"session-set\""))
+        assertTrue(body.contains("\"alt-speed-enabled\":true"))
+    }
 }
