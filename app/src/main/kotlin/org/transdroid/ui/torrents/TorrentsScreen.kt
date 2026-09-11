@@ -73,11 +73,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -101,6 +103,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.stringResource
@@ -209,9 +212,6 @@ fun TorrentsScreen(
                             }
                         },
                         actions = {
-                            if (ui.altSpeedSupported) {
-                                AltSpeedButton(enabled = ui.altSpeedEnabled, onClick = { viewModel.toggleAltSpeed() })
-                            }
                             if (searchAvailable) {
                                 IconButton(onClick = onOpenSearch) {
                                     Icon(Icons.Rounded.Search, contentDescription = stringResource(R.string.search_title))
@@ -355,26 +355,34 @@ private fun TabletTopBar(
     }
 }
 
+/** Toggles the daemon's alternative ("turtle") speed limits; a filled highlight when active, matching design/mockups/transdroid-m3-expressive.html's `.tbtn.on`. */
+@Composable
+private fun AltSpeedButton(enabled: Boolean, onClick: () -> Unit) {
+    FilledIconToggleButton(
+        checked = enabled,
+        onCheckedChange = { onClick() },
+        colors = IconButtonDefaults.filledIconToggleButtonColors(
+            containerColor = Color.Transparent,
+            checkedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            checkedContentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+    ) {
+        Icon(
+            Icons.Rounded.Speed,
+            contentDescription = stringResource(
+                if (enabled) R.string.torrents_alt_speed_on else R.string.torrents_alt_speed_off
+            ),
+        )
+    }
+}
+
 /**
  * The active server as a small pill in the torrents list's header. Tapping the header text still
  * scrolls to top (its own clickable, further up the tree); tapping specifically this pill instead
  * opens a switcher, same idea as the filter drawer's [ServerSelector] - just compact enough for
  * the app bar.
  */
-/** Toggles the daemon's alternative ("turtle") speed limits; tinted when active. */
-@Composable
-private fun AltSpeedButton(enabled: Boolean, onClick: () -> Unit) {
-    IconButton(onClick = onClick) {
-        Icon(
-            Icons.Rounded.Speed,
-            contentDescription = stringResource(
-                if (enabled) R.string.torrents_alt_speed_on else R.string.torrents_alt_speed_off
-            ),
-            tint = if (enabled) MaterialTheme.colorScheme.primary else LocalContentColor.current,
-        )
-    }
-}
-
 @Composable
 private fun ServerChip(activeProfile: ServerProfile, allProfiles: List<ServerProfile>, onSwitchProfile: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
@@ -564,6 +572,9 @@ private fun TorrentListContent(
                     sortDescending = ui.sortDescending,
                     onSortSelect = { viewModel.setSort(it) },
                     onRefresh = { viewModel.refresh() },
+                    altSpeedSupported = ui.altSpeedSupported,
+                    altSpeedEnabled = ui.altSpeedEnabled,
+                    onToggleAltSpeed = { viewModel.toggleAltSpeed() },
                 )
             }
         }
@@ -598,6 +609,9 @@ private fun TorrentsToolbar(
     sortDescending: Boolean,
     onSortSelect: (TorrentSort) -> Unit,
     onRefresh: () -> Unit,
+    altSpeedSupported: Boolean,
+    altSpeedEnabled: Boolean,
+    onToggleAltSpeed: () -> Unit,
 ) {
     Surface(
         shape = MaterialTheme.shapes.extraLarge,
@@ -621,6 +635,9 @@ private fun TorrentsToolbar(
                 caption = stringResource(R.string.toolbar_upload_sharing, sharingCount),
             )
             Spacer(Modifier.weight(1f))
+            if (altSpeedSupported) {
+                AltSpeedButton(enabled = altSpeedEnabled, onClick = onToggleAltSpeed)
+            }
             IconButton(onClick = onRefresh) {
                 Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
             }
