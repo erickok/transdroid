@@ -171,6 +171,17 @@ class RtorrentAdapterTest {
     }
 
     @Test
+    fun `check data calls d-check_hash`() = runTest {
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.checkData("ABCDEF")
+
+        val body = server.takeRequest().body.readUtf8()
+        assertTrue(body.contains("<methodName>d.check_hash</methodName>"))
+        assertTrue(body.contains("ABCDEF"))
+    }
+
+    @Test
     fun `set label encodes the value like encodeURIComponent`() = runTest {
         server.enqueue(xmlResponse("<i8>0</i8>"))
 

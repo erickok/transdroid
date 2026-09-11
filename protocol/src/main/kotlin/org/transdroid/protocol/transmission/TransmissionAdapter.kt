@@ -119,6 +119,10 @@ class TransmissionAdapter(
         }
     }
 
+    override suspend fun checkData(torrentId: String) {
+        request("torrent-verify") { putIds(torrentId) }
+    }
+
     override suspend fun listFiles(torrentId: String): List<TorrentFile> {
         val arguments = request("torrent-get") {
             putIds(torrentId)

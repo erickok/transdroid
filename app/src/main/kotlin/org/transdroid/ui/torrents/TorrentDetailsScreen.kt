@@ -36,6 +36,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
+import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Label
@@ -51,6 +52,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -195,6 +197,17 @@ fun TorrentDetailsContent(
                 Icon(Icons.Rounded.Delete, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.details_remove))
+            }
+            FilledIconButton(
+                onClick = { viewModel.checkData(torrent) },
+                shape = MaterialTheme.shapes.large,
+                modifier = Modifier.size(48.dp),
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+            ) {
+                Icon(Icons.Rounded.Checklist, contentDescription = stringResource(R.string.details_check_data))
             }
             FilledIconToggleButton(
                 checked = torrent.labels.isNotEmpty(),

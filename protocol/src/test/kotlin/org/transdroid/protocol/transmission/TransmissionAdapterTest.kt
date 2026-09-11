@@ -203,6 +203,17 @@ class TransmissionAdapterTest {
     }
 
     @Test
+    fun `check data sends torrent-verify with ids`() = runTest {
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{}}"""))
+
+        adapter.checkData("7")
+
+        val body = server.takeRequest().body.readUtf8()
+        assertTrue(body.contains("\"method\":\"torrent-verify\""))
+        assertTrue(body.contains("\"ids\":[7]"))
+    }
+
+    @Test
     fun `401 maps to authentication error`() = runTest {
         server.enqueue(MockResponse().setResponseCode(401))
 

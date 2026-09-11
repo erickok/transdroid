@@ -239,6 +239,19 @@ class QbittorrentAdapterTest {
     }
 
     @Test
+    fun `check data posts recheck with hashes`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody(""))
+
+        adapter().checkData("abcdef")
+
+        server.takeRequest() // login
+        val recheck = server.takeRequest()
+        assertEquals("/api/v2/torrents/recheck", recheck.path)
+        assertEquals("hashes=abcdef", recheck.body.readUtf8())
+    }
+
+    @Test
     fun `set label creates the category then assigns it`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(MockResponse().setBody(""))

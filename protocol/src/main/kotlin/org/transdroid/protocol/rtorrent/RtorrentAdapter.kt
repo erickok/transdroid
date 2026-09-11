@@ -155,6 +155,11 @@ class RtorrentAdapter(
         call("d.erase", torrentId)
     }
 
+    /** Started torrents are paused during the rehash and resumed automatically once it finishes. */
+    override suspend fun checkData(torrentId: String) {
+        call("d.check_hash", torrentId)
+    }
+
     override suspend fun listFiles(torrentId: String): List<TorrentFile> {
         val rows = call(
             "f.multicall",

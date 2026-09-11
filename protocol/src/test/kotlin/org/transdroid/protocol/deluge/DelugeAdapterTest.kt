@@ -269,6 +269,21 @@ class DelugeAdapterTest {
     }
 
     @Test
+    fun `check data calls core-force_recheck with a list of ids`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(connectedOk())
+        server.enqueue(MockResponse().setBody("""{"result": null, "error": null, "id": 3}"""))
+
+        adapter.checkData("abcdef")
+
+        server.takeRequest() // login
+        server.takeRequest() // web.connected
+        val recheck = server.takeRequest().body.readUtf8()
+        assertTrue(recheck.contains("\"method\":\"core.force_recheck\""))
+        assertTrue(recheck.contains("[\"abcdef\"]"))
+    }
+
+    @Test
     fun `set label adds the label then assigns it`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(connectedOk())

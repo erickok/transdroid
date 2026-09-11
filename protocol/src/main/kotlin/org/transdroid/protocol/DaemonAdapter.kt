@@ -69,6 +69,12 @@ interface DaemonAdapter {
      */
     suspend fun setLabel(torrentId: String, label: String)
 
+    /**
+     * Forces a data recheck: re-hashes the torrent's downloaded pieces against the .torrent
+     * file's piece hashes to verify integrity. Every client supports this natively.
+     */
+    suspend fun checkData(torrentId: String)
+
     /** Whether this client exposes an alternative ("turtle") speed limits toggle at all. */
     val supportsAltSpeedLimits: Boolean get() = false
 

@@ -125,6 +125,11 @@ class QbittorrentAdapter(
         post("api/v2/torrents/delete", form).use { it.readBodyOrThrow() }
     }
 
+    override suspend fun checkData(torrentId: String) {
+        val form = FormBody.Builder().add("hashes", torrentId).build()
+        post("api/v2/torrents/recheck", form).use { it.readBodyOrThrow() }
+    }
+
     override suspend fun listFiles(torrentId: String): List<TorrentFile> {
         val files = get("api/v2/torrents/files?hash=$torrentId").use { it.decodeJsonListOrThrow<FileInfo>("file list") }
         return files.mapIndexed { listIndex, file ->

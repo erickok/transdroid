@@ -181,6 +181,11 @@ class DelugeAdapter(
         call("core.remove_torrent", torrentId, deleteData)
     }
 
+    override suspend fun checkData(torrentId: String) {
+        ensureAuthenticated()
+        call("core.force_recheck", buildJsonArray { add(torrentId) })
+    }
+
     override suspend fun listFiles(torrentId: String): List<TorrentFile> {
         ensureAuthenticated()
         val result = call(
