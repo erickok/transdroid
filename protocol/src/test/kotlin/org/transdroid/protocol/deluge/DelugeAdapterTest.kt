@@ -66,9 +66,13 @@ class DelugeAdapterTest {
         .setBody("""{"result": true, "error": null, "id": 1}""")
         .setHeader("Set-Cookie", "_session_id=abc123; Path=/json")
 
+    /** web.connected reply saying the Web UI is already attached to a daemon - the common case. */
+    private fun connectedOk() = MockResponse().setBody("""{"result": true, "error": null, "id": 2}""")
+
     @Test
     fun `logs in with password and passes session cookie`() = runTest {
         server.enqueue(loginOk())
+        server.enqueue(connectedOk())
         server.enqueue(MockResponse().setBody(fixture("torrents-status.json")))
 
         adapter.listTorrents()
@@ -78,6 +82,8 @@ class DelugeAdapterTest {
         val loginBody = login.body.readUtf8()
         assertTrue(loginBody.contains("\"method\":\"auth.login\""))
         assertTrue(loginBody.contains("\"deluge\""))
+        val connectedCheck = server.takeRequest()
+        assertTrue(connectedCheck.body.readUtf8().contains("\"method\":\"web.connected\""))
         val status = server.takeRequest()
         assertEquals("_session_id=abc123", status.getHeader("Cookie"))
         assertTrue(status.body.readUtf8().contains("core.get_torrents_status"))
@@ -95,8 +101,46 @@ class DelugeAdapterTest {
     }
 
     @Test
+    fun `connects to the daemon host when the web UI is not already connected`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody("""{"result": false, "error": null, "id": 2}"""))
+        server.enqueue(
+            MockResponse().setBody(
+                """{"result": [["405b6c37a1e3b5527fc0c4a2b0fea54f0bd0c000", "127.0.0.1", 58846, "Online"]], "error": null, "id": 3}"""
+            )
+        )
+        server.enqueue(MockResponse().setBody("""{"result": [], "error": null, "id": 4}"""))
+        server.enqueue(MockResponse().setBody(fixture("torrents-status.json")))
+
+        val torrents = adapter.listTorrents()
+
+        assertEquals(4, torrents.size)
+        server.takeRequest() // login
+        server.takeRequest() // web.connected -> false
+        assertTrue(server.takeRequest().body.readUtf8().contains("\"method\":\"web.get_hosts\""))
+        val connect = server.takeRequest().body.readUtf8()
+        assertTrue(connect.contains("\"method\":\"web.connect\""))
+        assertTrue(connect.contains("405b6c37a1e3b5527fc0c4a2b0fea54f0bd0c000"))
+    }
+
+    @Test
+    fun `no configured daemon host is a diagnosable error`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody("""{"result": false, "error": null, "id": 2}"""))
+        server.enqueue(MockResponse().setBody("""{"result": [], "error": null, "id": 3}"""))
+
+        try {
+            adapter.listTorrents()
+            fail("Expected DaemonException.UnexpectedResponse")
+        } catch (expected: DaemonException.UnexpectedResponse) {
+            assertTrue(expected.message!!.contains("no daemon host configured"))
+        }
+    }
+
+    @Test
     fun `list torrents parses and normalizes fixture`() = runTest {
         server.enqueue(loginOk())
+        server.enqueue(connectedOk())
         server.enqueue(MockResponse().setBody(fixture("torrents-status.json")))
 
         val torrents = adapter.listTorrents().sortedByDescending { it.addedTimestamp }
@@ -128,21 +172,24 @@ class DelugeAdapterTest {
     @Test
     fun `expired session re-authenticates once`() = runTest {
         server.enqueue(loginOk())
+        server.enqueue(connectedOk())
         server.enqueue(
             MockResponse().setBody("""{"result": null, "error": {"message": "Not authenticated", "code": 1}, "id": 2}""")
         )
         server.enqueue(loginOk())
+        server.enqueue(connectedOk())
         server.enqueue(MockResponse().setBody(fixture("torrents-status.json")))
 
         val torrents = adapter.listTorrents()
 
         assertEquals(4, torrents.size)
-        assertEquals(4, server.requestCount)
+        assertEquals(6, server.requestCount)
     }
 
     @Test
     fun `list trackers marks only the active tracker with live status`() = runTest {
         server.enqueue(loginOk())
+        server.enqueue(connectedOk())
         server.enqueue(
             MockResponse().setBody(
                 """{"result": {
@@ -171,6 +218,7 @@ class DelugeAdapterTest {
     @Test
     fun `list trackers reads tracker errors as error status`() = runTest {
         server.enqueue(loginOk())
+        server.enqueue(connectedOk())
         server.enqueue(
             MockResponse().setBody(
                 """{"result": {
@@ -189,6 +237,7 @@ class DelugeAdapterTest {
     @Test
     fun `pause and resume use list parameters`() = runTest {
         server.enqueue(loginOk())
+        server.enqueue(connectedOk())
         server.enqueue(MockResponse().setBody("""{"result": null, "error": null, "id": 2}"""))
         server.enqueue(MockResponse().setBody("""{"result": null, "error": null, "id": 3}"""))
 
@@ -196,6 +245,7 @@ class DelugeAdapterTest {
         adapter.start("abcdef")
 
         server.takeRequest() // login
+        server.takeRequest() // web.connected
         val pause = server.takeRequest().body.readUtf8()
         assertTrue(pause.contains("\"method\":\"core.pause_torrent\""))
         assertTrue(pause.contains("[[\"abcdef\"]]"))
@@ -206,11 +256,13 @@ class DelugeAdapterTest {
     @Test
     fun `remove sends id and delete flag`() = runTest {
         server.enqueue(loginOk())
+        server.enqueue(connectedOk())
         server.enqueue(MockResponse().setBody("""{"result": true, "error": null, "id": 2}"""))
 
         adapter.remove("abcdef", deleteData = true)
 
         server.takeRequest() // login
+        server.takeRequest() // web.connected
         val remove = server.takeRequest().body.readUtf8()
         assertTrue(remove.contains("\"method\":\"core.remove_torrent\""))
         assertTrue(remove.contains("[\"abcdef\",true]"))
@@ -219,6 +271,7 @@ class DelugeAdapterTest {
     @Test
     fun `daemon error maps to unexpected response`() = runTest {
         server.enqueue(loginOk())
+        server.enqueue(connectedOk())
         server.enqueue(
             MockResponse().setBody("""{"result": null, "error": {"message": "Unknown method", "code": 2}, "id": 2}""")
         )

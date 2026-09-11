@@ -61,7 +61,8 @@ import org.transdroid.protocol.internal.joinPath
 /**
  * Adapter for the Deluge Web UI JSON-RPC API (POST /json with an _session_id cookie),
  * compatible with Deluge 1.3 and 2.x. Authentication uses the Web UI password only; the
- * username field is ignored. Assumes the Web UI is already connected to its daemon.
+ * username field is ignored. Connects the Web UI to its daemon host itself (see
+ * [ensureConnectedToDaemon]) rather than assuming that's already done.
  */
 class DelugeAdapter(
     override val config: DaemonConfig,
@@ -280,6 +281,36 @@ class DelugeAdapter(
                 throw DaemonException.Authentication("Deluge rejected the Web UI password")
             }
             sessionCookie = cookie.substringBefore(';')
+        }
+        ensureConnectedToDaemon()
+    }
+
+    /**
+     * The Web UI is a thin client to a separate daemon process; every `core.*` method - the
+     * whole torrent list, add/remove, everything - only becomes callable once the Web UI
+     * session has attached to a daemon host via web.connect. Without this, core.* calls fail
+     * with "Unknown method" even though auth.login already succeeded, since the Web UI itself
+     * only implements the auth and web namespaces until it's connected. See the handshake at
+     * https://deluge.readthedocs.io/en/latest/devguide/how-to/curl-jsonrpc.html.
+     */
+    private suspend fun ensureConnectedToDaemon() {
+        val connectedBody = send("web.connected", emptyList()).use { parseBody(it) }
+        val connected = connectedBody["result"]?.jsonPrimitive?.booleanOrNull ?: false
+        if (connected) return
+
+        val hostsBody = send("web.get_hosts", emptyList()).use { parseBody(it) }
+        val firstHost = hostsBody["result"]?.jsonArray?.firstOrNull()
+        val hostId = when {
+            firstHost is JsonArray -> firstHost.firstOrNull()?.jsonPrimitive?.contentOrNull
+            firstHost != null -> firstHost.jsonPrimitive.contentOrNull
+            else -> null
+        } ?: throw DaemonException.UnexpectedResponse("Deluge Web UI has no daemon host configured")
+
+        val connectBody = send("web.connect", listOf(hostId)).use { parseBody(it) }
+        val connectError = connectBody["error"]
+        if (connectError != null && connectError != JsonNull) {
+            val message = (connectError as? JsonObject)?.get("message")?.jsonPrimitive?.contentOrNull ?: "unknown error"
+            throw DaemonException.UnexpectedResponse("Deluge could not connect the Web UI to its daemon: $message")
         }
     }
 
