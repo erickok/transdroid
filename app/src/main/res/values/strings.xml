@@ -163,6 +163,9 @@
     <string name="settings_title">Settings</string>
     <string name="settings_servers">Servers</string>
     <string name="settings_add_server">Add server</string>
+    <!-- Debug builds only: offline test server backed by DummyDaemonAdapter, never shown in a release build -->
+    <string name="settings_add_dummy_server">Add dummy test server</string>
+    <string name="settings_dummy_server_subtitle">Offline test data · no real server</string>
     <string name="settings_active_server">Active</string>
     <string name="settings_edit_server">Edit server</string>
     <string name="settings_new_server">New server</string>

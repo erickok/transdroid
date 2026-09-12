@@ -94,6 +94,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.transdroid.BuildConfig
 import org.transdroid.R
+import org.transdroid.debug.DebugTools
 import org.transdroid.data.RssFeed
 import org.transdroid.data.SettingsRepository
 import org.transdroid.errorlog.ErrorLog
@@ -191,17 +192,35 @@ fun SettingsScreen(
                 SettingsSection(stringResource(R.string.settings_servers)) {
                     val effectiveActiveId = activeId ?: profiles.firstOrNull()?.id
                     profiles.forEach { profile ->
+                        val isDummy = DebugTools.isDummyServer(profile)
+                        val onClickRow: (() -> Unit)? = if (isDummy) null else ({ onEditServer(profile.id) })
                         SettingsRow(
                             icon = Icons.Rounded.Dns,
                             title = profile.displayName,
-                            subtitle = "${profile.type.displayName()} · ${profile.host}:${profile.port}",
-                            onClick = { onEditServer(profile.id) },
+                            subtitle = if (isDummy) {
+                                stringResource(R.string.settings_dummy_server_subtitle)
+                            } else {
+                                "${profile.type.displayName()} · ${profile.host}:${profile.port}"
+                            },
+                            // Editing a dummy profile through the normal form would silently
+                            // strip the extras marker that makes it dummy in the first place.
+                            onClick = onClickRow,
                             trailing = {
                                 if (profile.id == effectiveActiveId) {
                                     SettingsChip(stringResource(R.string.settings_active_server))
                                     Spacer(Modifier.width(4.dp))
                                 }
-                                Icon(Icons.Rounded.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                if (isDummy) {
+                                    IconButton(onClick = { viewModel.delete(profile.id) }) {
+                                        Icon(
+                                            Icons.Rounded.Delete,
+                                            contentDescription = stringResource(R.string.rss_delete_feed),
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
+                                } else {
+                                    Icon(Icons.Rounded.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
                             },
                         )
                     }
@@ -209,6 +228,12 @@ fun SettingsScreen(
                         title = stringResource(R.string.settings_add_server),
                         onClick = { onEditServer(null) },
                     )
+                    if (DebugTools.dummyServerAvailable) {
+                        SettingsAddRow(
+                            title = stringResource(R.string.settings_add_dummy_server),
+                            onClick = { viewModel.save(DebugTools.newDummyServerProfile()) },
+                        )
+                    }
                 }
             }
 

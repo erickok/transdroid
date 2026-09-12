@@ -21,6 +21,7 @@ import android.content.Context
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import org.transdroid.background.FinishedTorrentsWorker
+import org.transdroid.debug.DebugTools
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.data.ServerProfile
 import org.transdroid.discovery.LanDiscovery
@@ -50,20 +51,24 @@ class AppContainer(context: Context) {
             profiles.firstOrNull { it.id == activeId } ?: profiles.firstOrNull()
         }
 
-    /** Returns a (cached) adapter for [profile]; adapters keep session state like auth cookies. */
+    /**
+     * Returns a (cached) adapter for [profile]; adapters keep session state like auth cookies.
+     * [DebugTools.adapterFor] intercepts debug-only dummy test servers before this ever builds
+     * a real network-backed adapter - a no-op in release builds, see that object's doc comment.
+     */
     @Synchronized
     fun adapterFor(profile: ServerProfile): DaemonAdapter {
         cachedAdapter?.let { (cachedProfile, adapter) ->
             if (cachedProfile == profile) return adapter
         }
-        val adapter = DaemonAdapterFactory.create(profile.toDaemonConfig(), httpClient)
+        val adapter = DebugTools.adapterFor(profile) ?: DaemonAdapterFactory.create(profile.toDaemonConfig(), httpClient)
         cachedAdapter = profile to adapter
         return adapter
     }
 
     /** An uncached adapter for testing yet-unsaved connection settings. */
     fun adapterForTest(profile: ServerProfile): DaemonAdapter =
-        DaemonAdapterFactory.create(profile.toDaemonConfig(), httpClient)
+        DebugTools.adapterFor(profile) ?: DaemonAdapterFactory.create(profile.toDaemonConfig(), httpClient)
 }
 
 class TransdroidApplication : Application() {
