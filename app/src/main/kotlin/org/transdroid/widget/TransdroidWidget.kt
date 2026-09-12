@@ -364,14 +364,17 @@ class TransdroidWidget : GlanceAppWidget() {
     }
 
     /**
-     * The app's own launcher icon (adaptive-icon foreground layer only - already transparent
-     * outside its gear badge, so no separate background chip is drawn behind it here), matching
-     * the mockup's plain icon-only header glyph rather than a distinct badge shape/color.
+     * The app's own launcher icon, matching the mockup's plain icon-only header glyph rather than
+     * a distinct badge shape/color - no separate background chip is drawn behind it. Uses
+     * ic_widget_app_icon (a tight center-crop of the adaptive icon's foreground layer, one per
+     * density bucket) rather than that foreground drawable directly: the adaptive-icon format
+     * reserves a large transparent safe zone around the visible badge for the launcher's own
+     * masking/parallax, which at this widget's small size just reads as the icon being too small.
      */
     @Composable
     private fun WidgetIcon() {
         Image(
-            provider = ImageProvider(R.mipmap.ic_launcher_foreground),
+            provider = ImageProvider(R.drawable.ic_widget_app_icon),
             contentDescription = null,
             modifier = GlanceModifier.size(30.dp),
         )
