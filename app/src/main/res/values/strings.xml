@@ -5,7 +5,8 @@
 
     <!-- Torrents list -->
     <string name="torrents_title">Torrents</string>
-    <string name="torrents_select_prompt">Select a torrent to see its details</string>
+    <string name="torrents_select_title">No torrent selected</string>
+    <string name="torrents_select_prompt">Select a torrent from the list to see its details</string>
     <string name="torrents_no_server_title">No server configured</string>
     <string name="torrents_no_server_message">Add your Transmission, rTorrent or qBittorrent server to start managing torrents.</string>
     <string name="torrents_no_server_button">Add server</string>

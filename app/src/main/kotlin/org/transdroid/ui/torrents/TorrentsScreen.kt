@@ -27,6 +27,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -64,6 +67,7 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.South
 import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.material.icons.rounded.SyncAlt
+import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material.icons.rounded.UnfoldMore
 import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.Button
@@ -258,11 +262,11 @@ fun TorrentsScreen(
                                 if (selected != null) {
                                     TorrentDetailsContent(viewModel = viewModel, torrent = selected)
                                 } else {
-                                    Text(
-                                        stringResource(R.string.torrents_select_prompt),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.align(Alignment.Center),
+                                    EmptyState(
+                                        icon = Icons.Rounded.TouchApp,
+                                        title = stringResource(R.string.torrents_select_title),
+                                        message = stringResource(R.string.torrents_select_prompt),
+                                        modifier = Modifier.fillMaxSize().wrapContentSize(),
                                     )
                                 }
                             }
@@ -298,7 +302,9 @@ private fun TabletTopBar(
     onToggleAltSpeed: () -> Unit,
 ) {
     Surface(color = MaterialTheme.colorScheme.surface) {
-        Column {
+        // Unlike TopAppBar (used on the phone layout), this is a plain Surface/Row, so it
+        // doesn't get TopAppBar's automatic status bar inset padding - apply it explicitly.
+        Column(Modifier.windowInsetsPadding(WindowInsets.statusBars)) {
             Row(
                 Modifier.fillMaxWidth().height(64.dp).padding(horizontal = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
