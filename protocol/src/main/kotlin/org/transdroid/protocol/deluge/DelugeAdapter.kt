@@ -186,6 +186,11 @@ class DelugeAdapter(
         call("core.force_recheck", buildJsonArray { add(torrentId) })
     }
 
+    override suspend fun setDownloadLocation(torrentId: String, location: String) {
+        ensureAuthenticated()
+        call("core.move_storage", buildJsonArray { add(torrentId) }, location)
+    }
+
     override suspend fun listFiles(torrentId: String): List<TorrentFile> {
         ensureAuthenticated()
         val result = call(

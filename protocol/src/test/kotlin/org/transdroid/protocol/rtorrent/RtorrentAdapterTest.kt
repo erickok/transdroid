@@ -182,6 +182,23 @@ class RtorrentAdapterTest {
     }
 
     @Test
+    fun `set download location stops, closes, repoints, then reopens`() = runTest {
+        repeat(4) { server.enqueue(xmlResponse("<i8>0</i8>")) }
+
+        adapter.setDownloadLocation("ABCDEF", "/downloads/new")
+
+        val stop = server.takeRequest().body.readUtf8()
+        assertTrue(stop.contains("<methodName>d.stop</methodName>"))
+        val close = server.takeRequest().body.readUtf8()
+        assertTrue(close.contains("<methodName>d.close</methodName>"))
+        val setDir = server.takeRequest().body.readUtf8()
+        assertTrue(setDir.contains("<methodName>d.directory_base.set</methodName>"))
+        assertTrue(setDir.contains("/downloads/new"))
+        val open = server.takeRequest().body.readUtf8()
+        assertTrue(open.contains("<methodName>d.open</methodName>"))
+    }
+
+    @Test
     fun `set label encodes the value like encodeURIComponent`() = runTest {
         server.enqueue(xmlResponse("<i8>0</i8>"))
 

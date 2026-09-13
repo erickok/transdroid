@@ -343,6 +343,10 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         runAction { adapter -> adapter.checkData(torrent.id) }
     }
 
+    fun setDownloadLocation(torrent: Torrent, location: String) {
+        runAction { adapter -> adapter.setDownloadLocation(torrent.id, location) }
+    }
+
     /** Flips alternative ("turtle") speed limits; optimistic, since a poll cycle would confirm it anyway. */
     fun toggleAltSpeed() {
         val profile = _ui.value.activeProfile ?: return

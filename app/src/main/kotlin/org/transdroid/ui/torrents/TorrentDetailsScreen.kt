@@ -39,6 +39,7 @@ import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Description
+import androidx.compose.material.icons.rounded.DriveFileMove
 import androidx.compose.material.icons.rounded.Label
 import androidx.compose.material.icons.rounded.LabelOff
 import androidx.compose.material.icons.rounded.Lan
@@ -88,6 +89,7 @@ import java.net.URI
 import java.text.DateFormat
 import java.util.Date
 import org.transdroid.R
+import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
@@ -95,6 +97,7 @@ import org.transdroid.protocol.TorrentStatus
 import org.transdroid.protocol.Tracker
 import org.transdroid.protocol.TrackerStatus
 import org.transdroid.ui.components.TorrentProgressIndicator
+import org.transdroid.ui.components.TransdroidTextField
 import org.transdroid.ui.statusLabel
 import org.transdroid.ui.theme.LocalStatusColors
 import org.transdroid.ui.theme.accentColor
@@ -158,6 +161,7 @@ fun TorrentDetailsContent(
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     var showRemoveDialog by remember { mutableStateOf(false) }
     var showLabelSheet by remember { mutableStateOf(false) }
+    var showLocationDialog by remember { mutableStateOf(false) }
     var selectedTab by rememberSaveable(torrent.id) { mutableStateOf(0) }
 
     LaunchedEffect(torrent.id) {
@@ -216,6 +220,15 @@ fun TorrentDetailsContent(
                 ),
             ) {
                 Icon(Icons.Rounded.Sell, contentDescription = stringResource(R.string.details_set_label))
+            }
+            IconButton(
+                onClick = { showLocationDialog = true },
+                modifier = Modifier.size(48.dp),
+                colors = IconButtonDefaults.iconButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+            ) {
+                Icon(Icons.Rounded.DriveFileMove, contentDescription = stringResource(R.string.details_set_location))
             }
         }
 
@@ -315,6 +328,70 @@ fun TorrentDetailsContent(
             onDismiss = { showLabelSheet = false },
         )
     }
+
+    if (showLocationDialog) {
+        SetLocationDialog(
+            currentLocation = torrent.downloadDir.orEmpty(),
+            isRtorrent = ui.activeProfile?.type == DaemonType.RTORRENT,
+            onSetLocation = { location -> viewModel.setDownloadLocation(torrent, location) },
+            onDismiss = { showLocationDialog = false },
+        )
+    }
+}
+
+/**
+ * rTorrent can only repoint where it looks for a torrent's files, not physically move them (see
+ * DaemonAdapter.setDownloadLocation's doc) - shown as an inline warning rather than hiding the
+ * button for rTorrent servers, since it's still a real, useful action there when the files are
+ * already at (or about to be placed at) the new path.
+ */
+@Composable
+private fun SetLocationDialog(
+    currentLocation: String,
+    isRtorrent: Boolean,
+    onSetLocation: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var location by remember { mutableStateOf(currentLocation) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.details_set_location)) },
+        text = {
+            Column {
+                if (isRtorrent) {
+                    Text(
+                        stringResource(R.string.details_set_location_rtorrent_warning),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                    Spacer(Modifier.height(12.dp))
+                }
+                TransdroidTextField(
+                    value = location,
+                    onValueChange = { location = it },
+                    label = { Text(stringResource(R.string.details_set_location_label)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onDismiss()
+                    onSetLocation(location.trim())
+                },
+                enabled = location.isNotBlank(),
+            ) {
+                Text(stringResource(R.string.details_set_location_save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.details_cancel))
+            }
+        },
+    )
 }
 
 @Composable

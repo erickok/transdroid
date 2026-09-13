@@ -75,6 +75,14 @@ interface DaemonAdapter {
      */
     suspend fun checkData(torrentId: String)
 
+    /**
+     * Moves the torrent's download directory to [location]. Transmission, qBittorrent and
+     * Deluge physically move the files on disk; rTorrent has no RPC call that does this and can
+     * only repoint where it looks for the data (see RtorrentAdapter's implementation) - existing
+     * files are not moved on disk for rTorrent servers, so [location] must already contain them.
+     */
+    suspend fun setDownloadLocation(torrentId: String, location: String)
+
     /** Whether this client exposes an alternative ("turtle") speed limits toggle at all. */
     val supportsAltSpeedLimits: Boolean get() = false
 

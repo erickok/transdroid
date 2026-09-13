@@ -123,6 +123,16 @@ class TransmissionAdapter(
         request("torrent-verify") { putIds(torrentId) }
     }
 
+    override suspend fun setDownloadLocation(torrentId: String, location: String) {
+        // move:true physically relocates the existing files; false would just repoint
+        // Transmission at location and expect the files to already be there.
+        request("torrent-set-location") {
+            putIds(torrentId)
+            put("location", location)
+            put("move", true)
+        }
+    }
+
     override suspend fun listFiles(torrentId: String): List<TorrentFile> {
         val arguments = request("torrent-get") {
             putIds(torrentId)

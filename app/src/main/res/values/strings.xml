@@ -71,6 +71,10 @@
     <string name="details_remove_confirm">Remove</string>
     <string name="details_cancel">Cancel</string>
     <string name="details_check_data">Verify data</string>
+    <string name="details_set_location">Set download location</string>
+    <string name="details_set_location_label">New location</string>
+    <string name="details_set_location_rtorrent_warning">rTorrent can only repoint where it looks for this torrent\'s files - it won\'t move them. Make sure the files already exist at the new location, or the torrent will show as missing data.</string>
+    <string name="details_set_location_save">Save</string>
     <string name="details_set_label">Set label</string>
     <string name="details_set_label_subtitle">for “%1$s”</string>
     <string name="details_label_filter_hint">Filter or create a label</string>

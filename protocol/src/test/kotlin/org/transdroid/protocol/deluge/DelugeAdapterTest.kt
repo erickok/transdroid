@@ -284,6 +284,21 @@ class DelugeAdapterTest {
     }
 
     @Test
+    fun `set download location calls core-move_storage with ids and destination`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(connectedOk())
+        server.enqueue(MockResponse().setBody("""{"result": null, "error": null, "id": 3}"""))
+
+        adapter.setDownloadLocation("abcdef", "/downloads/new")
+
+        server.takeRequest() // login
+        server.takeRequest() // web.connected
+        val move = server.takeRequest().body.readUtf8()
+        assertTrue(move.contains("\"method\":\"core.move_storage\""))
+        assertTrue(move.contains("[[\"abcdef\"],\"/downloads/new\"]"))
+    }
+
+    @Test
     fun `set label adds the label then assigns it`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(connectedOk())

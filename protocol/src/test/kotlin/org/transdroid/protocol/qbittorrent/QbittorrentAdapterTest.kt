@@ -252,6 +252,19 @@ class QbittorrentAdapterTest {
     }
 
     @Test
+    fun `set download location posts setLocation with hashes and location`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody(""))
+
+        adapter().setDownloadLocation("abcdef", "/downloads/new")
+
+        server.takeRequest() // login
+        val setLocation = server.takeRequest()
+        assertEquals("/api/v2/torrents/setLocation", setLocation.path)
+        assertEquals("hashes=abcdef&location=%2Fdownloads%2Fnew", setLocation.body.readUtf8())
+    }
+
+    @Test
     fun `set label creates the category then assigns it`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(MockResponse().setBody(""))

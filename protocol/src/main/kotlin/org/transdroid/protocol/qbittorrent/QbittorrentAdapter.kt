@@ -130,6 +130,11 @@ class QbittorrentAdapter(
         post("api/v2/torrents/recheck", form).use { it.readBodyOrThrow() }
     }
 
+    override suspend fun setDownloadLocation(torrentId: String, location: String) {
+        val form = FormBody.Builder().add("hashes", torrentId).add("location", location).build()
+        post("api/v2/torrents/setLocation", form).use { it.readBodyOrThrow() }
+    }
+
     override suspend fun listFiles(torrentId: String): List<TorrentFile> {
         val files = get("api/v2/torrents/files?hash=$torrentId").use { it.decodeJsonListOrThrow<FileInfo>("file list") }
         return files.mapIndexed { listIndex, file ->

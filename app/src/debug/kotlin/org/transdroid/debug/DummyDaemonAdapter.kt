@@ -157,6 +157,10 @@ class DummyDaemonAdapter : DaemonAdapter {
         torrents[torrentId] = torrent.copy(status = TorrentStatus.CHECKING)
     }
 
+    override suspend fun setDownloadLocation(torrentId: String, location: String) = mutex.withLock {
+        mutate(torrentId) { it.copy(downloadDir = location) }
+    }
+
     override val supportsAltSpeedLimits: Boolean = true
 
     override suspend fun isAltSpeedLimitsEnabled(): Boolean = mutex.withLock { altSpeedEnabled }

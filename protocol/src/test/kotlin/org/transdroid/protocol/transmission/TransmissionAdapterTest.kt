@@ -214,6 +214,19 @@ class TransmissionAdapterTest {
     }
 
     @Test
+    fun `set download location sends torrent-set-location with move true`() = runTest {
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{}}"""))
+
+        adapter.setDownloadLocation("7", "/downloads/new")
+
+        val body = server.takeRequest().body.readUtf8()
+        assertTrue(body.contains("\"method\":\"torrent-set-location\""))
+        assertTrue(body.contains("\"ids\":[7]"))
+        assertTrue(body.contains("\"location\":\"/downloads/new\""))
+        assertTrue(body.contains("\"move\":true"))
+    }
+
+    @Test
     fun `401 maps to authentication error`() = runTest {
         server.enqueue(MockResponse().setResponseCode(401))
 

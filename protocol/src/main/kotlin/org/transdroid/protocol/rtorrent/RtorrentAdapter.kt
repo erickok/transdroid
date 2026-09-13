@@ -160,6 +160,20 @@ class RtorrentAdapter(
         call("d.check_hash", torrentId)
     }
 
+    /**
+     * Unlike the other three daemons, rTorrent has no RPC call that moves data on disk - this
+     * only repoints where rTorrent looks for the torrent's files (see DaemonAdapter's doc on
+     * this method). d.directory_base.set only takes effect once the item is closed, so this
+     * stops it (harmless if already stopped), closes, repoints, then reopens - deliberately left
+     * stopped afterward rather than guessing whether it's safe to resume.
+     */
+    override suspend fun setDownloadLocation(torrentId: String, location: String) {
+        call("d.stop", torrentId)
+        call("d.close", torrentId)
+        call("d.directory_base.set", torrentId, location)
+        call("d.open", torrentId)
+    }
+
     override suspend fun listFiles(torrentId: String): List<TorrentFile> {
         val rows = call(
             "f.multicall",
