@@ -204,7 +204,7 @@ fun TorrentDetailsContent(
                 onClick = { viewModel.checkData(torrent) },
                 modifier = Modifier.size(48.dp),
                 colors = IconButtonDefaults.iconButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.primary,
                 ),
             ) {
                 Icon(Icons.Rounded.Checklist, contentDescription = stringResource(R.string.details_check_data))
@@ -214,7 +214,7 @@ fun TorrentDetailsContent(
                 onCheckedChange = { showLabelSheet = true },
                 modifier = Modifier.size(48.dp),
                 colors = IconButtonDefaults.iconToggleButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.primary,
                     checkedContentColor = MaterialTheme.colorScheme.primary,
                 ),
             ) {
@@ -224,7 +224,7 @@ fun TorrentDetailsContent(
                 onClick = { showLocationDialog = true },
                 modifier = Modifier.size(48.dp),
                 colors = IconButtonDefaults.iconButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.primary,
                 ),
             ) {
                 Icon(Icons.Rounded.DriveFileMove, contentDescription = stringResource(R.string.details_set_location))
