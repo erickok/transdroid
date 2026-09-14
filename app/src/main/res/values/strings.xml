@@ -72,9 +72,12 @@
     <string name="details_cancel">Cancel</string>
     <string name="details_check_data">Verify data</string>
     <string name="details_set_location">Set download location</string>
-    <string name="details_set_location_label">New location</string>
+    <string name="details_set_location_subtitle">for “%1$s”</string>
+    <string name="details_set_location_hint">Enter a directory path</string>
+    <string name="details_set_location_known">Known &amp; recent locations</string>
+    <string name="details_set_location_move_note">Existing files for this torrent will be moved to the new folder.</string>
     <string name="details_set_location_rtorrent_warning">rTorrent can only repoint where it looks for this torrent\'s files - it won\'t move them. Make sure the files already exist at the new location, or the torrent will show as missing data.</string>
-    <string name="details_set_location_save">Save</string>
+    <string name="details_set_location_save">Set location</string>
     <string name="details_set_label">Set label</string>
     <string name="details_set_label_subtitle">for “%1$s”</string>
     <string name="details_label_filter_hint">Filter or create a label</string>
@@ -115,12 +118,16 @@
 
     <!-- Add torrent -->
     <string name="add_title">Add torrent</string>
+    <string name="add_sheet_subtitle">for “%1$s”</string>
     <string name="add_url_label">Magnet link or torrent URL</string>
     <string name="add_url_hint">magnet:?xt=… or https://…/file.torrent</string>
     <string name="add_paste">Paste</string>
     <string name="add_or">or</string>
     <string name="add_pick_file">Choose a .torrent file</string>
     <string name="add_file_read_failed">Could not read that file</string>
+    <string name="add_location_label">Download location</string>
+    <string name="add_location_hint">Server default folder</string>
+    <string name="add_location_helper">Leave empty to use the server\'s default folder, or pick a recent location:</string>
     <string name="add_paused">Add paused</string>
     <string name="add_paused_summary">Choose which files to download first, then start it from the details screen</string>
     <string name="add_button">Add to %1$s</string>
@@ -137,7 +144,6 @@
     <string name="rss_feed_url">Feed URL</string>
     <string name="rss_no_items">No items</string>
     <string name="rss_new">New</string>
-    <string name="rss_add_item_title">Send to your torrent client?</string>
     <string name="rss_all_feeds">All feeds</string>
     <string name="rss_new_only">New only</string>
     <string name="rss_summary">%1$d items · %2$d new · updated %3$s</string>

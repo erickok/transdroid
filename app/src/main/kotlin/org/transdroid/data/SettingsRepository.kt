@@ -68,8 +68,35 @@ class SettingsRepository(private val context: Context) {
 
     private fun unfinishedKey(profileId: String) = stringSetPreferencesKey("unfinished_ids_$profileId")
 
+    /**
+     * Download locations the user has previously typed or picked when adding a torrent to this
+     * server, most-recently-used first - shown on the add-torrent screen as quick-pick chips so a
+     * full path rarely needs retyping. A plain delimited string (not a string set) because, unlike
+     * [unfinishedTorrentIds], the order itself is the point.
+     */
+    fun recentDownloadLocations(profileId: String): Flow<List<String>> =
+        context.settingsDataStore.data.map { prefs ->
+            prefs[recentLocationsKey(profileId)]?.split(RECENT_LOCATIONS_SEPARATOR)?.filter { it.isNotBlank() } ?: emptyList()
+        }
+
+    suspend fun addRecentDownloadLocation(profileId: String, location: String) {
+        if (location.isBlank()) return
+        context.settingsDataStore.edit { prefs ->
+            val key = recentLocationsKey(profileId)
+            val existing = prefs[key]?.split(RECENT_LOCATIONS_SEPARATOR)?.filter { it.isNotBlank() } ?: emptyList()
+            val updated = (listOf(location) + existing.filterNot { it == location }).take(MAX_RECENT_LOCATIONS)
+            prefs[key] = updated.joinToString(RECENT_LOCATIONS_SEPARATOR)
+        }
+    }
+
+    private fun recentLocationsKey(profileId: String) = stringPreferencesKey("recent_locations_$profileId")
+
     companion object {
         const val DEFAULT_POLL_INTERVAL_SECONDS = 5
         val POLL_INTERVAL_OPTIONS = listOf(3, 5, 10, 30, 60)
+        private const val MAX_RECENT_LOCATIONS = 8
+
+        // A control character that cannot appear in a typed filesystem path.
+        private const val RECENT_LOCATIONS_SEPARATOR = ""
     }
 }

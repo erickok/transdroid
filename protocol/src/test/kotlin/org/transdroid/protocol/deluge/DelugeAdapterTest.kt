@@ -284,6 +284,35 @@ class DelugeAdapterTest {
     }
 
     @Test
+    fun `add by url with a download location includes it in the options`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(connectedOk())
+        server.enqueue(MockResponse().setBody("""{"result": "abcdef", "error": null, "id": 3}"""))
+
+        adapter.addByUrl("magnet:?xt=urn:btih:abcdef", downloadLocation = "/downloads/movies")
+
+        server.takeRequest() // login
+        server.takeRequest() // web.connected
+        val add = server.takeRequest().body.readUtf8()
+        assertTrue(add.contains("\"method\":\"core.add_torrent_magnet\""))
+        assertTrue(add.contains("\"download_location\":\"/downloads/movies\""))
+    }
+
+    @Test
+    fun `add by url without a download location omits the option entirely`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(connectedOk())
+        server.enqueue(MockResponse().setBody("""{"result": "abcdef", "error": null, "id": 3}"""))
+
+        adapter.addByUrl("magnet:?xt=urn:btih:abcdef")
+
+        server.takeRequest() // login
+        server.takeRequest() // web.connected
+        val add = server.takeRequest().body.readUtf8()
+        assertTrue("no options should mean an empty options object", !add.contains("download_location"))
+    }
+
+    @Test
     fun `set download location calls core-move_storage with ids and destination`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(connectedOk())

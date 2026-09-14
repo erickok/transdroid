@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Transdroid · Add torrent (M3 Expressive)</title>
+<title>Transdroid · Add torrent + location (M3 Expressive)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -25,6 +25,7 @@
   --on-primary:#ffffff;
   --primary-container:#c0f39a;
   --on-primary-container:#0b2100;
+  --sel-bg:#dcecce; --sel-fg:#2b3b1c;
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 html,body{margin:0;height:100%;}
@@ -74,8 +75,11 @@ body{
 .paste .msr{font-size:17px;}
 .frow{display:flex; gap:12px; align-items:flex-start; margin-top:4px;}
 .frow .fic{font-size:20px; color:var(--muted); margin-top:7px; flex:none;}
-.frow textarea{flex:1; min-width:0; border:none; background:transparent; outline:none; resize:none; font-family:inherit; font-size:15px; line-height:1.5; color:var(--on-surface); min-height:58px;}
-.frow textarea::placeholder{color:var(--outline);}
+.frow textarea, .frow input{flex:1; min-width:0; border:none; background:transparent; outline:none; font-family:inherit; font-size:15px; line-height:1.5; color:var(--on-surface);}
+.frow textarea{resize:none; min-height:58px;}
+.frow textarea::placeholder, .frow input::placeholder{color:var(--outline);}
+.field.loc .frow{align-items:center;}
+.field.loc .fic{margin-top:0;}
 
 /* or divider */
 .ordiv{display:flex; align-items:center; gap:14px; margin:18px 4px;}
@@ -92,6 +96,16 @@ body{
 .filechip .fx{border:none; background:transparent; cursor:pointer; width:38px; height:38px; border-radius:50%; display:grid; place-items:center; color:var(--on-primary-container);}
 .filechip .fx:hover{background:rgba(0,0,0,.08);}
 .filechip .lead{font-size:21px;}
+
+/* download location */
+.field.loc{margin-top:18px;}
+.helper{font-size:12px; color:var(--muted); padding:6px 6px 0; line-height:1.4;}
+.chips{display:flex; gap:8px; margin-top:10px; overflow-x:auto; padding-bottom:2px; scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.locchip{flex:none; border:1px solid var(--outline-variant); background:transparent; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:600; color:var(--on-surface-var); padding:8px 13px; border-radius:999px; display:inline-flex; align-items:center; gap:6px; transition:.12s; white-space:nowrap;}
+.locchip:hover{background:var(--surface-high);}
+.locchip.sel{background:var(--sel-bg); color:var(--sel-fg); border-color:transparent;}
+.locchip .msr{font-size:16px;}
 
 /* add paused switch */
 .optrow{display:flex; align-items:flex-start; gap:14px; padding:15px 16px; background:var(--surface-container); border-radius:20px; margin-top:18px;}
@@ -154,6 +168,21 @@ body{
       </div>
       <input type="file" id="fileInput" accept=".torrent" hidden>
 
+      <div class="field loc">
+        <div class="flabel"><span>Download location</span></div>
+        <div class="frow">
+          <span class="msr fic">folder</span>
+          <input id="dir" type="text" placeholder="Server default (/downloads)">
+        </div>
+      </div>
+      <div class="helper">Leave empty to use the server's default folder, or pick a recent location:</div>
+      <div class="chips">
+        <button class="locchip" data-path="/downloads/movies"><span class="msr">folder</span>/downloads/movies</button>
+        <button class="locchip" data-path="/downloads/tv"><span class="msr">folder</span>/downloads/tv</button>
+        <button class="locchip" data-path="/downloads/linux-isos"><span class="msr">folder</span>/downloads/linux-isos</button>
+        <button class="locchip" data-path="/downloads/music"><span class="msr">folder</span>/downloads/music</button>
+      </div>
+
       <div class="optrow">
         <div class="otext">
           <b>Add paused</b>
@@ -213,6 +242,15 @@ fileClear.addEventListener('click', ()=>{
   chooseBtn.style.display = '';
   refresh();
 });
+
+// download location quick-picks
+const dir = document.getElementById('dir');
+document.querySelectorAll('.locchip').forEach(c=>c.addEventListener('click', ()=>{
+  const was = c.classList.contains('sel');
+  document.querySelectorAll('.locchip').forEach(x=>x.classList.remove('sel'));
+  if(was){ dir.value=''; } else { c.classList.add('sel'); dir.value = c.dataset.path; }
+}));
+dir.addEventListener('input', ()=>document.querySelectorAll('.locchip').forEach(x=>x.classList.remove('sel')));
 </script>
 </body>
 </html>

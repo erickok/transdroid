@@ -48,7 +48,6 @@ import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.TravelExplore
 import androidx.compose.material.icons.rounded.ArrowUpward
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,7 +60,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -86,6 +84,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.transdroid.R
 import org.transdroid.protocol.search.SearchResult
+import org.transdroid.ui.components.AddTorrentOptionsSheet
 import org.transdroid.ui.components.DropdownPill
 import org.transdroid.ui.components.EmptyState
 import org.transdroid.ui.message
@@ -217,19 +216,12 @@ fun SearchScreen(
     }
 
     confirmResult?.let { result ->
-        AlertDialog(
-            onDismissRequest = { confirmResult = null },
-            title = { Text(stringResource(R.string.rss_add_item_title)) },
-            text = { Text(result.title) },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.addResult(result)
-                    confirmResult = null
-                }) { Text(stringResource(R.string.add_title)) }
-            },
-            dismissButton = {
-                TextButton(onClick = { confirmResult = null }) { Text(stringResource(R.string.details_cancel)) }
-            },
+        AddTorrentOptionsSheet(
+            itemTitle = result.title,
+            serverName = ui.activeProfile?.displayName ?: "",
+            recentLocations = ui.recentDownloadLocations,
+            onAdd = { startPaused, downloadLocation -> viewModel.addResult(result, startPaused, downloadLocation) },
+            onDismiss = { confirmResult = null },
         )
     }
 }

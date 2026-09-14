@@ -38,12 +38,21 @@ interface DaemonAdapter {
 
     /**
      * Adds a torrent by magnet link or a URL to a .torrent file. With [startPaused] the
-     * torrent is added stopped, so files can be deselected before starting it.
+     * torrent is added stopped, so files can be deselected before starting it. A blank or null
+     * [downloadLocation] leaves the server's own default directory in effect; otherwise every
+     * client is asked to place the torrent there directly at add time (see each adapter's
+     * implementation for how - rTorrent has no add-time parameter for this and instead passes an
+     * extra `d.directory.set` command alongside the load call).
      */
-    suspend fun addByUrl(url: String, startPaused: Boolean = false)
+    suspend fun addByUrl(url: String, startPaused: Boolean = false, downloadLocation: String? = null)
 
-    /** Adds a torrent from the raw bytes of a .torrent file. */
-    suspend fun addByFile(fileName: String, contents: ByteArray, startPaused: Boolean = false)
+    /** Adds a torrent from the raw bytes of a .torrent file. See [addByUrl] for [downloadLocation]. */
+    suspend fun addByFile(
+        fileName: String,
+        contents: ByteArray,
+        startPaused: Boolean = false,
+        downloadLocation: String? = null,
+    )
 
     suspend fun start(torrentId: String)
 

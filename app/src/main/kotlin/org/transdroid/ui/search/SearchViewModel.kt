@@ -29,12 +29,15 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.transdroid.AppContainer
 import org.transdroid.appContainer
 import org.transdroid.data.SearchProviderConfig
+import org.transdroid.data.ServerProfile
 import org.transdroid.protocol.search.SearchResult
 import org.transdroid.protocol.search.TorznabProvider
 import org.transdroid.ui.torrents.UiError
@@ -65,6 +68,9 @@ data class SearchUiState(
     val sort: SearchSort = SearchSort.SEEDERS,
     /** Null means "all indexers"; otherwise a [SearchResult.indexerName] to filter down to. */
     val indexerFilter: String? = null,
+    val activeProfile: ServerProfile? = null,
+    /** Download locations previously used on the active server; see [org.transdroid.ui.components.AddTorrentOptionsSheet]. */
+    val recentDownloadLocations: List<String> = emptyList(),
 ) {
     /** Distinct tracker names found in [results] (via Jackett's per-item indexer tag), sorted. */
     val availableIndexers: List<String>
@@ -85,6 +91,17 @@ class SearchViewModel(private val container: AppContainer) : ViewModel() {
     val ui: StateFlow<SearchUiState> = _ui.asStateFlow()
 
     private var searchJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            container.activeProfile.collect { profile -> _ui.update { it.copy(activeProfile = profile) } }
+        }
+        viewModelScope.launch {
+            container.activeProfile.flatMapLatest { profile ->
+                profile?.let { container.settingsRepository.recentDownloadLocations(it.id) } ?: flowOf(emptyList())
+            }.collect { locations -> _ui.update { it.copy(recentDownloadLocations = locations) } }
+        }
+    }
 
     fun setQuery(query: String) {
         _ui.update { it.copy(query = query) }
@@ -132,7 +149,7 @@ class SearchViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
-    fun addResult(result: SearchResult) {
+    fun addResult(result: SearchResult, startPaused: Boolean = false, downloadLocation: String? = null) {
         viewModelScope.launch {
             val profile = container.activeProfile.first()
             if (profile == null) {
@@ -140,7 +157,10 @@ class SearchViewModel(private val container: AppContainer) : ViewModel() {
                 return@launch
             }
             try {
-                container.adapterFor(profile).addByUrl(result.torrentUrl)
+                container.adapterFor(profile).addByUrl(result.torrentUrl, startPaused, downloadLocation)
+                if (!downloadLocation.isNullOrBlank()) {
+                    container.settingsRepository.addRecentDownloadLocation(profile.id, downloadLocation.trim())
+                }
                 _ui.update { it.copy(addedTitle = result.title, addError = null) }
             } catch (e: CancellationException) {
                 throw e

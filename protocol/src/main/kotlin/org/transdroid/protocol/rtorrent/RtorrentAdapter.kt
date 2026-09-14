@@ -129,14 +129,20 @@ class RtorrentAdapter(
         )
     }
 
-    override suspend fun addByUrl(url: String, startPaused: Boolean) {
-        // load.normal loads without starting; load.start loads and starts
-        call(if (startPaused) "load.normal" else "load.start", "", url)
+    override suspend fun addByUrl(url: String, startPaused: Boolean, downloadLocation: String?) {
+        // load.normal loads without starting; load.start loads and starts. Both accept extra
+        // trailing command strings that run against the item right after it's loaded but before
+        // it starts - d.directory.set here is the only way to steer where rTorrent places it,
+        // since there is no dedicated directory argument on load.* itself.
+        call(if (startPaused) "load.normal" else "load.start", "", url, *directoryCommand(downloadLocation))
     }
 
-    override suspend fun addByFile(fileName: String, contents: ByteArray, startPaused: Boolean) {
-        call(if (startPaused) "load.raw" else "load.raw_start", "", contents)
+    override suspend fun addByFile(fileName: String, contents: ByteArray, startPaused: Boolean, downloadLocation: String?) {
+        call(if (startPaused) "load.raw" else "load.raw_start", "", contents, *directoryCommand(downloadLocation))
     }
+
+    private fun directoryCommand(downloadLocation: String?): Array<String> =
+        if (downloadLocation.isNullOrBlank()) emptyArray() else arrayOf("d.directory.set=$downloadLocation")
 
     override suspend fun start(torrentId: String) {
         call("d.start", torrentId)

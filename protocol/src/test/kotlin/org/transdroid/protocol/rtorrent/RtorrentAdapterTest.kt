@@ -157,6 +157,26 @@ class RtorrentAdapterTest {
     }
 
     @Test
+    fun `add by url with a download location passes an extra d-directory-set command`() = runTest {
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.addByUrl("magnet:?xt=urn:btih:abc", downloadLocation = "/downloads/movies")
+
+        val body = server.takeRequest().body.readUtf8()
+        assertTrue(body.contains("d.directory.set=/downloads/movies"))
+    }
+
+    @Test
+    fun `add by url without a download location sends no extra command`() = runTest {
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.addByUrl("magnet:?xt=urn:btih:abc")
+
+        val body = server.takeRequest().body.readUtf8()
+        assertTrue(!body.contains("d.directory.set"))
+    }
+
+    @Test
     fun `remove with data sets the rutorrent erase-data marker first`() = runTest {
         server.enqueue(xmlResponse("<i8>0</i8>"))
         server.enqueue(xmlResponse("<i8>0</i8>"))

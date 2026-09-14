@@ -214,6 +214,32 @@ class QbittorrentAdapterTest {
     }
 
     @Test
+    fun `add with a download location disables autoTMM and sends savepath`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody("Ok."))
+
+        adapter().addByUrl("magnet:?xt=urn:btih:abcdef", downloadLocation = "/downloads/movies")
+
+        server.takeRequest() // login
+        val add = server.takeRequest().body.readUtf8()
+        assertTrue(add.contains("autoTMM=false"))
+        assertTrue(add.contains("savepath=" + java.net.URLEncoder.encode("/downloads/movies", "UTF-8")))
+    }
+
+    @Test
+    fun `add without a download location omits savepath and autoTMM`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody("Ok."))
+
+        adapter().addByUrl("magnet:?xt=urn:btih:abcdef")
+
+        server.takeRequest() // login
+        val add = server.takeRequest().body.readUtf8()
+        assertTrue(!add.contains("savepath"))
+        assertTrue(!add.contains("autoTMM"))
+    }
+
+    @Test
     fun `failed add is surfaced as an error`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(MockResponse().setBody("Fails."))

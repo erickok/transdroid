@@ -90,17 +90,19 @@ class TransmissionAdapter(
         return torrents.map { parseTorrent(it.jsonObject) }
     }
 
-    override suspend fun addByUrl(url: String, startPaused: Boolean) {
+    override suspend fun addByUrl(url: String, startPaused: Boolean, downloadLocation: String?) {
         request("torrent-add") {
             put("filename", url)
             if (startPaused) put("paused", true)
+            if (!downloadLocation.isNullOrBlank()) put("download-dir", downloadLocation)
         }
     }
 
-    override suspend fun addByFile(fileName: String, contents: ByteArray, startPaused: Boolean) {
+    override suspend fun addByFile(fileName: String, contents: ByteArray, startPaused: Boolean, downloadLocation: String?) {
         request("torrent-add") {
             put("metainfo", Base64.getEncoder().encodeToString(contents))
             if (startPaused) put("paused", true)
+            if (!downloadLocation.isNullOrBlank()) put("download-dir", downloadLocation)
         }
     }
 

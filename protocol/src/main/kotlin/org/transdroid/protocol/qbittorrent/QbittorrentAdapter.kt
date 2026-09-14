@@ -74,18 +74,24 @@ class QbittorrentAdapter(
         return infos.map { it.toTorrent() }
     }
 
-    override suspend fun addByUrl(url: String, startPaused: Boolean) {
+    override suspend fun addByUrl(url: String, startPaused: Boolean, downloadLocation: String?) {
         val form = FormBody.Builder().add("urls", url).apply {
             if (startPaused) {
                 // qBittorrent 4.x reads "paused", 5.x reads "stopped"; unknown fields are ignored
                 add("paused", "true")
                 add("stopped", "true")
             }
+            if (!downloadLocation.isNullOrBlank()) {
+                // Automatic Torrent Management (on by default, or per-category) otherwise
+                // silently overrides an explicit savepath with its own managed directory.
+                add("autoTMM", "false")
+                add("savepath", downloadLocation)
+            }
         }.build()
         post("api/v2/torrents/add", form).use { it.checkAddSucceeded() }
     }
 
-    override suspend fun addByFile(fileName: String, contents: ByteArray, startPaused: Boolean) {
+    override suspend fun addByFile(fileName: String, contents: ByteArray, startPaused: Boolean, downloadLocation: String?) {
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
@@ -96,6 +102,10 @@ class QbittorrentAdapter(
                 if (startPaused) {
                     addFormDataPart("paused", "true")
                     addFormDataPart("stopped", "true")
+                }
+                if (!downloadLocation.isNullOrBlank()) {
+                    addFormDataPart("autoTMM", "false")
+                    addFormDataPart("savepath", downloadLocation)
                 }
             }
             .build()

@@ -23,7 +23,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -56,7 +55,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -86,6 +84,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.transdroid.R
 import org.transdroid.errorlog.ErrorLog
+import org.transdroid.ui.components.AddTorrentOptionsSection
 import org.transdroid.ui.message
 import org.transdroid.ui.torrents.TorrentsViewModel
 import org.transdroid.ui.torrents.UiError
@@ -109,6 +108,7 @@ fun AddTorrentScreen(
     var url by rememberSaveable { mutableStateOf(if (initialIsFile) "" else initialUrl) }
     var fileUri by rememberSaveable { mutableStateOf(if (initialIsFile) initialUrl else null) }
     var invalidInput by rememberSaveable { mutableStateOf(false) }
+    var location by rememberSaveable { mutableStateOf("") }
     var startPaused by rememberSaveable { mutableStateOf(false) }
     // Deliberately not saveable: the completion callback writes to this composition's state,
     // so restoring `true` across recreation would leave the button disabled forever
@@ -125,6 +125,7 @@ fun AddTorrentScreen(
 
     fun submit() {
         val pickedFile = fileUri
+        val downloadLocation = location.trim().ifBlank { null }
         error = null
         fileReadFailed = false
         if (pickedFile != null) {
@@ -135,7 +136,7 @@ fun AddTorrentScreen(
                     submitting = false
                     fileReadFailed = true
                 } else {
-                    viewModel.addFile(contents.first, contents.second, startPaused) { result ->
+                    viewModel.addFile(contents.first, contents.second, startPaused, downloadLocation) { result ->
                         submitting = false
                         if (result == null) onDone() else error = result
                     }
@@ -150,7 +151,7 @@ fun AddTorrentScreen(
             invalidInput = true
         } else {
             submitting = true
-            viewModel.add(trimmed, startPaused) { result ->
+            viewModel.add(trimmed, startPaused, downloadLocation) { result ->
                 submitting = false
                 if (result == null) onDone() else error = result
             }
@@ -247,8 +248,15 @@ fun AddTorrentScreen(
                     onRemove = { fileUri = null },
                 )
             }
+
             Spacer(Modifier.height(18.dp))
-            AddPausedRow(startPaused) { startPaused = it }
+            AddTorrentOptionsSection(
+                location = location,
+                onLocationChange = { location = it },
+                recentLocations = ui.recentDownloadLocations,
+                startPaused = startPaused,
+                onStartPausedChange = { startPaused = it },
+            )
             if (fileReadFailed) {
                 Spacer(Modifier.height(12.dp))
                 Text(
@@ -396,35 +404,6 @@ private fun PickedFileChip(name: String, onRemove: () -> Unit) {
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
             )
         }
-    }
-}
-
-/** Matches the mockup's `.optrow`: a surface-container card with a title/subtitle and a switch. */
-@Composable
-private fun AddPausedRow(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable { onCheckedChange(!checked) }
-            .padding(horizontal = 16.dp, vertical = 15.dp),
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        Column(Modifier.weight(1f)) {
-            Text(
-                stringResource(R.string.add_paused),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                stringResource(R.string.add_paused_summary),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 3.dp),
-            )
-        }
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 

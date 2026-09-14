@@ -73,6 +73,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.transdroid.R
 import org.transdroid.data.RssFeed
+import org.transdroid.ui.components.AddTorrentOptionsSheet
 import org.transdroid.ui.components.DropdownPill
 import org.transdroid.ui.components.EmptyState
 import org.transdroid.ui.message
@@ -219,19 +220,12 @@ fun RssScreen(
     }
 
     confirmEntry?.let { entry ->
-        AlertDialog(
-            onDismissRequest = { confirmEntry = null },
-            title = { Text(stringResource(R.string.rss_add_item_title)) },
-            text = { Text(entry.item.title) },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.addItem(entry)
-                    confirmEntry = null
-                }) { Text(stringResource(R.string.add_title)) }
-            },
-            dismissButton = {
-                TextButton(onClick = { confirmEntry = null }) { Text(stringResource(R.string.details_cancel)) }
-            },
+        AddTorrentOptionsSheet(
+            itemTitle = entry.item.title,
+            serverName = ui.activeProfile?.displayName ?: "",
+            recentLocations = ui.recentDownloadLocations,
+            onAdd = { startPaused, downloadLocation -> viewModel.addItem(entry, startPaused, downloadLocation) },
+            onDismiss = { confirmEntry = null },
         )
     }
 

@@ -97,7 +97,6 @@ import org.transdroid.protocol.TorrentStatus
 import org.transdroid.protocol.Tracker
 import org.transdroid.protocol.TrackerStatus
 import org.transdroid.ui.components.TorrentProgressIndicator
-import org.transdroid.ui.components.TransdroidTextField
 import org.transdroid.ui.statusLabel
 import org.transdroid.ui.theme.LocalStatusColors
 import org.transdroid.ui.theme.accentColor
@@ -330,68 +329,15 @@ fun TorrentDetailsContent(
     }
 
     if (showLocationDialog) {
-        SetLocationDialog(
+        SetLocationSheet(
+            torrentName = torrent.name,
             currentLocation = torrent.downloadDir.orEmpty(),
             isRtorrent = ui.activeProfile?.type == DaemonType.RTORRENT,
+            recentLocations = ui.recentDownloadLocations,
             onSetLocation = { location -> viewModel.setDownloadLocation(torrent, location) },
             onDismiss = { showLocationDialog = false },
         )
     }
-}
-
-/**
- * rTorrent can only repoint where it looks for a torrent's files, not physically move them (see
- * DaemonAdapter.setDownloadLocation's doc) - shown as an inline warning rather than hiding the
- * button for rTorrent servers, since it's still a real, useful action there when the files are
- * already at (or about to be placed at) the new path.
- */
-@Composable
-private fun SetLocationDialog(
-    currentLocation: String,
-    isRtorrent: Boolean,
-    onSetLocation: (String) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    var location by remember { mutableStateOf(currentLocation) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.details_set_location)) },
-        text = {
-            Column {
-                if (isRtorrent) {
-                    Text(
-                        stringResource(R.string.details_set_location_rtorrent_warning),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                    Spacer(Modifier.height(12.dp))
-                }
-                TransdroidTextField(
-                    value = location,
-                    onValueChange = { location = it },
-                    label = { Text(stringResource(R.string.details_set_location_label)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onDismiss()
-                    onSetLocation(location.trim())
-                },
-                enabled = location.isNotBlank(),
-            ) {
-                Text(stringResource(R.string.details_set_location_save))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.details_cancel))
-            }
-        },
-    )
 }
 
 @Composable

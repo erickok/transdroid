@@ -179,6 +179,25 @@ class TransmissionAdapterTest {
     }
 
     @Test
+    fun `add with a download location sends download-dir`() = runTest {
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{}}"""))
+
+        adapter.addByUrl("magnet:?xt=urn:btih:abcdef", downloadLocation = "/downloads/movies")
+
+        val body = server.takeRequest().body.readUtf8()
+        assertTrue(body.contains("\"download-dir\":\"/downloads/movies\""))
+    }
+
+    @Test
+    fun `add without a download location omits download-dir`() = runTest {
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{}}"""))
+
+        adapter.addByUrl("magnet:?xt=urn:btih:abcdef")
+
+        assertTrue(!server.takeRequest().body.readUtf8().contains("download-dir"))
+    }
+
+    @Test
     fun `html login portal answer produces a diagnosable error`() = runTest {
         server.enqueue(MockResponse().setBody("<html><body>Cloudflare Access login</body></html>"))
 

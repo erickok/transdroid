@@ -30,6 +30,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -127,6 +129,8 @@ data class TorrentsUiState(
     /** Whether the active server's client exposes an alternative ("turtle") speed limits toggle. */
     val altSpeedSupported: Boolean = false,
     val altSpeedEnabled: Boolean = false,
+    /** Download locations previously used on the active server, most-recent first; see [org.transdroid.data.SettingsRepository.recentDownloadLocations]. */
+    val recentDownloadLocations: List<String> = emptyList(),
 ) {
     val availableLabels: List<String>
         get() = torrents.flatMap { it.labels }.distinct().sorted()
@@ -195,6 +199,11 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
                 }
                 if (profile != null) refresh(showSpinner = false)
             }
+        }
+        viewModelScope.launch {
+            container.activeProfile.flatMapLatest { profile ->
+                profile?.let { container.settingsRepository.recentDownloadLocations(it.id) } ?: flowOf(emptyList())
+            }.collect { locations -> _ui.update { it.copy(recentDownloadLocations = locations) } }
         }
     }
 
@@ -343,8 +352,20 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         runAction { adapter -> adapter.checkData(torrent.id) }
     }
 
+    /** Also remembered as a recent location, same as [add]/[addFile], so it offers itself back as a chip next time. */
     fun setDownloadLocation(torrent: Torrent, location: String) {
-        runAction { adapter -> adapter.setDownloadLocation(torrent.id, location) }
+        val profile = _ui.value.activeProfile ?: return
+        viewModelScope.launch {
+            try {
+                container.adapterFor(profile).setDownloadLocation(torrent.id, location)
+                rememberDownloadLocation(profile.id, location)
+                refreshNow(showSpinner = false)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _ui.update { it.copy(error = e.toUiError(profile.host)) }
+            }
+        }
     }
 
     /** Flips alternative ("turtle") speed limits; optimistic, since a poll cycle would confirm it anyway. */
@@ -395,11 +416,12 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     /** Adds a torrent by magnet/URL; invokes [onResult] with null on success. */
-    fun add(url: String, startPaused: Boolean = false, onResult: (UiError?) -> Unit) {
+    fun add(url: String, startPaused: Boolean = false, downloadLocation: String? = null, onResult: (UiError?) -> Unit) {
         val profile = _ui.value.activeProfile ?: return
         viewModelScope.launch {
             try {
-                container.adapterFor(profile).addByUrl(url, startPaused)
+                container.adapterFor(profile).addByUrl(url, startPaused, downloadLocation)
+                rememberDownloadLocation(profile.id, downloadLocation)
                 refreshNow(showSpinner = false)
                 onResult(null)
             } catch (e: CancellationException) {
@@ -411,11 +433,18 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     /** Adds a torrent from the raw contents of a .torrent file. */
-    fun addFile(fileName: String, contents: ByteArray, startPaused: Boolean = false, onResult: (UiError?) -> Unit) {
+    fun addFile(
+        fileName: String,
+        contents: ByteArray,
+        startPaused: Boolean = false,
+        downloadLocation: String? = null,
+        onResult: (UiError?) -> Unit,
+    ) {
         val profile = _ui.value.activeProfile ?: return
         viewModelScope.launch {
             try {
-                container.adapterFor(profile).addByFile(fileName, contents, startPaused)
+                container.adapterFor(profile).addByFile(fileName, contents, startPaused, downloadLocation)
+                rememberDownloadLocation(profile.id, downloadLocation)
                 refreshNow(showSpinner = false)
                 onResult(null)
             } catch (e: CancellationException) {
@@ -423,6 +452,12 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
             } catch (e: Exception) {
                 onResult(e.toUiError(profile.host))
             }
+        }
+    }
+
+    private suspend fun rememberDownloadLocation(profileId: String, downloadLocation: String?) {
+        if (!downloadLocation.isNullOrBlank()) {
+            container.settingsRepository.addRecentDownloadLocation(profileId, downloadLocation.trim())
         }
     }
 

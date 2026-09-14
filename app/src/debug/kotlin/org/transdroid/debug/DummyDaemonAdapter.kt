@@ -86,12 +86,12 @@ class DummyDaemonAdapter : DaemonAdapter {
         torrents.values.toList()
     }
 
-    override suspend fun addByUrl(url: String, startPaused: Boolean) = mutex.withLock {
-        addGeneric(startPaused)
+    override suspend fun addByUrl(url: String, startPaused: Boolean, downloadLocation: String?) = mutex.withLock {
+        addGeneric(startPaused, downloadLocation)
     }
 
-    override suspend fun addByFile(fileName: String, contents: ByteArray, startPaused: Boolean) = mutex.withLock {
-        addGeneric(startPaused)
+    override suspend fun addByFile(fileName: String, contents: ByteArray, startPaused: Boolean, downloadLocation: String?) = mutex.withLock {
+        addGeneric(startPaused, downloadLocation)
     }
 
     override suspend fun start(torrentId: String) = mutex.withLock {
@@ -253,7 +253,7 @@ class DummyDaemonAdapter : DaemonAdapter {
         )
     }
 
-    private fun addGeneric(startPaused: Boolean) {
+    private fun addGeneric(startPaused: Boolean, downloadLocation: String?) {
         val number = nextId++
         val sizeBytes = (Random.nextDouble(0.1, 4.0) * 1024.0 * 1024.0 * 1024.0).toLong()
         torrents[number.toString()] = Torrent(
@@ -268,7 +268,7 @@ class DummyDaemonAdapter : DaemonAdapter {
             uploadedBytes = 0L,
             ratio = 0f,
             addedTimestamp = System.currentTimeMillis() / 1000,
-            downloadDir = "/downloads",
+            downloadDir = downloadLocation?.takeIf { it.isNotBlank() } ?: "/downloads",
         )
     }
 

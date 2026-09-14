@@ -32,12 +32,15 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.transdroid.AppContainer
 import org.transdroid.appContainer
 import org.transdroid.data.RssFeed
+import org.transdroid.data.ServerProfile
 import org.transdroid.protocol.rss.RssItem
 import org.transdroid.ui.torrents.UiError
 import org.transdroid.ui.torrents.toUiError
@@ -65,6 +68,9 @@ data class RssUiState(
     val addedKeys: Set<String> = emptySet(),
     val addedItemTitle: String? = null,
     val addError: UiError? = null,
+    val activeProfile: ServerProfile? = null,
+    /** Download locations previously used on the active server; see [org.transdroid.ui.components.AddTorrentOptionsSheet]. */
+    val recentDownloadLocations: List<String> = emptyList(),
 ) {
     val visibleEntries: List<RssEntry>
         get() = entries.filter { (selectedFeedId == null || it.feed.id == selectedFeedId) && (!newOnly || it.isNew) }
@@ -82,6 +88,17 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
     val ui: StateFlow<RssUiState> = _ui.asStateFlow()
 
     private var fetchJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            container.activeProfile.collect { profile -> _ui.update { it.copy(activeProfile = profile) } }
+        }
+        viewModelScope.launch {
+            container.activeProfile.flatMapLatest { profile ->
+                profile?.let { container.settingsRepository.recentDownloadLocations(it.id) } ?: flowOf(emptyList())
+            }.collect { locations -> _ui.update { it.copy(recentDownloadLocations = locations) } }
+        }
+    }
 
     fun newFeedId(): String = UUID.randomUUID().toString()
 
@@ -159,7 +176,7 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     /** Sends an item's torrent link to the active server. */
-    fun addItem(entry: RssEntry) {
+    fun addItem(entry: RssEntry, startPaused: Boolean = false, downloadLocation: String? = null) {
         val url = entry.item.torrentUrl ?: return
         viewModelScope.launch {
             val profile = container.activeProfile.first()
@@ -168,7 +185,10 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
                 return@launch
             }
             try {
-                container.adapterFor(profile).addByUrl(url)
+                container.adapterFor(profile).addByUrl(url, startPaused, downloadLocation)
+                if (!downloadLocation.isNullOrBlank()) {
+                    container.settingsRepository.addRecentDownloadLocation(profile.id, downloadLocation.trim())
+                }
                 _ui.update {
                     it.copy(addedKeys = it.addedKeys + entry.key, addedItemTitle = entry.item.title, addError = null)
                 }
