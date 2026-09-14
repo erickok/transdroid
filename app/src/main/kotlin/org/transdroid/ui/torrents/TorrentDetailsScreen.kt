@@ -444,19 +444,22 @@ private fun OverviewTab(torrent: Torrent) {
         // pre-redesign detail list since the mockup doesn't otherwise surface them here.
         val unknown = "—"
         val tiles = buildList {
-            add(stringResource(R.string.details_ratio) to formatRatio(torrent.ratio))
-            add(stringResource(R.string.details_size) to formatBytes(torrent.sizeBytes))
-            add(stringResource(R.string.details_eta) to (formatEta(torrent.etaSeconds) ?: unknown))
+            add(StatTileData(stringResource(R.string.details_ratio), formatRatio(torrent.ratio)))
+            add(StatTileData(stringResource(R.string.details_size), formatBytes(torrent.sizeBytes)))
+            add(StatTileData(stringResource(R.string.details_eta), formatEta(torrent.etaSeconds) ?: unknown))
             add(
-                stringResource(R.string.details_added) to (
+                StatTileData(
+                    stringResource(R.string.details_added),
                     torrent.addedTimestamp?.let {
                         DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(it * 1000))
-                    } ?: unknown
+                    } ?: unknown,
                 ),
             )
-            torrent.downloadDir?.let { add(stringResource(R.string.details_location) to it) }
+            // Free-text/variable-length values (unlike the 4 fixed tiles above, which are always
+            // short) - wrapped instead of ellipsized so a long path or label list is fully readable.
+            torrent.downloadDir?.let { add(StatTileData(stringResource(R.string.details_location), it, wrap = true)) }
             if (torrent.labels.isNotEmpty()) {
-                add(stringResource(R.string.details_labels) to torrent.labels.joinToString())
+                add(StatTileData(stringResource(R.string.details_labels), torrent.labels.joinToString(), wrap = true))
             }
         }
         StatTileGrid(tiles)
@@ -509,12 +512,15 @@ private fun OverviewCard(
     }
 }
 
+/** [wrap] wraps [value] onto multiple lines instead of ellipsizing it to one - for free-text values (a path, a label list) that can run long, unlike the fixed short values (ratio, size, ...) this grid otherwise shows. */
+private data class StatTileData(val label: String, val value: String, val wrap: Boolean = false)
+
 @Composable
-private fun StatTileGrid(tiles: List<Pair<String, String>>) {
+private fun StatTileGrid(tiles: List<StatTileData>) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         tiles.chunked(2).forEach { pair ->
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                pair.forEach { (key, value) -> StatTile(key, value, Modifier.weight(1f)) }
+                pair.forEach { tile -> StatTile(tile, Modifier.weight(1f)) }
                 if (pair.size == 1) Spacer(Modifier.weight(1f))
             }
         }
@@ -522,16 +528,16 @@ private fun StatTileGrid(tiles: List<Pair<String, String>>) {
 }
 
 @Composable
-private fun StatTile(label: String, value: String, modifier: Modifier = Modifier) {
+private fun StatTile(tile: StatTileData, modifier: Modifier = Modifier) {
     Surface(shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.surfaceContainerLow, modifier = modifier) {
         Column(Modifier.padding(horizontal = 14.dp, vertical = 11.dp)) {
-            Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(tile.label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(
-                value,
+                tile.value,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                maxLines = if (tile.wrap) Int.MAX_VALUE else 1,
+                overflow = if (tile.wrap) TextOverflow.Clip else TextOverflow.Ellipsis,
                 modifier = Modifier.padding(top = 4.dp),
             )
         }
