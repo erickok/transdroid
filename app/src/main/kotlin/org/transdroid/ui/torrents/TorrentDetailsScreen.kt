@@ -440,8 +440,9 @@ private fun OverviewTab(torrent: Torrent) {
 
         Spacer(Modifier.height(10.dp))
         // The first 4 tiles always show, with a placeholder for an unknown ETA/Added, matching
-        // the mockup's fixed Ratio/Size/ETA/Added row; Location/Labels are extra, kept from the
-        // pre-redesign detail list since the mockup doesn't otherwise surface them here.
+        // the mockup's fixed Ratio/Size/ETA/Added row; Location is extra, kept from the
+        // pre-redesign detail list since the mockup doesn't otherwise surface it here. Labels are
+        // already shown as a pill in the header above, so not repeated here.
         val unknown = "—"
         val tiles = buildList {
             add(StatTileData(stringResource(R.string.details_ratio), formatRatio(torrent.ratio)))
@@ -455,12 +456,9 @@ private fun OverviewTab(torrent: Torrent) {
                     } ?: unknown,
                 ),
             )
-            // Free-text/variable-length values (unlike the 4 fixed tiles above, which are always
-            // short) - wrapped instead of ellipsized so a long path or label list is fully readable.
+            // Free-text/variable-length value (unlike the 4 fixed tiles above, which are always
+            // short) - wrapped instead of ellipsized so a long path is fully readable.
             torrent.downloadDir?.let { add(StatTileData(stringResource(R.string.details_location), it, wrap = true)) }
-            if (torrent.labels.isNotEmpty()) {
-                add(StatTileData(stringResource(R.string.details_labels), torrent.labels.joinToString(), wrap = true))
-            }
         }
         StatTileGrid(tiles)
     }

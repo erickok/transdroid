@@ -97,7 +97,6 @@
     <string name="details_eta">ETA</string>
     <string name="details_added">Added</string>
     <string name="details_location">Location</string>
-    <string name="details_labels">Labels</string>
     <string name="details_files_empty">No file details available</string>
     <string name="details_trackers_empty">No tracker details available</string>
     <string name="details_tracker_working">Working</string>
