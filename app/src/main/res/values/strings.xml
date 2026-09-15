@@ -264,9 +264,9 @@
     <string name="settings_help_close">Got it</string>
     <string name="settings_help_lan_title">Direct on your home network</string>
     <string name="settings_help_lan">Use the server\'s IP address (like 192.168.1.5) with the client\'s own port — Transmission 9091, qBittorrent 8080, Deluge 8112 — and leave HTTPS off. Adding a new server also scans your network and offers what it finds.</string>
-    <string name="settings_help_domain_title">Via a domain (reverse proxy or Cloudflare Tunnel)</string>
+    <string name="settings_help_domain_title">Via a domain or public IP</string>
     <string name="settings_help_domain">Enter just the host name (torrent.example.com — no https:// prefix), turn HTTPS on, and use port 443, not the client\'s local port. Leave the path empty unless your proxy serves the client under a sub-path.</string>
-    <string name="settings_help_portal_title">Behind a login portal (Cloudflare Access etc.)</string>
+    <string name="settings_help_portal_title">Behind a login portal or reverse proxy</string>
     <string name="settings_help_portal">If the test says the server answered with a web page, a login portal is in front of the client. Create a service token in the portal and put its headers in the Custom HTTP headers field, one Name: Value per line.</string>
     <string name="settings_help_selfsigned_title">Self-signed HTTPS certificate</string>
     <string name="settings_help_selfsigned">Turn HTTPS on and run Test connection; when the certificate isn\'t trusted, you\'ll be offered to inspect its fingerprint and pin it for this server.</string>
