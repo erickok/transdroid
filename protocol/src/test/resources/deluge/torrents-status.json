@@ -16,7 +16,11 @@
       "time_added": 1753526401.0,
       "save_path": "/downloads/complete",
       "message": "OK",
-      "label": "linux-isos"
+      "label": "linux-isos",
+      "trackers": [
+        {"url": "https://tracker.example.org:443/announce", "tier": 0},
+        {"url": "udp://backup.tracker.net:80/announce", "tier": 1}
+      ]
     },
     "2aa4f5a7e209e54b32803d43670971c4c8caaa05": {
       "name": "debian-12.7.0-amd64-netinst.iso",

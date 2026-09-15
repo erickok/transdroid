@@ -99,12 +99,18 @@ class TransmissionAdapterTest {
         assertEquals("peersSendingToUs maps to seeders", 12, downloading.seedersConnected)
         assertEquals("peersGettingFromUs maps to leechers", 22, downloading.leechersConnected)
         assertEquals(listOf("isos"), downloading.labels)
+        assertEquals(
+            "duplicate announce hosts must be deduplicated",
+            listOf("tracker.example.org", "backup.tracker.net"),
+            downloading.trackers,
+        )
 
         val seeding = torrents[1]
         assertEquals(TorrentStatus.SEEDING, seeding.status)
         assertNull("eta -1 must normalize to null", seeding.etaSeconds)
         assertEquals(2.0f, seeding.ratio, 0.0001f)
         assertTrue(seeding.isFinished)
+        assertEquals("no trackers field in the fixture must normalize to empty", emptyList<String>(), seeding.trackers)
 
         val paused = torrents[2]
         assertEquals(TorrentStatus.PAUSED, paused.status)

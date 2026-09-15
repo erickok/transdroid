@@ -57,6 +57,7 @@ import org.transdroid.protocol.Tracker
 import org.transdroid.protocol.TrackerStatus
 import org.transdroid.protocol.internal.executeOnIo
 import org.transdroid.protocol.internal.joinPath
+import org.transdroid.protocol.internal.trackerHost
 
 /**
  * Adapter for the Deluge Web UI JSON-RPC API (POST /json with an _session_id cookie),
@@ -147,6 +148,10 @@ class DelugeAdapter(
             // Present only when Deluge's Label plugin is enabled
             labels = obj["label"]?.jsonPrimitive?.contentOrNull
                 ?.takeIf { it.isNotBlank() }?.let { listOf(it) } ?: emptyList(),
+            trackers = obj["trackers"]?.jsonArray
+                ?.mapNotNull { it.jsonObject["url"]?.jsonPrimitive?.contentOrNull?.let(::trackerHost) }
+                ?.distinct()
+                ?: emptyList(),
         )
     }
 
@@ -443,7 +448,7 @@ class DelugeAdapter(
         val TORRENT_KEYS = listOf(
             "name", "state", "progress", "download_payload_rate", "upload_payload_rate", "eta",
             "total_wanted", "total_done", "total_uploaded", "ratio", "num_peers", "num_seeds",
-            "time_added", "save_path", "message", "label",
+            "time_added", "save_path", "message", "label", "trackers",
         )
     }
 }

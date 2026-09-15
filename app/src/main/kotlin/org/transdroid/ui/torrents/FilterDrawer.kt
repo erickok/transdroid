@@ -41,6 +41,7 @@ import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.ListAlt
 import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.UnfoldMore
@@ -78,10 +79,12 @@ import org.transdroid.ui.theme.labelColor
 /**
  * The list screen's primary navigation and filtering surface, replacing the pre-redesign inline
  * filter-chip rows: brand + server switcher, name filter, single-select status filter, multi-select
- * label filter, and the entry point into Settings. Mirrors
+ * label filter, multi-select tracker filter, and the entry point into Settings. Mirrors
  * design/mockups/transdroid-m3-filter-drawer.html: a fixed header (brand, server pill, filter field)
- * above one continuously-scrolling region that holds the status list, the label list and, at its very
- * end, the Settings row - nothing here is pinned to the screen bottom, matching the reference markup.
+ * above one continuously-scrolling region that holds the status list, the label list, the tracker
+ * list (not in the original mockup - added once [org.transdroid.protocol.Torrent.trackers] existed
+ * to filter on) and, at its very end, the Settings row - nothing here is pinned to the screen
+ * bottom, matching the reference markup.
  */
 @Composable
 fun FilterDrawerContent(
@@ -89,6 +92,7 @@ fun FilterDrawerContent(
     onSwitchProfile: (String) -> Unit,
     onSetFilter: (TorrentFilter) -> Unit,
     onToggleLabel: (String) -> Unit,
+    onToggleTracker: (String) -> Unit,
     onSetNameQuery: (String) -> Unit,
     onOpenSettings: () -> Unit,
 ) {
@@ -159,6 +163,20 @@ fun FilterDrawerContent(
                         count = ui.countForLabel(NO_LABEL),
                         selected = NO_LABEL in ui.labelFilters,
                         onClick = { onToggleLabel(NO_LABEL) },
+                    )
+                }
+            }
+
+            if (ui.availableTrackers.isNotEmpty()) {
+                DrawerDivider()
+                SectionTitle(stringResource(R.string.drawer_trackers_header))
+                ui.availableTrackers.forEach { tracker ->
+                    DrawerItemRow(
+                        icon = Icons.Rounded.Public,
+                        label = tracker,
+                        count = ui.countForTracker(tracker),
+                        selected = tracker in ui.trackerFilters,
+                        onClick = { onToggleTracker(tracker) },
                     )
                 }
             }

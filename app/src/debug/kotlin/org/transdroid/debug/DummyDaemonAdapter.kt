@@ -51,6 +51,7 @@ class DummyDaemonAdapter : DaemonAdapter {
 
     private val categories = listOf("Movie", "Documentary", "TV Show", "Book", "Album", "App", "ISO Image")
     private val labelPool = listOf("video", "docs", "books", "music", "software")
+    private val trackerPool = listOf("tracker.example.org", "tracker.example.com", "linuxtracker.example.net")
     private val statusPool = listOf(
         TorrentStatus.SEEDING, TorrentStatus.SEEDING, TorrentStatus.SEEDING,
         TorrentStatus.DOWNLOADING, TorrentStatus.DOWNLOADING, TorrentStatus.DOWNLOADING,
@@ -250,6 +251,7 @@ class DummyDaemonAdapter : DaemonAdapter {
             downloadDir = "/downloads/" + name.replace(" ", "_").lowercase(),
             error = if (status == TorrentStatus.ERROR) "Dummy tracker error" else null,
             labels = if (Random.nextBoolean()) listOf(labelPool.random()) else emptyList(),
+            trackers = trackerPool.shuffled().take(Random.nextInt(1, 3)),
         )
     }
 

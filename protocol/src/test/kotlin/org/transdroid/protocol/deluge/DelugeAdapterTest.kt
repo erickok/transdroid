@@ -155,10 +155,12 @@ class DelugeAdapterTest {
         assertEquals(22, downloading.seedersConnected)
         assertEquals("num_peers already excludes seeds", 12, downloading.leechersConnected)
         assertEquals("Label plugin value maps to a label", listOf("linux-isos"), downloading.labels)
+        assertEquals(listOf("tracker.example.org", "backup.tracker.net"), downloading.trackers)
 
         val seeding = torrents[1]
         assertEquals(TorrentStatus.SEEDING, seeding.status)
         assertNull("eta 0 must normalize to null", seeding.etaSeconds)
+        assertEquals("no trackers field in the fixture must normalize to empty", emptyList<String>(), seeding.trackers)
 
         val paused = torrents[2]
         assertEquals(TorrentStatus.PAUSED, paused.status)

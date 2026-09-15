@@ -104,6 +104,15 @@ data class Torrent(
     /** Labels/categories assigned on the daemon (qBittorrent's single category included). */
     val labels: List<String> = emptyList(),
     /**
+     * Distinct tracker hostnames (e.g. "tracker.example.org"), for grouping/filtering the torrent
+     * list - not the full announce URLs, and not live per-tracker status (see [listTrackers][DaemonAdapter.listTrackers]
+     * for that). Cheaply available from the same bulk list call for Transmission, qBittorrent
+     * (only its single first-working tracker) and Deluge; always empty for rTorrent, which has no
+     * bulk-level tracker field - only the per-torrent `t.multicall` this app already uses for the
+     * details screen's Trackers tab, too expensive to run for every torrent on every list refresh.
+     */
+    val trackers: List<String> = emptyList(),
+    /**
      * When a magnet transfer is still fetching its metadata, the progress (0..1) of that
      * fetch; null once real content is known. In this phase size/progress read as zero.
      */

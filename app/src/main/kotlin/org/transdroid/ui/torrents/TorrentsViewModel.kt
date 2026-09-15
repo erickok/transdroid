@@ -119,6 +119,8 @@ data class TorrentsUiState(
     val filter: TorrentFilter = TorrentFilter.ALL,
     /** OR semantics: a torrent matches if it carries any of the selected labels. */
     val labelFilters: Set<String> = emptySet(),
+    /** OR semantics: a torrent matches if any of its [Torrent.trackers] is selected. */
+    val trackerFilters: Set<String> = emptySet(),
     /** Free-text filter over torrent names, from the drawer's filter field. */
     val nameQuery: String = "",
     val sort: TorrentSort = TorrentSort.DATE_ADDED,
@@ -139,6 +141,10 @@ data class TorrentsUiState(
     val hasUnlabeledTorrents: Boolean
         get() = torrents.any { it.labels.isEmpty() }
 
+    /** Distinct tracker hostnames across all loaded torrents; empty for a client with no bulk tracker data (rTorrent). */
+    val availableTrackers: List<String>
+        get() = torrents.flatMap { it.trackers }.distinct().sorted()
+
     val visibleTorrents: List<Torrent>
         get() = torrents
             .filter {
@@ -148,6 +154,7 @@ data class TorrentsUiState(
                             it.labels.any { label -> label in labelFilters } ||
                             (NO_LABEL in labelFilters && it.labels.isEmpty())
                         ) &&
+                    (trackerFilters.isEmpty() || it.trackers.any { tracker -> tracker in trackerFilters }) &&
                     (nameQuery.isBlank() || it.name.contains(nameQuery, ignoreCase = true))
             }
             .sortedWith(sort.comparator(sortDescending).thenBy { it.name.lowercase() })
@@ -159,6 +166,8 @@ data class TorrentsUiState(
 
     fun countForLabel(label: String): Int =
         if (label == NO_LABEL) torrents.count { it.labels.isEmpty() } else torrents.count { label in it.labels }
+
+    fun countForTracker(tracker: String): Int = torrents.count { tracker in it.trackers }
 
     val totalDownloadRate: Long
         get() = torrents.sumOf { it.downloadRate }
@@ -302,6 +311,12 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
     fun toggleLabelFilter(label: String) {
         _ui.update {
             it.copy(labelFilters = if (label in it.labelFilters) it.labelFilters - label else it.labelFilters + label)
+        }
+    }
+
+    fun toggleTrackerFilter(tracker: String) {
+        _ui.update {
+            it.copy(trackerFilters = if (tracker in it.trackerFilters) it.trackerFilters - tracker else it.trackerFilters + tracker)
         }
     }
 

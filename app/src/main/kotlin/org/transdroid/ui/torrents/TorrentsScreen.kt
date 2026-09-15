@@ -166,6 +166,7 @@ fun TorrentsScreen(
                         scope.launch { drawerState.close() }
                     },
                     onToggleLabel = { viewModel.toggleLabelFilter(it) },
+                    onToggleTracker = { viewModel.toggleTrackerFilter(it) },
                     onSetNameQuery = { viewModel.setNameQuery(it) },
                     onOpenSettings = {
                         scope.launch { drawerState.close() }

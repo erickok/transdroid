@@ -36,6 +36,7 @@
     <string name="drawer_status_header">Status</string>
     <string name="drawer_labels_header">Labels</string>
     <string name="drawer_no_label">No label</string>
+    <string name="drawer_trackers_header">Trackers</string>
     <string name="drawer_connected_count">Connected · %1$d torrents</string>
     <string name="drawer_connecting">Connecting…</string>
     <string name="drawer_connection_error">Connection error</string>

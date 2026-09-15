@@ -14,6 +14,7 @@
     "size": 6114656256,
     "state": "downloading",
     "category": "linux",
+    "tracker": "https://tracker.example.org:443/announce",
     "uploaded": 104857600,
     "upspeed": 48000
   },

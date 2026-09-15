@@ -52,6 +52,7 @@ import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.internal.executeOnIo
+import org.transdroid.protocol.internal.trackerHost
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
@@ -371,6 +372,10 @@ class TransmissionAdapter(
             labels = obj["labels"]?.jsonArray
                 ?.mapNotNull { it.jsonPrimitive.contentOrNull?.takeIf(String::isNotBlank) }
                 ?: emptyList(),
+            trackers = obj["trackers"]?.jsonArray
+                ?.mapNotNull { it.jsonObject["announce"]?.jsonPrimitive?.contentOrNull?.let(::trackerHost) }
+                ?.distinct()
+                ?: emptyList(),
             metadataProgress = obj["metadataPercentComplete"]?.jsonPrimitive?.floatOrNull
                 ?.takeIf { it < 1f }
                 ?.coerceAtLeast(0f),
@@ -390,6 +395,9 @@ class TransmissionAdapter(
             "totalSize", "downloadedEver", "uploadedEver", "uploadRatio", "peersConnected",
             "peersSendingToUs", "peersGettingFromUs",
             "addedDate", "downloadDir", "errorString", "labels", "metadataPercentComplete",
+            // Just the static tracker list (announce URLs) - not "trackerStats", which adds a lot
+            // of live per-tracker announce/scrape history this app has no use for in the list view.
+            "trackers",
         )
     }
 }

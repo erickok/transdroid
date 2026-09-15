@@ -133,10 +133,12 @@ class QbittorrentAdapterTest {
         assertEquals(22, downloading.seedersConnected)
         assertEquals(12, downloading.leechersConnected)
         assertEquals("category maps to a label", listOf("linux"), downloading.labels)
+        assertEquals("tracker field maps to its host", listOf("tracker.example.org"), downloading.trackers)
 
         val seeding = torrents[1]
         assertEquals(TorrentStatus.SEEDING, seeding.status)
         assertNull("eta 8640000 must normalize to null", seeding.etaSeconds)
+        assertEquals("blank tracker field must normalize to empty", emptyList<String>(), seeding.trackers)
 
         assertEquals("qBittorrent 5 stoppedDL state", TorrentStatus.PAUSED, torrents[2].status)
         assertEquals(TorrentStatus.ERROR, torrents[3].status)

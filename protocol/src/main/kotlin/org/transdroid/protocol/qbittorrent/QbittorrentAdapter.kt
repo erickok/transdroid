@@ -39,6 +39,7 @@ import org.transdroid.protocol.Tracker
 import org.transdroid.protocol.TrackerStatus
 import org.transdroid.protocol.internal.executeOnIo
 import org.transdroid.protocol.internal.joinPath
+import org.transdroid.protocol.internal.trackerHost
 
 /**
  * Adapter for the qBittorrent Web API v2 (REST over HTTP with SID cookie auth), as documented
@@ -355,6 +356,8 @@ class QbittorrentAdapter(
         val added_on: Long = 0,
         val save_path: String? = null,
         val category: String = "",
+        /** URL of the first tracker with working status; empty if none is. The list endpoint only exposes this one, not the full tracker list. */
+        val tracker: String = "",
     ) {
         fun toTorrent() = Torrent(
             id = hash,
@@ -383,6 +386,7 @@ class QbittorrentAdapter(
             downloadDir = save_path,
             error = if (state == "error" || state == "missingFiles") "Torrent in error state ($state)" else null,
             labels = listOf(category).filter { it.isNotBlank() },
+            trackers = tracker.takeIf { it.isNotBlank() }?.let { listOf(trackerHost(it)) } ?: emptyList(),
             // qBittorrent flags the metadata phase by state but reports no percentage
             metadataProgress = if (state == "metaDL" || state == "forcedMetaDL") 0f else null,
         )
