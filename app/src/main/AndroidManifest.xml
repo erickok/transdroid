@@ -5,8 +5,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- Needed to read the connected Wi-Fi SSID, for per-network server connection overrides -->
+    <!-- Needed to read the connected Wi-Fi SSID, for per-network server connection overrides.
+         COARSE must be declared alongside FINE on Android 12+; the app only checks/requests FINE,
+         since only that reliably yields the real SSID rather than a placeholder. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".TransdroidApplication"
