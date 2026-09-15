@@ -16,6 +16,10 @@
  */
 package org.transdroid.ui.settings
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,12 +35,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
+import androidx.compose.material.icons.rounded.Badge
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Folder
+import androidx.compose.material.icons.rounded.Link
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.LockOpen
 import androidx.compose.material.icons.rounded.Numbers
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material.icons.rounded.VisibilityOff
+import androidx.compose.material.icons.rounded.Wifi
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -54,6 +64,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -73,12 +84,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import java.net.URI
 import org.transdroid.R
 import org.transdroid.data.ServerProfile
+import org.transdroid.discovery.CurrentSsid
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.discovery.DiscoveredDaemon
@@ -115,6 +130,7 @@ fun EditServerScreen(
     var hostError by remember { mutableStateOf(false) }
     var portError by remember { mutableStateOf(false) }
     var showHelp by remember { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     // Single-URL-first connection entry (Transmission/qBittorrent/Deluge web UIs, and rTorrent's
     // ruTorrent-URL sub-mode): the field below is the primary input, and host/port/ssl/path are
@@ -124,6 +140,50 @@ fun EditServerScreen(
     }
     var overridden by rememberSaveable(existing?.id) { mutableStateOf(false) }
     var rtorrentUseUrl by rememberSaveable(existing?.id) { mutableStateOf(true) }
+
+    // Local-network connection override: same URL-first entry as the main connection above,
+    // just without the "override individual parts" escape hatch - see ServerProfile.toDaemonConfig.
+    var localNetworkEnabled by rememberSaveable(existing?.id) { mutableStateOf(existing?.localNetworkEnabled ?: false) }
+    var localSsid by rememberSaveable(existing?.id) { mutableStateOf(existing?.localNetworkSsid.orEmpty()) }
+    var localHost by rememberSaveable(existing?.id) { mutableStateOf(existing?.localHost.orEmpty()) }
+    var localPort by rememberSaveable(existing?.id) { mutableStateOf((existing?.localPort ?: 0).takeIf { it != 0 }?.toString().orEmpty()) }
+    var localUseSsl by rememberSaveable(existing?.id) { mutableStateOf(existing?.localUseSsl ?: false) }
+    var localPath by rememberSaveable(existing?.id) { mutableStateOf(existing?.localPath.orEmpty()) }
+    var localUsername by rememberSaveable(existing?.id) { mutableStateOf(existing?.localUsername.orEmpty()) }
+    var localPassword by rememberSaveable(existing?.id) { mutableStateOf(existing?.localPassword.orEmpty()) }
+    var localUrl by rememberSaveable(existing?.id) {
+        mutableStateOf(
+            if (existing?.localHost.isNullOrBlank()) "" else
+                composeServerUrl(existing?.localUseSsl ?: false, existing?.localHost.orEmpty(), existing?.localPort ?: 80, existing?.localPath.orEmpty())
+        )
+    }
+
+    fun applyParsedLocalUrl(raw: String) {
+        localUrl = raw
+        val parsed = parseServerUrl(raw)
+        if (parsed != null) {
+            localUseSsl = parsed.secure
+            localHost = parsed.host
+            localPort = parsed.port.toString()
+            localPath = parsed.path
+        }
+    }
+
+    val context = LocalContext.current
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) CurrentSsid.read(context)?.let { localSsid = it }
+    }
+    fun useCurrentSsid() {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            CurrentSsid.read(context)?.let { localSsid = it }
+        } else {
+            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
 
     // Xirvik seedbox quick setup (new servers only): a hostname + credentials probe against
     // Xirvik's auto-config endpoint to discover the account's per-user SCGI mount path, mirroring
@@ -213,6 +273,14 @@ fun EditServerScreen(
         password = password,
         pinnedCertSha256 = pinnedCert,
         customHeaders = customHeaders.trim(),
+        localNetworkEnabled = localNetworkEnabled,
+        localNetworkSsid = localSsid.trim(),
+        localHost = localHost.trim(),
+        localPort = localPort.toIntOrNull() ?: 0,
+        localUseSsl = localUseSsl,
+        localPath = localPath.trim(),
+        localUsername = localUsername.trim(),
+        localPassword = localPassword,
     )
 
     fun validate(): Boolean {
@@ -300,6 +368,7 @@ fun EditServerScreen(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text(stringResource(R.string.settings_name)) },
+                leadingIcon = { Icon(Icons.Rounded.Badge, contentDescription = null) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -314,6 +383,7 @@ fun EditServerScreen(
                     onValueChange = {},
                     readOnly = true,
                     label = { Text(stringResource(R.string.settings_type)) },
+                    leadingIcon = { Icon(Icons.Rounded.Dns, contentDescription = null) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = typeMenuExpanded) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -380,6 +450,7 @@ fun EditServerScreen(
                         )
                     },
                     placeholder = { Text(stringResource(R.string.settings_url_placeholder)) },
+                    leadingIcon = { Icon(Icons.Rounded.Link, contentDescription = null) },
                     singleLine = true,
                     isError = hostError,
                     modifier = Modifier.fillMaxWidth(),
@@ -419,6 +490,7 @@ fun EditServerScreen(
                             )
                         )
                     },
+                    leadingIcon = { Icon(Icons.Rounded.Dns, contentDescription = null) },
                     isError = hostError,
                     supportingText = if (hostError) {
                         { Text(stringResource(R.string.settings_invalid_host)) }
@@ -442,6 +514,7 @@ fun EditServerScreen(
                             )
                         )
                     },
+                    leadingIcon = { Icon(Icons.Rounded.Numbers, contentDescription = null) },
                     isError = portError,
                     supportingText = {
                         Text(
@@ -491,6 +564,7 @@ fun EditServerScreen(
                             )
                         )
                     },
+                    leadingIcon = { Icon(Icons.Rounded.Folder, contentDescription = null) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -507,6 +581,7 @@ fun EditServerScreen(
                 value = username,
                 onValueChange = { username = it },
                 label = { Text(stringResource(R.string.settings_username)) },
+                leadingIcon = { Icon(Icons.Rounded.Person, contentDescription = null) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -514,7 +589,9 @@ fun EditServerScreen(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text(stringResource(R.string.settings_password)) },
-                visualTransformation = PasswordVisualTransformation(),
+                leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = null) },
+                trailingIcon = { PasswordVisibilityToggle(visible = passwordVisible, onToggle = { passwordVisible = !passwordVisible }) },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -526,6 +603,24 @@ fun EditServerScreen(
                 supportingText = { Text(stringResource(R.string.settings_custom_headers_summary)) },
                 minLines = 2,
                 modifier = Modifier.fillMaxWidth(),
+            )
+
+            LocalNetworkSection(
+                enabled = localNetworkEnabled,
+                onEnabledChange = { localNetworkEnabled = it },
+                ssid = localSsid,
+                onSsidChange = { localSsid = it },
+                onUseCurrentSsid = ::useCurrentSsid,
+                url = localUrl,
+                onUrlChange = ::applyParsedLocalUrl,
+                secure = localUseSsl,
+                host = localHost,
+                port = localPort,
+                path = localPath,
+                username = localUsername,
+                onUsernameChange = { localUsername = it },
+                password = localPassword,
+                onPasswordChange = { localPassword = it },
             )
 
             if (pinnedCert.isNotBlank()) {
@@ -749,6 +844,18 @@ private fun DetectedRow(
 }
 
 @Composable
+private fun PasswordVisibilityToggle(visible: Boolean, onToggle: () -> Unit) {
+    IconButton(onClick = onToggle) {
+        Icon(
+            if (visible) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
+            contentDescription = stringResource(
+                if (visible) R.string.settings_hide_password else R.string.settings_show_password
+            ),
+        )
+    }
+}
+
+@Composable
 private fun HelpEntry(titleRes: Int, bodyRes: Int) {
     Text(
         stringResource(titleRes),
@@ -797,6 +904,125 @@ private fun DiscoverySection(state: DiscoveryState, onPick: (DiscoveredDaemon) -
 }
 
 /**
+ * Connect using a different address (and optionally login) while the device is on a chosen
+ * Wi-Fi network - e.g. a seedbox that's also reachable directly over the LAN. See
+ * [ServerProfile.toDaemonConfig].
+ */
+@Composable
+private fun LocalNetworkSection(
+    enabled: Boolean,
+    onEnabledChange: (Boolean) -> Unit,
+    ssid: String,
+    onSsidChange: (String) -> Unit,
+    onUseCurrentSsid: () -> Unit,
+    url: String,
+    onUrlChange: (String) -> Unit,
+    secure: Boolean,
+    host: String,
+    port: String,
+    path: String,
+    username: String,
+    onUsernameChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+) {
+    Text(
+        stringResource(R.string.settings_local_network_title),
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Surface(
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            Modifier.padding(16.dp),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(R.string.settings_local_network_toggle), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.height(3.dp))
+                Text(
+                    stringResource(R.string.settings_local_network_toggle_summary),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Switch(checked = enabled, onCheckedChange = onEnabledChange)
+        }
+    }
+    if (enabled) {
+        var localPasswordVisible by remember { mutableStateOf(false) }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            TransdroidTextField(
+                value = ssid,
+                onValueChange = onSsidChange,
+                label = { Text(stringResource(R.string.settings_local_ssid)) },
+                placeholder = { Text(stringResource(R.string.settings_local_ssid_hint)) },
+                leadingIcon = { Icon(Icons.Rounded.Wifi, contentDescription = null) },
+                singleLine = true,
+                modifier = Modifier.weight(1f),
+            )
+            TextButton(onClick = onUseCurrentSsid) {
+                Text(stringResource(R.string.settings_local_use_current))
+            }
+        }
+        Text(
+            stringResource(R.string.settings_local_ssid_summary),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            stringResource(R.string.settings_local_override_address),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        TransdroidTextField(
+            value = url,
+            onValueChange = onUrlChange,
+            label = { Text(stringResource(R.string.settings_local_url_label)) },
+            placeholder = { Text(stringResource(R.string.settings_local_url_placeholder)) },
+            leadingIcon = { Icon(Icons.Rounded.Link, contentDescription = null) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        DetectedSettingsPanel(secure = secure, host = host, port = port, path = path)
+        Text(
+            stringResource(R.string.settings_local_override_login),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        TransdroidTextField(
+            value = username,
+            onValueChange = onUsernameChange,
+            label = { Text(stringResource(R.string.settings_local_username)) },
+            placeholder = { Text(stringResource(R.string.settings_local_login_hint)) },
+            leadingIcon = { Icon(Icons.Rounded.Person, contentDescription = null) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        TransdroidTextField(
+            value = password,
+            onValueChange = onPasswordChange,
+            label = { Text(stringResource(R.string.settings_local_password)) },
+            placeholder = { Text(stringResource(R.string.settings_local_login_hint)) },
+            leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = null) },
+            trailingIcon = {
+                PasswordVisibilityToggle(
+                    visible = localPasswordVisible,
+                    onToggle = { localPasswordVisible = !localPasswordVisible },
+                )
+            },
+            visualTransformation = if (localPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+/**
  * Collapsed: a prompt offering to fill in the form below from just a hostname and credentials.
  * Expanded: those three fields plus a "Detect settings" action that probes Xirvik's auto-config
  * endpoint for the account's SCGI mount path (see the [XirvikState] flow in [EditServerScreen]).
@@ -829,11 +1055,13 @@ private fun XirvikSetupSection(
                     Text(stringResource(R.string.settings_xirvik_action))
                 }
             } else {
+                var xirvikPasswordVisible by remember { mutableStateOf(false) }
                 TransdroidTextField(
                     value = server,
                     onValueChange = onServerChange,
                     label = { Text(stringResource(R.string.settings_xirvik_server)) },
                     placeholder = { Text(stringResource(R.string.settings_xirvik_server_hint)) },
+                    leadingIcon = { Icon(Icons.Rounded.Dns, contentDescription = null) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -842,6 +1070,7 @@ private fun XirvikSetupSection(
                     value = username,
                     onValueChange = onUsernameChange,
                     label = { Text(stringResource(R.string.settings_username)) },
+                    leadingIcon = { Icon(Icons.Rounded.Person, contentDescription = null) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -850,7 +1079,14 @@ private fun XirvikSetupSection(
                     value = password,
                     onValueChange = onPasswordChange,
                     label = { Text(stringResource(R.string.settings_password)) },
-                    visualTransformation = PasswordVisualTransformation(),
+                    leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = null) },
+                    trailingIcon = {
+                        PasswordVisibilityToggle(
+                            visible = xirvikPasswordVisible,
+                            onToggle = { xirvikPasswordVisible = !xirvikPasswordVisible },
+                        )
+                    },
+                    visualTransformation = if (xirvikPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )

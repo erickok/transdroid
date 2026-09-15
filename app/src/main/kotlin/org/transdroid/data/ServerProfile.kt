@@ -39,22 +39,47 @@ data class ServerProfile(
     val pinnedCertSha256: String = "",
     /** Extra HTTP headers, one "Name: Value" per line (e.g. Cloudflare Access tokens). */
     val customHeaders: String = "",
+    /**
+     * Local-network connection override: while the device is on Wi-Fi network
+     * [localNetworkSsid], connect using [localHost]/[localPort]/etc. instead - e.g. a seedbox
+     * that's also reachable directly over the LAN, bypassing its public reverse proxy. See
+     * [toDaemonConfig].
+     */
+    val localNetworkEnabled: Boolean = false,
+    val localNetworkSsid: String = "",
+    val localHost: String = "",
+    val localPort: Int = 0,
+    val localUseSsl: Boolean = false,
+    val localPath: String = "",
+    /** Blank falls back to [username]. */
+    val localUsername: String = "",
+    /** Blank falls back to [password]. */
+    val localPassword: String = "",
     val extras: Map<String, String> = emptyMap(),
 ) {
     val displayName: String
         get() = name.ifBlank { host }
 
-    fun toDaemonConfig() = DaemonConfig(
-        type = type,
-        host = host,
-        port = port,
-        useSsl = useSsl,
-        path = path.takeIf { it.isNotBlank() },
-        username = username.takeIf { it.isNotBlank() },
-        password = password.takeIf { it.isNotBlank() },
-        pinnedCertSha256 = pinnedCertSha256.takeIf { it.isNotBlank() },
-        customHeaders = parseHeaders(customHeaders),
-    )
+    /**
+     * [connectedSsid] is the device's current Wi-Fi SSID, or null when not on Wi-Fi or unknown
+     * (e.g. location permission not granted). The local override only applies when it matches
+     * [localNetworkSsid] exactly.
+     */
+    fun toDaemonConfig(connectedSsid: String? = null): DaemonConfig {
+        val useLocal = localNetworkEnabled && localHost.isNotBlank() && localNetworkSsid.isNotBlank() &&
+            connectedSsid == localNetworkSsid
+        return DaemonConfig(
+            type = type,
+            host = if (useLocal) localHost else host,
+            port = if (useLocal) localPort else port,
+            useSsl = if (useLocal) localUseSsl else useSsl,
+            path = (if (useLocal) localPath else path).takeIf { it.isNotBlank() },
+            username = (if (useLocal) localUsername.ifBlank { username } else username).takeIf { it.isNotBlank() },
+            password = (if (useLocal) localPassword.ifBlank { password } else password).takeIf { it.isNotBlank() },
+            pinnedCertSha256 = pinnedCertSha256.takeIf { it.isNotBlank() },
+            customHeaders = parseHeaders(customHeaders),
+        )
+    }
 
     private fun parseHeaders(raw: String): Map<String, String> = raw.lines()
         .mapNotNull { line ->

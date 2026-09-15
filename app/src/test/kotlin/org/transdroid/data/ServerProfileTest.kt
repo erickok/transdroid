@@ -56,4 +56,50 @@ class ServerProfileTest {
     fun `no headers yields an empty map`() {
         assertTrue(profile("").toDaemonConfig().customHeaders.isEmpty())
     }
+
+    private fun profileWithLocalOverride() = ServerProfile(
+        id = "1",
+        name = "Test",
+        type = DaemonType.TRANSMISSION,
+        host = "public.example.org",
+        port = 443,
+        useSsl = true,
+        username = "publicuser",
+        password = "publicpass",
+        localNetworkEnabled = true,
+        localNetworkSsid = "HomeNet-5G",
+        localHost = "192.168.1.10",
+        localPort = 9091,
+        localUseSsl = false,
+        localUsername = "",
+        localPassword = "",
+    )
+
+    @Test
+    fun `local override applies only on the matching SSID`() {
+        val config = profileWithLocalOverride().toDaemonConfig(connectedSsid = "HomeNet-5G")
+        assertEquals("192.168.1.10", config.host)
+        assertEquals(9091, config.port)
+        assertTrue(!config.useSsl)
+    }
+
+    @Test
+    fun `local override is ignored on a different or unknown SSID`() {
+        val profile = profileWithLocalOverride()
+        assertEquals("public.example.org", profile.toDaemonConfig(connectedSsid = "OtherNet").host)
+        assertEquals("public.example.org", profile.toDaemonConfig(connectedSsid = null).host)
+    }
+
+    @Test
+    fun `blank local login falls back to the main credentials`() {
+        val config = profileWithLocalOverride().toDaemonConfig(connectedSsid = "HomeNet-5G")
+        assertEquals("publicuser", config.username)
+        assertEquals("publicpass", config.password)
+    }
+
+    @Test
+    fun `local override disabled is ignored even on the matching SSID`() {
+        val profile = profileWithLocalOverride().copy(localNetworkEnabled = false)
+        assertEquals("public.example.org", profile.toDaemonConfig(connectedSsid = "HomeNet-5G").host)
+    }
 }

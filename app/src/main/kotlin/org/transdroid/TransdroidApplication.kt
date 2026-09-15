@@ -24,6 +24,7 @@ import org.transdroid.background.FinishedTorrentsWorker
 import org.transdroid.debug.DebugTools
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.data.ServerProfile
+import org.transdroid.discovery.CurrentSsid
 import org.transdroid.discovery.LanDiscovery
 import org.transdroid.data.ServerProfilesRepository
 import org.transdroid.data.SettingsRepository
@@ -35,6 +36,8 @@ import org.transdroid.widget.WidgetStateRepository
 /** Lightweight manual dependency container; see the v3 plan's "keep DI light" decision. */
 class AppContainer(context: Context) {
 
+    private val appContext = context.applicationContext
+
     val profilesRepository = ServerProfilesRepository(context)
     val settingsRepository = SettingsRepository(context)
     val widgetStateRepository = WidgetStateRepository(context)
@@ -43,7 +46,7 @@ class AppContainer(context: Context) {
     val httpClient = DaemonAdapterFactory.defaultHttpClient()
     val rssFetcher = RssFetcher(httpClient)
 
-    private var cachedAdapter: Pair<ServerProfile, DaemonAdapter>? = null
+    private var cachedAdapter: Triple<ServerProfile, String?, DaemonAdapter>? = null
 
     /** The profile torrents are loaded from: the selected one, or the first configured. */
     val activeProfile: Flow<ServerProfile?> =
@@ -53,22 +56,25 @@ class AppContainer(context: Context) {
 
     /**
      * Returns a (cached) adapter for [profile]; adapters keep session state like auth cookies.
+     * Also cached by the current Wi-Fi SSID, so a profile with a local-network override
+     * reconnects with the right settings when the device switches networks.
      * [DebugTools.adapterFor] intercepts debug-only dummy test servers before this ever builds
      * a real network-backed adapter - a no-op in release builds, see that object's doc comment.
      */
     @Synchronized
     fun adapterFor(profile: ServerProfile): DaemonAdapter {
-        cachedAdapter?.let { (cachedProfile, adapter) ->
-            if (cachedProfile == profile) return adapter
+        val ssid = CurrentSsid.read(appContext)
+        cachedAdapter?.let { (cachedProfile, cachedSsid, adapter) ->
+            if (cachedProfile == profile && cachedSsid == ssid) return adapter
         }
-        val adapter = DebugTools.adapterFor(profile) ?: DaemonAdapterFactory.create(profile.toDaemonConfig(), httpClient)
-        cachedAdapter = profile to adapter
+        val adapter = DebugTools.adapterFor(profile) ?: DaemonAdapterFactory.create(profile.toDaemonConfig(ssid), httpClient)
+        cachedAdapter = Triple(profile, ssid, adapter)
         return adapter
     }
 
     /** An uncached adapter for testing yet-unsaved connection settings. */
     fun adapterForTest(profile: ServerProfile): DaemonAdapter =
-        DebugTools.adapterFor(profile) ?: DaemonAdapterFactory.create(profile.toDaemonConfig(), httpClient)
+        DebugTools.adapterFor(profile) ?: DaemonAdapterFactory.create(profile.toDaemonConfig(CurrentSsid.read(appContext)), httpClient)
 }
 
 class TransdroidApplication : Application() {

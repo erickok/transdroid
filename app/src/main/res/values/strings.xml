@@ -193,6 +193,8 @@
     <string name="settings_path_hint_deluge">Base path of the Web UI, usually empty</string>
     <string name="settings_username">User name (optional)</string>
     <string name="settings_password">Password</string>
+    <string name="settings_show_password">Show password</string>
+    <string name="settings_hide_password">Hide password</string>
     <string name="settings_save">Save</string>
     <string name="settings_delete">Delete server</string>
     <string name="settings_test">Test connection</string>
@@ -227,7 +229,7 @@
     <string name="settings_cert_forget">Forget</string>
     <string name="settings_custom_headers">Custom HTTP headers (optional)</string>
     <string name="settings_custom_headers_hint">CF-Access-Client-Id: xxx.access\nCF-Access-Client-Secret: yyy</string>
-    <string name="settings_custom_headers_summary">One \"Name: Value\" per line; sent with every request. Needed for Cloudflare Access service tokens and similar portals.</string>
+    <string name="settings_custom_headers_summary">One \"Name: Value\" per line; sent with every request. Use for reverse proxies, custom authentication, service tokens, etc.</string>
     <string name="settings_port_hint">Client\'s own port on your LAN; 443 for an HTTPS domain via reverse proxy or tunnel</string>
     <string name="settings_url_label">Web interface URL</string>
     <string name="settings_url_placeholder">https://host:port/path</string>
@@ -267,6 +269,22 @@
     <string name="settings_help_portal">If the test says the server answered with a web page, a login portal is in front of the client. Create a service token in the portal and put its headers in the Custom HTTP headers field, one Name: Value per line.</string>
     <string name="settings_help_selfsigned_title">Self-signed HTTPS certificate</string>
     <string name="settings_help_selfsigned">Turn HTTPS on and run Test connection; when the certificate isn\'t trusted, you\'ll be offered to inspect its fingerprint and pin it for this server.</string>
+
+    <!-- Local network override -->
+    <string name="settings_local_network_title">Local network</string>
+    <string name="settings_local_network_toggle">Use local settings on Wi-Fi</string>
+    <string name="settings_local_network_toggle_summary">When your phone is on a chosen network, connect using a different address and login.</string>
+    <string name="settings_local_ssid">Wi-Fi network (SSID)</string>
+    <string name="settings_local_ssid_hint">e.g. HomeNet-5G</string>
+    <string name="settings_local_use_current">Use current</string>
+    <string name="settings_local_ssid_summary">Overrides apply only while connected to this network.</string>
+    <string name="settings_local_override_address">Override address</string>
+    <string name="settings_local_url_label">Local web interface URL</string>
+    <string name="settings_local_url_placeholder">http://192.168.1.10:port/path</string>
+    <string name="settings_local_override_login">Override login (optional)</string>
+    <string name="settings_local_username">Username</string>
+    <string name="settings_local_password">Password</string>
+    <string name="settings_local_login_hint">Leave empty to reuse the login above</string>
 
     <!-- Backup -->
     <string name="settings_backup">Backup</string>
