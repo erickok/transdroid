@@ -181,6 +181,7 @@
     <string name="settings_active_server">Active</string>
     <string name="settings_edit_server">Edit server</string>
     <string name="settings_new_server">New server</string>
+    <string name="settings_server_section_title">Server</string>
     <string name="settings_name">Name</string>
     <string name="settings_type">Client type</string>
     <string name="settings_host">Host name or IP address</string>

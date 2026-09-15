@@ -29,12 +29,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Badge
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Dns
@@ -364,6 +366,11 @@ fun EditServerScreen(
                 )
             }
 
+            Text(
+                stringResource(R.string.settings_server_section_title),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
             TransdroidTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -469,6 +476,12 @@ fun EditServerScreen(
                     DetectedSettingsPanel(secure = useSsl, host = host, port = port, path = path)
                     TextButton(onClick = { toggleOverride(true) }) {
                         Text(stringResource(R.string.settings_override_parts))
+                        Spacer(Modifier.width(2.dp))
+                        Icon(
+                            Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
                     }
                 }
             }
