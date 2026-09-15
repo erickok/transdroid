@@ -30,6 +30,23 @@ data class Release(val version: String, val date: String, val changes: List<Chan
  */
 val CHANGELOG: List<Release> = listOf(
     Release(
+        version = "3.0.0-alpha3",
+        date = "September 2026",
+        changes = listOf(
+            ChangelogEntry(ChangeKind.NEW, "Filter the torrent list by tracker"),
+            ChangelogEntry(ChangeKind.NEW, "Set a download location when adding a torrent, including from Search and RSS"),
+            ChangelogEntry(ChangeKind.NEW, "Redesigned Add torrent screen"),
+            ChangelogEntry(ChangeKind.NEW, "Home screen widget shows a scrollable list of running torrents; each widget instance can pick its own server"),
+            ChangelogEntry(ChangeKind.NEW, "Connect using different settings while on a chosen Wi-Fi network, e.g. a seedbox also reachable directly over the LAN"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Details screen action icons use a consistent accent color"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Location and label text wraps instead of truncating on the details Overview tab"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Clearer Edit Server screen: leading icons, a password-reveal toggle, and better connection help wording"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Widget uses the real app icon instead of a generic badge"),
+            ChangelogEntry(ChangeKind.FIXED, "Widget icon rendering too small"),
+            ChangelogEntry(ChangeKind.FIXED, "Tablet details placeholder styling and top bar status bar inset"),
+        ),
+    ),
+    Release(
         version = "3.0.0-alpha2",
         date = "September 2026",
         changes = listOf(

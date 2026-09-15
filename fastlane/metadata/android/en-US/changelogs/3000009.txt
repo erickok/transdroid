@@ -1,0 +1,6 @@
+* Filter the torrent list by tracker
+* Set a download location when adding a torrent, including from Search and RSS
+* Redesigned Add torrent screen
+* Home screen widget shows a scrollable list of running torrents; each widget instance can pick its own server
+* Connect using different settings while on a chosen Wi-Fi network, e.g. a seedbox also reachable directly over the LAN
+* Fixed: widget icon rendering too small, and now uses the real app icon instead of a generic badge
