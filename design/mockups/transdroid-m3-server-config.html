@@ -157,6 +157,23 @@ body{
 .btn-outline:hover{background:var(--surface-high);}
 .btn-outline .msr{font-size:20px; color:var(--primary);}
 
+/* switch + local network override */
+.optrow{display:flex; align-items:flex-start; gap:14px; padding:14px 16px; background:var(--surface-container); border-radius:18px; margin-bottom:12px;}
+.optrow .otext{flex:1; min-width:0;}
+.optrow .otext b{display:block; font-size:15px; font-weight:600;}
+.optrow .otext small{display:block; font-size:12.5px; color:var(--muted); line-height:1.42; margin-top:3px;}
+.switch{position:relative; width:52px; height:32px; flex:none; margin-top:2px;}
+.switch input{position:absolute; inset:0; opacity:0; margin:0; cursor:pointer; z-index:2;}
+.track{position:absolute; inset:0; border-radius:16px; background:var(--surface-highest); border:2px solid var(--outline); transition:.2s;}
+.thumb{position:absolute; top:50%; left:8px; transform:translateY(-50%); width:16px; height:16px; border-radius:50%; background:var(--outline); transition:.2s cubic-bezier(.2,.8,.2,1);}
+.switch input:checked ~ .track{background:var(--primary); border-color:var(--primary);}
+.switch input:checked ~ .thumb{left:24px; width:24px; height:24px; background:var(--on-primary);}
+.flabel.between{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+.usecur{border:none; background:transparent; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:600; color:var(--primary); display:inline-flex; align-items:center; gap:5px; padding:2px 6px; border-radius:999px;}
+.usecur:hover{background:var(--surface-high);}
+.usecur .msr{font-size:16px;}
+.collapsed{display:none;}
+
 .hidden{display:none !important;}
 </style>
 </head>
@@ -289,6 +306,59 @@ body{
         </div>
       </section>
 
+      <!-- Local network override -->
+      <section class="section">
+        <div class="section-title">Local network</div>
+
+        <div class="optrow">
+          <div class="otext">
+            <b>Use local settings on Wi-Fi</b>
+            <small>When your phone is on a chosen network, connect using a different address and login.</small>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="localToggle" checked aria-label="Use local network settings">
+            <span class="track"></span><span class="thumb"></span>
+          </label>
+        </div>
+
+        <div id="localFields">
+          <div class="field">
+            <span class="flabel between">Wi-Fi network (SSID)
+              <button class="usecur" id="useCurrent" type="button"><span class="msr">wifi</span>Use current</button>
+            </span>
+            <div class="frow"><span class="msr fic">wifi</span><input id="ssid" type="text" value="HomeNet-5G" placeholder="e.g. HomeNet-5G"></div>
+          </div>
+          <div class="helper">Overrides apply only while connected to this network.</div>
+
+          <div class="sublabel">Override address</div>
+          <div class="field">
+            <span class="flabel">Local web interface URL</span>
+            <div class="frow"><span class="msr fic">link</span><input id="localurl" type="url" value="http://192.168.1.10:8443/qbittorrent" placeholder="http://192.168.1.10:port/path"></div>
+          </div>
+          <div class="detected">
+            <div class="dhead">Detected settings</div>
+            <div class="drow"><span class="msr" id="lLockIc">lock_open</span><span class="dk">Secure connection</span><span class="dv" id="lSsl">No</span></div>
+            <div class="drow"><span class="msr">dns</span><span class="dk">Host</span><span class="dv" id="lHost">192.168.1.10</span></div>
+            <div class="drow"><span class="msr">tag</span><span class="dk">Port</span><span class="dv" id="lPort">8443</span></div>
+            <div class="drow"><span class="msr">folder</span><span class="dk">Folder</span><span class="dv" id="lPath">/qbittorrent</span></div>
+          </div>
+
+          <div class="sublabel">Override login (optional)</div>
+          <div class="field">
+            <span class="flabel">Username</span>
+            <div class="frow"><span class="msr fic">person</span><input type="text" value="admin" placeholder="Leave empty to reuse the login above"></div>
+          </div>
+          <div class="field">
+            <span class="flabel">Password</span>
+            <div class="frow">
+              <span class="msr fic">lock</span>
+              <input id="lpw" type="password" value="localpass" placeholder="Leave empty to reuse the login above">
+              <button class="ftrail" id="leye" type="button" aria-label="Show password"><span class="msr">visibility</span></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <button class="btn-outline"><span class="msr">network_check</span> Test connection</button>
 
     </main>
@@ -336,6 +406,7 @@ function wire(inputId, ids){
 }
 wire('url',   {ssl:'dSsl', lock:'dLockIc', host:'dHost', port:'dPort', path:'dPath'});
 wire('rturl', {ssl:'rSsl', lock:'rLockIc', host:'rHost', port:'rPort', path:'rPath'});
+wire('localurl', {ssl:'lSsl', lock:'lLockIc', host:'lHost', port:'lPort', path:'lPath'});
 
 /* client type switch */
 const web = document.getElementById('web'), rt = document.getElementById('rt');
@@ -379,6 +450,19 @@ eye.addEventListener('click', ()=>{
   const show = pw.type === 'password';
   pw.type = show ? 'text' : 'password';
   eye.querySelector('.msr').textContent = show ? 'visibility_off' : 'visibility';
+});
+
+/* local network override */
+const localToggle = document.getElementById('localToggle');
+const localFields = document.getElementById('localFields');
+localToggle.addEventListener('change', ()=> localFields.classList.toggle('collapsed', !localToggle.checked));
+document.getElementById('useCurrent').addEventListener('click', ()=>{ document.getElementById('ssid').value = 'HomeNet-5G'; });
+
+const lpw = document.getElementById('lpw'), leye = document.getElementById('leye');
+leye.addEventListener('click', ()=>{
+  const show = lpw.type === 'password';
+  lpw.type = show ? 'text' : 'password';
+  leye.querySelector('.msr').textContent = show ? 'visibility_off' : 'visibility';
 });
 </script>
 </body>
