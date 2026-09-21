@@ -100,6 +100,38 @@ class TorznabProvider(
         return parse(body)
     }
 
+    /**
+     * Downloads the raw bytes of a .torrent file at [url], attaching the same Basic Auth as
+     * [search] when configured. Needed because a result's download link commonly sits behind
+     * the exact same member-area login as the Torznab endpoint itself (common on Jackett-fronted
+     * seedboxes) - handing that URL straight to a daemon via addByUrl fails there, silently,
+     * since the daemon has no way to authenticate to it itself. Never call this for a magnet URI.
+     */
+    suspend fun fetchTorrentBytes(url: String): ByteArray {
+        val request = try {
+            Request.Builder().url(url).apply {
+                if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
+                    header("Authorization", Credentials.basic(username, password))
+                }
+            }.build()
+        } catch (e: IllegalArgumentException) {
+            throw DaemonException.UnexpectedResponse("Invalid download URL", e)
+        }
+        return httpClient.executeOnIo(request).use { response ->
+            when {
+                response.code == 401 || response.code == 403 ->
+                    throw DaemonException.Authentication("The indexer rejected the login while downloading the file")
+                !response.isSuccessful ->
+                    throw DaemonException.UnexpectedResponse("The indexer returned HTTP ${response.code} while downloading the file")
+            }
+            // executeOnIo only wraps the round-trip up to receiving headers; the body still
+            // streams off the same connection, so reading it can still block on the socket
+            // and must stay on IO too, or it risks a NetworkOnMainThreadException on whatever
+            // dispatcher called this.
+            withContext(Dispatchers.IO) { response.body?.bytes() ?: ByteArray(0) }
+        }
+    }
+
     internal fun parse(xml: String): List<SearchResult> {
         val root = try {
             parseXmlSafely(xml).documentElement

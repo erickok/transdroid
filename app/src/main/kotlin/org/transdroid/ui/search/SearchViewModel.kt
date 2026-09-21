@@ -157,7 +157,29 @@ class SearchViewModel(private val container: AppContainer) : ViewModel() {
                 return@launch
             }
             try {
-                container.adapterFor(profile).addByUrl(result.torrentUrl, startPaused, downloadLocation)
+                val adapter = container.adapterFor(profile)
+                val provider = providers.value.firstOrNull { it.id == _ui.value.selectedProviderId }
+                    ?: providers.value.firstOrNull()
+                val authedProvider = provider
+                    ?.takeIf { it.username.isNotBlank() && it.password.isNotBlank() }
+                    ?.takeIf { !result.torrentUrl.startsWith("magnet:") }
+                if (authedProvider != null) {
+                    // The download link commonly sits behind the exact same member-area login as
+                    // the Torznab endpoint itself (common on Jackett-fronted seedboxes) - handing
+                    // it straight to the daemon as a URL fails there, silently, since the daemon
+                    // has no way to authenticate to it. Fetch the bytes here instead, where the
+                    // indexer's own credentials are already known, then upload them directly.
+                    val bytes = TorznabProvider(
+                        endpointUrl = authedProvider.url,
+                        apiKey = authedProvider.apiKey,
+                        httpClient = container.httpClient,
+                        username = authedProvider.username,
+                        password = authedProvider.password,
+                    ).fetchTorrentBytes(result.torrentUrl)
+                    adapter.addByFile(torrentFileName(result.title), bytes, startPaused, downloadLocation)
+                } else {
+                    adapter.addByUrl(result.torrentUrl, startPaused, downloadLocation)
+                }
                 if (!downloadLocation.isNullOrBlank()) {
                     container.settingsRepository.addRecentDownloadLocation(profile.id, downloadLocation.trim())
                 }
@@ -180,3 +202,7 @@ class SearchViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 }
+
+/** A filesystem-safe .torrent file name derived from a search result's title. */
+private fun torrentFileName(title: String): String =
+    title.trim().ifBlank { "torrent" }.replace(Regex("[\\\\/:*?\"<>|]"), "_") + ".torrent"

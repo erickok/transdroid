@@ -129,4 +129,53 @@ class TorznabProviderTest {
         val request = server.takeRequest()
         assertEquals(null, request.getHeader("Authorization"))
     }
+
+    @Test
+    fun `fetchTorrentBytes downloads with basic auth when configured`() = runTest {
+        server.enqueue(MockResponse().setBody("torrent-bytes"))
+
+        val bytes = TorznabProvider(
+            endpointUrl = server.url("/api/v2.0/indexers/all/results/torznab").toString(),
+            apiKey = "key123",
+            httpClient = OkHttpClient(),
+            username = "member",
+            password = "secret",
+        ).fetchTorrentBytes(server.url("/dl/1002.torrent").toString())
+
+        assertEquals("torrent-bytes", String(bytes))
+        val request = server.takeRequest()
+        assertEquals("Basic bWVtYmVyOnNlY3JldA==", request.getHeader("Authorization"))
+    }
+
+    @Test
+    fun `fetchTorrentBytes omits basic auth header when not configured`() = runTest {
+        server.enqueue(MockResponse().setBody("torrent-bytes"))
+
+        provider().fetchTorrentBytes(server.url("/dl/1002.torrent").toString())
+
+        val request = server.takeRequest()
+        assertEquals(null, request.getHeader("Authorization"))
+    }
+
+    @Test
+    fun `fetchTorrentBytes maps 401 to authentication error`() = runTest {
+        server.enqueue(MockResponse().setResponseCode(401))
+
+        try {
+            provider().fetchTorrentBytes(server.url("/dl/1002.torrent").toString())
+            fail("Expected DaemonException.Authentication")
+        } catch (expected: DaemonException.Authentication) {
+        }
+    }
+
+    @Test
+    fun `fetchTorrentBytes maps other failures to unexpected response`() = runTest {
+        server.enqueue(MockResponse().setResponseCode(500))
+
+        try {
+            provider().fetchTorrentBytes(server.url("/dl/1002.torrent").toString())
+            fail("Expected DaemonException.UnexpectedResponse")
+        } catch (expected: DaemonException.UnexpectedResponse) {
+        }
+    }
 }
