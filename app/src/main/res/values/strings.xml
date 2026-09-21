@@ -86,6 +86,7 @@
     <string name="details_tab_overview">Overview</string>
     <string name="details_tab_files">Files (%d)</string>
     <string name="details_tab_trackers">Trackers (%d)</string>
+    <string name="details_tab_peers">Peers (%d)</string>
     <string name="details_section_download">Download</string>
     <string name="details_section_upload">Upload</string>
     <string name="details_size">Size</string>
@@ -99,6 +100,7 @@
     <string name="details_location">Location</string>
     <string name="details_files_empty">No file details available</string>
     <string name="details_trackers_empty">No tracker details available</string>
+    <string name="details_peers_empty">No peers connected</string>
     <string name="details_tracker_working">Working</string>
     <string name="details_tracker_idle">Idle</string>
     <string name="details_tracker_error">Error</string>

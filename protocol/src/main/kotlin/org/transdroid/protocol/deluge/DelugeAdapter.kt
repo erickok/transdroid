@@ -50,6 +50,7 @@ import org.transdroid.protocol.DaemonAdapter
 import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.FilePriority
+import org.transdroid.protocol.Peer
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
@@ -285,6 +286,40 @@ class DelugeAdapter(
                 else -> TrackerStatus.WORKING
             }
             Tracker(url = url, status = status, message = if (isActive) activeStatusText else null)
+        }
+    }
+
+    override suspend fun listPeers(torrentId: String): List<Peer> {
+        ensureAuthenticated()
+        val result = call(
+            "core.get_torrent_status",
+            torrentId,
+            buildJsonArray { add("peers") },
+        )
+        val obj = result as? JsonObject
+            ?: throw DaemonException.UnexpectedResponse("Unexpected core.get_torrent_status reply")
+        val peers = obj["peers"]?.jsonArray ?: return emptyList()
+        return peers.map { element ->
+            val peer = element.jsonObject
+            fun rate(key: String): Long = peer[key]?.jsonPrimitive?.doubleOrNull?.toLong() ?: 0L
+            // Deluge reports "ip:port" as one string; splitting on the last colon is imperfect
+            // for a bare (unbracketed) IPv6 address, which itself contains colons - acceptable
+            // here since Deluge always formats IPv4 this way and bare-IPv6 peers are rare.
+            val ipAndPort = peer["ip"]?.jsonPrimitive?.contentOrNull ?: ""
+            Peer(
+                ip = ipAndPort.substringBeforeLast(':'),
+                clientName = peer["client"]?.jsonPrimitive?.contentOrNull
+                    ?.takeIf { it.isNotBlank() && it != "unknown" },
+                progress = (peer["progress"]?.jsonPrimitive?.floatOrNull ?: 0f).coerceIn(0f, 1f),
+                downloadRate = rate("down_speed"),
+                uploadRate = rate("up_speed"),
+                port = ipAndPort.substringAfterLast(':').toIntOrNull()?.takeIf { it > 0 },
+                // Only populated if the server has a GeoIP database configured - often blank
+                // even when present, since modern Deluge no longer bundles one. No separate
+                // country-name field exists.
+                countryCode = peer["country"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() },
+                countryName = null,
+            )
         }
     }
 

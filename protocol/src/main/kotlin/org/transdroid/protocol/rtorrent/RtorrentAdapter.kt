@@ -29,6 +29,7 @@ import org.transdroid.protocol.DaemonAdapter
 import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.FilePriority
+import org.transdroid.protocol.Peer
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
@@ -248,6 +249,32 @@ class RtorrentAdapter(
                 status = status,
                 seeders = num(4).toInt().takeIf { it >= 0 },
                 leechers = num(5).toInt().takeIf { it >= 0 },
+            )
+        }
+    }
+
+    override suspend fun listPeers(torrentId: String): List<Peer> {
+        val rows = call(
+            "p.multicall",
+            torrentId, "",
+            "p.address=", "p.port=", "p.client_version=", "p.completed_percent=",
+            "p.down_rate=", "p.up_rate=",
+        ) as? List<*> ?: throw DaemonException.UnexpectedResponse("Unexpected p.multicall reply")
+        return rows.map { row ->
+            val fields = row as? List<*> ?: throw DaemonException.UnexpectedResponse("Bad multicall row")
+            fun str(index: Int) = fields.getOrNull(index)?.toString().orEmpty()
+            fun num(index: Int) = (fields.getOrNull(index) as? Long) ?: 0L
+            Peer(
+                ip = str(0),
+                clientName = str(2).takeIf { it.isNotBlank() && it != "Unknown" },
+                // p.completed_percent is 0-100, not 0..1
+                progress = (num(3) / 100f).coerceIn(0f, 1f),
+                downloadRate = num(4),
+                uploadRate = num(5),
+                port = num(1).toInt().takeIf { it > 0 },
+                // rTorrent's XML-RPC has no peer geolocation field at all
+                countryCode = null,
+                countryName = null,
             )
         }
     }

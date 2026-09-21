@@ -70,6 +70,9 @@ interface DaemonAdapter {
 
     suspend fun listTrackers(torrentId: String): List<Tracker>
 
+    /** Connected peers for this torrent, normalized across client types; empty when none are connected. */
+    suspend fun listPeers(torrentId: String): List<Peer>
+
     /**
      * Sets (replaces) the torrent's label; a blank string clears it. Every client supports some
      * notion of a per-torrent label, but the exact model differs - qBittorrent and Deluge keep a

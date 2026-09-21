@@ -24,6 +24,7 @@ import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.FilePriority
+import org.transdroid.protocol.Peer
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
@@ -62,6 +63,7 @@ class DummyDaemonAdapter : DaemonAdapter {
     private val torrents = LinkedHashMap<String, Torrent>()
     private val filesByTorrent = mutableMapOf<String, MutableList<TorrentFile>>()
     private val trackersByTorrent = mutableMapOf<String, MutableList<Tracker>>()
+    private val peersByTorrent = mutableMapOf<String, MutableList<Peer>>()
 
     /** Torrent id -> status to restore on the next [listTorrents] poll, simulating [checkData]. */
     private val statusBeforeRecheck = mutableMapOf<String, TorrentStatus>()
@@ -107,6 +109,7 @@ class DummyDaemonAdapter : DaemonAdapter {
         torrents.remove(torrentId)
         filesByTorrent.remove(torrentId)
         trackersByTorrent.remove(torrentId)
+        peersByTorrent.remove(torrentId)
         Unit
     }
 
@@ -143,6 +146,35 @@ class DummyDaemonAdapter : DaemonAdapter {
                     status = TrackerStatus.WORKING,
                     seeders = Random.nextInt(0, 50),
                     leechers = Random.nextInt(0, 20),
+                ),
+            )
+        }.toList()
+    }
+
+    override suspend fun listPeers(torrentId: String): List<Peer> = mutex.withLock {
+        requireTorrent(torrentId)
+        peersByTorrent.getOrPut(torrentId) {
+            mutableListOf(
+                Peer(
+                    ip = "203.0.113.${Random.nextInt(2, 254)}",
+                    clientName = "qBittorrent/4.6.0",
+                    progress = Random.nextFloat(),
+                    downloadRate = Random.nextLong(5_000, 500_000),
+                    uploadRate = Random.nextLong(1_000, 100_000),
+                    port = Random.nextInt(1024, 65535),
+                    countryCode = "NL",
+                    countryName = "Netherlands",
+                ),
+                Peer(
+                    ip = "198.51.100.${Random.nextInt(2, 254)}",
+                    clientName = "Transmission 4.0.5",
+                    progress = 1f,
+                    downloadRate = 0L,
+                    uploadRate = Random.nextLong(1_000, 200_000),
+                    port = Random.nextInt(1024, 65535),
+                    // No country, to exercise the UI's optional-field handling
+                    countryCode = null,
+                    countryName = null,
                 ),
             )
         }.toList()

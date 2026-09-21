@@ -154,6 +154,24 @@ data class Tracker(
     val message: String? = null,
 )
 
+/** One peer currently connected for a torrent, normalized across client types. */
+data class Peer(
+    val ip: String,
+    /** Reported client name/version string, when the daemon exposes it. */
+    val clientName: String? = null,
+    /** Download completion this peer has reported, in the range 0..1. */
+    val progress: Float,
+    /** Rate we are downloading from this peer, in bytes per second. */
+    val downloadRate: Long,
+    /** Rate we are uploading to this peer, in bytes per second. */
+    val uploadRate: Long,
+    val port: Int? = null,
+    /** Two-letter country code (ISO 3166-1 alpha-2), when the daemon resolves peer geolocation. */
+    val countryCode: String? = null,
+    /** Human-readable country name, when the daemon provides one (currently only qBittorrent). */
+    val countryName: String? = null,
+)
+
 /** Errors thrown by daemon adapters, so the UI can give targeted feedback. */
 sealed class DaemonException(message: String, cause: Throwable? = null) : Exception(message, cause) {
     /** The daemon could not be reached at all (network error, refused connection, timeout). */

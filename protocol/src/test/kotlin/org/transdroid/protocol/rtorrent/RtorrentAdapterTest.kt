@@ -146,6 +146,27 @@ class RtorrentAdapterTest {
     }
 
     @Test
+    fun `list peers maps completed percent to a 0 to 1 progress`() = runTest {
+        server.enqueue(MockResponse().setBody(fixture("p-multicall.xml")))
+
+        val peers = adapter.listPeers("8C212779B4ABDE7C6BC608063A0D008B7E40CE32")
+
+        assertEquals(2, peers.size)
+        val first = peers[0]
+        assertEquals("203.0.113.5", first.ip)
+        assertEquals(51413, first.port)
+        assertEquals("qBittorrent 4.6.0", first.clientName)
+        assertEquals("p.completed_percent (0-100) must divide down to 0..1", 0.75f, first.progress, 0.001f)
+        assertEquals(125000L, first.downloadRate)
+        assertEquals(4000L, first.uploadRate)
+        assertNull("rTorrent's XML-RPC has no peer geolocation field", first.countryCode)
+
+        val second = peers[1]
+        assertNull("'Unknown' client_version must normalize to null", second.clientName)
+        assertEquals(1f, second.progress, 0.001f)
+    }
+
+    @Test
     fun `add by url sends load-start with escaped url`() = runTest {
         server.enqueue(xmlResponse("<i8>0</i8>"))
 

@@ -1,0 +1,35 @@
+{
+  "arguments": {
+    "torrents": [
+      {
+        "peers": [
+          {
+            "address": "203.0.113.5",
+            "clientName": "qBittorrent 4.6.0",
+            "progress": 0.75,
+            "rateToClient": 125000,
+            "rateToPeer": 4000,
+            "port": 51413,
+            "isEncrypted": true,
+            "isIncoming": false,
+            "isUTP": false,
+            "flagStr": "D"
+          },
+          {
+            "address": "198.51.100.20",
+            "clientName": "",
+            "progress": 1.0,
+            "rateToClient": 0,
+            "rateToPeer": 250000,
+            "port": 6881,
+            "isEncrypted": false,
+            "isIncoming": true,
+            "isUTP": true,
+            "flagStr": "U"
+          }
+        ]
+      }
+    ]
+  },
+  "result": "success"
+}

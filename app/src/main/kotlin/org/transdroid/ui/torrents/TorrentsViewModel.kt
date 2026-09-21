@@ -41,6 +41,7 @@ import org.transdroid.data.ServerProfile
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.FilePriority
+import org.transdroid.protocol.Peer
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
@@ -128,6 +129,7 @@ data class TorrentsUiState(
     val selectedTorrentId: String? = null,
     val files: Map<String, List<TorrentFile>> = emptyMap(),
     val trackers: Map<String, List<Tracker>> = emptyMap(),
+    val peers: Map<String, List<Peer>> = emptyMap(),
     /** Whether the active server's client exposes an alternative ("turtle") speed limits toggle. */
     val altSpeedSupported: Boolean = false,
     val altSpeedEnabled: Boolean = false,
@@ -203,6 +205,7 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
                         hasLoaded = if (switched) false else state.hasLoaded,
                         files = if (switched) emptyMap() else state.files,
                         trackers = if (switched) emptyMap() else state.trackers,
+                        peers = if (switched) emptyMap() else state.peers,
                         error = if (switched) null else state.error,
                     )
                 }
@@ -290,6 +293,14 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
             throw e
         } catch (e: Exception) {
             // Keep showing the last-known trackers rather than clearing them on a transient failure
+        }
+        try {
+            val peers = adapter.listPeers(torrentId)
+            _ui.update { it.copy(peers = it.peers + (torrentId to peers)) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // Keep showing the last-known peers rather than clearing them on a transient failure
         }
     }
 
@@ -426,6 +437,20 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
                 throw e
             } catch (e: Exception) {
                 // Leave the trackers section empty; the list-level error banner covers connectivity
+            }
+        }
+    }
+
+    fun loadPeers(torrentId: String) {
+        val profile = _ui.value.activeProfile ?: return
+        viewModelScope.launch {
+            try {
+                val peers = container.adapterFor(profile).listPeers(torrentId)
+                _ui.update { it.copy(peers = it.peers + (torrentId to peers)) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // Leave the peers section empty; the list-level error banner covers connectivity
             }
         }
     }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+  <params><param><value><array><data>
+    <value><array><data>
+      <value><string>203.0.113.5</string></value>
+      <value><i8>51413</i8></value>
+      <value><string>qBittorrent 4.6.0</string></value>
+      <value><i8>75</i8></value>
+      <value><i8>125000</i8></value>
+      <value><i8>4000</i8></value>
+    </data></array></value>
+    <value><array><data>
+      <value><string>198.51.100.20</string></value>
+      <value><i8>6881</i8></value>
+      <value><string>Unknown</string></value>
+      <value><i8>100</i8></value>
+      <value><i8>0</i8></value>
+      <value><i8>250000</i8></value>
+    </data></array></value>
+  </data></array></value></param></params>
+</methodResponse>

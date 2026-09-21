@@ -1,0 +1,35 @@
+{
+  "full_update": true,
+  "rid": 1,
+  "show_flags": true,
+  "peers": {
+    "203.0.113.5:51413": {
+      "ip": "203.0.113.5",
+      "port": 51413,
+      "client": "qBittorrent/4.6.0",
+      "progress": 0.75,
+      "dl_speed": 125000,
+      "up_speed": 4000,
+      "downloaded": 78643200,
+      "uploaded": 1048576,
+      "connection": "BT",
+      "flags": "D",
+      "flags_desc": "D: interested",
+      "country": "Netherlands",
+      "country_code": "nl"
+    },
+    "198.51.100.20:6881": {
+      "ip": "198.51.100.20",
+      "port": 6881,
+      "client": "Transmission/4.0.5",
+      "progress": 1.0,
+      "dl_speed": 0,
+      "up_speed": 250000,
+      "downloaded": 104857600,
+      "uploaded": 209715200,
+      "connection": "uTP",
+      "flags": "U",
+      "flags_desc": "U: uTP"
+    }
+  }
+}

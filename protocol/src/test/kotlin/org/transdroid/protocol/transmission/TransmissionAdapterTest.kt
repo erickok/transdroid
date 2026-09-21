@@ -164,6 +164,28 @@ class TransmissionAdapterTest {
     }
 
     @Test
+    fun `list peers maps rates and progress, no country available`() = runTest {
+        server.enqueue(MockResponse().setBody(fixture("torrent-get-peers.json")))
+
+        val peers = adapter.listPeers("1")
+
+        assertEquals(2, peers.size)
+        val first = peers[0]
+        assertEquals("203.0.113.5", first.ip)
+        assertEquals("qBittorrent 4.6.0", first.clientName)
+        assertEquals(0.75f, first.progress, 0.0001f)
+        assertEquals(125000L, first.downloadRate)
+        assertEquals(4000L, first.uploadRate)
+        assertEquals(51413, first.port)
+        assertNull("Transmission's RPC has no peer geolocation field", first.countryCode)
+        assertNull(first.countryName)
+
+        val second = peers[1]
+        assertNull("blank clientName must normalize to null", second.clientName)
+        assertEquals(1f, second.progress, 0.0001f)
+    }
+
+    @Test
     fun `add by url sends torrent-add with filename`() = runTest {
         server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{}}"""))
 

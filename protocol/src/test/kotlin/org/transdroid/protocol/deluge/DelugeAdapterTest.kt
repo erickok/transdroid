@@ -237,6 +237,37 @@ class DelugeAdapterTest {
     }
 
     @Test
+    fun `list peers splits ip-port and maps optional country`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(connectedOk())
+        server.enqueue(
+            MockResponse().setBody(
+                """{"result": {
+                    "peers": [
+                        {"ip": "203.0.113.5:51413", "client": "qBittorrent", "progress": 0.75, "down_speed": 125000, "up_speed": 4000, "country": "NL", "seed": false},
+                        {"ip": "198.51.100.20:6881", "client": "", "progress": 1.0, "down_speed": 0, "up_speed": 250000, "country": "", "seed": true}
+                    ]
+                }, "error": null, "id": 2}"""
+            )
+        )
+
+        val peers = adapter.listPeers("abcdef")
+
+        assertEquals(2, peers.size)
+        val first = peers[0]
+        assertEquals("IP:port must split on the last colon", "203.0.113.5", first.ip)
+        assertEquals(51413, first.port)
+        assertEquals("qBittorrent", first.clientName)
+        assertEquals(0.75f, first.progress, 0.0001f)
+        assertEquals("NL", first.countryCode)
+        assertNull("Deluge has no separate country name field", first.countryName)
+
+        val second = peers[1]
+        assertNull("blank client must normalize to null", second.clientName)
+        assertNull("empty country string (no GeoIP db configured) must normalize to null", second.countryCode)
+    }
+
+    @Test
     fun `pause and resume use list parameters`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(connectedOk())

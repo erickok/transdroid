@@ -214,6 +214,23 @@ body{
 .titem{display:flex; align-items:center; gap:12px; padding:12px 6px;}
 .titem + .titem{border-top:1px solid var(--outline-variant);}
 .titem > .msr{font-size:20px; color:var(--muted);}
+
+/* peers */
+.prow{display:grid; grid-template-columns:auto 1fr; gap:0 12px; align-items:center; padding:11px 6px;}
+.prow + .prow{border-top:1px solid var(--outline-variant);}
+.pcc{width:26px; text-align:center; font-size:19px; line-height:1; flex:none;}
+.pcc .msr{font-size:18px; color:var(--muted);}
+.pmain{min-width:0;}
+.ptop{display:flex; align-items:baseline; gap:8px;}
+.pclient{flex:1; min-width:0; font-size:14px; font-weight:600; color:var(--on-surface); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.ppct{flex:none; font-size:12.5px; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums;}
+.ppct.seed{color:var(--seed);}
+.pbot{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-top:3px;}
+.pip{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.pspeeds{display:flex; gap:12px; flex:none; font-size:11.5px; font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.pspeeds .dn{color:var(--dl);} .pspeeds .up{color:var(--seed);}
+.pempty{display:flex; flex-direction:column; align-items:center; gap:8px; padding:40px 10px; color:var(--muted); font-size:13px;}
+.pempty .msr{font-size:36px; opacity:.7;}
 .tmeta{flex:1; min-width:0;}
 .tmeta b{display:block; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .tmeta small{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums;}
@@ -350,6 +367,34 @@ function select(i){
   renderDetail(items[i]);
 }
 
+const PEERS = {
+  'Book 1':[
+    {client:'qBittorrent 4.6.5', ip:'88.61.24.17:51413', pct:100, dl:'14 KB/s', ul:'0', flag:'🇩🇪'},
+    {client:'Transmission 4.0.5', ip:'203.0.113.9:49152', pct:100, dl:'9.2 KB/s', ul:'0.4 KB/s', flag:'🇯🇵'},
+    {client:'µTorrent 3.5.5', ip:'45.83.220.6:6881', pct:42, dl:'0', ul:'2.1 KB/s', flag:'🇺🇸'},
+    {client:'libtorrent 2.0.9', ip:'91.198.174.192:6889', pct:78, dl:'0', ul:'5.6 KB/s', flag:'🇳🇱'},
+    {client:'Deluge 2.1.1', ip:'176.9.60.11:58261', pct:100, dl:'6.0 KB/s', ul:'0'},
+  ],
+  'CD Image 2':[
+    {client:'Transmission 4.0.5', ip:'62.210.5.9:51413', pct:64, dl:'0', ul:'8.1 KB/s', flag:'🇫🇷'},
+    {client:'qBittorrent 5.0.0', ip:'118.71.0.2:6881', pct:12, dl:'0', ul:'3.3 KB/s', flag:'🇰🇷'},
+  ],
+  'Mix tape 3':[],
+  'App 4':[
+    {client:'qBittorrent 4.6.5', ip:'51.15.0.44:51413', pct:100, dl:'6.4 KB/s', ul:'0', flag:'🇬🇧'},
+    {client:'libtorrent 2.0.10', ip:'200.19.2.7:6889', pct:100, dl:'4.2 KB/s', ul:'0.2 KB/s', flag:'🇧🇷'},
+    {client:'Transmission 4.0.6', ip:'5.9.44.11:49160', pct:88, dl:'0', ul:'12.0 KB/s', flag:'🇩🇪'},
+    {client:'µTorrent 3.6.0', ip:'122.60.3.9:6881', pct:31, dl:'0', ul:'7.7 KB/s', flag:'🇦🇺'},
+    {client:'Deluge 2.1.1', ip:'88.99.2.3:58261', pct:100, dl:'3.1 KB/s', ul:'0'},
+  ],
+  'Documentary 5':[
+    {client:'qBittorrent 4.6.5', ip:'151.80.3.1:51413', pct:22, dl:'0', ul:'41.0 KB/s', flag:'🇮🇹'},
+    {client:'Transmission 4.0.5', ip:'190.2.3.4:6881', pct:5, dl:'0', ul:'18.4 KB/s', flag:'🇲🇽'},
+    {client:'libtorrent 2.0.9', ip:'129.21.0.9:6889', pct:67, dl:'0', ul:'63.3 KB/s', flag:'🇺🇸'},
+  ],
+  'Book 6':[],
+};
+
 function renderDetail(it){
   const paused = it.state==='idle' || it.state==='wait';
   const primary = paused
@@ -394,6 +439,15 @@ function renderDetail(it){
       <span class="tmeta"><b>${t.h}</b><small>${t.d}</small></span>
       <span class="ok">${paused?'Idle':'Working'}</span></div>`).join('');
 
+  const peerList = PEERS[it.name] || [];
+  const peers = peerList.length ? peerList.map(p=>{
+    const cc = p.flag ? `<span class="pcc">${p.flag}</span>` : `<span class="pcc"><span class="msr">public</span></span>`;
+    return `<div class="prow">${cc}<div class="pmain">
+      <div class="ptop"><span class="pclient">${p.client}</span><span class="ppct ${p.pct>=100?'seed':''}">${p.pct}%</span></div>
+      <div class="pbot"><span class="pip">${p.ip}</span><span class="pspeeds"><span class="dn">↓ ${p.dl}</span><span class="up">↑ ${p.ul}</span></span></div>
+    </div></div>`;
+  }).join('') : `<div class="pempty"><span class="msr">group_off</span>No peers connected</div>`;
+
   const progLine = it.state==='down'
     ? `<div class="d-progline"><span><b>${it.stats.Downloaded}</b> of ${it.stats.Size}</span><span>${it.tag}</span></div>`
     : it.state==='wait'
@@ -427,11 +481,13 @@ function renderDetail(it){
       <button class="dtab sel" data-tab="overview">Overview</button>
       <button class="dtab" data-tab="files">Files <span style="opacity:.6">(${it.files.length})</span></button>
       <button class="dtab" data-tab="trackers">Trackers <span style="opacity:.6">(${it.trackers.length})</span></button>
+      <button class="dtab" data-tab="peers">Peers <span style="opacity:.6">(${peerList.length})</span></button>
     </div>
 
     <div class="panel sel" data-panel="overview">${overview}</div>
     <div class="panel" data-panel="files">${files}</div>
-    <div class="panel" data-panel="trackers">${trackers}</div>`;
+    <div class="panel" data-panel="trackers">${trackers}</div>
+    <div class="panel" data-panel="peers">${peers}</div>`;
 
   detail.querySelectorAll('.dtab').forEach(t=>t.addEventListener('click', ()=>{
     detail.querySelectorAll('.dtab').forEach(x=>x.classList.toggle('sel', x===t));

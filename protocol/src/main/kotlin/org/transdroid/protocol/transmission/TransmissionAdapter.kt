@@ -53,6 +53,7 @@ import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.internal.executeOnIo
 import org.transdroid.protocol.internal.trackerHost
+import org.transdroid.protocol.Peer
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
@@ -210,6 +211,30 @@ class TransmissionAdapter(
                 leechers = obj["leecherCount"]?.jsonPrimitive?.int?.takeIf { it >= 0 },
                 message = obj["lastAnnounceResult"]?.jsonPrimitive?.contentOrNull
                     ?.takeIf { announced && !succeeded && it.isNotBlank() },
+            )
+        }
+    }
+
+    override suspend fun listPeers(torrentId: String): List<Peer> {
+        val arguments = request("torrent-get") {
+            putIds(torrentId)
+            put("fields", buildJsonArray { add("peers") })
+        }
+        val torrent = arguments["torrents"]?.jsonArray?.firstOrNull()?.jsonObject
+            ?: throw DaemonException.UnexpectedResponse("Torrent $torrentId not found")
+        val peers = torrent["peers"]?.jsonArray ?: return emptyList()
+        return peers.map { element ->
+            val obj = element.jsonObject
+            Peer(
+                ip = obj["address"]?.jsonPrimitive?.contentOrNull ?: "",
+                clientName = obj["clientName"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() },
+                progress = (obj["progress"]?.jsonPrimitive?.floatOrNull ?: 0f).coerceIn(0f, 1f),
+                downloadRate = obj["rateToClient"]?.jsonPrimitive?.long ?: 0L,
+                uploadRate = obj["rateToPeer"]?.jsonPrimitive?.long ?: 0L,
+                port = obj["port"]?.jsonPrimitive?.int,
+                // Transmission's RPC has no peer geolocation field at all
+                countryCode = null,
+                countryName = null,
             )
         }
     }

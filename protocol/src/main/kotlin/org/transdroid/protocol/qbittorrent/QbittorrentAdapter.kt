@@ -32,6 +32,7 @@ import org.transdroid.protocol.DaemonAdapter
 import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.FilePriority
+import org.transdroid.protocol.Peer
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
@@ -186,6 +187,12 @@ class QbittorrentAdapter(
         return trackers.filterNot { it.url.startsWith("**") }.map { it.toTracker() }
     }
 
+    override suspend fun listPeers(torrentId: String): List<Peer> {
+        val response = get("api/v2/sync/torrentPeers?hash=$torrentId&rid=0")
+            .use { it.decodeJsonObjectOrThrow<PeersSyncResponse>("peer list") }
+        return response.peers.values.map { it.toPeer() }
+    }
+
     /** qBittorrent calls this a "category"; a category must exist before it can be assigned. */
     override suspend fun setLabel(torrentId: String, label: String) {
         if (label.isNotBlank()) {
@@ -338,6 +345,22 @@ class QbittorrentAdapter(
             }
         }
 
+    /**
+     * Decodes a JSON object response (as opposed to [decodeJsonListOrThrow]'s array) directly
+     * off the body stream - needed because sync/torrentPeers wraps its peer map in an outer
+     * object alongside rid/full_update/show_flags, unlike the plain-array list endpoints.
+     */
+    private suspend inline fun <reified T> Response.decodeJsonObjectOrThrow(what: String): T =
+        withContext(Dispatchers.IO) {
+            val stream = body?.byteStream()
+                ?: throw DaemonException.UnexpectedResponse("Empty qBittorrent $what response")
+            try {
+                json.decodeFromStream<T>(stream)
+            } catch (e: Exception) {
+                throw DaemonException.UnexpectedResponse("Cannot parse qBittorrent $what", e)
+            }
+        }
+
     @Serializable
     private data class TorrentInfo(
         val hash: String,
@@ -411,6 +434,36 @@ class QbittorrentAdapter(
             seeders = num_seeds.takeIf { it >= 0 },
             leechers = num_leeches.takeIf { it >= 0 },
             message = msg.takeIf { it.isNotBlank() },
+        )
+    }
+
+    /** sync/torrentPeers wraps its map in an outer object; only its `peers` field is needed here. */
+    @Serializable
+    private data class PeersSyncResponse(val peers: Map<String, TorrentPeerInfo> = emptyMap())
+
+    @Serializable
+    private data class TorrentPeerInfo(
+        // ip/port are duplicated here from the outer map's "ip:port" key; read from here instead
+        // of parsing that key, since these are always present on every peer regardless.
+        val ip: String = "",
+        val port: Int = 0,
+        val client: String = "",
+        val progress: Float = 0f,
+        val dl_speed: Long = 0,
+        val up_speed: Long = 0,
+        // Only present when the server's "resolvePeerCountries" setting is enabled
+        val country: String? = null,
+        val country_code: String? = null,
+    ) {
+        fun toPeer() = Peer(
+            ip = ip,
+            clientName = client.takeIf { it.isNotBlank() },
+            progress = progress.coerceIn(0f, 1f),
+            downloadRate = dl_speed,
+            uploadRate = up_speed,
+            port = port.takeIf { it > 0 },
+            countryCode = country_code?.takeIf { it.isNotBlank() }?.uppercase(),
+            countryName = country?.takeIf { it.isNotBlank() },
         )
     }
 

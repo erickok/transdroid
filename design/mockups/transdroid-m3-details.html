@@ -101,7 +101,7 @@ body{
 .d-progline b{color:var(--on-surface); font-weight:600;}
 
 .tabs{display:flex; gap:4px; margin:20px 0 16px; border-bottom:1px solid var(--outline-variant);}
-.dtab{flex:1; border:none; background:transparent; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:600; color:var(--muted); padding:11px 6px; border-radius:12px 12px 0 0; position:relative; transition:.12s;}
+.dtab{flex:1; border:none; background:transparent; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:600; color:var(--muted); padding:11px 3px; border-radius:12px 12px 0 0; position:relative; transition:.12s; white-space:nowrap;}
 .dtab:hover{color:var(--on-surface-var);}
 .dtab.sel{color:var(--primary);}
 .dtab.sel::after{content:""; position:absolute; left:14px; right:14px; bottom:-1px; height:3px; border-radius:3px 3px 0 0; background:var(--primary);}
@@ -148,6 +148,23 @@ body{
 .tmeta b{display:block; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .tmeta small{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums;}
 .ok{font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--primary-container); color:var(--on-primary-container);}
+
+/* peers */
+.prow{display:grid; grid-template-columns:auto 1fr; gap:0 12px; align-items:center; padding:11px 2px;}
+.prow + .prow{border-top:1px solid var(--outline-variant);}
+.pcc{width:26px; text-align:center; font-size:19px; line-height:1; flex:none;}
+.pcc .msr{font-size:18px; color:var(--muted);}
+.pmain{min-width:0;}
+.ptop{display:flex; align-items:baseline; gap:8px;}
+.pclient{flex:1; min-width:0; font-size:14px; font-weight:600; color:var(--on-surface); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.ppct{flex:none; font-size:12.5px; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums;}
+.ppct.seed{color:var(--seed);}
+.pbot{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-top:3px;}
+.pip{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.pspeeds{display:flex; gap:12px; flex:none; font-size:11.5px; font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.pspeeds .dn{color:var(--dl);} .pspeeds .up{color:var(--seed);}
+.pempty{display:flex; flex-direction:column; align-items:center; gap:8px; padding:34px 10px; color:var(--muted); font-size:13px;}
+.pempty .msr{font-size:34px; opacity:.7;}
 
 .gesture{flex:none; height:26px; display:grid; place-items:center;}
 .gesture i{width:132px; height:5px; border-radius:3px; background:var(--on-surface); opacity:.35;}
@@ -200,6 +217,7 @@ body{
         <button class="dtab sel" data-tab="overview">Overview</button>
         <button class="dtab" data-tab="files">Files <span style="opacity:.6">(4)</span></button>
         <button class="dtab" data-tab="trackers">Trackers <span style="opacity:.6">(2)</span></button>
+        <button class="dtab" data-tab="peers">Peers <span style="opacity:.6">(5)</span></button>
       </div>
 
       <div class="panel sel" data-panel="overview">
@@ -235,6 +253,29 @@ body{
       <div class="panel" data-panel="trackers">
         <div class="titem"><span class="msr">lan</span><span class="tmeta"><b>tracker.example.org</b><small>6 seeds · 40 peers</small></span><span class="ok">Working</span></div>
         <div class="titem"><span class="msr">lan</span><span class="tmeta"><b>open.tracker.net</b><small>4 seeds · 12 peers</small></span><span class="ok">Working</span></div>
+      </div>
+
+      <div class="panel" data-panel="peers">
+        <div class="prow"><span class="pcc">🇩🇪</span><div class="pmain">
+          <div class="ptop"><span class="pclient">qBittorrent 4.6.5</span><span class="ppct seed">100%</span></div>
+          <div class="pbot"><span class="pip">88.61.24.17:51413</span><span class="pspeeds"><span class="dn">↓ 14 KB/s</span><span class="up">↑ 0</span></span></div>
+        </div></div>
+        <div class="prow"><span class="pcc">🇯🇵</span><div class="pmain">
+          <div class="ptop"><span class="pclient">Transmission 4.0.5</span><span class="ppct seed">100%</span></div>
+          <div class="pbot"><span class="pip">203.0.113.9:49152</span><span class="pspeeds"><span class="dn">↓ 9.2 KB/s</span><span class="up">↑ 0.4 KB/s</span></span></div>
+        </div></div>
+        <div class="prow"><span class="pcc">🇺🇸</span><div class="pmain">
+          <div class="ptop"><span class="pclient">µTorrent 3.5.5</span><span class="ppct">42%</span></div>
+          <div class="pbot"><span class="pip">45.83.220.6:6881</span><span class="pspeeds"><span class="dn">↓ 0</span><span class="up">↑ 2.1 KB/s</span></span></div>
+        </div></div>
+        <div class="prow"><span class="pcc">🇳🇱</span><div class="pmain">
+          <div class="ptop"><span class="pclient">libtorrent 2.0.9</span><span class="ppct">78%</span></div>
+          <div class="pbot"><span class="pip">91.198.174.192:6889</span><span class="pspeeds"><span class="dn">↓ 0</span><span class="up">↑ 5.6 KB/s</span></span></div>
+        </div></div>
+        <div class="prow"><span class="pcc"><span class="msr">public</span></span><div class="pmain">
+          <div class="ptop"><span class="pclient">Deluge 2.1.1</span><span class="ppct seed">100%</span></div>
+          <div class="pbot"><span class="pip">176.9.60.11:58261</span><span class="pspeeds"><span class="dn">↓ 6.0 KB/s</span><span class="up">↑ 0</span></span></div>
+        </div></div>
       </div>
 
     </main>

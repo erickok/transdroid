@@ -175,6 +175,30 @@ class QbittorrentAdapterTest {
     }
 
     @Test
+    fun `list peers reads sync torrentPeers object and maps optional country`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody(fixture("peers.json")))
+
+        val peers = adapter().listPeers("abcdef").sortedBy { it.ip }
+
+        assertEquals(2, peers.size)
+        val withCountry = peers.first { it.ip == "203.0.113.5" }
+        assertEquals("qBittorrent/4.6.0", withCountry.clientName)
+        assertEquals(0.75f, withCountry.progress, 0.0001f)
+        assertEquals(125000L, withCountry.downloadRate)
+        assertEquals(51413, withCountry.port)
+        assertEquals("NL", withCountry.countryCode)
+        assertEquals("Netherlands", withCountry.countryName)
+
+        val withoutCountry = peers.first { it.ip == "198.51.100.20" }
+        assertNull("country omitted when resolvePeerCountries is off", withoutCountry.countryCode)
+        assertNull(withoutCountry.countryName)
+
+        server.takeRequest() // login
+        assertTrue(server.takeRequest().path!!.startsWith("/api/v2/sync/torrentPeers?hash=abcdef"))
+    }
+
+    @Test
     fun `pause falls back to legacy endpoint on 404`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(MockResponse().setResponseCode(404))

@@ -40,11 +40,13 @@ import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.DriveFileMove
+import androidx.compose.material.icons.rounded.GroupOff
 import androidx.compose.material.icons.rounded.Label
 import androidx.compose.material.icons.rounded.LabelOff
 import androidx.compose.material.icons.rounded.Lan
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Sell
 import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.material3.AlertDialog
@@ -60,7 +62,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -91,6 +93,7 @@ import java.util.Date
 import org.transdroid.R
 import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.FilePriority
+import org.transdroid.protocol.Peer
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
@@ -166,10 +169,12 @@ fun TorrentDetailsContent(
     LaunchedEffect(torrent.id) {
         viewModel.loadFiles(torrent.id)
         viewModel.loadTrackers(torrent.id)
+        viewModel.loadPeers(torrent.id)
     }
 
     val files = ui.files[torrent.id].orEmpty()
     val trackers = ui.trackers[torrent.id].orEmpty()
+    val peers = ui.peers[torrent.id].orEmpty()
 
     Column(
         Modifier
@@ -258,7 +263,11 @@ fun TorrentDetailsContent(
         }
 
         Spacer(Modifier.height(20.dp))
-        PrimaryTabRow(selectedTabIndex = selectedTab, containerColor = Color.Transparent) {
+        PrimaryScrollableTabRow(
+            selectedTabIndex = selectedTab,
+            containerColor = Color.Transparent,
+            edgePadding = 0.dp,
+        ) {
             Tab(
                 selected = selectedTab == 0,
                 onClick = { selectedTab = 0 },
@@ -274,13 +283,19 @@ fun TorrentDetailsContent(
                 onClick = { selectedTab = 2 },
                 text = { Text(stringResource(R.string.details_tab_trackers, trackers.size)) },
             )
+            Tab(
+                selected = selectedTab == 3,
+                onClick = { selectedTab = 3 },
+                text = { Text(stringResource(R.string.details_tab_peers, peers.size)) },
+            )
         }
         Spacer(Modifier.height(16.dp))
 
         when (selectedTab) {
             0 -> OverviewTab(torrent)
             1 -> FilesTab(torrent, files, viewModel)
-            else -> TrackersTab(trackers)
+            2 -> TrackersTab(trackers)
+            else -> PeersTab(peers)
         }
         Spacer(Modifier.height(32.dp))
     }
@@ -739,4 +754,109 @@ private fun TrackerStatusChip(status: TrackerStatus) {
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
         )
     }
+}
+
+@Composable
+private fun PeersTab(peers: List<Peer>) {
+    if (peers.isEmpty()) {
+        Column(
+            Modifier.fillMaxWidth().padding(vertical = 34.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(
+                Icons.Rounded.GroupOff,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(34.dp),
+            )
+            Text(
+                stringResource(R.string.details_peers_empty),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        return
+    }
+    Column {
+        peers.forEachIndexed { index, peer ->
+            if (index > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
+            PeerRow(peer)
+        }
+    }
+}
+
+@Composable
+private fun PeerRow(peer: Peer) {
+    val statusColors = LocalStatusColors.current
+    Row(Modifier.fillMaxWidth().padding(vertical = 11.dp), verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.width(26.dp), contentAlignment = Alignment.Center) {
+            val flag = countryFlagEmoji(peer.countryCode)
+            if (flag != null) {
+                Text(flag, fontSize = 19.sp)
+            } else {
+                Icon(
+                    Icons.Rounded.Public,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp),
+                )
+            }
+        }
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    peer.clientName ?: peer.ip,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                Spacer(Modifier.width(8.dp))
+                val percent = (peer.progress * 100).toInt()
+                Text(
+                    "$percent%",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = if (percent >= 100) statusColors.seeding else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Spacer(Modifier.height(3.dp))
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    peer.port?.let { "${peer.ip}:$it" } ?: peer.ip,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                Spacer(Modifier.width(10.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        "↓ ${formatSpeed(peer.downloadRate)}",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = statusColors.downloading,
+                        maxLines = 1,
+                    )
+                    Text(
+                        "↑ ${formatSpeed(peer.uploadRate)}",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = statusColors.seeding,
+                        maxLines = 1,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/** Builds a flag emoji from a 2-letter ISO 3166-1 country code (e.g. "NL" -> "🇳🇱"), or null when absent/invalid. */
+private fun countryFlagEmoji(countryCode: String?): String? {
+    val code = countryCode?.uppercase()?.takeIf { it.length == 2 && it.all { c -> c in 'A'..'Z' } } ?: return null
+    return code.map { 0x1F1E6 + (it - 'A') }.joinToString("") { String(Character.toChars(it)) }
 }
