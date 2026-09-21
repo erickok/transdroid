@@ -186,15 +186,15 @@ fun TorrentDetailsContent(
 
         Spacer(Modifier.height(18.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            val paused = torrent.status == TorrentStatus.PAUSED
+            val showStart = torrent.status.canStart
             Button(
                 onClick = { viewModel.toggleStartPause(torrent) },
                 shape = MaterialTheme.shapes.extraLarge,
                 modifier = Modifier.weight(1f).height(48.dp),
             ) {
-                Icon(if (paused) Icons.Rounded.PlayArrow else Icons.Rounded.Pause, contentDescription = null)
+                Icon(if (showStart) Icons.Rounded.PlayArrow else Icons.Rounded.Pause, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
-                Text(stringResource(if (paused) R.string.details_start else R.string.details_pause))
+                Text(stringResource(if (showStart) R.string.details_start else R.string.details_pause))
             }
             OutlinedButton(
                 onClick = { showRemoveDialog = true },

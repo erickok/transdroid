@@ -361,7 +361,7 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
 
     fun toggleStartPause(torrent: Torrent) {
         runAction { adapter ->
-            if (torrent.status == TorrentStatus.PAUSED) adapter.start(torrent.id) else adapter.pause(torrent.id)
+            if (torrent.status.canStart) adapter.start(torrent.id) else adapter.pause(torrent.id)
         }
     }
 

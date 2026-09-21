@@ -66,6 +66,16 @@ enum class TorrentStatus {
 
     val isActive: Boolean
         get() = this == DOWNLOADING || this == SEEDING
+
+    /**
+     * Whether sending a Start command is the sensible offer here, as opposed to Pause. A daemon's
+     * "error" status is not mutually exclusive with being paused/stopped - e.g. rTorrent keeps
+     * reporting the last tracker error message long after the torrent itself was stopped, and
+     * ruTorrent shows such a torrent as "paused" with an error, not as actively failing - so
+     * treat ERROR the same as PAUSED here rather than assuming it's still running.
+     */
+    val canStart: Boolean
+        get() = this == PAUSED || this == ERROR
 }
 
 /** One torrent as reported by a daemon, normalized across client types. */
