@@ -30,6 +30,15 @@ data class Release(val version: String, val date: String, val changes: List<Chan
  */
 val CHANGELOG: List<Release> = listOf(
     Release(
+        version = "3.0.0-alpha4",
+        date = "September 2026",
+        changes = listOf(
+            ChangelogEntry(ChangeKind.NEW, "Peers tab on the details screen: client, country, progress and speed for connected peers"),
+            ChangelogEntry(ChangeKind.FIXED, "Adding a torrent from search could silently fail when the indexer needs its own login (e.g. a seedbox member area), separate from its API key"),
+            ChangelogEntry(ChangeKind.FIXED, "A torrent shown as \"Error\" but actually stopped now offers Start instead of only Pause"),
+        ),
+    ),
+    Release(
         version = "3.0.0-alpha3",
         date = "September 2026",
         changes = listOf(

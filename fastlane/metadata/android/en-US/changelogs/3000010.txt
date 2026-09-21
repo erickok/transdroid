@@ -1,0 +1,3 @@
+* Peers tab on the details screen: client, country, progress and speed for connected peers
+* Fixed: adding a torrent from search could silently fail when the indexer needs its own login (e.g. a seedbox member area), separate from its API key
+* Fixed: a torrent shown as "Error" but actually stopped now offers Start instead of only Pause
