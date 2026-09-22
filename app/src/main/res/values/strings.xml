@@ -233,7 +233,7 @@
     <string name="settings_geoip_summary">Shows a country flag for peers on every client</string>
     <string name="settings_geoip_summary_downloaded">Downloaded · tap to update</string>
     <string name="settings_geoip_confirm_title">Download country database?</string>
-    <string name="settings_geoip_confirm_message">This downloads about 18 MB from ip66.dev. Countries are then looked up on this device - peer addresses are never sent anywhere.</string>
+    <string name="settings_geoip_confirm_message">This downloads about 18 MB from ip66.dev, licensed under CC BY 4.0. Countries are then looked up on this device - peer addresses are never sent anywhere.</string>
     <string name="settings_geoip_confirm_download">Download</string>
     <string name="settings_geoip_downloading">Downloading country database…</string>
     <string name="settings_geoip_download_done">Country database downloaded</string>

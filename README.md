@@ -160,5 +160,6 @@ Libraries used in the project:
 *  [MaxMind DB Reader for Java](https://github.com/maxmind/MaxMind-DB-Reader-java) —
    MaxMind, Inc., Apache License 2.0
 
-Peer country flags can optionally use the [IP66](https://ip66.dev/) GeoIP database. It is not
-bundled: it is only downloaded when the user asks for it in Settings, and looked up on-device.
+Peer country flags can optionally use the [IP66](https://ip66.dev/) GeoIP database, licensed under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). It is not bundled: it is only
+downloaded when the user asks for it in Settings, and looked up on-device.
