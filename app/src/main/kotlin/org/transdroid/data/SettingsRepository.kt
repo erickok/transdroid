@@ -34,6 +34,7 @@ class SettingsRepository(private val context: Context) {
     private val activeServerKey = stringPreferencesKey("active_server_id")
     private val notifyFinishedKey = booleanPreferencesKey("notify_finished")
     private val pollIntervalKey = intPreferencesKey("poll_interval_seconds")
+    private val peerSortKey = stringPreferencesKey("peer_sort")
 
     val activeServerId: Flow<String?> = context.settingsDataStore.data.map { it[activeServerKey] }
 
@@ -49,6 +50,13 @@ class SettingsRepository(private val context: Context) {
 
     suspend fun setPollIntervalSeconds(seconds: Int) {
         context.settingsDataStore.edit { it[pollIntervalKey] = seconds.coerceIn(POLL_INTERVAL_OPTIONS.first(), POLL_INTERVAL_OPTIONS.last()) }
+    }
+
+    /** The order connected peers are listed in on the torrent details Peers tab. */
+    val peerSort: Flow<PeerSort> = context.settingsDataStore.data.map { PeerSort.fromName(it[peerSortKey]) }
+
+    suspend fun setPeerSort(sort: PeerSort) {
+        context.settingsDataStore.edit { it[peerSortKey] = sort.name }
     }
 
     /** Whether the background finished-torrent check and its notifications are enabled. */

@@ -45,18 +45,22 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Dns
+import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SettingsBackupRestore
+import androidx.compose.material.icons.rounded.SwapVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -95,6 +99,7 @@ import kotlinx.coroutines.withContext
 import org.transdroid.BuildConfig
 import org.transdroid.R
 import org.transdroid.debug.DebugTools
+import org.transdroid.data.PeerSort
 import org.transdroid.data.RssFeed
 import org.transdroid.data.SettingsRepository
 import org.transdroid.errorlog.ErrorLog
@@ -135,6 +140,10 @@ fun SettingsScreen(
     val restoreInvalid = stringResource(R.string.backup_invalid_file)
     val restoredTemplate = stringResource(R.string.backup_restored)
     val noEmailAppMessage = stringResource(R.string.pref_sendlog_no_app)
+    var showGeoIpDialog by remember { mutableStateOf(false) }
+    val geoIpDownloadedMessage = stringResource(R.string.settings_geoip_download_done)
+    val geoIpFailedMessage = stringResource(R.string.settings_geoip_download_failed)
+    val geoIpRemovedMessage = stringResource(R.string.settings_geoip_removed)
 
     val exportCreator = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/octet-stream")
@@ -330,6 +339,72 @@ fun SettingsScreen(
             }
 
             item {
+                SettingsSection(stringResource(R.string.settings_peers)) {
+                    val peerSort by viewModel.peerSort.collectAsStateWithLifecycle()
+                    var sortMenuOpen by remember { mutableStateOf(false) }
+                    Box {
+                        SettingsRow(
+                            icon = Icons.Rounded.SwapVert,
+                            title = stringResource(R.string.settings_peer_sort),
+                            subtitle = peerSort.label(),
+                            onClick = { sortMenuOpen = true },
+                        )
+                        DropdownMenu(expanded = sortMenuOpen, onDismissRequest = { sortMenuOpen = false }) {
+                            PeerSort.entries.forEach { sort ->
+                                DropdownMenuItem(
+                                    text = { Text(sort.label()) },
+                                    leadingIcon = { RadioButton(selected = sort == peerSort, onClick = null) },
+                                    onClick = {
+                                        viewModel.setPeerSort(sort)
+                                        sortMenuOpen = false
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    val geoIpDownloaded by viewModel.geoIpDownloaded.collectAsStateWithLifecycle()
+                    val geoIpDownloading by viewModel.geoIpDownloading.collectAsStateWithLifecycle()
+                    val onDownloadGeoIp: (() -> Unit)? = if (geoIpDownloading) null else ({ showGeoIpDialog = true })
+                    SettingsRow(
+                        icon = Icons.Rounded.Public,
+                        title = stringResource(R.string.settings_geoip),
+                        subtitle = stringResource(
+                            when {
+                                geoIpDownloading -> R.string.settings_geoip_downloading
+                                geoIpDownloaded -> R.string.settings_geoip_summary_downloaded
+                                else -> R.string.settings_geoip_summary
+                            }
+                        ),
+                        onClick = onDownloadGeoIp,
+                        trailing = {
+                            when {
+                                geoIpDownloading -> CircularProgressIndicator(
+                                    modifier = Modifier.padding(end = 12.dp).size(24.dp),
+                                    strokeWidth = 2.5.dp,
+                                )
+                                geoIpDownloaded -> IconButton(
+                                    onClick = {
+                                        viewModel.removeGeoIp { scope.launch { snackbarHostState.showSnackbar(geoIpRemovedMessage) } }
+                                    },
+                                ) {
+                                    Icon(
+                                        Icons.Rounded.Delete,
+                                        contentDescription = stringResource(R.string.settings_geoip_remove),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                                else -> Icon(
+                                    Icons.Rounded.Download,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        },
+                    )
+                }
+            }
+
+            item {
                 SettingsSection(stringResource(R.string.settings_backup)) {
                     SettingsRow(
                         icon = Icons.Rounded.Save,
@@ -451,6 +526,27 @@ fun SettingsScreen(
         )
     }
 
+    if (showGeoIpDialog) {
+        AlertDialog(
+            onDismissRequest = { showGeoIpDialog = false },
+            title = { Text(stringResource(R.string.settings_geoip_confirm_title)) },
+            text = { Text(stringResource(R.string.settings_geoip_confirm_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showGeoIpDialog = false
+                    viewModel.downloadGeoIp { success ->
+                        scope.launch {
+                            snackbarHostState.showSnackbar(if (success) geoIpDownloadedMessage else geoIpFailedMessage)
+                        }
+                    }
+                }) { Text(stringResource(R.string.settings_geoip_confirm_download)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showGeoIpDialog = false }) { Text(stringResource(R.string.details_cancel)) }
+            },
+        )
+    }
+
     if (showSendReportDialog) {
         val activeProfile = profiles.firstOrNull { it.id == activeId }
         SendReportDialog(
@@ -469,6 +565,17 @@ fun SettingsScreen(
 }
 
 private const val MAX_BACKUP_BYTES = 10 * 1024 * 1024
+
+@Composable
+private fun PeerSort.label(): String = stringResource(
+    when (this) {
+        PeerSort.TOTAL_SPEED -> R.string.peer_sort_total_speed
+        PeerSort.DOWNLOAD_SPEED -> R.string.peer_sort_download_speed
+        PeerSort.UPLOAD_SPEED -> R.string.peer_sort_upload_speed
+        PeerSort.ADDRESS -> R.string.peer_sort_address
+        PeerSort.CLIENT -> R.string.peer_sort_client
+    }
+)
 
 @Composable
 private fun PassphraseDialog(

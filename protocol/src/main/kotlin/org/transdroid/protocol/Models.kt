@@ -180,7 +180,23 @@ data class Peer(
     val countryCode: String? = null,
     /** Human-readable country name, when the daemon provides one (currently only qBittorrent). */
     val countryName: String? = null,
-)
+    /**
+     * Whether the connection to this peer is encrypted (full RC4 traffic encryption, not just an
+     * obfuscated handshake), or null when the daemon does not report it - Deluge never does.
+     */
+    val encrypted: Boolean? = null,
+) {
+    /**
+     * The address for display: "ip:port", with an IPv6 address bracketed so its own colons are
+     * not read as the port separator ("[2001:db8::1]:6881"); just [ip] when the port is unknown.
+     */
+    val endpoint: String
+        get() = when {
+            port == null -> ip
+            ':' in ip -> "[$ip]:$port"
+            else -> "$ip:$port"
+        }
+}
 
 /** Errors thrown by daemon adapters, so the UI can give targeted feedback. */
 sealed class DaemonException(message: String, cause: Throwable? = null) : Exception(message, cause) {

@@ -13,7 +13,7 @@
       "downloaded": 78643200,
       "uploaded": 1048576,
       "connection": "BT",
-      "flags": "D",
+      "flags": "D E",
       "flags_desc": "D: interested",
       "country": "Netherlands",
       "country_code": "nl"

@@ -37,6 +37,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.transdroid.AppContainer
 import org.transdroid.appContainer
+import org.transdroid.data.PeerSort
 import org.transdroid.data.ServerProfile
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.protocol.DaemonException
@@ -130,6 +131,8 @@ data class TorrentsUiState(
     val files: Map<String, List<TorrentFile>> = emptyMap(),
     val trackers: Map<String, List<Tracker>> = emptyMap(),
     val peers: Map<String, List<Peer>> = emptyMap(),
+    /** The order the details screen lists [peers] in; a preference, see [org.transdroid.data.SettingsRepository.peerSort]. */
+    val peerSort: PeerSort = PeerSort.DEFAULT,
     /** Whether the active server's client exposes an alternative ("turtle") speed limits toggle. */
     val altSpeedSupported: Boolean = false,
     val altSpeedEnabled: Boolean = false,
@@ -217,6 +220,9 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
                 profile?.let { container.settingsRepository.recentDownloadLocations(it.id) } ?: flowOf(emptyList())
             }.collect { locations -> _ui.update { it.copy(recentDownloadLocations = locations) } }
         }
+        viewModelScope.launch {
+            container.settingsRepository.peerSort.collect { sort -> _ui.update { it.copy(peerSort = sort) } }
+        }
     }
 
     /** Runs while the torrents UI is started; cancellation stops the polling. */
@@ -295,7 +301,7 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
             // Keep showing the last-known trackers rather than clearing them on a transient failure
         }
         try {
-            val peers = adapter.listPeers(torrentId)
+            val peers = fetchPeers(adapter, torrentId)
             _ui.update { it.copy(peers = it.peers + (torrentId to peers)) }
         } catch (e: CancellationException) {
             throw e
@@ -303,6 +309,10 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
             // Keep showing the last-known peers rather than clearing them on a transient failure
         }
     }
+
+    /** The daemon's peer list, with countries filled in from the local GeoIP database when one is downloaded. */
+    private suspend fun fetchPeers(adapter: org.transdroid.protocol.DaemonAdapter, torrentId: String): List<Peer> =
+        container.geoIpDatabase.withCountries(adapter.listPeers(torrentId))
 
     fun setFilter(filter: TorrentFilter) {
         _ui.update { it.copy(filter = filter) }
@@ -445,7 +455,7 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         val profile = _ui.value.activeProfile ?: return
         viewModelScope.launch {
             try {
-                val peers = container.adapterFor(profile).listPeers(torrentId)
+                val peers = fetchPeers(container.adapterFor(profile), torrentId)
                 _ui.update { it.copy(peers = it.peers + (torrentId to peers)) }
             } catch (e: CancellationException) {
                 throw e

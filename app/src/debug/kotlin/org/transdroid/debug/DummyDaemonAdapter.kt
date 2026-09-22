@@ -164,6 +164,7 @@ class DummyDaemonAdapter : DaemonAdapter {
                     port = Random.nextInt(1024, 65535),
                     countryCode = "NL",
                     countryName = "Netherlands",
+                    encrypted = true,
                 ),
                 Peer(
                     ip = "198.51.100.${Random.nextInt(2, 254)}",
@@ -174,6 +175,18 @@ class DummyDaemonAdapter : DaemonAdapter {
                     port = Random.nextInt(1024, 65535),
                     // No country, to exercise the UI's optional-field handling
                     countryCode = null,
+                    countryName = null,
+                    encrypted = false,
+                ),
+                Peer(
+                    // An IPv6 peer (RFC 3849 documentation prefix), to see it bracketed in the row
+                    ip = "2001:db8::${Random.nextInt(1, 0xffff).toString(16)}",
+                    clientName = "Deluge 2.1.1",
+                    progress = Random.nextFloat(),
+                    downloadRate = Random.nextLong(1_000, 200_000),
+                    uploadRate = 0L,
+                    port = Random.nextInt(1024, 65535),
+                    countryCode = "DE",
                     countryName = null,
                 ),
             )

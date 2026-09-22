@@ -235,6 +235,7 @@ class TransmissionAdapter(
                 // Transmission's RPC has no peer geolocation field at all
                 countryCode = null,
                 countryName = null,
+                encrypted = obj["isEncrypted"]?.jsonPrimitive?.booleanOrNull,
             )
         }
     }

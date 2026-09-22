@@ -258,7 +258,7 @@ class RtorrentAdapter(
             "p.multicall",
             torrentId, "",
             "p.address=", "p.port=", "p.client_version=", "p.completed_percent=",
-            "p.down_rate=", "p.up_rate=",
+            "p.down_rate=", "p.up_rate=", "p.is_encrypted=",
         ) as? List<*> ?: throw DaemonException.UnexpectedResponse("Unexpected p.multicall reply")
         return rows.map { row ->
             val fields = row as? List<*> ?: throw DaemonException.UnexpectedResponse("Bad multicall row")
@@ -275,6 +275,7 @@ class RtorrentAdapter(
                 // rTorrent's XML-RPC has no peer geolocation field at all
                 countryCode = null,
                 countryName = null,
+                encrypted = num(6) != 0L,
             )
         }
     }

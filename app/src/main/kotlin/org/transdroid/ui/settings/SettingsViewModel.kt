@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import java.util.UUID
 import javax.crypto.AEADBadTagException
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,6 +39,7 @@ import org.transdroid.BuildConfig
 import org.transdroid.R
 import org.transdroid.appContainer
 import org.transdroid.data.BackupCrypto
+import org.transdroid.data.PeerSort
 import org.transdroid.data.ProfilesData
 import org.transdroid.data.RssFeed
 import org.transdroid.data.SearchProviderConfig
@@ -245,6 +247,48 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
 
     fun setPollInterval(seconds: Int) {
         viewModelScope.launch { container.settingsRepository.setPollIntervalSeconds(seconds) }
+    }
+
+    val peerSort: StateFlow<PeerSort> = container.settingsRepository.peerSort
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PeerSort.DEFAULT)
+
+    fun setPeerSort(sort: PeerSort) {
+        viewModelScope.launch { container.settingsRepository.setPeerSort(sort) }
+    }
+
+    val geoIpDownloaded: StateFlow<Boolean> = container.geoIpDatabase.downloaded
+
+    private val _geoIpDownloading = MutableStateFlow(false)
+    val geoIpDownloading: StateFlow<Boolean> = _geoIpDownloading.asStateFlow()
+
+    /**
+     * Downloads (or re-downloads) the peer country database; no-op while one is already running.
+     * This ViewModel is activity-scoped, so the download carries on if the user leaves Settings.
+     */
+    fun downloadGeoIp(onResult: (success: Boolean) -> Unit) {
+        if (_geoIpDownloading.value) return
+        _geoIpDownloading.value = true
+        viewModelScope.launch {
+            val success = try {
+                container.geoIpDatabase.download()
+                true
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                ErrorLog.log("Settings", "Country database download failed", e)
+                false
+            } finally {
+                _geoIpDownloading.value = false
+            }
+            onResult(success)
+        }
+    }
+
+    fun removeGeoIp(onDone: () -> Unit) {
+        viewModelScope.launch {
+            container.geoIpDatabase.clear()
+            onDone()
+        }
     }
 
     /**

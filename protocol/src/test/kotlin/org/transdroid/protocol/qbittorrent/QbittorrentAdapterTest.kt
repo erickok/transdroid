@@ -189,13 +189,31 @@ class QbittorrentAdapterTest {
         assertEquals(51413, withCountry.port)
         assertEquals("NL", withCountry.countryCode)
         assertEquals("Netherlands", withCountry.countryName)
+        assertEquals("the E flag marks encrypted traffic", true, withCountry.encrypted)
 
         val withoutCountry = peers.first { it.ip == "198.51.100.20" }
         assertNull("country omitted when resolvePeerCountries is off", withoutCountry.countryCode)
         assertNull(withoutCountry.countryName)
+        assertEquals("flags without an E read as not encrypted", false, withoutCountry.encrypted)
 
         server.takeRequest() // login
         assertTrue(server.takeRequest().path!!.startsWith("/api/v2/sync/torrentPeers?hash=abcdef"))
+    }
+
+    @Test
+    fun `list peers leaves encryption unknown when the server does not show flags`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(
+            MockResponse().setBody(
+                """{"full_update": true, "rid": 1, "show_flags": false,
+                    "peers": {"203.0.113.5:51413": {"ip": "203.0.113.5", "port": 51413, "progress": 0.5}}}"""
+            )
+        )
+
+        val peers = adapter().listPeers("abcdef")
+
+        assertEquals(1, peers.size)
+        assertNull("no flags reported at all is unknown, not unencrypted", peers[0].encrypted)
     }
 
     @Test

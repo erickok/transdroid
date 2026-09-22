@@ -4,6 +4,8 @@ kotlin = "2.3.21"
 coroutines = "1.10.2"
 serialization = "1.9.0"
 okhttp = "4.12.0"
+# Last release built for Java 8 and free of dependencies; see GeoIpDatabase before bumping
+maxmindDb = "2.1.0"
 
 coreKtx = "1.16.0"
 activityCompose = "1.10.1"
@@ -24,6 +26,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
 okhttp-tls = { group = "com.squareup.okhttp3", name = "okhttp-tls", version.ref = "okhttp" }
+maxmind-db = { group = "com.maxmind.db", name = "maxmind-db", version.ref = "maxmindDb" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
