@@ -179,10 +179,12 @@ class TransmissionAdapterTest {
         assertEquals(51413, first.port)
         assertNull("Transmission's RPC has no peer geolocation field", first.countryCode)
         assertNull(first.countryName)
+        assertEquals(true, first.encrypted)
 
         val second = peers[1]
         assertNull("blank clientName must normalize to null", second.clientName)
         assertEquals(1f, second.progress, 0.0001f)
+        assertEquals(false, second.encrypted)
     }
 
     @Test

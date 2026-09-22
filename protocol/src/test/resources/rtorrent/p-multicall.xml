@@ -8,6 +8,7 @@
       <value><i8>75</i8></value>
       <value><i8>125000</i8></value>
       <value><i8>4000</i8></value>
+      <value><i8>1</i8></value>
     </data></array></value>
     <value><array><data>
       <value><string>198.51.100.20</string></value>
@@ -16,6 +17,7 @@
       <value><i8>100</i8></value>
       <value><i8>0</i8></value>
       <value><i8>250000</i8></value>
+      <value><i8>0</i8></value>
     </data></array></value>
   </data></array></value></param></params>
 </methodResponse>

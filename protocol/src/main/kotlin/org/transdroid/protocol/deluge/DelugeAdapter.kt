@@ -302,9 +302,9 @@ class DelugeAdapter(
         return peers.map { element ->
             val peer = element.jsonObject
             fun rate(key: String): Long = peer[key]?.jsonPrimitive?.doubleOrNull?.toLong() ?: 0L
-            // Deluge reports "ip:port" as one string; splitting on the last colon is imperfect
-            // for a bare (unbracketed) IPv6 address, which itself contains colons - acceptable
-            // here since Deluge always formats IPv4 this way and bare-IPv6 peers are rare.
+            // Deluge reports the endpoint as one "%s:%s" % (ip, port) string, never bracketing
+            // an IPv6 address, so the port is always whatever follows the last colon - for
+            // "2001:db8::1:6881" as much as for "203.0.113.5:51413".
             val ipAndPort = peer["ip"]?.jsonPrimitive?.contentOrNull ?: ""
             Peer(
                 ip = ipAndPort.substringBeforeLast(':'),
@@ -319,6 +319,8 @@ class DelugeAdapter(
                 // country-name field exists.
                 countryCode = peer["country"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() },
                 countryName = null,
+                // Deluge's peer records carry no encryption state
+                encrypted = null,
             )
         }
     }

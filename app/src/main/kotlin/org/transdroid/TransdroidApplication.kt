@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.combine
 import org.transdroid.background.FinishedTorrentsWorker
 import org.transdroid.debug.DebugTools
 import org.transdroid.errorlog.ErrorLog
+import org.transdroid.data.GeoIpDatabase
 import org.transdroid.data.ServerProfile
 import org.transdroid.discovery.CurrentSsid
 import org.transdroid.discovery.LanDiscovery
@@ -45,6 +46,7 @@ class AppContainer(context: Context) {
 
     val httpClient = DaemonAdapterFactory.defaultHttpClient()
     val rssFetcher = RssFetcher(httpClient)
+    val geoIpDatabase = GeoIpDatabase(context.noBackupFilesDir, httpClient)
 
     private var cachedAdapter: Triple<ServerProfile, String?, DaemonAdapter>? = null
 

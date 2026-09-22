@@ -160,10 +160,12 @@ class RtorrentAdapterTest {
         assertEquals(125000L, first.downloadRate)
         assertEquals(4000L, first.uploadRate)
         assertNull("rTorrent's XML-RPC has no peer geolocation field", first.countryCode)
+        assertEquals(true, first.encrypted)
 
         val second = peers[1]
         assertNull("'Unknown' client_version must normalize to null", second.clientName)
         assertEquals(1f, second.progress, 0.001f)
+        assertEquals(false, second.encrypted)
     }
 
     @Test

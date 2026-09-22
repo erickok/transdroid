@@ -245,7 +245,8 @@ class DelugeAdapterTest {
                 """{"result": {
                     "peers": [
                         {"ip": "203.0.113.5:51413", "client": "qBittorrent", "progress": 0.75, "down_speed": 125000, "up_speed": 4000, "country": "NL", "seed": false},
-                        {"ip": "198.51.100.20:6881", "client": "", "progress": 1.0, "down_speed": 0, "up_speed": 250000, "country": "", "seed": true}
+                        {"ip": "198.51.100.20:6881", "client": "", "progress": 1.0, "down_speed": 0, "up_speed": 250000, "country": "", "seed": true},
+                        {"ip": "2001:db8::1:6881", "client": "Transmission 4.0.5", "progress": 0.5, "down_speed": 1000, "up_speed": 0, "country": "", "seed": false}
                     ]
                 }, "error": null, "id": 2}"""
             )
@@ -253,7 +254,7 @@ class DelugeAdapterTest {
 
         val peers = adapter.listPeers("abcdef")
 
-        assertEquals(2, peers.size)
+        assertEquals(3, peers.size)
         val first = peers[0]
         assertEquals("IP:port must split on the last colon", "203.0.113.5", first.ip)
         assertEquals(51413, first.port)
@@ -261,10 +262,16 @@ class DelugeAdapterTest {
         assertEquals(0.75f, first.progress, 0.0001f)
         assertEquals("NL", first.countryCode)
         assertNull("Deluge has no separate country name field", first.countryName)
+        assertNull("Deluge reports no per-peer encryption state", first.encrypted)
 
         val second = peers[1]
         assertNull("blank client must normalize to null", second.clientName)
         assertNull("empty country string (no GeoIP db configured) must normalize to null", second.countryCode)
+
+        val ipv6 = peers[2]
+        assertEquals("Deluge does not bracket IPv6, so only the last colon separates the port", "2001:db8::1", ipv6.ip)
+        assertEquals(6881, ipv6.port)
+        assertEquals("[2001:db8::1]:6881", ipv6.endpoint)
     }
 
     @Test

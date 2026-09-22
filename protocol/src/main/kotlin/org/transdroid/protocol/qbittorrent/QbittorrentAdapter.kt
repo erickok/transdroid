@@ -190,7 +190,7 @@ class QbittorrentAdapter(
     override suspend fun listPeers(torrentId: String): List<Peer> {
         val response = get("api/v2/sync/torrentPeers?hash=$torrentId&rid=0")
             .use { it.decodeJsonObjectOrThrow<PeersSyncResponse>("peer list") }
-        return response.peers.values.map { it.toPeer() }
+        return response.peers.values.map { it.toPeer(showFlags = response.show_flags) }
     }
 
     /** qBittorrent calls this a "category"; a category must exist before it can be assigned. */
@@ -437,9 +437,13 @@ class QbittorrentAdapter(
         )
     }
 
-    /** sync/torrentPeers wraps its map in an outer object; only its `peers` field is needed here. */
+    /** sync/torrentPeers wraps its map in an outer object alongside rid/full_update/show_flags. */
     @Serializable
-    private data class PeersSyncResponse(val peers: Map<String, TorrentPeerInfo> = emptyMap())
+    private data class PeersSyncResponse(
+        val peers: Map<String, TorrentPeerInfo> = emptyMap(),
+        /** Whether per-peer connection flags are reported at all; a server setting. */
+        val show_flags: Boolean = true,
+    )
 
     @Serializable
     private data class TorrentPeerInfo(
@@ -451,11 +455,13 @@ class QbittorrentAdapter(
         val progress: Float = 0f,
         val dl_speed: Long = 0,
         val up_speed: Long = 0,
+        /** Space-separated connection flag letters as in qBittorrent's own peer list, e.g. "D X H E P". */
+        val flags: String = "",
         // Only present when the server's "resolvePeerCountries" setting is enabled
         val country: String? = null,
         val country_code: String? = null,
     ) {
-        fun toPeer() = Peer(
+        fun toPeer(showFlags: Boolean) = Peer(
             ip = ip,
             clientName = client.takeIf { it.isNotBlank() },
             progress = progress.coerceIn(0f, 1f),
@@ -464,6 +470,8 @@ class QbittorrentAdapter(
             port = port.takeIf { it > 0 },
             countryCode = country_code?.takeIf { it.isNotBlank() }?.uppercase(),
             countryName = country?.takeIf { it.isNotBlank() },
+            // Case matters: "E" is encrypted traffic, while lowercase "e" is only an encrypted handshake
+            encrypted = if (showFlags) 'E' in flags else null,
         )
     }
 
