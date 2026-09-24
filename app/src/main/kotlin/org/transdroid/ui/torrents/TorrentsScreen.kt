@@ -185,7 +185,7 @@ fun TorrentsScreen(
                         onOpenDrawer = { scope.launch { drawerState.open() } },
                         onOpenSearch = onOpenSearch,
                         onRefresh = { viewModel.refresh() },
-                        onSortSelect = { viewModel.setSort(it) },
+                        onSortSelect = { viewModel.setSort(it); scrollToTop() },
                         onTitleClick = scrollToTop,
                         onSwitchProfile = { viewModel.switchProfile(it) },
                         onToggleAltSpeed = { viewModel.toggleAltSpeed() },
@@ -253,6 +253,7 @@ fun TorrentsScreen(
                                     onOpenSearch = onOpenSearch,
                                     onOpenRss = onOpenRss,
                                     listState = listState,
+                                    scrollToTop = scrollToTop,
                                     showToolbar = false,
                                     showFilterChips = true,
                                 )
@@ -283,6 +284,7 @@ fun TorrentsScreen(
                         onOpenSearch = onOpenSearch,
                         onOpenRss = onOpenRss,
                         listState = listState,
+                        scrollToTop = scrollToTop,
                     )
                 }
             }
@@ -477,6 +479,7 @@ private fun TorrentListContent(
     onOpenSearch: () -> Unit = {},
     onOpenRss: () -> Unit = {},
     listState: LazyListState = rememberLazyListState(),
+    scrollToTop: () -> Unit = {},
     showToolbar: Boolean = true,
     showFilterChips: Boolean = false,
 ) {
@@ -577,7 +580,7 @@ private fun TorrentListContent(
                     sharingCount = ui.sharingCount,
                     sort = ui.sort,
                     sortDescending = ui.sortDescending,
-                    onSortSelect = { viewModel.setSort(it) },
+                    onSortSelect = { viewModel.setSort(it); scrollToTop() },
                     onRefresh = { viewModel.refresh() },
                     altSpeedSupported = ui.altSpeedSupported,
                     altSpeedEnabled = ui.altSpeedEnabled,

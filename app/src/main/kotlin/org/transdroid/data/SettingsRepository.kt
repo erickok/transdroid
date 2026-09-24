@@ -25,6 +25,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.transdroid.ui.torrents.TorrentSort
 
 private val Context.settingsDataStore by preferencesDataStore(name = "settings")
 
@@ -35,6 +36,8 @@ class SettingsRepository(private val context: Context) {
     private val notifyFinishedKey = booleanPreferencesKey("notify_finished")
     private val pollIntervalKey = intPreferencesKey("poll_interval_seconds")
     private val peerSortKey = stringPreferencesKey("peer_sort")
+    private val torrentSortKey = stringPreferencesKey("torrent_sort")
+    private val torrentSortDescendingKey = booleanPreferencesKey("torrent_sort_descending")
 
     val activeServerId: Flow<String?> = context.settingsDataStore.data.map { it[activeServerKey] }
 
@@ -57,6 +60,18 @@ class SettingsRepository(private val context: Context) {
 
     suspend fun setPeerSort(sort: PeerSort) {
         context.settingsDataStore.edit { it[peerSortKey] = sort.name }
+    }
+
+    /** The field and direction the main torrent list is sorted by. */
+    val torrentSort: Flow<TorrentSort> = context.settingsDataStore.data.map { TorrentSort.fromName(it[torrentSortKey]) }
+    val torrentSortDescending: Flow<Boolean> =
+        context.settingsDataStore.data.map { it[torrentSortDescendingKey] ?: TorrentSort.DEFAULT.defaultDescending }
+
+    suspend fun setTorrentSort(sort: TorrentSort, descending: Boolean) {
+        context.settingsDataStore.edit {
+            it[torrentSortKey] = sort.name
+            it[torrentSortDescendingKey] = descending
+        }
     }
 
     /** Whether the background finished-torrent check and its notifications are enabled. */

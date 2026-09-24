@@ -103,6 +103,13 @@ enum class TorrentSort {
 
     fun comparator(descending: Boolean): Comparator<Torrent> =
         ascending().let { if (descending) it.reversed() else it }
+
+    companion object {
+        val DEFAULT = DATE_ADDED
+
+        /** Tolerates a stored name that no longer exists, e.g. after a constant is renamed. */
+        fun fromName(name: String?): TorrentSort = entries.firstOrNull { it.name == name } ?: DEFAULT
+    }
 }
 
 data class TorrentsUiState(
@@ -223,6 +230,13 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             container.settingsRepository.peerSort.collect { sort -> _ui.update { it.copy(peerSort = sort) } }
         }
+        viewModelScope.launch {
+            combine(
+                container.settingsRepository.torrentSort,
+                container.settingsRepository.torrentSortDescending,
+            ) { sort, descending -> sort to descending }
+                .collect { (sort, descending) -> _ui.update { it.copy(sort = sort, sortDescending = descending) } }
+        }
     }
 
     /** Runs while the torrents UI is started; cancellation stops the polling. */
@@ -318,15 +332,15 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         _ui.update { it.copy(filter = filter) }
     }
 
-    /** Picking the already-active sort field again reverses its direction instead of no-op'ing. */
+    /**
+     * Picking the already-active sort field again reverses its direction instead of no-op'ing.
+     * Persisted via [org.transdroid.data.SettingsRepository.setTorrentSort] and fed back into
+     * [ui] through the [init] collector above, so it survives a cold app start.
+     */
     fun setSort(sort: TorrentSort) {
-        _ui.update {
-            if (it.sort == sort) {
-                it.copy(sortDescending = !it.sortDescending)
-            } else {
-                it.copy(sort = sort, sortDescending = sort.defaultDescending)
-            }
-        }
+        val current = _ui.value
+        val descending = if (current.sort == sort) !current.sortDescending else sort.defaultDescending
+        viewModelScope.launch { container.settingsRepository.setTorrentSort(sort, descending) }
     }
 
     fun toggleLabelFilter(label: String) {
