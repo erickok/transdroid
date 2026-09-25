@@ -197,6 +197,8 @@
     <string name="settings_path_hint_deluge">Base path of the Web UI, usually empty</string>
     <string name="settings_username">User name (optional)</string>
     <string name="settings_password">Password</string>
+    <string name="settings_qbittorrent_api_key">API key (optional)</string>
+    <string name="settings_qbittorrent_api_key_summary">qBittorrent 5.2+ Web UI setting. When set, replaces user name/password login above.</string>
     <string name="settings_show_password">Show password</string>
     <string name="settings_hide_password">Hide password</string>
     <string name="settings_save">Save</string>

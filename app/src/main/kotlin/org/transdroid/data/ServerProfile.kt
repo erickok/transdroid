@@ -35,6 +35,8 @@ data class ServerProfile(
     val path: String = "",
     val username: String = "",
     val password: String = "",
+    /** Stateless Bearer-token alternative to [username]/[password]; see [DaemonConfig.apiKey]. */
+    val apiKey: String = "",
     /** SHA-256 (lowercase hex) of an explicitly trusted self-signed certificate, or empty. */
     val pinnedCertSha256: String = "",
     /** Extra HTTP headers, one "Name: Value" per line (e.g. Cloudflare Access tokens). */
@@ -76,6 +78,7 @@ data class ServerProfile(
             path = (if (useLocal) localPath else path).takeIf { it.isNotBlank() },
             username = (if (useLocal) localUsername.ifBlank { username } else username).takeIf { it.isNotBlank() },
             password = (if (useLocal) localPassword.ifBlank { password } else password).takeIf { it.isNotBlank() },
+            apiKey = apiKey.takeIf { it.isNotBlank() },
             pinnedCertSha256 = pinnedCertSha256.takeIf { it.isNotBlank() },
             customHeaders = parseHeaders(customHeaders),
         )

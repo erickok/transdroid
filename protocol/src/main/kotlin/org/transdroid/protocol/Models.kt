@@ -41,6 +41,12 @@ data class DaemonConfig(
     val username: String? = null,
     val password: String? = null,
     /**
+     * Stateless Bearer-token alternative to [username]/[password] login, currently only used by
+     * qBittorrent (WebUI API key, added in qBittorrent 5.2). When set, takes priority over
+     * username/password for that adapter.
+     */
+    val apiKey: String? = null,
+    /**
      * Lowercase hex SHA-256 of a self-signed certificate the user explicitly trusts for
      * this server, or null to use normal CA validation only.
      */

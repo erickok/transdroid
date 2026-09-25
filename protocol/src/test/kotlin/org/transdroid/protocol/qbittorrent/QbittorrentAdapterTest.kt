@@ -48,13 +48,14 @@ class QbittorrentAdapterTest {
         server.shutdown()
     }
 
-    private fun adapter(username: String? = "admin", password: String? = "adminadmin") = QbittorrentAdapter(
+    private fun adapter(username: String? = "admin", password: String? = "adminadmin", apiKey: String? = null) = QbittorrentAdapter(
         DaemonConfig(
             type = DaemonType.QBITTORRENT,
             host = server.hostName,
             port = server.port,
             username = username,
             password = password,
+            apiKey = apiKey,
         ),
         OkHttpClient(),
     )
@@ -152,6 +153,44 @@ class QbittorrentAdapterTest {
 
         assertEquals(4, torrents.size)
         assertEquals("/api/v2/torrents/info", server.takeRequest().path)
+    }
+
+    @Test
+    fun `an api key skips login and is sent as a bearer token`() = runTest {
+        server.enqueue(MockResponse().setBody(fixture("torrents-info.json")))
+
+        val torrents = adapter(apiKey = "qbt_fakeTestApiKeyNotARealSecret").listTorrents()
+
+        assertEquals(4, torrents.size)
+        val request = server.takeRequest()
+        assertEquals("/api/v2/torrents/info", request.path)
+        assertEquals("Bearer qbt_fakeTestApiKeyNotARealSecret", request.getHeader("Authorization"))
+        assertNull("no session cookie is sent alongside an api key", request.getHeader("Cookie"))
+    }
+
+    @Test
+    fun `an api key takes priority over username and password`() = runTest {
+        server.enqueue(MockResponse().setBody(fixture("torrents-info.json")))
+
+        adapter(username = "admin", password = "adminadmin", apiKey = "qbt_fakeTestApiKeyNotARealSecret").listTorrents()
+
+        // A login call would have been enqueued first if the api key didn't take priority.
+        assertEquals(1, server.requestCount)
+    }
+
+    @Test
+    fun `a rejected api key maps to authentication error without retrying login`() = runTest {
+        server.enqueue(MockResponse().setResponseCode(403))
+
+        try {
+            adapter(apiKey = "qbt_fakeTestApiKeyNotARealSecret").listTorrents()
+            fail("Expected DaemonException.Authentication")
+        } catch (expected: DaemonException.Authentication) {
+            assertTrue(expected.message!!.contains("API key"))
+        }
+
+        // No auth/login fallback attempt - qBittorrent's login endpoint refuses api-key requests.
+        assertEquals(1, server.requestCount)
     }
 
     @Test

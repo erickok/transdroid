@@ -41,6 +41,7 @@ import androidx.compose.material.icons.rounded.Badge
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Folder
+import androidx.compose.material.icons.rounded.Key
 import androidx.compose.material.icons.rounded.Link
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.LockOpen
@@ -127,12 +128,14 @@ fun EditServerScreen(
     var path by rememberSaveable(existing?.id) { mutableStateOf(existing?.path.orEmpty()) }
     var username by rememberSaveable(existing?.id) { mutableStateOf(existing?.username.orEmpty()) }
     var password by rememberSaveable(existing?.id) { mutableStateOf(existing?.password.orEmpty()) }
+    var apiKey by rememberSaveable(existing?.id) { mutableStateOf(existing?.apiKey.orEmpty()) }
     var pinnedCert by rememberSaveable(existing?.id) { mutableStateOf(existing?.pinnedCertSha256.orEmpty()) }
     var customHeaders by rememberSaveable(existing?.id) { mutableStateOf(existing?.customHeaders.orEmpty()) }
     var hostError by remember { mutableStateOf(false) }
     var portError by remember { mutableStateOf(false) }
     var showHelp by remember { mutableStateOf(false) }
     var passwordVisible by remember { mutableStateOf(false) }
+    var apiKeyVisible by remember { mutableStateOf(false) }
 
     // Single-URL-first connection entry (Transmission/qBittorrent/Deluge web UIs, and rTorrent's
     // ruTorrent-URL sub-mode): the field below is the primary input, and host/port/ssl/path are
@@ -273,6 +276,7 @@ fun EditServerScreen(
         path = path.trim(),
         username = username.trim(),
         password = password,
+        apiKey = apiKey.trim(),
         pinnedCertSha256 = pinnedCert,
         customHeaders = customHeaders.trim(),
         localNetworkEnabled = localNetworkEnabled,
@@ -608,6 +612,19 @@ fun EditServerScreen(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
+            if (type == DaemonType.QBITTORRENT) {
+                TransdroidTextField(
+                    value = apiKey,
+                    onValueChange = { apiKey = it },
+                    label = { Text(stringResource(R.string.settings_qbittorrent_api_key)) },
+                    supportingText = { Text(stringResource(R.string.settings_qbittorrent_api_key_summary)) },
+                    leadingIcon = { Icon(Icons.Rounded.Key, contentDescription = null) },
+                    trailingIcon = { PasswordVisibilityToggle(visible = apiKeyVisible, onToggle = { apiKeyVisible = !apiKeyVisible }) },
+                    visualTransformation = if (apiKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
             TransdroidTextField(
                 value = customHeaders,
                 onValueChange = { customHeaders = it },

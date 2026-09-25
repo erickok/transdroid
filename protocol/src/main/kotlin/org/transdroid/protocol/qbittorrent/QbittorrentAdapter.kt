@@ -46,6 +46,12 @@ import org.transdroid.protocol.internal.trackerHost
  * Adapter for the qBittorrent Web API v2 (REST over HTTP with SID cookie auth), as documented
  * in https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-4.1). Also covers
  * qBittorrent 5.x, which renamed the pause/resume endpoints to stop/start; both are tried.
+ *
+ * When [DaemonConfig.apiKey] is set, it replaces the username/password cookie login entirely
+ * with a stateless `Authorization: Bearer` header (qBittorrent 5.2+'s WebUI API key, see
+ * https://github.com/qbittorrent/qBittorrent/wiki/API-Key-Authentication-(%E2%89%A5v5.2.0)) -
+ * that endpoint explicitly can't be used with auth/login, so the two modes are mutually
+ * exclusive rather than combined.
  */
 class QbittorrentAdapter(
     override val config: DaemonConfig,
@@ -232,6 +238,9 @@ class QbittorrentAdapter(
     }
 
     private suspend fun ensureAuthenticated() {
+        // An API key is sent per-request instead (see send()); no session to establish, and
+        // qBittorrent's auth/login endpoint explicitly refuses to be used alongside API keys.
+        if (!config.apiKey.isNullOrBlank()) return
         if (sessionCookie != null || config.username.isNullOrEmpty()) return
         loginWithBackoff()
     }
@@ -296,8 +305,9 @@ class QbittorrentAdapter(
         build: () -> Request.Builder,
     ): Response {
         ensureAuthenticated()
+        val usingApiKey = !config.apiKey.isNullOrBlank()
         var response = send(build())
-        if (response.code == 403 && !config.username.isNullOrEmpty()) {
+        if (response.code == 403 && !usingApiKey && !config.username.isNullOrEmpty()) {
             response.close()
             loginWithBackoff()
             response = send(build())
@@ -305,7 +315,9 @@ class QbittorrentAdapter(
         when {
             response.code == 401 || response.code == 403 -> {
                 response.close()
-                throw DaemonException.Authentication("qBittorrent requires a valid username/password")
+                throw DaemonException.Authentication(
+                    if (usingApiKey) "qBittorrent rejected the API key" else "qBittorrent requires a valid username/password",
+                )
             }
             response.code == 404 && allowNotFound -> return response
             !response.isSuccessful -> {
@@ -318,7 +330,12 @@ class QbittorrentAdapter(
     }
 
     private suspend fun send(builder: Request.Builder): Response {
-        sessionCookie?.let { builder.header("Cookie", it) }
+        val apiKey = config.apiKey
+        if (!apiKey.isNullOrBlank()) {
+            builder.header("Authorization", "Bearer $apiKey")
+        } else {
+            sessionCookie?.let { builder.header("Cookie", it) }
+        }
         return httpClient.executeOnIo(builder.build())
     }
 
