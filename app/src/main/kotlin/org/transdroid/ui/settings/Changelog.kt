@@ -30,6 +30,17 @@ data class Release(val version: String, val date: String, val changes: List<Chan
  */
 val CHANGELOG: List<Release> = listOf(
     Release(
+        version = "3.0.0-alpha5",
+        date = "September 2026",
+        changes = listOf(
+            ChangelogEntry(ChangeKind.NEW, "Sort the Peers tab by speed, IP address or client"),
+            ChangelogEntry(ChangeKind.NEW, "Optional on-device country database shows a flag for every peer, even on clients that don't report it themselves"),
+            ChangelogEntry(ChangeKind.NEW, "Connect to qBittorrent 5.2+ using its Web UI API key instead of a username/password"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Swipe between the details screen's Overview/Files/Trackers/Peers tabs"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Torrent list sort order is remembered across app restarts, and changing it scrolls back to the top"),
+        ),
+    ),
+    Release(
         version = "3.0.0-alpha4",
         date = "September 2026",
         changes = listOf(

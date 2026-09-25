@@ -1,0 +1,5 @@
+* Sort the Peers tab by speed, IP address or client
+* Optional on-device country database shows a flag for every peer, even on clients that don't report it themselves
+* Connect to qBittorrent 5.2+ using its Web UI API key instead of a username/password
+* Swipe between the details screen's Overview/Files/Trackers/Peers tabs
+* Torrent list sort order is remembered across app restarts, and changing it scrolls back to the top
