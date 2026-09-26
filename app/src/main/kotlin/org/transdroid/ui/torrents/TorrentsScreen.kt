@@ -909,7 +909,7 @@ private fun RowMetaRight(torrent: Torrent) {
 }
 
 @Composable
-private fun SpeedChip(icon: ImageVector, text: String) {
+internal fun SpeedChip(icon: ImageVector, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
         Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.outline, modifier = Modifier.size(13.dp))
         Text(text, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

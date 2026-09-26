@@ -49,10 +49,13 @@ import androidx.compose.material.icons.rounded.Label
 import androidx.compose.material.icons.rounded.LabelOff
 import androidx.compose.material.icons.rounded.Lan
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.North
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Public
+import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Sell
+import androidx.compose.material.icons.rounded.South
 import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -427,16 +430,19 @@ private fun DetailsSummary(
             modifier = Modifier.fillMaxWidth().height(20.dp),
         )
         Spacer(Modifier.height(9.dp))
-        Row(Modifier.fillMaxWidth()) {
+        // Time left and speeds sit flush right here, above the tabs, so they stay visible on every tab
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(
                 detailsProgressLine(torrent),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.weight(1f, fill = false),
+                modifier = Modifier.weight(1f),
             )
-            Spacer(Modifier.weight(1f))
-            formatEta(torrent.etaSeconds)?.let {
-                Text(it, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.width(12.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                formatEta(torrent.etaSeconds)?.let { SpeedChip(Icons.Rounded.Schedule, it) }
+                SpeedChip(Icons.Rounded.South, formatSpeed(torrent.downloadRate))
+                SpeedChip(Icons.Rounded.North, formatSpeed(torrent.uploadRate))
             }
         }
         torrent.error?.let { error ->
@@ -696,8 +702,6 @@ private fun FileRow(file: TorrentFile, onSetPriority: (FilePriority) -> Unit) {
                     file.path,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     "${formatBytes(file.downloadedBytes)} / ${formatBytes(file.sizeBytes)} · ${(file.progress * 100).toInt()}%",
