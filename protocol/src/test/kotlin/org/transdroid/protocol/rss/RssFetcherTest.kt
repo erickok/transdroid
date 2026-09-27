@@ -80,6 +80,22 @@ class RssFetcherTest {
     }
 
     @Test
+    fun `rfc 822 zone names and common date dialects parse`() {
+        fun timestampOf(date: String) = fetcher.parse(
+            """<rss version="2.0"><channel><title>t</title><item><title>i</title><pubDate>$date</pubDate></item></channel></rss>"""
+        ).items.single().timestamp
+
+        val base = 1785060001L // Sun, 26 Jul 2026 10:00:01 GMT
+        assertEquals(base, timestampOf("Sun, 26 Jul 2026 10:00:01 GMT"))
+        assertEquals(base, timestampOf("Sun, 26 Jul 2026 10:00:01 UTC"))
+        assertEquals("EST is UTC-5", base + 5 * 3600, timestampOf("Sun, 26 Jul 2026 10:00:01 EST"))
+        assertEquals("PDT is UTC-7", base + 7 * 3600, timestampOf("Sun, 26 Jul 2026 10:00:01 PDT"))
+        assertEquals("no weekday", base, timestampOf("26 Jul 2026 10:00:01 +0000"))
+        assertEquals("ISO fallback", base, timestampOf("2026-07-26T10:00:01Z"))
+        assertEquals("garbage stays null", null, timestampOf("yesterday"))
+    }
+
+    @Test
     fun `html error page maps to unexpected response`() {
         try {
             fetcher.parse("<html><body>login required</body></html>")
