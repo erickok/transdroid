@@ -200,17 +200,44 @@ class RtorrentAdapterTest {
     }
 
     @Test
-    fun `remove with data sets the rutorrent erase-data marker first`() = runTest {
+    fun `remove with data sets the erase marker and deletes the tied file before erasing`() = runTest {
+        repeat(3) { server.enqueue(xmlResponse("<i8>0</i8>")) }
+
+        adapter.remove("ABCDEF", deleteData = true)
+
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>d.custom5.set</methodName>"))
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>d.delete_tied</methodName>"))
+        val erase = server.takeRequest().body.readUtf8()
+        assertTrue(erase.contains("<methodName>d.erase</methodName>"))
+        assertTrue(erase.contains("ABCDEF"))
+    }
+
+    @Test
+    fun `a failing delete_tied does not block the removal`() = runTest {
         server.enqueue(xmlResponse("<i8>0</i8>"))
+        server.enqueue(
+            MockResponse().setBody(
+                """<?xml version="1.0"?><methodResponse><fault><value><struct>""" +
+                    """<member><name>faultCode</name><value><i4>-501</i4></value></member>""" +
+                    """<member><name>faultString</name><value><string>Could not delete tied file</string></value></member>""" +
+                    """</struct></value></fault></methodResponse>"""
+            )
+        )
         server.enqueue(xmlResponse("<i8>0</i8>"))
 
         adapter.remove("ABCDEF", deleteData = true)
 
-        val first = server.takeRequest().body.readUtf8()
-        assertTrue(first.contains("<methodName>d.custom5.set</methodName>"))
-        val second = server.takeRequest().body.readUtf8()
-        assertTrue(second.contains("<methodName>d.erase</methodName>"))
-        assertTrue(second.contains("ABCDEF"))
+        assertEquals(3, server.requestCount)
+    }
+
+    @Test
+    fun `remove without data neither marks nor deletes the tied file`() = runTest {
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.remove("ABCDEF", deleteData = false)
+
+        assertEquals(1, server.requestCount)
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>d.erase</methodName>"))
     }
 
     @Test
