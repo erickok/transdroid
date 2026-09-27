@@ -105,8 +105,12 @@ class TransmissionAdapterTest {
             downloading.trackers,
         )
 
+        assertEquals("sizeWhenDone is the wanted size", 6114656256L, downloading.sizeBytes)
+        assertEquals("haveValid + haveUnchecked", 2608512724L, downloading.downloadedBytes)
+
         val seeding = torrents[1]
-        assertEquals(TorrentStatus.SEEDING, seeding.status)
+        assertEquals("a tracker warning (error 2) leaves a working torrent seeding", TorrentStatus.SEEDING, seeding.status)
+        assertEquals("the warning text is still shown", "Tracker announce timed out", seeding.error)
         assertNull("eta -1 must normalize to null", seeding.etaSeconds)
         assertEquals(2.0f, seeding.ratio, 0.0001f)
         assertTrue(seeding.isFinished)

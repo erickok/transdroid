@@ -34,6 +34,7 @@ import kotlinx.serialization.json.encodeToStream
 import kotlinx.serialization.json.float
 import kotlinx.serialization.json.floatOrNull
 import kotlinx.serialization.json.int
+import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -359,10 +360,14 @@ class TransmissionAdapter(
     }
 
     private fun parseTorrent(obj: JsonObject): Torrent {
-        val error = obj["errorString"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }
+        // Transmission fills errorString for routine tracker warnings too (error codes 1/2)
+        // while the torrent keeps working; only code 3 is a real local error
+        val errorCode = obj["error"]?.jsonPrimitive?.intOrNull ?: 0
+        val error = obj["errorString"]?.jsonPrimitive?.contentOrNull
+            ?.takeIf { it.isNotBlank() && errorCode != 0 }
         val statusCode = obj["status"]?.jsonPrimitive?.int ?: -1
         val status = when {
-            error != null -> TorrentStatus.ERROR
+            errorCode == 3 -> TorrentStatus.ERROR
             else -> when (statusCode) {
                 0 -> TorrentStatus.PAUSED
                 1, 2 -> TorrentStatus.CHECKING
@@ -382,8 +387,11 @@ class TransmissionAdapter(
             downloadRate = obj["rateDownload"]?.jsonPrimitive?.long ?: 0L,
             uploadRate = obj["rateUpload"]?.jsonPrimitive?.long ?: 0L,
             etaSeconds = eta,
-            sizeBytes = obj["totalSize"]?.jsonPrimitive?.long ?: 0L,
-            downloadedBytes = obj["downloadedEver"]?.jsonPrimitive?.long ?: 0L,
+            // sizeWhenDone and haveValid+haveUnchecked cover only the wanted files; totalSize
+            // and downloadedEver would count deselected files and discarded corrupt data
+            sizeBytes = obj["sizeWhenDone"]?.jsonPrimitive?.long ?: 0L,
+            downloadedBytes = (obj["haveValid"]?.jsonPrimitive?.long ?: 0L) +
+                (obj["haveUnchecked"]?.jsonPrimitive?.long ?: 0L),
             uploadedBytes = obj["uploadedEver"]?.jsonPrimitive?.long ?: 0L,
             ratio = (obj["uploadRatio"]?.jsonPrimitive?.float ?: 0f).coerceAtLeast(0f),
             peersConnected = obj["peersConnected"]?.jsonPrimitive?.int ?: 0,
@@ -418,9 +426,9 @@ class TransmissionAdapter(
 
         val TORRENT_FIELDS = listOf(
             "id", "name", "status", "percentDone", "rateDownload", "rateUpload", "eta",
-            "totalSize", "downloadedEver", "uploadedEver", "uploadRatio", "peersConnected",
+            "sizeWhenDone", "haveValid", "haveUnchecked", "uploadedEver", "uploadRatio", "peersConnected",
             "peersSendingToUs", "peersGettingFromUs",
-            "addedDate", "downloadDir", "errorString", "labels", "metadataPercentComplete",
+            "addedDate", "downloadDir", "error", "errorString", "labels", "metadataPercentComplete",
             // Just the static tracker list (announce URLs) - not "trackerStats", which adds a lot
             // of live per-tracker announce/scrape history this app has no use for in the list view.
             "trackers",
