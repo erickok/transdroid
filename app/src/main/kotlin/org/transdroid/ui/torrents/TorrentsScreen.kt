@@ -103,6 +103,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -541,17 +542,34 @@ private fun TorrentListContent(
                         },
                     )
                 } else {
+                    var pendingRemoveId by rememberSaveable { mutableStateOf<String?>(null) }
+                    ui.torrents.firstOrNull { it.id == pendingRemoveId }?.let { torrent ->
+                        SwipeRemoveDialog(
+                            torrent = torrent,
+                            onDismiss = { pendingRemoveId = null },
+                            onConfirm = { alsoDeleteData ->
+                                pendingRemoveId = null
+                                viewModel.remove(torrent, alsoDeleteData)
+                            },
+                        )
+                    }
                     LazyColumn(
                         state = listState,
                         contentPadding = PaddingValues(start = 6.dp, end = 6.dp, top = 8.dp, bottom = 96.dp),
                         modifier = Modifier.fillMaxSize(),
                     ) {
                         items(ui.visibleTorrents, key = { it.id }) { torrent ->
-                            TorrentRow(
+                            SwipeableTorrentRow(
                                 torrent = torrent,
-                                selected = torrent.id == ui.selectedTorrentId,
-                                onClick = { onOpenDetails(torrent.id) },
-                            )
+                                onToggleStartPause = { viewModel.toggleStartPause(it) },
+                                onRequestRemove = { pendingRemoveId = it.id },
+                            ) {
+                                TorrentRow(
+                                    torrent = torrent,
+                                    selected = torrent.id == ui.selectedTorrentId,
+                                    onClick = { onOpenDetails(torrent.id) },
+                                )
+                            }
                             HorizontalDivider(
                                 modifier = Modifier.padding(start = 52.dp),
                                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
