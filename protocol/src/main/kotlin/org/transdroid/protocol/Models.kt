@@ -58,7 +58,11 @@ data class DaemonConfig(
     val customHeaders: Map<String, String> = emptyMap(),
 ) {
     val baseUrl: String
-        get() = (if (useSsl) "https" else "http") + "://" + host + ":" + port
+        get() {
+            // A bare IPv6 literal must be bracketed to be a valid URL authority
+            val authorityHost = if (host.contains(':') && !host.startsWith("[")) "[$host]" else host
+            return (if (useSsl) "https" else "http") + "://" + authorityHost + ":" + port
+        }
 }
 
 enum class TorrentStatus {
