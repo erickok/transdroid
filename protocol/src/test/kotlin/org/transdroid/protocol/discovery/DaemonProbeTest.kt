@@ -96,6 +96,41 @@ class DaemonProbeTest {
     }
 
     @Test
+    fun `qbittorrent requiring login is confirmed through its login endpoint`() = runTest {
+        dispatch { request ->
+            when (request.path) {
+                "/api/v2/app/webapiVersion" -> MockResponse().setResponseCode(403)
+                "/api/v2/auth/login" -> MockResponse().setBody("Fails.")
+                else -> MockResponse().setResponseCode(404)
+            }
+        }
+
+        assertEquals(DaemonType.QBITTORRENT, DaemonProbe.probe(client, server.hostName, server.port)?.type)
+    }
+
+    @Test
+    fun `a proxy answering 403 everywhere is not qbittorrent`() = runTest {
+        dispatch { MockResponse().setResponseCode(403).setBody("Forbidden") }
+
+        assertNull(DaemonProbe.probe(client, server.hostName, server.port))
+    }
+
+    @Test
+    fun `a generic 401 is not transmission but its own realm is`() = runTest {
+        dispatch { MockResponse().setResponseCode(401).setHeader("WWW-Authenticate", "Basic realm=\"nginx\"") }
+        assertNull(DaemonProbe.probe(client, server.hostName, server.port))
+
+        dispatch { request ->
+            if (request.path == "/transmission/rpc") {
+                MockResponse().setResponseCode(401).setHeader("WWW-Authenticate", "Basic realm=\"Transmission\"")
+            } else {
+                MockResponse().setResponseCode(404)
+            }
+        }
+        assertEquals(DaemonType.TRANSMISSION, DaemonProbe.probe(client, server.hostName, server.port)?.type)
+    }
+
+    @Test
     fun `a plain web server is not misidentified`() = runTest {
         dispatch { MockResponse().setBody("<html>welcome to my NAS</html>") }
 
