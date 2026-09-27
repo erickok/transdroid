@@ -286,7 +286,7 @@ class RtorrentAdapter(
             .post(XmlRpc.buildRequest(method, params.toList()).toRequestBody("text/xml".toMediaType()))
         val username = config.username
         if (!username.isNullOrEmpty()) {
-            builder.header("Authorization", Credentials.basic(username, config.password.orEmpty()))
+            builder.header("Authorization", Credentials.basic(username, config.password.orEmpty(), Charsets.UTF_8))
         }
         httpClient.executeOnIo(builder.build()).use { response ->
             when {

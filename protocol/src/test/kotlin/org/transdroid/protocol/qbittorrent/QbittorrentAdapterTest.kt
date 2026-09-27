@@ -84,6 +84,19 @@ class QbittorrentAdapterTest {
     }
 
     @Test
+    fun `401 without an api key is explained as a host header rejection`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setResponseCode(401))
+
+        try {
+            adapter().listTorrents()
+            fail("Expected DaemonException.Authentication")
+        } catch (expected: DaemonException.Authentication) {
+            assertTrue(expected.message!!.contains("Host header"))
+        }
+    }
+
+    @Test
     fun `rejected login maps to authentication error`() = runTest {
         server.enqueue(MockResponse().setBody("Fails."))
 

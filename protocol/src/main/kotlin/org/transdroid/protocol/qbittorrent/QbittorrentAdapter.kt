@@ -313,6 +313,15 @@ class QbittorrentAdapter(
             response = send(build())
         }
         when {
+            // Without an API key, qBittorrent answers 401 only from its Host-header and
+            // cross-site checks (typical behind a reverse proxy), never for credentials
+            response.code == 401 && !usingApiKey -> {
+                response.close()
+                throw DaemonException.Authentication(
+                    "qBittorrent refused the request's Host header - in its Web UI options, disable " +
+                        "'Enable Host header validation' or add this address to the server domains",
+                )
+            }
             response.code == 401 || response.code == 403 -> {
                 response.close()
                 throw DaemonException.Authentication(
