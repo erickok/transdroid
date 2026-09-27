@@ -106,9 +106,40 @@ class RtorrentAdapterTest {
 
         assertEquals(TorrentStatus.PAUSED, torrents[2].status)
 
-        val errored = torrents[3]
-        assertEquals(TorrentStatus.ERROR, errored.status)
-        assertTrue(errored.error!!.contains("Unregistered torrent"))
+        // d.message is informational: status comes from the state machine, the message
+        // stays visible as the torrent's error text
+        val withMessage = torrents[3]
+        assertEquals(TorrentStatus.DOWNLOADING, withMessage.status)
+        assertTrue(withMessage.error!!.contains("Unregistered torrent"))
+    }
+
+    @Test
+    fun `add by file raises the xmlrpc size limit first`() = runTest {
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.addByFile("big.torrent", ByteArray(600_000), startPaused = false, downloadLocation = null)
+
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>network.xmlrpc.size_limit.set</methodName>"))
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>load.raw_start</methodName>"))
+    }
+
+    @Test
+    fun `a refused size limit does not block the upload`() = runTest {
+        server.enqueue(
+            MockResponse().setBody(
+                """<?xml version="1.0"?><methodResponse><fault><value><struct>""" +
+                    """<member><name>faultCode</name><value><i4>-506</i4></value></member>""" +
+                    """<member><name>faultString</name><value><string>Method not defined</string></value></member>""" +
+                    """</struct></value></fault></methodResponse>"""
+            )
+        )
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.addByFile("small.torrent", ByteArray(1_000), startPaused = true, downloadLocation = null)
+
+        server.takeRequest()
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>load.raw</methodName>"))
     }
 
     @Test
