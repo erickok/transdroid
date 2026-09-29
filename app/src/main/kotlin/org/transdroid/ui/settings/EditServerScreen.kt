@@ -807,7 +807,9 @@ private fun composeServerUrl(secure: Boolean, host: String, port: Int, path: Str
     val standardPort = if (secure) 443 else 80
     val portPart = if (port == standardPort) "" else ":$port"
     val pathPart = path.trim().let { if (it.isBlank()) "" else if (it.startsWith("/")) it else "/$it" }
-    return "$scheme://$host$portPart$pathPart"
+    // A bare IPv6 literal must be bracketed to be a valid URL authority, as in DaemonConfig.baseUrl
+    val authorityHost = if (host.contains(':') && !host.startsWith("[")) "[$host]" else host
+    return "$scheme://$authorityHost$portPart$pathPart"
 }
 
 @Composable
