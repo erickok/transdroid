@@ -158,6 +158,14 @@ class RtorrentAdapter(
             // ruTorrent convention: an event hook on custom5 erases the data on removal.
             // Harmless when no such hook is configured; rTorrent itself never deletes data.
             call("d.custom5.set", torrentId, "1")
+            // Also delete the tied .torrent file (e.g. in a watch directory), which would
+            // otherwise re-add the torrent on the next rescan. Transdroid 2 did this too
+            // (#655); best-effort, since the removal itself must not fail over it.
+            try {
+                call("d.delete_tied", torrentId)
+            } catch (e: DaemonException.UnexpectedResponse) {
+                // Not tied to a file, or an rTorrent build without the command
+            }
         }
         call("d.erase", torrentId)
     }
