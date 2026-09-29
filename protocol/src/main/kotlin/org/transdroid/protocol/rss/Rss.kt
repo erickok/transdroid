@@ -19,8 +19,6 @@ package org.transdroid.protocol.rss
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
-import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -122,15 +120,12 @@ class RssFetcher(private val httpClient: OkHttpClient) {
 
     private fun parseRssDate(text: String?): Long? {
         if (text == null) return null
-        val normalized = normalizeRfc822Zone(text.trim())
-        for (formatter in RSS_DATE_FORMATS) {
-            try {
-                return ZonedDateTime.parse(normalized, formatter).toEpochSecond()
-            } catch (e: DateTimeParseException) {
-                // Try the next dialect
-            }
+        return try {
+            val normalized = normalizeRfc822Zone(text.trim())
+            ZonedDateTime.parse(normalized, DateTimeFormatter.RFC_1123_DATE_TIME).toEpochSecond()
+        } catch (e: Exception) {
+            parseIsoDate(text)
         }
-        return parseIsoDate(text)
     }
 
     /**
@@ -154,13 +149,6 @@ class RssFetcher(private val httpClient: OkHttpClient) {
     }
 
     private companion object {
-        val RSS_DATE_FORMATS: List<DateTimeFormatter> = listOf(
-            DateTimeFormatter.RFC_1123_DATE_TIME,
-            // Without a weekday, or without seconds, as some sites emit
-            DateTimeFormatter.ofPattern("d MMM yyyy HH:mm:ss Z", Locale.US),
-            DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm Z", Locale.US),
-        )
-
         val RFC822_ZONES: Map<String, String> = mapOf(
             "UT" to "+0000", "UTC" to "+0000", "Z" to "+0000",
             "EST" to "-0500", "EDT" to "-0400", "CST" to "-0600", "CDT" to "-0500",
