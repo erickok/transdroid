@@ -82,10 +82,12 @@ class RtorrentAdapter(
         val downRate = num(6)
         val sizeBytes = num(8)
         val completedBytes = num(9)
+        // d.message carries tracker notices ("Tried all trackers", "Unregistered torrent")
+        // that persist while the torrent keeps working via other trackers, DHT or PEX: shown
+        // as the torrent's error text, but never a status of its own
         val message = str(15).takeIf { it.isNotBlank() }
 
         val status = when {
-            message != null -> TorrentStatus.ERROR
             hashing -> TorrentStatus.CHECKING
             state == 0L || !isActive -> TorrentStatus.PAUSED
             complete -> TorrentStatus.SEEDING
@@ -139,6 +141,18 @@ class RtorrentAdapter(
     }
 
     override suspend fun addByFile(fileName: String, contents: ByteArray, startPaused: Boolean, downloadLocation: String?) {
+        // Stock rTorrent rejects XML-RPC requests over ~512 KiB, which a base64-encoded
+        // .torrent for a large multi-file torrent easily exceeds; raise the limit first like
+        // ruTorrent does. The limit is server-wide, so only ever raise it: never shrink a
+        // larger one the user configured. Best-effort: locked-down hosts may refuse the
+        // command, and small files work regardless.
+        try {
+            val needed = maxOf(2L * 1024 * 1024, contents.size * 2L + 1280L)
+            val current = call("network.xmlrpc.size_limit") as? Long ?: 0L
+            if (current < needed) call("network.xmlrpc.size_limit.set", "", needed)
+        } catch (e: DaemonException.UnexpectedResponse) {
+            // Proceed; the load below fails with a clear fault if the file really is too big
+        }
         call(if (startPaused) "load.raw" else "load.raw_start", "", contents, *directoryCommand(downloadLocation))
     }
 
