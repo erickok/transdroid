@@ -24,6 +24,7 @@ import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -96,16 +97,32 @@ class DaemonProbeTest {
     }
 
     @Test
-    fun `qbittorrent requiring login is confirmed through its login endpoint`() = runTest {
+    fun `qbittorrent requiring login is confirmed through its login page`() = runTest {
         dispatch { request ->
             when (request.path) {
                 "/api/v2/app/webapiVersion" -> MockResponse().setResponseCode(403)
-                "/api/v2/auth/login" -> MockResponse().setBody("Fails.")
+                "/" -> MockResponse().setBody("<html><head><title>qBittorrent WebUI</title></head></html>")
                 else -> MockResponse().setResponseCode(404)
             }
         }
 
         assertEquals(DaemonType.QBITTORRENT, DaemonProbe.probe(client, server.hostName, server.port)?.type)
+        // Discovery must never spend one of qBittorrent's failed-login attempts
+        val paths = List(server.requestCount) { server.takeRequest().path }
+        assertFalse(paths.any { it == "/api/v2/auth/login" })
+    }
+
+    @Test
+    fun `a 403 in front of an unrelated login page is not qbittorrent`() = runTest {
+        dispatch { request ->
+            when (request.path) {
+                "/api/v2/app/webapiVersion" -> MockResponse().setResponseCode(403)
+                "/" -> MockResponse().setBody("<html><head><title>Synology DiskStation</title></head></html>")
+                else -> MockResponse().setResponseCode(404)
+            }
+        }
+
+        assertNull(DaemonProbe.probe(client, server.hostName, server.port))
     }
 
     @Test

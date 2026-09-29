@@ -19,7 +19,6 @@ package org.transdroid.protocol.discovery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -38,9 +37,6 @@ data class DiscoveredDaemon(
  * LAN default setups; HTTPS/self-signed servers are added manually.
  */
 object DaemonProbe {
-
-    /** Internal marker: the version endpoint wants a session, so confirm via the login endpoint. */
-    private val NEEDS_LOGIN_CHECK = DiscoveredDaemon(DaemonType.QBITTORRENT, "", 0)
 
     /** Ports worth scanning: Transmission, qBittorrent and Deluge Web UI defaults. */
     val DEFAULT_PORTS: List<Int> = listOf(9091, 8080, 8112)
@@ -62,6 +58,7 @@ object DaemonProbe {
         }
 
     private suspend fun probeQbittorrent(client: OkHttpClient, host: String, port: Int): DiscoveredDaemon? {
+        var wantsLogin = false
         val versionResult = tryRequest(
             client,
             Request.Builder().url("http://$host:$port/api/v2/app/webapiVersion").get().build(),
@@ -69,21 +66,20 @@ object DaemonProbe {
             val body = if (response.code == 200) response.body?.string().orEmpty() else ""
             val versionLike = response.code == 200 && body.length in 1..16 &&
                 body.trim().firstOrNull()?.isDigit() == true
-            when {
-                versionLike -> DiscoveredDaemon(DaemonType.QBITTORRENT, host, port)
-                response.code == 403 -> NEEDS_LOGIN_CHECK
-                else -> null
-            }
+            wantsLogin = response.code == 403
+            if (versionLike) DiscoveredDaemon(DaemonType.QBITTORRENT, host, port) else null
         }
-        if (versionResult !== NEEDS_LOGIN_CHECK) return versionResult
+        if (versionResult != null || !wantsLogin) return versionResult
         // A bare 403 is also what reverse proxies, NAS admin pages and IP allow-lists answer
-        // on port 8080; qBittorrent's login endpoint, though, replies "Fails." to empty
-        // credentials (or "Ok." with auth bypass), which nothing else does
-        val form = FormBody.Builder().add("username", "").add("password", "").build()
-        val login = Request.Builder().url("http://$host:$port/api/v2/auth/login").post(form).build()
-        return tryRequest(client, login) { response ->
-            val body = if (response.code == 200) response.body?.string().orEmpty().trim() else ""
-            if (body == "Fails." || body == "Ok.") DiscoveredDaemon(DaemonType.QBITTORRENT, host, port) else null
+        // on port 8080, so confirm through the login page qBittorrent serves at the root.
+        // Never POST to the login endpoint: failed attempts count towards qBittorrent's IP ban
+        return tryRequest(client, Request.Builder().url("http://$host:$port/").get().build()) { response ->
+            val page = if (response.code == 200) response.body?.string().orEmpty() else ""
+            if (page.contains("qBittorrent", ignoreCase = true)) {
+                DiscoveredDaemon(DaemonType.QBITTORRENT, host, port)
+            } else {
+                null
+            }
         }
     }
 
