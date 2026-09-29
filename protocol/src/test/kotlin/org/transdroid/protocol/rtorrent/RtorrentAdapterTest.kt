@@ -114,13 +114,29 @@ class RtorrentAdapterTest {
     }
 
     @Test
-    fun `add by file raises the xmlrpc size limit first`() = runTest {
+    fun `add by file raises a too small xmlrpc size limit first`() = runTest {
+        server.enqueue(xmlResponse("<i8>524288</i8>"))
         server.enqueue(xmlResponse("<i8>0</i8>"))
         server.enqueue(xmlResponse("<i8>0</i8>"))
 
         adapter.addByFile("big.torrent", ByteArray(600_000), startPaused = false, downloadLocation = null)
 
-        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>network.xmlrpc.size_limit.set</methodName>"))
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>network.xmlrpc.size_limit</methodName>"))
+        val set = server.takeRequest().body.readUtf8()
+        assertTrue(set.contains("<methodName>network.xmlrpc.size_limit.set</methodName>"))
+        assertTrue(set.contains("2097152"))
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>load.raw_start</methodName>"))
+    }
+
+    @Test
+    fun `add by file never lowers a larger configured xmlrpc size limit`() = runTest {
+        server.enqueue(xmlResponse("<i8>16777216</i8>"))
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.addByFile("big.torrent", ByteArray(600_000), startPaused = false, downloadLocation = null)
+
+        assertEquals(2, server.requestCount)
+        server.takeRequest()
         assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>load.raw_start</methodName>"))
     }
 
