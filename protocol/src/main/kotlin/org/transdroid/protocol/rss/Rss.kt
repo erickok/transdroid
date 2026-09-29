@@ -121,18 +121,38 @@ class RssFetcher(private val httpClient: OkHttpClient) {
     private fun parseRssDate(text: String?): Long? {
         if (text == null) return null
         return try {
-            ZonedDateTime.parse(text, DateTimeFormatter.RFC_1123_DATE_TIME).toEpochSecond()
+            val normalized = normalizeRfc822Zone(text.trim())
+            ZonedDateTime.parse(normalized, DateTimeFormatter.RFC_1123_DATE_TIME).toEpochSecond()
         } catch (e: Exception) {
             parseIsoDate(text)
         }
     }
 
+    /**
+     * RFC 822 (which RSS 2.0 pubDate follows) allows zone names - UT, UTC, EST, PDT and so on -
+     * that java.time's RFC-1123 formatter rejects; real feeds use them, so map them to offsets.
+     */
+    private fun normalizeRfc822Zone(text: String): String {
+        val lastSpace = text.lastIndexOf(' ')
+        if (lastSpace < 0) return text
+        val offset = RFC822_ZONES[text.substring(lastSpace + 1).uppercase()] ?: return text
+        return text.substring(0, lastSpace + 1) + offset
+    }
+
     private fun parseIsoDate(text: String?): Long? {
         if (text == null) return null
         return try {
-            OffsetDateTime.parse(text).toEpochSecond()
+            OffsetDateTime.parse(text.trim()).toEpochSecond()
         } catch (e: Exception) {
             null
         }
+    }
+
+    private companion object {
+        val RFC822_ZONES: Map<String, String> = mapOf(
+            "UT" to "+0000", "UTC" to "+0000", "Z" to "+0000",
+            "EST" to "-0500", "EDT" to "-0400", "CST" to "-0600", "CDT" to "-0500",
+            "MST" to "-0700", "MDT" to "-0600", "PST" to "-0800", "PDT" to "-0700",
+        )
     }
 }
