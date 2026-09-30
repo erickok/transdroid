@@ -16,6 +16,7 @@
  */
 package org.transdroid.protocol.rtorrent
 
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -296,6 +297,23 @@ class RtorrentAdapterTest {
         val body = server.takeRequest().body.readUtf8()
         assertTrue(body.contains("<methodName>d.check_hash</methodName>"))
         assertTrue(body.contains("ABCDEF"))
+    }
+
+    @Test
+    fun `set file priority sets it, then makes rtorrent re-evaluate the torrent's priorities`() = runTest {
+        repeat(2) { server.enqueue(xmlResponse("<i8>0</i8>")) }
+
+        adapter.setFilePriority("ABCDEF", 2, FilePriority.OFF)
+
+        val set = server.takeRequest().body.readUtf8()
+        assertTrue(set.contains("<methodName>f.priority.set</methodName>"))
+        assertTrue(set.contains("ABCDEF:f2"))
+        assertTrue(set.contains("<i8>0</i8>"))
+        // Without it, already-queued pieces of a disabled file keep downloading (see #697)
+        val update = checkNotNull(server.takeRequest(1, TimeUnit.SECONDS)) { "No d.update_priorities call" }
+            .body.readUtf8()
+        assertTrue(update.contains("<methodName>d.update_priorities</methodName>"))
+        assertTrue(update.contains("ABCDEF"))
     }
 
     @Test
