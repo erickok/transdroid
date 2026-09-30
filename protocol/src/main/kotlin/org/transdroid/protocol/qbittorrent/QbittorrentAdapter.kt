@@ -281,6 +281,11 @@ class QbittorrentAdapter(
             if (response.code == 403) {
                 throw DaemonException.Authentication("qBittorrent blocked this address (too many failed logins)")
             }
+            // Wrong credentials get a 200 "Fails."; a 401 comes from the Host-header or
+            // cross-site checks, or from a proxy in front of qBittorrent
+            if (response.code == 401) {
+                throw DaemonException.Authentication(unauthorizedMessage(response))
+            }
             val body = withContext(Dispatchers.IO) { response.body?.string().orEmpty() }
             if (!response.isSuccessful || body.trim() != "Ok.") {
                 throw DaemonException.Authentication("qBittorrent rejected the username/password")
@@ -316,16 +321,19 @@ class QbittorrentAdapter(
             // Without an API key, qBittorrent answers 401 only from its Host-header and
             // cross-site checks (typical behind a reverse proxy), never for credentials
             response.code == 401 && !usingApiKey -> {
+                val message = unauthorizedMessage(response)
                 response.close()
-                throw DaemonException.Authentication(
-                    "qBittorrent refused the request's Host header - in its Web UI options, disable " +
-                        "'Enable Host header validation' or add this address to the server domains",
-                )
+                throw DaemonException.Authentication(message)
             }
             response.code == 401 || response.code == 403 -> {
                 response.close()
                 throw DaemonException.Authentication(
-                    if (usingApiKey) "qBittorrent rejected the API key" else "qBittorrent requires a valid username/password",
+                    // The Host-header check runs before the key is looked at, so a 401 can be either
+                    if (usingApiKey) {
+                        "qBittorrent rejected the API key, or the request's Host header ($HOST_HEADER_HINT)"
+                    } else {
+                        "qBittorrent requires a valid username/password"
+                    },
                 )
             }
             response.code == 404 && allowNotFound -> return response
@@ -336,6 +344,21 @@ class QbittorrentAdapter(
             }
         }
         return response
+    }
+
+    /**
+     * A 401 without an API key: a proxy that wants its own HTTP authentication says so in
+     * WWW-Authenticate; otherwise it is qBittorrent's Host-header or cross-site check.
+     */
+    private fun unauthorizedMessage(response: Response): String {
+        val challenge = response.header("WWW-Authenticate").orEmpty()
+        val proxyAuth = challenge.startsWith("Basic", ignoreCase = true) ||
+            challenge.startsWith("Digest", ignoreCase = true)
+        return if (proxyAuth) {
+            "A proxy in front of qBittorrent requires its own HTTP authentication"
+        } else {
+            "qBittorrent refused the request's Host header - $HOST_HEADER_HINT"
+        }
     }
 
     private suspend fun send(builder: Request.Builder): Response {
@@ -516,5 +539,8 @@ class QbittorrentAdapter(
 
         /** Minimum time between login attempts after a failure; see [loginWithBackoff]. */
         const val AUTH_RETRY_COOLDOWN_MILLIS = 60_000L
+
+        const val HOST_HEADER_HINT = "in its Web UI options, disable 'Enable Host header validation' " +
+            "or add this address to the server domains"
     }
 }

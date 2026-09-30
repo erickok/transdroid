@@ -288,6 +288,21 @@ class TransmissionAdapterTest {
     }
 
     @Test
+    fun `403 from the anti brute force lockout is not blamed on the whitelist`() = runTest {
+        server.enqueue(
+            MockResponse().setResponseCode(403)
+                .setBody("<p>Too many unsuccessful login attempts. Please restart transmission-daemon.</p>")
+        )
+
+        try {
+            adapter.listTorrents()
+            fail("Expected DaemonException.Authentication")
+        } catch (expected: DaemonException.Authentication) {
+            assertTrue(expected.message!!.contains("too many failed attempts"))
+        }
+    }
+
+    @Test
     fun `basic auth encodes a non-ASCII password as UTF-8`() = runTest {
         val utf8Adapter = TransmissionAdapter(
             DaemonConfig(
