@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history and tags, to find the previous release for the changelog link
+          fetch-depth: 0
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -56,9 +59,34 @@ jobs:
       - name: Assemble APK
         run: ./gradlew :app:assembleFullRelease
 
+      # The release notes are the same as the in-app "What's new" and F-Droid changelog for
+      # this versionCode, plus a link to the full diff since the previous release
+      - name: Write release notes
+        env:
+          TAG: ${{ inputs.tag_name || github.ref_name }}
+        run: |
+          code=$(sed -n 's/^ *versionCode = \([0-9]*\).*/\1/p' app/build.gradle.kts)
+          notes="fastlane/metadata/android/en-US/changelogs/$code.txt"
+          if [ ! -f "$notes" ]; then
+            echo "::error::No changelog for versionCode $code; add $notes before releasing"
+            exit 1
+          fi
+          cp "$notes" release-notes.md
+          # The previous release is the nearest tag below this one - or below HEAD when a
+          # dispatched run is about to create the tag
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then base="$TAG^"; else base="HEAD"; fi
+          previous=$(git describe --tags --abbrev=0 --match 'v*' "$base" 2>/dev/null || true)
+          if [ -n "$previous" ]; then
+            printf '\n**Full Changelog**: %s/%s/compare/%s...%s\n' \
+              "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$previous" "$TAG" >> release-notes.md
+          fi
+          cat release-notes.md
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.tag_name || github.ref_name }}
           files: app/build/outputs/apk/full/release/*.apk
-          generate_release_notes: true
+          body_path: release-notes.md
+          # Any suffixed version (3.0.0-alpha6, -beta1, -rc1) is a pre-release
+          prerelease: ${{ contains(inputs.tag_name || github.ref_name, '-') }}
