@@ -19,16 +19,22 @@ package org.transdroid.protocol.rtorrent
 import java.io.InputStream
 import java.io.PushbackInputStream
 import java.util.Base64
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import nl.adaptivity.xmlutil.core.KtXmlReader
 import org.transdroid.protocol.DaemonException
-import org.transdroid.protocol.internal.childElements
-import org.transdroid.protocol.internal.parseXmlSafely
-import org.w3c.dom.Document
-import org.w3c.dom.Element
 
 /**
- * Minimal XML-RPC codec covering what rTorrent needs: string, int/i4/i8, boolean, double,
- * base64, array and struct values. Values map to String, Long, Boolean, Double, ByteArray,
- * List and Map. Parsing forbids DTDs to rule out XXE.
+ * Minimal XML-RPC codec covering what rTorrent needs. Requests are built as a string (they're
+ * tiny); responses are decoded straight off the stream into kotlinx serializable types by
+ * [XmlRpcValueDecoder] on xmlutil's pure-Kotlin [KtXmlReader] - the same parser on the JVM and
+ * on Android, never building a document tree however large the reply. The reader never
+ * expands a declared entity and the decoder refuses any DOCTYPE, ruling out XXE.
  */
 internal object XmlRpc {
 
@@ -66,65 +72,49 @@ internal object XmlRpc {
     }
 
     /**
-     * Parses a methodResponse read directly off the response body stream, returning its single
-     * value; XML-RPC faults become exceptions. Parses straight off the stream rather than a
-     * pre-buffered String — matters for a large multicall reply (e.g. thousands of torrents).
-     * Peeks a few bytes first (without consuming them) so a genuine parse failure can report
-     * what the server actually sent instead of a content-free "not XML" message — seedboxes
-     * (e.g. Xirvik/ruTorrent behind nginx) commonly answer a wrong mount path or an expired
-     * session with an HTML page instead of a fault response.
+     * Decodes a methodResponse directly off the response body stream into [result]; XML-RPC
+     * faults become exceptions. Peeks a few bytes first (without consuming them) so a genuine
+     * parse failure can report what the server actually sent instead of a content-free "not
+     * XML" message - seedboxes (e.g. Xirvik/ruTorrent behind nginx) commonly answer a wrong
+     * mount path or an expired session with an HTML page instead of a fault response.
      */
-    fun parseResponse(stream: InputStream): Any? {
+    fun <T> decodeResponse(stream: InputStream, result: DeserializationStrategy<T>): T {
         val pushback = PushbackInputStream(stream, PEEK_BYTES)
         val peek = ByteArray(PEEK_BYTES)
         val peeked = pushback.read(peek).coerceAtLeast(0)
         if (peeked > 0) pushback.unread(peek, 0, peeked)
-        val snippet = String(peek, 0, peeked, Charsets.UTF_8)
-        return parseResponse(snippet) { parseXmlSafely(pushback) }
-    }
-
-    private inline fun parseResponse(peekedForDiagnosis: String, parseDocument: () -> Document): Any? {
-        val document = try {
-            parseDocument()
-        } catch (e: Exception) {
-            throw DaemonException.UnexpectedResponse(parseFailureHint(peekedForDiagnosis, e), e)
-        }
-        val root = document.documentElement
-        if (root.tagName != "methodResponse") {
-            throw DaemonException.UnexpectedResponse("Not an XML-RPC methodResponse")
-        }
-        root.childElements().firstOrNull { it.tagName == "fault" }?.let { fault ->
-            val value = fault.childElements().firstOrNull { it.tagName == "value" }?.let(::parseValue)
-            val message = (value as? Map<*, *>)?.get("faultString")?.toString() ?: "unknown fault"
-            throw DaemonException.UnexpectedResponse("rTorrent error: $message")
-        }
-        val value = root.childElements().firstOrNull { it.tagName == "params" }
-            ?.childElements()?.firstOrNull { it.tagName == "param" }
-            ?.childElements()?.firstOrNull { it.tagName == "value" }
-            ?: throw DaemonException.UnexpectedResponse("XML-RPC response without value")
-        return parseValue(value)
-    }
-
-    private fun parseValue(value: Element): Any? {
-        val typed = value.childElements().firstOrNull()
-            ?: return value.textContent // untyped <value> is a string
-        return when (typed.tagName) {
-            "string" -> typed.textContent
-            "i4", "i8", "int" -> typed.textContent.trim().toLong()
-            "boolean" -> typed.textContent.trim() == "1"
-            "double" -> typed.textContent.trim().toDouble()
-            "base64" -> Base64.getDecoder().decode(typed.textContent.trim())
-            "array" -> typed.childElements().firstOrNull { it.tagName == "data" }
-                ?.childElements()?.filter { it.tagName == "value" }?.map(::parseValue)
-                ?: emptyList<Any?>()
-            "struct" -> typed.childElements().filter { it.tagName == "member" }.associate { member ->
-                val name = member.childElements().firstOrNull { it.tagName == "name" }?.textContent ?: ""
-                val memberValue = member.childElements().firstOrNull { it.tagName == "value" }?.let(::parseValue)
-                name to memberValue
+        try {
+            val cursor = XmlRpcCursor(KtXmlReader(pushback, expandEntities = true))
+            cursor.requireStart("methodResponse")
+            cursor.nextTag()
+            when (cursor.localName) {
+                "fault" -> {
+                    cursor.requireStart("value")
+                    val fault = XmlRpcValueDecoder(cursor).decodeSerializableValue(Fault.serializer())
+                    throw DaemonException.UnexpectedResponse("rTorrent error: ${fault.faultString ?: "unknown fault"}")
+                }
+                "params" -> {
+                    cursor.requireStart("param")
+                    cursor.requireStart("value")
+                    return XmlRpcValueDecoder(cursor).decodeSerializableValue(result)
+                }
+                else -> throw SerializationException("Not an XML-RPC methodResponse")
             }
-            else -> typed.textContent
+        } catch (e: DaemonException) {
+            throw e
+        } catch (e: Exception) {
+            throw DaemonException.UnexpectedResponse(parseFailureHint(String(peek, 0, peeked, Charsets.UTF_8), e), e)
         }
     }
+
+    /** For calls whose reply value isn't needed: skips it, whatever it holds. */
+    object Ignored : DeserializationStrategy<Unit> {
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("XmlRpcIgnored", PrimitiveKind.STRING)
+        override fun deserialize(decoder: Decoder) = (decoder as XmlRpcValueDecoder).skipValue()
+    }
+
+    @Serializable
+    private data class Fault(val faultCode: Long = 0, val faultString: String? = null)
 
     /** Turns whatever a genuinely unparseable response started with into an actionable message. */
     private fun parseFailureHint(peeked: String, parseError: Exception): String {

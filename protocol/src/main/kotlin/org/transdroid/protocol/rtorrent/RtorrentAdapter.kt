@@ -20,6 +20,12 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 import okhttp3.Credentials
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -52,85 +58,12 @@ class RtorrentAdapter(
         (config.path?.takeIf { it.isNotBlank() } ?: "/RPC2").let { if (it.startsWith("/")) it else "/$it" }
 
     override suspend fun testConnection(): String {
-        val version = call("system.client_version") as? String ?: "unknown"
+        val version = query("system.client_version", String.serializer()).ifBlank { "unknown" }
         return "rTorrent $version"
     }
 
-    override suspend fun listTorrents(): List<Torrent> {
-        val rows = call(
-            "d.multicall2",
-            "", "main",
-            "d.hash=", "d.name=", "d.state=", "d.complete=", "d.is_active=", "d.hashing=",
-            "d.down.rate=", "d.up.rate=", "d.size_bytes=", "d.completed_bytes=", "d.up.total=",
-            "d.ratio=", "d.peers_connected=", "d.timestamp.started=", "d.directory=", "d.message=",
-            "d.custom1=", "d.peers_complete=",
-        ) as? List<*> ?: throw DaemonException.UnexpectedResponse("Unexpected d.multicall2 reply")
-        return rows.map { row ->
-            val fields = row as? List<*> ?: throw DaemonException.UnexpectedResponse("Bad multicall row")
-            parseTorrent(fields)
-        }
-    }
-
-    private fun parseTorrent(fields: List<*>): Torrent {
-        fun str(index: Int) = fields.getOrNull(index)?.toString().orEmpty()
-        fun num(index: Int) = (fields.getOrNull(index) as? Long) ?: 0L
-
-        val state = num(2)
-        val complete = num(3) == 1L
-        val isActive = num(4) == 1L
-        val hashing = num(5) > 0L
-        val downRate = num(6)
-        val sizeBytes = num(8)
-        val completedBytes = num(9)
-        // d.message carries tracker notices ("Tried all trackers", "Unregistered torrent")
-        // that persist while the torrent keeps working via other trackers, DHT or PEX: shown
-        // as the torrent's error text, but never a status of its own
-        val message = str(15).takeIf { it.isNotBlank() }
-
-        val status = when {
-            hashing -> TorrentStatus.CHECKING
-            state == 0L || !isActive -> TorrentStatus.PAUSED
-            complete -> TorrentStatus.SEEDING
-            else -> TorrentStatus.DOWNLOADING
-        }
-        val eta = if (status == TorrentStatus.DOWNLOADING && downRate > 0) {
-            (sizeBytes - completedBytes) / downRate
-        } else {
-            null
-        }
-        return Torrent(
-            id = str(0),
-            name = str(1),
-            status = status,
-            progress = if (sizeBytes <= 0) 0f else (completedBytes.toFloat() / sizeBytes).coerceIn(0f, 1f),
-            downloadRate = downRate,
-            uploadRate = num(7),
-            etaSeconds = eta,
-            sizeBytes = sizeBytes,
-            downloadedBytes = completedBytes,
-            uploadedBytes = num(10),
-            // d.ratio is reported in per-mille
-            ratio = num(11) / 1000f,
-            peersConnected = num(12).toInt(),
-            // d.peers_complete is the number of connected peers that are seeding (complete)
-            seedersConnected = num(17).toInt(),
-            leechersConnected = (num(12) - num(17)).toInt().coerceAtLeast(0),
-            addedTimestamp = num(13).takeIf { it > 0 },
-            downloadDir = str(14).takeIf { it.isNotBlank() },
-            error = message,
-            // ruTorrent stores its label encodeURIComponent-encoded in custom1; that
-            // encoding leaves "+" literal, so protect it from URLDecoder's plus-to-space
-            labels = str(16).takeIf { it.isNotBlank() }?.let { raw ->
-                listOf(
-                    try {
-                        URLDecoder.decode(raw.replace("+", "%2B"), "UTF-8")
-                    } catch (e: IllegalArgumentException) {
-                        raw
-                    }
-                )
-            } ?: emptyList(),
-        )
-    }
+    override suspend fun listTorrents(): List<Torrent> =
+        multicall("d.multicall2", TorrentRow.serializer(), "", "main").map { it.toTorrent() }
 
     override suspend fun addByUrl(url: String, startPaused: Boolean, downloadLocation: String?) {
         // load.normal loads without starting; load.start loads and starts. Both accept extra
@@ -148,7 +81,7 @@ class RtorrentAdapter(
         // command, and small files work regardless.
         try {
             val needed = maxOf(2L * 1024 * 1024, contents.size * 2L + 1280L)
-            val current = call("network.xmlrpc.size_limit") as? Long ?: 0L
+            val current = query("network.xmlrpc.size_limit", Long.serializer())
             if (current < needed) call("network.xmlrpc.size_limit.set", "", needed)
         } catch (e: DaemonException.UnexpectedResponse) {
             // Proceed; the load below fails with a clear fault if the file really is too big
@@ -203,30 +136,20 @@ class RtorrentAdapter(
         call("d.open", torrentId)
     }
 
-    override suspend fun listFiles(torrentId: String): List<TorrentFile> {
-        val rows = call(
-            "f.multicall",
-            torrentId, "",
-            "f.path=", "f.size_bytes=", "f.completed_chunks=", "f.size_chunks=", "f.priority=",
-        ) as? List<*> ?: throw DaemonException.UnexpectedResponse("Unexpected f.multicall reply")
-        return rows.mapIndexed { index, row ->
-            val fields = row as? List<*> ?: throw DaemonException.UnexpectedResponse("Bad multicall row")
-            val size = (fields.getOrNull(1) as? Long) ?: 0L
-            val completedChunks = (fields.getOrNull(2) as? Long) ?: 0L
-            val sizeChunks = (fields.getOrNull(3) as? Long) ?: 0L
+    override suspend fun listFiles(torrentId: String): List<TorrentFile> =
+        multicall("f.multicall", FileRow.serializer(), torrentId, "").mapIndexed { index, row ->
             TorrentFile(
                 index = index,
-                path = fields.getOrNull(0)?.toString().orEmpty(),
-                sizeBytes = size,
-                downloadedBytes = if (sizeChunks <= 0) 0L else size * completedChunks / sizeChunks,
-                priority = when ((fields.getOrNull(4) as? Long) ?: 1L) {
+                path = row.path,
+                sizeBytes = row.sizeBytes,
+                downloadedBytes = if (row.sizeChunks <= 0) 0L else row.sizeBytes * row.completedChunks / row.sizeChunks,
+                priority = when (row.priority) {
                     0L -> FilePriority.OFF
                     2L -> FilePriority.HIGH
                     else -> FilePriority.NORMAL
                 },
             )
         }
-    }
 
     override suspend fun setFilePriority(torrentId: String, fileIndex: Int, priority: FilePriority) {
         // rTorrent priorities: 0 = off, 1 = normal (LOW folds into it), 2 = high
@@ -248,61 +171,54 @@ class RtorrentAdapter(
     private fun encodeURIComponent(value: String): String =
         URLEncoder.encode(value, "UTF-8").replace("+", "%20")
 
-    override suspend fun listTrackers(torrentId: String): List<Tracker> {
-        val rows = call(
-            "t.multicall",
-            torrentId, "",
-            "t.url=", "t.is_enabled=", "t.success_counter=", "t.failed_counter=",
-            "t.scrape_complete=", "t.scrape_incomplete=",
-        ) as? List<*> ?: throw DaemonException.UnexpectedResponse("Unexpected t.multicall reply")
-        return rows.map { row ->
-            val fields = row as? List<*> ?: throw DaemonException.UnexpectedResponse("Bad multicall row")
-            fun str(index: Int) = fields.getOrNull(index)?.toString().orEmpty()
-            fun num(index: Int) = (fields.getOrNull(index) as? Long) ?: 0L
-            val enabled = num(1) != 0L
+    override suspend fun listTrackers(torrentId: String): List<Tracker> =
+        multicall("t.multicall", TrackerRow.serializer(), torrentId, "").map { row ->
             val status = when {
-                !enabled -> TrackerStatus.IDLE
-                num(2) > 0L -> TrackerStatus.WORKING
-                num(3) > 0L -> TrackerStatus.ERROR
+                row.isEnabled == 0L -> TrackerStatus.IDLE
+                row.successCounter > 0L -> TrackerStatus.WORKING
+                row.failedCounter > 0L -> TrackerStatus.ERROR
                 else -> TrackerStatus.IDLE
             }
             Tracker(
-                url = str(0),
+                url = row.url,
                 status = status,
-                seeders = num(4).toInt().takeIf { it >= 0 },
-                leechers = num(5).toInt().takeIf { it >= 0 },
+                seeders = row.scrapeComplete.toInt().takeIf { it >= 0 },
+                leechers = row.scrapeIncomplete.toInt().takeIf { it >= 0 },
             )
         }
-    }
 
-    override suspend fun listPeers(torrentId: String): List<Peer> {
-        val rows = call(
-            "p.multicall",
-            torrentId, "",
-            "p.address=", "p.port=", "p.client_version=", "p.completed_percent=",
-            "p.down_rate=", "p.up_rate=", "p.is_encrypted=",
-        ) as? List<*> ?: throw DaemonException.UnexpectedResponse("Unexpected p.multicall reply")
-        return rows.map { row ->
-            val fields = row as? List<*> ?: throw DaemonException.UnexpectedResponse("Bad multicall row")
-            fun str(index: Int) = fields.getOrNull(index)?.toString().orEmpty()
-            fun num(index: Int) = (fields.getOrNull(index) as? Long) ?: 0L
+    override suspend fun listPeers(torrentId: String): List<Peer> =
+        multicall("p.multicall", PeerRow.serializer(), torrentId, "").map { row ->
             Peer(
-                ip = str(0),
-                clientName = str(2).takeIf { it.isNotBlank() && it != "Unknown" },
+                ip = row.address,
+                clientName = row.clientVersion.takeIf { it.isNotBlank() && it != "Unknown" },
                 // p.completed_percent is 0-100, not 0..1
-                progress = (num(3) / 100f).coerceIn(0f, 1f),
-                downloadRate = num(4),
-                uploadRate = num(5),
-                port = num(1).toInt().takeIf { it > 0 },
+                progress = (row.completedPercent / 100f).coerceIn(0f, 1f),
+                downloadRate = row.downRate,
+                uploadRate = row.upRate,
+                port = row.port.toInt().takeIf { it > 0 },
                 // rTorrent's XML-RPC has no peer geolocation field at all
                 countryCode = null,
                 countryName = null,
-                encrypted = num(6) != 0L,
+                encrypted = row.isEncrypted != 0L,
             )
         }
+
+    /**
+     * Runs a multicall with [row]'s commands as the per-item fields, after the [leadingParams]
+     * (the target and view/filter). The commands come from the row class itself, in the order
+     * the values come back, so request and decoding can't drift apart.
+     */
+    private suspend fun <R> multicall(method: String, row: KSerializer<R>, vararg leadingParams: Any?): List<R> =
+        query(method, ListSerializer(row), *leadingParams, *multicallCommands(row.descriptor).toTypedArray())
+
+    /** Sends a call whose reply value isn't needed; faults still become exceptions. */
+    private suspend fun call(method: String, vararg params: Any?) {
+        query(method, XmlRpc.Ignored, *params)
     }
 
-    private suspend fun call(method: String, vararg params: Any?): Any? {
+    /** Sends a call and decodes its reply value as [result], straight off the response stream. */
+    private suspend fun <T> query(method: String, result: DeserializationStrategy<T>, vararg params: Any?): T {
         val builder = Request.Builder()
             .url(rpcUrl)
             .post(XmlRpc.buildRequest(method, params.toList()).toRequestBody("text/xml".toMediaType()))
@@ -322,7 +238,112 @@ class RtorrentAdapter(
             // streams off the same connection, so parsing it can still block on the socket
             // and must stay on IO too, or it risks a NetworkOnMainThreadException on whatever
             // dispatcher called the adapter.
-            return withContext(Dispatchers.IO) { XmlRpc.parseResponse(body.byteStream()) }
+            return withContext(Dispatchers.IO) { XmlRpc.decodeResponse(body.byteStream(), result) }
         }
     }
+
+    /** One d.multicall2 row; properties in request order, named after their commands. */
+    @Serializable
+    private data class TorrentRow(
+        @SerialName("d.hash=") val hash: String = "",
+        @SerialName("d.name=") val name: String = "",
+        @SerialName("d.state=") val state: Long = 0,
+        @SerialName("d.complete=") val complete: Long = 0,
+        @SerialName("d.is_active=") val isActive: Long = 0,
+        @SerialName("d.hashing=") val hashing: Long = 0,
+        @SerialName("d.down.rate=") val downRate: Long = 0,
+        @SerialName("d.up.rate=") val upRate: Long = 0,
+        @SerialName("d.size_bytes=") val sizeBytes: Long = 0,
+        @SerialName("d.completed_bytes=") val completedBytes: Long = 0,
+        @SerialName("d.up.total=") val upTotal: Long = 0,
+        /** In per-mille. */
+        @SerialName("d.ratio=") val ratio: Long = 0,
+        @SerialName("d.peers_connected=") val peersConnected: Long = 0,
+        @SerialName("d.timestamp.started=") val startedAt: Long = 0,
+        @SerialName("d.directory=") val directory: String = "",
+        @SerialName("d.message=") val message: String = "",
+        /** ruTorrent's label, encodeURIComponent-encoded. */
+        @SerialName("d.custom1=") val custom1: String = "",
+        /** The number of connected peers that are seeding (complete). */
+        @SerialName("d.peers_complete=") val peersComplete: Long = 0,
+    ) {
+        fun toTorrent(): Torrent {
+            // d.message carries tracker notices ("Tried all trackers", "Unregistered torrent")
+            // that persist while the torrent keeps working via other trackers, DHT or PEX: shown
+            // as the torrent's error text, but never a status of its own
+            val status = when {
+                hashing > 0L -> TorrentStatus.CHECKING
+                state == 0L || isActive != 1L -> TorrentStatus.PAUSED
+                complete == 1L -> TorrentStatus.SEEDING
+                else -> TorrentStatus.DOWNLOADING
+            }
+            val eta = if (status == TorrentStatus.DOWNLOADING && downRate > 0) {
+                (sizeBytes - completedBytes) / downRate
+            } else {
+                null
+            }
+            return Torrent(
+                id = hash,
+                name = name,
+                status = status,
+                progress = if (sizeBytes <= 0) 0f else (completedBytes.toFloat() / sizeBytes).coerceIn(0f, 1f),
+                downloadRate = downRate,
+                uploadRate = upRate,
+                etaSeconds = eta,
+                sizeBytes = sizeBytes,
+                downloadedBytes = completedBytes,
+                uploadedBytes = upTotal,
+                ratio = ratio / 1000f,
+                peersConnected = peersConnected.toInt(),
+                seedersConnected = peersComplete.toInt(),
+                leechersConnected = (peersConnected - peersComplete).toInt().coerceAtLeast(0),
+                addedTimestamp = startedAt.takeIf { it > 0 },
+                downloadDir = directory.takeIf { it.isNotBlank() },
+                error = message.takeIf { it.isNotBlank() },
+                // ruTorrent stores its label encodeURIComponent-encoded in custom1; that
+                // encoding leaves "+" literal, so protect it from URLDecoder's plus-to-space
+                labels = custom1.takeIf { it.isNotBlank() }?.let { raw ->
+                    listOf(
+                        try {
+                            URLDecoder.decode(raw.replace("+", "%2B"), "UTF-8")
+                        } catch (e: IllegalArgumentException) {
+                            raw
+                        }
+                    )
+                } ?: emptyList(),
+            )
+        }
+    }
+
+    @Serializable
+    private data class FileRow(
+        @SerialName("f.path=") val path: String = "",
+        @SerialName("f.size_bytes=") val sizeBytes: Long = 0,
+        @SerialName("f.completed_chunks=") val completedChunks: Long = 0,
+        @SerialName("f.size_chunks=") val sizeChunks: Long = 0,
+        /** 0 = off, 1 = normal, 2 = high. */
+        @SerialName("f.priority=") val priority: Long = 1,
+    )
+
+    @Serializable
+    private data class TrackerRow(
+        @SerialName("t.url=") val url: String = "",
+        @SerialName("t.is_enabled=") val isEnabled: Long = 0,
+        @SerialName("t.success_counter=") val successCounter: Long = 0,
+        @SerialName("t.failed_counter=") val failedCounter: Long = 0,
+        @SerialName("t.scrape_complete=") val scrapeComplete: Long = 0,
+        @SerialName("t.scrape_incomplete=") val scrapeIncomplete: Long = 0,
+    )
+
+    @Serializable
+    private data class PeerRow(
+        @SerialName("p.address=") val address: String = "",
+        @SerialName("p.port=") val port: Long = 0,
+        @SerialName("p.client_version=") val clientVersion: String = "",
+        /** 0-100. */
+        @SerialName("p.completed_percent=") val completedPercent: Long = 0,
+        @SerialName("p.down_rate=") val downRate: Long = 0,
+        @SerialName("p.up_rate=") val upRate: Long = 0,
+        @SerialName("p.is_encrypted=") val isEncrypted: Long = 0,
+    )
 }
