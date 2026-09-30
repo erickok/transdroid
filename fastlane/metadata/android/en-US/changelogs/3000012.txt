@@ -1,0 +1,9 @@
+* Swipe a torrent right to start/pause it, left to remove it
+* Play/pause buttons on the home screen widget
+* Transmission accepts its web interface URL
+* Clearer errors when a server refuses to connect
+* Lighter refreshes with thousands of torrents
+* Fixed: qBittorrent 5.2 username/password login
+* Fixed: custom headers (e.g. Cloudflare Access) breaking logins
+* Fixed: Deluge reconnects after a daemon restart
+* Fixed: several rTorrent, Transmission, IPv6 and RSS issues

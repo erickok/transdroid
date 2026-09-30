@@ -30,6 +30,21 @@ data class Release(val version: String, val date: String, val changes: List<Chan
  */
 val CHANGELOG: List<Release> = listOf(
     Release(
+        version = "3.0.0-alpha6",
+        date = "September 2026",
+        changes = listOf(
+            ChangelogEntry(ChangeKind.NEW, "Swipe a torrent right to start/pause it, left to remove it"),
+            ChangelogEntry(ChangeKind.NEW, "Play/pause buttons on the home screen widget"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Transmission accepts its web interface URL"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Clearer errors when a server refuses to connect"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Lighter refreshes with thousands of torrents"),
+            ChangelogEntry(ChangeKind.FIXED, "qBittorrent 5.2 username/password login"),
+            ChangelogEntry(ChangeKind.FIXED, "Custom headers (e.g. Cloudflare Access) breaking logins"),
+            ChangelogEntry(ChangeKind.FIXED, "Deluge reconnects after a daemon restart"),
+            ChangelogEntry(ChangeKind.FIXED, "Several rTorrent, Transmission, IPv6 and RSS issues"),
+        ),
+    ),
+    Release(
         version = "3.0.0-alpha5",
         date = "September 2026",
         changes = listOf(
