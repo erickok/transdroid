@@ -432,9 +432,8 @@ private fun DetailsSummary(
                 detailsProgressLine(torrent),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.weight(1f, fill = false),
+                modifier = Modifier.weight(1f),
             )
-            Spacer(Modifier.weight(1f))
             formatEta(torrent.etaSeconds)?.let {
                 Text(it, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
