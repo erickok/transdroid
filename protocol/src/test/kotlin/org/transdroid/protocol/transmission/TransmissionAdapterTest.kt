@@ -276,6 +276,54 @@ class TransmissionAdapterTest {
     }
 
     @Test
+    fun `403 is explained as an rpc-whitelist rejection, not a bad password`() = runTest {
+        server.enqueue(MockResponse().setResponseCode(403).setBody("<p>Unauthorized IP Address.</p>"))
+
+        try {
+            adapter.listTorrents()
+            fail("Expected DaemonException.Authentication")
+        } catch (expected: DaemonException.Authentication) {
+            assertTrue(expected.message!!.contains("rpc-whitelist"))
+        }
+    }
+
+    @Test
+    fun `403 from the anti brute force lockout is not blamed on the whitelist`() = runTest {
+        server.enqueue(
+            MockResponse().setResponseCode(403)
+                .setBody("<p>Too many unsuccessful login attempts. Please restart transmission-daemon.</p>")
+        )
+
+        try {
+            adapter.listTorrents()
+            fail("Expected DaemonException.Authentication")
+        } catch (expected: DaemonException.Authentication) {
+            assertTrue(expected.message!!.contains("too many failed attempts"))
+        }
+    }
+
+    @Test
+    fun `basic auth encodes a non-ASCII password as UTF-8`() = runTest {
+        val utf8Adapter = TransmissionAdapter(
+            DaemonConfig(
+                type = DaemonType.TRANSMISSION,
+                host = server.hostName,
+                port = server.port,
+                username = "user",
+                password = "pässwörd",
+            ),
+            OkHttpClient(),
+        )
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{"version":"4.0.5"}}"""))
+
+        utf8Adapter.testConnection()
+
+        val expected = "Basic " + java.util.Base64.getEncoder()
+            .encodeToString("user:pässwörd".toByteArray(Charsets.UTF_8))
+        assertEquals(expected, server.takeRequest().getHeader("Authorization"))
+    }
+
+    @Test
     fun `401 maps to authentication error`() = runTest {
         server.enqueue(MockResponse().setResponseCode(401))
 

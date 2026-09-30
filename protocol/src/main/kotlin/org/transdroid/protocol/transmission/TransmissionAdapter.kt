@@ -282,8 +282,22 @@ class TransmissionAdapter(
         }
         response.use {
             when {
-                it.code == 401 || it.code == 403 ->
+                it.code == 401 ->
                     throw DaemonException.Authentication("Transmission rejected the username/password")
+                // Transmission answers 403 when the client address is outside rpc-whitelist, or
+                // once rpc-anti-brute-force has locked out logins; never for a single bad password
+                it.code == 403 -> {
+                    val page = it.body?.string().orEmpty()
+                    throw DaemonException.Authentication(
+                        if (page.contains("unsuccessful login attempts", ignoreCase = true)) {
+                            "Transmission locked out logins after too many failed attempts - restart " +
+                                "transmission-daemon to lift it"
+                        } else {
+                            "Transmission refuses this device's IP address - add it to rpc-whitelist " +
+                                "(or disable rpc-whitelist-enabled) in the daemon's settings.json"
+                        }
+                    )
+                }
                 !it.isSuccessful ->
                     throw DaemonException.UnexpectedResponse("Transmission returned HTTP ${it.code}")
             }
@@ -335,7 +349,7 @@ class TransmissionAdapter(
         sessionId?.let { builder.header(SESSION_ID_HEADER, it) }
         val username = config.username
         if (!username.isNullOrEmpty()) {
-            builder.header("Authorization", Credentials.basic(username, config.password.orEmpty()))
+            builder.header("Authorization", Credentials.basic(username, config.password.orEmpty(), Charsets.UTF_8))
         }
         return httpClient.executeOnIo(builder.build())
     }
