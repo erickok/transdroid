@@ -65,7 +65,7 @@ class TransmissionAdapter(
 ) : DaemonAdapter {
 
     private val json = Json { ignoreUnknownKeys = true }
-    private val rpcUrl = config.baseUrl + (config.path?.takeIf { it.isNotBlank() } ?: "/transmission/rpc")
+    private val rpcUrl = config.baseUrl + rpcPath(config.path)
 
     @Volatile
     private var sessionId: String? = null
@@ -481,15 +481,35 @@ class TransmissionAdapter(
         val isEncrypted: Boolean? = null,
     )
 
-    private companion object {
-        const val SESSION_ID_HEADER = "X-Transmission-Session-Id"
+    internal companion object {
+        /**
+         * The RPC endpoint for a configured [path], which may well be the web UI address the user
+         * copied from the browser: Transmission serves its web UI at `<rpc-url>web/` and RPC at
+         * `<rpc-url>rpc`, where rpc-url defaults to `/transmission/` and may sit behind a reverse
+         * proxy prefix. So a `.../web` path maps to `.../rpc`, a bare `.../transmission` gets `/rpc`
+         * appended, and any other path is taken as a custom RPC endpoint as-is.
+         */
+        internal fun rpcPath(path: String?): String {
+            val configured = path.orEmpty().trim().let { if (it.isEmpty() || it.startsWith("/")) it else "/$it" }
+            val base = configured.removeSuffix("/index.html").trimEnd('/')
+            return when {
+                base.isEmpty() -> DEFAULT_RPC_PATH
+                base.endsWith("/web") -> base.removeSuffix("web") + "rpc"
+                base.endsWith("/transmission") -> "$base/rpc"
+                else -> configured
+            }
+        }
+
+        private const val DEFAULT_RPC_PATH = "/transmission/rpc"
+
+        private const val SESSION_ID_HEADER = "X-Transmission-Session-Id"
 
         /** Bytes peeked (without consuming) to sniff an HTML error page before decoding JSON. */
-        const val PEEK_BYTES = 256
+        private const val PEEK_BYTES = 256
 
-        val JSON_MEDIA_TYPE = "application/json".toMediaType()
+        private val JSON_MEDIA_TYPE = "application/json".toMediaType()
 
-        val TORRENT_FIELDS = listOf(
+        private val TORRENT_FIELDS = listOf(
             "id", "name", "status", "percentDone", "rateDownload", "rateUpload", "eta",
             "sizeWhenDone", "haveValid", "haveUnchecked", "uploadedEver", "uploadRatio", "peersConnected",
             "peersSendingToUs", "peersGettingFromUs",

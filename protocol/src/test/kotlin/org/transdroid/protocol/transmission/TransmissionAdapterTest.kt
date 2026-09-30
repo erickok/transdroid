@@ -65,6 +65,34 @@ class TransmissionAdapterTest {
             .bufferedReader().readText()
 
     @Test
+    fun `web ui addresses resolve to the rpc endpoint`() {
+        assertEquals("/transmission/rpc", TransmissionAdapter.rpcPath(null))
+        assertEquals("/transmission/rpc", TransmissionAdapter.rpcPath(""))
+        assertEquals("/transmission/rpc", TransmissionAdapter.rpcPath("/"))
+        assertEquals("/transmission/rpc", TransmissionAdapter.rpcPath("/transmission/web/"))
+        assertEquals("/transmission/rpc", TransmissionAdapter.rpcPath("/transmission/web/index.html"))
+        assertEquals("/transmission/rpc", TransmissionAdapter.rpcPath("/transmission/web"))
+        assertEquals("/transmission/rpc", TransmissionAdapter.rpcPath("/transmission/"))
+        assertEquals("/transmission/rpc", TransmissionAdapter.rpcPath("transmission/rpc"))
+        assertEquals("reverse proxy prefix is kept", "/seedbox/transmission/rpc", TransmissionAdapter.rpcPath("/seedbox/transmission/web/"))
+        assertEquals("rpc-url of / serves the web ui at /web", "/rpc", TransmissionAdapter.rpcPath("/web/"))
+        assertEquals("a custom rpc endpoint is used as-is", "/custom/endpoint/", TransmissionAdapter.rpcPath("/custom/endpoint/"))
+    }
+
+    @Test
+    fun `a web ui url as the configured path still talks to the rpc endpoint`() = runTest {
+        val webUiAdapter = TransmissionAdapter(
+            DaemonConfig(type = DaemonType.TRANSMISSION, host = server.hostName, port = server.port, path = "/transmission/web/"),
+            OkHttpClient(),
+        )
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{"version":"4.0.6"}}"""))
+
+        webUiAdapter.testConnection()
+
+        assertEquals("/transmission/rpc", server.takeRequest().path)
+    }
+
+    @Test
     fun `session id handshake retries once after 409`() = runTest {
         server.enqueue(MockResponse().setResponseCode(409).setHeader("X-Transmission-Session-Id", "abc123"))
         server.enqueue(
