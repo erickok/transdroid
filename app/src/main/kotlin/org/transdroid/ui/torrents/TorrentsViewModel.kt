@@ -531,6 +531,11 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
             try {
                 action(container.adapterFor(profile))
                 refreshNow(showSpinner = false)
+                // Daemons apply some actions asynchronously (qBittorrent only recalculates a
+                // torrent's state on its next status update), so the immediate refresh can still
+                // show the old state; a second one soon after beats waiting for the next poll
+                delay(FOLLOW_UP_REFRESH_MILLIS)
+                refreshNow(showSpinner = false)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -540,6 +545,8 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     companion object {
+        private const val FOLLOW_UP_REFRESH_MILLIS = 2000L
+
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer { TorrentsViewModel(checkNotNull(this[APPLICATION_KEY]).appContainer) }
         }
