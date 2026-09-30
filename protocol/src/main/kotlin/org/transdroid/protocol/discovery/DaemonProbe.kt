@@ -51,18 +51,37 @@ object DaemonProbe {
     private suspend fun probeTransmission(client: OkHttpClient, host: String, port: Int): DiscoveredDaemon? =
         tryRequest(client, Request.Builder().url("http://$host:$port/transmission/rpc").get().build()) { response ->
             val challenged = response.code == 409 && response.header("X-Transmission-Session-Id") != null
-            val authWalled = response.code == 401
+            // Any proxy or NAS can answer 401; Transmission names itself in the challenge realm
+            val authWalled = response.code == 401 &&
+                response.header("WWW-Authenticate")?.contains("Transmission", ignoreCase = true) == true
             if (challenged || authWalled) DiscoveredDaemon(DaemonType.TRANSMISSION, host, port) else null
         }
 
-    private suspend fun probeQbittorrent(client: OkHttpClient, host: String, port: Int): DiscoveredDaemon? =
-        tryRequest(client, Request.Builder().url("http://$host:$port/api/v2/app/webapiVersion").get().build()) { response ->
+    private suspend fun probeQbittorrent(client: OkHttpClient, host: String, port: Int): DiscoveredDaemon? {
+        var wantsLogin = false
+        val versionResult = tryRequest(
+            client,
+            Request.Builder().url("http://$host:$port/api/v2/app/webapiVersion").get().build(),
+        ) { response ->
             val body = if (response.code == 200) response.body?.string().orEmpty() else ""
             val versionLike = response.code == 200 && body.length in 1..16 &&
                 body.trim().firstOrNull()?.isDigit() == true
-            // 403 means the endpoint exists but wants the SID cookie first
-            if (versionLike || response.code == 403) DiscoveredDaemon(DaemonType.QBITTORRENT, host, port) else null
+            wantsLogin = response.code == 403
+            if (versionLike) DiscoveredDaemon(DaemonType.QBITTORRENT, host, port) else null
         }
+        if (versionResult != null || !wantsLogin) return versionResult
+        // A bare 403 is also what reverse proxies, NAS admin pages and IP allow-lists answer
+        // on port 8080, so confirm through the login page qBittorrent serves at the root.
+        // Never POST to the login endpoint: failed attempts count towards qBittorrent's IP ban
+        return tryRequest(client, Request.Builder().url("http://$host:$port/").get().build()) { response ->
+            val page = if (response.code == 200) response.body?.string().orEmpty() else ""
+            if (page.contains("qBittorrent", ignoreCase = true)) {
+                DiscoveredDaemon(DaemonType.QBITTORRENT, host, port)
+            } else {
+                null
+            }
+        }
+    }
 
     private suspend fun probeDeluge(client: OkHttpClient, host: String, port: Int): DiscoveredDaemon? {
         val body = """{"method":"web.connected","params":[],"id":1}"""

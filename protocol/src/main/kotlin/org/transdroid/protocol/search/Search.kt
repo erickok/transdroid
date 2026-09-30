@@ -76,7 +76,7 @@ class TorznabProvider(
             ?: throw DaemonException.UnexpectedResponse("Invalid Torznab endpoint URL")
         val requestBuilder = Request.Builder().url(url).get()
         if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
-            requestBuilder.header("Authorization", Credentials.basic(username, password))
+            requestBuilder.header("Authorization", Credentials.basic(username, password, Charsets.UTF_8))
         }
         val body = httpClient.executeOnIo(requestBuilder.build()).use { response ->
             when {
@@ -111,7 +111,7 @@ class TorznabProvider(
         val request = try {
             Request.Builder().url(url).apply {
                 if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
-                    header("Authorization", Credentials.basic(username, password))
+                    header("Authorization", Credentials.basic(username, password, Charsets.UTF_8))
                 }
             }.build()
         } catch (e: IllegalArgumentException) {

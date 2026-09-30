@@ -24,6 +24,7 @@ import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -93,6 +94,57 @@ class DaemonProbeTest {
         val found = DaemonProbe.probe(client, server.hostName, server.port)
 
         assertEquals(DaemonType.DELUGE, found?.type)
+    }
+
+    @Test
+    fun `qbittorrent requiring login is confirmed through its login page`() = runTest {
+        dispatch { request ->
+            when (request.path) {
+                "/api/v2/app/webapiVersion" -> MockResponse().setResponseCode(403)
+                "/" -> MockResponse().setBody("<html><head><title>qBittorrent WebUI</title></head></html>")
+                else -> MockResponse().setResponseCode(404)
+            }
+        }
+
+        assertEquals(DaemonType.QBITTORRENT, DaemonProbe.probe(client, server.hostName, server.port)?.type)
+        // Discovery must never spend one of qBittorrent's failed-login attempts
+        val paths = List(server.requestCount) { server.takeRequest().path }
+        assertFalse(paths.any { it == "/api/v2/auth/login" })
+    }
+
+    @Test
+    fun `a 403 in front of an unrelated login page is not qbittorrent`() = runTest {
+        dispatch { request ->
+            when (request.path) {
+                "/api/v2/app/webapiVersion" -> MockResponse().setResponseCode(403)
+                "/" -> MockResponse().setBody("<html><head><title>Synology DiskStation</title></head></html>")
+                else -> MockResponse().setResponseCode(404)
+            }
+        }
+
+        assertNull(DaemonProbe.probe(client, server.hostName, server.port))
+    }
+
+    @Test
+    fun `a proxy answering 403 everywhere is not qbittorrent`() = runTest {
+        dispatch { MockResponse().setResponseCode(403).setBody("Forbidden") }
+
+        assertNull(DaemonProbe.probe(client, server.hostName, server.port))
+    }
+
+    @Test
+    fun `a generic 401 is not transmission but its own realm is`() = runTest {
+        dispatch { MockResponse().setResponseCode(401).setHeader("WWW-Authenticate", "Basic realm=\"nginx\"") }
+        assertNull(DaemonProbe.probe(client, server.hostName, server.port))
+
+        dispatch { request ->
+            if (request.path == "/transmission/rpc") {
+                MockResponse().setResponseCode(401).setHeader("WWW-Authenticate", "Basic realm=\"Transmission\"")
+            } else {
+                MockResponse().setResponseCode(404)
+            }
+        }
+        assertEquals(DaemonType.TRANSMISSION, DaemonProbe.probe(client, server.hostName, server.port)?.type)
     }
 
     @Test

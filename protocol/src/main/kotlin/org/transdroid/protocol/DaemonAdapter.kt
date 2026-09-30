@@ -18,6 +18,7 @@ package org.transdroid.protocol
 
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.transdroid.protocol.deluge.DelugeAdapter
 import org.transdroid.protocol.qbittorrent.QbittorrentAdapter
 import org.transdroid.protocol.rtorrent.RtorrentAdapter
@@ -121,10 +122,7 @@ object DaemonAdapterFactory {
             ?: httpClient
         if (config.customHeaders.isNotEmpty()) {
             client = client.newBuilder().addInterceptor { chain ->
-                val request = chain.request().newBuilder().apply {
-                    config.customHeaders.forEach { (name, value) -> header(name, value) }
-                }.build()
-                chain.proceed(request)
+                chain.proceed(withCustomHeaders(chain.request(), config.customHeaders))
             }.build()
         }
         return when (config.type) {
@@ -133,5 +131,24 @@ object DaemonAdapterFactory {
             DaemonType.RTORRENT -> RtorrentAdapter(config, client)
             DaemonType.DELUGE -> DelugeAdapter(config, client)
         }
+    }
+
+    /**
+     * Custom headers never clobber what the adapter itself set: its session cookie or
+     * Authorization must survive (a replaced Cookie loses the qBittorrent/Deluge session and
+     * every request fails as "unauthorized"), so a same-named Cookie is appended to the
+     * adapter's and any other header the adapter already sent is left alone.
+     */
+    internal fun withCustomHeaders(request: Request, custom: Map<String, String>): Request {
+        val builder = request.newBuilder()
+        custom.forEach { (name, value) ->
+            val existing = request.header(name)
+            when {
+                existing == null -> builder.header(name, value)
+                name.equals("Cookie", ignoreCase = true) -> builder.header(name, "$existing; $value")
+                else -> Unit
+            }
+        }
+        return builder.build()
     }
 }

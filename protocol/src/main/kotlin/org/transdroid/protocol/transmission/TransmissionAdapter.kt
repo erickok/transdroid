@@ -34,6 +34,7 @@ import kotlinx.serialization.json.encodeToStream
 import kotlinx.serialization.json.float
 import kotlinx.serialization.json.floatOrNull
 import kotlinx.serialization.json.int
+import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -282,8 +283,22 @@ class TransmissionAdapter(
         }
         response.use {
             when {
-                it.code == 401 || it.code == 403 ->
+                it.code == 401 ->
                     throw DaemonException.Authentication("Transmission rejected the username/password")
+                // Transmission answers 403 when the client address is outside rpc-whitelist, or
+                // once rpc-anti-brute-force has locked out logins; never for a single bad password
+                it.code == 403 -> {
+                    val page = it.body?.string().orEmpty()
+                    throw DaemonException.Authentication(
+                        if (page.contains("unsuccessful login attempts", ignoreCase = true)) {
+                            "Transmission locked out logins after too many failed attempts - restart " +
+                                "transmission-daemon to lift it"
+                        } else {
+                            "Transmission refuses this device's IP address - add it to rpc-whitelist " +
+                                "(or disable rpc-whitelist-enabled) in the daemon's settings.json"
+                        }
+                    )
+                }
                 !it.isSuccessful ->
                     throw DaemonException.UnexpectedResponse("Transmission returned HTTP ${it.code}")
             }
@@ -335,7 +350,7 @@ class TransmissionAdapter(
         sessionId?.let { builder.header(SESSION_ID_HEADER, it) }
         val username = config.username
         if (!username.isNullOrEmpty()) {
-            builder.header("Authorization", Credentials.basic(username, config.password.orEmpty()))
+            builder.header("Authorization", Credentials.basic(username, config.password.orEmpty(), Charsets.UTF_8))
         }
         return httpClient.executeOnIo(builder.build())
     }
@@ -359,10 +374,14 @@ class TransmissionAdapter(
     }
 
     private fun parseTorrent(obj: JsonObject): Torrent {
-        val error = obj["errorString"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }
+        // Transmission fills errorString for routine tracker warnings too (error codes 1/2)
+        // while the torrent keeps working; only code 3 is a real local error
+        val errorCode = obj["error"]?.jsonPrimitive?.intOrNull ?: 0
+        val error = obj["errorString"]?.jsonPrimitive?.contentOrNull
+            ?.takeIf { it.isNotBlank() && errorCode != 0 }
         val statusCode = obj["status"]?.jsonPrimitive?.int ?: -1
         val status = when {
-            error != null -> TorrentStatus.ERROR
+            errorCode == 3 -> TorrentStatus.ERROR
             else -> when (statusCode) {
                 0 -> TorrentStatus.PAUSED
                 1, 2 -> TorrentStatus.CHECKING
@@ -382,8 +401,11 @@ class TransmissionAdapter(
             downloadRate = obj["rateDownload"]?.jsonPrimitive?.long ?: 0L,
             uploadRate = obj["rateUpload"]?.jsonPrimitive?.long ?: 0L,
             etaSeconds = eta,
-            sizeBytes = obj["totalSize"]?.jsonPrimitive?.long ?: 0L,
-            downloadedBytes = obj["downloadedEver"]?.jsonPrimitive?.long ?: 0L,
+            // sizeWhenDone and haveValid+haveUnchecked cover only the wanted files; totalSize
+            // and downloadedEver would count deselected files and discarded corrupt data
+            sizeBytes = obj["sizeWhenDone"]?.jsonPrimitive?.long ?: 0L,
+            downloadedBytes = (obj["haveValid"]?.jsonPrimitive?.long ?: 0L) +
+                (obj["haveUnchecked"]?.jsonPrimitive?.long ?: 0L),
             uploadedBytes = obj["uploadedEver"]?.jsonPrimitive?.long ?: 0L,
             ratio = (obj["uploadRatio"]?.jsonPrimitive?.float ?: 0f).coerceAtLeast(0f),
             peersConnected = obj["peersConnected"]?.jsonPrimitive?.int ?: 0,
@@ -418,9 +440,9 @@ class TransmissionAdapter(
 
         val TORRENT_FIELDS = listOf(
             "id", "name", "status", "percentDone", "rateDownload", "rateUpload", "eta",
-            "totalSize", "downloadedEver", "uploadedEver", "uploadRatio", "peersConnected",
+            "sizeWhenDone", "haveValid", "haveUnchecked", "uploadedEver", "uploadRatio", "peersConnected",
             "peersSendingToUs", "peersGettingFromUs",
-            "addedDate", "downloadDir", "errorString", "labels", "metadataPercentComplete",
+            "addedDate", "downloadDir", "error", "errorString", "labels", "metadataPercentComplete",
             // Just the static tracker list (announce URLs) - not "trackerStats", which adds a lot
             // of live per-tracker announce/scrape history this app has no use for in the list view.
             "trackers",

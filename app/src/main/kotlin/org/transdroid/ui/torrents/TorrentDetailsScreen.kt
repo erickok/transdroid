@@ -696,8 +696,6 @@ private fun FileRow(file: TorrentFile, onSetPriority: (FilePriority) -> Unit) {
                     file.path,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     "${formatBytes(file.downloadedBytes)} / ${formatBytes(file.sizeBytes)} · ${(file.progress * 100).toInt()}%",

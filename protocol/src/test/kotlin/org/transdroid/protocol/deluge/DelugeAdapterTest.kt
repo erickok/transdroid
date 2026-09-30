@@ -420,18 +420,36 @@ class DelugeAdapterTest {
     }
 
     @Test
+    fun `lost daemon connection is re-established and the call retried`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(MockResponse().setBody("""{"result": true, "error": null, "id": 2}""")) // web.connected
+        server.enqueue(MockResponse().setBody("""{"result": null, "error": {"message": "Unknown method", "code": 2}, "id": 3}"""))
+        server.enqueue(MockResponse().setBody("""{"result": false, "error": null, "id": 4}""")) // web.connected
+        server.enqueue(MockResponse().setBody("""{"result": [["host1", "127.0.0.1", 58846, "Online"]], "error": null, "id": 5}"""))
+        server.enqueue(MockResponse().setBody("""{"result": null, "error": null, "id": 6}""")) // web.connect
+        server.enqueue(MockResponse().setBody(fixture("torrents-status.json")))
+
+        val torrents = adapter.listTorrents()
+
+        assertTrue(torrents.isNotEmpty())
+        repeat(5) { server.takeRequest() }
+        assertTrue(server.takeRequest().body.readUtf8().contains("\"web.connect\""))
+        assertTrue(server.takeRequest().body.readUtf8().contains("core.get_torrents_status"))
+    }
+
+    @Test
     fun `daemon error maps to unexpected response`() = runTest {
         server.enqueue(loginOk())
         server.enqueue(connectedOk())
         server.enqueue(
-            MockResponse().setBody("""{"result": null, "error": {"message": "Unknown method", "code": 2}, "id": 2}""")
+            MockResponse().setBody("""{"result": null, "error": {"message": "Torrent not found", "code": 4}, "id": 2}""")
         )
 
         try {
             adapter.listTorrents()
             fail("Expected DaemonException.UnexpectedResponse")
         } catch (expected: DaemonException.UnexpectedResponse) {
-            assertTrue(expected.message!!.contains("Unknown method"))
+            assertTrue(expected.message!!.contains("Torrent not found"))
         }
     }
 }

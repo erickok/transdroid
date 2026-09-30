@@ -106,9 +106,56 @@ class RtorrentAdapterTest {
 
         assertEquals(TorrentStatus.PAUSED, torrents[2].status)
 
-        val errored = torrents[3]
-        assertEquals(TorrentStatus.ERROR, errored.status)
-        assertTrue(errored.error!!.contains("Unregistered torrent"))
+        // d.message is informational: status comes from the state machine, the message
+        // stays visible as the torrent's error text
+        val withMessage = torrents[3]
+        assertEquals(TorrentStatus.DOWNLOADING, withMessage.status)
+        assertTrue(withMessage.error!!.contains("Unregistered torrent"))
+    }
+
+    @Test
+    fun `add by file raises a too small xmlrpc size limit first`() = runTest {
+        server.enqueue(xmlResponse("<i8>524288</i8>"))
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.addByFile("big.torrent", ByteArray(600_000), startPaused = false, downloadLocation = null)
+
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>network.xmlrpc.size_limit</methodName>"))
+        val set = server.takeRequest().body.readUtf8()
+        assertTrue(set.contains("<methodName>network.xmlrpc.size_limit.set</methodName>"))
+        assertTrue(set.contains("2097152"))
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>load.raw_start</methodName>"))
+    }
+
+    @Test
+    fun `add by file never lowers a larger configured xmlrpc size limit`() = runTest {
+        server.enqueue(xmlResponse("<i8>16777216</i8>"))
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.addByFile("big.torrent", ByteArray(600_000), startPaused = false, downloadLocation = null)
+
+        assertEquals(2, server.requestCount)
+        server.takeRequest()
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>load.raw_start</methodName>"))
+    }
+
+    @Test
+    fun `a refused size limit does not block the upload`() = runTest {
+        server.enqueue(
+            MockResponse().setBody(
+                """<?xml version="1.0"?><methodResponse><fault><value><struct>""" +
+                    """<member><name>faultCode</name><value><i4>-506</i4></value></member>""" +
+                    """<member><name>faultString</name><value><string>Method not defined</string></value></member>""" +
+                    """</struct></value></fault></methodResponse>"""
+            )
+        )
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.addByFile("small.torrent", ByteArray(1_000), startPaused = true, downloadLocation = null)
+
+        server.takeRequest()
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>load.raw</methodName>"))
     }
 
     @Test
@@ -200,17 +247,44 @@ class RtorrentAdapterTest {
     }
 
     @Test
-    fun `remove with data sets the rutorrent erase-data marker first`() = runTest {
+    fun `remove with data sets the erase marker and deletes the tied file before erasing`() = runTest {
+        repeat(3) { server.enqueue(xmlResponse("<i8>0</i8>")) }
+
+        adapter.remove("ABCDEF", deleteData = true)
+
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>d.custom5.set</methodName>"))
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>d.delete_tied</methodName>"))
+        val erase = server.takeRequest().body.readUtf8()
+        assertTrue(erase.contains("<methodName>d.erase</methodName>"))
+        assertTrue(erase.contains("ABCDEF"))
+    }
+
+    @Test
+    fun `a failing delete_tied does not block the removal`() = runTest {
         server.enqueue(xmlResponse("<i8>0</i8>"))
+        server.enqueue(
+            MockResponse().setBody(
+                """<?xml version="1.0"?><methodResponse><fault><value><struct>""" +
+                    """<member><name>faultCode</name><value><i4>-501</i4></value></member>""" +
+                    """<member><name>faultString</name><value><string>Could not delete tied file</string></value></member>""" +
+                    """</struct></value></fault></methodResponse>"""
+            )
+        )
         server.enqueue(xmlResponse("<i8>0</i8>"))
 
         adapter.remove("ABCDEF", deleteData = true)
 
-        val first = server.takeRequest().body.readUtf8()
-        assertTrue(first.contains("<methodName>d.custom5.set</methodName>"))
-        val second = server.takeRequest().body.readUtf8()
-        assertTrue(second.contains("<methodName>d.erase</methodName>"))
-        assertTrue(second.contains("ABCDEF"))
+        assertEquals(3, server.requestCount)
+    }
+
+    @Test
+    fun `remove without data neither marks nor deletes the tied file`() = runTest {
+        server.enqueue(xmlResponse("<i8>0</i8>"))
+
+        adapter.remove("ABCDEF", deleteData = false)
+
+        assertEquals(1, server.requestCount)
+        assertTrue(server.takeRequest().body.readUtf8().contains("<methodName>d.erase</methodName>"))
     }
 
     @Test

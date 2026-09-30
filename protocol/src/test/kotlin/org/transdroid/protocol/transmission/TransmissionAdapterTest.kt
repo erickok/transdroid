@@ -105,8 +105,12 @@ class TransmissionAdapterTest {
             downloading.trackers,
         )
 
+        assertEquals("sizeWhenDone is the wanted size", 6114656256L, downloading.sizeBytes)
+        assertEquals("haveValid + haveUnchecked", 2608512724L, downloading.downloadedBytes)
+
         val seeding = torrents[1]
-        assertEquals(TorrentStatus.SEEDING, seeding.status)
+        assertEquals("a tracker warning (error 2) leaves a working torrent seeding", TorrentStatus.SEEDING, seeding.status)
+        assertEquals("the warning text is still shown", "Tracker announce timed out", seeding.error)
         assertNull("eta -1 must normalize to null", seeding.etaSeconds)
         assertEquals(2.0f, seeding.ratio, 0.0001f)
         assertTrue(seeding.isFinished)
@@ -273,6 +277,54 @@ class TransmissionAdapterTest {
         assertTrue(body.contains("\"ids\":[7]"))
         assertTrue(body.contains("\"location\":\"/downloads/new\""))
         assertTrue(body.contains("\"move\":true"))
+    }
+
+    @Test
+    fun `403 is explained as an rpc-whitelist rejection, not a bad password`() = runTest {
+        server.enqueue(MockResponse().setResponseCode(403).setBody("<p>Unauthorized IP Address.</p>"))
+
+        try {
+            adapter.listTorrents()
+            fail("Expected DaemonException.Authentication")
+        } catch (expected: DaemonException.Authentication) {
+            assertTrue(expected.message!!.contains("rpc-whitelist"))
+        }
+    }
+
+    @Test
+    fun `403 from the anti brute force lockout is not blamed on the whitelist`() = runTest {
+        server.enqueue(
+            MockResponse().setResponseCode(403)
+                .setBody("<p>Too many unsuccessful login attempts. Please restart transmission-daemon.</p>")
+        )
+
+        try {
+            adapter.listTorrents()
+            fail("Expected DaemonException.Authentication")
+        } catch (expected: DaemonException.Authentication) {
+            assertTrue(expected.message!!.contains("too many failed attempts"))
+        }
+    }
+
+    @Test
+    fun `basic auth encodes a non-ASCII password as UTF-8`() = runTest {
+        val utf8Adapter = TransmissionAdapter(
+            DaemonConfig(
+                type = DaemonType.TRANSMISSION,
+                host = server.hostName,
+                port = server.port,
+                username = "user",
+                password = "pässwörd",
+            ),
+            OkHttpClient(),
+        )
+        server.enqueue(MockResponse().setBody("""{"result":"success","arguments":{"version":"4.0.5"}}"""))
+
+        utf8Adapter.testConnection()
+
+        val expected = "Basic " + java.util.Base64.getEncoder()
+            .encodeToString("user:pässwörd".toByteArray(Charsets.UTF_8))
+        assertEquals(expected, server.takeRequest().getHeader("Authorization"))
     }
 
     @Test

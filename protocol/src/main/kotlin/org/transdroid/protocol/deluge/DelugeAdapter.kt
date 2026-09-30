@@ -395,6 +395,11 @@ class DelugeAdapter(
         if (isNotAuthenticated(body["error"])) {
             login()
             body = send(method, params.toList()).use { parseBody(it) }
+        } else if (method.startsWith("core.") && isUnknownMethod(body["error"])) {
+            // The session outlived its daemon connection (routine after the daemon restarts):
+            // the web UI only knows core.* while attached, so re-attach and retry once
+            ensureConnectedToDaemon()
+            body = send(method, params.toList()).use { parseBody(it) }
         }
         val error = body["error"]
         if (error != null && error != JsonNull) {
@@ -406,6 +411,10 @@ class DelugeAdapter(
         }
         return body["result"] ?: JsonNull
     }
+
+    private fun isUnknownMethod(error: JsonElement?): Boolean =
+        (error as? JsonObject)?.get("message")?.jsonPrimitive?.contentOrNull
+            ?.contains("Unknown method", ignoreCase = true) == true
 
     private fun isNotAuthenticated(error: JsonElement?): Boolean =
         (error as? JsonObject)?.get("code")?.jsonPrimitive?.int == NOT_AUTHENTICATED_CODE
