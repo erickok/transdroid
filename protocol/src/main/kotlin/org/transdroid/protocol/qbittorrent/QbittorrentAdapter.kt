@@ -281,16 +281,20 @@ class QbittorrentAdapter(
             if (response.code == 403) {
                 throw DaemonException.Authentication("qBittorrent blocked this address (too many failed logins)")
             }
-            // Wrong credentials get a 200 "Fails."; a 401 comes from the Host-header or
-            // cross-site checks, or from a proxy in front of qBittorrent
+            // Up to 5.1, wrong credentials get a 200 "Fails." and a 401 only comes from the
+            // Host-header or cross-site checks; since 5.2, wrong credentials are a 401 as well,
+            // indistinguishable from those. A proxy in front of qBittorrent can also send a 401.
             if (response.code == 401) {
-                throw DaemonException.Authentication(unauthorizedMessage(response))
+                throw DaemonException.Authentication(unauthorizedMessage(response, atLogin = true))
             }
-            val body = withContext(Dispatchers.IO) { response.body?.string().orEmpty() }
-            if (!response.isSuccessful || body.trim() != "Ok.") {
+            // Success is a 200 "Ok." up to 5.1 and an empty 204 since 5.2
+            val body = withContext(Dispatchers.IO) { response.body?.string().orEmpty() }.trim()
+            if (!response.isSuccessful || (body != "Ok." && body.isNotEmpty())) {
                 throw DaemonException.Authentication("qBittorrent rejected the username/password")
             }
-            val cookie = response.headers("Set-Cookie").firstOrNull { it.startsWith("SID=") }
+            // The login sets only the session cookie, but its name varies: SID by default up to 5.1
+            // (where it can be renamed via WebAPISessionCookieName), QBT_SID_<port> since 5.2
+            val cookie = response.headers("Set-Cookie").firstOrNull()
                 ?: throw DaemonException.UnexpectedResponse("qBittorrent login did not return a session cookie")
             sessionCookie = cookie.substringBefore(';')
         }
@@ -350,14 +354,15 @@ class QbittorrentAdapter(
      * A 401 without an API key: a proxy that wants its own HTTP authentication says so in
      * WWW-Authenticate; otherwise it is qBittorrent's Host-header or cross-site check.
      */
-    private fun unauthorizedMessage(response: Response): String {
+    private fun unauthorizedMessage(response: Response, atLogin: Boolean = false): String {
         val challenge = response.header("WWW-Authenticate").orEmpty()
         val proxyAuth = challenge.startsWith("Basic", ignoreCase = true) ||
             challenge.startsWith("Digest", ignoreCase = true)
-        return if (proxyAuth) {
-            "A proxy in front of qBittorrent requires its own HTTP authentication"
-        } else {
-            "qBittorrent refused the request's Host header - $HOST_HEADER_HINT"
+        return when {
+            proxyAuth -> "A proxy in front of qBittorrent requires its own HTTP authentication"
+            atLogin -> "qBittorrent rejected the username/password, or the request's Host header - " +
+                "if the credentials are right, $HOST_HEADER_HINT"
+            else -> "qBittorrent refused the request's Host header - $HOST_HEADER_HINT"
         }
     }
 
