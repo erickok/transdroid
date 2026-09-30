@@ -18,6 +18,8 @@ package org.transdroid.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -89,7 +91,8 @@ class TransdroidWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val serverId = resolveWidgetServerId(context, id)
-        val state = context.appContainer.widgetStateRepository.stateFor(serverId)
+        val repository = context.appContainer.widgetStateRepository
+        val initial = repository.stateFor(serverId)
         val strings = WidgetStrings(
             appName = context.getString(R.string.app_name),
             noData = context.getString(R.string.widget_no_data),
@@ -101,8 +104,15 @@ class TransdroidWidget : GlanceAppWidget() {
             footerSummary = context.getString(R.string.widget_footer_summary),
             refresh = context.getString(R.string.widget_refresh),
             addTorrent = context.getString(R.string.add_title),
+            start = context.getString(R.string.widget_start),
+            pause = context.getString(R.string.widget_pause),
         )
         provideContent {
+            // Glance keeps this session alive for a while after rendering, and updateAll()
+            // within that window does not re-run provideGlance; observing the stored state
+            // makes every write (a row's play/pause, a refresh) show up immediately
+            val states by repository.states.collectAsState(initial = null)
+            val state = states?.let { all -> serverId?.let { all[it] } } ?: initial
             GlanceTheme {
                 WidgetContent(state, strings)
             }
@@ -120,6 +130,8 @@ class TransdroidWidget : GlanceAppWidget() {
         val footerSummary: String,
         val refresh: String,
         val addTorrent: String,
+        val start: String,
+        val pause: String,
     )
 
     @Composable
@@ -291,6 +303,8 @@ class TransdroidWidget : GlanceAppWidget() {
                     style = TextStyle(color = color, fontWeight = FontWeight.Bold, fontSize = 11.5.sp),
                     maxLines = 1,
                 )
+                Spacer(GlanceModifier.width(8.dp))
+                ToggleButton(torrent, strings)
             }
             Spacer(GlanceModifier.height(6.dp))
             Row(
@@ -341,6 +355,33 @@ class TransdroidWidget : GlanceAppWidget() {
                     modifier = GlanceModifier.size(19.dp),
                 )
             }
+        }
+    }
+
+    @Composable
+    private fun ToggleButton(torrent: WidgetTorrent, strings: WidgetStrings) {
+        val canStart = torrent.status.canStart
+        Box(
+            modifier = GlanceModifier
+                .size(28.dp)
+                .cornerRadius(14.dp)
+                .background(WidgetColors.chip)
+                .clickable(
+                    actionRunCallback<ToggleTorrentWidgetAction>(
+                        parameters = actionParametersOf(
+                            WidgetTorrentIdKey to torrent.id,
+                            WidgetTorrentCanStartKey to canStart,
+                        ),
+                    ),
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Image(
+                provider = ImageProvider(if (canStart) R.drawable.ic_widget_play else R.drawable.ic_widget_pause),
+                contentDescription = if (canStart) strings.start else strings.pause,
+                colorFilter = ColorFilter.tint(WidgetColors.muted),
+                modifier = GlanceModifier.size(16.dp),
+            )
         }
     }
 

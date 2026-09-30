@@ -386,6 +386,11 @@
     <string name="widget_seeding_label">Seed</string>
     <string name="widget_footer_summary">%1$d active · %2$d total</string>
     <string name="widget_refresh">Refresh</string>
+    <string name="widget_start">Start</string>
+    <string name="widget_pause">Pause</string>
+    <string name="widget_starting">Starting torrent…</string>
+    <string name="widget_pausing">Pausing torrent…</string>
+    <string name="widget_action_failed">Widget action failed: %1$s</string>
     <string name="widget_configure_title">Choose a server</string>
     <string name="widget_configure_subtitle">This widget will show torrents from the server you pick</string>
 
