@@ -21,24 +21,17 @@ import java.io.PushbackInputStream
 import java.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.add
-import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
-import kotlinx.serialization.json.float
-import kotlinx.serialization.json.floatOrNull
-import kotlinx.serialization.json.int
-import kotlinx.serialization.json.intOrNull
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.long
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonObject
 import okhttp3.Credentials
@@ -78,20 +71,13 @@ class TransmissionAdapter(
     private var sessionId: String? = null
 
     override suspend fun testConnection(): String {
-        val arguments = request("session-get")
-        val version = arguments["version"]?.jsonPrimitive?.contentOrNull ?: "unknown"
-        val rpcVersion = arguments["rpc-version"]?.jsonPrimitive?.contentOrNull
-        return "Transmission $version" + (rpcVersion?.let { " (RPC v$it)" } ?: "")
+        val session = request("session-get", SessionInfo.serializer())
+        val version = session?.version ?: "unknown"
+        return "Transmission $version" + (session?.rpcVersion?.let { " (RPC v$it)" } ?: "")
     }
 
-    override suspend fun listTorrents(): List<Torrent> {
-        val arguments = request("torrent-get") {
-            put("fields", buildJsonArray { TORRENT_FIELDS.forEach { add(it) } })
-        }
-        val torrents = arguments["torrents"]?.jsonArray
-            ?: throw DaemonException.UnexpectedResponse("Missing 'torrents' in torrent-get response")
-        return torrents.map { parseTorrent(it.jsonObject) }
-    }
+    override suspend fun listTorrents(): List<Torrent> =
+        torrentGet(TorrentInfo.serializer(), TORRENT_FIELDS, torrentId = null).map { it.toTorrent() }
 
     override suspend fun addByUrl(url: String, startPaused: Boolean, downloadLocation: String?) {
         request("torrent-add") {
@@ -139,31 +125,22 @@ class TransmissionAdapter(
     }
 
     override suspend fun listFiles(torrentId: String): List<TorrentFile> {
-        val arguments = request("torrent-get") {
-            putIds(torrentId)
-            put("fields", buildJsonArray { listOf("files", "fileStats").forEach { add(it) } })
-        }
-        val torrent = arguments["torrents"]?.jsonArray?.firstOrNull()?.jsonObject
-            ?: throw DaemonException.UnexpectedResponse("Torrent $torrentId not found")
-        val files = torrent["files"]?.jsonArray ?: return emptyList()
-        val stats = torrent["fileStats"]?.jsonArray
-        return files.mapIndexed { index, element ->
-            val file = element.jsonObject
-            val stat = stats?.getOrNull(index)?.jsonObject
-            val wanted = stat?.get("wanted")?.jsonPrimitive?.contentOrNull != "false"
+        val torrent = singleTorrent(torrentId, TorrentFiles.serializer(), listOf("files", "fileStats"))
+        return torrent.files.mapIndexed { index, file ->
+            val stat = torrent.fileStats.getOrNull(index)
             val priority = when {
-                !wanted -> FilePriority.OFF
-                else -> when (stat?.get("priority")?.jsonPrimitive?.contentOrNull) {
-                    "-1" -> FilePriority.LOW
-                    "1" -> FilePriority.HIGH
+                stat?.wanted == false -> FilePriority.OFF
+                else -> when (stat?.priority) {
+                    -1 -> FilePriority.LOW
+                    1 -> FilePriority.HIGH
                     else -> FilePriority.NORMAL
                 }
             }
             TorrentFile(
                 index = index,
-                path = file["name"]?.jsonPrimitive?.contentOrNull ?: "",
-                sizeBytes = file["length"]?.jsonPrimitive?.long ?: 0L,
-                downloadedBytes = file["bytesCompleted"]?.jsonPrimitive?.long ?: 0L,
+                path = file.name,
+                sizeBytes = file.length,
+                downloadedBytes = file.bytesCompleted,
                 priority = priority,
             )
         }
@@ -187,59 +164,39 @@ class TransmissionAdapter(
         }
     }
 
-    override suspend fun listTrackers(torrentId: String): List<Tracker> {
-        val arguments = request("torrent-get") {
-            putIds(torrentId)
-            put("fields", buildJsonArray { add("trackerStats") })
-        }
-        val torrent = arguments["torrents"]?.jsonArray?.firstOrNull()?.jsonObject
-            ?: throw DaemonException.UnexpectedResponse("Torrent $torrentId not found")
-        val stats = torrent["trackerStats"]?.jsonArray ?: return emptyList()
-        return stats.map { element ->
-            val obj = element.jsonObject
-            val announced = obj["hasAnnounced"]?.jsonPrimitive?.booleanOrNull ?: false
-            val succeeded = obj["lastAnnounceSucceeded"]?.jsonPrimitive?.booleanOrNull ?: false
-            val status = when {
-                !announced -> TrackerStatus.IDLE
-                succeeded -> TrackerStatus.WORKING
-                else -> TrackerStatus.ERROR
+    override suspend fun listTrackers(torrentId: String): List<Tracker> =
+        singleTorrent(torrentId, TorrentTrackerStats.serializer(), listOf("trackerStats"))
+            .trackerStats.map { stat ->
+                val status = when {
+                    !stat.hasAnnounced -> TrackerStatus.IDLE
+                    stat.lastAnnounceSucceeded -> TrackerStatus.WORKING
+                    else -> TrackerStatus.ERROR
+                }
+                Tracker(
+                    url = stat.announce ?: stat.host ?: "",
+                    status = status,
+                    seeders = stat.seederCount?.takeIf { it >= 0 },
+                    leechers = stat.leecherCount?.takeIf { it >= 0 },
+                    message = stat.lastAnnounceResult
+                        ?.takeIf { stat.hasAnnounced && !stat.lastAnnounceSucceeded && it.isNotBlank() },
+                )
             }
-            Tracker(
-                url = obj["announce"]?.jsonPrimitive?.contentOrNull
-                    ?: obj["host"]?.jsonPrimitive?.contentOrNull ?: "",
-                status = status,
-                seeders = obj["seederCount"]?.jsonPrimitive?.int?.takeIf { it >= 0 },
-                leechers = obj["leecherCount"]?.jsonPrimitive?.int?.takeIf { it >= 0 },
-                message = obj["lastAnnounceResult"]?.jsonPrimitive?.contentOrNull
-                    ?.takeIf { announced && !succeeded && it.isNotBlank() },
-            )
-        }
-    }
 
-    override suspend fun listPeers(torrentId: String): List<Peer> {
-        val arguments = request("torrent-get") {
-            putIds(torrentId)
-            put("fields", buildJsonArray { add("peers") })
-        }
-        val torrent = arguments["torrents"]?.jsonArray?.firstOrNull()?.jsonObject
-            ?: throw DaemonException.UnexpectedResponse("Torrent $torrentId not found")
-        val peers = torrent["peers"]?.jsonArray ?: return emptyList()
-        return peers.map { element ->
-            val obj = element.jsonObject
+    override suspend fun listPeers(torrentId: String): List<Peer> =
+        singleTorrent(torrentId, TorrentPeers.serializer(), listOf("peers")).peers.map { peer ->
             Peer(
-                ip = obj["address"]?.jsonPrimitive?.contentOrNull ?: "",
-                clientName = obj["clientName"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() },
-                progress = (obj["progress"]?.jsonPrimitive?.floatOrNull ?: 0f).coerceIn(0f, 1f),
-                downloadRate = obj["rateToClient"]?.jsonPrimitive?.long ?: 0L,
-                uploadRate = obj["rateToPeer"]?.jsonPrimitive?.long ?: 0L,
-                port = obj["port"]?.jsonPrimitive?.int,
+                ip = peer.address,
+                clientName = peer.clientName?.takeIf { it.isNotBlank() },
+                progress = peer.progress.coerceIn(0f, 1f),
+                downloadRate = peer.rateToClient,
+                uploadRate = peer.rateToPeer,
+                port = peer.port,
                 // Transmission's RPC has no peer geolocation field at all
                 countryCode = null,
                 countryName = null,
-                encrypted = obj["isEncrypted"]?.jsonPrimitive?.booleanOrNull,
+                encrypted = peer.isEncrypted,
             )
         }
-    }
 
     override suspend fun setLabel(torrentId: String, label: String) {
         request("torrent-set") {
@@ -250,26 +207,47 @@ class TransmissionAdapter(
 
     override val supportsAltSpeedLimits: Boolean get() = true
 
-    override suspend fun isAltSpeedLimitsEnabled(): Boolean {
-        val arguments = request("session-get")
-        return arguments["alt-speed-enabled"]?.jsonPrimitive?.booleanOrNull ?: false
-    }
+    override suspend fun isAltSpeedLimitsEnabled(): Boolean =
+        request("session-get", SessionInfo.serializer())?.altSpeedEnabled ?: false
 
     override suspend fun setAltSpeedLimitsEnabled(enabled: Boolean) {
         request("session-set") { put("alt-speed-enabled", enabled) }
     }
 
-    private fun kotlinx.serialization.json.JsonObjectBuilder.putIds(torrentId: String) {
+    /** torrent-get for all torrents, or just [torrentId]; each reply entry decoded as [fields]' shape. */
+    private suspend fun <T> torrentGet(entry: KSerializer<T>, fields: List<String>, torrentId: String?): List<T> {
+        val arguments = request("torrent-get", TorrentGetArguments.serializer(entry)) {
+            if (torrentId != null) putIds(torrentId)
+            put("fields", buildJsonArray { fields.forEach { add(it) } })
+        }
+        return arguments?.torrents
+            ?: throw DaemonException.UnexpectedResponse("Missing 'torrents' in torrent-get response")
+    }
+
+    private suspend fun <T> singleTorrent(torrentId: String, entry: KSerializer<T>, fields: List<String>): T =
+        torrentGet(entry, fields, torrentId).firstOrNull()
+            ?: throw DaemonException.UnexpectedResponse("Torrent $torrentId not found")
+
+    private fun JsonObjectBuilder.putIds(torrentId: String) {
         val id = torrentId.toIntOrNull()
             ?: throw DaemonException.UnexpectedResponse("Not a Transmission torrent id: $torrentId")
         put("ids", buildJsonArray { add(id) })
     }
 
-    /** Sends one RPC request, retrying once after a 409 session-id challenge. */
-    private suspend fun request(
+    /** Sends one RPC request whose reply arguments aren't needed. */
+    private suspend fun request(method: String, argumentsBuilder: (JsonObjectBuilder.() -> Unit)? = null) {
+        request(method, NoArguments.serializer(), argumentsBuilder)
+    }
+
+    /**
+     * Sends one RPC request, retrying once after a 409 session-id challenge, and decodes the
+     * reply's arguments as [arguments]; null when the reply carries none.
+     */
+    private suspend fun <A> request(
         method: String,
-        argumentsBuilder: (kotlinx.serialization.json.JsonObjectBuilder.() -> Unit)? = null,
-    ): JsonObject {
+        arguments: KSerializer<A>,
+        argumentsBuilder: (JsonObjectBuilder.() -> Unit)? = null,
+    ): A? {
         val payload = buildJsonObject {
             put("method", method)
             if (argumentsBuilder != null) putJsonObject("arguments", argumentsBuilder)
@@ -303,32 +281,32 @@ class TransmissionAdapter(
                     throw DaemonException.UnexpectedResponse("Transmission returned HTTP ${it.code}")
             }
             val body = it.body ?: throw DaemonException.UnexpectedResponse("Empty Transmission response")
-            val root = decodeResponse(body.byteStream())
-            val result = root["result"]?.jsonPrimitive?.contentOrNull
-            if (result != "success") {
-                throw DaemonException.UnexpectedResponse("Transmission error: ${result ?: "no result"}")
+            val reply = decodeResponse(body.byteStream(), RpcReply.serializer(arguments))
+            if (reply.result != "success") {
+                throw DaemonException.UnexpectedResponse("Transmission error: ${reply.result ?: "no result"}")
             }
-            return root["arguments"]?.jsonObject ?: JsonObject(emptyMap())
+            return reply.arguments
         }
     }
 
     /**
-     * Decodes the response directly off the stream (no intermediate String covering the
-     * whole body — matters for a `torrent-get` reply listing thousands of torrents), while
-     * still peeking a few bytes for the HTML-login-portal diagnostic below.
+     * Decodes the response directly off the stream into [reply]'s typed shape - no
+     * intermediate String or JSON tree covering the whole body, and fields the app doesn't
+     * read are skipped rather than kept; matters for a `torrent-get` reply listing thousands
+     * of torrents - while still peeking a few bytes for the HTML-login-portal diagnostic below.
      *
      * [executeOnIo] only wraps the network round-trip up to receiving headers; the body
      * still streams off the same connection, and reading it (whichever way) can still block
      * on the socket, so that must stay on IO too or it risks a NetworkOnMainThreadException
      * on whatever dispatcher called the adapter.
      */
-    private suspend fun decodeResponse(stream: InputStream): JsonObject = withContext(Dispatchers.IO) {
+    private suspend fun <R> decodeResponse(stream: InputStream, reply: KSerializer<R>): R = withContext(Dispatchers.IO) {
         val pushback = PushbackInputStream(stream, PEEK_BYTES)
         val peek = ByteArray(PEEK_BYTES)
         val peeked = pushback.read(peek)
         if (peeked > 0) pushback.unread(peek, 0, peeked)
         try {
-            json.decodeFromStream<JsonObject>(pushback)
+            json.decodeFromStream(reply, pushback)
         } catch (e: Exception) {
             // A reverse proxy or access portal (e.g. Cloudflare Access) commonly answers
             // with an HTML login page; make that diagnosable instead of a generic error
@@ -373,62 +351,135 @@ class TransmissionAdapter(
         }
     }
 
-    private fun parseTorrent(obj: JsonObject): Torrent {
-        // Transmission fills errorString for routine tracker warnings too (error codes 1/2)
-        // while the torrent keeps working; only code 3 is a real local error
-        val errorCode = obj["error"]?.jsonPrimitive?.intOrNull ?: 0
-        val error = obj["errorString"]?.jsonPrimitive?.contentOrNull
-            ?.takeIf { it.isNotBlank() && errorCode != 0 }
-        val statusCode = obj["status"]?.jsonPrimitive?.int ?: -1
-        val status = when {
-            errorCode == 3 -> TorrentStatus.ERROR
-            else -> when (statusCode) {
-                0 -> TorrentStatus.PAUSED
-                1, 2 -> TorrentStatus.CHECKING
-                3, 5 -> TorrentStatus.QUEUED
-                4 -> TorrentStatus.DOWNLOADING
-                6 -> TorrentStatus.SEEDING
-                else -> TorrentStatus.UNKNOWN
+    /** The reply envelope: a "success" [result] or an error text, plus method-specific arguments. */
+    @Serializable
+    private data class RpcReply<A>(val result: String? = null, val arguments: A? = null)
+
+    /** For methods whose reply arguments aren't needed; unknown keys are skipped, not kept. */
+    @Serializable
+    private class NoArguments
+
+    @Serializable
+    private data class TorrentGetArguments<T>(val torrents: List<T>? = null)
+
+    @Serializable
+    private data class SessionInfo(
+        val version: String? = null,
+        @SerialName("rpc-version") val rpcVersion: Int? = null,
+        @SerialName("alt-speed-enabled") val altSpeedEnabled: Boolean = false,
+    )
+
+    @Serializable
+    private data class TorrentInfo(
+        val id: Long? = null,
+        val name: String = "",
+        val status: Int = -1,
+        val percentDone: Float = 0f,
+        val rateDownload: Long = 0,
+        val rateUpload: Long = 0,
+        val eta: Long = -1,
+        val sizeWhenDone: Long = 0,
+        val haveValid: Long = 0,
+        val haveUnchecked: Long = 0,
+        val uploadedEver: Long = 0,
+        val uploadRatio: Float = 0f,
+        val peersConnected: Int = 0,
+        val peersSendingToUs: Int = 0,
+        val peersGettingFromUs: Int = 0,
+        val addedDate: Long = 0,
+        val downloadDir: String? = null,
+        val error: Int = 0,
+        val errorString: String? = null,
+        val labels: List<String> = emptyList(),
+        val trackers: List<TrackerAnnounce> = emptyList(),
+        val metadataPercentComplete: Float? = null,
+    ) {
+        fun toTorrent(): Torrent {
+            // Transmission fills errorString for routine tracker warnings too (error codes 1/2)
+            // while the torrent keeps working; only code 3 is a real local error
+            val torrentStatus = when {
+                error == 3 -> TorrentStatus.ERROR
+                else -> when (status) {
+                    0 -> TorrentStatus.PAUSED
+                    1, 2 -> TorrentStatus.CHECKING
+                    3, 5 -> TorrentStatus.QUEUED
+                    4 -> TorrentStatus.DOWNLOADING
+                    6 -> TorrentStatus.SEEDING
+                    else -> TorrentStatus.UNKNOWN
+                }
             }
+            return Torrent(
+                id = id?.toString() ?: throw DaemonException.UnexpectedResponse("Torrent without id"),
+                name = name,
+                status = torrentStatus,
+                progress = percentDone.coerceIn(0f, 1f),
+                downloadRate = rateDownload,
+                uploadRate = rateUpload,
+                etaSeconds = eta.takeIf { it >= 0 },
+                // sizeWhenDone and haveValid+haveUnchecked cover only the wanted files; totalSize
+                // and downloadedEver would count deselected files and discarded corrupt data
+                sizeBytes = sizeWhenDone,
+                downloadedBytes = haveValid + haveUnchecked,
+                uploadedBytes = uploadedEver,
+                ratio = uploadRatio.coerceAtLeast(0f),
+                peersConnected = peersConnected,
+                // Transmission has no direct seeders/leechers split; a peer sending us data has
+                // pieces we lack (seed-like role for us), one we're sending to is missing pieces
+                // (leech-like role) - the closest approximation its RPC exposes.
+                seedersConnected = peersSendingToUs,
+                leechersConnected = peersGettingFromUs,
+                addedTimestamp = addedDate.takeIf { it > 0 },
+                downloadDir = downloadDir,
+                error = errorString?.takeIf { it.isNotBlank() && error != 0 },
+                labels = labels.filter { it.isNotBlank() },
+                trackers = trackers.mapNotNull { it.announce?.let(::trackerHost) }.distinct(),
+                metadataProgress = metadataPercentComplete?.takeIf { it < 1f }?.coerceAtLeast(0f),
+            )
         }
-        val eta = obj["eta"]?.jsonPrimitive?.long?.takeIf { it >= 0 }
-        return Torrent(
-            id = obj["id"]?.jsonPrimitive?.contentOrNull
-                ?: throw DaemonException.UnexpectedResponse("Torrent without id"),
-            name = obj["name"]?.jsonPrimitive?.contentOrNull ?: "",
-            status = status,
-            progress = obj["percentDone"]?.jsonPrimitive?.float?.coerceIn(0f, 1f) ?: 0f,
-            downloadRate = obj["rateDownload"]?.jsonPrimitive?.long ?: 0L,
-            uploadRate = obj["rateUpload"]?.jsonPrimitive?.long ?: 0L,
-            etaSeconds = eta,
-            // sizeWhenDone and haveValid+haveUnchecked cover only the wanted files; totalSize
-            // and downloadedEver would count deselected files and discarded corrupt data
-            sizeBytes = obj["sizeWhenDone"]?.jsonPrimitive?.long ?: 0L,
-            downloadedBytes = (obj["haveValid"]?.jsonPrimitive?.long ?: 0L) +
-                (obj["haveUnchecked"]?.jsonPrimitive?.long ?: 0L),
-            uploadedBytes = obj["uploadedEver"]?.jsonPrimitive?.long ?: 0L,
-            ratio = (obj["uploadRatio"]?.jsonPrimitive?.float ?: 0f).coerceAtLeast(0f),
-            peersConnected = obj["peersConnected"]?.jsonPrimitive?.int ?: 0,
-            // Transmission has no direct seeders/leechers split; a peer sending us data has
-            // pieces we lack (seed-like role for us), one we're sending to is missing pieces
-            // (leech-like role) - the closest approximation its RPC exposes.
-            seedersConnected = obj["peersSendingToUs"]?.jsonPrimitive?.int ?: 0,
-            leechersConnected = obj["peersGettingFromUs"]?.jsonPrimitive?.int ?: 0,
-            addedTimestamp = obj["addedDate"]?.jsonPrimitive?.long?.takeIf { it > 0 },
-            downloadDir = obj["downloadDir"]?.jsonPrimitive?.contentOrNull,
-            error = error,
-            labels = obj["labels"]?.jsonArray
-                ?.mapNotNull { it.jsonPrimitive.contentOrNull?.takeIf(String::isNotBlank) }
-                ?: emptyList(),
-            trackers = obj["trackers"]?.jsonArray
-                ?.mapNotNull { it.jsonObject["announce"]?.jsonPrimitive?.contentOrNull?.let(::trackerHost) }
-                ?.distinct()
-                ?: emptyList(),
-            metadataProgress = obj["metadataPercentComplete"]?.jsonPrimitive?.floatOrNull
-                ?.takeIf { it < 1f }
-                ?.coerceAtLeast(0f),
-        )
     }
+
+    @Serializable
+    private data class TrackerAnnounce(val announce: String? = null)
+
+    @Serializable
+    private data class TorrentFiles(
+        val files: List<FileInfo> = emptyList(),
+        val fileStats: List<FileStat> = emptyList(),
+    )
+
+    @Serializable
+    private data class FileInfo(val name: String = "", val length: Long = 0, val bytesCompleted: Long = 0)
+
+    @Serializable
+    private data class FileStat(val wanted: Boolean = true, val priority: Int = 0)
+
+    @Serializable
+    private data class TorrentTrackerStats(val trackerStats: List<TrackerStat> = emptyList())
+
+    @Serializable
+    private data class TrackerStat(
+        val announce: String? = null,
+        val host: String? = null,
+        val hasAnnounced: Boolean = false,
+        val lastAnnounceSucceeded: Boolean = false,
+        val seederCount: Int? = null,
+        val leecherCount: Int? = null,
+        val lastAnnounceResult: String? = null,
+    )
+
+    @Serializable
+    private data class TorrentPeers(val peers: List<PeerInfo> = emptyList())
+
+    @Serializable
+    private data class PeerInfo(
+        val address: String = "",
+        val clientName: String? = null,
+        val progress: Float = 0f,
+        val rateToClient: Long = 0,
+        val rateToPeer: Long = 0,
+        val port: Int? = null,
+        val isEncrypted: Boolean? = null,
+    )
 
     private companion object {
         const val SESSION_ID_HEADER = "X-Transmission-Session-Id"

@@ -30,6 +30,7 @@ import org.junit.Test
 import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.DaemonType
+import org.transdroid.protocol.FilePriority
 import org.transdroid.protocol.TorrentStatus
 import org.transdroid.protocol.TrackerStatus
 
@@ -234,6 +235,52 @@ class DelugeAdapterTest {
         val trackers = adapter.listTrackers("abcdef")
 
         assertEquals(TrackerStatus.ERROR, trackers[0].status)
+    }
+
+    @Test
+    fun `list files maps sizes, progress and priorities, tolerating float numbers`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(connectedOk())
+        server.enqueue(
+            MockResponse().setBody(
+                """{"result": {
+                    "files": [
+                        {"index": 0, "path": "show/episode1.mkv", "size": 1000000, "offset": 0},
+                        {"index": 1.0, "path": "show/sample.mkv", "size": 2000.0, "offset": 1000000}
+                    ],
+                    "file_progress": [0.5, 1],
+                    "file_priorities": [7, 0.0]
+                }, "error": null, "id": 2}"""
+            )
+        )
+
+        val files = adapter.listFiles("abcdef")
+
+        assertEquals(2, files.size)
+        assertEquals("show/episode1.mkv", files[0].path)
+        assertEquals(1000000L, files[0].sizeBytes)
+        assertEquals(500000L, files[0].downloadedBytes)
+        assertEquals(FilePriority.HIGH, files[0].priority)
+        assertEquals(1, files[1].index)
+        assertEquals(2000L, files[1].downloadedBytes)
+        assertEquals(FilePriority.OFF, files[1].priority)
+    }
+
+    @Test
+    fun `set file priority rewrites the complete priorities array`() = runTest {
+        server.enqueue(loginOk())
+        server.enqueue(connectedOk())
+        server.enqueue(MockResponse().setBody("""{"result": {"file_priorities": [4, 4.0, 1]}, "error": null, "id": 2}"""))
+        server.enqueue(MockResponse().setBody("""{"result": null, "error": null, "id": 3}"""))
+
+        adapter.setFilePriority("abcdef", 1, FilePriority.OFF)
+
+        server.takeRequest() // login
+        server.takeRequest() // web.connected
+        assertTrue(server.takeRequest().body.readUtf8().contains("\"file_priorities\""))
+        val set = server.takeRequest().body.readUtf8()
+        assertTrue(set.contains("\"method\":\"core.set_torrent_options\""))
+        assertTrue(set.contains("\"file_priorities\":[4,0,1]"))
     }
 
     @Test
