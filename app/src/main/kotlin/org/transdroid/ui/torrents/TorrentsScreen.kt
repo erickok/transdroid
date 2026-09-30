@@ -792,9 +792,10 @@ private fun TorrentRow(torrent: Torrent, selected: Boolean, onClick: () -> Unit)
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
-            .let {
-                if (selected) it.background(MaterialTheme.colorScheme.surfaceContainerHigh) else it
-            }
+            // Opaque either way, so the swipe actions behind the row don't show through it
+            .background(
+                if (selected) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.background,
+            )
             .clickable(onClick = onClick),
     ) {
         Row(
