@@ -97,15 +97,31 @@ class QbittorrentAdapterTest {
     }
 
     @Test
-    fun `401 at login is explained as a host header rejection, not bad credentials`() = runTest {
-        server.enqueue(MockResponse().setResponseCode(401))
+    fun `401 at login is explained as bad credentials or a host header rejection`() = runTest {
+        server.enqueue(MockResponse().setResponseCode(401).setBody("Unauthorized"))
 
         try {
             adapter().listTorrents()
             fail("Expected DaemonException.Authentication")
         } catch (expected: DaemonException.Authentication) {
+            assertTrue(expected.message!!.contains("username/password"))
             assertTrue(expected.message!!.contains("Host header"))
         }
+    }
+
+    @Test
+    fun `accepts the empty 204 login response of qbittorrent 5_2`() = runTest {
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(204)
+                .setHeader("Set-Cookie", "QBT_SID_8080=tokenValue; HttpOnly; path=/")
+        )
+        server.enqueue(MockResponse().setBody(fixture("torrents-info.json")))
+
+        adapter().listTorrents()
+
+        server.takeRequest() // login
+        assertEquals("QBT_SID_8080=tokenValue", server.takeRequest().getHeader("Cookie"))
     }
 
     @Test
@@ -118,6 +134,36 @@ class QbittorrentAdapterTest {
         } catch (expected: DaemonException.Authentication) {
             assertTrue(expected.message!!.contains("proxy"))
         }
+    }
+
+    @Test
+    fun `accepts the qbittorrent 5_2 per-port session cookie`() = runTest {
+        server.enqueue(
+            MockResponse()
+                .setBody("Ok.")
+                .setHeader("Set-Cookie", "QBT_SID_8080=tokenValue; HttpOnly; path=/")
+        )
+        server.enqueue(MockResponse().setBody(fixture("torrents-info.json")))
+
+        adapter().listTorrents()
+
+        server.takeRequest() // login
+        assertEquals("QBT_SID_8080=tokenValue", server.takeRequest().getHeader("Cookie"))
+    }
+
+    @Test
+    fun `accepts a custom session cookie name`() = runTest {
+        server.enqueue(
+            MockResponse()
+                .setBody("Ok.")
+                .setHeader("Set-Cookie", "MyCookie=tokenValue; HttpOnly; path=/")
+        )
+        server.enqueue(MockResponse().setBody(fixture("torrents-info.json")))
+
+        adapter().listTorrents()
+
+        server.takeRequest() // login
+        assertEquals("MyCookie=tokenValue", server.takeRequest().getHeader("Cookie"))
     }
 
     @Test
