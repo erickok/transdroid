@@ -94,6 +94,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -150,7 +151,7 @@ fun TorrentDetailsScreen(
             )
         },
     ) { padding ->
-        Box(Modifier.padding(padding).fillMaxSize()) {
+        Box(Modifier.paddingExceptBottom(padding).fillMaxSize()) {
             if (torrent == null) {
                 Text(
                     stringResource(R.string.details_not_found),
@@ -159,7 +160,12 @@ fun TorrentDetailsScreen(
                     modifier = Modifier.align(Alignment.Center),
                 )
             } else {
-                TorrentDetailsContent(viewModel = viewModel, torrent = torrent, onRemoved = onBack)
+                TorrentDetailsContent(
+                    viewModel = viewModel,
+                    torrent = torrent,
+                    onRemoved = onBack,
+                    bottomInset = padding.calculateBottomPadding(),
+                )
             }
         }
     }
@@ -171,6 +177,8 @@ fun TorrentDetailsContent(
     viewModel: TorrentsViewModel,
     torrent: Torrent,
     onRemoved: (() -> Unit)? = null,
+    /** The navigation bar height the content scrolls under; added after its end so it can scroll clear. */
+    bottomInset: Dp = 0.dp,
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     var showRemoveDialog by remember { mutableStateOf(false) }
@@ -234,7 +242,7 @@ fun TorrentDetailsContent(
             // Every page is at least as tall as the space left under the tabs, so a swipe registers
             // anywhere below them - not just on top of a short page's one or two rows - without
             // adding any scroll range a short page did not already have.
-            val pageMinHeight = (viewportHeight - with(density) { aboveTabContentPx.toDp() } - CONTENT_VERTICAL_CHROME)
+            val pageMinHeight = (viewportHeight - with(density) { aboveTabContentPx.toDp() } - CONTENT_VERTICAL_CHROME - bottomInset)
                 .coerceAtLeast(0.dp)
             HorizontalPager(
                 state = pagerState,
@@ -250,7 +258,7 @@ fun TorrentDetailsContent(
                     }
                 }
             }
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(32.dp + bottomInset))
         }
     }
 

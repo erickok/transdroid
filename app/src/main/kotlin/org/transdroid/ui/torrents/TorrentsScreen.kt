@@ -23,6 +23,8 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -116,6 +118,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
@@ -233,7 +237,10 @@ fun TorrentsScreen(
                 }
             },
         ) { padding ->
-            Box(Modifier.padding(padding).fillMaxSize()) {
+            // Drawn edge to edge under the navigation bar; what floats or ends at the bottom
+            // keeps clear of it with this inset instead
+            val bottomInset = padding.calculateBottomPadding()
+            Box(Modifier.paddingExceptBottom(padding).fillMaxSize()) {
                 when {
                     !ui.profilesLoaded -> {
                         CircularProgressIndicator(Modifier.align(Alignment.Center))
@@ -257,13 +264,14 @@ fun TorrentsScreen(
                                     scrollToTop = scrollToTop,
                                     showToolbar = false,
                                     showFilterChips = true,
+                                    bottomInset = bottomInset,
                                 )
                             }
                             VerticalDivider()
                             Box(Modifier.weight(1f)) {
                                 val selected = ui.selectedTorrent
                                 if (selected != null) {
-                                    TorrentDetailsContent(viewModel = viewModel, torrent = selected)
+                                    TorrentDetailsContent(viewModel = viewModel, torrent = selected, bottomInset = bottomInset)
                                 } else {
                                     EmptyState(
                                         icon = Icons.Rounded.TouchApp,
@@ -286,6 +294,7 @@ fun TorrentsScreen(
                         onOpenRss = onOpenRss,
                         listState = listState,
                         scrollToTop = scrollToTop,
+                        bottomInset = bottomInset,
                     )
                 }
             }
@@ -483,6 +492,8 @@ private fun TorrentListContent(
     scrollToTop: () -> Unit = {},
     showToolbar: Boolean = true,
     showFilterChips: Boolean = false,
+    /** The navigation bar height the list draws under, which the FAB and toolbar stay above. */
+    bottomInset: Dp = 0.dp,
 ) {
     Box(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
@@ -553,9 +564,13 @@ private fun TorrentListContent(
                             },
                         )
                     }
+                    // Enough room below the last row to scroll it clear of the FAB and toolbar floating over the list
+                    val overlayHeight = bottomInset + OverlayBottomPadding +
+                        (if (ui.activeProfile != null) FabSize + FabToolbarGap else 0.dp) +
+                        (if (showToolbar) ToolbarHeight else 0.dp)
                     LazyColumn(
                         state = listState,
-                        contentPadding = PaddingValues(start = 6.dp, end = 6.dp, top = 8.dp, bottom = 96.dp),
+                        contentPadding = PaddingValues(start = 6.dp, end = 6.dp, top = 8.dp, bottom = overlayHeight + 8.dp),
                         modifier = Modifier.fillMaxSize(),
                     ) {
                         items(ui.visibleTorrents, key = { it.id }) { torrent ->
@@ -583,12 +598,12 @@ private fun TorrentListContent(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 16.dp),
+                .padding(start = 12.dp, end = 12.dp, top = 16.dp, bottom = bottomInset + OverlayBottomPadding),
             horizontalAlignment = Alignment.End,
         ) {
             if (ui.activeProfile != null) {
                 AddTorrentFab(onClick = onAddTorrent)
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(FabToolbarGap))
             }
             if (showToolbar) {
                 TorrentsToolbar(
@@ -645,7 +660,7 @@ private fun TorrentsToolbar(
         shape = MaterialTheme.shapes.extraLarge,
         color = MaterialTheme.colorScheme.surfaceContainer,
         shadowElevation = 3.dp,
-        modifier = Modifier.fillMaxWidth().height(62.dp),
+        modifier = Modifier.fillMaxWidth().height(ToolbarHeight),
     ) {
         Row(
             Modifier.fillMaxSize().padding(start = 16.dp, end = 6.dp),
@@ -698,6 +713,24 @@ private fun ToolbarStat(icon: ImageVector, value: String, caption: String) {
     }
 }
 
+/** A Scaffold's content padding minus the bottom, for content drawn edge to edge under the navigation bar. */
+@Composable
+internal fun Modifier.paddingExceptBottom(padding: PaddingValues): Modifier {
+    val layoutDirection = LocalLayoutDirection.current
+    return padding(
+        start = padding.calculateStartPadding(layoutDirection),
+        top = padding.calculateTopPadding(),
+        end = padding.calculateEndPadding(layoutDirection),
+    )
+}
+
+// Sizes of the FAB and toolbar floating over the bottom of the torrent list, which the list's
+// bottom padding is derived from
+private val FabSize = 66.dp
+private val ToolbarHeight = 62.dp
+private val FabToolbarGap = 10.dp
+private val OverlayBottomPadding = 16.dp
+
 @Composable
 private fun AddTorrentFab(onClick: () -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -710,7 +743,7 @@ private fun AddTorrentFab(onClick: () -> Unit) {
         contentColor = MaterialTheme.colorScheme.onPrimary,
         shadowElevation = 6.dp,
         interactionSource = interactionSource,
-        modifier = Modifier.size(66.dp),
+        modifier = Modifier.size(FabSize),
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.torrents_add))
