@@ -297,11 +297,13 @@
     <!-- Local network override -->
     <string name="settings_local_network_title">Local network</string>
     <string name="settings_local_network_toggle">Use local settings on Wi-Fi</string>
-    <string name="settings_local_network_toggle_summary">When your phone is on a chosen network, connect using a different address and login.</string>
+    <string name="settings_local_network_toggle_summary">When your phone is on one of the chosen networks, connect using a different address and login.</string>
     <string name="settings_local_ssid">Wi-Fi network (SSID)</string>
     <string name="settings_local_ssid_hint">e.g. HomeNet-5G</string>
+    <string name="settings_local_add_network">Add</string>
     <string name="settings_local_use_current">Use current</string>
-    <string name="settings_local_ssid_summary">Overrides apply only while connected to this network.</string>
+    <string name="settings_local_ssid_summary">Add each network separately. Tap a network below to remove it.</string>
+    <string name="settings_local_remove_ssid">Remove %1$s</string>
     <string name="settings_local_override_address">Override address</string>
     <string name="settings_local_url_label">Local web interface URL</string>
     <string name="settings_local_url_placeholder">http://192.168.1.10:port/path</string>

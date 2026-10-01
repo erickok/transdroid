@@ -38,6 +38,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Badge
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Folder
@@ -149,7 +150,14 @@ fun EditServerScreen(
     // Local-network connection override: same URL-first entry as the main connection above,
     // just without the "override individual parts" escape hatch - see ServerProfile.toDaemonConfig.
     var localNetworkEnabled by rememberSaveable(existing?.id) { mutableStateOf(existing?.localNetworkEnabled ?: false) }
-    var localSsid by rememberSaveable(existing?.id) { mutableStateOf(existing?.localNetworkSsid.orEmpty()) }
+    var localSsids by rememberSaveable(existing?.id) {
+        mutableStateOf(
+            (existing?.localNetworkSsids.orEmpty() + existing?.localNetworkSsid.orEmpty())
+                .map(String::trim)
+                .filter(String::isNotBlank)
+                .distinct(),
+        )
+    }
     var localHost by rememberSaveable(existing?.id) { mutableStateOf(existing?.localHost.orEmpty()) }
     var localPort by rememberSaveable(existing?.id) { mutableStateOf((existing?.localPort ?: 0).takeIf { it != 0 }?.toString().orEmpty()) }
     var localUseSsl by rememberSaveable(existing?.id) { mutableStateOf(existing?.localUseSsl ?: false) }
@@ -178,13 +186,13 @@ fun EditServerScreen(
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) CurrentSsid.read(context)?.let { localSsid = it }
+        if (granted) CurrentSsid.read(context)?.let { localSsids = appendSsid(localSsids, it) }
     }
     fun useCurrentSsid() {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
             PackageManager.PERMISSION_GRANTED
         ) {
-            CurrentSsid.read(context)?.let { localSsid = it }
+            CurrentSsid.read(context)?.let { localSsids = appendSsid(localSsids, it) }
         } else {
             locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -280,7 +288,7 @@ fun EditServerScreen(
         pinnedCertSha256 = pinnedCert,
         customHeaders = customHeaders.trim(),
         localNetworkEnabled = localNetworkEnabled,
-        localNetworkSsid = localSsid.trim(),
+        localNetworkSsids = localSsids,
         localHost = localHost.trim(),
         localPort = localPort.toIntOrNull() ?: 0,
         localUseSsl = localUseSsl,
@@ -638,8 +646,9 @@ fun EditServerScreen(
             LocalNetworkSection(
                 enabled = localNetworkEnabled,
                 onEnabledChange = { localNetworkEnabled = it },
-                ssid = localSsid,
-                onSsidChange = { localSsid = it },
+                ssids = localSsids,
+                onAddSsid = { localSsids = appendSsid(localSsids, it) },
+                onRemoveSsid = { ssid -> localSsids = localSsids - ssid },
                 onUseCurrentSsid = ::useCurrentSsid,
                 url = localUrl,
                 onUrlChange = ::applyParsedLocalUrl,
@@ -937,15 +946,16 @@ private fun DiscoverySection(state: DiscoveryState, onPick: (DiscoveredDaemon) -
 
 /**
  * Connect using a different address (and optionally login) while the device is on a chosen
- * Wi-Fi network - e.g. a seedbox that's also reachable directly over the LAN. See
+ * Wi-Fi networks - e.g. a seedbox that's also reachable directly over the LAN. See
  * [ServerProfile.toDaemonConfig].
  */
 @Composable
 private fun LocalNetworkSection(
     enabled: Boolean,
     onEnabledChange: (Boolean) -> Unit,
-    ssid: String,
-    onSsidChange: (String) -> Unit,
+    ssids: List<String>,
+    onAddSsid: (String) -> Unit,
+    onRemoveSsid: (String) -> Unit,
     onUseCurrentSsid: () -> Unit,
     url: String,
     onUrlChange: (String) -> Unit,
@@ -987,18 +997,44 @@ private fun LocalNetworkSection(
     }
     if (enabled) {
         var localPasswordVisible by remember { mutableStateOf(false) }
+        var ssidToAdd by rememberSaveable { mutableStateOf("") }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             TransdroidTextField(
-                value = ssid,
-                onValueChange = onSsidChange,
+                value = ssidToAdd,
+                onValueChange = { ssidToAdd = it },
                 label = { Text(stringResource(R.string.settings_local_ssid)) },
                 placeholder = { Text(stringResource(R.string.settings_local_ssid_hint)) },
                 leadingIcon = { Icon(Icons.Rounded.Wifi, contentDescription = null) },
                 singleLine = true,
                 modifier = Modifier.weight(1f),
             )
+            TextButton(
+                onClick = {
+                    onAddSsid(ssidToAdd)
+                    ssidToAdd = ""
+                },
+                enabled = ssidToAdd.isNotBlank(),
+            ) {
+                Text(stringResource(R.string.settings_local_add_network))
+            }
             TextButton(onClick = onUseCurrentSsid) {
                 Text(stringResource(R.string.settings_local_use_current))
+            }
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            ssids.forEach { ssid ->
+                FilterChip(
+                    selected = true,
+                    onClick = { onRemoveSsid(ssid) },
+                    label = { Text(ssid) },
+                    leadingIcon = { Icon(Icons.Rounded.Wifi, contentDescription = null) },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Rounded.Close,
+                            contentDescription = stringResource(R.string.settings_local_remove_ssid, ssid),
+                        )
+                    },
+                )
             }
         }
         Text(
@@ -1052,6 +1088,11 @@ private fun LocalNetworkSection(
             modifier = Modifier.fillMaxWidth(),
         )
     }
+}
+
+private fun appendSsid(existing: List<String>, ssid: String): List<String> {
+    val normalizedSsid = ssid.trim()
+    return if (normalizedSsid.isBlank() || normalizedSsid in existing) existing else existing + normalizedSsid
 }
 
 /**
