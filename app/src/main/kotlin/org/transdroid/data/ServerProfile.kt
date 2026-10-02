@@ -43,11 +43,17 @@ data class ServerProfile(
     val customHeaders: String = "",
     /**
      * Local-network connection override: while the device is on Wi-Fi network
-     * [localNetworkSsid], connect using [localHost]/[localPort]/etc. instead - e.g. a seedbox
+     * one of [localNetworkSsids], connect using [localHost]/[localPort]/etc. instead - e.g. a seedbox
      * that's also reachable directly over the LAN, bypassing its public reverse proxy. See
      * [toDaemonConfig].
      */
     val localNetworkEnabled: Boolean = false,
+    /** Wi-Fi SSIDs that should use the local override. */
+    val localNetworkSsids: List<String> = emptyList(),
+    /**
+     * Kept to read profiles saved by alpha builds that supported a single SSID. New profiles
+     * store their networks in [localNetworkSsids].
+     */
     val localNetworkSsid: String = "",
     val localHost: String = "",
     val localPort: Int = 0,
@@ -65,11 +71,14 @@ data class ServerProfile(
     /**
      * [connectedSsid] is the device's current Wi-Fi SSID, or null when not on Wi-Fi or unknown
      * (e.g. location permission not granted). The local override only applies when it matches
-     * [localNetworkSsid] exactly.
+     * one of [localNetworkSsids]. [localNetworkSsid] is also accepted for profiles persisted by
+     * earlier alpha builds.
      */
     fun toDaemonConfig(connectedSsid: String? = null): DaemonConfig {
-        val useLocal = localNetworkEnabled && localHost.isNotBlank() && localNetworkSsid.isNotBlank() &&
-            connectedSsid == localNetworkSsid
+        val matchingSsids = (localNetworkSsids + localNetworkSsid)
+            .map(String::trim)
+            .filter(String::isNotBlank)
+        val useLocal = localNetworkEnabled && localHost.isNotBlank() && connectedSsid in matchingSsids
         return DaemonConfig(
             type = type,
             host = if (useLocal) localHost else host,

@@ -84,6 +84,22 @@ class ServerProfileTest {
     }
 
     @Test
+    fun `local override applies on each configured SSID`() {
+        val profile = profileWithLocalOverride().copy(
+            localNetworkSsids = listOf("HomeNet-5G", "HomeNet"),
+            localNetworkSsid = "",
+        )
+        assertEquals("192.168.1.10", profile.toDaemonConfig(connectedSsid = "HomeNet-5G").host)
+        assertEquals("192.168.1.10", profile.toDaemonConfig(connectedSsid = "HomeNet").host)
+        assertEquals("public.example.org", profile.toDaemonConfig(connectedSsid = "OtherNet").host)
+    }
+
+    @Test
+    fun `legacy single SSID profiles retain their local override`() {
+        assertEquals("192.168.1.10", profileWithLocalOverride().toDaemonConfig(connectedSsid = "HomeNet-5G").host)
+    }
+
+    @Test
     fun `local override is ignored on a different or unknown SSID`() {
         val profile = profileWithLocalOverride()
         assertEquals("public.example.org", profile.toDaemonConfig(connectedSsid = "OtherNet").host)
