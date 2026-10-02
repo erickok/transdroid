@@ -1,7 +1,15 @@
 # Contributing to Transdroid 3
 
-Code and design contributions are very welcome. All code is licensed under the
-GNU GPL v3 (see [COPYING](COPYING)).
+All code and design contributions are welcome, though sometimes we need to be strict in
+what we can land in the final app, to keep the UX clear and streamlined. All code is
+licensed under the GNU GPL v3 (see [COPYING](COPYING)).
+
+- **New client adapters** are only added after explicit agreement, via a GitHub issue,
+  that we want to support that client in Transdroid. Please open one before you start.
+- **New client features** can be added when all or the majority of clients support them;
+  typically we do not want to support a feature that only one client offers.
+- **UI changes and additions** ideally update the HTML mockups in
+  [`design/mockups/`](design/mockups/), in both the light and the `-dark` variant.
 
 ## Project layout
 
@@ -23,28 +31,21 @@ CI runs all of the above on every push and pull request.
 
 ## Adding a torrent client adapter
 
-Client adapters are the project's main extension point. Each one lives in its own package
-under `protocol/src/main/kotlin/org/transdroid/protocol/` and consists of:
+Only start on an adapter once a GitHub issue has agreed the client should be added (see
+above). Each adapter lives in its own package under
+`protocol/src/main/kotlin/org/transdroid/protocol/` and consists of:
 
-1. **An implementation of `DaemonAdapter`** (`org.transdroid.protocol.DaemonAdapter`) —
-   seven suspend functions: `testConnection`, `listTorrents`, `addByUrl`, `addByFile`,
-   `start`, `pause`, `remove`, `listFiles`. Map your client's states and units onto the
-   normalized `Torrent`/`TorrentFile` models (progress 0..1, rates in bytes/second, eta in
-   seconds or null when unknown). Throw the right `DaemonException` subtype — `Connection`,
-   `Authentication` or `UnexpectedResponse` — so the UI can give targeted feedback.
-2. **A `DaemonType` entry** in `Models.kt` with the client's default ports, plus a branch
-   in `DaemonAdapterFactory.create`.
-3. **Fixture-based unit tests** — record real responses from your client into
-   `protocol/src/test/resources/<client>/` and test against a `MockWebServer`. Look at
-   `TransmissionAdapterTest` for the pattern. Cover at minimum: the happy-path torrent
-   list with all status mappings, the authentication failure path, and any session or
-   handshake quirks of the protocol.
-4. **UI wiring** in the app module: a display name and default-path hint branch in
-   `EditServerScreen.kt` (the compiler's exhaustive `when` will point you to every spot).
+1. **An implementation of `DaemonAdapter`** that maps the client onto the normalized
+   `Torrent`/`TorrentFile` models and throws the matching `DaemonException` subtype so
+   the UI can give targeted feedback.
+2. **A `DaemonType` entry** in `Models.kt` plus a branch in `DaemonAdapterFactory.create`.
+3. **Fixture-based unit tests** against recorded responses in
+   `protocol/src/test/resources/<client>/` (see `TransmissionAdapterTest`), covering the
+   status mappings, authentication failure and any protocol quirks.
+4. **UI wiring** in the app module; the compiler's exhaustive `when`s point to every spot.
 
-Use the existing adapters as references — Transmission (JSON-RPC), qBittorrent (REST +
-cookie auth), rTorrent (XML-RPC) and Deluge (web JSON-RPC) cover most protocol shapes a
-new client is likely to need.
+Transmission (JSON-RPC), qBittorrent (REST + cookie auth), rTorrent (XML-RPC) and Deluge
+(web JSON-RPC) cover most protocol shapes a new client is likely to need.
 
 ## Other extension points
 
@@ -58,6 +59,8 @@ new client is likely to need.
 Guidelines:
 
 - Keep adapters free of Android imports; the `:protocol` module must stay pure JVM.
+- Always parse responses (JSON, XML, …) with a streaming implementation rather than
+  reading the body into an in-memory string first.
 - Never log or embed credentials, hosts or torrent names in exception messages beyond
   what the UI needs.
 - Support current client versions first; only add legacy fallbacks that you can test.
