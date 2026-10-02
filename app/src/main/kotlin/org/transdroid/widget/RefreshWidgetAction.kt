@@ -20,9 +20,6 @@ import android.content.Context
 import androidx.glance.GlanceId
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.action.ActionCallback
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.flow.first
-import org.transdroid.appContainer
 
 /**
  * Runs when the widget's own refresh button is tapped: a one-off poll of this widget instance's
@@ -32,18 +29,8 @@ import org.transdroid.appContainer
  */
 class RefreshWidgetAction : ActionCallback {
     override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
-        val container = context.appContainer
         val serverId = resolveWidgetServerId(context, glanceId) ?: return
-        val profile = container.profilesRepository.profiles.first().firstOrNull { it.id == serverId } ?: return
-        val torrents = try {
-            container.adapterFor(profile).listTorrents()
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            // Server unreachable right now; the widget just keeps showing its last-known state
-            return
-        }
-        // update() also triggers TransdroidWidget().updateAll(context)
-        container.widgetStateRepository.update(profile.id, profile.displayName, torrents)
+        // When the server is unreachable the widget just keeps showing its last-known state
+        refreshWidgetServer(context, serverId)
     }
 }

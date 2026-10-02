@@ -18,9 +18,11 @@ package org.transdroid.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
@@ -44,7 +46,9 @@ import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.items
 import androidx.glance.appwidget.provideContent
+import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.background
+import androidx.glance.currentState
 import androidx.glance.color.ColorProvider as DayNightColor
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -64,6 +68,7 @@ import androidx.glance.unit.ColorProvider
 import org.transdroid.EXTRA_OPEN_ADD_TORRENT
 import org.transdroid.MainActivity
 import org.transdroid.R
+import kotlinx.coroutines.flow.first
 import org.transdroid.appContainer
 import org.transdroid.protocol.TorrentStatus
 import org.transdroid.util.formatSpeed
@@ -76,6 +81,7 @@ private object WidgetColors {
     val seed: ColorProvider = DayNightColor(day = Color(0xFF4D7D2A), night = Color(0xFFA0CF72))
     val track: ColorProvider = DayNightColor(day = Color(0x1F000000), night = Color(0x26FFFFFF))
     val chip: ColorProvider = DayNightColor(day = Color(0x0D000000), night = Color(0x14FFFFFF))
+    val iconChip: ColorProvider = DayNightColor(day = Color(0xFF303331), night = Color(0xFF3A3D3B))
 }
 
 /** Below this height a single-row "stats strip" is shown instead of the header+list+footer layout. */
@@ -90,40 +96,77 @@ class TransdroidWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val serverId = resolveWidgetServerId(context, id)
         val repository = context.appContainer.widgetStateRepository
-        val initial = repository.stateFor(serverId)
-        val strings = WidgetStrings(
-            appName = context.getString(R.string.app_name),
-            noData = context.getString(R.string.widget_no_data),
-            connected = context.getString(R.string.widget_connected),
-            noActiveTorrents = context.getString(R.string.widget_no_active_torrents),
-            seeding = context.getString(R.string.widget_seeding_label),
-            active = context.getString(R.string.toolbar_download_active),
-            sharing = context.getString(R.string.toolbar_upload_sharing),
-            footerSummary = context.getString(R.string.widget_footer_summary),
-            refresh = context.getString(R.string.widget_refresh),
-            addTorrent = context.getString(R.string.add_title),
-            start = context.getString(R.string.widget_start),
-            pause = context.getString(R.string.widget_pause),
-        )
+        val activeProfile = context.appContainer.activeProfile
+        val initialServerId = resolveWidgetServerId(context, id)
+        val initialStates = repository.states.first()
+        val strings = widgetStrings(context)
         provideContent {
-            // Glance keeps this session alive for a while after rendering, and updateAll()
-            // within that window does not re-run provideGlance; observing the stored state
-            // makes every write (a row's play/pause, a refresh) show up immediately
-            val states by repository.states.collectAsState(initial = null)
-            val state = states?.let { all -> serverId?.let { all[it] } } ?: initial
+            // Glance keeps this session alive for a while after rendering, and update()/updateAll()
+            // within that window only recompose, never re-run provideGlance. So the server choice
+            // is read from this instance's Glance state here, not captured once above: the host
+            // first renders a newly placed widget before WidgetConfigureActivity stores the pick.
+            // Likewise the stored snapshots are observed so every write shows up immediately.
+            val configuredServerId = currentState(WIDGET_SERVER_ID_KEY)
+            val active by activeProfile.collectAsState(initial = null)
+            val serverId = configuredServerId ?: active?.id ?: initialServerId
+            val states by repository.states.collectAsState(initial = initialStates)
+            val listOptions = WidgetListOptions.from(currentState())
+            val state = (serverId?.let { states[it] } ?: WidgetState()).let { stored ->
+                stored.copy(torrents = listOptions.select(stored.torrents))
+            }
+            // Fetch right away when just (re)configured, as the stored snapshot may lack the top
+            // torrents for the newly chosen list options, or when there is no snapshot at all (a server
+            // that isn't the app's active one), rather than wait for the next background worker run
+            val needsRefresh = currentState(WIDGET_NEEDS_REFRESH_KEY) == true
+            if (serverId != null && (needsRefresh || state.updatedAtMillis == null)) {
+                LaunchedEffect(serverId, listOptions) {
+                    updateAppWidgetState(context, id) { it.remove(WIDGET_NEEDS_REFRESH_KEY) }
+                    refreshWidgetServer(context, serverId)
+                }
+            }
             GlanceTheme {
-                WidgetContent(state, strings)
+                WidgetContent(state, listOptions, strings)
             }
         }
     }
+
+    // The widget picker preview (Android 15+): sample data in the strip and the full layout, so
+    // the launcher can show whichever fits the preview's size. See publishWidgetPreviews().
+    override val previewSizeMode = SizeMode.Responsive(setOf(PREVIEW_STRIP_SIZE, PREVIEW_FULL_SIZE))
+
+    override suspend fun providePreview(context: Context, widgetCategory: Int) {
+        val strings = widgetStrings(context)
+        val state = widgetPreviewState(context)
+        provideContent {
+            GlanceTheme {
+                WidgetContent(state, WidgetListOptions.DEFAULT, strings)
+            }
+        }
+    }
+
+    private fun widgetStrings(context: Context) = WidgetStrings(
+        appName = context.getString(R.string.app_name),
+        noData = context.getString(R.string.widget_no_data),
+        connected = context.getString(R.string.widget_connected),
+        noActiveTorrents = context.getString(R.string.widget_no_active_torrents),
+        noTorrents = context.getString(R.string.widget_no_torrents),
+        seeding = context.getString(R.string.widget_seeding_label),
+        active = context.getString(R.string.toolbar_download_active),
+        sharing = context.getString(R.string.toolbar_upload_sharing),
+        footerSummary = context.getString(R.string.widget_footer_summary),
+        refresh = context.getString(R.string.widget_refresh),
+        addTorrent = context.getString(R.string.add_title),
+        start = context.getString(R.string.widget_start),
+        pause = context.getString(R.string.widget_pause),
+    )
 
     private data class WidgetStrings(
         val appName: String,
         val noData: String,
         val connected: String,
         val noActiveTorrents: String,
+        val noTorrents: String,
         val seeding: String,
         val active: String,
         val sharing: String,
@@ -135,7 +178,7 @@ class TransdroidWidget : GlanceAppWidget() {
     )
 
     @Composable
-    private fun WidgetContent(state: WidgetState, strings: WidgetStrings) {
+    private fun WidgetContent(state: WidgetState, listOptions: WidgetListOptions, strings: WidgetStrings) {
         val size = LocalSize.current
         Box(
             modifier = GlanceModifier
@@ -148,7 +191,7 @@ class TransdroidWidget : GlanceAppWidget() {
             when {
                 state.updatedAtMillis == null -> EmptyState(strings)
                 size.height < STRIP_MAX_HEIGHT -> StripContent(state, strings)
-                else -> FullContent(state, strings)
+                else -> FullContent(state, listOptions, strings)
             }
         }
     }
@@ -215,7 +258,7 @@ class TransdroidWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun FullContent(state: WidgetState, strings: WidgetStrings) {
+    private fun FullContent(state: WidgetState, listOptions: WidgetListOptions, strings: WidgetStrings) {
         Column(modifier = GlanceModifier.fillMaxSize().padding(14.dp)) {
             HeaderRow(state, strings)
             Spacer(GlanceModifier.height(8.dp))
@@ -225,7 +268,7 @@ class TransdroidWidget : GlanceAppWidget() {
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        strings.noActiveTorrents,
+                        if (listOptions.showInactive) strings.noTorrents else strings.noActiveTorrents,
                         style = TextStyle(color = WidgetColors.muted, fontSize = 12.sp),
                     )
                 }
@@ -279,7 +322,13 @@ class TransdroidWidget : GlanceAppWidget() {
 
     @Composable
     private fun TorrentRow(torrent: WidgetTorrent, strings: WidgetStrings) {
-        val color = if (torrent.status == TorrentStatus.SEEDING) WidgetColors.seed else WidgetColors.down
+        // Paused, queued, errored etc. rows (only listed when the widget shows inactive torrents)
+        // are muted and drop their always-zero speed
+        val color = when {
+            torrent.status == TorrentStatus.SEEDING -> WidgetColors.seed
+            torrent.status.isActive -> WidgetColors.down
+            else -> WidgetColors.muted
+        }
         Column(
             modifier = GlanceModifier
                 .fillMaxWidth()
@@ -295,14 +344,16 @@ class TransdroidWidget : GlanceAppWidget() {
                     maxLines = 1,
                     modifier = GlanceModifier.defaultWeight(),
                 )
-                Spacer(GlanceModifier.width(8.dp))
-                val speed = if (torrent.status == TorrentStatus.SEEDING) torrent.uploadRate else torrent.downloadRate
-                val arrow = if (torrent.status == TorrentStatus.SEEDING) "↑" else "↓"
-                Text(
-                    "$arrow ${formatSpeed(speed)}",
-                    style = TextStyle(color = color, fontWeight = FontWeight.Bold, fontSize = 11.5.sp),
-                    maxLines = 1,
-                )
+                if (torrent.status.isActive) {
+                    Spacer(GlanceModifier.width(8.dp))
+                    val speed = if (torrent.status == TorrentStatus.SEEDING) torrent.uploadRate else torrent.downloadRate
+                    val arrow = if (torrent.status == TorrentStatus.SEEDING) "↑" else "↓"
+                    Text(
+                        "$arrow ${formatSpeed(speed)}",
+                        style = TextStyle(color = color, fontWeight = FontWeight.Bold, fontSize = 11.5.sp),
+                        maxLines = 1,
+                    )
+                }
                 Spacer(GlanceModifier.width(8.dp))
                 ToggleButton(torrent, strings)
             }
@@ -405,23 +456,29 @@ class TransdroidWidget : GlanceAppWidget() {
     }
 
     /**
-     * The app's own launcher icon, matching the mockup's plain icon-only header glyph rather than
-     * a distinct badge shape/color - no separate background chip is drawn behind it. Uses
-     * ic_widget_app_icon (a tight center-crop of the adaptive icon's foreground layer, one per
-     * density bucket) rather than that foreground drawable directly: the adaptive-icon format
-     * reserves a large transparent safe zone around the visible badge for the launcher's own
-     * masking/parallax, which at this widget's small size just reads as the icon being too small.
+     * The app's own launcher icon on a dark grey rounded chip. Uses ic_widget_app_icon (a tight
+     * center-crop of the adaptive icon's foreground layer, one per density bucket) rather than
+     * that foreground drawable directly: the adaptive-icon format reserves a large transparent
+     * safe zone around the visible badge for the launcher's own masking/parallax, which at this
+     * widget's small size just reads as the icon being too small.
      */
     @Composable
     private fun WidgetIcon() {
-        Image(
-            provider = ImageProvider(R.drawable.ic_widget_app_icon),
-            contentDescription = null,
-            modifier = GlanceModifier.size(30.dp),
-        )
+        Box(
+            modifier = GlanceModifier.size(30.dp).cornerRadius(10.dp).background(WidgetColors.iconChip),
+            contentAlignment = Alignment.Center,
+        ) {
+            Image(
+                provider = ImageProvider(R.drawable.ic_widget_app_icon),
+                contentDescription = null,
+                modifier = GlanceModifier.size(22.dp),
+            )
+        }
     }
 
     private companion object {
+        val PREVIEW_STRIP_SIZE = DpSize(250.dp, 60.dp)
+        val PREVIEW_FULL_SIZE = DpSize(250.dp, 200.dp)
         val openAddTorrentKey = ActionParameters.Key<Boolean>(EXTRA_OPEN_ADD_TORRENT)
     }
 }

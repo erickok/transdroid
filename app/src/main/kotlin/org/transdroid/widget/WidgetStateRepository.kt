@@ -18,6 +18,7 @@ package org.transdroid.widget
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.appwidget.updateAll
@@ -40,6 +41,9 @@ data class WidgetTorrent(
     val progress: Float,
     val downloadRate: Long,
     val uploadRate: Long,
+    // Defaults let snapshots stored before widget sorting existed still decode
+    val addedTimestamp: Long? = null,
+    val ratio: Float = 0f,
 )
 
 @Serializable
@@ -51,25 +55,30 @@ data class WidgetState(
     val totalCount: Int = 0,
     val downloadRate: Long = 0,
     val uploadRate: Long = 0,
-    /** Only currently-active (downloading/seeding) torrents, most recently added first. */
+    /**
+     * The torrents any placed widget instance may list, in no particular order: each instance
+     * filters and sorts them itself, see [WidgetListOptions.select].
+     */
     val torrents: List<WidgetTorrent> = emptyList(),
     val updatedAtMillis: Long? = null,
 )
 
-/** Caps how many active torrents are persisted and shown in the widget's scrollable list. */
-private const val MAX_WIDGET_TORRENTS = 30
+/** Caps how many torrents are shown in the widget's scrollable list (and stored per list options in use). */
+internal const val MAX_WIDGET_TORRENTS = 30
 
 /**
  * A small snapshot of the last successful torrent list per server, written on every refresh
  * (foreground poll, the widget's own refresh button, or the background worker) and read by the
- * home screen widget - each widget instance picks which server's snapshot it shows via
- * [WidgetConfigureActivity]. No credentials are stored here - it is unencrypted preference data -
- * and each server's torrent list is capped and limited to active torrents so a large library
- * doesn't bloat every write.
+ * home screen widget - each widget instance picks which server's snapshot it shows, and in what
+ * order, via [WidgetConfigureActivity]. No credentials are stored here - it is unencrypted
+ * preference data - and each server's torrent list is limited to the top [MAX_WIDGET_TORRENTS]
+ * for each combination of list options a placed widget uses, so a large library doesn't bloat
+ * every write.
  */
 class WidgetStateRepository(private val context: Context) {
 
     private val statesKey = stringPreferencesKey("widget_states_json")
+    private val previewsVersionKey = intPreferencesKey("previews_published_for_version")
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -84,19 +93,22 @@ class WidgetStateRepository(private val context: Context) {
         } ?: emptyMap()
     }
 
-    /** The given server's snapshot, or an empty (no-data) state when [serverId] is null or unknown. */
-    suspend fun stateFor(serverId: String?): WidgetState =
-        serverId?.let { states.first()[it] } ?: WidgetState()
+    /** The app version code the widget picker preview was last published for, see [publishWidgetPreviews]. */
+    suspend fun previewsPublishedForVersion(): Int? = context.widgetDataStore.data.first()[previewsVersionKey]
+
+    suspend fun setPreviewsPublishedForVersion(versionCode: Int) {
+        context.widgetDataStore.edit { it[previewsVersionKey] = versionCode }
+    }
 
     @Volatile
     private var lastWritten: Map<String, WidgetState> = emptyMap()
 
     suspend fun update(serverId: String, serverName: String, torrents: List<Torrent>) {
-        val widgetTorrents = torrents
-            .filter { it.status.isActive }
-            .sortedByDescending { it.addedTimestamp ?: 0L }
-            .take(MAX_WIDGET_TORRENTS)
-            .map { WidgetTorrent(it.id, it.name, it.status, it.progress, it.downloadRate, it.uploadRate) }
+        val all = torrents
+            .map { WidgetTorrent(it.id, it.name, it.status, it.progress, it.downloadRate, it.uploadRate, it.addedTimestamp, it.ratio) }
+        val widgetTorrents = widgetConfiguredListOptions(context)
+            .flatMap { options -> options.select(all) }
+            .distinctBy { it.id }
         val snapshot = WidgetState(
             serverName = serverName,
             downloadingCount = torrents.count { it.status == TorrentStatus.DOWNLOADING },

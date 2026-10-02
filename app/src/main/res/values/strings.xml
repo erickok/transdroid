@@ -119,6 +119,8 @@
     <string name="sort_name">Name</string>
     <string name="sort_download_speed">Download speed</string>
     <string name="sort_ratio">Ratio</string>
+    <string name="sort_ascending">Ascending</string>
+    <string name="sort_descending">Descending</string>
 
     <!-- Add torrent -->
     <string name="add_title">Add torrent</string>
@@ -383,6 +385,8 @@
     <string name="widget_no_data">Open the app to load torrents</string>
     <string name="widget_connected">Connected</string>
     <string name="widget_no_active_torrents">No active torrents</string>
+    <string name="widget_no_torrents">No torrents</string>
+    <string name="widget_preview_server_name">Home server</string>
     <string name="widget_seeding_label">Seed</string>
     <string name="widget_footer_summary">%1$d active · %2$d total</string>
     <string name="widget_refresh">Refresh</string>
@@ -391,8 +395,14 @@
     <string name="widget_starting">Starting torrent…</string>
     <string name="widget_pausing">Pausing torrent…</string>
     <string name="widget_action_failed">Widget action failed: %1$s</string>
-    <string name="widget_configure_title">Choose a server</string>
-    <string name="widget_configure_subtitle">This widget will show torrents from the server you pick</string>
+    <string name="widget_configure_title">Widget settings</string>
+    <string name="widget_configure_server">Server to show</string>
+    <string name="widget_configure_sort">Sort torrents by</string>
+    <string name="widget_configure_direction">Direction</string>
+    <string name="widget_configure_filter">Filter</string>
+    <string name="widget_configure_show_inactive">Show inactive torrents</string>
+    <string name="widget_configure_show_inactive_summary">Also list paused, queued and errored torrents.</string>
+    <string name="widget_configure_done">Done</string>
 
     <!-- Errors -->
     <string name="error_connection">Cannot connect to %1$s</string>

@@ -52,12 +52,12 @@ body{
   border:1px solid var(--w-border); box-shadow:0 10px 26px rgba(0,0,0,.22);
 }
 .tl{ --on:#1a1c15; --muted:#5c6053; --dl:#3f68b8; --seed:#4d7d2a; --track:rgba(0,0,0,.12);
-     --w-bg:rgba(248,250,240,.86); --w-border:rgba(0,0,0,.06); --chip:rgba(0,0,0,.05); }
+     --w-bg:rgba(248,250,240,.86); --w-border:rgba(0,0,0,.06); --chip:rgba(0,0,0,.05); --icon-chip:#303331; }
 .td{ --on:#e6e7dc; --muted:#a4a897; --dl:#adc7ff; --seed:#a0cf72; --track:rgba(255,255,255,.15);
-     --w-bg:rgba(19,21,14,.72); --w-border:rgba(255,255,255,.09); --chip:rgba(255,255,255,.08); }
+     --w-bg:rgba(19,21,14,.72); --w-border:rgba(255,255,255,.09); --chip:rgba(255,255,255,.08); --icon-chip:#3a3d3b; }
 
 .w-head{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
-.w-icon{width:30px; height:30px; border-radius:10px; background:linear-gradient(150deg,#5f9130,#2f5a17); display:grid; place-items:center; color:#fff; flex:none;}
+.w-icon{width:30px; height:30px; border-radius:10px; background:var(--icon-chip); display:grid; place-items:center; color:#fff; flex:none;}
 .w-icon .msr{font-size:19px;}
 .w-title{flex:1; min-width:0;}
 .w-title b{display:block; font-size:13.5px; font-weight:700; color:var(--on); line-height:1.15;}

@@ -10,4 +10,6 @@
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:configure="org.transdroid.widget.WidgetConfigureActivity"
-    android:description="@string/widget_description" />
+    android:widgetFeatures="reconfigurable"
+    android:description="@string/widget_description"
+    android:previewImage="@drawable/widget_preview" />

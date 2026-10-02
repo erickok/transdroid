@@ -63,7 +63,7 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
-        <!-- Lets the user pick which server a newly placed widget instance shows -->
+        <!-- Lets the user pick which server a widget instance shows, and how it sorts its torrents -->
         <activity
             android:name=".widget.WidgetConfigureActivity"
             android:exported="true"

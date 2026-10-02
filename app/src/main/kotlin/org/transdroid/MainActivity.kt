@@ -27,8 +27,11 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import org.transdroid.ui.TransdroidApp
 import org.transdroid.ui.theme.TransdroidTheme
+import org.transdroid.widget.publishWidgetPreviews
 
 /** Intent extra set by the home screen widget's Add button; see [org.transdroid.widget.TransdroidWidget]. */
 const val EXTRA_OPEN_ADD_TORRENT = "open_add_torrent"
@@ -51,6 +54,7 @@ class MainActivity : ComponentActivity() {
             pendingTorrentUrl = savedInstanceState.getString(STATE_PENDING_TORRENT_URL)
             pendingOpenAddTorrent = savedInstanceState.getBoolean(STATE_PENDING_OPEN_ADD_TORRENT)
         }
+        lifecycleScope.launch { publishWidgetPreviews(applicationContext) }
         setContent {
             TransdroidTheme {
                 val windowSizeClass = calculateWindowSizeClass(this)

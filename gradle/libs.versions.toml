@@ -16,7 +16,7 @@ navigationCompose = "2.9.0"
 composeBom = "2025.06.01"
 datastore = "1.1.7"
 work = "2.10.2"
-glance = "1.1.1"
+glance = "1.2.0"
 
 junit = "4.13.2"
 
