@@ -23,6 +23,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,11 +34,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Badge
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
@@ -62,6 +67,8 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -89,6 +96,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -158,6 +166,8 @@ fun EditServerScreen(
                 .distinct(),
         )
     }
+    // A network typed but not yet added as a chip; still saved so it isn't silently dropped.
+    var localSsidDraft by rememberSaveable(existing?.id) { mutableStateOf("") }
     var localHost by rememberSaveable(existing?.id) { mutableStateOf(existing?.localHost.orEmpty()) }
     var localPort by rememberSaveable(existing?.id) { mutableStateOf((existing?.localPort ?: 0).takeIf { it != 0 }?.toString().orEmpty()) }
     var localUseSsl by rememberSaveable(existing?.id) { mutableStateOf(existing?.localUseSsl ?: false) }
@@ -288,7 +298,7 @@ fun EditServerScreen(
         pinnedCertSha256 = pinnedCert,
         customHeaders = customHeaders.trim(),
         localNetworkEnabled = localNetworkEnabled,
-        localNetworkSsids = localSsids,
+        localNetworkSsids = appendSsid(localSsids, localSsidDraft),
         localHost = localHost.trim(),
         localPort = localPort.toIntOrNull() ?: 0,
         localUseSsl = localUseSsl,
@@ -647,7 +657,12 @@ fun EditServerScreen(
                 enabled = localNetworkEnabled,
                 onEnabledChange = { localNetworkEnabled = it },
                 ssids = localSsids,
-                onAddSsid = { localSsids = appendSsid(localSsids, it) },
+                ssidDraft = localSsidDraft,
+                onSsidDraftChange = { localSsidDraft = it },
+                onAddSsid = {
+                    localSsids = appendSsid(localSsids, localSsidDraft)
+                    localSsidDraft = ""
+                },
                 onRemoveSsid = { ssid -> localSsids = localSsids - ssid },
                 onUseCurrentSsid = ::useCurrentSsid,
                 url = localUrl,
@@ -945,16 +960,19 @@ private fun DiscoverySection(state: DiscoveryState, onPick: (DiscoveredDaemon) -
 }
 
 /**
- * Connect using a different address (and optionally login) while the device is on a chosen
+ * Connect using a different address (and optionally login) while the device is on one of the chosen
  * Wi-Fi networks - e.g. a seedbox that's also reachable directly over the LAN. See
  * [ServerProfile.toDaemonConfig].
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LocalNetworkSection(
     enabled: Boolean,
     onEnabledChange: (Boolean) -> Unit,
     ssids: List<String>,
-    onAddSsid: (String) -> Unit,
+    ssidDraft: String,
+    onSsidDraftChange: (String) -> Unit,
+    onAddSsid: () -> Unit,
     onRemoveSsid: (String) -> Unit,
     onUseCurrentSsid: () -> Unit,
     url: String,
@@ -997,44 +1015,46 @@ private fun LocalNetworkSection(
     }
     if (enabled) {
         var localPasswordVisible by remember { mutableStateOf(false) }
-        var ssidToAdd by rememberSaveable { mutableStateOf("") }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             TransdroidTextField(
-                value = ssidToAdd,
-                onValueChange = { ssidToAdd = it },
+                value = ssidDraft,
+                onValueChange = onSsidDraftChange,
                 label = { Text(stringResource(R.string.settings_local_ssid)) },
                 placeholder = { Text(stringResource(R.string.settings_local_ssid_hint)) },
                 leadingIcon = { Icon(Icons.Rounded.Wifi, contentDescription = null) },
+                trailingIcon = if (ssidDraft.isNotBlank()) {
+                    {
+                        IconButton(onClick = onAddSsid) {
+                            Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.settings_local_add_network))
+                        }
+                    }
+                } else null,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { onAddSsid() }),
                 singleLine = true,
                 modifier = Modifier.weight(1f),
             )
-            TextButton(
-                onClick = {
-                    onAddSsid(ssidToAdd)
-                    ssidToAdd = ""
-                },
-                enabled = ssidToAdd.isNotBlank(),
-            ) {
-                Text(stringResource(R.string.settings_local_add_network))
-            }
             TextButton(onClick = onUseCurrentSsid) {
                 Text(stringResource(R.string.settings_local_use_current))
             }
         }
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            ssids.forEach { ssid ->
-                FilterChip(
-                    selected = true,
-                    onClick = { onRemoveSsid(ssid) },
-                    label = { Text(ssid) },
-                    leadingIcon = { Icon(Icons.Rounded.Wifi, contentDescription = null) },
-                    trailingIcon = {
-                        Icon(
-                            Icons.Rounded.Close,
-                            contentDescription = stringResource(R.string.settings_local_remove_ssid, ssid),
-                        )
-                    },
-                )
+        if (ssids.isNotEmpty()) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ssids.forEach { ssid ->
+                    InputChip(
+                        selected = false,
+                        onClick = { onRemoveSsid(ssid) },
+                        label = { Text(ssid) },
+                        leadingIcon = { Icon(Icons.Rounded.Wifi, contentDescription = null, Modifier.size(InputChipDefaults.IconSize)) },
+                        trailingIcon = {
+                            Icon(
+                                Icons.Rounded.Close,
+                                contentDescription = stringResource(R.string.settings_local_remove_ssid, ssid),
+                                Modifier.size(InputChipDefaults.IconSize),
+                            )
+                        },
+                    )
+                }
             }
         }
         Text(
