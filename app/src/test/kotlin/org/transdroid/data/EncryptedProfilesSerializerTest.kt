@@ -143,4 +143,17 @@ class EncryptedProfilesSerializerTest {
 
         assertEquals(ProfilesData(), serializer.readFrom(ByteArrayInputStream(bytes)))
     }
+
+    @Test
+    fun `profiles saved with a single local network SSID still load and apply`() = runTest {
+        val legacyJson = """{"profiles":[{"id":"id-1","name":"Seedbox","type":"TRANSMISSION",""" +
+            """"host":"public.example.org","port":443,"localNetworkEnabled":true,""" +
+            """"localNetworkSsid":"HomeNet","localHost":"192.168.1.10","localPort":9091}]}"""
+        val bytes = cipher.encrypt(legacyJson.encodeToByteArray())
+
+        val profile = serializer.readFrom(ByteArrayInputStream(bytes)).profiles.single()
+
+        assertEquals(emptyList<String>(), profile.localNetworkSsids)
+        assertEquals("192.168.1.10", profile.toDaemonConfig(connectedSsid = "HomeNet").host)
+    }
 }

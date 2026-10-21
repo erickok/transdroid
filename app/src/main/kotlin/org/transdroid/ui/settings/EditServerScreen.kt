@@ -1110,7 +1110,8 @@ private fun LocalNetworkSection(
     }
 }
 
-private fun appendSsid(existing: List<String>, ssid: String): List<String> {
+/** Adds [ssid] (trimmed) to [existing] unless it is blank or already listed. */
+internal fun appendSsid(existing: List<String>, ssid: String): List<String> {
     val normalizedSsid = ssid.trim()
     return if (normalizedSsid.isBlank() || normalizedSsid in existing) existing else existing + normalizedSsid
 }
