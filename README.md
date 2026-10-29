@@ -5,7 +5,7 @@ Transdroid 3
 
 Manage torrents from your Android device.
 
-> **Branch notice** — `master` now contains **Transdroid 3** (currently in alpha), a
+> **Branch notice** — `master` now contains **Transdroid 3** (currently in beta), a
 > ground-up rewrite following the [Transdroid 3 plan](transdroid3_plan.md). The final
 > Transdroid 2 code is preserved at the [`transdroid2-final`](../../tree/transdroid2-final)
 > tag and receives no further development.

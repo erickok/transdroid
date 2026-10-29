@@ -1,0 +1,7 @@
+* Upgrading from Transdroid 2 brings your servers and RSS feeds along
+* Import a Transdroid 2 settings export from Settings > Backup
+* Widget settings: server, sort order and inactive torrents
+* Use local server settings on several Wi-Fi networks
+* Torrent list and details drawn edge to edge
+* Fixed: a widget always showing the first server
+* Fixed: the last torrent hidden under the Add button

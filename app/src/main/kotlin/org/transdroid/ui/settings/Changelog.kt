@@ -30,6 +30,19 @@ data class Release(val version: String, val date: String, val changes: List<Chan
  */
 val CHANGELOG: List<Release> = listOf(
     Release(
+        version = "3.0.0-beta1",
+        date = "October 2026",
+        changes = listOf(
+            ChangelogEntry(ChangeKind.NEW, "Upgrading from Transdroid 2 brings your servers and RSS feeds along"),
+            ChangelogEntry(ChangeKind.NEW, "Import a Transdroid 2 settings export from Settings > Backup"),
+            ChangelogEntry(ChangeKind.NEW, "New widget settings: pick each widget's server, sort order and whether to show inactive torrents"),
+            ChangelogEntry(ChangeKind.NEW, "Use local server settings on several Wi-Fi networks"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Torrent list and details are drawn edge to edge, with the Add button clear of the navigation bar"),
+            ChangelogEntry(ChangeKind.FIXED, "A widget always showed the first server instead of the one picked for it"),
+            ChangelogEntry(ChangeKind.FIXED, "The last torrent in the list sat under the Add button"),
+        ),
+    ),
+    Release(
         version = "3.0.0-alpha6",
         date = "September 2026",
         changes = listOf(
