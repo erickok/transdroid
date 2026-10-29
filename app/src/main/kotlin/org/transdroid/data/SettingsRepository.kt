@@ -25,6 +25,8 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.json.Json
+import org.transdroid.data.legacy.LegacyImportSummary
 import org.transdroid.ui.torrents.TorrentSort
 
 private val Context.settingsDataStore by preferencesDataStore(name = "settings")
@@ -38,6 +40,7 @@ class SettingsRepository(private val context: Context) {
     private val peerSortKey = stringPreferencesKey("peer_sort")
     private val torrentSortKey = stringPreferencesKey("torrent_sort")
     private val torrentSortDescendingKey = booleanPreferencesKey("torrent_sort_descending")
+    private val legacyImportSummaryKey = stringPreferencesKey("legacy_import_summary")
 
     val activeServerId: Flow<String?> = context.settingsDataStore.data.map { it[activeServerKey] }
 
@@ -81,6 +84,27 @@ class SettingsRepository(private val context: Context) {
         context.settingsDataStore.edit { it[notifyFinishedKey] = enabled }
     }
 
+    /** The outcome of the last Transdroid 2 settings import, until the user has seen it. */
+    val legacyImportSummary: Flow<LegacyImportSummary?> = context.settingsDataStore.data.map { prefs ->
+        prefs[legacyImportSummaryKey]?.let {
+            try {
+                summaryJson.decodeFromString(LegacyImportSummary.serializer(), it)
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    suspend fun setLegacyImportSummary(summary: LegacyImportSummary?) {
+        context.settingsDataStore.edit { prefs ->
+            if (summary == null) {
+                prefs.remove(legacyImportSummaryKey)
+            } else {
+                prefs[legacyImportSummaryKey] = summaryJson.encodeToString(LegacyImportSummary.serializer(), summary)
+            }
+        }
+    }
+
     /** Ids of torrents seen unfinished on the last background check, per server profile. */
     fun unfinishedTorrentIds(profileId: String): Flow<Set<String>> =
         context.settingsDataStore.data.map { it[unfinishedKey(profileId)] ?: emptySet() }
@@ -115,6 +139,7 @@ class SettingsRepository(private val context: Context) {
     private fun recentLocationsKey(profileId: String) = stringPreferencesKey("recent_locations_$profileId")
 
     companion object {
+        private val summaryJson = Json { ignoreUnknownKeys = true }
         const val DEFAULT_POLL_INTERVAL_SECONDS = 5
         val POLL_INTERVAL_OPTIONS = listOf(3, 5, 10, 30, 60)
         private const val MAX_RECENT_LOCATIONS = 8

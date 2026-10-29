@@ -34,6 +34,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.serialization.json.Json
+import org.transdroid.data.legacy.LegacyImport
+import org.transdroid.data.legacy.LegacyMergeResult
+import org.transdroid.data.legacy.LegacySettingsConverter
 
 /**
  * Stores server profiles as one JSON document, encrypted at rest with a Keystore-bound
@@ -70,6 +73,20 @@ class ServerProfilesRepository(context: Context, cipher: ProfilesCipher = Keysto
     /** Replaces the entire store with restored backup contents. */
     suspend fun replaceData(newData: ProfilesData) {
         dataStore.updateData { newData }
+    }
+
+    /**
+     * Adds imported Transdroid 2 settings to the store (see [LegacySettingsConverter.merge]).
+     * Merges inside the store's own transaction, so it throws rather than overwriting the
+     * existing data when that can't be read.
+     */
+    suspend fun importLegacy(import: LegacyImport): LegacyMergeResult {
+        lateinit var result: LegacyMergeResult
+        dataStore.updateData { existing ->
+            result = LegacySettingsConverter.merge(existing, import)
+            result.data
+        }
+        return result
     }
 
     suspend fun save(profile: ServerProfile) {

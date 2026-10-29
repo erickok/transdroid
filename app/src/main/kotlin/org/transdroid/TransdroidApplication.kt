@@ -18,8 +18,12 @@ package org.transdroid
 
 import android.app.Application
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import org.transdroid.background.FinishedTorrentsWorker
 import org.transdroid.debug.DebugTools
 import org.transdroid.errorlog.ErrorLog
@@ -29,6 +33,7 @@ import org.transdroid.discovery.CurrentSsid
 import org.transdroid.discovery.LanDiscovery
 import org.transdroid.data.ServerProfilesRepository
 import org.transdroid.data.SettingsRepository
+import org.transdroid.data.legacy.LegacyMigration
 import org.transdroid.protocol.DaemonAdapter
 import org.transdroid.protocol.DaemonAdapterFactory
 import org.transdroid.protocol.rss.RssFetcher
@@ -43,6 +48,7 @@ class AppContainer(context: Context) {
     val settingsRepository = SettingsRepository(context)
     val widgetStateRepository = WidgetStateRepository(context)
     val lanDiscovery = LanDiscovery(context)
+    val legacyMigration = LegacyMigration(context, profilesRepository, settingsRepository)
 
     val httpClient = DaemonAdapterFactory.defaultHttpClient()
     val rssFetcher = RssFetcher(httpClient)
@@ -81,6 +87,8 @@ class AppContainer(context: Context) {
 
 class TransdroidApplication : Application() {
 
+    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     lateinit var container: AppContainer
         private set
 
@@ -93,6 +101,8 @@ class TransdroidApplication : Application() {
             previousHandler?.uncaughtException(thread, throwable)
         }
         container = AppContainer(this)
+        // Brings over servers and feeds when this was installed as an update to Transdroid 2
+        appScope.launch { container.legacyMigration.migrateOnUpgrade() }
         // Re-arm after updates/reboots; KEEP is idempotent. Always scheduled, not just when
         // finished-torrent notifications are on: it's also what keeps a widget pointed at a
         // non-active server fresh in the background - see FinishedTorrentsWorker.doWork().

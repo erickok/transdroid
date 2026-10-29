@@ -48,6 +48,7 @@ import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.MoveToInbox
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Delete
@@ -139,6 +140,8 @@ fun SettingsScreen(
     val restoreWrongPassphrase = stringResource(R.string.backup_wrong_passphrase)
     val restoreInvalid = stringResource(R.string.backup_invalid_file)
     val restoredTemplate = stringResource(R.string.backup_restored)
+    val legacyInvalidMessage = stringResource(R.string.legacy_import_invalid)
+    val legacyNothingMessage = stringResource(R.string.legacy_import_nothing)
     val noEmailAppMessage = stringResource(R.string.pref_sendlog_no_app)
     var showGeoIpDialog by remember { mutableStateOf(false) }
     val geoIpDownloadedMessage = stringResource(R.string.settings_geoip_download_done)
@@ -167,6 +170,34 @@ fun SettingsScreen(
 
     val importPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) importUri = uri
+    }
+
+    // Transdroid 2 exported plain JSON, which file pickers report under various types
+    val legacyImportPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val bytes = withContext(Dispatchers.IO) {
+                try {
+                    context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                } catch (e: Exception) {
+                    ErrorLog.log("Settings", "Transdroid 2 settings read failed", e)
+                    null
+                }
+            }
+            if (bytes == null || bytes.size > MAX_BACKUP_BYTES) {
+                snackbarHostState.showSnackbar(legacyInvalidMessage)
+                return@launch
+            }
+            viewModel.importLegacySettings(bytes) { result ->
+                scope.launch {
+                    when (result) {
+                        SettingsViewModel.LegacyImportResult.Imported -> Unit // The summary dialog shows instead
+                        SettingsViewModel.LegacyImportResult.NothingNew -> snackbarHostState.showSnackbar(legacyNothingMessage)
+                        SettingsViewModel.LegacyImportResult.InvalidFile -> snackbarHostState.showSnackbar(legacyInvalidMessage)
+                    }
+                }
+            }
+        }
     }
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
@@ -417,6 +448,12 @@ fun SettingsScreen(
                         title = stringResource(R.string.backup_import),
                         subtitle = stringResource(R.string.backup_import_summary),
                         onClick = { importPicker.launch(arrayOf("application/octet-stream", "*/*")) },
+                    )
+                    SettingsRow(
+                        icon = Icons.Rounded.MoveToInbox,
+                        title = stringResource(R.string.legacy_import_file),
+                        subtitle = stringResource(R.string.legacy_import_file_summary),
+                        onClick = { legacyImportPicker.launch(arrayOf("application/json", "text/plain", "*/*")) },
                     )
                 }
             }

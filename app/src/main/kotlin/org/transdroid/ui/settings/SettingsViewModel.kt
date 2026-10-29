@@ -44,6 +44,7 @@ import org.transdroid.data.ProfilesData
 import org.transdroid.data.RssFeed
 import org.transdroid.data.SearchProviderConfig
 import org.transdroid.data.ServerProfile
+import org.transdroid.data.legacy.LegacyImportSummary
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.protocol.CertificateFingerprint
 import org.transdroid.protocol.Tls
@@ -338,6 +339,36 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
             onResult(result)
         }
     }
+
+    /** Set after a Transdroid 2 import until the user has dismissed its summary. */
+    val legacyImportSummary: StateFlow<LegacyImportSummary?> = container.settingsRepository.legacyImportSummary
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    fun dismissLegacyImportSummary() {
+        viewModelScope.launch { container.settingsRepository.setLegacyImportSummary(null) }
+    }
+
+    /**
+     * Imports a Transdroid 2 settings.json export. A successful import shows its summary
+     * through [legacyImportSummary]; [onResult] only hears about failures and empty imports.
+     */
+    fun importLegacySettings(bytes: ByteArray, onResult: (LegacyImportResult) -> Unit) {
+        viewModelScope.launch {
+            val result = try {
+                val summary = container.legacyMigration.importExportFile(bytes.decodeToString())
+                if (summary.isEmpty) LegacyImportResult.NothingNew else LegacyImportResult.Imported
+            } catch (e: IllegalArgumentException) {
+                LegacyImportResult.InvalidFile
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                ErrorLog.log("Settings", "Transdroid 2 settings import failed", e)
+                LegacyImportResult.InvalidFile
+            }
+            onResult(result)
+        }
+    }
+
+    enum class LegacyImportResult { Imported, NothingNew, InvalidFile }
 
     /**
      * Builds a "Send error report" email intent. [activeProfile] is passed in already resolved

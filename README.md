@@ -109,6 +109,31 @@ The remaining Transdroid 2 adapters are out of scope for the initial v3 release;
 contributions can revive them once the adapter interface stabilizes — see
 [CONTRIBUTING.md](CONTRIBUTING.md) for how to add an adapter.
 
+Upgrading from Transdroid 2
+===========================
+
+When Transdroid 3 is installed as an update over Transdroid 2 (from the same source, so
+transdroid.org over transdroid.org, F-Droid over F-Droid, Play over Play), it brings your
+settings over on first start:
+
+* **Servers** for Transmission, qBittorrent, rTorrent (including Xirvik seedboxes) and Deluge
+  Web UI, with their local-network (Wi-Fi) settings. The active server stays the same.
+* **RSS feeds**.
+
+Not carried over:
+
+* Servers for clients Transdroid 3 doesn't support, Deluge daemon (RPC) connections and
+  Dediseedbox presets. The app lists what it skipped.
+* Trusted self-signed certificates. Transdroid 2 stored them in a format Transdroid 3 can't use,
+  so open each such server in Settings and run **Test connection** to trust its certificate again.
+* Web search sites, notification and download-directory settings.
+
+Once imported, the old settings file (which held passwords unencrypted) is deleted.
+
+Installing from a different source than before, or on a new phone? Export your settings in
+Transdroid 2 (Settings → System → Export settings → To file), then in Transdroid 3 use
+**Settings → Backup → Import Transdroid 2 settings** and pick the `settings.json` file.
+
 Building
 ========
 

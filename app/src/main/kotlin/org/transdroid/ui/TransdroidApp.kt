@@ -21,9 +21,11 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -40,6 +42,7 @@ import org.transdroid.ui.settings.AboutScreen
 import org.transdroid.ui.settings.ChangelogScreen
 import org.transdroid.ui.settings.EditSearchIndexerScreen
 import org.transdroid.ui.settings.EditServerScreen
+import org.transdroid.ui.settings.LegacyImportDialog
 import org.transdroid.ui.settings.SettingsScreen
 import org.transdroid.ui.settings.SettingsViewModel
 import org.transdroid.ui.torrents.TorrentDetailsScreen
@@ -104,6 +107,12 @@ fun TransdroidApp(
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             torrentsViewModel.pollLoop()
         }
+    }
+
+    // After a Transdroid 2 import, on whichever screen is showing
+    val legacyImportSummary by settingsViewModel.legacyImportSummary.collectAsStateWithLifecycle()
+    legacyImportSummary?.let { summary ->
+        LegacyImportDialog(summary = summary, onDismiss = settingsViewModel::dismissLegacyImportSummary)
     }
 
     NavHost(
