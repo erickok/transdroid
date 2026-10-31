@@ -82,7 +82,19 @@ enum class TorrentFilter {
         PAUSED -> torrent.status == TorrentStatus.PAUSED
         ERROR -> torrent.status == TorrentStatus.ERROR
     }
+
+    companion object {
+        /** Tolerates a stored name that no longer exists, e.g. after a constant is renamed. */
+        fun fromName(name: String?): TorrentFilter = entries.firstOrNull { it.name == name } ?: ALL
+    }
 }
+
+/** The drawer filters in use on one server; remembered per server across app starts. */
+data class TorrentFilters(
+    val status: TorrentFilter = TorrentFilter.ALL,
+    val labels: Set<String> = emptySet(),
+    val trackers: Set<String> = emptySet(),
+)
 
 enum class TorrentSort {
     DATE_ADDED, NAME, DOWNLOAD_SPEED, RATIO;
@@ -157,6 +169,21 @@ data class TorrentsUiState(
     val availableTrackers: List<String>
         get() = torrents.flatMap { it.trackers }.distinct().sorted()
 
+    /**
+     * The drawer's labels: [availableLabels] plus any selected label no torrent carries (anymore),
+     * e.g. a filter restored from a previous session, so it can still be turned off.
+     */
+    val drawerLabels: List<String>
+        get() = (availableLabels + (labelFilters - NO_LABEL)).distinct().sorted()
+
+    /** Whether the drawer shows its "No label" bucket; also when selected, for the same reason. */
+    val drawerShowsNoLabel: Boolean
+        get() = hasUnlabeledTorrents || NO_LABEL in labelFilters
+
+    /** The drawer's trackers: [availableTrackers] plus any selected one, see [drawerLabels]. */
+    val drawerTrackers: List<String>
+        get() = (availableTrackers + trackerFilters).distinct().sorted()
+
     val visibleTorrents: List<Torrent>
         get() = torrents
             .filter {
@@ -204,9 +231,15 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
             combine(container.activeProfile, container.profilesRepository.profiles) { active, all ->
                 active to all
             }.collect { (profile, all) ->
+                // Restore the filters last used on this server, on a cold start or a server switch
+                val restored = profile?.takeIf { it.id != _ui.value.activeProfile?.id }
+                    ?.let { container.settingsRepository.torrentFilters(it.id).first() }
                 _ui.update { state ->
                     val switched = profile?.id != state.activeProfile?.id
                     state.copy(
+                        filter = restored?.status ?: state.filter,
+                        labelFilters = restored?.labels ?: state.labelFilters,
+                        trackerFilters = restored?.trackers ?: state.trackerFilters,
                         activeProfile = profile,
                         allProfiles = all,
                         profilesLoaded = true,
@@ -330,6 +363,15 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
 
     fun setFilter(filter: TorrentFilter) {
         _ui.update { it.copy(filter = filter) }
+        saveFilters()
+    }
+
+    /** Remembers the active server's drawer filters, so a cold start shows the same list. */
+    private fun saveFilters() {
+        val state = _ui.value
+        val profileId = state.activeProfile?.id ?: return
+        val filters = TorrentFilters(state.filter, state.labelFilters, state.trackerFilters)
+        viewModelScope.launch { container.settingsRepository.setTorrentFilters(profileId, filters) }
     }
 
     /**
@@ -347,12 +389,14 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         _ui.update {
             it.copy(labelFilters = if (label in it.labelFilters) it.labelFilters - label else it.labelFilters + label)
         }
+        saveFilters()
     }
 
     fun toggleTrackerFilter(tracker: String) {
         _ui.update {
             it.copy(trackerFilters = if (tracker in it.trackerFilters) it.trackerFilters - tracker else it.trackerFilters + tracker)
         }
+        saveFilters()
     }
 
     fun setNameQuery(query: String) {

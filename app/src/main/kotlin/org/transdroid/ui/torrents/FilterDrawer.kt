@@ -143,10 +143,10 @@ fun FilterDrawerContent(
                 )
             }
 
-            if (ui.availableLabels.isNotEmpty()) {
+            if (ui.drawerLabels.isNotEmpty() || NO_LABEL in ui.labelFilters) {
                 DrawerDivider()
                 SectionTitle(stringResource(R.string.drawer_labels_header))
-                ui.availableLabels.forEach { label ->
+                ui.drawerLabels.forEach { label ->
                     val (dotColor, _) = labelColor(label)
                     DrawerItemRow(
                         dotColor = dotColor,
@@ -156,7 +156,7 @@ fun FilterDrawerContent(
                         onClick = { onToggleLabel(label) },
                     )
                 }
-                if (ui.hasUnlabeledTorrents) {
+                if (ui.drawerShowsNoLabel) {
                     DrawerItemRow(
                         hollowDot = true,
                         label = stringResource(R.string.drawer_no_label),
@@ -167,10 +167,10 @@ fun FilterDrawerContent(
                 }
             }
 
-            if (ui.availableTrackers.isNotEmpty()) {
+            if (ui.drawerTrackers.isNotEmpty()) {
                 DrawerDivider()
                 SectionTitle(stringResource(R.string.drawer_trackers_header))
-                ui.availableTrackers.forEach { tracker ->
+                ui.drawerTrackers.forEach { tracker ->
                     DrawerItemRow(
                         icon = Icons.Rounded.Public,
                         label = tracker,

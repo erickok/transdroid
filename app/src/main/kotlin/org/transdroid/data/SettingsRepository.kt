@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import org.transdroid.data.legacy.LegacyImportSummary
+import org.transdroid.ui.torrents.TorrentFilter
+import org.transdroid.ui.torrents.TorrentFilters
 import org.transdroid.ui.torrents.TorrentSort
 
 private val Context.settingsDataStore by preferencesDataStore(name = "settings")
@@ -76,6 +78,27 @@ class SettingsRepository(private val context: Context) {
             it[torrentSortDescendingKey] = descending
         }
     }
+
+    /** The drawer filters last used on a server, restored when the app starts or switches to it. */
+    fun torrentFilters(profileId: String): Flow<TorrentFilters> = context.settingsDataStore.data.map { prefs ->
+        TorrentFilters(
+            status = TorrentFilter.fromName(prefs[filterStatusKey(profileId)]),
+            labels = prefs[filterLabelsKey(profileId)] ?: emptySet(),
+            trackers = prefs[filterTrackersKey(profileId)] ?: emptySet(),
+        )
+    }
+
+    suspend fun setTorrentFilters(profileId: String, filters: TorrentFilters) {
+        context.settingsDataStore.edit { prefs ->
+            prefs[filterStatusKey(profileId)] = filters.status.name
+            prefs[filterLabelsKey(profileId)] = filters.labels
+            prefs[filterTrackersKey(profileId)] = filters.trackers
+        }
+    }
+
+    private fun filterStatusKey(profileId: String) = stringPreferencesKey("filter_status_$profileId")
+    private fun filterLabelsKey(profileId: String) = stringSetPreferencesKey("filter_labels_$profileId")
+    private fun filterTrackersKey(profileId: String) = stringSetPreferencesKey("filter_trackers_$profileId")
 
     /** Whether the background finished-torrent check and its notifications are enabled. */
     val notifyFinished: Flow<Boolean> = context.settingsDataStore.data.map { it[notifyFinishedKey] ?: false }
