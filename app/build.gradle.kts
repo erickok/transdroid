@@ -62,6 +62,12 @@ android {
         }
     }
 
+    // CI already runs the full lint on every push, so release builds skip their own lint pass,
+    // which took several minutes per release
+    lint {
+        checkReleaseBuilds = false
+    }
+
     // F-Droid requirement: no Google-signed dependency metadata blob in the APK
     dependenciesInfo {
         includeInApk = false
