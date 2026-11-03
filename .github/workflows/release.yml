@@ -56,8 +56,13 @@ jobs:
 
       # Only the "full" flavor's release build - "lite" (the Play Store variant) isn't
       # needed until we're off the beta track and actually publishing there.
+      # Always attached as transdroid.apk, so one permanent link serves the newest release:
+      # https://github.com/erickok/transdroid/releases/latest/download/transdroid.apk
+      # (GitHub's "latest" skips pre-releases, so betas never replace it)
       - name: Assemble APK
-        run: ./gradlew :app:assembleFullRelease
+        run: |
+          ./gradlew :app:assembleFullRelease
+          cp app/build/outputs/apk/full/release/app-full-release.apk transdroid.apk
 
       # The release notes are the same as the in-app "What's new" and F-Droid changelog for
       # this versionCode, plus a link to the full diff since the previous release
@@ -86,7 +91,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.tag_name || github.ref_name }}
-          files: app/build/outputs/apk/full/release/*.apk
+          files: transdroid.apk
           body_path: release-notes.md
           # Any suffixed version (3.0.0-alpha6, -beta1, -rc1) is a pre-release
           prerelease: ${{ contains(inputs.tag_name || github.ref_name, '-') }}
