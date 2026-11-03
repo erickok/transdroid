@@ -182,6 +182,8 @@ Libraries used in the project:
    JetBrains and contributors, Apache License 2.0
 *  [OkHttp](https://square.github.io/okhttp/) —
    Square, Inc., Apache License 2.0
+*  [xmlutil](https://github.com/pdvrieze/xmlutil) —
+   Paul de Vrieze, Apache License 2.0
 *  [MaxMind DB Reader for Java](https://github.com/maxmind/MaxMind-DB-Reader-java) —
    MaxMind, Inc., Apache License 2.0
 
