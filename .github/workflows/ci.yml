@@ -18,6 +18,10 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          # By default only the repository's default branch saves the cache; development
+          # happens on transdroid3, so save from there too, or every run starts cold
+          cache-read-only: ${{ github.ref != 'refs/heads/transdroid3' && github.ref != 'refs/heads/master' }}
 
       - name: Protocol tests
         run: ./gradlew :protocol:test
