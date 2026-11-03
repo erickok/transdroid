@@ -53,6 +53,7 @@ import org.transdroid.protocol.discovery.DiscoveredDaemon
 import org.transdroid.protocol.search.TorznabProvider
 import org.transdroid.ui.torrents.UiError
 import org.transdroid.ui.torrents.toUiError
+import org.transdroid.update.AppUpdateWorker
 
 sealed class TestState {
     data object Idle : TestState()
@@ -299,6 +300,16 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
      */
     fun setNotifyFinished(enabled: Boolean) {
         viewModelScope.launch { container.settingsRepository.setNotifyFinished(enabled) }
+    }
+
+    val checkUpdates: StateFlow<Boolean> = container.settingsRepository.checkUpdates
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+
+    fun setCheckUpdates(enabled: Boolean) {
+        viewModelScope.launch {
+            container.settingsRepository.setCheckUpdates(enabled)
+            AppUpdateWorker.schedule(container.appContext, enabled)
+        }
     }
 
     /** Serializes and encrypts the whole settings store with the given passphrase. */

@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.transdroid.background.FinishedTorrentsWorker
 import org.transdroid.debug.DebugTools
@@ -37,12 +38,13 @@ import org.transdroid.data.legacy.LegacyMigration
 import org.transdroid.protocol.DaemonAdapter
 import org.transdroid.protocol.DaemonAdapterFactory
 import org.transdroid.protocol.rss.RssFetcher
+import org.transdroid.update.AppUpdateWorker
 import org.transdroid.widget.WidgetStateRepository
 
 /** Lightweight manual dependency container; see the v3 plan's "keep DI light" decision. */
 class AppContainer(context: Context) {
 
-    private val appContext = context.applicationContext
+    val appContext: Context = context.applicationContext
 
     val profilesRepository = ServerProfilesRepository(context)
     val settingsRepository = SettingsRepository(context)
@@ -103,6 +105,10 @@ class TransdroidApplication : Application() {
         container = AppContainer(this)
         // Brings over servers and feeds when this was installed as an update to Transdroid 2
         appScope.launch { container.legacyMigration.migrateOnUpgrade() }
+        // Daily release check, for builds not updated through an app store
+        appScope.launch {
+            AppUpdateWorker.schedule(this@TransdroidApplication, container.settingsRepository.checkUpdates.first())
+        }
         // Re-arm after updates/reboots; KEEP is idempotent. Always scheduled, not just when
         // finished-torrent notifications are on: it's also what keeps a widget pointed at a
         // non-active server fresh in the background - see FinishedTorrentsWorker.doWork().

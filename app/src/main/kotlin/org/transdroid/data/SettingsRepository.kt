@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import org.transdroid.data.legacy.LegacyImportSummary
+import org.transdroid.update.AppUpdates
+import org.transdroid.update.LatestRelease
 import org.transdroid.ui.torrents.TorrentFilter
 import org.transdroid.ui.torrents.TorrentFilters
 import org.transdroid.ui.torrents.TorrentSort
@@ -43,6 +45,10 @@ class SettingsRepository(private val context: Context) {
     private val torrentSortKey = stringPreferencesKey("torrent_sort")
     private val torrentSortDescendingKey = booleanPreferencesKey("torrent_sort_descending")
     private val legacyImportSummaryKey = stringPreferencesKey("legacy_import_summary")
+    private val checkUpdatesKey = booleanPreferencesKey("check_updates")
+    private val latestReleaseCodeKey = intPreferencesKey("latest_release_code")
+    private val latestReleaseNameKey = stringPreferencesKey("latest_release_name")
+    private val notifiedUpdateCodeKey = intPreferencesKey("notified_update_code")
 
     val activeServerId: Flow<String?> = context.settingsDataStore.data.map { it[activeServerKey] }
 
@@ -105,6 +111,36 @@ class SettingsRepository(private val context: Context) {
 
     suspend fun setNotifyFinished(enabled: Boolean) {
         context.settingsDataStore.edit { it[notifyFinishedKey] = enabled }
+    }
+
+    /** Whether to look for new releases; only offered where updatecheck_available is set. */
+    val checkUpdates: Flow<Boolean> = context.settingsDataStore.data.map { it[checkUpdatesKey] ?: true }
+
+    suspend fun setCheckUpdates(enabled: Boolean) {
+        context.settingsDataStore.edit { it[checkUpdatesKey] = enabled }
+    }
+
+    /** The newest release the last update check found, whether or not it's newer than this build. */
+    val latestRelease: Flow<LatestRelease?> = context.settingsDataStore.data.map { prefs ->
+        val code = prefs[latestReleaseCodeKey] ?: return@map null
+        LatestRelease(code, prefs[latestReleaseNameKey].orEmpty())
+    }
+
+    /**
+     * Stores what an update check found, and returns whether to notify about it (see
+     * [AppUpdates.shouldNotify]), marking it notified.
+     */
+    suspend fun recordLatestRelease(release: LatestRelease, installedVersionCode: Int): Boolean {
+        var notify = false
+        context.settingsDataStore.edit { prefs ->
+            prefs[latestReleaseCodeKey] = release.versionCode
+            prefs[latestReleaseNameKey] = release.versionName
+            if (AppUpdates.shouldNotify(release, installedVersionCode, prefs[notifiedUpdateCodeKey])) {
+                prefs[notifiedUpdateCodeKey] = release.versionCode
+                notify = true
+            }
+        }
+        return notify
     }
 
     /** The outcome of the last Transdroid 2 settings import, until the user has seen it. */

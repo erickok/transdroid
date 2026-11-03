@@ -58,6 +58,7 @@ import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SettingsBackupRestore
 import androidx.compose.material.icons.rounded.SwapVert
+import androidx.compose.material.icons.rounded.SystemUpdate
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -125,6 +126,7 @@ fun SettingsScreen(
     val context = LocalContext.current
     val searchAvailable = booleanResource(R.bool.search_available)
     val rssAvailable = booleanResource(R.bool.rss_available)
+    val updateCheckAvailable = booleanResource(R.bool.updatecheck_available)
 
     var showAddFeedDialog by remember { mutableStateOf(false) }
     var deletingFeed by remember { mutableStateOf<RssFeed?>(null) }
@@ -366,6 +368,18 @@ fun SettingsScreen(
                             )
                         },
                     )
+                    if (updateCheckAvailable) {
+                        val checkUpdates by viewModel.checkUpdates.collectAsStateWithLifecycle()
+                        SettingsRow(
+                            icon = Icons.Rounded.SystemUpdate,
+                            title = stringResource(R.string.settings_check_updates),
+                            subtitle = stringResource(R.string.settings_check_updates_summary),
+                            onClick = null,
+                            trailing = {
+                                Switch(checked = checkUpdates, onCheckedChange = viewModel::setCheckUpdates)
+                            },
+                        )
+                    }
                 }
             }
 

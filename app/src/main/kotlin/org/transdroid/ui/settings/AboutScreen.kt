@@ -40,6 +40,7 @@ import androidx.compose.material.icons.rounded.Gavel
 import androidx.compose.material.icons.rounded.Group
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.NewReleases
+import androidx.compose.material.icons.rounded.SystemUpdate
 import androidx.compose.material.icons.rounded.VolunteerActivism
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -51,6 +52,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -64,9 +66,12 @@ import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import org.transdroid.BuildConfig
 import org.transdroid.R
+import org.transdroid.appContainer
+import org.transdroid.update.AppUpdates
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,6 +79,10 @@ fun AboutScreen(onOpenChangelog: () -> Unit, onBack: () -> Unit) {
     val context = LocalContext.current
     val donateAvailable = booleanResource(R.bool.donate_available)
     val websiteLinkAvailable = booleanResource(R.bool.website_link_available)
+    val updateCheckAvailable = booleanResource(R.bool.updatecheck_available)
+    val latestRelease by context.appContainer.settingsRepository.latestRelease.collectAsStateWithLifecycle(null)
+    // Also shown when the update notification couldn't be (no permission, or dismissed)
+    val newerRelease = latestRelease?.takeIf { updateCheckAvailable && it.versionCode > BuildConfig.VERSION_CODE }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val noBrowserAppMessage = stringResource(R.string.settings_no_browser_app)
@@ -155,6 +164,15 @@ fun AboutScreen(onOpenChangelog: () -> Unit, onBack: () -> Unit) {
 
             item {
                 SettingsSection(stringResource(R.string.settings_about_section)) {
+                    newerRelease?.let { release ->
+                        SettingsRow(
+                            icon = Icons.Rounded.SystemUpdate,
+                            title = stringResource(R.string.about_update_available, release.versionName),
+                            subtitle = stringResource(R.string.about_update_available_subtitle),
+                            onClick = { openUrl(AppUpdates.DOWNLOAD_URL) },
+                            trailing = externalLinkIcon,
+                        )
+                    }
                     SettingsRow(
                         icon = Icons.Rounded.Gavel,
                         title = stringResource(R.string.about_license),
