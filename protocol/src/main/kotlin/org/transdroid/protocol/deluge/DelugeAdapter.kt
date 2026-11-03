@@ -19,6 +19,7 @@ package org.transdroid.protocol.deluge
 import java.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
@@ -382,6 +383,7 @@ class DelugeAdapter(
      * count, and some servers (embedded/minimal HTTP stacks) don't handle a chunked request
      * body with no Content-Length at all.
      */
+    @OptIn(ExperimentalSerializationApi::class)
     private fun jsonRequestBody(value: JsonObject): RequestBody {
         val buffer = Buffer()
         json.encodeToStream(value, buffer.outputStream())
@@ -403,6 +405,7 @@ class DelugeAdapter(
      * socket, so that must stay on IO too or it risks a NetworkOnMainThreadException on
      * whatever dispatcher called the adapter.
      */
+    @OptIn(ExperimentalSerializationApi::class)
     private suspend fun <R> parseBody(response: okhttp3.Response, reply: KSerializer<R>): R {
         val body = response.body ?: throw DaemonException.UnexpectedResponse("Empty Deluge response")
         return withContext(Dispatchers.IO) {

@@ -33,13 +33,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ListAlt
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.ErrorOutline
-import androidx.compose.material.icons.rounded.ListAlt
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Search
@@ -442,7 +442,7 @@ private fun DrawerItemRow(
 }
 
 private fun TorrentFilter.icon(): ImageVector = when (this) {
-    TorrentFilter.ALL -> Icons.Rounded.ListAlt
+    TorrentFilter.ALL -> Icons.AutoMirrored.Rounded.ListAlt
     TorrentFilter.DOWNLOADING -> Icons.Rounded.Download
     TorrentFilter.SEEDING -> Icons.Rounded.Upload
     TorrentFilter.COMPLETED -> Icons.Rounded.CheckCircle

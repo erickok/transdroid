@@ -38,15 +38,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.DriveFileMove
+import androidx.compose.material.icons.automirrored.rounded.Label
+import androidx.compose.material.icons.automirrored.rounded.LabelOff
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Description
-import androidx.compose.material.icons.rounded.DriveFileMove
 import androidx.compose.material.icons.rounded.GroupOff
-import androidx.compose.material.icons.rounded.Label
-import androidx.compose.material.icons.rounded.LabelOff
 import androidx.compose.material.icons.rounded.Lan
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Pause
@@ -422,7 +422,7 @@ private fun DetailsSummary(
                     contentColor = MaterialTheme.colorScheme.primary,
                 ),
             ) {
-                Icon(Icons.Rounded.DriveFileMove, contentDescription = stringResource(R.string.details_set_location))
+                Icon(Icons.AutoMirrored.Rounded.DriveFileMove, contentDescription = stringResource(R.string.details_set_location))
             }
         }
 
@@ -488,7 +488,7 @@ private fun DetailsHeader(torrent: Torrent) {
                 DetailPill(torrent.status.leadingIcon, torrent.statusLabel())
                 val label = torrent.labels.firstOrNull()
                 DetailPill(
-                    if (label != null) Icons.Rounded.Label else Icons.Rounded.LabelOff,
+                    if (label != null) Icons.AutoMirrored.Rounded.Label else Icons.AutoMirrored.Rounded.LabelOff,
                     label ?: stringResource(R.string.drawer_no_label),
                 )
             }

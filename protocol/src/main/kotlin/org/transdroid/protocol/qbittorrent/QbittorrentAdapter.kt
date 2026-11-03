@@ -18,6 +18,7 @@ package org.transdroid.protocol.qbittorrent
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -389,6 +390,7 @@ class QbittorrentAdapter(
      * Decodes a JSON array response directly off the body stream, without first buffering
      * the whole reply into a String — matters for a server with thousands of torrents.
      */
+    @OptIn(ExperimentalSerializationApi::class)
     private suspend inline fun <reified T> Response.decodeJsonListOrThrow(what: String): List<T> =
         withContext(Dispatchers.IO) {
             val stream = body?.byteStream() ?: return@withContext emptyList()
@@ -404,6 +406,7 @@ class QbittorrentAdapter(
      * off the body stream - needed because sync/torrentPeers wraps its peer map in an outer
      * object alongside rid/full_update/show_flags, unlike the plain-array list endpoints.
      */
+    @OptIn(ExperimentalSerializationApi::class)
     private suspend inline fun <reified T> Response.decodeJsonObjectOrThrow(what: String): T =
         withContext(Dispatchers.IO) {
             val stream = body?.byteStream()

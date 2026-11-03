@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import java.util.UUID
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -79,6 +80,7 @@ data class RssUiState(
         get() = visibleEntries.count { it.isNew }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class) // flatMapLatest
 class RssViewModel(private val container: AppContainer) : ViewModel() {
 
     val feeds: StateFlow<List<RssFeed>> = container.profilesRepository.feeds

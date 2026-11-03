@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -82,6 +83,7 @@ data class SearchUiState(
             .sortedWith(sort.comparator)
 }
 
+@OptIn(ExperimentalCoroutinesApi::class) // flatMapLatest
 class SearchViewModel(private val container: AppContainer) : ViewModel() {
 
     val providers: StateFlow<List<SearchProviderConfig>> = container.profilesRepository.searchProviders

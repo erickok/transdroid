@@ -21,6 +21,7 @@ import java.io.PushbackInputStream
 import java.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -45,14 +46,14 @@ import org.transdroid.protocol.DaemonAdapter
 import org.transdroid.protocol.DaemonConfig
 import org.transdroid.protocol.DaemonException
 import org.transdroid.protocol.FilePriority
-import org.transdroid.protocol.internal.executeOnIo
-import org.transdroid.protocol.internal.trackerHost
 import org.transdroid.protocol.Peer
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
 import org.transdroid.protocol.Tracker
 import org.transdroid.protocol.TrackerStatus
+import org.transdroid.protocol.internal.executeOnIo
+import org.transdroid.protocol.internal.trackerHost
 
 /**
  * Adapter for the Transmission RPC protocol (JSON over HTTP POST), as documented in
@@ -300,6 +301,7 @@ class TransmissionAdapter(
      * on the socket, so that must stay on IO too or it risks a NetworkOnMainThreadException
      * on whatever dispatcher called the adapter.
      */
+    @OptIn(ExperimentalSerializationApi::class)
     private suspend fun <R> decodeResponse(stream: InputStream, reply: KSerializer<R>): R = withContext(Dispatchers.IO) {
         val pushback = PushbackInputStream(stream, PEEK_BYTES)
         val peek = ByteArray(PEEK_BYTES)
@@ -339,6 +341,7 @@ class TransmissionAdapter(
      * count, and some servers (embedded/minimal HTTP stacks) don't handle a chunked request
      * body with no Content-Length at all.
      */
+    @OptIn(ExperimentalSerializationApi::class)
     private fun jsonRequestBody(value: JsonObject): RequestBody {
         val buffer = Buffer()
         json.encodeToStream(value, buffer.outputStream())

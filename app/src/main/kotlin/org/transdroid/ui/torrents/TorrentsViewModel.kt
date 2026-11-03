@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -221,6 +222,7 @@ data class TorrentsUiState(
         get() = torrents.count { it.status == TorrentStatus.SEEDING }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class) // flatMapLatest
 class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
 
     private val _ui = MutableStateFlow(TorrentsUiState())

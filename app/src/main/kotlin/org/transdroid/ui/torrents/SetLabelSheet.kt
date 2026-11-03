@@ -34,10 +34,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Label
+import androidx.compose.material.icons.automirrored.rounded.LabelOff
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Label
-import androidx.compose.material.icons.rounded.LabelOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -116,7 +116,7 @@ fun SetLabelSheet(
             if (trimmedFilter.isEmpty()) {
                 item {
                     LabelRow(
-                        icon = Icons.Rounded.LabelOff,
+                        icon = Icons.AutoMirrored.Rounded.LabelOff,
                         name = stringResource(R.string.drawer_no_label),
                         count = null,
                         selected = selected == null,
@@ -186,7 +186,7 @@ private fun LabelFilterField(value: String, onValueChange: (String) -> Unit, mod
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Icon(Icons.Rounded.Label, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+        Icon(Icons.AutoMirrored.Rounded.Label, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         Box(Modifier.weight(1f)) {
             if (value.isEmpty()) {
                 Text(

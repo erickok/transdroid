@@ -38,9 +38,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -54,7 +54,7 @@ import org.transdroid.protocol.Torrent
 
 /**
  * Wraps a torrent list row with swipe gestures: swipe right to start/pause, swipe left to
- * remove (always behind the usual confirmation dialog). The row snaps back either way;
+ * remove (always behind the usual confirmation dialog). The row slides back either way;
  * the result shows up through the next refresh.
  */
 @Composable
@@ -67,23 +67,18 @@ fun SwipeableTorrentRow(
     val currentTorrent by rememberUpdatedState(torrent)
     val currentToggle by rememberUpdatedState(onToggleStartPause)
     val currentRemove by rememberUpdatedState(onRequestRemove)
-    // material3 consults confirmValueChange both when the drag crosses the threshold and
-    // again when the release settles, so one swipe would otherwise act twice
-    val lastFiredAt = remember { longArrayOf(0L) }
-    val state = rememberSwipeToDismissBoxState(
-        confirmValueChange = { value ->
-            val now = System.currentTimeMillis()
-            if (value != SwipeToDismissBoxValue.Settled && now - lastFiredAt[0] > SWIPE_DEBOUNCE_MILLIS) {
-                lastFiredAt[0] = now
-                when (value) {
-                    SwipeToDismissBoxValue.StartToEnd -> currentToggle(currentTorrent)
-                    SwipeToDismissBoxValue.EndToStart -> currentRemove(currentTorrent)
-                    SwipeToDismissBoxValue.Settled -> {}
-                }
-            }
-            false
-        },
-    )
+    val state = rememberSwipeToDismissBoxState()
+    // Once a swipe has fully settled on a side: act on it once, then animate the row back.
+    // Keyed on settledValue, which (unlike currentValue) doesn't change until the reset
+    // animation has finished, so the effect can't cancel its own reset halfway.
+    LaunchedEffect(state.settledValue) {
+        when (state.settledValue) {
+            SwipeToDismissBoxValue.StartToEnd -> currentToggle(currentTorrent)
+            SwipeToDismissBoxValue.EndToStart -> currentRemove(currentTorrent)
+            SwipeToDismissBoxValue.Settled -> return@LaunchedEffect
+        }
+        state.reset()
+    }
     SwipeToDismissBox(
         state = state,
         backgroundContent = {
@@ -111,8 +106,6 @@ fun SwipeableTorrentRow(
         content()
     }
 }
-
-private const val SWIPE_DEBOUNCE_MILLIS = 600L
 
 /** The same removal confirmation as the details screen, for the list's swipe gesture. */
 @Composable

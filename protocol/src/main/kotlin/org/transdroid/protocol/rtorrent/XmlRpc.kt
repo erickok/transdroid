@@ -26,6 +26,7 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
+import nl.adaptivity.xmlutil.ExperimentalXmlUtilApi
 import nl.adaptivity.xmlutil.core.KtXmlReader
 import org.transdroid.protocol.DaemonException
 
@@ -78,6 +79,7 @@ internal object XmlRpc {
      * XML" message - seedboxes (e.g. Xirvik/ruTorrent behind nginx) commonly answer a wrong
      * mount path or an expired session with an HTML page instead of a fault response.
      */
+    @OptIn(ExperimentalXmlUtilApi::class)
     fun <T> decodeResponse(stream: InputStream, result: DeserializationStrategy<T>): T {
         val pushback = PushbackInputStream(stream, PEEK_BYTES)
         val peek = ByteArray(PEEK_BYTES)

@@ -75,7 +75,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -105,7 +105,7 @@ fun AddTorrentScreen(
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val clipboard = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
 
     val initialIsFile = initialUrl.startsWith("content:") || initialUrl.startsWith("file:")
@@ -224,9 +224,13 @@ fun AddTorrentScreen(
                     },
                     isError = invalidInput,
                     onPaste = {
-                        clipboard.getText()?.text?.let {
-                            url = it
-                            invalidInput = false
+                        scope.launch {
+                            clipboard.getClipEntry()?.clipData?.takeIf { it.itemCount > 0 }
+                                ?.getItemAt(0)?.text?.toString()
+                                ?.let {
+                                    url = it
+                                    invalidInput = false
+                                }
                         }
                     },
                 )
