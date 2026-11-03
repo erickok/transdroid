@@ -8,16 +8,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
         with:
           # By default only the repository's default branch saves the cache; development
           # happens on transdroid3, so save from there too, or every run starts cold
@@ -33,7 +33,7 @@ jobs:
         run: ./gradlew :app:assembleFullDebug :app:assembleLiteDebug
 
       - name: Upload debug APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: transdroid-full-debug
           path: app/build/outputs/apk/full/debug/app-full-debug.apk
