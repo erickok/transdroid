@@ -30,6 +30,15 @@ data class Release(val version: String, val date: String, val changes: List<Chan
  */
 val CHANGELOG: List<Release> = listOf(
     Release(
+        version = "3.0.0-beta2",
+        date = "November 2026",
+        changes = listOf(
+            ChangelogEntry(ChangeKind.NEW, "Your status, label and tracker filters are remembered per server, also after restarting the app"),
+            ChangelogEntry(ChangeKind.NEW, "Builds from transdroid.org and GitHub check daily for a new version, which can be turned off in Settings"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Notifications and themed launcher icons show the Transdroid badge"),
+        ),
+    ),
+    Release(
         version = "3.0.0-beta1",
         date = "October 2026",
         changes = listOf(

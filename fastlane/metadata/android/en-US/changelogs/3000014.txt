@@ -1,0 +1,3 @@
+* Your status, label and tracker filters are remembered per server
+* Builds from transdroid.org and GitHub check daily for new versions
+* New notification and themed launcher icons with the Transdroid badge
