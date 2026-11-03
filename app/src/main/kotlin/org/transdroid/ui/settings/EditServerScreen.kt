@@ -121,160 +121,27 @@ fun EditServerScreen(
     onBack: () -> Unit,
 ) {
     val profiles by viewModel.profiles.collectAsStateWithLifecycle()
-    val testState by viewModel.testState.collectAsStateWithLifecycle()
-    val certificateState by viewModel.certificateState.collectAsStateWithLifecycle()
     val discovery by viewModel.discovery.collectAsStateWithLifecycle()
     val xirvikState by viewModel.xirvikState.collectAsStateWithLifecycle()
     val existing = profiles.firstOrNull { it.id == serverId }
-
-    var name by rememberSaveable(existing?.id) { mutableStateOf(existing?.name.orEmpty()) }
-    var type by rememberSaveable(existing?.id) { mutableStateOf(existing?.type ?: DaemonType.TRANSMISSION) }
-    var host by rememberSaveable(existing?.id) { mutableStateOf(existing?.host.orEmpty()) }
-    var port by rememberSaveable(existing?.id) {
-        mutableStateOf((existing?.port ?: DaemonType.TRANSMISSION.defaultPort).toString())
-    }
-    var useSsl by rememberSaveable(existing?.id) { mutableStateOf(existing?.useSsl ?: false) }
-    var path by rememberSaveable(existing?.id) { mutableStateOf(existing?.path.orEmpty()) }
-    var username by rememberSaveable(existing?.id) { mutableStateOf(existing?.username.orEmpty()) }
-    var password by rememberSaveable(existing?.id) { mutableStateOf(existing?.password.orEmpty()) }
-    var apiKey by rememberSaveable(existing?.id) { mutableStateOf(existing?.apiKey.orEmpty()) }
-    var pinnedCert by rememberSaveable(existing?.id) { mutableStateOf(existing?.pinnedCertSha256.orEmpty()) }
-    var customHeaders by rememberSaveable(existing?.id) { mutableStateOf(existing?.customHeaders.orEmpty()) }
-    var hostError by remember { mutableStateOf(false) }
-    var portError by remember { mutableStateOf(false) }
+    // Keyed on the loaded profile: the profiles flow hasn't emitted on first composition
+    val form = rememberSaveable(existing?.id, saver = EditServerFormState.Saver) { EditServerFormState(existing) }
     var showHelp by remember { mutableStateOf(false) }
-    var passwordVisible by remember { mutableStateOf(false) }
-    var apiKeyVisible by remember { mutableStateOf(false) }
-
-    // Single-URL-first connection entry (Transmission/qBittorrent/Deluge web UIs, and rTorrent's
-    // ruTorrent-URL sub-mode): the field below is the primary input, and host/port/ssl/path are
-    // derived from it. "Override individual parts" reveals those raw fields for direct editing.
-    var url by rememberSaveable(existing?.id) {
-        mutableStateOf(composeServerUrl(existing?.useSsl ?: false, existing?.host.orEmpty(), existing?.port ?: type.defaultPort, existing?.path.orEmpty()))
-    }
-    var overridden by rememberSaveable(existing?.id) { mutableStateOf(false) }
-    var rtorrentUseUrl by rememberSaveable(existing?.id) { mutableStateOf(true) }
-
-    // Local-network connection override: same URL-first entry as the main connection above,
-    // just without the "override individual parts" escape hatch - see ServerProfile.toDaemonConfig.
-    var localNetworkEnabled by rememberSaveable(existing?.id) { mutableStateOf(existing?.localNetworkEnabled ?: false) }
-    var localSsids by rememberSaveable(existing?.id) {
-        mutableStateOf(
-            (existing?.localNetworkSsids.orEmpty() + existing?.localNetworkSsid.orEmpty())
-                .map(String::trim)
-                .filter(String::isNotBlank)
-                .distinct(),
-        )
-    }
-    // A network typed but not yet added as a chip; still saved so it isn't silently dropped.
-    var localSsidDraft by rememberSaveable(existing?.id) { mutableStateOf("") }
-    var localHost by rememberSaveable(existing?.id) { mutableStateOf(existing?.localHost.orEmpty()) }
-    var localPort by rememberSaveable(existing?.id) { mutableStateOf((existing?.localPort ?: 0).takeIf { it != 0 }?.toString().orEmpty()) }
-    var localUseSsl by rememberSaveable(existing?.id) { mutableStateOf(existing?.localUseSsl ?: false) }
-    var localPath by rememberSaveable(existing?.id) { mutableStateOf(existing?.localPath.orEmpty()) }
-    var localUsername by rememberSaveable(existing?.id) { mutableStateOf(existing?.localUsername.orEmpty()) }
-    var localPassword by rememberSaveable(existing?.id) { mutableStateOf(existing?.localPassword.orEmpty()) }
-    var localUrl by rememberSaveable(existing?.id) {
-        mutableStateOf(
-            if (existing?.localHost.isNullOrBlank()) "" else
-                composeServerUrl(existing?.localUseSsl ?: false, existing?.localHost.orEmpty(), existing?.localPort ?: 80, existing?.localPath.orEmpty())
-        )
-    }
-
-    fun applyParsedLocalUrl(raw: String) {
-        localUrl = raw
-        val parsed = parseServerUrl(raw)
-        if (parsed != null) {
-            localUseSsl = parsed.secure
-            localHost = parsed.host
-            localPort = parsed.port.toString()
-            localPath = parsed.path
-        }
-    }
-
-    val context = LocalContext.current
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) CurrentSsid.read(context)?.let { localSsids = appendSsid(localSsids, it) }
-    }
-    fun useCurrentSsid() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED
-        ) {
-            CurrentSsid.read(context)?.let { localSsids = appendSsid(localSsids, it) }
-        } else {
-            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-    }
 
     // Xirvik seedbox quick setup (new servers only): a hostname + credentials probe against
     // Xirvik's auto-config endpoint to discover the account's per-user SCGI mount path, mirroring
     // Transdroid 2's XirvikSettingsActivity/RetrieveXirvikAutoConfTask. A hit or a miss both fill in
     // the rest of the form below, exactly like picking a LAN-discovered daemon does.
-    var xirvikExpanded by rememberSaveable(existing?.id) { mutableStateOf(false) }
-    var xirvikServer by rememberSaveable(existing?.id) { mutableStateOf("") }
-    var xirvikUser by rememberSaveable(existing?.id) { mutableStateOf("") }
-    var xirvikPass by rememberSaveable(existing?.id) { mutableStateOf("") }
-
     LaunchedEffect(xirvikState) {
-        val detectedPath = when (val state = xirvikState) {
-            is XirvikState.Success -> state.path
-            XirvikState.Failed -> ""
-            else -> return@LaunchedEffect
+        when (val state = xirvikState) {
+            is XirvikState.Success -> form.applyXirvik(state.path, found = true)
+            XirvikState.Failed -> form.applyXirvik("", found = false)
+            else -> {}
         }
-        type = DaemonType.RTORRENT
-        host = xirvikServer.trim()
-        port = "443"
-        useSsl = true
-        path = detectedPath
-        username = xirvikUser.trim()
-        password = xirvikPass
-        overridden = false
-        rtorrentUseUrl = true
-        url = composeServerUrl(true, xirvikServer.trim(), 443, detectedPath)
-        if (name.isBlank()) name = "Xirvik"
-        hostError = false
-        xirvikExpanded = xirvikState is XirvikState.Failed
-    }
-
-    fun applyParsedUrl(raw: String) {
-        url = raw
-        val parsed = parseServerUrl(raw)
-        if (parsed != null) {
-            useSsl = parsed.secure
-            host = parsed.host
-            port = parsed.port.toString()
-            path = parsed.path
-            hostError = false
-        }
-    }
-
-    fun toggleOverride(enabled: Boolean) {
-        if (!enabled) url = composeServerUrl(useSsl, host, port.toIntOrNull() ?: type.defaultPort, path)
-        overridden = enabled
     }
 
     DisposableEffect(Unit) {
         onDispose { viewModel.resetTestState() }
-    }
-
-    if (showHelp) {
-        AlertDialog(
-            onDismissRequest = { showHelp = false },
-            title = { Text(stringResource(R.string.settings_connection_help)) },
-            text = {
-                Column(Modifier.verticalScroll(rememberScrollState())) {
-                    HelpEntry(R.string.settings_help_lan_title, R.string.settings_help_lan)
-                    HelpEntry(R.string.settings_help_domain_title, R.string.settings_help_domain)
-                    HelpEntry(R.string.settings_help_portal_title, R.string.settings_help_portal)
-                    HelpEntry(R.string.settings_help_selfsigned_title, R.string.settings_help_selfsigned)
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = { showHelp = false }) { Text(stringResource(R.string.settings_help_close)) }
-            },
-        )
     }
 
     // Adding a new server: look around the local network for daemons to offer.
@@ -284,33 +151,8 @@ fun EditServerScreen(
         LaunchedEffect(Unit) { viewModel.startLanScan() }
     }
 
-    fun buildProfile() = ServerProfile(
-        id = serverId ?: viewModel.newProfileId(),
-        name = name.trim(),
-        type = type,
-        host = host.trim(),
-        port = port.toIntOrNull() ?: type.defaultPort,
-        useSsl = useSsl,
-        path = path.trim(),
-        username = username.trim(),
-        password = password,
-        apiKey = apiKey.trim(),
-        pinnedCertSha256 = pinnedCert,
-        customHeaders = customHeaders.trim(),
-        localNetworkEnabled = localNetworkEnabled,
-        localNetworkSsids = appendSsid(localSsids, localSsidDraft),
-        localHost = localHost.trim(),
-        localPort = localPort.toIntOrNull() ?: 0,
-        localUseSsl = localUseSsl,
-        localPath = localPath.trim(),
-        localUsername = localUsername.trim(),
-        localPassword = localPassword,
-    )
-
-    fun validate(): Boolean {
-        hostError = host.isBlank()
-        portError = port.toIntOrNull() !in 1..65535
-        return !hostError && !portError
+    if (showHelp) {
+        ConnectionHelpDialog(onDismiss = { showHelp = false })
     }
 
     Scaffold(
@@ -355,444 +197,443 @@ fun EditServerScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             if (serverId == null && (discovery.scanning || discovery.found.isNotEmpty())) {
-                DiscoverySection(
-                    state = discovery,
-                    onPick = { daemon ->
-                        type = daemon.type
-                        host = daemon.host
-                        port = daemon.port.toString()
-                        useSsl = false
-                        path = ""
-                        overridden = false
-                        rtorrentUseUrl = true
-                        url = composeServerUrl(false, daemon.host, daemon.port, "")
-                        if (name.isBlank()) name = daemon.type.displayName()
-                        hostError = false
-                        portError = false
-                    },
-                )
+                DiscoverySection(state = discovery, onPick = form::applyDiscovered)
             }
-
             if (serverId == null) {
                 XirvikSetupSection(
-                    expanded = xirvikExpanded,
-                    onExpandedChange = { xirvikExpanded = it },
-                    server = xirvikServer,
-                    onServerChange = { xirvikServer = it },
-                    username = xirvikUser,
-                    onUsernameChange = { xirvikUser = it },
-                    password = xirvikPass,
-                    onPasswordChange = { xirvikPass = it },
+                    expanded = form.xirvikExpanded,
+                    onExpandedChange = { form.xirvikExpanded = it },
+                    server = form.xirvikServer,
+                    onServerChange = { form.xirvikServer = it },
+                    username = form.xirvikUser,
+                    onUsernameChange = { form.xirvikUser = it },
+                    password = form.xirvikPass,
+                    onPasswordChange = { form.xirvikPass = it },
                     state = xirvikState,
-                    onDetect = { viewModel.detectXirvik(xirvikServer.trim(), xirvikUser.trim(), xirvikPass) },
+                    onDetect = { viewModel.detectXirvik(form.xirvikServer.trim(), form.xirvikUser.trim(), form.xirvikPass) },
                 )
             }
-
-            Text(
-                stringResource(R.string.settings_server_section_title),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            ConnectionSection(form)
+            CredentialsSection(form)
+            LocalNetworkFormSection(form)
+            TestAndSaveSection(
+                form = form,
+                viewModel = viewModel,
+                profileId = { serverId ?: viewModel.newProfileId() },
+                onSaved = onBack,
             )
-            TransdroidTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text(stringResource(R.string.settings_name)) },
-                leadingIcon = { Icon(Icons.Rounded.Badge, contentDescription = null) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
+        }
+    }
+}
+
+@Composable
+private fun ConnectionHelpDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_connection_help)) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                HelpEntry(R.string.settings_help_lan_title, R.string.settings_help_lan)
+                HelpEntry(R.string.settings_help_domain_title, R.string.settings_help_domain)
+                HelpEntry(R.string.settings_help_portal_title, R.string.settings_help_portal)
+                HelpEntry(R.string.settings_help_selfsigned_title, R.string.settings_help_selfsigned)
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.settings_help_close)) }
+        },
+    )
+}
+
+/** Name, client type and where to reach it: a single URL, or the raw parts. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ConnectionSection(form: EditServerFormState) {
+    Text(
+        stringResource(R.string.settings_server_section_title),
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    TransdroidTextField(
+        value = form.name,
+        onValueChange = { form.name = it },
+        label = { Text(stringResource(R.string.settings_name)) },
+        leadingIcon = { Icon(Icons.Rounded.Badge, contentDescription = null) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    ClientTypeMenu(selected = form.type, onSelect = form::selectType)
+
+    if (form.type == DaemonType.RTORRENT) {
+        Text(
+            stringResource(R.string.settings_rtorrent_how),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(
+                selected = form.rtorrentUseUrl,
+                onClick = { form.rtorrentUseUrl = true },
+                label = { Text(stringResource(R.string.settings_rtorrent_mode_url)) },
             )
+            FilterChip(
+                selected = !form.rtorrentUseUrl,
+                onClick = form::useScgi,
+                label = { Text(stringResource(R.string.settings_rtorrent_mode_scgi)) },
+            )
+        }
+    }
 
-            var typeMenuExpanded by remember { mutableStateOf(false) }
-            ExposedDropdownMenuBox(
-                expanded = typeMenuExpanded,
-                onExpandedChange = { typeMenuExpanded = it },
-            ) {
-                TransdroidTextField(
-                    value = type.displayName(),
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text(stringResource(R.string.settings_type)) },
-                    leadingIcon = { Icon(Icons.Rounded.Dns, contentDescription = null) },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = typeMenuExpanded) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .menuAnchor(),
-                )
-                ExposedDropdownMenu(
-                    expanded = typeMenuExpanded,
-                    onDismissRequest = { typeMenuExpanded = false },
-                ) {
-                    DaemonType.entries.forEach { daemonType ->
-                        DropdownMenuItem(
-                            text = { Text(daemonType.displayName()) },
-                            onClick = {
-                                // Only nudge the port to the new type's default while nothing real has
-                                // been entered yet - once a host/URL is set, switching type shouldn't
-                                // silently rewrite a port the user (or a pasted URL) explicitly gave.
-                                if (host.isBlank() && port == type.defaultPort.toString()) {
-                                    port = daemonType.defaultPort.toString()
-                                }
-                                type = daemonType
-                                if (!overridden) {
-                                    url = composeServerUrl(useSsl, host, port.toIntOrNull() ?: daemonType.defaultPort, path)
-                                }
-                                typeMenuExpanded = false
-                            },
-                        )
-                    }
-                }
-            }
-
-            if (type == DaemonType.RTORRENT) {
-                Text(
-                    stringResource(R.string.settings_rtorrent_how),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterChip(
-                        selected = rtorrentUseUrl,
-                        onClick = { rtorrentUseUrl = true },
-                        label = { Text(stringResource(R.string.settings_rtorrent_mode_url)) },
-                    )
-                    FilterChip(
-                        selected = !rtorrentUseUrl,
-                        onClick = {
-                            rtorrentUseUrl = false
-                            useSsl = false
-                        },
-                        label = { Text(stringResource(R.string.settings_rtorrent_mode_scgi)) },
-                    )
-                }
-            }
-
-            val showUrlSection = type != DaemonType.RTORRENT || rtorrentUseUrl
-            if (showUrlSection) {
-                TransdroidTextField(
-                    value = url,
-                    onValueChange = ::applyParsedUrl,
-                    label = {
-                        Text(
-                            stringResource(
-                                if (type == DaemonType.RTORRENT) R.string.settings_rturl_label else R.string.settings_url_label
-                            )
-                        )
-                    },
-                    placeholder = { Text(stringResource(R.string.settings_url_placeholder)) },
-                    leadingIcon = { Icon(Icons.Rounded.Link, contentDescription = null) },
-                    singleLine = true,
-                    isError = hostError,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+    if (form.showUrlSection) {
+        TransdroidTextField(
+            value = form.url,
+            onValueChange = form::applyParsedUrl,
+            label = {
                 Text(
                     stringResource(
-                        if (type == DaemonType.RTORRENT) R.string.settings_rturl_hint
-                        else R.string.settings_url_hint,
-                        type.displayName(),
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-
-                if (!overridden) {
-                    DetectedSettingsPanel(secure = useSsl, host = host, port = port, path = path)
-                    TextButton(onClick = { toggleOverride(true) }) {
-                        Text(stringResource(R.string.settings_override_parts))
-                        Spacer(Modifier.width(2.dp))
-                        Icon(
-                            Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                    }
-                }
-            }
-
-            val showManualFields = overridden || (type == DaemonType.RTORRENT && !rtorrentUseUrl)
-            if (showManualFields) {
-                TransdroidTextField(
-                    value = host,
-                    onValueChange = {
-                        host = it
-                        hostError = false
-                        if (!overridden) url = composeServerUrl(useSsl, host, port.toIntOrNull() ?: type.defaultPort, path)
-                    },
-                    label = {
-                        Text(
-                            stringResource(
-                                if (type == DaemonType.RTORRENT && !rtorrentUseUrl) R.string.settings_scgi_host
-                                else R.string.settings_host
-                            )
-                        )
-                    },
-                    leadingIcon = { Icon(Icons.Rounded.Dns, contentDescription = null) },
-                    isError = hostError,
-                    supportingText = if (hostError) {
-                        { Text(stringResource(R.string.settings_invalid_host)) }
-                    } else {
-                        null
-                    },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                TransdroidTextField(
-                    value = port,
-                    onValueChange = {
-                        port = it
-                        portError = false
-                    },
-                    label = {
-                        Text(
-                            stringResource(
-                                if (type == DaemonType.RTORRENT && !rtorrentUseUrl) R.string.settings_scgi_port
-                                else R.string.settings_port
-                            )
-                        )
-                    },
-                    leadingIcon = { Icon(Icons.Rounded.Numbers, contentDescription = null) },
-                    isError = portError,
-                    supportingText = {
-                        Text(
-                            stringResource(
-                                if (portError) R.string.settings_invalid_port else R.string.settings_port_hint
-                            )
-                        )
-                    },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                if (type != DaemonType.RTORRENT || rtorrentUseUrl) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Switch(
-                            checked = useSsl,
-                            onCheckedChange = { checked ->
-                                val oldDefault = if (useSsl) 443 else 80
-                                val newDefault = if (checked) 443 else 80
-                                if (port == oldDefault.toString()) port = newDefault.toString()
-                                useSsl = checked
-                            },
-                        )
-                        Spacer(Modifier.fillMaxWidth(0.05f))
-                        Text(stringResource(R.string.settings_use_ssl))
-                    }
-                }
-                TransdroidTextField(
-                    value = path,
-                    onValueChange = { path = it },
-                    label = {
-                        Text(
-                            stringResource(
-                                if (type == DaemonType.RTORRENT && !rtorrentUseUrl) R.string.settings_scgi_path
-                                else R.string.settings_path
-                            )
-                        )
-                    },
-                    placeholder = {
-                        Text(
-                            stringResource(
-                                when (type) {
-                                    DaemonType.TRANSMISSION -> R.string.settings_path_hint_transmission
-                                    DaemonType.QBITTORRENT -> R.string.settings_path_hint_qbittorrent
-                                    DaemonType.RTORRENT -> R.string.settings_path_hint_rtorrent
-                                    DaemonType.DELUGE -> R.string.settings_path_hint_deluge
-                                }
-                            )
-                        )
-                    },
-                    leadingIcon = { Icon(Icons.Rounded.Folder, contentDescription = null) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                if (type == DaemonType.RTORRENT && !rtorrentUseUrl) {
-                    Text(
-                        stringResource(R.string.settings_scgi_hint),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        if (form.type == DaemonType.RTORRENT) R.string.settings_rturl_label else R.string.settings_url_label
                     )
-                }
-            }
-
-            TransdroidTextField(
-                value = username,
-                onValueChange = { username = it },
-                label = { Text(stringResource(R.string.settings_username)) },
-                leadingIcon = { Icon(Icons.Rounded.Person, contentDescription = null) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            TransdroidTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text(stringResource(R.string.settings_password)) },
-                leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = null) },
-                trailingIcon = { PasswordVisibilityToggle(visible = passwordVisible, onToggle = { passwordVisible = !passwordVisible }) },
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            if (type == DaemonType.QBITTORRENT) {
-                TransdroidTextField(
-                    value = apiKey,
-                    onValueChange = { apiKey = it },
-                    label = { Text(stringResource(R.string.settings_qbittorrent_api_key)) },
-                    supportingText = { Text(stringResource(R.string.settings_qbittorrent_api_key_summary)) },
-                    leadingIcon = { Icon(Icons.Rounded.Key, contentDescription = null) },
-                    trailingIcon = { PasswordVisibilityToggle(visible = apiKeyVisible, onToggle = { apiKeyVisible = !apiKeyVisible }) },
-                    visualTransformation = if (apiKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            placeholder = { Text(stringResource(R.string.settings_url_placeholder)) },
+            leadingIcon = { Icon(Icons.Rounded.Link, contentDescription = null) },
+            singleLine = true,
+            isError = form.hostError,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Text(
+            stringResource(
+                if (form.type == DaemonType.RTORRENT) R.string.settings_rturl_hint else R.string.settings_url_hint,
+                form.type.displayName(),
+            ),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        if (!form.overridden) {
+            DetectedSettingsPanel(secure = form.useSsl, host = form.host, port = form.port, path = form.path)
+            TextButton(onClick = { form.toggleOverride(true) }) {
+                Text(stringResource(R.string.settings_override_parts))
+                Spacer(Modifier.width(2.dp))
+                Icon(
+                    Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
                 )
             }
-            TransdroidTextField(
-                value = customHeaders,
-                onValueChange = { customHeaders = it },
-                label = { Text(stringResource(R.string.settings_custom_headers)) },
-                placeholder = { Text(stringResource(R.string.settings_custom_headers_hint)) },
-                supportingText = { Text(stringResource(R.string.settings_custom_headers_summary)) },
-                minLines = 2,
-                modifier = Modifier.fillMaxWidth(),
-            )
+        }
+    }
 
-            LocalNetworkSection(
-                enabled = localNetworkEnabled,
-                onEnabledChange = { localNetworkEnabled = it },
-                ssids = localSsids,
-                ssidDraft = localSsidDraft,
-                onSsidDraftChange = { localSsidDraft = it },
-                onAddSsid = {
-                    localSsids = appendSsid(localSsids, localSsidDraft)
-                    localSsidDraft = ""
-                },
-                onRemoveSsid = { ssid -> localSsids = localSsids - ssid },
-                onUseCurrentSsid = ::useCurrentSsid,
-                url = localUrl,
-                onUrlChange = ::applyParsedLocalUrl,
-                secure = localUseSsl,
-                host = localHost,
-                port = localPort,
-                path = localPath,
-                username = localUsername,
-                onUsernameChange = { localUsername = it },
-                password = localPassword,
-                onPasswordChange = { localPassword = it },
-            )
+    if (form.showManualFields) {
+        ManualConnectionFields(form)
+    }
+}
 
-            if (pinnedCert.isNotBlank()) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        stringResource(
-                            R.string.settings_cert_pinned,
-                            pinnedCert.uppercase().chunked(2).take(8).joinToString(":"),
-                        ),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.weight(1f),
-                    )
-                    TextButton(onClick = { pinnedCert = "" }) {
-                        Text(stringResource(R.string.settings_cert_forget))
-                    }
-                }
-            }
-
-            when (val state = testState) {
-                TestState.Idle -> {}
-                TestState.Testing -> Row(verticalAlignment = Alignment.CenterVertically) {
-                    CircularProgressIndicator(Modifier.height(20.dp).fillMaxWidth(0.06f))
-                    Text(
-                        "  " + stringResource(R.string.settings_testing),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                is TestState.Success -> Text(
-                    stringResource(R.string.settings_test_success, state.versionInfo),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                is TestState.Failure -> Column {
-                    Text(
-                        state.error.message(),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    if (state.error == UiError.Ssl && useSsl) {
-                        Spacer(Modifier.height(4.dp))
-                        OutlinedButton(
-                            onClick = {
-                                if (validate()) {
-                                    viewModel.fetchCertificate(host.trim(), port.toIntOrNull() ?: type.defaultSslPort)
-                                }
-                            },
-                            enabled = certificateState != CertificateState.Fetching,
-                        ) {
-                            Text(stringResource(R.string.settings_trust_cert))
-                        }
-                    }
-                }
-            }
-
-            when (val certState = certificateState) {
-                CertificateState.Idle -> {}
-                CertificateState.Fetching -> Text(
-                    stringResource(R.string.settings_cert_fetching),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                is CertificateState.Failed -> Text(
-                    certState.error.message(),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                is CertificateState.Fetched -> AlertDialog(
-                    onDismissRequest = { viewModel.dismissCertificate() },
-                    title = { Text(stringResource(R.string.settings_trust_cert_title)) },
-                    text = {
-                        Column {
-                            Text(stringResource(R.string.settings_trust_cert_message))
-                            Spacer(Modifier.height(8.dp))
-                            Text(certState.fingerprint.subject, style = MaterialTheme.typography.bodySmall)
-                            Spacer(Modifier.height(8.dp))
-                            Text(
-                                certState.fingerprint.displayFingerprint,
-                                style = MaterialTheme.typography.bodySmall,
-                                fontFamily = FontFamily.Monospace,
-                            )
-                        }
-                    },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            pinnedCert = certState.fingerprint.sha256
-                            viewModel.dismissCertificate()
-                            viewModel.testConnection(buildProfile())
-                        }) { Text(stringResource(R.string.settings_trust_cert_confirm)) }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { viewModel.dismissCertificate() }) {
-                            Text(stringResource(R.string.details_cancel))
-                        }
-                    },
-                )
-            }
-
-            Spacer(Modifier.height(4.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(
-                    onClick = { if (validate()) viewModel.testConnection(buildProfile()) },
-                    enabled = testState != TestState.Testing,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(stringResource(R.string.settings_test))
-                }
-                Button(
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ClientTypeMenu(selected: DaemonType, onSelect: (DaemonType) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
+        TransdroidTextField(
+            value = selected.displayName(),
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(R.string.settings_type)) },
+            leadingIcon = { Icon(Icons.Rounded.Dns, contentDescription = null) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(),
+        )
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DaemonType.entries.forEach { daemonType ->
+                DropdownMenuItem(
+                    text = { Text(daemonType.displayName()) },
                     onClick = {
-                        if (validate()) {
-                            viewModel.save(buildProfile())
-                            onBack()
+                        onSelect(daemonType)
+                        expanded = false
+                    },
+                )
+            }
+        }
+    }
+}
+
+/** Host, port, HTTPS and path as separate fields: "override individual parts", or rTorrent SCGI. */
+@Composable
+private fun ManualConnectionFields(form: EditServerFormState) {
+    TransdroidTextField(
+        value = form.host,
+        onValueChange = form::changeHost,
+        label = { Text(stringResource(if (form.usesScgi) R.string.settings_scgi_host else R.string.settings_host)) },
+        leadingIcon = { Icon(Icons.Rounded.Dns, contentDescription = null) },
+        isError = form.hostError,
+        supportingText = if (form.hostError) {
+            { Text(stringResource(R.string.settings_invalid_host)) }
+        } else {
+            null
+        },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    TransdroidTextField(
+        value = form.port,
+        onValueChange = form::changePort,
+        label = { Text(stringResource(if (form.usesScgi) R.string.settings_scgi_port else R.string.settings_port)) },
+        leadingIcon = { Icon(Icons.Rounded.Numbers, contentDescription = null) },
+        isError = form.portError,
+        supportingText = {
+            Text(stringResource(if (form.portError) R.string.settings_invalid_port else R.string.settings_port_hint))
+        },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    if (!form.usesScgi) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Switch(checked = form.useSsl, onCheckedChange = form::changeSsl)
+            Spacer(Modifier.fillMaxWidth(0.05f))
+            Text(stringResource(R.string.settings_use_ssl))
+        }
+    }
+    TransdroidTextField(
+        value = form.path,
+        onValueChange = { form.path = it },
+        label = { Text(stringResource(if (form.usesScgi) R.string.settings_scgi_path else R.string.settings_path)) },
+        placeholder = {
+            Text(
+                stringResource(
+                    when (form.type) {
+                        DaemonType.TRANSMISSION -> R.string.settings_path_hint_transmission
+                        DaemonType.QBITTORRENT -> R.string.settings_path_hint_qbittorrent
+                        DaemonType.RTORRENT -> R.string.settings_path_hint_rtorrent
+                        DaemonType.DELUGE -> R.string.settings_path_hint_deluge
+                    }
+                )
+            )
+        },
+        leadingIcon = { Icon(Icons.Rounded.Folder, contentDescription = null) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    if (form.usesScgi) {
+        Text(
+            stringResource(R.string.settings_scgi_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+/** Username, password, qBittorrent's API key and custom headers. */
+@Composable
+private fun CredentialsSection(form: EditServerFormState) {
+    var passwordVisible by remember { mutableStateOf(false) }
+    var apiKeyVisible by remember { mutableStateOf(false) }
+    TransdroidTextField(
+        value = form.username,
+        onValueChange = { form.username = it },
+        label = { Text(stringResource(R.string.settings_username)) },
+        leadingIcon = { Icon(Icons.Rounded.Person, contentDescription = null) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    TransdroidTextField(
+        value = form.password,
+        onValueChange = { form.password = it },
+        label = { Text(stringResource(R.string.settings_password)) },
+        leadingIcon = { Icon(Icons.Rounded.Lock, contentDescription = null) },
+        trailingIcon = { PasswordVisibilityToggle(visible = passwordVisible, onToggle = { passwordVisible = !passwordVisible }) },
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    if (form.type == DaemonType.QBITTORRENT) {
+        TransdroidTextField(
+            value = form.apiKey,
+            onValueChange = { form.apiKey = it },
+            label = { Text(stringResource(R.string.settings_qbittorrent_api_key)) },
+            supportingText = { Text(stringResource(R.string.settings_qbittorrent_api_key_summary)) },
+            leadingIcon = { Icon(Icons.Rounded.Key, contentDescription = null) },
+            trailingIcon = { PasswordVisibilityToggle(visible = apiKeyVisible, onToggle = { apiKeyVisible = !apiKeyVisible }) },
+            visualTransformation = if (apiKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+    TransdroidTextField(
+        value = form.customHeaders,
+        onValueChange = { form.customHeaders = it },
+        label = { Text(stringResource(R.string.settings_custom_headers)) },
+        placeholder = { Text(stringResource(R.string.settings_custom_headers_hint)) },
+        supportingText = { Text(stringResource(R.string.settings_custom_headers_summary)) },
+        minLines = 2,
+        modifier = Modifier.fillMaxWidth(),
+    )
+}
+
+/** The local Wi-Fi override, including reading the current network's name. */
+@Composable
+private fun LocalNetworkFormSection(form: EditServerFormState) {
+    val context = LocalContext.current
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) CurrentSsid.read(context)?.let(form::addSsid)
+    }
+    LocalNetworkSection(
+        enabled = form.localNetworkEnabled,
+        onEnabledChange = { form.localNetworkEnabled = it },
+        ssids = form.localSsids,
+        ssidDraft = form.localSsidDraft,
+        onSsidDraftChange = { form.localSsidDraft = it },
+        onAddSsid = form::addSsidDraft,
+        onRemoveSsid = form::removeSsid,
+        onUseCurrentSsid = {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                CurrentSsid.read(context)?.let(form::addSsid)
+            } else {
+                locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        },
+        url = form.localUrl,
+        onUrlChange = form::applyParsedLocalUrl,
+        secure = form.localUseSsl,
+        host = form.localHost,
+        port = form.localPort,
+        path = form.localPath,
+        username = form.localUsername,
+        onUsernameChange = { form.localUsername = it },
+        password = form.localPassword,
+        onPasswordChange = { form.localPassword = it },
+    )
+}
+
+/** The pinned certificate, connection test results and the Test/Save buttons. */
+@Composable
+private fun TestAndSaveSection(
+    form: EditServerFormState,
+    viewModel: SettingsViewModel,
+    profileId: () -> String,
+    onSaved: () -> Unit,
+) {
+    val testState by viewModel.testState.collectAsStateWithLifecycle()
+    val certificateState by viewModel.certificateState.collectAsStateWithLifecycle()
+
+    if (form.pinnedCert.isNotBlank()) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                stringResource(
+                    R.string.settings_cert_pinned,
+                    form.pinnedCert.uppercase().chunked(2).take(8).joinToString(":"),
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.weight(1f),
+            )
+            TextButton(onClick = { form.pinnedCert = "" }) {
+                Text(stringResource(R.string.settings_cert_forget))
+            }
+        }
+    }
+
+    when (val state = testState) {
+        TestState.Idle -> {}
+        TestState.Testing -> Row(verticalAlignment = Alignment.CenterVertically) {
+            CircularProgressIndicator(Modifier.height(20.dp).fillMaxWidth(0.06f))
+            Text(
+                "  " + stringResource(R.string.settings_testing),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        is TestState.Success -> Text(
+            stringResource(R.string.settings_test_success, state.versionInfo),
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        is TestState.Failure -> Column {
+            Text(
+                state.error.message(),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            if (state.error == UiError.Ssl && form.useSsl) {
+                Spacer(Modifier.height(4.dp))
+                OutlinedButton(
+                    onClick = {
+                        if (form.validate()) {
+                            viewModel.fetchCertificate(form.host.trim(), form.port.toIntOrNull() ?: form.type.defaultSslPort)
                         }
                     },
-                    modifier = Modifier.weight(1f),
+                    enabled = certificateState != CertificateState.Fetching,
                 ) {
-                    Text(stringResource(R.string.settings_save))
+                    Text(stringResource(R.string.settings_trust_cert))
                 }
             }
+        }
+    }
+
+    when (val certState = certificateState) {
+        CertificateState.Idle -> {}
+        CertificateState.Fetching -> Text(
+            stringResource(R.string.settings_cert_fetching),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        is CertificateState.Failed -> Text(
+            certState.error.message(),
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        is CertificateState.Fetched -> AlertDialog(
+            onDismissRequest = { viewModel.dismissCertificate() },
+            title = { Text(stringResource(R.string.settings_trust_cert_title)) },
+            text = {
+                Column {
+                    Text(stringResource(R.string.settings_trust_cert_message))
+                    Spacer(Modifier.height(8.dp))
+                    Text(certState.fingerprint.subject, style = MaterialTheme.typography.bodySmall)
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        certState.fingerprint.displayFingerprint,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontFamily = FontFamily.Monospace,
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    form.pinnedCert = certState.fingerprint.sha256
+                    viewModel.dismissCertificate()
+                    viewModel.testConnection(form.toProfile(profileId()))
+                }) { Text(stringResource(R.string.settings_trust_cert_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.dismissCertificate() }) {
+                    Text(stringResource(R.string.details_cancel))
+                }
+            },
+        )
+    }
+
+    Spacer(Modifier.height(4.dp))
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedButton(
+            onClick = { if (form.validate()) viewModel.testConnection(form.toProfile(profileId())) },
+            enabled = testState != TestState.Testing,
+            modifier = Modifier.weight(1f),
+        ) {
+            Text(stringResource(R.string.settings_test))
+        }
+        Button(
+            onClick = {
+                if (form.validate()) {
+                    viewModel.save(form.toProfile(profileId()))
+                    onSaved()
+                }
+            },
+            modifier = Modifier.weight(1f),
+        ) {
+            Text(stringResource(R.string.settings_save))
         }
     }
 }
@@ -805,9 +646,9 @@ internal fun DaemonType.displayName(): String = when (this) {
 }
 
 /** Host/port/ssl/path as inferred from a pasted server URL. */
-private data class ParsedServerUrl(val secure: Boolean, val host: String, val port: Int, val path: String)
+internal data class ParsedServerUrl(val secure: Boolean, val host: String, val port: Int, val path: String)
 
-private fun parseServerUrl(raw: String): ParsedServerUrl? {
+internal fun parseServerUrl(raw: String): ParsedServerUrl? {
     val trimmed = raw.trim()
     if (trimmed.isEmpty()) return null
     val hadHttps = trimmed.startsWith("https://", ignoreCase = true)
@@ -825,7 +666,7 @@ private fun parseServerUrl(raw: String): ParsedServerUrl? {
     return ParsedServerUrl(secure = hadHttps, host = host, port = port, path = path)
 }
 
-private fun composeServerUrl(secure: Boolean, host: String, port: Int, path: String): String {
+internal fun composeServerUrl(secure: Boolean, host: String, port: Int, path: String): String {
     if (host.isBlank()) return ""
     val scheme = if (secure) "https" else "http"
     val standardPort = if (secure) 443 else 80
