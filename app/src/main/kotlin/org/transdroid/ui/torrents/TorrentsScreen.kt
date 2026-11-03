@@ -165,7 +165,10 @@ fun TorrentsScreen(
             ModalDrawerSheet(drawerShape = RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp)) {
                 FilterDrawerContent(
                     ui = ui,
-                    onSwitchProfile = { viewModel.switchProfile(it) },
+                    onSwitchProfile = {
+                        viewModel.switchProfile(it)
+                        scope.launch { drawerState.close() }
+                    },
                     onSetFilter = {
                         viewModel.setFilter(it)
                         scope.launch { drawerState.close() }
