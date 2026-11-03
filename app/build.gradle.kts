@@ -15,7 +15,7 @@ val hasSigningConfig = keystoreProperties.getProperty("storeFile") != null
 
 android {
     namespace = "org.transdroid"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "org.transdroid"
