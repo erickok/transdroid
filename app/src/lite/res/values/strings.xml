@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Transdrone, as this flavor has always been called on Google Play -->
+    <string name="app_name" translatable="false">Transdrone</string>
+    <string name="settings_about">Transdrone %1$s — GNU GPL v3</string>
+    <string name="settings_url_hint">Full %1$s Web UI address — Transdrone works out the rest.</string>
+
+    <!-- Moving over from Transdrone 2, which had no RSS feeds either -->
+    <string name="legacy_import_file">Import Transdrone 2 settings</string>
+    <string name="legacy_import_file_summary">Add servers from a settings.json file exported by Transdrone 2</string>
+    <string name="legacy_import_invalid">This is not a Transdrone 2 settings file</string>
+    <string name="legacy_import_title">Imported from Transdrone 2</string>
+    <string name="legacy_import_server_count">Your Transdrone 2 settings were brought over: %1$d server(s).</string>
+    <string name="legacy_skip_unsupported_client">%1$s: this torrent client isn\'t supported by Transdrone 3</string>
+
     <!-- Lite flavor: donate_available (bools.xml) is false, so this is never read -->
     <string name="donate_url" translatable="false"></string>
 </resources>

@@ -43,7 +43,13 @@ fun LegacyImportDialog(summary: LegacyImportSummary, onDismiss: () -> Unit) {
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Text(stringResource(R.string.legacy_import_counts, summary.serverCount, summary.feedCount))
+                Text(
+                    if (summary.feedCount > 0) {
+                        stringResource(R.string.legacy_import_counts, summary.serverCount, summary.feedCount)
+                    } else {
+                        stringResource(R.string.legacy_import_server_count, summary.serverCount)
+                    }
+                )
                 if (summary.needsCertificate.isNotEmpty()) {
                     BulletedList(stringResource(R.string.legacy_import_certificates), summary.needsCertificate)
                 }

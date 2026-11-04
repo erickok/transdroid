@@ -340,6 +340,7 @@
     <string name="legacy_import_nothing">Nothing new to import</string>
     <string name="legacy_import_title">Imported from Transdroid 2</string>
     <string name="legacy_import_counts">Your Transdroid 2 settings were brought over: %1$d server(s) and %2$d RSS feed(s).</string>
+    <string name="legacy_import_server_count">Your Transdroid 2 settings were brought over: %1$d server(s).</string>
     <string name="legacy_import_certificates">These servers use a self-signed HTTPS certificate that needs to be trusted again. Open each one in Settings and run Test connection:</string>
     <string name="legacy_import_skipped">Not imported:</string>
     <string name="legacy_skip_unsupported_client">%1$s: this torrent client isn\'t supported by Transdroid 3</string>
