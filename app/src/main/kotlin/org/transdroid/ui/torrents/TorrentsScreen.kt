@@ -44,6 +44,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -132,6 +133,7 @@ import org.transdroid.ui.statusLabel
 import org.transdroid.ui.theme.accentColor
 import org.transdroid.ui.theme.trackColor
 import org.transdroid.ui.components.EmptyState
+import org.transdroid.ui.components.LabelPill
 import org.transdroid.ui.components.SortDirectionIcon
 import org.transdroid.ui.components.TorrentProgressIndicator
 import org.transdroid.util.formatBytes
@@ -576,7 +578,14 @@ private fun TorrentListContent(
                         contentPadding = PaddingValues(start = 6.dp, end = 6.dp, top = 8.dp, bottom = overlayHeight + 8.dp),
                         modifier = Modifier.fillMaxSize(),
                     ) {
-                        items(ui.visibleTorrents, key = { it.id }) { torrent ->
+                        itemsIndexed(ui.visibleTorrents, key = { _, torrent -> torrent.id }) { index, torrent ->
+                            // Between rows only, starting under the text column
+                            if (index > 0) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(start = 52.dp),
+                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
+                                )
+                            }
                             SwipeableTorrentRow(
                                 torrent = torrent,
                                 onToggleStartPause = { viewModel.toggleStartPause(it) },
@@ -588,10 +597,6 @@ private fun TorrentListContent(
                                     onClick = { onOpenDetails(torrent.id) },
                                 )
                             }
-                            HorizontalDivider(
-                                modifier = Modifier.padding(start = 52.dp),
-                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
-                            )
                         }
                     }
                 }
@@ -847,7 +852,7 @@ private fun TorrentRow(torrent: Torrent, selected: Boolean, onClick: () -> Unit)
             )
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.Bottom) {
+                Row {
                     Text(
                         torrent.name,
                         style = MaterialTheme.typography.titleSmall,
@@ -858,7 +863,7 @@ private fun TorrentRow(torrent: Torrent, selected: Boolean, onClick: () -> Unit)
                         // remaining width like the mockup's `.name{flex:1}` - otherwise a
                         // short title only takes its natural width and the tag ends up sitting
                         // right after it instead of pushed to the row's far right.
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f).alignByBaseline(),
                     )
                     Spacer(Modifier.width(10.dp))
                     Text(
@@ -866,21 +871,30 @@ private fun TorrentRow(torrent: Torrent, selected: Boolean, onClick: () -> Unit)
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
+                        modifier = Modifier.alignByBaseline(),
                     )
                 }
-                Text(
-                    rowDetail(torrent),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                // A little extra room above, as the label pill is taller than the text beside it
+                Row(Modifier.padding(top = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        rowDetail(torrent),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
+                    )
+                    torrent.labels.firstOrNull()?.let { label ->
+                        Spacer(Modifier.width(10.dp))
+                        LabelPill(label)
+                    }
+                }
                 TorrentProgressIndicator(
                     progress = torrent.displayProgress,
                     active = torrent.status == TorrentStatus.DOWNLOADING,
                     color = torrent.status.accentColor,
                     trackColor = torrent.status.trackColor,
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 9.dp),
                 )
                 Row(
                     Modifier.fillMaxWidth(),

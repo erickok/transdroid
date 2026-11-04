@@ -193,14 +193,24 @@ fun StatusColors.track(status: TorrentStatus): Color = when (status) {
     TorrentStatus.PAUSED, TorrentStatus.ERROR, TorrentStatus.UNKNOWN -> idleTrack
 }
 
-// Label/category chip hues - labels are free-form user text, so a fixed palette is cycled by a
-// stable hash of the label name rather than matched to specific category keywords.
-private val LabelHues: List<Pair<Color, Color>> = listOf(
-    Color(0xFFF2A93C) to Color(0xFFFFF2D9), // amber
-    Color(0xFF9C6ADE) to Color(0xFFF1E7FB), // purple
-    Color(0xFF3F68B8) to Color(0xFFDDE5F7), // blue
-    Color(0xFF2E9E8F) to Color(0xFFDCF1EE), // teal
+/**
+ * One label/category hue: [dot] for the filter drawer and set-label sheet, [content] and
+ * [container] for the label pill on the torrent list and details screen. Labels are free-form user
+ * text, so a fixed set of hues is cycled by a stable hash of the label name (see [labelHue]) rather
+ * than matched to specific category keywords; the mockups name them after example labels.
+ */
+data class LabelHue(val dot: Color, val content: Color, val container: Color)
+
+val LightLabelHues: List<LabelHue> = listOf(
+    LabelHue(dot = Color(0xFFC0871C), content = Color(0xFF8A5E0C), container = Color(0xFFF1E4C6)), // amber (books)
+    LabelHue(dot = Color(0xFF7A5BD0), content = Color(0xFF654BC0), container = Color(0xFFE6DDF8)), // purple (music)
+    LabelHue(dot = Color(0xFF3F68B8), content = Color(0xFF31548F), container = Color(0xFFD9E3F6)), // blue (software)
+    LabelHue(dot = Color(0xFF1F8F86), content = Color(0xFF136B63), container = Color(0xFFD0E8E3)), // teal (video)
 )
 
-/** Returns a stable (color, containerColor) pair for a label/category name. */
-fun labelColor(label: String): Pair<Color, Color> = LabelHues[label.hashCode().mod(LabelHues.size)]
+val DarkLabelHues: List<LabelHue> = listOf(
+    LabelHue(dot = Color(0xFFE0A53A), content = Color(0xFFE0A53A), container = Color(0xFF3A2E12)),
+    LabelHue(dot = Color(0xFFA892E6), content = Color(0xFFC3AEF0), container = Color(0xFF2F2545)),
+    LabelHue(dot = Color(0xFF8FB0F0), content = Color(0xFFA8C2F5), container = Color(0xFF20314F)),
+    LabelHue(dot = Color(0xFF5BC4BA), content = Color(0xFF5FC9BD), container = Color(0xFF113B37)),
+)

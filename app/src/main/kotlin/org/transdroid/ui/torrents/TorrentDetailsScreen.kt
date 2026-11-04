@@ -39,7 +39,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.DriveFileMove
-import androidx.compose.material.icons.automirrored.rounded.Label
 import androidx.compose.material.icons.automirrored.rounded.LabelOff
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
@@ -112,6 +111,8 @@ import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
 import org.transdroid.protocol.Tracker
 import org.transdroid.protocol.TrackerStatus
+import org.transdroid.ui.components.LabelPill
+import org.transdroid.ui.components.LabelPillSize
 import org.transdroid.ui.components.TorrentProgressIndicator
 import org.transdroid.ui.statusLabel
 import org.transdroid.ui.theme.LocalStatusColors
@@ -486,11 +487,13 @@ private fun DetailsHeader(torrent: Torrent) {
             Spacer(Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 DetailPill(torrent.status.leadingIcon, torrent.statusLabel())
+                // The same coloured pill as on the torrent list; "No label" has no hue of its own
                 val label = torrent.labels.firstOrNull()
-                DetailPill(
-                    if (label != null) Icons.AutoMirrored.Rounded.Label else Icons.AutoMirrored.Rounded.LabelOff,
-                    label ?: stringResource(R.string.drawer_no_label),
-                )
+                if (label != null) {
+                    LabelPill(label, size = LabelPillSize.Regular)
+                } else {
+                    DetailPill(Icons.AutoMirrored.Rounded.LabelOff, stringResource(R.string.drawer_no_label))
+                }
             }
         }
     }

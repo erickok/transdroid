@@ -27,6 +27,13 @@ import org.transdroid.protocol.TorrentStatus
 
 val LocalStatusColors = staticCompositionLocalOf { LightStatusColors }
 
+val LocalLabelHues = staticCompositionLocalOf { LightLabelHues }
+
+/** The stable hue for a label/category name, in the current light or dark theme. */
+@Composable
+@ReadOnlyComposable
+fun labelHue(label: String): LabelHue = LocalLabelHues.current.let { it[label.hashCode().mod(it.size)] }
+
 /** Drop-in replacement for the pre-redesign flat `torrent.status.accentColor` call sites. */
 val TorrentStatus.accentColor: Color
     @Composable @ReadOnlyComposable get() = LocalStatusColors.current.accent(this)
@@ -41,7 +48,10 @@ fun TransdroidTheme(
     content: @Composable () -> Unit,
 ) {
     val statusColors = if (darkTheme) DarkStatusColors else LightStatusColors
-    CompositionLocalProvider(LocalStatusColors provides statusColors) {
+    CompositionLocalProvider(
+        LocalStatusColors provides statusColors,
+        LocalLabelHues provides if (darkTheme) DarkLabelHues else LightLabelHues,
+    ) {
         MaterialTheme(
             colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
             shapes = TransdroidShapes,

@@ -63,7 +63,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.transdroid.R
-import org.transdroid.ui.theme.labelColor
+import org.transdroid.ui.theme.labelHue
 
 /**
  * Bottom sheet to pick, clear, or create a torrent's label - matches
@@ -126,7 +126,7 @@ fun SetLabelSheet(
             }
             items(matches) { label ->
                 LabelRow(
-                    dotColor = labelColor(label).first,
+                    dotColor = labelHue(label).dot,
                     name = label,
                     count = countForLabel(label),
                     selected = selected == label,

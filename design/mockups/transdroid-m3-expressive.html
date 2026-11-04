@@ -30,6 +30,12 @@
   --idle:#8a8d80;    --idle-track:#d6d9cb;
   --wait:#9a7b33;    --wait-track:#e7ddc6;
 
+  /* label hues (match the filter drawer / set-label sheet) */
+  --l-books:#8a5e0c; --l-books-bg:#f1e4c6;
+  --l-music:#654bc0; --l-music-bg:#e6ddf8;
+  --l-soft:#31548f;  --l-soft-bg:#d9e3f6;
+  --l-video:#136b63; --l-video-bg:#d0e8e3;
+
   --shadow-2:0 3px 8px rgba(31,35,22,.16), 0 1px 3px rgba(31,35,22,.10);
   --shadow-fab:0 6px 16px rgba(35,64,10,.32), 0 2px 5px rgba(35,64,10,.26);
 }
@@ -84,24 +90,24 @@ body{
 .list{flex:1; overflow-y:auto; padding:0 6px 118px 6px; scrollbar-width:none;}
 .list::-webkit-scrollbar{display:none;}
 
-/* Leading column tightened (30px + 8px gap) so column 2 lines up with the
-   app-bar title. Content column start = 6(list) + 14(row) + 30 + 8 = 58px,
-   matching "All torrents" at 8(bar) + 44(menu) + 4 + 2 = 58px. */
+/* Compact rows, as in the app: the 22px icon column and a 10px gap put the
+   content column at 6(list) + 8(row) + 22 + 10 = 46px. */
 .row{
-  position:relative; display:grid; grid-template-columns:30px 1fr; gap:0 8px;
-  padding:14px 12px 15px 14px;
+  position:relative; display:grid; grid-template-columns:22px 1fr; gap:0 10px;
+  padding:12px 8px;
 }
 .row + .row::before{
-  content:""; position:absolute; top:0; left:52px; right:12px; height:1px;
+  content:""; position:absolute; top:0; left:52px; right:0; height:1px;
   background:var(--outline-variant); opacity:.55;
 }
 
 .lead{display:flex; align-items:flex-start; justify-content:center; padding-top:1px;}
 .lead .msr{font-size:22px; color:var(--muted);}
 
-/* colour-coded accent line, centred under the icon (row-x 14 + 15 = 29 → left 27.5) */
+/* colour-coded accent line, centred under the icon (row-x 8 + 11 = 19 → left 17.5),
+   from just below the icon (12 + 1 + 22 = 35) to the bottom of the row's content */
 .stripe{
-  position:absolute; left:27.5px; width:3px; top:44px; bottom:16px;
+  position:absolute; left:17.5px; width:3px; top:35px; bottom:12px;
   border-radius:2px; pointer-events:none;
 }
 .stripe.down{background:var(--dl);}
@@ -115,11 +121,24 @@ body{
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .tag{flex:none; font-size:12px; font-weight:500; letter-spacing:.2px; color:var(--muted);}
+.detailrow{display:flex; align-items:center; gap:10px; margin-top:4px;}
 .detail{
-  font-size:12.5px; color:var(--muted); margin-top:2px;
+  flex:1; min-width:0; font-size:12.5px; color:var(--muted);
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .detail b{font-weight:600; color:var(--on-surface-var); font-variant-numeric:tabular-nums;}
+
+/* label pill */
+.lpill{
+  flex:none; display:inline-flex; align-items:center; gap:6px;
+  padding:3px 10px 3px 8px; border-radius:999px;
+  font-size:11.5px; font-weight:600; letter-spacing:.1px; white-space:nowrap;
+}
+.lpill .dot{width:8px; height:8px; border-radius:50%;}
+.lpill.books{background:var(--l-books-bg); color:var(--l-books);} .lpill.books .dot{background:var(--l-books);}
+.lpill.music{background:var(--l-music-bg); color:var(--l-music);} .lpill.music .dot{background:var(--l-music);}
+.lpill.soft{background:var(--l-soft-bg); color:var(--l-soft);}   .lpill.soft .dot{background:var(--l-soft);}
+.lpill.video{background:var(--l-video-bg); color:var(--l-video);} .lpill.video .dot{background:var(--l-video);}
 
 .progress{margin:10px 0 9px; height:14px;}
 .progress svg{display:block; width:100%; height:14px; overflow:visible;}
@@ -223,22 +242,22 @@ body{
 <script>
 const items = [
   { name:'Book 1', state:'down', pct:38.3,
-    detail:'80.1 MB of 209.3 MB · <b>38.3%</b>', tag:'1h 8m left',
+    detail:'80.1 MB of 209.3 MB · <b>38.3%</b>', tag:'1h 8m left', label:{cls:'books', text:'Books'},
     left:{icon:'group', text:'12 / 6 seeders'}, speeds:{dl:'32.0 KB/s', ul:'88.5 KB/s'} },
   { name:'CD Image 2', state:'seed', pct:100,
-    detail:'194.1 MB · complete', tag:'Seeding',
+    detail:'194.1 MB · complete', tag:'Seeding', label:{cls:'soft', text:'Software'},
     left:{icon:'sync_alt', text:'Ratio 1.6'}, note:'Uploaded 311.7 MB' },
   { name:'Mix tape 3', state:'idle', pct:100,
-    detail:'474.3 MB · complete', tag:'Paused',
+    detail:'474.3 MB · complete', tag:'Paused', label:{cls:'music', text:'Music'},
     left:{icon:'sync_alt', text:'Ratio 0.0'}, note:'Uploaded 3.8 MB' },
   { name:'App 4', state:'down', pct:47.8,
-    detail:'1.8 GB of 3.8 GB · <b>47.8%</b>', tag:'1d 8h left',
+    detail:'1.8 GB of 3.8 GB · <b>47.8%</b>', tag:'1d 8h left', label:{cls:'soft', text:'Software'},
     left:{icon:'group', text:'60 / 24 seeders'}, speeds:{dl:'17.8 KB/s', ul:'329.7 KB/s'} },
   { name:'Documentary 5', state:'seed', pct:100,
-    detail:'2.3 GB · complete', tag:'Seeding',
+    detail:'2.3 GB · complete', tag:'Seeding', label:{cls:'video', text:'Video'},
     left:{icon:'sync_alt', text:'Ratio 0.8'}, note:'↑ 122.7 KB/s' },
   { name:'Book 6', state:'wait', pct:0,
-    detail:'4.6 GB', tag:'Queued',
+    detail:'4.6 GB', tag:'Queued', label:null,
     left:{icon:'schedule', text:'In queue'}, note:'Waiting to download' },
 ];
 
@@ -259,10 +278,10 @@ items.forEach(it=>{
     <span class="stripe ${it.state}"></span>
     <div class="lead"><span class="msr">${ICON[it.state]}</span></div>
     <div class="titlerow"><div class="name">${it.name}</div><div class="tag">${it.tag}</div></div>
-    <div class="detail">${it.detail}</div>
+    <div class="detailrow"><div class="detail">${it.detail}</div>${it.label ? `<span class="lpill ${it.label.cls}"><span class="dot"></span>${it.label.text}</span>` : ''}</div>
     <div class="progress" data-state="${it.state}" data-pct="${it.pct}"></div>
     <div class="meta"><span class="left"><span class="msr">${it.left.icon}</span>${it.left.text}</span>${right}</div>`;
-  row.querySelectorAll('.titlerow,.detail,.progress,.meta').forEach(n=>n.style.gridColumn='2');
+  row.querySelectorAll('.titlerow,.detailrow,.progress,.meta').forEach(n=>n.style.gridColumn='2');
   list.appendChild(row);
 });
 

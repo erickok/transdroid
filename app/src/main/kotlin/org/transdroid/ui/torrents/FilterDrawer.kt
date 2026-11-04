@@ -74,7 +74,7 @@ import org.transdroid.R
 import org.transdroid.data.ServerProfile
 import org.transdroid.protocol.TorrentStatus
 import org.transdroid.ui.theme.accentColor
-import org.transdroid.ui.theme.labelColor
+import org.transdroid.ui.theme.labelHue
 
 /**
  * The list screen's primary navigation and filtering surface, replacing the pre-redesign inline
@@ -147,7 +147,7 @@ fun FilterDrawerContent(
                 DrawerDivider()
                 SectionTitle(stringResource(R.string.drawer_labels_header))
                 ui.drawerLabels.forEach { label ->
-                    val (dotColor, _) = labelColor(label)
+                    val dotColor = labelHue(label).dot
                     DrawerItemRow(
                         dotColor = dotColor,
                         label = label,
