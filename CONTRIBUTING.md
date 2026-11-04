@@ -69,3 +69,25 @@ Guidelines:
 
 Standard Kotlin style (`kotlin.code.style=official`). Match the surrounding code, prefer
 small focused files, and let the compiler's exhaustiveness checks do the wiring work.
+
+## Releasing (maintainers)
+
+1. Bump `versionCode` and `versionName` in `app/build.gradle.kts`.
+2. Add the changelog, max 500 characters (Play's limit), as
+   `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`, and the same entries to
+   `ui/settings/Changelog.kt` for the in-app "What's new".
+3. If the changelog mentions features Transdrone (the `lite` flavor) doesn't have, like RSS,
+   search or the update check, also add
+   `app/src/lite/fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`. Play uses it
+   for Transdrone instead of the shared one.
+4. Push a `v<versionName>` tag. The Release workflow then tests, attaches the signed `full`
+   APK to a GitHub release as `transdroid.apk`, and uploads the signed `lite` APK to Google
+   Play. A suffixed version (`-beta1`, `-rc1`) becomes a GitHub pre-release and goes to Play's
+   open testing (beta) track; otherwise it is a full release on Play's production track.
+
+The workflow uses these repository secrets:
+
+| Secret | Used for |
+| --- | --- |
+| `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` | Signing both APKs |
+| `PLAY_SERVICE_ACCOUNT_JSON` | The Google Play upload; a Google Cloud service account key with release permissions for Transdrone in the Play Console. Without it the Play upload is skipped. |

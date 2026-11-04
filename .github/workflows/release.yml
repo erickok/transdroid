@@ -16,6 +16,10 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      # Secrets can't be tested in step conditions directly
+      HAS_SIGNING: ${{ secrets.KEYSTORE_BASE64 != '' }}
+      HAS_PLAY_ACCOUNT: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -54,14 +58,14 @@ jobs:
       - name: Test
         run: ./gradlew :protocol:test :app:testFullDebugUnitTest
 
-      # Only the "full" flavor's release build - "lite" (the Play Store variant) isn't
-      # needed until we're off the beta track and actually publishing there.
-      # Always attached as transdroid.apk, so one permanent link serves the newest release:
+      # "full" is attached to the GitHub release, always as transdroid.apk, so one permanent
+      # link serves the newest release:
       # https://github.com/erickok/transdroid/releases/latest/download/transdroid.apk
-      # (GitHub's "latest" skips pre-releases, so betas never replace it)
-      - name: Assemble APK
+      # (GitHub's "latest" skips pre-releases, so betas never replace it).
+      # "lite" is Transdrone, published to Google Play below.
+      - name: Assemble APKs
         run: |
-          ./gradlew :app:assembleFullRelease
+          ./gradlew :app:assembleFullRelease :app:assembleLiteRelease
           cp app/build/outputs/apk/full/release/app-full-release.apk transdroid.apk
 
       # The release notes are the same as the in-app "What's new" and F-Droid changelog for
@@ -95,3 +99,35 @@ jobs:
           body_path: release-notes.md
           # Any suffixed version (3.0.0-alpha6, -beta1, -rc1) is a pre-release
           prerelease: ${{ contains(inputs.tag_name || github.ref_name, '-') }}
+
+      # Play's "What's new" for Transdrone: its own changelog when the full one mentions
+      # features Transdrone doesn't have (RSS, search, the update check), else the shared one.
+      - name: Write Play release notes
+        if: env.HAS_SIGNING == 'true' && env.HAS_PLAY_ACCOUNT == 'true'
+        run: |
+          code=$(sed -n 's/^ *versionCode = \([0-9]*\).*/\1/p' app/build.gradle.kts)
+          notes="app/src/lite/fastlane/metadata/android/en-US/changelogs/$code.txt"
+          [ -f "$notes" ] || notes="fastlane/metadata/android/en-US/changelogs/$code.txt"
+          chars=$(wc -m < "$notes")
+          if [ "$chars" -gt 500 ]; then
+            echo "::error::$notes is $chars characters; Play allows 500"
+            exit 1
+          fi
+          mkdir -p play-whatsnew
+          cp "$notes" play-whatsnew/whatsnew-en-US
+          echo "Using $notes"
+
+      # Needs the PLAY_SERVICE_ACCOUNT_JSON secret: a Google Cloud service account key with
+      # release permissions for Transdrone in the Play Console. Pre-releases go to the open
+      # testing (beta) track, final versions to production.
+      - name: Upload Transdrone to Google Play
+        if: env.HAS_SIGNING == 'true' && env.HAS_PLAY_ACCOUNT == 'true'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: org.transdroid.lite
+          releaseFiles: app/build/outputs/apk/lite/release/app-lite-release.apk
+          mappingFile: app/build/outputs/mapping/liteRelease/mapping.txt
+          track: ${{ contains(inputs.tag_name || github.ref_name, '-') && 'beta' || 'production' }}
+          status: completed
+          whatsNewDirectory: play-whatsnew
