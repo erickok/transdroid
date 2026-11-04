@@ -1,0 +1,7 @@
+Transdrone 3 beta: rebuilt from the ground up with a new design.
+* Your servers carry over from Transdrone 2
+* Transmission, qBittorrent, rTorrent and Deluge (Web UI)
+* Labels as coloured pills, with filters remembered per server
+* Swipe a torrent to start/pause or remove it
+* Home screen widget and finished-torrent notifications
+* Needs Android 10 or newer

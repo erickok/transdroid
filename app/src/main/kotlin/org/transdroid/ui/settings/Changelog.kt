@@ -30,6 +30,16 @@ data class Release(val version: String, val date: String, val changes: List<Chan
  */
 val CHANGELOG: List<Release> = listOf(
     Release(
+        version = "3.0.0-beta3",
+        date = "November 2026",
+        changes = listOf(
+            ChangelogEntry(ChangeKind.NEW, "A torrent's label shows as a coloured pill in the list and on the details screen"),
+            ChangelogEntry(ChangeKind.IMPROVED, "The filter menu closes after switching server from it"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Swiping a torrent to start/pause or remove it slides the row back smoothly"),
+            ChangelogEntry(ChangeKind.IMPROVED, "Updated to the latest Android libraries"),
+        ),
+    ),
+    Release(
         version = "3.0.0-beta2",
         date = "November 2026",
         changes = listOf(

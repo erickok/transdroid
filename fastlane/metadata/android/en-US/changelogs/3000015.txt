@@ -1,0 +1,4 @@
+* Labels shown as coloured pills in the torrent list and details
+* The filter menu closes after switching server
+* Smoother swipe to start/pause or remove a torrent
+* Updated to the latest Android libraries
