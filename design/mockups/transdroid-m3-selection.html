@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transdroid · Selection mode (M3 Expressive)</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,0" rel="stylesheet">
+<style>
+:root{
+  --surface:#f8faf0; --surface-low:#f2f5ea; --surface-container:#eceee2; --surface-high:#e6e9dd; --surface-highest:#e0e3d7;
+  --on-surface:#1a1c15; --on-surface-var:#44483b; --muted:#5c6053; --outline:#75796a; --outline-variant:#c5c8b8;
+  --primary:#3f6a1e; --on-primary:#fff; --primary-container:#c0f39a; --on-primary-container:#0b2100;
+  --sel:#dcebcd; --sel-ring:#3f6a1e; --error:#ba1a1a; --on-error:#fff; --scrim:rgba(20,22,16,.42);
+  --dl:#3f68b8; --dl-track:#d3ddf2; --seed:#4d7d2a; --seed-track:#d3e6be; --idle:#8a8d80; --idle-track:#d6d9cb; --wait:#9a7b33; --wait-track:#e7ddc6;
+  --l-books:#8a5e0c; --l-books-bg:#f1e4c6; --l-music:#654bc0; --l-music-bg:#e6ddf8; --l-soft:#31548f; --l-soft-bg:#d9e3f6; --l-video:#136b63; --l-video-bg:#d0e8e3;
+  --shadow-2:0 3px 8px rgba(31,35,22,.16),0 1px 3px rgba(31,35,22,.10); --page:#1f231b;
+}
+body.dark{
+  --surface:#12140e; --surface-low:#191b14; --surface-container:#1e201a; --surface-high:#282b23; --surface-highest:#33362d;
+  --on-surface:#e3e4d9; --on-surface-var:#c6c9b9; --muted:#a4a897; --outline:#8e9284; --outline-variant:#43473b;
+  --primary:#a6d67e; --on-primary:#133800; --primary-container:#284f10; --on-primary-container:#c1f39b;
+  --sel:#2a3a1f; --sel-ring:#a6d67e; --error:#ffb4ab; --on-error:#690005; --scrim:rgba(0,0,0,.55);
+  --dl:#adc7ff; --dl-track:#324365; --seed:#a0cf72; --seed-track:#2f4a1e; --idle:#b1b5a5; --idle-track:#3a3e33; --wait:#f0c250; --wait-track:#473d1f;
+  --l-books:#e0a53a; --l-books-bg:#3a2e12; --l-music:#c3aef0; --l-music-bg:#2f2545; --l-soft:#a8c2f5; --l-soft-bg:#20314f; --l-video:#5fc9bd; --l-video-bg:#113b37;
+  --shadow-2:0 3px 10px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.4); --page:#3a3f34;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{margin:0;font-family:Roboto,system-ui,sans-serif;background:var(--page);color:#e9ebe0;min-height:100vh;}
+.msr{font-family:"Material Symbols Rounded";font-weight:normal;font-style:normal;line-height:1;display:inline-block;font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;user-select:none;}
+.fill{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
+header.page{max-width:1500px;margin:0 auto;padding:22px 24px 6px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+header.page h1{font-size:19px;font-weight:600;margin:0;flex:1;min-width:240px;}
+header.page p{margin:4px 0 0;font-size:13px;opacity:.8;font-weight:400;}
+.pgbtn{border:1px solid rgba(255,255,255,.35);background:transparent;color:inherit;border-radius:999px;padding:7px 14px;font:500 13px Roboto;cursor:pointer;}
+.stage{max-width:1500px;margin:0 auto;padding:14px 24px 40px;display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap;justify-content:center;}
+.cap{font-size:12px;opacity:.75;margin:0 0 8px 6px;letter-spacing:.3px;text-transform:uppercase;}
+.device{background:#0c0d0a;padding:8px;border-radius:42px;box-shadow:0 26px 60px rgba(0,0,0,.55);}
+.device.tablet{border-radius:30px;}
+.screen{position:relative;overflow:hidden;background:var(--surface);color:var(--on-surface);border-radius:34px;display:flex;flex-direction:column;isolation:isolate;}
+.phone .screen{width:380px;height:800px;}
+.tablet .screen{width:980px;height:640px;border-radius:24px;}
+.statusbar{height:30px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:600;}
+.iconbtn{border:none;background:transparent;cursor:pointer;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:var(--on-surface-var);}
+.iconbtn:hover{background:var(--surface-high);}
+.iconbtn .msr{font-size:23px;}
+/* app bars */
+/* Same fixed height in normal and selection mode, so switching never shifts the list */
+.appbar{flex:none;display:flex;align-items:center;gap:4px;padding:0 8px;height:70px;transition:background .18s;}
+.appbar .title{flex:1;min-width:0;padding-left:4px;}
+.appbar h2{margin:0;font-size:22px;font-weight:500;}
+.chip{display:inline-flex;align-items:center;gap:5px;margin-top:5px;padding:3px 10px 3px 8px;background:var(--surface-high);border-radius:999px;font-size:12px;font-weight:500;color:var(--on-surface-var);}
+.chip .msr{font-size:15px;}
+.appbar.ctx{background:var(--surface-container);}
+.appbar.ctx h2{font-size:20px;}
+.count{font-variant-numeric:tabular-nums;}
+/* list */
+.list{flex:1;overflow-y:auto;padding:0 6px 120px;scrollbar-width:none;}
+.row{position:relative;display:flex;gap:10px;padding:12px 8px;border-radius:20px;cursor:pointer;user-select:none;transition:background .15s;}
+.row + .row::before{content:"";position:absolute;top:0;left:46px;right:0;height:1px;background:var(--outline-variant);opacity:.55;}
+.row.sel{background:var(--sel);}
+.row.sel::before,.row.sel + .row::before{opacity:0;}
+.row.open{background:var(--surface-high);}
+.lead{width:22px;flex:none;display:flex;justify-content:center;padding-top:1px;}
+.lead .msr{font-size:22px;color:var(--muted);}
+.check{width:22px;height:22px;border-radius:50%;border:2px solid var(--outline);display:grid;place-items:center;}
+.check.on{background:var(--sel-ring);border-color:var(--sel-ring);}
+.check.on .msr{font-size:16px;color:var(--surface);font-variation-settings:'FILL' 1,'wght' 700,'GRAD' 0,'opsz' 20;}
+.stripe{position:absolute;left:17.5px;width:3px;top:35px;bottom:12px;border-radius:2px;}
+.body{flex:1;min-width:0;}
+.t1{display:flex;align-items:baseline;gap:10px;}
+.name{flex:1;min-width:0;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tag{font-size:12px;font-weight:500;color:var(--muted);}
+.t2{display:flex;align-items:center;gap:10px;margin-top:4px;}
+.detail{flex:1;min-width:0;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lpill{flex:none;display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 8px;border-radius:999px;font-size:11.5px;font-weight:600;}
+.lpill .dot{width:8px;height:8px;border-radius:50%;background:currentColor;}
+.books{background:var(--l-books-bg);color:var(--l-books);} .music{background:var(--l-music-bg);color:var(--l-music);}
+.soft{background:var(--l-soft-bg);color:var(--l-soft);} .video{background:var(--l-video-bg);color:var(--l-video);}
+.bar{height:4px;border-radius:2px;margin:11px 0 9px;background:var(--track);overflow:hidden;}
+.bar i{display:block;height:100%;border-radius:2px;background:var(--acc);}
+.meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);}
+/* floating toolbars */
+.bottom{position:absolute;left:12px;right:12px;bottom:16px;z-index:5;pointer-events:none;}
+.toolbar{pointer-events:auto;height:60px;background:var(--surface-container);border-radius:30px;box-shadow:var(--shadow-2);display:flex;align-items:center;padding:0 8px 0 16px;gap:6px;font-size:12px;}
+.toolbar b{font-size:14px;color:var(--on-surface);}
+.toolbar .grow{flex:1;}
+.actions{pointer-events:auto;height:68px;background:var(--surface-container);border-radius:34px;box-shadow:var(--shadow-2);display:flex;align-items:center;justify-content:space-around;padding:0 6px;}
+.act{border:none;background:transparent;cursor:pointer;color:var(--primary);display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border-radius:16px;font:500 11px Roboto;min-width:52px;}
+.act:hover{background:var(--surface-high);}
+.act .msr{font-size:23px;}
+.act.danger{color:var(--error);}
+.act:disabled{opacity:.38;cursor:default;}
+.fab{pointer-events:auto;position:absolute;right:4px;bottom:74px;width:62px;height:62px;border-radius:20px;border:none;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;box-shadow:var(--shadow-2);cursor:pointer;}
+.fab .msr{font-size:28px;}
+.hidden{display:none!important;}
+.fade{animation:fade .18s ease-out;}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+/* tablet */
+.panes{flex:1;display:flex;min-height:0;}
+.lpane{width:380px;flex:none;position:relative;display:flex;flex-direction:column;border-right:1px solid var(--outline-variant);}
+.rpane{flex:1;min-width:0;overflow-y:auto;padding:18px 24px 24px;}
+.tstats{display:flex;align-items:center;gap:18px;font-size:12px;color:var(--muted);margin-right:6px;}
+.tstats b{display:block;font-size:14px;color:var(--on-surface);}
+.dhead{display:flex;gap:14px;align-items:center;}
+.dicon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--track);color:var(--acc);}
+.dicon .msr{font-size:26px;}
+.dname{font-size:22px;font-weight:600;}
+.pills{display:flex;gap:8px;margin-top:6px;}
+.spill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;background:var(--surface-container);font-size:12px;font-weight:600;color:var(--on-surface-var);}
+.spill .msr{font-size:15px;}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0;}
+.card{background:var(--surface-low);border-radius:20px;padding:14px 16px;}
+.card small{display:block;font-size:12px;color:var(--muted);}
+.card b{font-size:20px;font-weight:600;}
+.bigacts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 18px;}
+.btn{border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;font:600 14px Roboto;background:var(--surface-high);color:var(--on-surface);}
+.btn.primary{background:var(--primary);color:var(--on-primary);}
+.btn.outline{background:transparent;border:1px solid var(--outline);}
+.btn.danger{background:transparent;border:1px solid var(--error);color:var(--error);}
+.btn .msr{font-size:20px;}
+.sellist{background:var(--surface-low);border-radius:20px;padding:6px 0;}
+.sellist div{display:flex;align-items:center;gap:12px;padding:9px 16px;font-size:14px;}
+.sellist .msr{font-size:20px;color:var(--muted);}
+.sellist span.n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sellist small{color:var(--muted);}
+.empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--muted);}
+/* dialog + snackbar */
+.scrim{position:absolute;inset:0;background:var(--scrim);display:grid;place-items:center;z-index:20;}
+.dialog{width:min(320px,86%);background:var(--surface-high);border-radius:28px;padding:22px 22px 14px;color:var(--on-surface);}
+.dialog h3{margin:0 0 10px;font-size:21px;font-weight:500;}
+.dialog p{margin:0 0 12px;font-size:14px;color:var(--on-surface-var);}
+.dialog label{display:flex;align-items:center;gap:10px;font-size:14px;margin:6px 0 10px;cursor:pointer;}
+.dialog .btns{display:flex;justify-content:flex-end;gap:6px;}
+.tbtn{border:none;background:transparent;cursor:pointer;font:600 14px Roboto;color:var(--primary);padding:10px 14px;border-radius:999px;}
+.tbtn.danger{color:var(--error);}
+.snack{position:absolute;left:16px;right:16px;bottom:96px;background:var(--on-surface);color:var(--surface);border-radius:12px;padding:13px 16px;font-size:14px;z-index:15;box-shadow:var(--shadow-2);}
+.tablet .snack{left:auto;right:24px;width:360px;bottom:24px;}
+.hint{margin:2px 8px 8px;background:var(--primary-container);color:var(--on-primary-container);border-radius:16px;padding:10px 14px;font-size:13px;display:flex;gap:10px;align-items:center;}
+.hint .msr{font-size:20px;}
+.notes{max-width:1500px;margin:0 auto 40px;padding:0 24px;font-size:13.5px;line-height:1.55;opacity:.9;columns:2 420px;column-gap:40px;}
+.notes h3{font-size:14px;margin:0 0 4px;break-after:avoid;}
+.notes ul{margin:0 0 14px;padding-left:18px;}
+</style>
+</head>
+<body>
+<header class="page">
+  <h1>Selection mode: long-press to select, act on one or many torrents
+    <p>Long-press a row to start selecting. Tap rows to add or remove them. Tap a row without a selection to open its details. Try both devices.</p>
+  </h1>
+  <button class="pgbtn" id="reset">Reset</button>
+  <button class="pgbtn" id="theme">Dark theme</button>
+</header>
+<div class="stage">
+  <div><div class="cap">Phone</div><div class="device phone"><div class="screen" id="phone"></div></div></div>
+  <div><div class="cap">Tablet (two-pane)</div><div class="device tablet"><div class="screen" id="tablet"></div></div></div>
+</div>
+<div class="notes">
+  <h3>Entering and leaving</h3>
+  <ul><li>Long-press any row: it becomes selected (haptic tick) and the screen switches to selection mode.</li>
+  <li>While selecting, a tap adds or removes a row. Deselecting the last row, the close button or Back leave selection mode.</li>
+  <li>Without a selection, a tap opens details as today. Swipe gestures are gone, so the drawer swipe and the system Back gesture never collide with row actions.</li></ul>
+  <h3>Phone</h3>
+  <ul><li>Top bar becomes the selection bar: close, "N selected", select all (within the current filter).</li>
+  <li>The floating speed toolbar turns into the action toolbar at thumb height: Start, Pause, Check data, Label, Move, Remove, with the same filled icons as the details screen. The Add button hides.</li>
+  <li>Start/Pause are only enabled when some selected torrent can be started or paused.</li></ul>
+  <h3>Tablet</h3>
+  <ul><li>The selection bar spans both panes, as the normal tablet top bar does; its actions live in the summary pane, so they're not repeated in the bar.</li>
+  <li>The details pane shows a summary of the selection (count, size, speeds, labels, the selected torrents) with large action buttons, instead of one torrent's details.</li>
+  <li>Leaving selection mode brings back the details of the torrent that was open before.</li></ul>
+  <h3>Actions</h3>
+  <ul><li>Remove always asks first, with the count and the "Also delete downloaded data" option.</li>
+  <li>Label and Move open the existing sheets, titled "for N torrents". After an action, selection mode ends and a snackbar confirms, or reports partial failures ("Couldn't pause 2 of 5").</li>
+  <li>TalkBack users get Start/Pause/Remove as custom actions on each row.</li></ul>
+</div>
+<script>
+const DATA=[
+ {id:1,name:'Debian 13.2 netinst',st:'down',pct:62,size:'754 MB',label:['soft','software'],tag:'4m left',meta:'14 peers',dl:2.1,ul:.4},
+ {id:2,name:'Blender open movie collection',st:'seed',pct:100,size:'7.9 GB',label:['video','video'],tag:'Seeding',meta:'Ratio 2.45',dl:0,ul:.24},
+ {id:3,name:'Creative Commons audiobooks',st:'idle',pct:54,size:'3.8 GB',label:['books','books'],tag:'Paused',meta:'Ratio 0.58',dl:0,ul:0},
+ {id:4,name:'Ubuntu 26.04 desktop',st:'down',pct:21,size:'6.1 GB',label:null,tag:'38m left',meta:'52 peers',dl:3.4,ul:.9},
+ {id:5,name:'Jamendo album sampler',st:'seed',pct:100,size:'412 MB',label:['music','music'],tag:'Seeding',meta:'Ratio 1.12',dl:0,ul:.11},
+ {id:6,name:'Fedora Workstation 44',st:'wait',pct:9,size:'2.3 GB',label:['soft','software'],tag:'Queued',meta:'Queued',dl:0,ul:0},
+ {id:7,name:'Internet Archive lectures',st:'idle',pct:100,size:'1.4 GB',label:['video','video'],tag:'Paused',meta:'Ratio 3.01',dl:0,ul:0},
+ {id:8,name:'Arch Linux 2026.11',st:'seed',pct:100,size:'1.2 GB',label:['soft','software'],tag:'Seeding',meta:'Ratio 0.92',dl:0,ul:.33},
+];
+const HINT=`<div class="hint"><span class="msr">touch_app</span>Tip: long-press a torrent to select it, then tap others to act on several at once.</div>`;
+const ICON={down:'download',seed:'upload',idle:'pause',wait:'schedule'};
+const COL={down:['--dl','--dl-track'],seed:['--seed','--seed-track'],idle:['--idle','--idle-track'],wait:['--wait','--wait-track']};
+const GB=s=>s.endsWith('GB')?parseFloat(s):parseFloat(s)/1000;
+function make(root,tablet){
+  let items=DATA.map(d=>({...d})), sel=new Set(), open=tablet?2:null, hinted=false, snackT;
+  const canStart=t=>t.st==='idle'||t.st==='wait', canPause=t=>t.st==='down'||t.st==='seed'||t.st==='wait';
+  function snack(msg){clearTimeout(snackT);root.querySelector('.snack')?.remove();const s=document.createElement('div');s.className='snack fade';s.textContent=msg;root.appendChild(s);snackT=setTimeout(()=>s.remove(),2600);}
+  function act(kind){
+    const chosen=items.filter(t=>sel.has(t.id)); const n=chosen.length;
+    if(kind==='remove'){confirmRemove(chosen);return;}
+    if(kind==='start'){chosen.filter(canStart).forEach(t=>{t.st=t.pct>=100?'seed':'down';t.tag=t.st==='seed'?'Seeding':'Starting'});snack(`Started ${chosen.filter(t=>t.st!=='idle').length} of ${n}`);}
+    if(kind==='pause'){chosen.filter(canPause).forEach(t=>{t.st='idle';t.tag='Paused';t.dl=t.ul=0});snack(`Paused ${n} torrent${n>1?'s':''}`);}
+    if(kind==='check'){snack(`Checking the data of ${n} torrent${n>1?'s':''}`);sel.clear();render();return;}
+    if(kind==='label'){snack(`Set label sheet opens "for ${n} torrent${n>1?'s':''}"`);return;}
+    if(kind==='move'){snack(`Set location sheet opens "for ${n} torrent${n>1?'s':''}"`);return;}
+    sel.clear();render();
+  }
+  function confirmRemove(chosen){
+    const n=chosen.length, sc=document.createElement('div'); sc.className='scrim';
+    sc.innerHTML=`<div class="dialog fade"><h3>Remove ${n} torrent${n>1?'s':''}?</h3><p>${n>1?`${n} torrents will be removed from the server.`:`“${chosen[0].name}” will be removed from the server.`}</p>
+      <label><input type="checkbox"> Also delete downloaded data</label><div class="btns"><button class="tbtn" data-x>Cancel</button><button class="tbtn danger" data-ok>Remove</button></div></div>`;
+    sc.querySelector('[data-x]').onclick=()=>sc.remove();
+    sc.querySelector('[data-ok]').onclick=()=>{items=items.filter(t=>!sel.has(t.id)); if(sel.has(open))open=null; sel.clear(); sc.remove(); render(); snack(`Removed ${n} torrent${n>1?'s':''}`);};
+    sc.onclick=e=>{if(e.target===sc)sc.remove();}; root.appendChild(sc);
+  }
+  function rowHtml(t){
+    const on=sel.has(t.id), selecting=sel.size>0, c=COL[t.st];
+    const lead=selecting?`<span class="check ${on?'on':''}">${on?'<span class="msr">check</span>':''}</span>`:`<span class="msr">${ICON[t.st]}</span>`;
+    return `<div class="row ${on?'sel':''} ${tablet&&!selecting&&open===t.id?'open':''}" data-id="${t.id}" style="--acc:var(${c[0]});--track:var(${c[1]})">
+      ${selecting?'':`<span class="stripe" style="background:var(${c[0]})"></span>`}
+      <div class="lead">${lead}</div><div class="body">
+      <div class="t1"><div class="name">${t.name}</div><div class="tag">${t.tag}</div></div>
+      <div class="t2"><div class="detail">${t.pct>=100?t.size+' · complete':`${(GB(t.size)*t.pct/100).toFixed(1)} GB of ${t.size} · ${t.pct}%`}</div>${t.label?`<span class="lpill ${t.label[0]}"><span class="dot"></span>${t.label[1]}</span>`:''}</div>
+      <div class="bar"><i style="width:${t.pct}%"></i></div><div class="meta"><span>${t.meta}</span><span>${t.dl?`↓ ${t.dl} MB/s  `:''}${t.ul?`↑ ${t.ul} MB/s`:''}</span></div></div></div>`;
+  }
+  function render(){
+    const selecting=sel.size>0, n=sel.size, chosen=items.filter(t=>sel.has(t.id));
+    const dl=items.reduce((a,t)=>a+t.dl,0).toFixed(1), ul=items.reduce((a,t)=>a+t.ul,0).toFixed(1);
+    const startOk=chosen.some(canStart), pauseOk=chosen.some(canPause);
+    const normalBar=`<div class="appbar"><button class="iconbtn"><span class="msr">menu</span></button>
+      <div class="title"><h2>Torrents</h2><span class="chip"><span class="msr fill">dns</span>Home server</span></div>
+      ${tablet?`<div class="tstats"><span><b>↓ ${dl} MB/s</b>${items.filter(t=>t.st==='down').length} active</span><span><b>↑ ${ul} MB/s</b>${items.filter(t=>t.st==='seed').length} sharing</span></div>`:''}
+      <button class="iconbtn"><span class="msr">search</span></button><button class="iconbtn"><span class="msr">rss_feed</span></button>${tablet?'<button class="iconbtn"><span class="msr">sort</span></button>':''}</div>`;
+    const ctxBar=`<div class="appbar ctx fade"><button class="iconbtn" data-close title="Clear selection"><span class="msr">close</span></button>
+      <div class="title"><h2><span class="count">${n}</span> selected</h2></div>
+      <button class="iconbtn" data-all title="Select all"><span class="msr">select_all</span></button>
+    </div>`;
+    const list=`<div class="list">${(!selecting&&!hinted)?HINT:''}${items.map(rowHtml).join('')}</div>`;
+    const phoneBottom=selecting?`<div class="bottom"><div class="actions fade">
+        <button class="act" data-a="start" ${startOk?'':'disabled'}><span class="msr fill">play_arrow</span>Start</button>
+        <button class="act" data-a="pause" ${pauseOk?'':'disabled'}><span class="msr fill">pause</span>Pause</button>
+        <button class="act" data-a="check"><span class="msr fill">checklist</span>Check</button>
+        <button class="act" data-a="label"><span class="msr fill">sell</span>Label</button>
+        <button class="act" data-a="move"><span class="msr fill">drive_file_move</span>Move</button>
+        <button class="act danger" data-a="remove"><span class="msr fill">delete</span>Remove</button></div></div>`
+      :`<div class="bottom"><div class="toolbar"><span>↓ <b>${dl} MB/s</b></span><span style="margin-left:10px">↑ <b>${ul} MB/s</b></span><span class="grow"></span>
+        <button class="iconbtn"><span class="msr">refresh</span></button><button class="iconbtn"><span class="msr">sort</span></button></div>
+        <button class="fab"><span class="msr">add</span></button></div>`;
+    let right='';
+    if(tablet){
+      if(selecting){
+        const size=chosen.reduce((a,t)=>a+GB(t.size),0).toFixed(1), sdl=chosen.reduce((a,t)=>a+t.dl,0).toFixed(1), sul=chosen.reduce((a,t)=>a+t.ul,0).toFixed(1);
+        const labels=[...new Map(chosen.filter(t=>t.label).map(t=>[t.label[1],t.label])).values()];
+        right=`<div class="fade"><div class="dhead"><div class="dicon" style="--acc:var(--primary);--track:var(--primary-container)"><span class="msr fill">library_add_check</span></div>
+          <div><div class="dname">${n} torrent${n>1?'s':''} selected</div><div class="pills">${labels.map(l=>`<span class="lpill ${l[0]}"><span class="dot"></span>${l[1]}</span>`).join('')}${chosen.some(t=>!t.label)?'<span class="spill"><span class="msr">label_off</span>No label</span>':''}</div></div></div>
+          <div class="cards"><div class="card"><small>Total size</small><b>${size} GB</b></div><div class="card"><small>Download</small><b>${sdl} MB/s</b></div><div class="card"><small>Upload</small><b>${sul} MB/s</b></div></div>
+          <div class="bigacts"><button class="btn primary" data-a="start" ${startOk?'':'disabled style="opacity:.45"'}><span class="msr fill">play_arrow</span>Start</button>
+          <button class="btn" data-a="pause" ${pauseOk?'':'disabled style="opacity:.45"'}><span class="msr fill">pause</span>Pause</button>
+          <button class="btn outline" data-a="check"><span class="msr fill">checklist</span>Check data</button>
+          <button class="btn outline" data-a="label"><span class="msr fill">sell</span>Set label</button><button class="btn outline" data-a="move"><span class="msr fill">drive_file_move</span>Move</button>
+          <button class="btn danger" data-a="remove"><span class="msr fill">delete</span>Remove</button></div>
+          <div class="sellist">${chosen.map(t=>`<div><span class="msr">${ICON[t.st]}</span><span class="n">${t.name}</span><small>${t.size}</small></div>`).join('')}</div></div>`;
+      } else {
+        const t=items.find(x=>x.id===open);
+        right=t?`<div class="dhead"><div class="dicon" style="--acc:var(${COL[t.st][0]});--track:var(${COL[t.st][1]})"><span class="msr">${ICON[t.st]}</span></div>
+          <div><div class="dname">${t.name}</div><div class="pills"><span class="spill"><span class="msr">${ICON[t.st]}</span>${t.tag}</span>${t.label?`<span class="lpill ${t.label[0]}" style="padding:4px 11px 4px 9px;font-size:12px"><span class="dot"></span>${t.label[1]}</span>`:''}</div></div></div>
+          <div class="cards"><div class="card"><small>Size</small><b>${t.size}</b></div><div class="card"><small>Download</small><b>${t.dl} MB/s</b></div><div class="card"><small>Upload</small><b>${t.ul} MB/s</b></div></div>
+          <p style="color:var(--muted);font-size:13px">Torrent details as today: Overview, Files, Peers and Trackers tabs.</p>`
+          :`<div class="empty"><div><span class="msr" style="font-size:40px">touch_app</span><p>Select a torrent to see its details</p></div></div>`;
+      }
+    }
+    root.innerHTML=`<div class="statusbar"><span>4:52</span><span class="msr fill" style="font-size:16px">battery_5_bar</span></div>`+
+      (tablet?`${selecting?ctxBar:normalBar}<div class="panes"><div class="lpane">${list}${selecting?'':'<div class="bottom" style="left:auto;right:12px"><button class="fab" style="position:static"><span class="msr">add</span></button></div>'}</div><div class="rpane">${right}</div></div>`
+        :`${selecting?ctxBar:normalBar}${list}${phoneBottom}`);
+    wire();
+  }
+  function wire(){
+    root.querySelectorAll('.row').forEach(r=>{
+      const id=+r.dataset.id; let timer=null, long=false;
+      r.addEventListener('pointerdown',()=>{long=false;timer=setTimeout(()=>{long=true;hinted=true;if(!sel.has(id))sel.add(id);navigator.vibrate?.(15);render();},450);});
+      ['pointerup','pointerleave','pointercancel'].forEach(e=>r.addEventListener(e,()=>clearTimeout(timer)));
+      r.addEventListener('click',()=>{ if(long)return;
+        if(sel.size){ sel.has(id)?sel.delete(id):sel.add(id); render(); }
+        else if(tablet){ open=id; render(); } else snack('Opens the details screen');});
+      r.addEventListener('contextmenu',e=>e.preventDefault());
+    });
+    root.querySelector('[data-close]')?.addEventListener('click',()=>{sel.clear();render();});
+    root.querySelector('[data-all]')?.addEventListener('click',()=>{items.forEach(t=>sel.add(t.id));render();});
+    root.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>act(b.dataset.a)));
+  }
+  if(location.search.includes('demo')){[1,3,6].forEach(i=>sel.add(i));hinted=true;}
+  render();
+  return ()=>{items=DATA.map(d=>({...d}));sel.clear();open=tablet?2:null;hinted=false;render();};
+}
+const resets=[make(document.getElementById('phone'),false),make(document.getElementById('tablet'),true)];
+document.getElementById('reset').onclick=()=>resets.forEach(r=>r());
+document.getElementById('theme').onclick=e=>{document.body.classList.toggle('dark');e.target.textContent=document.body.classList.contains('dark')?'Light theme':'Dark theme';};
+</script>
+</body>
+</html>
