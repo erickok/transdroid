@@ -58,7 +58,8 @@ fun AddTorrentOptionsSheet(
     recentLocations: List<String>,
     onAdd: (startPaused: Boolean, downloadLocation: String?) -> Unit,
     onDismiss: () -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    // Fully expanded right away, so the action buttons at the bottom are visible without dragging
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
     var location by remember { mutableStateOf("") }
     var startPaused by remember { mutableStateOf(false) }

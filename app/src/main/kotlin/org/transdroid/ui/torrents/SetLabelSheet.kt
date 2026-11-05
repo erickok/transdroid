@@ -84,7 +84,8 @@ fun SetLabelSheet(
     countForLabel: (String) -> Int,
     onSetLabel: (String?) -> Unit,
     onDismiss: () -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    // Fully expanded right away, so the action buttons at the bottom are visible without dragging
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
     var filterText by remember { mutableStateOf("") }
     var selected by remember { mutableStateOf(currentLabel) }
@@ -112,7 +113,13 @@ fun SetLabelSheet(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
         )
 
-        LazyColumn(Modifier.heightIn(max = 340.dp).padding(horizontal = 8.dp, vertical = 4.dp)) {
+        // Shrinks (and scrolls) on short screens, so the buttons below always stay on screen
+        LazyColumn(
+            Modifier
+                .weight(1f, fill = false)
+                .heightIn(max = 340.dp)
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+        ) {
             if (trimmedFilter.isEmpty()) {
                 item {
                     LabelRow(

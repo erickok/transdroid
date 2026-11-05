@@ -75,7 +75,8 @@ fun SetLocationSheet(
     recentLocations: List<String>,
     onSetLocation: (String) -> Unit,
     onDismiss: () -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    // Fully expanded right away, so the action buttons at the bottom are visible without dragging
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
     var location by remember { mutableStateOf(currentLocation) }
     val trimmedLocation = location.trim()
