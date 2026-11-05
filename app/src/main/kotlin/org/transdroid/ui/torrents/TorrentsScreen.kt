@@ -547,10 +547,10 @@ private fun TorrentListContent(
                     EmptyState(
                         icon = Icons.Rounded.FilterAltOff,
                         title = stringResource(R.string.torrents_no_filter_title),
-                        message = stringResource(R.string.torrents_no_filter_message, ui.filter.label()),
+                        message = stringResource(R.string.torrents_no_filter_message),
                         modifier = Modifier.fillMaxSize().wrapContentSize(),
                         actions = {
-                            FilledTonalButton(onClick = { viewModel.setFilter(TorrentFilter.ALL) }) {
+                            FilledTonalButton(onClick = { viewModel.clearFilters() }) {
                                 Icon(Icons.Rounded.FilterAlt, contentDescription = null, modifier = Modifier.size(18.dp))
                                 Spacer(Modifier.width(8.dp))
                                 Text(stringResource(R.string.torrents_show_all))

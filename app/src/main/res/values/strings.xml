@@ -13,7 +13,7 @@
     <string name="torrents_no_torrents_title">No torrents yet</string>
     <string name="torrents_no_torrents_message">Add one with the + button, or find something to download from Search or RSS.</string>
     <string name="torrents_no_filter_title">No matches</string>
-    <string name="torrents_no_filter_message">No torrents match the “%1$s” filter right now.</string>
+    <string name="torrents_no_filter_message">Connected, but no torrents match the current filters.</string>
     <string name="torrents_show_all">Show all torrents</string>
     <string name="torrents_refresh">Refresh</string>
     <string name="torrents_add">Add torrent</string>

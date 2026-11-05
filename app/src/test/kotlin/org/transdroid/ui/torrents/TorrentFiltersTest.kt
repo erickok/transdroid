@@ -54,7 +54,7 @@ class TorrentFiltersTest {
             labelFilters = setOf("tv"),
         )
         assertEquals(listOf("tv"), ui.drawerLabels)
-        assertTrue(ui.drawerShowsNoLabel)
+        assertTrue(ui.drawerShowsLabels)
         assertEquals(listOf("t1"), ui.drawerTrackers)
     }
 
@@ -67,10 +67,19 @@ class TorrentFiltersTest {
         )
         assertTrue(ui.visibleTorrents.isEmpty())
         assertEquals(listOf("movies", "tv"), ui.drawerLabels)
-        assertTrue(ui.drawerShowsNoLabel)
+        assertTrue(ui.drawerShowsLabels)
         assertEquals(listOf("gone.example", "t1"), ui.drawerTrackers)
         // The label picker still only offers labels that exist on the server
         assertEquals(listOf("tv"), ui.availableLabels)
         assertFalse(ui.hasUnlabeledTorrents)
+    }
+
+    @Test
+    fun `the labels section, with No label, shows whenever the server uses labels`() {
+        val allLabelled = TorrentsUiState(torrents = listOf(torrent("a", labels = listOf("tv"))))
+        assertTrue(allLabelled.drawerShowsLabels)
+        assertEquals(0, allLabelled.countForLabel(NO_LABEL))
+        // No labels on the server at all: "No label" would just match everything
+        assertFalse(TorrentsUiState(torrents = listOf(torrent("a"))).drawerShowsLabels)
     }
 }

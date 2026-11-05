@@ -143,7 +143,7 @@ fun FilterDrawerContent(
                 )
             }
 
-            if (ui.drawerLabels.isNotEmpty() || NO_LABEL in ui.labelFilters) {
+            if (ui.drawerShowsLabels) {
                 DrawerDivider()
                 SectionTitle(stringResource(R.string.drawer_labels_header))
                 ui.drawerLabels.forEach { label ->
@@ -156,15 +156,14 @@ fun FilterDrawerContent(
                         onClick = { onToggleLabel(label) },
                     )
                 }
-                if (ui.drawerShowsNoLabel) {
-                    DrawerItemRow(
-                        hollowDot = true,
-                        label = stringResource(R.string.drawer_no_label),
-                        count = ui.countForLabel(NO_LABEL),
-                        selected = NO_LABEL in ui.labelFilters,
-                        onClick = { onToggleLabel(NO_LABEL) },
-                    )
-                }
+                // Always shown, so you can check that no torrent is left without a label
+                DrawerItemRow(
+                    hollowDot = true,
+                    label = stringResource(R.string.drawer_no_label),
+                    count = ui.countForLabel(NO_LABEL),
+                    selected = NO_LABEL in ui.labelFilters,
+                    onClick = { onToggleLabel(NO_LABEL) },
+                )
             }
 
             if (ui.drawerTrackers.isNotEmpty()) {

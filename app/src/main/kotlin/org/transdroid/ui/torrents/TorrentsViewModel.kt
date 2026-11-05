@@ -177,9 +177,13 @@ data class TorrentsUiState(
     val drawerLabels: List<String>
         get() = (availableLabels + (labelFilters - NO_LABEL)).distinct().sorted()
 
-    /** Whether the drawer shows its "No label" bucket; also when selected, for the same reason. */
-    val drawerShowsNoLabel: Boolean
-        get() = hasUnlabeledTorrents || NO_LABEL in labelFilters
+    /**
+     * Whether the drawer shows its Labels section, which then always includes "No label" - also
+     * when every torrent has a label, so users who label everything can check that nothing is
+     * left unlabeled. Hidden when the server uses no labels at all (or a restored filter needs it).
+     */
+    val drawerShowsLabels: Boolean
+        get() = drawerLabels.isNotEmpty() || NO_LABEL in labelFilters
 
     /** The drawer's trackers: [availableTrackers] plus any selected one, see [drawerLabels]. */
     val drawerTrackers: List<String>
@@ -397,6 +401,14 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
     fun toggleTrackerFilter(tracker: String) {
         _ui.update {
             it.copy(trackerFilters = if (tracker in it.trackerFilters) it.trackerFilters - tracker else it.trackerFilters + tracker)
+        }
+        saveFilters()
+    }
+
+    /** Back to the full torrent list: no status, label, tracker or name filter. */
+    fun clearFilters() {
+        _ui.update {
+            it.copy(filter = TorrentFilter.ALL, labelFilters = emptySet(), trackerFilters = emptySet(), nameQuery = "")
         }
         saveFilters()
     }
