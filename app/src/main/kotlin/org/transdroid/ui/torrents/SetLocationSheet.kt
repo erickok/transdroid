@@ -75,6 +75,8 @@ fun SetLocationSheet(
     recentLocations: List<String>,
     onSetLocation: (String) -> Unit,
     onDismiss: () -> Unit,
+    /** Replaces the "for <torrent name>" line, e.g. for several selected torrents. */
+    subtitle: String? = null,
     // Fully expanded right away, so the action buttons at the bottom are visible without dragging
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
@@ -87,7 +89,7 @@ fun SetLocationSheet(
         Column(Modifier.padding(horizontal = 22.dp)) {
             Text(stringResource(R.string.details_set_location), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Text(
-                stringResource(R.string.details_set_location_subtitle, torrentName),
+                subtitle ?: stringResource(R.string.details_set_location_subtitle, torrentName),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

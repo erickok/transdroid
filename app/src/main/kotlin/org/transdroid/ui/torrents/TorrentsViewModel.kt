@@ -90,6 +90,11 @@ enum class TorrentFilter {
     }
 }
 
+enum class BulkAction { START, PAUSE, CHECK, REMOVE, LABEL, MOVE }
+
+/** How a bulk action went: [failed] of [total] torrents couldn't be updated. */
+data class BulkResult(val action: BulkAction, val total: Int, val failed: Int)
+
 /** The drawer filters in use on one server; remembered per server across app starts. */
 data class TorrentFilters(
     val status: TorrentFilter = TorrentFilter.ALL,
@@ -148,6 +153,12 @@ data class TorrentsUiState(
     val sort: TorrentSort = TorrentSort.DATE_ADDED,
     val sortDescending: Boolean = TorrentSort.DATE_ADDED.defaultDescending,
     val selectedTorrentId: String? = null,
+    /** Torrents picked in selection mode (long-press); empty when not selecting. */
+    val selection: Set<String> = emptySet(),
+    /** The outcome of the last bulk action, until the screen has shown it. */
+    val bulkResult: BulkResult? = null,
+    /** Whether to show the one-time "long-press to select" tip above the list. */
+    val showSelectionHint: Boolean = false,
     val files: Map<String, List<TorrentFile>> = emptyMap(),
     val trackers: Map<String, List<Tracker>> = emptyMap(),
     val peers: Map<String, List<Peer>> = emptyMap(),
@@ -203,6 +214,18 @@ data class TorrentsUiState(
             }
             .sortedWith(sort.comparator(sortDescending).thenBy { it.name.lowercase() })
 
+    val selecting: Boolean
+        get() = selection.isNotEmpty()
+
+    val selectedTorrents: List<Torrent>
+        get() = torrents.filter { it.id in selection }
+
+    val selectionCanStart: Boolean
+        get() = selectedTorrents.any { it.status.canStart }
+
+    val selectionCanPause: Boolean
+        get() = selectedTorrents.any { !it.status.canStart }
+
     val selectedTorrent: Torrent?
         get() = torrents.firstOrNull { it.id == selectedTorrentId }
 
@@ -256,6 +279,7 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
                         trackers = if (switched) emptyMap() else state.trackers,
                         peers = if (switched) emptyMap() else state.peers,
                         error = if (switched) null else state.error,
+                        selection = if (switched) emptySet() else state.selection,
                     )
                 }
                 if (profile != null) refresh(showSpinner = false)
@@ -268,6 +292,9 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         }
         viewModelScope.launch {
             container.settingsRepository.peerSort.collect { sort -> _ui.update { it.copy(peerSort = sort) } }
+        }
+        viewModelScope.launch {
+            container.settingsRepository.selectionHintSeen.collect { seen -> _ui.update { it.copy(showSelectionHint = !seen) } }
         }
         viewModelScope.launch {
             combine(
@@ -312,6 +339,8 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
                 if (it.activeProfile?.id != profile.id) it
                 else it.copy(
                     torrents = torrents,
+                    // Torrents removed elsewhere drop out of the selection
+                    selection = it.selection.intersect(torrents.mapTo(HashSet()) { t -> t.id }),
                     hasLoaded = true,
                     refreshing = false,
                     error = null,
@@ -439,6 +468,86 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
 
     fun select(torrentId: String?) {
         _ui.update { it.copy(selectedTorrentId = torrentId) }
+    }
+
+    /** Long-press: starts selection mode with [torrentId] selected (or adds it). */
+    fun startSelection(torrentId: String) {
+        _ui.update { it.copy(selection = it.selection + torrentId) }
+        if (_ui.value.showSelectionHint) dismissSelectionHint()
+    }
+
+    fun dismissSelectionHint() {
+        _ui.update { it.copy(showSelectionHint = false) }
+        viewModelScope.launch { container.settingsRepository.setSelectionHintSeen() }
+    }
+
+    /** A tap while selecting; deselecting the last torrent ends selection mode. */
+    fun toggleSelected(torrentId: String) {
+        _ui.update {
+            it.copy(selection = if (torrentId in it.selection) it.selection - torrentId else it.selection + torrentId)
+        }
+    }
+
+    /** Selects every torrent the current filters show. */
+    fun selectAllVisible() {
+        _ui.update { it.copy(selection = it.selection + it.visibleTorrents.map(Torrent::id)) }
+    }
+
+    fun clearSelection() {
+        _ui.update { it.copy(selection = emptySet()) }
+    }
+
+    fun consumeBulkResult() {
+        _ui.update { it.copy(bulkResult = null) }
+    }
+
+    fun startSelected() = runBulk(BulkAction.START, { it.status.canStart }) { adapter, t -> adapter.start(t.id) }
+
+    fun pauseSelected() = runBulk(BulkAction.PAUSE, { !it.status.canStart }) { adapter, t -> adapter.pause(t.id) }
+
+    fun checkSelected() = runBulk(BulkAction.CHECK) { adapter, t -> adapter.checkData(t.id) }
+
+    fun removeSelected(deleteData: Boolean) = runBulk(BulkAction.REMOVE) { adapter, t -> adapter.remove(t.id, deleteData) }
+
+    /** [label] null or blank clears it. */
+    fun setLabelSelected(label: String?) =
+        runBulk(BulkAction.LABEL) { adapter, t -> adapter.setLabel(t.id, label.orEmpty()) }
+
+    fun setLocationSelected(location: String) {
+        _ui.value.activeProfile?.let { profile -> viewModelScope.launch { rememberDownloadLocation(profile.id, location) } }
+        runBulk(BulkAction.MOVE) { adapter, t -> adapter.setDownloadLocation(t.id, location) }
+    }
+
+    /**
+     * Runs [action] on each selected torrent that [applies] to, one by one, then ends selection
+     * mode and reports how many succeeded. One failing torrent doesn't stop the others.
+     */
+    private fun runBulk(
+        kind: BulkAction,
+        applies: (Torrent) -> Boolean = { true },
+        action: suspend (org.transdroid.protocol.DaemonAdapter, Torrent) -> Unit,
+    ) {
+        val profile = _ui.value.activeProfile ?: return
+        val targets = _ui.value.selectedTorrents.filter(applies)
+        _ui.update { it.copy(selection = emptySet()) }
+        if (targets.isEmpty()) return
+        viewModelScope.launch {
+            val adapter = container.adapterFor(profile)
+            var failed = 0
+            for (torrent in targets) {
+                try {
+                    action(adapter, torrent)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    failed++
+                }
+            }
+            _ui.update { it.copy(bulkResult = BulkResult(kind, total = targets.size, failed = failed)) }
+            refreshNow(showSpinner = false)
+            delay(FOLLOW_UP_REFRESH_MILLIS)
+            refreshNow(showSpinner = false)
+        }
     }
 
     fun toggleStartPause(torrent: Torrent) {

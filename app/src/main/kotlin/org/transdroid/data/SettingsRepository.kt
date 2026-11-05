@@ -46,6 +46,7 @@ class SettingsRepository(private val context: Context) {
     private val torrentSortDescendingKey = booleanPreferencesKey("torrent_sort_descending")
     private val legacyImportSummaryKey = stringPreferencesKey("legacy_import_summary")
     private val checkUpdatesKey = booleanPreferencesKey("check_updates")
+    private val selectionHintSeenKey = booleanPreferencesKey("selection_hint_seen")
     private val latestReleaseCodeKey = intPreferencesKey("latest_release_code")
     private val latestReleaseNameKey = stringPreferencesKey("latest_release_name")
     private val notifiedUpdateCodeKey = intPreferencesKey("notified_update_code")
@@ -111,6 +112,13 @@ class SettingsRepository(private val context: Context) {
 
     suspend fun setNotifyFinished(enabled: Boolean) {
         context.settingsDataStore.edit { it[notifyFinishedKey] = enabled }
+    }
+
+    /** Whether the user has seen (or used) the long-press-to-select tip on the torrent list. */
+    val selectionHintSeen: Flow<Boolean> = context.settingsDataStore.data.map { it[selectionHintSeenKey] ?: false }
+
+    suspend fun setSelectionHintSeen() {
+        context.settingsDataStore.edit { it[selectionHintSeenKey] = true }
     }
 
     /** Whether to look for new releases; only offered where updatecheck_available is set. */

@@ -16,30 +16,32 @@
  */
 package org.transdroid.ui.torrents
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -74,9 +76,10 @@ import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material.icons.rounded.UnfoldMore
 import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -93,6 +96,8 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -100,8 +105,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -112,30 +117,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import org.transdroid.R
 import org.transdroid.data.ServerProfile
+import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentStatus
-import org.transdroid.ui.message
-import org.transdroid.ui.statusLabel
-import org.transdroid.ui.theme.accentColor
-import org.transdroid.ui.theme.trackColor
 import org.transdroid.ui.components.EmptyState
 import org.transdroid.ui.components.LabelPill
 import org.transdroid.ui.components.SortDirectionIcon
 import org.transdroid.ui.components.TorrentProgressIndicator
+import org.transdroid.ui.message
+import org.transdroid.ui.statusLabel
+import org.transdroid.ui.theme.accentColor
+import org.transdroid.ui.theme.trackColor
 import org.transdroid.util.formatBytes
 import org.transdroid.util.formatEta
 import org.transdroid.util.formatRatio
@@ -159,6 +170,57 @@ fun TorrentsScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Selection mode: Back ends it, and each bulk action reports back in a snackbar
+    BackHandler(enabled = ui.selecting) { viewModel.clearSelection() }
+    val bulkMessage = ui.bulkResult?.message()
+    LaunchedEffect(ui.bulkResult) {
+        if (bulkMessage != null) {
+            // Shown from the screen's scope: consuming the result restarts this effect
+            scope.launch { snackbarHostState.showSnackbar(bulkMessage) }
+            viewModel.consumeBulkResult()
+        }
+    }
+    var bulkDialog by rememberSaveable { mutableStateOf<BulkAction?>(null) }
+    val selectionActions = SelectionActions(
+        canStart = ui.selectionCanStart,
+        canPause = ui.selectionCanPause,
+        onStart = { viewModel.startSelected() },
+        onPause = { viewModel.pauseSelected() },
+        onCheck = { viewModel.checkSelected() },
+        onLabel = { bulkDialog = BulkAction.LABEL },
+        onMove = { bulkDialog = BulkAction.MOVE },
+        onRemove = { bulkDialog = BulkAction.REMOVE },
+    )
+    val chosen = ui.selectedTorrents
+    if (chosen.isEmpty()) bulkDialog = null
+    when (bulkDialog) {
+        BulkAction.LABEL -> SetLabelSheet(
+            torrentName = chosen.first().name,
+            currentLabel = chosen.map { it.labels.firstOrNull() }.distinct().singleOrNull(),
+            availableLabels = ui.availableLabels,
+            countForLabel = ui::countForLabel,
+            onSetLabel = { label -> viewModel.setLabelSelected(label); bulkDialog = null },
+            onDismiss = { bulkDialog = null },
+            subtitle = if (chosen.size > 1) stringResource(R.string.selection_subtitle, chosen.size) else null,
+        )
+        BulkAction.MOVE -> SetLocationSheet(
+            torrentName = chosen.first().name,
+            currentLocation = chosen.map { it.downloadDir.orEmpty() }.distinct().singleOrNull().orEmpty(),
+            isRtorrent = ui.activeProfile?.type == DaemonType.RTORRENT,
+            recentLocations = ui.recentDownloadLocations,
+            onSetLocation = { location -> viewModel.setLocationSelected(location); bulkDialog = null },
+            onDismiss = { bulkDialog = null },
+            subtitle = if (chosen.size > 1) stringResource(R.string.selection_subtitle, chosen.size) else null,
+        )
+        BulkAction.REMOVE -> RemoveTorrentsDialog(
+            torrents = chosen,
+            onDismiss = { bulkDialog = null },
+            onConfirm = { alsoDeleteData -> viewModel.removeSelected(alsoDeleteData); bulkDialog = null },
+        )
+        else -> {}
+    }
     val scrollToTop: () -> Unit = { scope.launch { listState.animateScrollToItem(0) } }
 
     ModalNavigationDrawer(
@@ -187,8 +249,16 @@ fun TorrentsScreen(
         },
     ) {
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
-                if (useTwoPane && ui.activeProfile != null) {
+                if (ui.selecting) {
+                    SelectionTopBar(
+                        count = ui.selection.size,
+                        onClose = { viewModel.clearSelection() },
+                        onSelectAll = { viewModel.selectAllVisible() },
+                        showDivider = useTwoPane,
+                    )
+                } else if (useTwoPane && ui.activeProfile != null) {
                     TabletTopBar(
                         ui = ui,
                         searchAvailable = searchAvailable,
@@ -270,12 +340,15 @@ fun TorrentsScreen(
                                     showToolbar = false,
                                     showFilterChips = true,
                                     bottomInset = bottomInset,
+                                    selectionActions = selectionActions,
                                 )
                             }
                             VerticalDivider()
                             Box(Modifier.weight(1f)) {
                                 val selected = ui.selectedTorrent
-                                if (selected != null) {
+                                if (ui.selecting) {
+                                    SelectionSummaryPane(ui.selectedTorrents, selectionActions)
+                                } else if (selected != null) {
                                     TorrentDetailsContent(viewModel = viewModel, torrent = selected, bottomInset = bottomInset)
                                 } else {
                                     EmptyState(
@@ -300,6 +373,7 @@ fun TorrentsScreen(
                         listState = listState,
                         scrollToTop = scrollToTop,
                         bottomInset = bottomInset,
+                        selectionActions = selectionActions,
                     )
                 }
             }
@@ -499,6 +573,8 @@ private fun TorrentListContent(
     showFilterChips: Boolean = false,
     /** The navigation bar height the list draws under, which the FAB and toolbar stay above. */
     bottomInset: Dp = 0.dp,
+    /** Shown in the phone's action toolbar while selecting. */
+    selectionActions: SelectionActions? = null,
 ) {
     Box(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
@@ -558,17 +634,6 @@ private fun TorrentListContent(
                         },
                     )
                 } else {
-                    var pendingRemoveId by rememberSaveable { mutableStateOf<String?>(null) }
-                    ui.torrents.firstOrNull { it.id == pendingRemoveId }?.let { torrent ->
-                        SwipeRemoveDialog(
-                            torrent = torrent,
-                            onDismiss = { pendingRemoveId = null },
-                            onConfirm = { alsoDeleteData ->
-                                pendingRemoveId = null
-                                viewModel.remove(torrent, alsoDeleteData)
-                            },
-                        )
-                    }
                     // Enough room below the last row to scroll it clear of the FAB and toolbar floating over the list
                     val overlayHeight = bottomInset + OverlayBottomPadding +
                         (if (ui.activeProfile != null) FabSize + FabToolbarGap else 0.dp) +
@@ -578,6 +643,9 @@ private fun TorrentListContent(
                         contentPadding = PaddingValues(start = 6.dp, end = 6.dp, top = 8.dp, bottom = overlayHeight + 8.dp),
                         modifier = Modifier.fillMaxSize(),
                     ) {
+                        if (ui.showSelectionHint && !ui.selecting && ui.visibleTorrents.isNotEmpty()) {
+                            item(key = "selection-hint") { SelectionHint(onDismiss = { viewModel.dismissSelectionHint() }) }
+                        }
                         itemsIndexed(ui.visibleTorrents, key = { _, torrent -> torrent.id }) { index, torrent ->
                             // Between rows only, starting under the text column
                             if (index > 0) {
@@ -586,17 +654,17 @@ private fun TorrentListContent(
                                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
                                 )
                             }
-                            SwipeableTorrentRow(
+                            TorrentRow(
                                 torrent = torrent,
-                                onToggleStartPause = { viewModel.toggleStartPause(it) },
-                                onRequestRemove = { pendingRemoveId = it.id },
-                            ) {
-                                TorrentRow(
-                                    torrent = torrent,
-                                    selected = torrent.id == ui.selectedTorrentId,
-                                    onClick = { onOpenDetails(torrent.id) },
-                                )
-                            }
+                                selected = !ui.selecting && torrent.id == ui.selectedTorrentId,
+                                selecting = ui.selecting,
+                                checked = torrent.id in ui.selection,
+                                onClick = {
+                                    if (ui.selecting) viewModel.toggleSelected(torrent.id) else onOpenDetails(torrent.id)
+                                },
+                                onLongClick = { viewModel.startSelection(torrent.id) },
+                                onToggleStartPause = { viewModel.toggleStartPause(torrent) },
+                            )
                         }
                     }
                 }
@@ -609,11 +677,13 @@ private fun TorrentListContent(
                 .padding(start = 12.dp, end = 12.dp, top = 16.dp, bottom = bottomInset + OverlayBottomPadding),
             horizontalAlignment = Alignment.End,
         ) {
-            if (ui.activeProfile != null) {
+            if (ui.selecting) {
+                if (showToolbar && selectionActions != null) SelectionActionBar(selectionActions)
+            } else if (ui.activeProfile != null) {
                 AddTorrentFab(onClick = onAddTorrent)
                 Spacer(Modifier.height(FabToolbarGap))
             }
-            if (showToolbar) {
+            if (showToolbar && !ui.selecting) {
                 TorrentsToolbar(
                     downloadRate = ui.totalDownloadRate,
                     activeCount = ui.activeCount,
@@ -828,28 +898,63 @@ internal val TorrentStatus.leadingIcon: ImageVector
     }
 
 @Composable
-private fun TorrentRow(torrent: Torrent, selected: Boolean, onClick: () -> Unit) {
+private fun TorrentRow(
+    torrent: Torrent,
+    selected: Boolean,
+    onClick: () -> Unit,
+    selecting: Boolean = false,
+    checked: Boolean = false,
+    onLongClick: () -> Unit = {},
+    onToggleStartPause: () -> Unit = {},
+) {
+    val haptics = LocalHapticFeedback.current
+    // Long-press and its gesture-free alternatives for TalkBack users
+    val startPauseLabel = stringResource(if (torrent.status.canStart) R.string.selection_start else R.string.selection_pause)
+    val selectLabel = stringResource(R.string.selection_select)
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
             // Opaque either way, so the swipe actions behind the row don't show through it
             .background(
-                if (selected) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.background,
+                when {
+                    checked -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+                        .compositeOver(MaterialTheme.colorScheme.background)
+                    selected -> MaterialTheme.colorScheme.surfaceContainerHigh
+                    else -> MaterialTheme.colorScheme.background
+                },
             )
-            .clickable(onClick = onClick),
+            .semantics {
+                if (!selecting) {
+                    customActions = listOf(
+                        CustomAccessibilityAction(startPauseLabel) { onToggleStartPause(); true },
+                        CustomAccessibilityAction(selectLabel) { onLongClick(); true },
+                    )
+                }
+            }
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onLongClick()
+                },
+            ),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 12.dp),
         ) {
-            Icon(
-                torrent.status.leadingIcon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(22.dp).padding(top = 1.dp),
-            )
+            if (selecting) {
+                SelectionCheck(checked, Modifier.padding(top = 1.dp))
+            } else {
+                Icon(
+                    torrent.status.leadingIcon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(22.dp).padding(top = 1.dp),
+                )
+            }
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 Row {
@@ -917,7 +1022,7 @@ private fun TorrentRow(torrent: Torrent, selected: Boolean, onClick: () -> Unit)
         // of shrinking it. Nesting a plain Box inside sidesteps that: the outer box's tight
         // sizing is already resolved, so its own children (this inner one) get measured with
         // normal loose (0..max) constraints, and width/padding behave as expected.
-        Box(Modifier.matchParentSize()) {
+        if (!selecting) Box(Modifier.matchParentSize()) {
             Box(
                 Modifier
                     .padding(start = 17.5.dp, top = 35.dp, bottom = 12.dp)

@@ -84,6 +84,8 @@ fun SetLabelSheet(
     countForLabel: (String) -> Int,
     onSetLabel: (String?) -> Unit,
     onDismiss: () -> Unit,
+    /** Replaces the "for <torrent name>" line, e.g. for several selected torrents. */
+    subtitle: String? = null,
     // Fully expanded right away, so the action buttons at the bottom are visible without dragging
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
@@ -99,7 +101,7 @@ fun SetLabelSheet(
         Column(Modifier.padding(horizontal = 22.dp)) {
             Text(stringResource(R.string.details_set_label), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Text(
-                stringResource(R.string.details_set_label_subtitle, torrentName),
+                subtitle ?: stringResource(R.string.details_set_label_subtitle, torrentName),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
