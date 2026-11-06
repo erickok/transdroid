@@ -30,6 +30,16 @@ data class Release(val version: String, val date: String, val changes: List<Chan
  */
 val CHANGELOG: List<Release> = listOf(
     Release(
+        version = "3.0.0-beta4",
+        date = "November 2026",
+        changes = listOf(
+            ChangelogEntry(ChangeKind.NEW, "Long-press a torrent to select it, then start, pause, check, label, move or remove one or many at once; this replaces the swipe gestures"),
+            ChangelogEntry(ChangeKind.IMPROVED, "The \"No label\" filter is always available, also when every torrent has a label"),
+            ChangelogEntry(ChangeKind.IMPROVED, "When filters match no torrents, the list says so and offers to clear them all"),
+            ChangelogEntry(ChangeKind.FIXED, "The set label and location sheets opened half-way, hiding their buttons"),
+        ),
+    ),
+    Release(
         version = "3.0.0-beta3",
         date = "November 2026",
         changes = listOf(

@@ -1,0 +1,4 @@
+* Long-press a torrent to select it, then start, pause, check, label, move or remove one or many at once (replaces the swipe gestures)
+* The "No label" filter is always available
+* Clearer message, and a one-tap reset, when filters match no torrents
+* Label and location sheets open fully, with their buttons in view
