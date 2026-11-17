@@ -108,4 +108,11 @@ dependencies {
     // Using it as a compileOnly so this helps while developing, but is not compiled into the final
     // app, see https://developer.android.com/studio/build/dependencies#dependency_configurations
     compileOnly files('libs/org.apache.http.legacy.jar')
+
+    // Unit tests run on the JVM, where neither the legacy Apache HttpClient nor org.json are available
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
+    testImplementation 'org.apache.httpcomponents:httpclient:4.0.1'
+    testImplementation 'org.json:json:20231013'
 }

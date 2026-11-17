@@ -19,14 +19,29 @@ package org.transdroid.daemon.adapters.transmission;
 
 import net.iharder.Base64;
 import net.iharder.Base64.InputStream;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpResponseInterceptor;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthState;
+import org.apache.http.auth.Credentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import org.transdroid.core.gui.log.Log;
 import org.transdroid.daemon.Daemon;
 import org.transdroid.daemon.DaemonException;
@@ -111,6 +126,13 @@ public class TransmissionAdapter implements IDaemonAdapter {
     private static final String RPC_FILESTAT_WANTED = "wanted";
     private static final String RPC_FILESTAT_PRIORITY = "priority";
     private static String sessionToken;
+    /**
+     * Servers (address:port) that challenged us with HTTP Basic auth before; for these we send credentials
+     * preemptively, so not every request first triggers a 401 (which reverse proxies/fail2ban/CrowdSec may
+     * consider a brute-force attempt). Servers using Digest (or no auth) never end up here and keep using
+     * normal challenge/response negotiation. Static as adapters are re-created frequently, like sessionToken.
+     */
+    private static final Set<String> basicAuthServers = Collections.synchronizedSet(new HashSet<String>());
     private DaemonSettings settings;
     private DefaultHttpClient httpclient;
     private long rpcVersion = -1;
@@ -477,7 +499,55 @@ public class TransmissionAdapter implements IDaemonAdapter {
     private synchronized void initialise() throws DaemonException {
         if(httpclient == null) {
             httpclient = HttpHelper.createStandardHttpClient(settings, true);
+            if (settings.shouldUseAuthentication()) {
+                addPreemptiveBasicAuth(httpclient);
+            }
         }
+    }
+
+    /**
+     * Remembers whether the server asked for HTTP Basic auth and, if so, sends Basic credentials preemptively on
+     * subsequent requests (including the retry after a 409 session-id handshake).
+     */
+    private void addPreemptiveBasicAuth(DefaultHttpClient client) {
+        final String serverKey = settings.getAddress() + ":" + settings.getPort();
+        client.addResponseInterceptor(new HttpResponseInterceptor() {
+            @Override
+            public void process(HttpResponse response, HttpContext context) {
+                if (response.getStatusLine().getStatusCode() != 401) {
+                    return;
+                }
+                for (Header challenge : response.getHeaders("WWW-Authenticate")) {
+                    if (challenge.getValue().trim().toLowerCase().startsWith("basic")) {
+                        basicAuthServers.add(serverKey);
+                        return;
+                    }
+                }
+                // Not (or no longer) a Basic challenge, e.g. Digest: fall back to plain negotiation
+                basicAuthServers.remove(serverKey);
+            }
+        });
+        // Must run before the standard RequestTargetAuthentication interceptor, hence index 0
+        client.addRequestInterceptor(new HttpRequestInterceptor() {
+            @Override
+            public void process(HttpRequest request, HttpContext context) {
+                if (!basicAuthServers.contains(serverKey)) {
+                    return;
+                }
+                AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
+                CredentialsProvider credentialsProvider =
+                        (CredentialsProvider) context.getAttribute(ClientContext.CREDS_PROVIDER);
+                if (authState == null || credentialsProvider == null || authState.getAuthScheme() != null) {
+                    return;
+                }
+                Credentials credentials = credentialsProvider.getCredentials(
+                        new AuthScope(settings.getAddress(), settings.getPort(), AuthScope.ANY_REALM));
+                if (credentials != null) {
+                    authState.setAuthScheme(new BasicScheme());
+                    authState.setCredentials(credentials);
+                }
+            }
+        }, 0);
     }
 
     /**
