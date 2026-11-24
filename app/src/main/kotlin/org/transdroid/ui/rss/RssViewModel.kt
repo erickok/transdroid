@@ -53,10 +53,24 @@ data class RssEntry(
     /** Published after [feed]'s last-viewed marker, from before this fetch updated it. */
     val isNew: Boolean,
 ) {
-    /** Stable enough to track "already added this session" without a real item id. */
+    /**
+     * Stable enough to track "already added this session" without a real item id. Scoped to the
+     * feed because the same torrent often shows up in several feeds (e.g. overlapping searches on
+     * one site), and this doubles as the LazyColumn key, which must be unique.
+     */
     val key: String
-        get() = item.torrentUrl ?: item.link ?: (feed.id + item.title)
+        get() = feed.id + "|" + (item.torrentUrl ?: item.link ?: item.title)
 }
+
+/**
+ * Merges per-feed fetch results into one newest-first timeline. Null results are failed feeds
+ * and are skipped. Repeated items within one feed are dropped, keeping the first, so every
+ * [RssEntry.key] is unique - a duplicate key crashes the RSS list.
+ */
+internal fun mergeFeedEntries(perFeedResults: List<List<RssEntry>?>): List<RssEntry> =
+    perFeedResults.filterNotNull().flatten()
+        .distinctBy { it.key }
+        .sortedByDescending { it.item.timestamp ?: Long.MIN_VALUE }
 
 data class RssUiState(
     val loading: Boolean = false,
@@ -138,8 +152,7 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
                     async { fetchFeed(feed) }
                 }.map { it.await() }
             }
-            val entries = perFeedResults.filterNotNull().flatten()
-                .sortedByDescending { it.item.timestamp ?: Long.MIN_VALUE }
+            val entries = mergeFeedEntries(perFeedResults)
             _ui.update {
                 it.copy(
                     loading = false,
