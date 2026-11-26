@@ -40,6 +40,7 @@ import org.transdroid.ui.search.SearchScreen
 import org.transdroid.ui.search.SearchViewModel
 import org.transdroid.ui.settings.AboutScreen
 import org.transdroid.ui.settings.ChangelogScreen
+import org.transdroid.ui.settings.EditFeedScreen
 import org.transdroid.ui.settings.EditSearchIndexerScreen
 import org.transdroid.ui.settings.EditServerScreen
 import org.transdroid.ui.settings.LegacyImportDialog
@@ -56,6 +57,7 @@ object Routes {
     const val SETTINGS = "settings"
     const val EDIT_SERVER = "settings/server/{id}"
     const val EDIT_SEARCH_INDEXER = "settings/search/{id}"
+    const val EDIT_FEED = "settings/feed/{id}"
     const val RSS = "rss"
     const val SEARCH = "search"
     const val ABOUT = "settings/about"
@@ -63,11 +65,13 @@ object Routes {
 
     const val NEW_SERVER_ID = "new"
     const val NEW_SEARCH_INDEXER_ID = "new"
+    const val NEW_FEED_ID = "new"
 
     fun torrentDetails(id: String) = "torrent/${Uri.encode(id)}"
     fun add(url: String?) = if (url == null) "add" else "add?url=${Uri.encode(url)}"
     fun editServer(id: String?) = "settings/server/${Uri.encode(id ?: NEW_SERVER_ID)}"
     fun editSearchIndexer(id: String?) = "settings/search/${Uri.encode(id ?: NEW_SEARCH_INDEXER_ID)}"
+    fun editFeed(id: String?) = "settings/feed/${Uri.encode(id ?: NEW_FEED_ID)}"
 }
 
 @Composable
@@ -143,6 +147,7 @@ fun TransdroidApp(
             RssScreen(
                 viewModel = rssViewModel,
                 onManageFeeds = { navController.navigate(Routes.SETTINGS) },
+                onAddFeed = { navController.navigate(Routes.editFeed(null)) },
                 onBack = { navController.popBackStack() },
             )
         }
@@ -179,6 +184,7 @@ fun TransdroidApp(
                 viewModel = settingsViewModel,
                 onEditServer = { id -> navController.navigate(Routes.editServer(id)) },
                 onEditSearchIndexer = { id -> navController.navigate(Routes.editSearchIndexer(id)) },
+                onEditFeed = { id -> navController.navigate(Routes.editFeed(id)) },
                 onOpenAbout = { navController.navigate(Routes.ABOUT) },
                 onBack = { navController.popBackStack() },
             )
@@ -209,6 +215,16 @@ fun TransdroidApp(
             EditSearchIndexerScreen(
                 viewModel = settingsViewModel,
                 providerId = entry.arguments?.getString("id")?.takeIf { it != Routes.NEW_SEARCH_INDEXER_ID },
+                onBack = { navController.popBackStack() },
+            )
+        }
+        composable(
+            Routes.EDIT_FEED,
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
+        ) { entry ->
+            EditFeedScreen(
+                viewModel = settingsViewModel,
+                feedId = entry.arguments?.getString("id")?.takeIf { it != Routes.NEW_FEED_ID },
                 onBack = { navController.popBackStack() },
             )
         }

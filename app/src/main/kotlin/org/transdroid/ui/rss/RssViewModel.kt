@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import java.util.UUID
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -179,16 +178,6 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
                 profile?.let { container.settingsRepository.recentDownloadLocations(it.id) } ?: flowOf(emptyList())
             }.collect { locations -> _ui.update { it.copy(recentDownloadLocations = locations) } }
         }
-    }
-
-    fun newFeedId(): String = UUID.randomUUID().toString()
-
-    fun saveFeed(feed: RssFeed) {
-        viewModelScope.launch { container.profilesRepository.saveFeed(feed) }
-    }
-
-    fun deleteFeed(feedId: String) {
-        viewModelScope.launch { container.profilesRepository.deleteFeed(feedId) }
     }
 
     fun setSelectedFeed(feedId: String?) {

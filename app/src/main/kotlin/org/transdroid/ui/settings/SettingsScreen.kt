@@ -82,7 +82,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -107,7 +106,6 @@ import org.transdroid.data.RssFeed
 import org.transdroid.data.SettingsRepository
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.ui.components.IconTooltip
-import org.transdroid.ui.rss.EditFeedDialog
 import org.transdroid.ui.components.TransdroidTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -116,6 +114,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     onEditServer: (String?) -> Unit,
     onEditSearchIndexer: (String?) -> Unit,
+    onEditFeed: (String?) -> Unit,
     onOpenAbout: () -> Unit,
     onBack: () -> Unit,
 ) {
@@ -129,11 +128,6 @@ fun SettingsScreen(
     val rssAvailable = booleanResource(R.bool.rss_available)
     val updateCheckAvailable = booleanResource(R.bool.updatecheck_available)
 
-    // Saveable like the server editor's form, so an open feed dialog survives the activity being
-    // recreated (a dark mode or language switch, or the process being killed in the background)
-    var showAddFeedDialog by rememberSaveable { mutableStateOf(false) }
-    var editingFeedId by rememberSaveable { mutableStateOf<String?>(null) }
-    var deletingFeed by remember { mutableStateOf<RssFeed?>(null) }
     var showSendReportDialog by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
@@ -296,27 +290,19 @@ fun SettingsScreen(
                                 title = feed.displayName,
                                 subtitle = feed.url,
                                 // Like the servers above: a tap edits (its items are on the RSS screen)
-                                onClick = { editingFeedId = feed.id },
+                                onClick = { onEditFeed(feed.id) },
                                 trailing = {
                                     if (feed.hasFilters) {
                                         SettingsChip(stringResource(R.string.rss_filtered))
                                         Spacer(Modifier.width(4.dp))
                                     }
-                                    IconTooltip(stringResource(R.string.rss_delete_feed)) {
-                                        IconButton(onClick = { deletingFeed = feed }) {
-                                            Icon(
-                                                Icons.Rounded.Delete,
-                                                contentDescription = stringResource(R.string.rss_delete_feed),
-                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            )
-                                        }
-                                    }
+                                    Icon(Icons.Rounded.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                                 },
                             )
                         }
                         SettingsAddRow(
                             title = stringResource(R.string.rss_add_feed),
-                            onClick = { showAddFeedDialog = true },
+                            onClick = { onEditFeed(null) },
                         )
                     }
                 }
@@ -563,47 +549,6 @@ fun SettingsScreen(
                         }
                     }
                 }
-            },
-        )
-    }
-
-    if (showAddFeedDialog) {
-        EditFeedDialog(
-            onDismiss = { showAddFeedDialog = false },
-            onSave = { name, url, includeFilter, excludeFilter ->
-                viewModel.saveFeed(
-                    RssFeed(id = viewModel.newFeedId(), name = name, url = url, includeFilter = includeFilter, excludeFilter = excludeFilter),
-                )
-                showAddFeedDialog = false
-            },
-        )
-    }
-
-    // Looked up by id, so the dialog closes if the feed is gone (deleted, or a backup restored)
-    feeds.firstOrNull { it.id == editingFeedId }?.let { feed ->
-        EditFeedDialog(
-            feed = feed,
-            onDismiss = { editingFeedId = null },
-            onSave = { name, url, includeFilter, excludeFilter ->
-                viewModel.saveFeed(feed.edited(name, url, includeFilter, excludeFilter))
-                editingFeedId = null
-            },
-        )
-    }
-
-    deletingFeed?.let { feed ->
-        AlertDialog(
-            onDismissRequest = { deletingFeed = null },
-            title = { Text(stringResource(R.string.rss_delete_feed)) },
-            text = { Text(feed.displayName) },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.deleteFeed(feed.id)
-                    deletingFeed = null
-                }) { Text(stringResource(R.string.details_remove_confirm)) }
-            },
-            dismissButton = {
-                TextButton(onClick = { deletingFeed = null }) { Text(stringResource(R.string.details_cancel)) }
             },
         )
     }

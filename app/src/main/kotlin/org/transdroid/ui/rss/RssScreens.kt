@@ -35,9 +35,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
@@ -46,7 +44,6 @@ import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -62,7 +59,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -70,7 +66,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -97,7 +92,6 @@ import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.components.SelectionCheck
 import org.transdroid.ui.components.SelectionCheckSize
 import org.transdroid.ui.components.SelectionTopBar
-import org.transdroid.ui.components.TransdroidTextField
 import org.transdroid.ui.message
 import org.transdroid.ui.theme.LocalStatusColors
 import org.transdroid.util.formatBytes
@@ -118,13 +112,13 @@ private val DownloadButtonSize = 46.dp
 fun RssScreen(
     viewModel: RssViewModel,
     onManageFeeds: () -> Unit,
+    onAddFeed: () -> Unit,
     onBack: () -> Unit,
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val feeds by viewModel.feeds.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var confirmEntry by remember { mutableStateOf<RssEntry?>(null) }
-    var showAddFeedDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { viewModel.refresh() }
 
@@ -250,7 +244,7 @@ fun RssScreen(
                     message = stringResource(R.string.rss_no_feeds_message),
                     modifier = Modifier.fillMaxSize().wrapContentSize(),
                     actions = {
-                        Button(onClick = { showAddFeedDialog = true }) {
+                        Button(onClick = onAddFeed) {
                             Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(Modifier.width(8.dp))
                             Text(stringResource(R.string.rss_add_feed))
@@ -310,17 +304,6 @@ fun RssScreen(
         )
     }
 
-    if (showAddFeedDialog) {
-        EditFeedDialog(
-            onDismiss = { showAddFeedDialog = false },
-            onSave = { name, url, includeFilter, excludeFilter ->
-                viewModel.saveFeed(
-                    RssFeed(id = viewModel.newFeedId(), name = name, url = url, includeFilter = includeFilter, excludeFilter = excludeFilter),
-                )
-                showAddFeedDialog = false
-            },
-        )
-    }
 }
 
 @Composable
@@ -447,69 +430,4 @@ private fun RssRow(
             }
         }
     }
-}
-
-/**
- * Adds a feed, or edits [feed] when given: its name, URL and Transdroid 2-style title filters.
- * Also reused by [org.transdroid.ui.settings.SettingsScreen]'s RSS feeds section.
- */
-@Composable
-internal fun EditFeedDialog(
-    onDismiss: () -> Unit,
-    onSave: (name: String, url: String, includeFilter: String, excludeFilter: String) -> Unit,
-    feed: RssFeed? = null,
-) {
-    var name by rememberSaveable(feed?.id) { mutableStateOf(feed?.name.orEmpty()) }
-    var url by rememberSaveable(feed?.id) { mutableStateOf(feed?.url.orEmpty()) }
-    var includeFilter by rememberSaveable(feed?.id) { mutableStateOf(feed?.includeFilter.orEmpty()) }
-    var excludeFilter by rememberSaveable(feed?.id) { mutableStateOf(feed?.excludeFilter.orEmpty()) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(if (feed == null) R.string.rss_add_feed else R.string.rss_edit_feed)) },
-        text = {
-            // Scrolls so all four fields stay reachable with the keyboard open
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-                TransdroidTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text(stringResource(R.string.settings_name)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                )
-                TransdroidTextField(
-                    value = url,
-                    onValueChange = { url = it },
-                    label = { Text(stringResource(R.string.rss_feed_url)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                )
-                TransdroidTextField(
-                    value = includeFilter,
-                    onValueChange = { includeFilter = it },
-                    label = { Text(stringResource(R.string.rss_include_filter)) },
-                    supportingText = { Text(stringResource(R.string.rss_include_filter_summary)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                )
-                TransdroidTextField(
-                    value = excludeFilter,
-                    onValueChange = { excludeFilter = it },
-                    label = { Text(stringResource(R.string.rss_exclude_filter)) },
-                    supportingText = { Text(stringResource(R.string.rss_exclude_filter_summary)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                // Filters are kept as typed: spaces can be part of a word, as in Transdroid 2
-                onClick = { onSave(name.trim(), url.trim(), includeFilter, excludeFilter) },
-                enabled = url.trim().startsWith("http"),
-            ) { Text(stringResource(R.string.settings_save)) }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.details_cancel)) }
-        },
-    )
 }

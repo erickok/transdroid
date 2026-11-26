@@ -186,6 +186,7 @@
     <string name="rss_bulk_added">Added %1$d torrent(s)</string>
     <string name="rss_bulk_failed">%1$d of %2$d torrents couldn\'t be added</string>
     <string name="rss_edit_feed">Edit feed</string>
+    <string name="rss_filters_summary">Filter this feed\'s items by words in their titles. Upper and lower case don\'t matter, and a space counts as part of a word.</string>
     <string name="rss_include_filter">Include filter</string>
     <string name="rss_include_filter_summary">Only show items whose title contains one of these |-separated words</string>
     <string name="rss_exclude_filter">Exclude filter</string>

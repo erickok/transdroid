@@ -1,8 +1,9 @@
 <!doctype html>
 <html lang="en">
 <!--
-  RSS feeds: tapping a feed edits it (name, URL and Transdroid 2's include/exclude title filters),
-  like a server row opens the server settings. Feeds with filters show a "Filtered" chip.
+  RSS feeds: tapping a feed opens its edit screen (name, URL and Transdroid 2's include/exclude
+  title filters), like servers and search indexers. Delete is in that screen's top bar. Feeds with
+  filters show a "Filtered" chip.
 -->
 <head>
 <meta charset="utf-8">
@@ -118,20 +119,21 @@ body{
 .row.donate .ic{color:var(--primary);}
 .row.donate + .row::before, .row.donate::before{display:none;}
 
-/* edit feed dialog */
-.scrim{position:absolute; inset:0; z-index:30; background:rgba(20,22,16,.42); display:none; align-items:center; justify-content:center; padding:24px;}
-.scrim.open{display:flex; animation:fade .15s ease-out;}
-@keyframes fade{from{opacity:0;} to{opacity:1;}}
-.dialog{width:100%; max-height:100%; overflow-y:auto; background:var(--surface-high); border-radius:28px; padding:24px 24px 14px; box-shadow:0 12px 32px rgba(0,0,0,.3);}
-.dialog h2{margin:0 0 16px; font-size:22px; font-weight:500;}
-.field{position:relative; margin-bottom:12px;}
+/* edit feed screen, over Settings like the server and search indexer screens */
+.editscreen{position:absolute; inset:0; z-index:30; background:var(--surface); border-radius:39px; display:none; flex-direction:column; overflow:hidden;}
+.editscreen.open{display:flex; animation:slidein .18s ease-out;}
+@keyframes slidein{from{transform:translateX(24px); opacity:0;} to{transform:none; opacity:1;}}
+.edit-top{flex:none; display:flex; align-items:center; gap:4px; padding:52px 6px 8px;}
+.edit-top h2{flex:1; margin:0 0 0 4px; font-size:22px; font-weight:400;}
+.edit-body{flex:1; overflow-y:auto; padding:8px 16px 24px; display:flex; flex-direction:column; gap:12px;}
+.field{position:relative;}
 .field input{width:100%; height:54px; border:1px solid var(--outline); border-radius:6px; background:transparent; padding:18px 14px 6px; font-family:inherit; font-size:15px; color:var(--on-surface);}
 .field input:focus{outline:none; border:2px solid var(--primary); padding:17px 13px 5px;}
-.field label{position:absolute; left:11px; top:-8px; padding:0 4px; background:var(--surface-high); font-size:12px; color:var(--on-surface-var);}
+.field label{position:absolute; left:11px; top:-8px; padding:0 4px; background:var(--surface); font-size:12px; color:var(--on-surface-var);}
 .field .help{font-size:12px; color:var(--muted); padding:4px 14px 0; line-height:1.35;}
-.dialog .btns{display:flex; justify-content:flex-end; gap:4px; margin-top:6px;}
-.tbtn{border:none; background:transparent; cursor:pointer; font-family:inherit; font-size:14px; font-weight:600; color:var(--primary); padding:10px 14px; border-radius:20px;}
-.tbtn:hover{background:var(--surface-container);}
+.edit-body hr{border:none; border-top:1px solid var(--outline-variant); margin:4px 0;}
+.edit-body .summary{font-size:12.5px; color:var(--on-surface-var); line-height:1.4; margin:0;}
+.savebtn{margin-top:4px; height:44px; border:none; border-radius:22px; background:var(--primary); color:var(--on-primary); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer;}
 
 .footer-note{text-align:center; font-size:11.5px; color:var(--outline); padding:20px 0 4px;}
 </style>
@@ -242,38 +244,45 @@ body{
 
     </main>
 
-    <div class="scrim" id="scrim">
-      <div class="dialog" role="dialog" aria-labelledby="dlgTitle">
-        <h2 id="dlgTitle">Edit feed</h2>
+    <div class="editscreen" id="editScreen" role="dialog" aria-labelledby="editTitle">
+      <div class="edit-top">
+        <button class="iconbtn" id="editBack" aria-label="Back"><span class="msr">arrow_back</span></button>
+        <h2 id="editTitle">Edit feed</h2>
+        <button class="iconbtn" id="editDelete" aria-label="Delete feed"><span class="msr">delete</span></button>
+      </div>
+      <div class="edit-body">
         <div class="field"><label>Name</label><input id="fName"></div>
         <div class="field"><label>Feed URL</label><input id="fUrl"></div>
+        <hr>
+        <p class="summary">Filter this feed's items by words in their titles. Upper and lower case don't matter, and a space counts as part of a word.</p>
         <div class="field"><label>Include filter</label><input id="fInclude"><div class="help">Only show items whose title contains one of these |-separated words</div></div>
         <div class="field"><label>Exclude filter</label><input id="fExclude"><div class="help">Hide items whose title contains one of these |-separated words</div></div>
-        <div class="btns"><button class="tbtn" id="dlgCancel">Cancel</button><button class="tbtn" id="dlgSave">Save</button></div>
+        <button class="savebtn" id="editSave">Save</button>
       </div>
     </div>
 
   </div></div>
 <script>
-/* tapping a feed edits it; "Add feed" opens the same dialog empty */
-const scrim = document.getElementById('scrim');
+/* tapping a feed opens its edit screen; "Add feed" opens the same screen empty, without Delete */
+const editScreen = document.getElementById('editScreen');
 const field = id => document.getElementById(id);
 let editing = null;
-function openDialog(row){
+function openEditor(row){
   editing = row;
-  field('dlgTitle').textContent = row ? 'Edit feed' : 'Add feed';
+  field('editTitle').textContent = row ? 'Edit feed' : 'Add feed';
+  field('editDelete').hidden = !row;
   field('fName').value = row ? row.dataset.name : '';
   field('fUrl').value = row ? row.dataset.url : '';
   field('fInclude').value = row ? row.dataset.include : '';
   field('fExclude').value = row ? row.dataset.exclude : '';
-  scrim.classList.add('open');
+  editScreen.classList.add('open');
 }
-function closeDialog(){ scrim.classList.remove('open'); }
-document.querySelectorAll('.row.feed').forEach(row => row.addEventListener('click', () => openDialog(row)));
-document.querySelector('.section:nth-of-type(2) .row.add').addEventListener('click', () => openDialog(null));
-field('dlgCancel').onclick = closeDialog;
-scrim.addEventListener('click', e => { if (e.target === scrim) closeDialog(); });
-field('dlgSave').onclick = () => {
+function closeEditor(){ editScreen.classList.remove('open'); }
+document.querySelectorAll('.row.feed').forEach(row => row.addEventListener('click', () => openEditor(row)));
+document.querySelector('.section:nth-of-type(2) .row.add').addEventListener('click', () => openEditor(null));
+field('editBack').onclick = closeEditor;
+field('editDelete').onclick = () => { editing?.remove(); closeEditor(); };
+field('editSave').onclick = () => {
   if (editing) {
     ['name','url','include','exclude'].forEach(k => editing.dataset[k] = field('f' + k[0].toUpperCase() + k.slice(1)).value);
     editing.querySelector('b').textContent = editing.dataset.name || editing.dataset.url;
@@ -281,9 +290,9 @@ field('dlgSave').onclick = () => {
     tr.querySelector('.chip')?.remove();
     if (editing.dataset.include.replace(/\|/g,'') || editing.dataset.exclude.replace(/\|/g,'')) tr.insertAdjacentHTML('afterbegin', '<span class="chip">Filtered</span>');
   }
-  closeDialog();
+  closeEditor();
 };
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDialog(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEditor(); });
 </script>
 </body>
 </html>
