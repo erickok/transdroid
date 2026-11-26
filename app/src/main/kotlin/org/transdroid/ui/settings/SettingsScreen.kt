@@ -114,7 +114,6 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     onEditServer: (String?) -> Unit,
     onEditSearchIndexer: (String?) -> Unit,
-    onOpenFeed: (String) -> Unit,
     onOpenAbout: () -> Unit,
     onBack: () -> Unit,
 ) {
@@ -129,6 +128,7 @@ fun SettingsScreen(
     val updateCheckAvailable = booleanResource(R.bool.updatecheck_available)
 
     var showAddFeedDialog by remember { mutableStateOf(false) }
+    var editingFeed by remember { mutableStateOf<RssFeed?>(null) }
     var deletingFeed by remember { mutableStateOf<RssFeed?>(null) }
     var showSendReportDialog by remember { mutableStateOf(false) }
 
@@ -287,8 +287,13 @@ fun SettingsScreen(
                                 icon = Icons.Rounded.RssFeed,
                                 title = feed.displayName,
                                 subtitle = feed.url,
-                                onClick = { onOpenFeed(feed.id) },
+                                // Like the servers above: a tap edits (its items are on the RSS screen)
+                                onClick = { editingFeed = feed },
                                 trailing = {
+                                    if (feed.hasFilters) {
+                                        SettingsChip(stringResource(R.string.rss_filtered))
+                                        Spacer(Modifier.width(4.dp))
+                                    }
                                     IconButton(onClick = { deletingFeed = feed }) {
                                         Icon(
                                             Icons.Rounded.Delete,
@@ -553,9 +558,22 @@ fun SettingsScreen(
     if (showAddFeedDialog) {
         EditFeedDialog(
             onDismiss = { showAddFeedDialog = false },
-            onSave = { name, url ->
-                viewModel.saveFeed(RssFeed(id = viewModel.newFeedId(), name = name, url = url))
+            onSave = { name, url, includeFilter, excludeFilter ->
+                viewModel.saveFeed(
+                    RssFeed(id = viewModel.newFeedId(), name = name, url = url, includeFilter = includeFilter, excludeFilter = excludeFilter),
+                )
                 showAddFeedDialog = false
+            },
+        )
+    }
+
+    editingFeed?.let { feed ->
+        EditFeedDialog(
+            feed = feed,
+            onDismiss = { editingFeed = null },
+            onSave = { name, url, includeFilter, excludeFilter ->
+                viewModel.saveFeed(feed.edited(name, url, includeFilter, excludeFilter))
+                editingFeed = null
             },
         )
     }

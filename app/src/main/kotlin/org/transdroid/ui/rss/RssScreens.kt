@@ -19,6 +19,8 @@ package org.transdroid.ui.rss
 import android.text.format.DateUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,6 +64,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -232,8 +235,10 @@ fun RssScreen(
     if (showAddFeedDialog) {
         EditFeedDialog(
             onDismiss = { showAddFeedDialog = false },
-            onSave = { name, url ->
-                viewModel.saveFeed(RssFeed(id = viewModel.newFeedId(), name = name, url = url))
+            onSave = { name, url, includeFilter, excludeFilter ->
+                viewModel.saveFeed(
+                    RssFeed(id = viewModel.newFeedId(), name = name, url = url, includeFilter = includeFilter, excludeFilter = excludeFilter),
+                )
                 showAddFeedDialog = false
             },
         )
@@ -311,16 +316,26 @@ private fun RssRow(entry: RssEntry, added: Boolean, onAddClick: () -> Unit) {
     }
 }
 
-/** Also reused by [org.transdroid.ui.settings.SettingsScreen]'s RSS feeds section. */
+/**
+ * Adds a feed, or edits [feed] when given: its name, URL and Transdroid 2-style title filters.
+ * Also reused by [org.transdroid.ui.settings.SettingsScreen]'s RSS feeds section.
+ */
 @Composable
-internal fun EditFeedDialog(onDismiss: () -> Unit, onSave: (name: String, url: String) -> Unit) {
-    var name by remember { mutableStateOf("") }
-    var url by remember { mutableStateOf("") }
+internal fun EditFeedDialog(
+    onDismiss: () -> Unit,
+    onSave: (name: String, url: String, includeFilter: String, excludeFilter: String) -> Unit,
+    feed: RssFeed? = null,
+) {
+    var name by rememberSaveable(feed?.id) { mutableStateOf(feed?.name.orEmpty()) }
+    var url by rememberSaveable(feed?.id) { mutableStateOf(feed?.url.orEmpty()) }
+    var includeFilter by rememberSaveable(feed?.id) { mutableStateOf(feed?.includeFilter.orEmpty()) }
+    var excludeFilter by rememberSaveable(feed?.id) { mutableStateOf(feed?.excludeFilter.orEmpty()) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.rss_add_feed)) },
+        title = { Text(stringResource(if (feed == null) R.string.rss_add_feed else R.string.rss_edit_feed)) },
         text = {
-            Column {
+            // Scrolls so all four fields stay reachable with the keyboard open
+            Column(Modifier.verticalScroll(rememberScrollState())) {
                 TransdroidTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -333,13 +348,30 @@ internal fun EditFeedDialog(onDismiss: () -> Unit, onSave: (name: String, url: S
                     onValueChange = { url = it },
                     label = { Text(stringResource(R.string.rss_feed_url)) },
                     singleLine = true,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                )
+                TransdroidTextField(
+                    value = includeFilter,
+                    onValueChange = { includeFilter = it },
+                    label = { Text(stringResource(R.string.rss_include_filter)) },
+                    supportingText = { Text(stringResource(R.string.rss_include_filter_summary)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                )
+                TransdroidTextField(
+                    value = excludeFilter,
+                    onValueChange = { excludeFilter = it },
+                    label = { Text(stringResource(R.string.rss_exclude_filter)) },
+                    supportingText = { Text(stringResource(R.string.rss_exclude_filter_summary)) },
+                    singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
         confirmButton = {
             TextButton(
-                onClick = { onSave(name.trim(), url.trim()) },
+                // Filters are kept as typed: spaces can be part of a word, as in Transdroid 2
+                onClick = { onSave(name.trim(), url.trim(), includeFilter, excludeFilter) },
                 enabled = url.trim().startsWith("http"),
             ) { Text(stringResource(R.string.settings_save)) }
         },

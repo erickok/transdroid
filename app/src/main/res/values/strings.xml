@@ -182,6 +182,12 @@
     <string name="rss_added">Added</string>
     <string name="rss_download">Download to server</string>
     <string name="rss_manage_feeds">Manage feeds</string>
+    <string name="rss_edit_feed">Edit feed</string>
+    <string name="rss_include_filter">Include filter</string>
+    <string name="rss_include_filter_summary">Only show items whose title contains one of these |-separated words</string>
+    <string name="rss_exclude_filter">Exclude filter</string>
+    <string name="rss_exclude_filter_summary">Hide items whose title contains one of these |-separated words</string>
+    <string name="rss_filtered">Filtered</string>
 
     <!-- Search -->
     <string name="search_title">Search</string>
@@ -367,6 +373,7 @@
     <string name="legacy_import_title">Imported from Transdroid 2</string>
     <string name="legacy_import_counts">Your Transdroid 2 settings were brought over: %1$d server(s) and %2$d RSS feed(s).</string>
     <string name="legacy_import_server_count">Your Transdroid 2 settings were brought over: %1$d server(s).</string>
+    <string name="legacy_import_feed_filters">Include and exclude filters were added to %1$d RSS feed(s) you already had.</string>
     <string name="legacy_import_certificates">These servers use a self-signed HTTPS certificate that needs to be trusted again. Open each one in Settings and run Test connection:</string>
     <string name="legacy_import_skipped">Not imported:</string>
     <string name="legacy_skip_unsupported_client">%1$s: this torrent client isn\'t supported by Transdroid 3</string>

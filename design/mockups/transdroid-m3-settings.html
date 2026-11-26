@@ -1,5 +1,9 @@
 <!doctype html>
 <html lang="en">
+<!--
+  RSS feeds: tapping a feed edits it (name, URL and Transdroid 2's include/exclude title filters),
+  like a server row opens the server settings. Feeds with filters show a "Filtered" chip.
+-->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -114,6 +118,21 @@ body{
 .row.donate .ic{color:var(--primary);}
 .row.donate + .row::before, .row.donate::before{display:none;}
 
+/* edit feed dialog */
+.scrim{position:absolute; inset:0; z-index:30; background:rgba(20,22,16,.42); display:none; align-items:center; justify-content:center; padding:24px;}
+.scrim.open{display:flex; animation:fade .15s ease-out;}
+@keyframes fade{from{opacity:0;} to{opacity:1;}}
+.dialog{width:100%; max-height:100%; overflow-y:auto; background:var(--surface-high); border-radius:28px; padding:24px 24px 14px; box-shadow:0 12px 32px rgba(0,0,0,.3);}
+.dialog h2{margin:0 0 16px; font-size:22px; font-weight:500;}
+.field{position:relative; margin-bottom:12px;}
+.field input{width:100%; height:54px; border:1px solid var(--outline); border-radius:6px; background:transparent; padding:18px 14px 6px; font-family:inherit; font-size:15px; color:var(--on-surface);}
+.field input:focus{outline:none; border:2px solid var(--primary); padding:17px 13px 5px;}
+.field label{position:absolute; left:11px; top:-8px; padding:0 4px; background:var(--surface-high); font-size:12px; color:var(--on-surface-var);}
+.field .help{font-size:12px; color:var(--muted); padding:4px 14px 0; line-height:1.35;}
+.dialog .btns{display:flex; justify-content:flex-end; gap:4px; margin-top:6px;}
+.tbtn{border:none; background:transparent; cursor:pointer; font-family:inherit; font-size:14px; font-weight:600; color:var(--primary); padding:10px 14px; border-radius:20px;}
+.tbtn:hover{background:var(--surface-container);}
+
 .footer-note{text-align:center; font-size:11.5px; color:var(--outline); padding:20px 0 4px;}
 </style>
 </head>
@@ -163,20 +182,20 @@ body{
       <section class="section">
         <div class="section-title">RSS feeds</div>
         <div class="group">
-          <div class="row">
+          <div class="row feed" data-name="Ubuntu Releases" data-url="https://releases.ubuntu.com/rss" data-include="" data-exclude="">
             <span class="ic"><span class="msr">rss_feed</span></span>
             <span class="txt"><b>Ubuntu Releases</b><small>3 new · checked 5 min ago</small></span>
             <span class="tr"><span class="msr">chevron_right</span></span>
           </div>
-          <div class="row">
+          <div class="row feed" data-name="Debian CD Images" data-url="https://cdimage.debian.org/rss" data-include="" data-exclude="">
             <span class="ic"><span class="msr">rss_feed</span></span>
             <span class="txt"><b>Debian CD Images</b><small>Checked 1 h ago</small></span>
             <span class="tr"><span class="msr">chevron_right</span></span>
           </div>
-          <div class="row">
+          <div class="row feed" data-name="LinuxTracker" data-url="https://linuxtracker.example/rss?passkey=…" data-include="x86_64|amd64" data-exclude="beta|rc">
             <span class="ic"><span class="msr">rss_feed</span></span>
             <span class="txt"><b>LinuxTracker</b><small>12 new · checked 20 min ago</small></span>
-            <span class="tr"><span class="msr">chevron_right</span></span>
+            <span class="tr"><span class="chip">Filtered</span><span class="msr">chevron_right</span></span>
           </div>
           <div class="row add">
             <span class="plus"><span class="msr">add</span></span>
@@ -223,6 +242,48 @@ body{
 
     </main>
 
+    <div class="scrim" id="scrim">
+      <div class="dialog" role="dialog" aria-labelledby="dlgTitle">
+        <h2 id="dlgTitle">Edit feed</h2>
+        <div class="field"><label>Name</label><input id="fName"></div>
+        <div class="field"><label>Feed URL</label><input id="fUrl"></div>
+        <div class="field"><label>Include filter</label><input id="fInclude"><div class="help">Only show items whose title contains one of these |-separated words</div></div>
+        <div class="field"><label>Exclude filter</label><input id="fExclude"><div class="help">Hide items whose title contains one of these |-separated words</div></div>
+        <div class="btns"><button class="tbtn" id="dlgCancel">Cancel</button><button class="tbtn" id="dlgSave">Save</button></div>
+      </div>
+    </div>
+
   </div></div>
+<script>
+/* tapping a feed edits it; "Add feed" opens the same dialog empty */
+const scrim = document.getElementById('scrim');
+const field = id => document.getElementById(id);
+let editing = null;
+function openDialog(row){
+  editing = row;
+  field('dlgTitle').textContent = row ? 'Edit feed' : 'Add feed';
+  field('fName').value = row ? row.dataset.name : '';
+  field('fUrl').value = row ? row.dataset.url : '';
+  field('fInclude').value = row ? row.dataset.include : '';
+  field('fExclude').value = row ? row.dataset.exclude : '';
+  scrim.classList.add('open');
+}
+function closeDialog(){ scrim.classList.remove('open'); }
+document.querySelectorAll('.row.feed').forEach(row => row.addEventListener('click', () => openDialog(row)));
+document.querySelector('.section:nth-of-type(2) .row.add').addEventListener('click', () => openDialog(null));
+field('dlgCancel').onclick = closeDialog;
+scrim.addEventListener('click', e => { if (e.target === scrim) closeDialog(); });
+field('dlgSave').onclick = () => {
+  if (editing) {
+    ['name','url','include','exclude'].forEach(k => editing.dataset[k] = field('f' + k[0].toUpperCase() + k.slice(1)).value);
+    editing.querySelector('b').textContent = editing.dataset.name || editing.dataset.url;
+    const tr = editing.querySelector('.tr');
+    tr.querySelector('.chip')?.remove();
+    if (editing.dataset.include.replace(/\|/g,'') || editing.dataset.exclude.replace(/\|/g,'')) tr.insertAdjacentHTML('afterbegin', '<span class="chip">Filtered</span>');
+  }
+  closeDialog();
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDialog(); });
+</script>
 </body>
 </html>

@@ -115,9 +115,29 @@ data class RssFeed(
     val url: String,
     /** Publication time (unix seconds) of the newest item the user has seen. */
     val lastViewedTimestamp: Long? = null,
+    /** Only items whose title contains one of these |-separated words are shown; blank shows all. See [org.transdroid.protocol.rss.RssFilter]. */
+    val includeFilter: String = "",
+    /** Items whose title contains one of these |-separated words are hidden. */
+    val excludeFilter: String = "",
 ) {
     val displayName: String
         get() = name.ifBlank { url }
+
+    /** Whether the filters hide anything; matches how [org.transdroid.protocol.rss.RssFilter] applies them. */
+    val hasFilters: Boolean
+        get() = !org.transdroid.protocol.rss.RssFilter(includeFilter, excludeFilter).isEmpty
+
+    /**
+     * This feed with edited settings. A new [url] is a different feed, so its last-viewed marker
+     * is dropped rather than carried over and comparing against another feed's items.
+     */
+    fun edited(name: String, url: String, includeFilter: String, excludeFilter: String): RssFeed = copy(
+        name = name,
+        url = url,
+        includeFilter = includeFilter,
+        excludeFilter = excludeFilter,
+        lastViewedTimestamp = if (url == this.url) lastViewedTimestamp else null,
+    )
 }
 
 /**
