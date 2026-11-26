@@ -19,14 +19,20 @@ package org.transdroid.ui.components
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -75,29 +81,53 @@ fun TransdroidTextField(
         focused -> MaterialTheme.colorScheme.primary
         else -> Color.Transparent
     }
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier.border(1.5.dp, borderColor, shape),
-        enabled = enabled,
-        readOnly = readOnly,
-        textStyle = textStyle,
-        label = label,
-        placeholder = placeholder,
-        leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon,
-        supportingText = supportingText,
-        isError = isError,
-        visualTransformation = visualTransformation,
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        singleLine = singleLine,
-        maxLines = maxLines,
-        minLines = minLines,
-        interactionSource = resolvedInteractionSource,
-        shape = shape,
-        colors = colors,
-    )
+    val field: @Composable (Modifier) -> Unit = { fieldModifier ->
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = fieldModifier.border(1.5.dp, borderColor, shape),
+            enabled = enabled,
+            readOnly = readOnly,
+            textStyle = textStyle,
+            label = label,
+            placeholder = placeholder,
+            leadingIcon = leadingIcon,
+            trailingIcon = trailingIcon,
+            isError = isError,
+            visualTransformation = visualTransformation,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
+            singleLine = singleLine,
+            maxLines = maxLines,
+            minLines = minLines,
+            interactionSource = resolvedInteractionSource,
+            shape = shape,
+            colors = colors,
+        )
+    }
+    if (supportingText == null) {
+        field(modifier)
+    } else {
+        // Drawn below the field here rather than by TextField, which would put it inside the
+        // focus outline: the outline should only go around the input box
+        Column(modifier) {
+            field(Modifier.fillMaxWidth())
+            val supportingColor = when {
+                !enabled -> colors.disabledSupportingTextColor
+                isError -> colors.errorSupportingTextColor
+                focused -> colors.focusedSupportingTextColor
+                else -> colors.unfocusedSupportingTextColor
+            }
+            // Material's own spacing and style for supporting text
+            Box(Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp)) {
+                CompositionLocalProvider(
+                    LocalContentColor provides supportingColor,
+                    LocalTextStyle provides MaterialTheme.typography.bodySmall,
+                    content = supportingText,
+                )
+            }
+        }
+    }
 }
 
 @Composable
