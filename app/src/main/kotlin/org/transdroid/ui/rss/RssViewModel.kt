@@ -72,6 +72,44 @@ internal fun mergeFeedEntries(perFeedResults: List<List<RssEntry>?>): List<RssEn
         .distinctBy { it.key }
         .sortedByDescending { it.item.timestamp ?: Long.MIN_VALUE }
 
+/** Whether [entry] can be picked in selection mode: it has a torrent link and isn't added yet. */
+internal fun canSelect(entry: RssEntry, addedKeys: Set<String>): Boolean =
+    entry.item.torrentUrl != null && entry.key !in addedKeys
+
+/**
+ * The torrents a bulk add sends to the server: one per distinct link, so the same torrent
+ * selected under two feeds is only added once.
+ */
+internal fun bulkAddTargets(selected: List<RssEntry>, addedKeys: Set<String>): List<RssEntry> =
+    selected.filter { canSelect(it, addedKeys) }.distinctBy { it.item.torrentUrl }
+
+/**
+ * Adds each target's torrent link with [add], one by one; one failing doesn't stop the others.
+ * Returns the links that were added.
+ */
+internal suspend fun addEach(targets: List<RssEntry>, add: suspend (url: String) -> Unit): Set<String> {
+    val added = mutableSetOf<String>()
+    for (target in targets) {
+        val url = target.item.torrentUrl ?: continue
+        try {
+            add(url)
+            added += url
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // Counted as failed by the caller: targets minus what was added
+        }
+    }
+    return added
+}
+
+/** The keys of every row showing one of [urls], so a torrent added from one feed shows as added under the others too. */
+internal fun keysForUrls(entries: List<RssEntry>, urls: Set<String>): Set<String> =
+    entries.filter { it.item.torrentUrl in urls }.mapTo(mutableSetOf()) { it.key }
+
+/** How a bulk add went: [failed] of [total] torrents couldn't be added. */
+data class RssBulkAddResult(val total: Int, val failed: Int)
+
 data class RssUiState(
     val loading: Boolean = false,
     val entries: List<RssEntry> = emptyList(),
@@ -86,12 +124,32 @@ data class RssUiState(
     val activeProfile: ServerProfile? = null,
     /** Download locations previously used on the active server; see [org.transdroid.ui.components.AddTorrentOptionsSheet]. */
     val recentDownloadLocations: List<String> = emptyList(),
+    /** Keys ([RssEntry.key]) picked in selection mode (long-press); empty when not selecting. */
+    val selection: Set<String> = emptySet(),
+    /** The outcome of the last bulk add, until the screen has shown it. */
+    val bulkAddResult: RssBulkAddResult? = null,
+    /** A bulk add is sending its torrents; rows turn "Added" one by one meanwhile. */
+    val bulkAdding: Boolean = false,
 ) {
     val visibleEntries: List<RssEntry>
         get() = entries.filter { (selectedFeedId == null || it.feed.id == selectedFeedId) && (!newOnly || it.isNew) }
 
     val newCount: Int
         get() = visibleEntries.count { it.isNew }
+
+    val selecting: Boolean
+        get() = selection.isNotEmpty()
+
+    /** The torrents "Download" will add: the selected rows, minus repeats of the same link. */
+    val bulkTargets: List<RssEntry>
+        get() = bulkAddTargets(visibleEntries.filter { it.key in selection }, addedKeys)
+
+    /** Drops selected keys that are no longer visible, after a refresh or a filter change. */
+    fun withPrunedSelection(): RssUiState {
+        if (selection.isEmpty()) return this
+        val visibleKeys = visibleEntries.mapTo(mutableSetOf()) { it.key }
+        return copy(selection = selection intersect visibleKeys)
+    }
 }
 
 @OptIn(ExperimentalCoroutinesApi::class) // flatMapLatest
@@ -127,11 +185,43 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun setSelectedFeed(feedId: String?) {
-        _ui.update { it.copy(selectedFeedId = feedId) }
+        _ui.update { it.copy(selectedFeedId = feedId).withPrunedSelection() }
     }
 
     fun setNewOnly(newOnly: Boolean) {
-        _ui.update { it.copy(newOnly = newOnly) }
+        _ui.update { it.copy(newOnly = newOnly).withPrunedSelection() }
+    }
+
+    /** Long-press: starts selection mode with [entry] selected (or adds it). */
+    fun startSelection(entry: RssEntry) {
+        // Not while a bulk add runs: its rows aren't all marked as added yet, so they could be sent twice
+        _ui.update { if (!it.bulkAdding && canSelect(entry, it.addedKeys)) it.copy(selection = it.selection + entry.key) else it }
+    }
+
+    /** A tap while selecting; deselecting the last item ends selection mode. */
+    fun toggleSelected(entry: RssEntry) {
+        _ui.update {
+            when {
+                entry.key in it.selection -> it.copy(selection = it.selection - entry.key)
+                canSelect(entry, it.addedKeys) -> it.copy(selection = it.selection + entry.key)
+                else -> it
+            }
+        }
+    }
+
+    /** Selects every item the current feed and "new only" filters show that can still be added. */
+    fun selectAllVisible() {
+        _ui.update { state ->
+            state.copy(selection = state.selection + state.visibleEntries.filter { canSelect(it, state.addedKeys) }.map { it.key })
+        }
+    }
+
+    fun clearSelection() {
+        _ui.update { it.copy(selection = emptySet()) }
+    }
+
+    fun consumeBulkAddResult() {
+        _ui.update { it.copy(bulkAddResult = null) }
     }
 
     /** Fetches every configured feed in parallel and merges their items into one timeline. */
@@ -161,7 +251,7 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
                     // something useful to show, so a single broken feed shouldn't blank the screen.
                     error = if (entries.isEmpty() && perFeedResults.all { r -> r == null }) UiError.Unexpected() else null,
                     lastUpdatedTimestamp = System.currentTimeMillis() / 1000,
-                )
+                ).withPrunedSelection()
             }
         }
     }
@@ -205,12 +295,58 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
                     container.settingsRepository.addRecentDownloadLocation(profile.id, downloadLocation.trim())
                 }
                 _ui.update {
-                    it.copy(addedKeys = it.addedKeys + entry.key, addedItemTitle = entry.item.title, addError = null)
+                    it.copy(
+                        addedKeys = it.addedKeys + keysForUrls(it.entries, setOf(url)),
+                        addedItemTitle = entry.item.title,
+                        addError = null,
+                    )
                 }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 _ui.update { it.copy(addError = e.toUiError(profile.host), addedItemTitle = null) }
+            }
+        }
+    }
+
+    /**
+     * Sends every selected item's torrent link to the active server, one by one, then ends
+     * selection mode and reports how many were added. One failing doesn't stop the others.
+     */
+    fun addSelected(startPaused: Boolean = false, downloadLocation: String? = null) {
+        if (_ui.value.bulkAdding) return
+        val targets = _ui.value.bulkTargets
+        _ui.update { it.copy(selection = emptySet(), bulkAdding = targets.isNotEmpty()) }
+        if (targets.isEmpty()) return
+        // viewModelScope outlives the RSS screen (the view model belongs to the activity), so
+        // leaving the screen mid-way doesn't stop the remaining adds
+        viewModelScope.launch {
+            try {
+                val profile = container.activeProfile.first()
+                if (profile == null) {
+                    _ui.update { it.copy(addError = UiError.Unexpected()) }
+                    return@launch
+                }
+                try {
+                    val adapter = container.adapterFor(profile)
+                    val addedUrls = addEach(targets) { url ->
+                        adapter.addByUrl(url, startPaused, downloadLocation)
+                        _ui.update { it.copy(addedKeys = it.addedKeys + keysForUrls(it.entries, setOf(url))) }
+                    }
+                    _ui.update {
+                        it.copy(bulkAddResult = RssBulkAddResult(total = targets.size, failed = targets.size - addedUrls.size))
+                    }
+                    if (addedUrls.isNotEmpty() && !downloadLocation.isNullOrBlank()) {
+                        container.settingsRepository.addRecentDownloadLocation(profile.id, downloadLocation.trim())
+                    }
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    // No adapter for this server (bad settings), or saving the recent location failed
+                    _ui.update { it.copy(addError = e.toUiError(profile.host)) }
+                }
+            } finally {
+                _ui.update { it.copy(bulkAdding = false) }
             }
         }
     }

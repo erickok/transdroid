@@ -1,5 +1,14 @@
 <!doctype html>
 <html lang="en">
+<!--
+  Selection mode (multi-download), following transdroid-m3-selection.html:
+  - Long-press an item to select it; taps then add or remove more. Close, Back or deselecting
+    the last item ends selection mode. Items without a torrent link, or already added, can't be selected.
+  - The top bar becomes "N selected" with select all (within the current feed and New only filter).
+  - The new-item dot becomes a check circle, and the per-item download buttons give way to one
+    "Download N" button, which opens the usual add options sheet ("for N torrent(s)") once.
+  - The same torrent selected in two feeds is added once; the result shows in a snackbar.
+-->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -111,6 +120,23 @@ body{
 
 .gesture{flex:none; height:26px; display:grid; place-items:center;}
 .gesture i{width:132px; height:5px; border-radius:3px; background:var(--on-surface); opacity:.35;}
+
+/* selection mode: long-press a row, tap others, then download them all at once */
+.appbar.selbar{background:var(--surface-container);}
+.count{font-variant-numeric:tabular-nums;}
+.item{user-select:none; -webkit-user-select:none;}
+.screen.selecting .item{grid-template-columns:22px 1fr auto; cursor:pointer;}
+.item.sel{background:var(--sel-bg); border-radius:18px;}
+.item.sel, .item.sel + .item{border-top-color:transparent;}
+.screen.selecting .item.off{opacity:.5; cursor:default;}
+.check{width:22px; height:22px; border-radius:50%; border:2px solid var(--outline); display:grid; place-items:center;}
+.check.on{background:var(--primary); border-color:var(--primary);}
+.check.on .msr{font-size:16px; color:var(--on-primary); font-variation-settings:'FILL' 1,'wght' 700,'GRAD' 0,'opsz' 20;}
+.fab{position:absolute; right:18px; bottom:40px; z-index:10; height:56px; padding:0 20px 0 16px; border:none; border-radius:16px; background:var(--primary-container); color:var(--on-primary-container); font-family:inherit; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:10px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.28); animation:pop .14s ease-out;}
+.fab .msr{font-size:22px;}
+.fab[hidden]{display:none;}
+.list{padding-bottom:90px;}
+.snack{position:absolute; left:16px; right:16px; bottom:40px; z-index:15; background:var(--on-surface); color:var(--surface); border-radius:12px; padding:13px 16px; font-size:14px; animation:pop .14s ease-out;}
 </style>
 </head>
 <body>
@@ -125,12 +151,7 @@ body{
       </span>
     </div>
 
-    <header class="appbar">
-      <button class="iconbtn" aria-label="Back"><span class="msr">arrow_back</span></button>
-      <h1>RSS feeds</h1>
-      <button class="iconbtn" aria-label="Refresh"><span class="msr">refresh</span></button>
-      <button class="iconbtn" aria-label="More"><span class="msr">more_vert</span></button>
-    </header>
+    <header class="appbar" id="appbar"></header>
 
     <div class="controls">
       <div class="dd" id="feedDD">
@@ -149,6 +170,7 @@ body{
     <div class="summary" id="summary"></div>
     <div class="list" id="list"></div>
 
+    <button class="fab" id="fab" hidden><span class="msr">download</span><span id="fabLabel"></span></button>
     <div class="gesture"><i></i></div>
 
   </div></div>
@@ -165,27 +187,100 @@ const items = [
   {t:'openSUSE Tumbleweed snapshot 20250102',     feed:'LinuxTracker',     age:'1 week ago', days:7, sz:'4.4 GB', unread:false},
 ];
 
-const state = { feed:'All feeds', newOnly:false };
+items.forEach((r,i)=>r.id=i);
+const state = { feed:'All feeds', newOnly:false, sel:new Set() };
+const screen = document.querySelector('.screen');
+const appbar = document.getElementById('appbar');
 const list = document.getElementById('list');
 const summary = document.getElementById('summary');
+const fab = document.getElementById('fab');
+
+const selectable = r => !r.added;
+function visibleRows(){
+  const rows = items.filter(r => (state.feed==='All feeds' || r.feed===state.feed) && (!state.newOnly || r.unread));
+  return rows.sort((a,b)=>a.days-b.days);
+}
+
+function renderAppbar(n){
+  if(n>0){
+    appbar.className = 'appbar selbar';
+    appbar.innerHTML = `
+      <button class="iconbtn" id="selClose" aria-label="Clear selection"><span class="msr">close</span></button>
+      <h1><span class="count">${n}</span> selected</h1>
+      <button class="iconbtn" id="selAll" aria-label="Select all"><span class="msr">select_all</span></button>`;
+    document.getElementById('selClose').onclick = ()=>{ state.sel.clear(); render(); };
+    document.getElementById('selAll').onclick = ()=>{ visibleRows().filter(selectable).forEach(r=>state.sel.add(r.id)); render(); };
+  } else {
+    appbar.className = 'appbar';
+    appbar.innerHTML = `
+      <button class="iconbtn" aria-label="Back"><span class="msr">arrow_back</span></button>
+      <h1>RSS feeds</h1>
+      <button class="iconbtn" aria-label="Refresh"><span class="msr">refresh</span></button>
+      <button class="iconbtn" aria-label="More"><span class="msr">more_vert</span></button>`;
+  }
+}
 
 function render(){
-  let rows = items.filter(r => (state.feed==='All feeds' || r.feed===state.feed) && (!state.newOnly || r.unread));
-  rows.sort((a,b)=>a.days-b.days);
+  const rows = visibleRows();
+  const n = state.sel.size, selecting = n>0;
+  screen.classList.toggle('selecting', selecting);
+  renderAppbar(n);
   const newCount = rows.filter(r=>r.unread).length;
   summary.textContent = `${rows.length} item${rows.length===1?'':'s'} · ${newCount} new · updated 5 min ago`;
-  list.innerHTML = rows.map(r=>`
-    <div class="item ${r.unread?'unread':''}">
-      <span class="idot"></span>
+  list.innerHTML = rows.map(r=>{
+    const on = state.sel.has(r.id);
+    const lead = selecting
+      ? (selectable(r) ? `<span class="check ${on?'on':''}">${on?'<span class="msr">check</span>':''}</span>` : `<span></span>`)
+      : `<span class="idot"></span>`;
+    const trail = r.added
+      ? `<span class="added"><span class="msr">check_circle</span>Added</span>`
+      : (selecting ? `<span></span>` : `<button class="radd" title="Download to server"><span class="msr">download</span></button>`);
+    return `
+    <div class="item ${r.unread?'unread':''} ${on?'sel':''} ${selectable(r)?'':'off'}" data-id="${r.id}">
+      ${lead}
       <div class="imain">
         <div class="ititle">${r.t}</div>
         <div class="isub">${r.feed} · ${r.age} · ${r.sz}</div>
       </div>
-      ${r.added
-        ? `<span class="added"><span class="msr">check_circle</span>Added</span>`
-        : `<button class="radd" title="Download to server"><span class="msr">download</span></button>`}
-    </div>`).join('');
+      ${trail}
+    </div>`;}).join('');
+  fab.hidden = !selecting;
+  document.getElementById('fabLabel').textContent = `Download ${n}`;
 }
+
+/* long-press starts selection; while selecting, a tap toggles */
+let pressTimer = null, longPressed = false;
+list.addEventListener('pointerdown', e=>{
+  const row = e.target.closest('.item'); if(!row || e.target.closest('.radd')) return;
+  longPressed = false;
+  pressTimer = setTimeout(()=>{
+    const r = items[+row.dataset.id]; if(!selectable(r)) return;
+    longPressed = true; state.sel.add(r.id); navigator.vibrate?.(15); render();
+  }, 450);
+});
+['pointerup','pointerleave','pointercancel'].forEach(ev=>list.addEventListener(ev, ()=>clearTimeout(pressTimer)));
+list.addEventListener('contextmenu', e=>e.preventDefault());
+list.addEventListener('click', e=>{
+  const row = e.target.closest('.item'); if(!row || longPressed || state.sel.size===0) return;
+  const r = items[+row.dataset.id]; if(!selectable(r)) return;
+  state.sel.has(r.id) ? state.sel.delete(r.id) : state.sel.add(r.id); render();
+});
+
+/* in the app this opens the add options sheet ("for N torrent(s)") first */
+let snackTimer = null;
+function snack(msg){
+  clearTimeout(snackTimer); screen.querySelector('.snack')?.remove();
+  const s = document.createElement('div'); s.className = 'snack'; s.textContent = msg; screen.appendChild(s);
+  snackTimer = setTimeout(()=>s.remove(), 2600);
+}
+fab.addEventListener('click', ()=>{
+  const n = state.sel.size;
+  items.forEach(r=>{ if(state.sel.has(r.id)) r.added = true; });
+  state.sel.clear(); render();
+  snack(`Added ${n} torrent${n===1?'':'s'}`);
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && state.sel.size){ state.sel.clear(); render(); } });
+
 render();
 
 /* feed dropdown */

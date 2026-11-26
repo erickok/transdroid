@@ -17,10 +17,13 @@
 package org.transdroid.ui.rss
 
 import android.text.format.DateUtils
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,10 +48,12 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -62,11 +67,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -79,6 +93,8 @@ import org.transdroid.ui.components.EmptyState
 import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.message
 import org.transdroid.ui.theme.LocalStatusColors
+import org.transdroid.ui.torrents.SelectionCheck
+import org.transdroid.ui.torrents.SelectionTopBar
 import org.transdroid.util.formatBytes
 import org.transdroid.util.formatRelativeAge
 import org.transdroid.ui.components.TransdroidTextField
@@ -116,10 +132,42 @@ fun RssScreen(
         }
     }
 
+    // Selection mode: Back ends it, and a bulk add reports back in a snackbar
+    BackHandler(enabled = ui.selecting) { viewModel.clearSelection() }
+    var showBulkAddSheet by remember { mutableStateOf(false) }
+    val bulkTargets = ui.bulkTargets
+    if (bulkTargets.isEmpty()) showBulkAddSheet = false
+    val bulkAddMessage = ui.bulkAddResult?.let { result ->
+        if (result.failed > 0) stringResource(R.string.rss_bulk_failed, result.failed, result.total)
+        else stringResource(R.string.rss_bulk_added, result.total)
+    }
+    LaunchedEffect(bulkAddMessage) {
+        if (bulkAddMessage != null) {
+            snackbarHostState.showSnackbar(bulkAddMessage)
+            viewModel.consumeBulkAddResult()
+        }
+    }
+
     Scaffold(
+        floatingActionButton = {
+            if (ui.selecting && bulkTargets.isNotEmpty()) {
+                ExtendedFloatingActionButton(
+                    onClick = { showBulkAddSheet = true },
+                    icon = { Icon(Icons.Rounded.Download, contentDescription = null) },
+                    text = { Text(stringResource(R.string.rss_download_selected, bulkTargets.size)) },
+                )
+            }
+        },
         topBar = {
             Column {
-                TopAppBar(
+                if (ui.selecting) {
+                    SelectionTopBar(
+                        count = ui.selection.size,
+                        onClose = { viewModel.clearSelection() },
+                        onSelectAll = { viewModel.selectAllVisible() },
+                        showDivider = false,
+                    )
+                } else TopAppBar(
                     title = { Text(stringResource(R.string.rss_title)) },
                     navigationIcon = {
                         IconTooltip(stringResource(R.string.details_back)) {
@@ -180,6 +228,8 @@ fun RssScreen(
                         )
                     }
                 }
+                // A bulk add in progress; its rows turn "Added" one by one
+                if (ui.bulkAdding) LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 4.dp))
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -212,12 +262,18 @@ fun RssScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.align(Alignment.Center),
                 )
-                else -> LazyColumn(Modifier.fillMaxSize()) {
+                // While selecting, room below the last row so the Download button doesn't cover it
+                else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = if (ui.selecting) 88.dp else 0.dp)) {
                     items(ui.visibleEntries, key = { it.key }) { entry ->
                         RssRow(
                             entry = entry,
                             added = entry.key in ui.addedKeys,
                             onAddClick = { confirmEntry = entry },
+                            selecting = ui.selecting,
+                            checked = entry.key in ui.selection,
+                            selectable = canSelect(entry, ui.addedKeys),
+                            onClick = { if (ui.selecting) viewModel.toggleSelected(entry) },
+                            onLongClick = { viewModel.startSelection(entry) },
                         )
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
                     }
@@ -236,6 +292,17 @@ fun RssScreen(
         )
     }
 
+    if (showBulkAddSheet) {
+        AddTorrentOptionsSheet(
+            itemTitle = bulkTargets.first().item.title,
+            serverName = ui.activeProfile?.displayName ?: "",
+            recentLocations = ui.recentDownloadLocations,
+            onAdd = { startPaused, downloadLocation -> viewModel.addSelected(startPaused, downloadLocation) },
+            onDismiss = { showBulkAddSheet = false },
+            subtitle = stringResource(R.string.selection_subtitle, bulkTargets.size),
+        )
+    }
+
     if (showAddFeedDialog) {
         EditFeedDialog(
             onDismiss = { showAddFeedDialog = false },
@@ -248,19 +315,67 @@ fun RssScreen(
 }
 
 @Composable
-private fun RssRow(entry: RssEntry, added: Boolean, onAddClick: () -> Unit) {
+private fun RssRow(
+    entry: RssEntry,
+    added: Boolean,
+    onAddClick: () -> Unit,
+    selecting: Boolean = false,
+    checked: Boolean = false,
+    selectable: Boolean = false,
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
+) {
+    val haptics = LocalHapticFeedback.current
+    val currentOnLongClick by rememberUpdatedState(onLongClick)
+    // Long-press's gesture-free alternative for TalkBack users
+    val selectLabel = stringResource(R.string.selection_select)
     Row(
-        Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+        Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium)
+            .background(
+                if (checked) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+                    .compositeOver(MaterialTheme.colorScheme.background)
+                else Color.Transparent,
+            )
+            .semantics {
+                if (!selecting && selectable) {
+                    customActions = listOf(CustomAccessibilityAction(selectLabel) { onLongClick(); true })
+                }
+            }
+            .then(
+                when {
+                    // While selecting, a tap toggles the row
+                    selecting -> Modifier.clickable(enabled = selectable || checked, onClick = onClick)
+                    // Otherwise only long-press does something (the download button adds), so the
+                    // row isn't clickable: no ripple or TalkBack click action that does nothing
+                    selectable -> Modifier.pointerInput(entry.key) {
+                        detectTapGestures(
+                            onLongPress = {
+                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                currentOnLongClick()
+                            },
+                        )
+                    }
+                    else -> Modifier
+                },
+            )
+            .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            Modifier
-                .size(8.dp)
-                .background(
-                    if (entry.isNew) MaterialTheme.colorScheme.primary else Color.Transparent,
-                    CircleShape,
-                ),
-        )
+        if (selecting) {
+            // Rows that can't be added keep the check circle's width, so titles stay aligned
+            if (selectable) SelectionCheck(checked) else Spacer(Modifier.size(22.dp))
+        } else {
+            Box(
+                Modifier
+                    .size(8.dp)
+                    .background(
+                        if (entry.isNew) MaterialTheme.colorScheme.primary else Color.Transparent,
+                        CircleShape,
+                    ),
+            )
+        }
         Spacer(Modifier.width(10.dp))
         Column(Modifier.weight(1f)) {
             Text(
@@ -298,7 +413,7 @@ private fun RssRow(entry: RssEntry, added: Boolean, onAddClick: () -> Unit) {
                 )
                 Text(stringResource(R.string.rss_added), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-        } else {
+        } else if (!selecting) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 color = MaterialTheme.colorScheme.primaryContainer,
