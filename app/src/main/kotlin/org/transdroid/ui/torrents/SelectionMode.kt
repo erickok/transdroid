@@ -23,28 +23,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.DriveFileMove
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.LibraryAddCheck
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.SelectAll
 import androidx.compose.material.icons.rounded.Sell
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material3.AlertDialog
@@ -52,7 +46,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -79,40 +72,6 @@ import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.components.LabelPill
 import org.transdroid.util.formatBytes
 import org.transdroid.util.formatSpeed
-
-/**
- * Replaces the top bar while torrents are selected. Same height as the normal phone and tablet
- * bars (status bar inset plus 64dp, and the tablet bar's divider), so the list never shifts.
- */
-@Composable
-internal fun SelectionTopBar(count: Int, onClose: () -> Unit, onSelectAll: () -> Unit, showDivider: Boolean) {
-    Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
-        Column(Modifier.windowInsetsPadding(WindowInsets.statusBars)) {
-            Row(
-                Modifier.fillMaxWidth().height(64.dp).padding(horizontal = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconTooltip(stringResource(R.string.selection_close)) {
-                    IconButton(onClick = onClose) {
-                        Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.selection_close))
-                    }
-                }
-                Spacer(Modifier.width(4.dp))
-                Text(
-                    stringResource(R.string.selection_count, count),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.weight(1f),
-                )
-                IconTooltip(stringResource(R.string.selection_select_all)) {
-                    IconButton(onClick = onSelectAll) {
-                        Icon(Icons.Rounded.SelectAll, contentDescription = stringResource(R.string.selection_select_all))
-                    }
-                }
-            }
-            if (showDivider) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
-        }
-    }
-}
 
 /** The actions on the selected torrents, with the details screen's icons. */
 internal class SelectionActions(
@@ -290,33 +249,6 @@ internal fun RemoveTorrentsDialog(torrents: List<Torrent>, onDismiss: () -> Unit
             TextButton(onClick = onDismiss) { Text(stringResource(R.string.details_cancel)) }
         },
     )
-}
-
-/** The check circle that replaces a row's status icon while selecting. */
-@Composable
-internal fun SelectionCheck(checked: Boolean, modifier: Modifier = Modifier) {
-    val ring = MaterialTheme.colorScheme.primary
-    Box(
-        modifier
-            .size(22.dp)
-            .clip(CircleShape)
-            .background(if (checked) ring else MaterialTheme.colorScheme.surface)
-            .then(
-                if (checked) Modifier
-                else Modifier.background(MaterialTheme.colorScheme.outline, CircleShape).padding(2.dp)
-                    .background(MaterialTheme.colorScheme.surface, CircleShape)
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        if (checked) {
-            Icon(
-                Icons.Rounded.Check,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(16.dp),
-            )
-        }
-    }
 }
 
 /** The message after a bulk action, or null when there's nothing to say. */

@@ -142,6 +142,8 @@ import org.transdroid.protocol.TorrentStatus
 import org.transdroid.ui.components.EmptyState
 import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.components.LabelPill
+import org.transdroid.ui.components.SelectionCheck
+import org.transdroid.ui.components.SelectionTopBar
 import org.transdroid.ui.components.SortDirectionIcon
 import org.transdroid.ui.components.TorrentProgressIndicator
 import org.transdroid.ui.message

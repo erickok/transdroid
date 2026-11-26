@@ -23,8 +23,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -91,13 +91,20 @@ import org.transdroid.ui.components.AddTorrentOptionsSheet
 import org.transdroid.ui.components.DropdownPill
 import org.transdroid.ui.components.EmptyState
 import org.transdroid.ui.components.IconTooltip
+import org.transdroid.ui.components.SelectionCheck
+import org.transdroid.ui.components.SelectionCheckSize
+import org.transdroid.ui.components.SelectionTopBar
 import org.transdroid.ui.message
 import org.transdroid.ui.theme.LocalStatusColors
-import org.transdroid.ui.torrents.SelectionCheck
-import org.transdroid.ui.torrents.SelectionTopBar
 import org.transdroid.util.formatBytes
 import org.transdroid.util.formatRelativeAge
 import org.transdroid.ui.components.TransdroidTextField
+
+/** Room below the last row while selecting, so the Download button (56dp, 16dp margin) doesn't cover it. */
+private val DownloadButtonClearance = 88.dp
+
+/** A row's download button, and the room it keeps while selecting. */
+private val DownloadButtonSize = 46.dp
 
 /**
  * All configured feeds merged into one timeline, filterable to a single feed and/or "new only".
@@ -136,7 +143,9 @@ fun RssScreen(
     BackHandler(enabled = ui.selecting) { viewModel.clearSelection() }
     var showBulkAddSheet by remember { mutableStateOf(false) }
     val bulkTargets = ui.bulkTargets
-    if (bulkTargets.isEmpty()) showBulkAddSheet = false
+    // A refresh or filter change can leave nothing to add while the sheet is open: close it, and
+    // don't let it pop up again with the next selection
+    LaunchedEffect(bulkTargets.isEmpty()) { if (bulkTargets.isEmpty()) showBulkAddSheet = false }
     val bulkAddMessage = ui.bulkAddResult?.let { result ->
         if (result.failed > 0) stringResource(R.string.rss_bulk_failed, result.failed, result.total)
         else stringResource(R.string.rss_bulk_added, result.total)
@@ -262,8 +271,7 @@ fun RssScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.align(Alignment.Center),
                 )
-                // While selecting, room below the last row so the Download button doesn't cover it
-                else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = if (ui.selecting) 88.dp else 0.dp)) {
+                else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = if (ui.selecting) DownloadButtonClearance else 0.dp)) {
                     items(ui.visibleEntries, key = { it.key }) { entry ->
                         RssRow(
                             entry = entry,
@@ -292,7 +300,7 @@ fun RssScreen(
         )
     }
 
-    if (showBulkAddSheet) {
+    if (showBulkAddSheet && bulkTargets.isNotEmpty()) {
         AddTorrentOptionsSheet(
             itemTitle = bulkTargets.first().item.title,
             serverName = ui.activeProfile?.displayName ?: "",
@@ -360,21 +368,25 @@ private fun RssRow(
                     else -> Modifier
                 },
             )
-            .padding(horizontal = 14.dp, vertical = 12.dp),
+            // The leading slot is wider than the dot, so less start padding keeps the dot in place
+            .padding(start = 8.dp, end = 14.dp, top = 12.dp, bottom = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (selecting) {
-            // Rows that can't be added keep the check circle's width, so titles stay aligned
-            if (selectable) SelectionCheck(checked) else Spacer(Modifier.size(22.dp))
-        } else {
-            Box(
-                Modifier
-                    .size(8.dp)
-                    .background(
-                        if (entry.isNew) MaterialTheme.colorScheme.primary else Color.Transparent,
-                        CircleShape,
-                    ),
-            )
+        // The new-item dot and the check circle share one slot, so the title doesn't shift when
+        // selection mode starts or ends (rows that can't be selected keep the slot empty)
+        Box(Modifier.size(SelectionCheckSize), contentAlignment = Alignment.Center) {
+            if (selecting) {
+                if (selectable) SelectionCheck(checked)
+            } else {
+                Box(
+                    Modifier
+                        .size(8.dp)
+                        .background(
+                            if (entry.isNew) MaterialTheme.colorScheme.primary else Color.Transparent,
+                            CircleShape,
+                        ),
+                )
+            }
         }
         Spacer(Modifier.width(10.dp))
         Column(Modifier.weight(1f)) {
@@ -413,12 +425,15 @@ private fun RssRow(
                 )
                 Text(stringResource(R.string.rss_added), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-        } else if (!selecting) {
+        } else if (selecting) {
+            // Keeps the download button's room, so rows keep their width and height
+            Spacer(Modifier.size(DownloadButtonSize))
+        } else {
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 color = MaterialTheme.colorScheme.primaryContainer,
                 modifier = Modifier
-                    .size(46.dp)
+                    .size(DownloadButtonSize)
                     .clickable(enabled = entry.item.torrentUrl != null, onClick = onAddClick),
             ) {
                 Box(contentAlignment = Alignment.Center) {

@@ -84,10 +84,14 @@ internal fun bulkAddTargets(selected: List<RssEntry>, addedKeys: Set<String>): L
     selected.filter { canSelect(it, addedKeys) }.distinctBy { it.item.torrentUrl }
 
 /**
- * Adds each target's torrent link with [add], one by one; one failing doesn't stop the others.
- * Returns the links that were added.
+ * Adds each target's torrent link with [add], one by one; one failing doesn't stop the others,
+ * but is reported to [onError]. Returns the links that were added.
  */
-internal suspend fun addEach(targets: List<RssEntry>, add: suspend (url: String) -> Unit): Set<String> {
+internal suspend fun addEach(
+    targets: List<RssEntry>,
+    onError: (Exception) -> Unit = {},
+    add: suspend (url: String) -> Unit,
+): Set<String> {
     val added = mutableSetOf<String>()
     for (target in targets) {
         val url = target.item.torrentUrl ?: continue
@@ -98,6 +102,7 @@ internal suspend fun addEach(targets: List<RssEntry>, add: suspend (url: String)
             throw e
         } catch (e: Exception) {
             // Counted as failed by the caller: targets minus what was added
+            onError(e)
         }
     }
     return added
@@ -329,7 +334,9 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
                 }
                 try {
                     val adapter = container.adapterFor(profile)
-                    val addedUrls = addEach(targets) { url ->
+                    // toUiError writes the failure to the error log, with the host but not the
+                    // torrent link (feed links can carry a passkey)
+                    val addedUrls = addEach(targets, onError = { e -> e.toUiError(profile.host) }) { url ->
                         adapter.addByUrl(url, startPaused, downloadLocation)
                         _ui.update { it.copy(addedKeys = it.addedKeys + keysForUrls(it.entries, setOf(url))) }
                     }

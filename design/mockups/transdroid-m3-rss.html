@@ -103,10 +103,11 @@ body{
 .list{flex:1; overflow-y:auto; padding:0 4px 20px; scrollbar-width:none;}
 .list::-webkit-scrollbar{display:none;}
 
-.item{display:grid; grid-template-columns:10px 1fr auto; gap:0 10px; align-items:center; padding:13px 14px;}
+/* the dot and the check circle share one 22px slot, so titles don't shift when selecting */
+.item{display:grid; grid-template-columns:22px 1fr auto; gap:0 10px; align-items:center; padding:13px 14px 13px 8px;}
 .item + .item{border-top:1px solid var(--outline-variant);}
 .item:hover{background:var(--surface-low); border-radius:18px;}
-.idot{width:8px; height:8px; border-radius:50%; background:transparent;}
+.idot{width:8px; height:8px; border-radius:50%; background:transparent; justify-self:center;}
 .item.unread .idot{background:var(--primary);}
 .imain{min-width:0;}
 .ititle{font-size:14.5px; font-weight:600; line-height:1.32; color:var(--on-surface-var); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
@@ -125,7 +126,8 @@ body{
 .appbar.selbar{background:var(--surface-container);}
 .count{font-variant-numeric:tabular-nums;}
 .item{user-select:none; -webkit-user-select:none;}
-.screen.selecting .item{grid-template-columns:22px 1fr auto; cursor:pointer;}
+.screen.selecting .item{cursor:pointer;}
+.rkeep{width:46px; height:46px;} /* the download button's room while selecting */
 .item.sel{background:var(--sel-bg); border-radius:18px;}
 .item.sel, .item.sel + .item{border-top-color:transparent;}
 .screen.selecting .item.off{opacity:.5; cursor:default;}
@@ -234,7 +236,7 @@ function render(){
       : `<span class="idot"></span>`;
     const trail = r.added
       ? `<span class="added"><span class="msr">check_circle</span>Added</span>`
-      : (selecting ? `<span></span>` : `<button class="radd" title="Download to server"><span class="msr">download</span></button>`);
+      : (selecting ? `<span class="rkeep"></span>` : `<button class="radd" title="Download to server"><span class="msr">download</span></button>`);
     return `
     <div class="item ${r.unread?'unread':''} ${on?'sel':''} ${selectable(r)?'':'off'}" data-id="${r.id}">
       ${lead}
