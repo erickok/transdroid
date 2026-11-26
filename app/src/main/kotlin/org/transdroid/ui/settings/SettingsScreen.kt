@@ -82,6 +82,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -128,8 +129,10 @@ fun SettingsScreen(
     val rssAvailable = booleanResource(R.bool.rss_available)
     val updateCheckAvailable = booleanResource(R.bool.updatecheck_available)
 
-    var showAddFeedDialog by remember { mutableStateOf(false) }
-    var editingFeed by remember { mutableStateOf<RssFeed?>(null) }
+    // Saveable like the server editor's form, so an open feed dialog survives the activity being
+    // recreated (a dark mode or language switch, or the process being killed in the background)
+    var showAddFeedDialog by rememberSaveable { mutableStateOf(false) }
+    var editingFeedId by rememberSaveable { mutableStateOf<String?>(null) }
     var deletingFeed by remember { mutableStateOf<RssFeed?>(null) }
     var showSendReportDialog by remember { mutableStateOf(false) }
 
@@ -293,7 +296,7 @@ fun SettingsScreen(
                                 title = feed.displayName,
                                 subtitle = feed.url,
                                 // Like the servers above: a tap edits (its items are on the RSS screen)
-                                onClick = { editingFeed = feed },
+                                onClick = { editingFeedId = feed.id },
                                 trailing = {
                                     if (feed.hasFilters) {
                                         SettingsChip(stringResource(R.string.rss_filtered))
@@ -576,13 +579,14 @@ fun SettingsScreen(
         )
     }
 
-    editingFeed?.let { feed ->
+    // Looked up by id, so the dialog closes if the feed is gone (deleted, or a backup restored)
+    feeds.firstOrNull { it.id == editingFeedId }?.let { feed ->
         EditFeedDialog(
             feed = feed,
-            onDismiss = { editingFeed = null },
+            onDismiss = { editingFeedId = null },
             onSave = { name, url, includeFilter, excludeFilter ->
                 viewModel.saveFeed(feed.edited(name, url, includeFilter, excludeFilter))
-                editingFeed = null
+                editingFeedId = null
             },
         )
     }

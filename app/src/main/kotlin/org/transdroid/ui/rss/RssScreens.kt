@@ -124,7 +124,7 @@ fun RssScreen(
     val feeds by viewModel.feeds.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var confirmEntry by remember { mutableStateOf<RssEntry?>(null) }
-    var showAddFeedDialog by remember { mutableStateOf(false) }
+    var showAddFeedDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { viewModel.refresh() }
 
