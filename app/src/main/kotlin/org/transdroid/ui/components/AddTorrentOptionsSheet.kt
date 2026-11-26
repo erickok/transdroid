@@ -60,6 +60,8 @@ fun AddTorrentOptionsSheet(
     onDismiss: () -> Unit,
     // Fully expanded right away, so the action buttons at the bottom are visible without dragging
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    // Replaces the "for “title”" line, e.g. "for 3 torrent(s)" when adding several at once
+    subtitle: String? = null,
 ) {
     var location by remember { mutableStateOf("") }
     var startPaused by remember { mutableStateOf(false) }
@@ -70,7 +72,7 @@ fun AddTorrentOptionsSheet(
         Column(Modifier.padding(horizontal = 22.dp)) {
             Text(stringResource(R.string.add_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Text(
-                stringResource(R.string.add_sheet_subtitle, itemTitle),
+                subtitle ?: stringResource(R.string.add_sheet_subtitle, itemTitle),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

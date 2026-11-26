@@ -182,6 +182,9 @@
     <string name="rss_added">Added</string>
     <string name="rss_download">Download to server</string>
     <string name="rss_manage_feeds">Manage feeds</string>
+    <string name="rss_download_selected">Download %1$d</string>
+    <string name="rss_bulk_added">Added %1$d torrent(s)</string>
+    <string name="rss_bulk_failed">%1$d of %2$d torrents couldn\'t be added</string>
 
     <!-- Search -->
     <string name="search_title">Search</string>
