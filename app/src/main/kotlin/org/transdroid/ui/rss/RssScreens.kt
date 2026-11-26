@@ -35,7 +35,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
@@ -68,6 +70,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -94,11 +97,11 @@ import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.components.SelectionCheck
 import org.transdroid.ui.components.SelectionCheckSize
 import org.transdroid.ui.components.SelectionTopBar
+import org.transdroid.ui.components.TransdroidTextField
 import org.transdroid.ui.message
 import org.transdroid.ui.theme.LocalStatusColors
 import org.transdroid.util.formatBytes
 import org.transdroid.util.formatRelativeAge
-import org.transdroid.ui.components.TransdroidTextField
 
 /** Room below the last row while selecting, so the Download button (56dp, 16dp margin) doesn't cover it. */
 private val DownloadButtonClearance = 88.dp
@@ -114,7 +117,6 @@ private val DownloadButtonSize = 46.dp
 @Composable
 fun RssScreen(
     viewModel: RssViewModel,
-    initialFeedId: String?,
     onManageFeeds: () -> Unit,
     onBack: () -> Unit,
 ) {
@@ -124,10 +126,7 @@ fun RssScreen(
     var confirmEntry by remember { mutableStateOf<RssEntry?>(null) }
     var showAddFeedDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(initialFeedId) {
-        if (initialFeedId != null) viewModel.setSelectedFeed(initialFeedId)
-        viewModel.refresh()
-    }
+    LaunchedEffect(Unit) { viewModel.refresh() }
 
     val addedMessage = ui.addedItemTitle?.let { stringResource(R.string.add_success) + ": " + it }
     val addErrorMessage = ui.addError?.message()
@@ -314,8 +313,10 @@ fun RssScreen(
     if (showAddFeedDialog) {
         EditFeedDialog(
             onDismiss = { showAddFeedDialog = false },
-            onSave = { name, url ->
-                viewModel.saveFeed(RssFeed(id = viewModel.newFeedId(), name = name, url = url))
+            onSave = { name, url, includeFilter, excludeFilter ->
+                viewModel.saveFeed(
+                    RssFeed(id = viewModel.newFeedId(), name = name, url = url, includeFilter = includeFilter, excludeFilter = excludeFilter),
+                )
                 showAddFeedDialog = false
             },
         )
@@ -448,16 +449,26 @@ private fun RssRow(
     }
 }
 
-/** Also reused by [org.transdroid.ui.settings.SettingsScreen]'s RSS feeds section. */
+/**
+ * Adds a feed, or edits [feed] when given: its name, URL and Transdroid 2-style title filters.
+ * Also reused by [org.transdroid.ui.settings.SettingsScreen]'s RSS feeds section.
+ */
 @Composable
-internal fun EditFeedDialog(onDismiss: () -> Unit, onSave: (name: String, url: String) -> Unit) {
-    var name by remember { mutableStateOf("") }
-    var url by remember { mutableStateOf("") }
+internal fun EditFeedDialog(
+    onDismiss: () -> Unit,
+    onSave: (name: String, url: String, includeFilter: String, excludeFilter: String) -> Unit,
+    feed: RssFeed? = null,
+) {
+    var name by rememberSaveable(feed?.id) { mutableStateOf(feed?.name.orEmpty()) }
+    var url by rememberSaveable(feed?.id) { mutableStateOf(feed?.url.orEmpty()) }
+    var includeFilter by rememberSaveable(feed?.id) { mutableStateOf(feed?.includeFilter.orEmpty()) }
+    var excludeFilter by rememberSaveable(feed?.id) { mutableStateOf(feed?.excludeFilter.orEmpty()) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.rss_add_feed)) },
+        title = { Text(stringResource(if (feed == null) R.string.rss_add_feed else R.string.rss_edit_feed)) },
         text = {
-            Column {
+            // Scrolls so all four fields stay reachable with the keyboard open
+            Column(Modifier.verticalScroll(rememberScrollState())) {
                 TransdroidTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -470,13 +481,30 @@ internal fun EditFeedDialog(onDismiss: () -> Unit, onSave: (name: String, url: S
                     onValueChange = { url = it },
                     label = { Text(stringResource(R.string.rss_feed_url)) },
                     singleLine = true,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                )
+                TransdroidTextField(
+                    value = includeFilter,
+                    onValueChange = { includeFilter = it },
+                    label = { Text(stringResource(R.string.rss_include_filter)) },
+                    supportingText = { Text(stringResource(R.string.rss_include_filter_summary)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                )
+                TransdroidTextField(
+                    value = excludeFilter,
+                    onValueChange = { excludeFilter = it },
+                    label = { Text(stringResource(R.string.rss_exclude_filter)) },
+                    supportingText = { Text(stringResource(R.string.rss_exclude_filter_summary)) },
+                    singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
         confirmButton = {
             TextButton(
-                onClick = { onSave(name.trim(), url.trim()) },
+                // Filters are kept as typed: spaces can be part of a word, as in Transdroid 2
+                onClick = { onSave(name.trim(), url.trim(), includeFilter, excludeFilter) },
                 enabled = url.trim().startsWith("http"),
             ) { Text(stringResource(R.string.settings_save)) }
         },

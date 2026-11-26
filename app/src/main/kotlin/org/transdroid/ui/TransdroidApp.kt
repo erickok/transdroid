@@ -56,7 +56,7 @@ object Routes {
     const val SETTINGS = "settings"
     const val EDIT_SERVER = "settings/server/{id}"
     const val EDIT_SEARCH_INDEXER = "settings/search/{id}"
-    const val RSS = "rss?feedId={feedId}"
+    const val RSS = "rss"
     const val SEARCH = "search"
     const val ABOUT = "settings/about"
     const val CHANGELOG = "settings/about/changelog"
@@ -68,7 +68,6 @@ object Routes {
     fun add(url: String?) = if (url == null) "add" else "add?url=${Uri.encode(url)}"
     fun editServer(id: String?) = "settings/server/${Uri.encode(id ?: NEW_SERVER_ID)}"
     fun editSearchIndexer(id: String?) = "settings/search/${Uri.encode(id ?: NEW_SEARCH_INDEXER_ID)}"
-    fun rss(feedId: String?) = if (feedId == null) "rss" else "rss?feedId=${Uri.encode(feedId)}"
 }
 
 @Composable
@@ -136,17 +135,13 @@ fun TransdroidApp(
                 onAddTorrent = { navController.navigate(Routes.add(null)) },
                 onOpenSettings = { navController.navigate(Routes.SETTINGS) },
                 onAddServer = { navController.navigate(Routes.editServer(null)) },
-                onOpenRss = { navController.navigate(Routes.rss(null)) },
+                onOpenRss = { navController.navigate(Routes.RSS) },
                 onOpenSearch = { navController.navigate(Routes.SEARCH) },
             )
         }
-        composable(
-            Routes.RSS,
-            arguments = listOf(navArgument("feedId") { type = NavType.StringType; defaultValue = "" }),
-        ) { entry ->
+        composable(Routes.RSS) {
             RssScreen(
                 viewModel = rssViewModel,
-                initialFeedId = entry.arguments?.getString("feedId")?.takeIf { it.isNotEmpty() },
                 onManageFeeds = { navController.navigate(Routes.SETTINGS) },
                 onBack = { navController.popBackStack() },
             )
@@ -184,7 +179,6 @@ fun TransdroidApp(
                 viewModel = settingsViewModel,
                 onEditServer = { id -> navController.navigate(Routes.editServer(id)) },
                 onEditSearchIndexer = { id -> navController.navigate(Routes.editSearchIndexer(id)) },
-                onOpenFeed = { feedId -> navController.navigate(Routes.rss(feedId)) },
                 onOpenAbout = { navController.navigate(Routes.ABOUT) },
                 onBack = { navController.popBackStack() },
             )

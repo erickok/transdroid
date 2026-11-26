@@ -65,9 +65,11 @@ data class LegacyImportSummary(
     val feedCount: Int,
     val skipped: List<LegacySkippedServer> = emptyList(),
     val needsCertificate: List<String> = emptyList(),
+    /** Feeds that already existed (same URL) without filters, and got v2's include/exclude filters. */
+    val feedFiltersAdded: Int = 0,
 ) {
     val isEmpty: Boolean
-        get() = serverCount == 0 && feedCount == 0 && skipped.isEmpty()
+        get() = serverCount == 0 && feedCount == 0 && feedFiltersAdded == 0 && skipped.isEmpty()
 }
 
 data class LegacyMergeResult(val data: ProfilesData, val summary: LegacyImportSummary, val activeProfileId: String?)
@@ -131,21 +133,34 @@ object LegacySettingsConverter {
     /**
      * Adds an import to existing v3 data without overwriting anything. A server already present
      * with the same client type, host and port is left alone (so a repeated import adds nothing),
-     * as is a feed with the same URL.
+     * as is a feed with the same URL - except that such a feed without any filters gets the
+     * imported feed's include/exclude filters, so importing again after filters became supported
+     * brings them over.
      */
     fun merge(existing: ProfilesData, import: LegacyImport): LegacyMergeResult {
         val newProfiles = import.profiles.filter { candidate ->
             existing.profiles.none { it.type == candidate.type && it.host.equals(candidate.host, ignoreCase = true) && it.port == candidate.port }
         }
         val newFeeds = import.feeds.filter { candidate -> existing.feeds.none { it.url == candidate.url } }
+        var feedFiltersAdded = 0
+        val existingFeeds = existing.feeds.map { feed ->
+            val imported = import.feeds.firstOrNull { it.url == feed.url && it.hasFilters }
+            if (imported != null && !feed.hasFilters) {
+                feedFiltersAdded++
+                feed.copy(includeFilter = imported.includeFilter, excludeFilter = imported.excludeFilter)
+            } else {
+                feed
+            }
+        }
         val newNames = newProfiles.map { it.displayName }.toSet()
         return LegacyMergeResult(
-            data = existing.copy(profiles = existing.profiles + newProfiles, feeds = existing.feeds + newFeeds),
+            data = existing.copy(profiles = existing.profiles + newProfiles, feeds = existingFeeds + newFeeds),
             summary = LegacyImportSummary(
                 serverCount = newProfiles.size,
                 feedCount = newFeeds.size,
                 skipped = import.skipped,
                 needsCertificate = import.needsCertificate.filter { it in newNames },
+                feedFiltersAdded = feedFiltersAdded,
             ),
             activeProfileId = import.activeProfileId?.takeIf { id -> newProfiles.any { it.id == id } },
         )
@@ -190,6 +205,9 @@ object LegacySettingsConverter {
             feed.primitive("name")?.let { prefs["rssfeed_name_$i"] = it }
             feed.primitive("url")?.let { prefs["rssfeed_url_$i"] = it }
             feed.primitive("last_seen_time")?.let { prefs["rssfeed_lastviewed_$i"] = it }
+            // v2 named these after its new-item notifications, but its feed list applied them too
+            feed.primitive("alarm_filter_include")?.let { prefs["rssfeed_include_$i"] = it }
+            feed.primitive("alarm_filter_exclude")?.let { prefs["rssfeed_exclude_$i"] = it }
         }
         return prefs
     }
@@ -342,7 +360,14 @@ object LegacySettingsConverter {
             val url = prefs.string("rssfeed_url_$i") ?: break
             // v2 stored milliseconds, v3 stores seconds
             val lastViewed = (prefs["rssfeed_lastviewed_$i"] as? Number)?.toLong()?.takeIf { it > 0 }?.div(1000)
-            feeds += RssFeed(id = newId(), name = prefs.string("rssfeed_name_$i").orEmpty(), url = url.trim(), lastViewedTimestamp = lastViewed)
+            feeds += RssFeed(
+                id = newId(),
+                name = prefs.string("rssfeed_name_$i").orEmpty(),
+                url = url.trim(),
+                lastViewedTimestamp = lastViewed,
+                includeFilter = prefs.string("rssfeed_include_$i").orEmpty(),
+                excludeFilter = prefs.string("rssfeed_exclude_$i").orEmpty(),
+            )
             i++
         }
         return feeds

@@ -382,4 +382,64 @@ class LegacySettingsConverterTest {
     fun `non-json is rejected`() {
         LegacySettingsConverter.fromExportJson("TDBK\u0000binary")
     }
+
+    @Test
+    fun `rss feed filters are imported from v2's settings`() {
+        val feeds = convert(
+            "rssfeed_url_0" to "https://example.org/rss",
+            "rssfeed_include_0" to "1080p|x265",
+            "rssfeed_exclude_0" to " CAM ",
+            "rssfeed_url_1" to "https://example.org/other",
+        ).feeds
+        assertEquals(listOf("1080p|x265", ""), feeds.map { it.includeFilter })
+        // Kept as typed, spaces included, as v2 matched them
+        assertEquals(listOf(" CAM ", ""), feeds.map { it.excludeFilter })
+    }
+
+    @Test
+    fun `rss feed filters are imported from a settings json export`() {
+        val json = """
+            {"rssfeeds": [
+              {"name": "Shows", "url": "https://example.org/rss", "alarm_filter_include": "1080p", "alarm_filter_exclude": "cam|hdts"},
+              {"name": "Plain", "url": "https://example.org/plain", "alarm_filter_include": null, "alarm_filter_exclude": null}
+            ]}
+        """.trimIndent()
+        val feeds = LegacySettingsConverter.convert(LegacySettingsConverter.fromExportJson(json), ids()).feeds
+        assertEquals(listOf("1080p", ""), feeds.map { it.includeFilter })
+        assertEquals(listOf("cam|hdts", ""), feeds.map { it.excludeFilter })
+    }
+
+    @Test
+    fun `merge adds filters to an existing feed without any, but never overwrites them`() {
+        val existing = ProfilesData(
+            feeds = listOf(
+                RssFeed(id = "plain", name = "", url = "https://example.org/a", lastViewedTimestamp = 42),
+                RssFeed(id = "mine", name = "", url = "https://example.org/b", includeFilter = "mine"),
+            ),
+        )
+        val import = convert(
+            "rssfeed_url_0" to "https://example.org/a", "rssfeed_include_0" to "1080p", "rssfeed_exclude_0" to "cam",
+            "rssfeed_url_1" to "https://example.org/b", "rssfeed_include_1" to "theirs",
+        )
+        val result = LegacySettingsConverter.merge(existing, import)
+        assertEquals(
+            listOf(
+                RssFeed(id = "plain", name = "", url = "https://example.org/a", lastViewedTimestamp = 42, includeFilter = "1080p", excludeFilter = "cam"),
+                RssFeed(id = "mine", name = "", url = "https://example.org/b", includeFilter = "mine"),
+            ),
+            result.data.feeds,
+        )
+        assertEquals(LegacyImportSummary(serverCount = 0, feedCount = 0, feedFiltersAdded = 1), result.summary)
+        // Not "nothing new": the filters were brought over
+        assertFalse(result.summary.isEmpty)
+    }
+
+    @Test
+    fun `importing filters twice adds nothing the second time`() {
+        val prefs = mapOf<String, Any?>("rssfeed_url_0" to "https://example.org/rss", "rssfeed_include_0" to "1080p")
+        val first = LegacySettingsConverter.merge(ProfilesData(), LegacySettingsConverter.convert(prefs))
+        val second = LegacySettingsConverter.merge(first.data, LegacySettingsConverter.convert(prefs))
+        assertEquals(first.data.feeds, second.data.feeds)
+        assertTrue(second.summary.isEmpty)
+    }
 }

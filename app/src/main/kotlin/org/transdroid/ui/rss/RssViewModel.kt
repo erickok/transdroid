@@ -42,7 +42,9 @@ import org.transdroid.AppContainer
 import org.transdroid.appContainer
 import org.transdroid.data.RssFeed
 import org.transdroid.data.ServerProfile
+import org.transdroid.protocol.rss.RssFilter
 import org.transdroid.protocol.rss.RssItem
+import org.transdroid.protocol.rss.filtered
 import org.transdroid.ui.torrents.UiError
 import org.transdroid.ui.torrents.toUiError
 
@@ -234,10 +236,11 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
         fetchJob?.cancel()
         _ui.update { it.copy(loading = true, error = null) }
         fetchJob = viewModelScope.launch {
-            // `feeds` is a stateIn StateFlow that may not have emitted yet on the very first
-            // collection (e.g. right after navigating here); fall back to the repository
-            // directly rather than racing it and treating a real feed list as empty.
-            val configuredFeeds = feeds.value.ifEmpty { container.profilesRepository.feeds.first() }
+            // Read the repository directly rather than `feeds`: that stateIn StateFlow may not
+            // have emitted yet right after navigating here, and after a while without collectors
+            // (WhileSubscribed) it can still hold the feeds from before an edit in Settings, so
+            // a changed URL or filter wouldn't apply until the next refresh.
+            val configuredFeeds = container.profilesRepository.feeds.first()
             if (configuredFeeds.isEmpty()) {
                 _ui.update { it.copy(entries = emptyList(), loading = false, error = null) }
                 return@launch
@@ -265,7 +268,8 @@ class RssViewModel(private val container: AppContainer) : ViewModel() {
     private suspend fun fetchFeed(feed: RssFeed): List<RssEntry>? {
         val sinceTimestamp = feed.lastViewedTimestamp
         return try {
-            val channel = container.rssFetcher.fetch(feed.url)
+            // Filtered before anything else, as in Transdroid 2, so hidden items don't count as new either
+            val channel = container.rssFetcher.fetch(feed.url).filtered(RssFilter(feed.includeFilter, feed.excludeFilter))
             val newest = channel.items.firstNotNullOfOrNull { it.timestamp }
             if (newest != null && newest != feed.lastViewedTimestamp) {
                 container.profilesRepository.markFeedViewed(feed.id, newest)

@@ -43,13 +43,19 @@ fun LegacyImportDialog(summary: LegacyImportSummary, onDismiss: () -> Unit) {
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Text(
-                    if (summary.feedCount > 0) {
-                        stringResource(R.string.legacy_import_counts, summary.serverCount, summary.feedCount)
-                    } else {
-                        stringResource(R.string.legacy_import_server_count, summary.serverCount)
-                    }
-                )
+                // Left out when an import only added filters to existing feeds: "0 server(s)" says nothing
+                if (summary.serverCount > 0 || summary.feedCount > 0 || summary.feedFiltersAdded == 0) {
+                    Text(
+                        if (summary.feedCount > 0) {
+                            stringResource(R.string.legacy_import_counts, summary.serverCount, summary.feedCount)
+                        } else {
+                            stringResource(R.string.legacy_import_server_count, summary.serverCount)
+                        }
+                    )
+                }
+                if (summary.feedFiltersAdded > 0) {
+                    Text(stringResource(R.string.legacy_import_feed_filters, summary.feedFiltersAdded))
+                }
                 if (summary.needsCertificate.isNotEmpty()) {
                     BulletedList(stringResource(R.string.legacy_import_certificates), summary.needsCertificate)
                 }
