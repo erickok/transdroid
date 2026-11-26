@@ -540,6 +540,8 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
+                    // Counted for the snackbar; toUiError writes it to the error log
+                    e.toUiError(profile.host)
                     failed++
                 }
             }
