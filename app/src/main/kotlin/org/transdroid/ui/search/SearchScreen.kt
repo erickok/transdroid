@@ -87,6 +87,7 @@ import org.transdroid.protocol.search.SearchResult
 import org.transdroid.ui.components.AddTorrentOptionsSheet
 import org.transdroid.ui.components.DropdownPill
 import org.transdroid.ui.components.EmptyState
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.message
 import org.transdroid.ui.theme.LocalStatusColors
 import org.transdroid.util.formatBytes
@@ -125,8 +126,10 @@ fun SearchScreen(
         topBar = {
             Column(Modifier.windowInsetsPadding(WindowInsets.statusBars)) {
                 if (providers.isEmpty()) {
-                    IconButton(onClick = onBack, modifier = Modifier.padding(4.dp)) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.details_back))
+                    IconTooltip(stringResource(R.string.details_back)) {
+                        IconButton(onClick = onBack, modifier = Modifier.padding(4.dp)) {
+                            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.details_back))
+                        }
                     }
                 } else {
                     SearchBarPill(
@@ -246,8 +249,10 @@ private fun SearchBarPill(
             .padding(horizontal = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.details_back))
+        IconTooltip(stringResource(R.string.details_back)) {
+            IconButton(onClick = onBack) {
+                Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.details_back))
+            }
         }
         Box(Modifier.weight(1f)) {
             if (query.isEmpty()) {
@@ -269,8 +274,10 @@ private fun SearchBarPill(
             )
         }
         if (query.isNotEmpty()) {
-            IconButton(onClick = { onQueryChange("") }) {
-                Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.search_clear))
+            IconTooltip(stringResource(R.string.search_clear)) {
+                IconButton(onClick = { onQueryChange("") }) {
+                    Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.search_clear))
+                }
             }
         }
     }

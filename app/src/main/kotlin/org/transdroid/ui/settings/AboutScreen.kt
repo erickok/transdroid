@@ -71,6 +71,7 @@ import kotlinx.coroutines.launch
 import org.transdroid.BuildConfig
 import org.transdroid.R
 import org.transdroid.appContainer
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.update.AppUpdates
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,8 +111,10 @@ fun AboutScreen(onOpenChangelog: () -> Unit, onBack: () -> Unit) {
             TopAppBar(
                 title = { Text(stringResource(R.string.about_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.details_back))
+                    IconTooltip(stringResource(R.string.details_back)) {
+                        IconButton(onClick = onBack) {
+                            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.details_back))
+                        }
                     }
                 },
             )

@@ -89,6 +89,7 @@ import kotlinx.coroutines.withContext
 import org.transdroid.R
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.ui.components.AddTorrentOptionsSection
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.message
 import org.transdroid.ui.torrents.TorrentsViewModel
 import org.transdroid.ui.torrents.UiError
@@ -176,11 +177,13 @@ fun AddTorrentScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.add_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onDone) {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.details_back),
-                        )
+                    IconTooltip(stringResource(R.string.details_back)) {
+                        IconButton(onClick = onDone) {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.details_back),
+                            )
+                        }
                     }
                 },
             )
@@ -411,12 +414,14 @@ private fun PickedFileChip(name: String, onRemove: () -> Unit) {
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
-        IconButton(onClick = onRemove, modifier = Modifier.height(38.dp)) {
-            Icon(
-                Icons.Rounded.Close,
-                contentDescription = stringResource(R.string.details_cancel),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
+        IconTooltip(stringResource(R.string.details_cancel)) {
+            IconButton(onClick = onRemove, modifier = Modifier.height(38.dp)) {
+                Icon(
+                    Icons.Rounded.Close,
+                    contentDescription = stringResource(R.string.details_cancel),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
         }
     }
 }

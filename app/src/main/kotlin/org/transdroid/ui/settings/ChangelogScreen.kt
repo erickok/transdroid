@@ -46,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.transdroid.R
+import org.transdroid.ui.components.IconTooltip
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,8 +56,10 @@ fun ChangelogScreen(onBack: () -> Unit) {
             TopAppBar(
                 title = { Text(stringResource(R.string.changelog_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.details_back))
+                    IconTooltip(stringResource(R.string.details_back)) {
+                        IconButton(onClick = onBack) {
+                            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.details_back))
+                        }
                     }
                 },
             )

@@ -140,6 +140,7 @@ import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.Torrent
 import org.transdroid.protocol.TorrentStatus
 import org.transdroid.ui.components.EmptyState
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.components.LabelPill
 import org.transdroid.ui.components.SortDirectionIcon
 import org.transdroid.ui.components.TorrentProgressIndicator
@@ -273,8 +274,10 @@ fun TorrentsScreen(
                 } else {
                     TopAppBar(
                         navigationIcon = {
-                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(Icons.Rounded.Menu, contentDescription = stringResource(R.string.drawer_open))
+                            IconTooltip(stringResource(R.string.drawer_open)) {
+                                IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                    Icon(Icons.Rounded.Menu, contentDescription = stringResource(R.string.drawer_open))
+                                }
                             }
                         },
                         title = {
@@ -298,13 +301,17 @@ fun TorrentsScreen(
                         },
                         actions = {
                             if (searchAvailable) {
-                                IconButton(onClick = onOpenSearch) {
-                                    Icon(Icons.Rounded.Search, contentDescription = stringResource(R.string.search_title))
+                                IconTooltip(stringResource(R.string.search_title)) {
+                                    IconButton(onClick = onOpenSearch) {
+                                        Icon(Icons.Rounded.Search, contentDescription = stringResource(R.string.search_title))
+                                    }
                                 }
                             }
                             if (rssAvailable) {
-                                IconButton(onClick = onOpenRss) {
-                                    Icon(Icons.Rounded.RssFeed, contentDescription = stringResource(R.string.rss_title))
+                                IconTooltip(stringResource(R.string.rss_title)) {
+                                    IconButton(onClick = onOpenRss) {
+                                        Icon(Icons.Rounded.RssFeed, contentDescription = stringResource(R.string.rss_title))
+                                    }
                                 }
                             }
                         },
@@ -401,8 +408,10 @@ private fun TabletTopBar(
                 Modifier.fillMaxWidth().height(64.dp).padding(horizontal = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = onOpenDrawer) {
-                    Icon(Icons.Rounded.Menu, contentDescription = stringResource(R.string.drawer_open))
+                IconTooltip(stringResource(R.string.drawer_open)) {
+                    IconButton(onClick = onOpenDrawer) {
+                        Icon(Icons.Rounded.Menu, contentDescription = stringResource(R.string.drawer_open))
+                    }
                 }
                 Spacer(Modifier.width(4.dp))
                 Text(
@@ -439,12 +448,16 @@ private fun TabletTopBar(
                     AltSpeedButton(enabled = ui.altSpeedEnabled, onClick = onToggleAltSpeed)
                 }
                 if (searchAvailable) {
-                    IconButton(onClick = onOpenSearch) {
-                        Icon(Icons.Rounded.Search, contentDescription = stringResource(R.string.search_title))
+                    IconTooltip(stringResource(R.string.search_title)) {
+                        IconButton(onClick = onOpenSearch) {
+                            Icon(Icons.Rounded.Search, contentDescription = stringResource(R.string.search_title))
+                        }
                     }
                 }
-                IconButton(onClick = onRefresh) {
-                    Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
+                IconTooltip(stringResource(R.string.torrents_refresh)) {
+                    IconButton(onClick = onRefresh) {
+                        Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
+                    }
                 }
                 SortMenuButton(current = ui.sort, descending = ui.sortDescending, onSelect = onSortSelect)
             }
@@ -456,22 +469,24 @@ private fun TabletTopBar(
 /** Toggles the daemon's alternative ("turtle") speed limits; a filled highlight when active, matching design/mockups/transdroid-m3-expressive.html's `.tbtn.on`. */
 @Composable
 private fun AltSpeedButton(enabled: Boolean, onClick: () -> Unit) {
-    FilledIconToggleButton(
-        checked = enabled,
-        onCheckedChange = { onClick() },
-        colors = IconButtonDefaults.filledIconToggleButtonColors(
-            containerColor = Color.Transparent,
-            checkedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            checkedContentColor = MaterialTheme.colorScheme.onSurface,
-        ),
-    ) {
-        Icon(
-            Icons.Rounded.Speed,
-            contentDescription = stringResource(
-                if (enabled) R.string.torrents_alt_speed_on else R.string.torrents_alt_speed_off
+    IconTooltip(stringResource(if (enabled) R.string.torrents_alt_speed_on else R.string.torrents_alt_speed_off)) {
+        FilledIconToggleButton(
+            checked = enabled,
+            onCheckedChange = { onClick() },
+            colors = IconButtonDefaults.filledIconToggleButtonColors(
+                containerColor = Color.Transparent,
+                checkedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                checkedContentColor = MaterialTheme.colorScheme.onSurface,
             ),
-        )
+        ) {
+            Icon(
+                Icons.Rounded.Speed,
+                contentDescription = stringResource(
+                    if (enabled) R.string.torrents_alt_speed_on else R.string.torrents_alt_speed_off
+                ),
+            )
+        }
     }
 }
 
@@ -759,8 +774,10 @@ private fun TorrentsToolbar(
             if (altSpeedSupported) {
                 AltSpeedButton(enabled = altSpeedEnabled, onClick = onToggleAltSpeed)
             }
-            IconButton(onClick = onRefresh) {
-                Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
+            IconTooltip(stringResource(R.string.torrents_refresh)) {
+                IconButton(onClick = onRefresh) {
+                    Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
+                }
             }
             SortMenuButton(current = sort, descending = sortDescending, onSelect = onSortSelect)
         }
@@ -833,11 +850,13 @@ private fun AddTorrentFab(onClick: () -> Unit) {
 private fun SortMenuButton(current: TorrentSort, descending: Boolean, onSelect: (TorrentSort) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     val sortTitle = stringResource(R.string.sort_title)
-    IconButton(
-        onClick = { expanded = true },
-        modifier = Modifier.semantics { contentDescription = sortTitle },
-    ) {
-        SortDirectionIcon(descending = descending, tint = LocalContentColor.current)
+    IconTooltip(sortTitle) {
+        IconButton(
+            onClick = { expanded = true },
+            modifier = Modifier.semantics { contentDescription = sortTitle },
+        ) {
+            SortDirectionIcon(descending = descending, tint = LocalContentColor.current)
+        }
     }
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
         TorrentSort.entries.forEach { sort ->

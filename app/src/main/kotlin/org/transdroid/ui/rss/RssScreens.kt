@@ -76,6 +76,7 @@ import org.transdroid.data.RssFeed
 import org.transdroid.ui.components.AddTorrentOptionsSheet
 import org.transdroid.ui.components.DropdownPill
 import org.transdroid.ui.components.EmptyState
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.message
 import org.transdroid.ui.theme.LocalStatusColors
 import org.transdroid.util.formatBytes
@@ -121,16 +122,22 @@ fun RssScreen(
                 TopAppBar(
                     title = { Text(stringResource(R.string.rss_title)) },
                     navigationIcon = {
-                        IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.details_back))
+                        IconTooltip(stringResource(R.string.details_back)) {
+                            IconButton(onClick = onBack) {
+                                Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.details_back))
+                            }
                         }
                     },
                     actions = {
-                        IconButton(onClick = { viewModel.refresh() }) {
-                            Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
+                        IconTooltip(stringResource(R.string.torrents_refresh)) {
+                            IconButton(onClick = { viewModel.refresh() }) {
+                                Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.torrents_refresh))
+                            }
                         }
-                        IconButton(onClick = onManageFeeds) {
-                            Icon(Icons.Rounded.Settings, contentDescription = stringResource(R.string.rss_manage_feeds))
+                        IconTooltip(stringResource(R.string.rss_manage_feeds)) {
+                            IconButton(onClick = onManageFeeds) {
+                                Icon(Icons.Rounded.Settings, contentDescription = stringResource(R.string.rss_manage_feeds))
+                            }
                         }
                     },
                 )

@@ -75,6 +75,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.transdroid.R
 import org.transdroid.protocol.Torrent
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.components.LabelPill
 import org.transdroid.util.formatBytes
 import org.transdroid.util.formatSpeed
@@ -91,8 +92,10 @@ internal fun SelectionTopBar(count: Int, onClose: () -> Unit, onSelectAll: () ->
                 Modifier.fillMaxWidth().height(64.dp).padding(horizontal = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = onClose) {
-                    Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.selection_close))
+                IconTooltip(stringResource(R.string.selection_close)) {
+                    IconButton(onClick = onClose) {
+                        Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.selection_close))
+                    }
                 }
                 Spacer(Modifier.width(4.dp))
                 Text(
@@ -100,8 +103,10 @@ internal fun SelectionTopBar(count: Int, onClose: () -> Unit, onSelectAll: () ->
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(onClick = onSelectAll) {
-                    Icon(Icons.Rounded.SelectAll, contentDescription = stringResource(R.string.selection_select_all))
+                IconTooltip(stringResource(R.string.selection_select_all)) {
+                    IconButton(onClick = onSelectAll) {
+                        Icon(Icons.Rounded.SelectAll, contentDescription = stringResource(R.string.selection_select_all))
+                    }
                 }
             }
             if (showDivider) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
@@ -348,8 +353,10 @@ internal fun SelectionHint(onDismiss: () -> Unit, modifier: Modifier = Modifier)
             Icon(Icons.Rounded.TouchApp, contentDescription = null, modifier = Modifier.size(20.dp))
             Spacer(Modifier.width(10.dp))
             Text(stringResource(R.string.selection_hint), style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
-            IconButton(onClick = onDismiss) {
-                Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.selection_hint_dismiss), modifier = Modifier.size(20.dp))
+            IconTooltip(stringResource(R.string.selection_hint_dismiss)) {
+                IconButton(onClick = onDismiss) {
+                    Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.selection_hint_dismiss), modifier = Modifier.size(20.dp))
+                }
             }
         }
     }

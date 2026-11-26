@@ -73,6 +73,7 @@ import androidx.compose.ui.unit.sp
 import org.transdroid.R
 import org.transdroid.data.ServerProfile
 import org.transdroid.protocol.TorrentStatus
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.theme.accentColor
 import org.transdroid.ui.theme.labelHue
 
@@ -370,13 +371,15 @@ private fun DrawerFilterField(value: String, onValueChange: (String) -> Unit, mo
             )
         }
         if (value.isNotEmpty()) {
-            IconButton(onClick = { onValueChange("") }, modifier = Modifier.size(36.dp)) {
-                Icon(
-                    Icons.Rounded.Close,
-                    contentDescription = stringResource(R.string.drawer_clear_filter),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp),
-                )
+            IconTooltip(stringResource(R.string.drawer_clear_filter)) {
+                IconButton(onClick = { onValueChange("") }, modifier = Modifier.size(36.dp)) {
+                    Icon(
+                        Icons.Rounded.Close,
+                        contentDescription = stringResource(R.string.drawer_clear_filter),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
             }
         }
     }

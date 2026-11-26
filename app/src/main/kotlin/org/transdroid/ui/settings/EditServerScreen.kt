@@ -110,6 +110,7 @@ import org.transdroid.discovery.CurrentSsid
 import org.transdroid.errorlog.ErrorLog
 import org.transdroid.protocol.DaemonType
 import org.transdroid.protocol.discovery.DiscoveredDaemon
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.message
 import org.transdroid.ui.torrents.UiError
 import org.transdroid.ui.components.TransdroidTextField
@@ -163,26 +164,32 @@ fun EditServerScreen(
                     Text(stringResource(if (existing == null) R.string.settings_new_server else R.string.settings_edit_server))
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.details_back),
-                        )
+                    IconTooltip(stringResource(R.string.details_back)) {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.details_back),
+                            )
+                        }
                     }
                 },
                 actions = {
-                    IconButton(onClick = { showHelp = true }) {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.HelpOutline,
-                            contentDescription = stringResource(R.string.settings_connection_help),
-                        )
+                    IconTooltip(stringResource(R.string.settings_connection_help)) {
+                        IconButton(onClick = { showHelp = true }) {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.HelpOutline,
+                                contentDescription = stringResource(R.string.settings_connection_help),
+                            )
+                        }
                     }
                     if (existing != null) {
-                        IconButton(onClick = {
-                            viewModel.delete(existing.id)
-                            onBack()
-                        }) {
-                            Icon(Icons.Rounded.Delete, contentDescription = stringResource(R.string.settings_delete))
+                        IconTooltip(stringResource(R.string.settings_delete)) {
+                            IconButton(onClick = {
+                                viewModel.delete(existing.id)
+                                onBack()
+                            }) {
+                                Icon(Icons.Rounded.Delete, contentDescription = stringResource(R.string.settings_delete))
+                            }
                         }
                     }
                 },
@@ -743,13 +750,15 @@ private fun DetectedRow(
 
 @Composable
 private fun PasswordVisibilityToggle(visible: Boolean, onToggle: () -> Unit) {
-    IconButton(onClick = onToggle) {
-        Icon(
-            if (visible) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
-            contentDescription = stringResource(
-                if (visible) R.string.settings_hide_password else R.string.settings_show_password
-            ),
-        )
+    IconTooltip(stringResource(if (visible) R.string.settings_hide_password else R.string.settings_show_password)) {
+        IconButton(onClick = onToggle) {
+            Icon(
+                if (visible) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
+                contentDescription = stringResource(
+                    if (visible) R.string.settings_hide_password else R.string.settings_show_password
+                ),
+            )
+        }
     }
 }
 
@@ -866,8 +875,10 @@ private fun LocalNetworkSection(
                 leadingIcon = { Icon(Icons.Rounded.Wifi, contentDescription = null) },
                 trailingIcon = if (ssidDraft.isNotBlank()) {
                     {
-                        IconButton(onClick = onAddSsid) {
-                            Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.settings_local_add_network))
+                        IconTooltip(stringResource(R.string.settings_local_add_network)) {
+                            IconButton(onClick = onAddSsid) {
+                                Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.settings_local_add_network))
+                            }
                         }
                     }
                 } else null,

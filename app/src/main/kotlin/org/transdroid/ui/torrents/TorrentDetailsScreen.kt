@@ -111,6 +111,7 @@ import org.transdroid.protocol.TorrentFile
 import org.transdroid.protocol.TorrentStatus
 import org.transdroid.protocol.Tracker
 import org.transdroid.protocol.TrackerStatus
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.components.LabelPill
 import org.transdroid.ui.components.LabelPillSize
 import org.transdroid.ui.components.TorrentProgressIndicator
@@ -142,11 +143,13 @@ fun TorrentDetailsScreen(
                 // repeating it here just duplicated it.
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.details_back),
-                        )
+                    IconTooltip(stringResource(R.string.details_back)) {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.details_back),
+                            )
+                        }
                     }
                 },
             )
@@ -396,34 +399,40 @@ private fun DetailsSummary(
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.details_remove))
             }
-            IconButton(
-                onClick = { viewModel.checkData(torrent) },
-                modifier = Modifier.size(48.dp),
-                colors = IconButtonDefaults.iconButtonColors(
-                    contentColor = MaterialTheme.colorScheme.primary,
-                ),
-            ) {
-                Icon(Icons.Rounded.Checklist, contentDescription = stringResource(R.string.details_check_data))
+            IconTooltip(stringResource(R.string.details_check_data)) {
+                IconButton(
+                    onClick = { viewModel.checkData(torrent) },
+                    modifier = Modifier.size(48.dp),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                ) {
+                    Icon(Icons.Rounded.Checklist, contentDescription = stringResource(R.string.details_check_data))
+                }
             }
-            IconToggleButton(
-                checked = torrent.labels.isNotEmpty(),
-                onCheckedChange = { onSetLabel() },
-                modifier = Modifier.size(48.dp),
-                colors = IconButtonDefaults.iconToggleButtonColors(
-                    contentColor = MaterialTheme.colorScheme.primary,
-                    checkedContentColor = MaterialTheme.colorScheme.primary,
-                ),
-            ) {
-                Icon(Icons.Rounded.Sell, contentDescription = stringResource(R.string.details_set_label))
+            IconTooltip(stringResource(R.string.details_set_label)) {
+                IconToggleButton(
+                    checked = torrent.labels.isNotEmpty(),
+                    onCheckedChange = { onSetLabel() },
+                    modifier = Modifier.size(48.dp),
+                    colors = IconButtonDefaults.iconToggleButtonColors(
+                        contentColor = MaterialTheme.colorScheme.primary,
+                        checkedContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                ) {
+                    Icon(Icons.Rounded.Sell, contentDescription = stringResource(R.string.details_set_label))
+                }
             }
-            IconButton(
-                onClick = onSetLocation,
-                modifier = Modifier.size(48.dp),
-                colors = IconButtonDefaults.iconButtonColors(
-                    contentColor = MaterialTheme.colorScheme.primary,
-                ),
-            ) {
-                Icon(Icons.AutoMirrored.Rounded.DriveFileMove, contentDescription = stringResource(R.string.details_set_location))
+            IconTooltip(stringResource(R.string.details_set_location)) {
+                IconButton(
+                    onClick = onSetLocation,
+                    modifier = Modifier.size(48.dp),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                ) {
+                    Icon(Icons.AutoMirrored.Rounded.DriveFileMove, contentDescription = stringResource(R.string.details_set_location))
+                }
             }
         }
 

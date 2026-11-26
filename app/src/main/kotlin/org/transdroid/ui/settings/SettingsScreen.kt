@@ -105,6 +105,7 @@ import org.transdroid.data.PeerSort
 import org.transdroid.data.RssFeed
 import org.transdroid.data.SettingsRepository
 import org.transdroid.errorlog.ErrorLog
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.rss.EditFeedDialog
 import org.transdroid.ui.components.TransdroidTextField
 
@@ -215,11 +216,13 @@ fun SettingsScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.details_back),
-                        )
+                    IconTooltip(stringResource(R.string.details_back)) {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.details_back),
+                            )
+                        }
                     }
                 },
             )
@@ -253,12 +256,14 @@ fun SettingsScreen(
                                     Spacer(Modifier.width(4.dp))
                                 }
                                 if (isDummy) {
-                                    IconButton(onClick = { viewModel.delete(profile.id) }) {
-                                        Icon(
-                                            Icons.Rounded.Delete,
-                                            contentDescription = stringResource(R.string.rss_delete_feed),
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        )
+                                    IconTooltip(stringResource(R.string.settings_delete)) {
+                                        IconButton(onClick = { viewModel.delete(profile.id) }) {
+                                            Icon(
+                                                Icons.Rounded.Delete,
+                                                contentDescription = stringResource(R.string.settings_delete),
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            )
+                                        }
                                     }
                                 } else {
                                     Icon(Icons.Rounded.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -289,12 +294,14 @@ fun SettingsScreen(
                                 subtitle = feed.url,
                                 onClick = { onOpenFeed(feed.id) },
                                 trailing = {
-                                    IconButton(onClick = { deletingFeed = feed }) {
-                                        Icon(
-                                            Icons.Rounded.Delete,
-                                            contentDescription = stringResource(R.string.rss_delete_feed),
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        )
+                                    IconTooltip(stringResource(R.string.rss_delete_feed)) {
+                                        IconButton(onClick = { deletingFeed = feed }) {
+                                            Icon(
+                                                Icons.Rounded.Delete,
+                                                contentDescription = stringResource(R.string.rss_delete_feed),
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            )
+                                        }
                                     }
                                 },
                             )
@@ -427,16 +434,18 @@ fun SettingsScreen(
                                     modifier = Modifier.padding(end = 12.dp).size(24.dp),
                                     strokeWidth = 2.5.dp,
                                 )
-                                geoIpDownloaded -> IconButton(
-                                    onClick = {
-                                        viewModel.removeGeoIp { scope.launch { snackbarHostState.showSnackbar(geoIpRemovedMessage) } }
-                                    },
-                                ) {
-                                    Icon(
-                                        Icons.Rounded.Delete,
-                                        contentDescription = stringResource(R.string.settings_geoip_remove),
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
+                                geoIpDownloaded -> IconTooltip(stringResource(R.string.settings_geoip_remove)) {
+                                    IconButton(
+                                        onClick = {
+                                            viewModel.removeGeoIp { scope.launch { snackbarHostState.showSnackbar(geoIpRemovedMessage) } }
+                                        },
+                                    ) {
+                                        Icon(
+                                            Icons.Rounded.Delete,
+                                            contentDescription = stringResource(R.string.settings_geoip_remove),
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
                                 }
                                 else -> Icon(
                                     Icons.Rounded.Download,

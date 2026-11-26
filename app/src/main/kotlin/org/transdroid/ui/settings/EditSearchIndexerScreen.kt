@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.transdroid.R
 import org.transdroid.data.SearchProviderConfig
+import org.transdroid.ui.components.IconTooltip
 import org.transdroid.ui.message
 import org.transdroid.ui.components.TransdroidTextField
 
@@ -98,20 +99,24 @@ fun EditSearchIndexerScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.details_back),
-                        )
+                    IconTooltip(stringResource(R.string.details_back)) {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.details_back),
+                            )
+                        }
                     }
                 },
                 actions = {
                     if (existing != null) {
-                        IconButton(onClick = {
-                            viewModel.deleteSearchProvider(existing.id)
-                            onBack()
-                        }) {
-                            Icon(Icons.Rounded.Delete, contentDescription = stringResource(R.string.settings_delete_search_provider))
+                        IconTooltip(stringResource(R.string.settings_delete_search_provider)) {
+                            IconButton(onClick = {
+                                viewModel.deleteSearchProvider(existing.id)
+                                onBack()
+                            }) {
+                                Icon(Icons.Rounded.Delete, contentDescription = stringResource(R.string.settings_delete_search_provider))
+                            }
                         }
                     }
                 },
