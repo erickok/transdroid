@@ -909,7 +909,7 @@ private fun TorrentRow(
 ) {
     val haptics = LocalHapticFeedback.current
     // Long-press and its gesture-free alternatives for TalkBack users
-    val startPauseLabel = stringResource(if (torrent.status.canStart) R.string.selection_start else R.string.selection_pause)
+    val startPauseLabel = stringResource(if (torrent.canStart) R.string.selection_start else R.string.selection_pause)
     val selectLabel = stringResource(R.string.selection_select)
     Box(
         modifier = Modifier

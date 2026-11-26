@@ -268,16 +268,21 @@ class RtorrentAdapter(
         @SerialName("d.peers_complete=") val peersComplete: Long = 0,
     ) {
         fun toTorrent(): Torrent {
-            // d.message carries tracker notices ("Tried all trackers", "Unregistered torrent")
-            // that persist while the torrent keeps working via other trackers, DHT or PEX: shown
-            // as the torrent's error text, but never a status of its own
-            val status = when {
+            // rTorrent sets d.message to "Tracker: [<reason>]" when an announce fails and clears it
+            // on the next success, so a message means the tracker is failing right now ("your
+            // client is not on the whitelist", "Unregistered torrent"). As in ruTorrent, that's an
+            // error, except for the generic "Tried all trackers." notice on torrents that may well
+            // keep working via DHT or PEX. The torrent may still be running, hence canStart below.
+            val stopped = state == 0L || isActive != 1L
+            val runState = when {
                 hashing > 0L -> TorrentStatus.CHECKING
-                state == 0L || isActive != 1L -> TorrentStatus.PAUSED
+                stopped -> TorrentStatus.PAUSED
                 complete == 1L -> TorrentStatus.SEEDING
                 else -> TorrentStatus.DOWNLOADING
             }
-            val eta = if (status == TorrentStatus.DOWNLOADING && downRate > 0) {
+            val trackerFailing = message.isNotBlank() && message.trim() != TRIED_ALL_TRACKERS
+            val status = if (trackerFailing && runState != TorrentStatus.CHECKING) TorrentStatus.ERROR else runState
+            val eta = if (runState == TorrentStatus.DOWNLOADING && downRate > 0) {
                 (sizeBytes - completedBytes) / downRate
             } else {
                 null
@@ -300,6 +305,7 @@ class RtorrentAdapter(
                 addedTimestamp = startedAt.takeIf { it > 0 },
                 downloadDir = directory.takeIf { it.isNotBlank() },
                 error = message.takeIf { it.isNotBlank() },
+                canStart = stopped,
                 // ruTorrent stores its label encodeURIComponent-encoded in custom1; that
                 // encoding leaves "+" literal, so protect it from URLDecoder's plus-to-space
                 labels = custom1.takeIf { it.isNotBlank() }?.let { raw ->
@@ -347,3 +353,6 @@ class RtorrentAdapter(
         @SerialName("p.is_encrypted=") val isEncrypted: Long = 0,
     )
 }
+
+/** rTorrent's d.message after every tracker failed: a notice, not proof the torrent is stuck. */
+private const val TRIED_ALL_TRACKERS = "Tracker: [Tried all trackers.]"

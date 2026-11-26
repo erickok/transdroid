@@ -411,7 +411,7 @@ class TransdroidWidget : GlanceAppWidget() {
 
     @Composable
     private fun ToggleButton(torrent: WidgetTorrent, strings: WidgetStrings) {
-        val canStart = torrent.status.canStart
+        val canStart = torrent.canStart
         Box(
             modifier = GlanceModifier
                 .size(28.dp)

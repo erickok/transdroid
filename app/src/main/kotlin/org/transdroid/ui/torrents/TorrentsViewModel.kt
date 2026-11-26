@@ -221,10 +221,10 @@ data class TorrentsUiState(
         get() = torrents.filter { it.id in selection }
 
     val selectionCanStart: Boolean
-        get() = selectedTorrents.any { it.status.canStart }
+        get() = selectedTorrents.any { it.canStart }
 
     val selectionCanPause: Boolean
-        get() = selectedTorrents.any { !it.status.canStart }
+        get() = selectedTorrents.any { !it.canStart }
 
     val selectedTorrent: Torrent?
         get() = torrents.firstOrNull { it.id == selectedTorrentId }
@@ -501,9 +501,9 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
         _ui.update { it.copy(bulkResult = null) }
     }
 
-    fun startSelected() = runBulk(BulkAction.START, { it.status.canStart }) { adapter, t -> adapter.start(t.id) }
+    fun startSelected() = runBulk(BulkAction.START, { it.canStart }) { adapter, t -> adapter.start(t.id) }
 
-    fun pauseSelected() = runBulk(BulkAction.PAUSE, { !it.status.canStart }) { adapter, t -> adapter.pause(t.id) }
+    fun pauseSelected() = runBulk(BulkAction.PAUSE, { !it.canStart }) { adapter, t -> adapter.pause(t.id) }
 
     fun checkSelected() = runBulk(BulkAction.CHECK) { adapter, t -> adapter.checkData(t.id) }
 
@@ -552,7 +552,7 @@ class TorrentsViewModel(private val container: AppContainer) : ViewModel() {
 
     fun toggleStartPause(torrent: Torrent) {
         runAction { adapter ->
-            if (torrent.status.canStart) adapter.start(torrent.id) else adapter.pause(torrent.id)
+            if (torrent.canStart) adapter.start(torrent.id) else adapter.pause(torrent.id)
         }
     }
 

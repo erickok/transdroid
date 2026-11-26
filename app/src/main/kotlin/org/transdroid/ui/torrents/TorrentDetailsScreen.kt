@@ -377,7 +377,7 @@ private fun DetailsSummary(
 
         Spacer(Modifier.height(18.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            val showStart = torrent.status.canStart
+            val showStart = torrent.canStart
             Button(
                 onClick = { viewModel.toggleStartPause(torrent) },
                 shape = MaterialTheme.shapes.extraLarge,

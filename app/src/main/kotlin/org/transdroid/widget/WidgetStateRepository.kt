@@ -44,6 +44,8 @@ data class WidgetTorrent(
     // Defaults let snapshots stored before widget sorting existed still decode
     val addedTimestamp: Long? = null,
     val ratio: Float = 0f,
+    /** See [Torrent.canStart]; a running rTorrent torrent can be in ERROR. */
+    val canStart: Boolean = status.canStart,
 )
 
 @Serializable
@@ -105,7 +107,7 @@ class WidgetStateRepository(private val context: Context) {
 
     suspend fun update(serverId: String, serverName: String, torrents: List<Torrent>) {
         val all = torrents
-            .map { WidgetTorrent(it.id, it.name, it.status, it.progress, it.downloadRate, it.uploadRate, it.addedTimestamp, it.ratio) }
+            .map { WidgetTorrent(it.id, it.name, it.status, it.progress, it.downloadRate, it.uploadRate, it.addedTimestamp, it.ratio, it.canStart) }
         val widgetTorrents = widgetConfiguredListOptions(context)
             .flatMap { options -> options.select(all) }
             .distinctBy { it.id }

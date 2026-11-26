@@ -23,6 +23,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
@@ -107,11 +108,62 @@ class RtorrentAdapterTest {
 
         assertEquals(TorrentStatus.PAUSED, torrents[2].status)
 
-        // d.message is informational: status comes from the state machine, the message
-        // stays visible as the torrent's error text
+        // A tracker failure in d.message is an error, while the torrent itself keeps running
         val withMessage = torrents[3]
-        assertEquals(TorrentStatus.DOWNLOADING, withMessage.status)
+        assertEquals(TorrentStatus.ERROR, withMessage.status)
         assertTrue(withMessage.error!!.contains("Unregistered torrent"))
+        assertFalse("still running, so Pause is the action", withMessage.canStart)
+    }
+
+    /** One d.multicall2 row, in TorrentRow's field order. */
+    private fun torrentRow(hash: String, state: Int, complete: Int, isActive: Int, hashing: Int = 0, message: String = "") =
+        """<value><array><data>
+          <value><string>$hash</string></value><value><string>$hash.iso</string></value>
+          <value><i8>$state</i8></value><value><i8>$complete</i8></value>
+          <value><i8>$isActive</i8></value><value><i8>$hashing</i8></value>
+          <value><i8>0</i8></value><value><i8>0</i8></value>
+          <value><i8>100</i8></value><value><i8>${if (complete == 1) 100 else 50}</i8></value>
+          <value><i8>0</i8></value><value><i8>0</i8></value><value><i8>0</i8></value><value><i8>0</i8></value>
+          <value><string>/downloads</string></value><value><string>$message</string></value>
+          <value><string></string></value><value><i8>0</i8></value>
+        </data></array></value>"""
+
+    @Test
+    fun `tracker failures are errors like in ruTorrent, except the tried all trackers notice`() = runTest {
+        val whitelist = "Tracker: [Failure reason \"your client is not on the whitelist\"]"
+        server.enqueue(
+            xmlResponse(
+                "<array><data>" +
+                    torrentRow("SEEDING", state = 1, complete = 1, isActive = 1, message = whitelist) +
+                    torrentRow("STOPPED", state = 0, complete = 1, isActive = 0, message = whitelist) +
+                    torrentRow("TRIED", state = 1, complete = 0, isActive = 1, message = "Tracker: [Tried all trackers.]") +
+                    torrentRow("HASHING", state = 1, complete = 0, isActive = 1, hashing = 1, message = whitelist) +
+                    torrentRow("CLEAN", state = 1, complete = 1, isActive = 1) +
+                    "</data></array>"
+            )
+        )
+
+        val byId = adapter.listTorrents().associateBy { it.id }
+
+        val seeding = byId.getValue("SEEDING")
+        assertEquals(TorrentStatus.ERROR, seeding.status)
+        assertEquals(whitelist, seeding.error)
+        assertFalse("a running torrent in error offers Pause", seeding.canStart)
+
+        val stopped = byId.getValue("STOPPED")
+        assertEquals(TorrentStatus.ERROR, stopped.status)
+        assertTrue("a stopped torrent in error offers Start", stopped.canStart)
+
+        val tried = byId.getValue("TRIED")
+        assertEquals("may still work via DHT or PEX", TorrentStatus.DOWNLOADING, tried.status)
+        assertEquals("Tracker: [Tried all trackers.]", tried.error)
+        assertFalse(tried.canStart)
+
+        assertEquals("checking is transient and wins", TorrentStatus.CHECKING, byId.getValue("HASHING").status)
+
+        val clean = byId.getValue("CLEAN")
+        assertEquals(TorrentStatus.SEEDING, clean.status)
+        assertNull(clean.error)
     }
 
     @Test
